@@ -282,6 +282,9 @@
 
 <span class="sd">    .. _xyzplugin:</span>
 <span class="sd">       http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html</span>
+
+<span class="sd">    .. versionchanged: 0.21.0</span>
+<span class="sd">       Use elements attribute instead of names attribute, if present</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;XYZ&#39;</span>
@@ -323,15 +326,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atomnames</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atoms_elements_or_names</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
         <span class="n">default_remark</span> <span class="o">=</span> <span class="s2">&quot;Written by </span><span class="si">{0}</span><span class="s2"> (release </span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">default_remark</span> <span class="k">if</span> <span class="n">remark</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">remark</span>
         <span class="c1"># can also be gz, bz2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_get_atomnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return a list of atom names&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">_get_atoms_elements_or_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of atom elements (if present) or fallback to atom names&quot;&quot;&quot;</span>
         <span class="c1"># Default case</span>
         <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
@@ -344,9 +347,12 @@
         <span class="c1"># AtomGroup or Universe, grab the names else default</span>
         <span class="c1"># (AtomGroup.atoms just returns AtomGroup)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+            <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">elements</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">atoms</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
 
 <div class="viewcode-block" id="XYZWriter.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Close the trajectory file and finalize the writing&quot;&quot;&quot;</span>
@@ -358,7 +364,7 @@
 <div class="viewcode-block" id="XYZWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write object `obj` at current trajectory frame to file.</span>
 
-<span class="sd">        Atom names in the output are taken from the `obj` or default</span>
+<span class="sd">        Atom elements (or names) in the output are taken from the `obj` or default</span>
 <span class="sd">        to the value of the `atoms` keyword supplied to the</span>
 <span class="sd">        :class:`XYZWriter` constructor.</span>
 
@@ -392,7 +398,7 @@
                 <span class="c1"># For Universe only --- get everything</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
             <span class="c1"># update atom names</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atomnames</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atoms_elements_or_names</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
 
