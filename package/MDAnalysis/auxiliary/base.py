@@ -825,7 +825,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
     @time_selector.setter
     def time_selector(self, new):
-        olf = self.auxstep._time_selector
+        old = self.auxstep._time_selector
         self.auxstep._time_selector = new
         if old != new:
             # if constant_dt is False and so we're using a _times list, this will
