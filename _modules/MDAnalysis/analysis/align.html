@@ -371,7 +371,6 @@
 <span class="kn">import</span> <span class="nn">Bio.SeqIO</span>
 <span class="kn">import</span> <span class="nn">Bio.AlignIO</span>
 <span class="kn">import</span> <span class="nn">Bio.Align.Applications</span>
-<span class="kn">import</span> <span class="nn">Bio.Alphabet</span>
 <span class="kn">import</span> <span class="nn">Bio.pairwise2</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
@@ -1021,12 +1020,11 @@
 <span class="sd">    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">protein_gapped</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Alphabet</span><span class="o">.</span><span class="n">Gapped</span><span class="p">(</span><span class="n">Bio</span><span class="o">.</span><span class="n">Alphabet</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">protein</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">is_aligned</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using provided alignment </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">))</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fasta</span><span class="p">:</span>
             <span class="n">alignment</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
-                <span class="n">fasta</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">protein_gapped</span><span class="p">)</span>
+                <span class="n">fasta</span><span class="p">,</span> <span class="s2">&quot;fasta&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">alnfilename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filepath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">)</span>
@@ -1054,7 +1052,7 @@
             <span class="k">raise</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">)</span> <span class="k">as</span> <span class="n">aln</span><span class="p">:</span>
             <span class="n">alignment</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">AlignIO</span><span class="o">.</span><span class="n">read</span><span class="p">(</span>
-                <span class="n">aln</span><span class="p">,</span> <span class="s2">&quot;clustal&quot;</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">protein_gapped</span><span class="p">)</span>
+                <span class="n">aln</span><span class="p">,</span> <span class="s2">&quot;clustal&quot;</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
             <span class="s2">&quot;Using clustalw sequence alignment </span><span class="si">{0!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">))</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
@@ -1073,7 +1071,7 @@
         <span class="k">if</span> <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># build default: assume consecutive numbering of all</span>
             <span class="c1"># residues in the alignment</span>
-            <span class="n">GAP</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span><span class="o">.</span><span class="n">gap_char</span>
+            <span class="n">GAP</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
             <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span> <span class="o">-</span> <span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">GAP</span><span class="p">)</span>
             <span class="n">orig_resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">length</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1115,7 +1113,7 @@
         <span class="n">nseq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">alignment</span><span class="p">)</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">nseq</span><span class="p">,</span> <span class="n">alignment</span><span class="o">.</span><span class="n">get_alignment_length</span><span class="p">()),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">iseq</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">alignment</span><span class="p">):</span>
-            <span class="n">GAP</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span><span class="o">.</span><span class="n">gap_char</span>
+            <span class="n">GAP</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span>
             <span class="n">t</span><span class="p">[</span><span class="n">iseq</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">seq2resids</span><span class="p">[</span><span class="n">iseq</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">seq</span><span class="p">))</span> <span class="o">==</span> <span class="n">GAP</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
             <span class="c1"># -1 because seq2resid is index-1 based (resids start at 1)</span>
@@ -1131,12 +1129,6 @@
     <span class="c1"># could collect just resid and type (with/without CB) and</span>
     <span class="c1"># then post-process and use ranges for continuous stretches, eg</span>
     <span class="c1"># ( resid 1:35 and ( backbone or name CB ) ) or ( resid 36 and backbone )</span>
-
-    <span class="c1"># should be the same for both seqs</span>
-    <span class="n">GAP</span> <span class="o">=</span> <span class="n">alignment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span><span class="o">.</span><span class="n">gap_char</span>
-    <span class="k">if</span> <span class="n">GAP</span> <span class="o">!=</span> <span class="n">alignment</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">seq</span><span class="o">.</span><span class="n">alphabet</span><span class="o">.</span><span class="n">gap_char</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="s2">&quot;Different gap characters in sequence &#39;target&#39; and &#39;mobile&#39;.&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">ipos</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">alignment</span><span class="o">.</span><span class="n">get_alignment_length</span><span class="p">()):</span>
         <span class="n">aligned</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">alignment</span><span class="p">[:,</span> <span class="n">ipos</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">GAP</span> <span class="ow">in</span> <span class="n">aligned</span><span class="p">:</span>

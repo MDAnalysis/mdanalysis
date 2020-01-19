@@ -211,7 +211,6 @@
 
 <span class="kn">import</span> <span class="nn">Bio.Seq</span>
 <span class="kn">import</span> <span class="nn">Bio.SeqRecord</span>
-<span class="kn">import</span> <span class="nn">Bio.Alphabet</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -1664,7 +1663,7 @@
                              <span class="s2">&quot;character&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sequence</span>
-        <span class="n">seq</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Seq</span><span class="o">.</span><span class="n">Seq</span><span class="p">(</span><span class="n">sequence</span><span class="p">,</span> <span class="n">alphabet</span><span class="o">=</span><span class="n">Bio</span><span class="o">.</span><span class="n">Alphabet</span><span class="o">.</span><span class="n">IUPAC</span><span class="o">.</span><span class="n">protein</span><span class="p">)</span>
+        <span class="n">seq</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Seq</span><span class="o">.</span><span class="n">Seq</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;Seq&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">seq</span>
         <span class="k">return</span> <span class="n">Bio</span><span class="o">.</span><span class="n">SeqRecord</span><span class="o">.</span><span class="n">SeqRecord</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
