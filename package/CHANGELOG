@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud
+         PicoCentauri, davidercruz, jbarnoud, RMeli
 
   * 0.21.0
 
@@ -51,6 +51,9 @@ Enhancements
   * Added wrap/unwrap transformations (PR #2038)
   * Read TPR files from Gromacs 2020 (Issue #2412 and #2428)
 
+Changes
+  * The fasta2select now always assumes that the gap character in a sequence
+    is "-" (Issue #2448, PR #2457)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0

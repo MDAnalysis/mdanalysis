@@ -37,7 +37,6 @@ from six.moves import zip, range
 
 import Bio.Seq
 import Bio.SeqRecord
-import Bio.Alphabet
 from collections import defaultdict
 import copy
 import functools
@@ -1490,7 +1489,7 @@ class Resnames(ResidueAttr):
                              "character".format(err.message)), None)
         if format == "string":
             return sequence
-        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        seq = Bio.Seq.Seq(sequence)
         if format == "Seq":
             return seq
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
