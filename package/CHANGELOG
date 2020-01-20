@@ -55,8 +55,8 @@ Enhancements
   * Added analysis.align.AverageStructure to get the average structure of an 
     out-of-memory trajectory (Issue #2039)
   * Added _add_TopologyObjects, _delete_TopologyObjects, and public convenience 
-    methods to Universe. Added type and order checking to Bonds/Angles/Dihedrals
-    and type checking to Impropers. (PR #2382)
+    methods to Universe. Added type and order checking to _Connection
+    topologyattrs. (PR #2382)
 
 Changes
   * The fasta2select now always assumes that the gap character in a sequence
