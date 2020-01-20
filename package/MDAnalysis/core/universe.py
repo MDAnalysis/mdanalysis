@@ -1002,10 +1002,12 @@ class Universe(object):
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
             The type of TopologyObject to add.
-        values : iterable of tuples, AtomGroups, or TopologyObjects
+        values : TopologyGroup or iterable of tuples, AtomGroups, or TopologyObjects
             An iterable of: tuples of atom indices, or AtomGroups, 
             or TopologyObjects. If every value is a TopologyObject, all 
             keywords are ignored.
+            If AtomGroups or TopologyObjects are passed, they *must* be from the same 
+            Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
@@ -1024,15 +1026,22 @@ class Universe(object):
             guessed = [t.is_guessed for t in values]
             order = [t.order for t in values]
         
-        values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
-                  else x for x in values]
+        indices = []
+        for x in values:
+            if isinstance(x, (AtomGroup, TopologyObject)):
+                if x.universe is not self:
+                    err_msg = 'Cannot add {} from different Universes.'
+                    raise ValueError(err_msg.format(object_type))
+                indices.append(x.indices)
+            else:
+                indices.append(x)
 
-        all_indices = set([i for obj in values for i in obj])
+        all_indices = set([i for obj in indices for i in obj])
         nonexistent = all_indices - set(self.atoms.indices)
         if nonexistent:
             istr = ', '.join(map(str, nonexistent))
-            raise ValueError(('Cannot add {} for nonexistent'
-                              ' atom indices: {}').format(object_type, istr))
+            err_msg = 'Cannot add {} for nonexistent atom indices: {}'
+            raise ValueError(err_msg.format(object_type, istr))
         
         try:
             attr = getattr(self._topology, object_type)
@@ -1041,17 +1050,19 @@ class Universe(object):
             attr = getattr(self._topology, object_type)
         
 
-        attr._add_bonds(values, types=types, guessed=guessed, order=order)
+        attr._add_bonds(indices, types=types, guessed=guessed, order=order)
 
     def add_bonds(self, values, types=None, guessed=False, order=None):
         """Add new Bonds to this Universe.
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Bonds
+        values : iterable of tuples, AtomGroups, or Bonds; or TopologyGroup
             An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms, 
             or Bonds. If every value is a Bond, all 
             keywords are ignored. 
+            If AtomGroups, Bonds, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
@@ -1063,16 +1074,26 @@ class Universe(object):
         Example
         -------
 
-        Adding TIP4P water bonds with a list of AtomGroups:
+        Adding TIP4P water bonds with a list of AtomGroups::
 
-        >>> import MDAnalysis as mda
-        >>> from MDAnalysis.tests.datafiles import GRO
-        >>> u = mda.Universe(GRO)
-        >>> sol = u.select_atoms('resname SOL')
-        >>> ow_hw1 = sol.select_atoms('name OW or name HW1').split('residue')
-        >>> ow_hw2 = sol.select_atoms('name OW or name HW2').split('residue')
-        >>> ow_mw = sol.select_atoms('name OW or name MW').split('residue')
-        >>> u.add_bonds(ow_hw1 + ow_hw2 + ow_mw)
+            import MDAnalysis as mda
+            from MDAnalysis.tests.datafiles import GRO
+            u = mda.Universe(GRO)
+            sol = u.select_atoms('resname SOL')
+            ow_hw1 = sol.select_atoms('name OW or name HW1').split('residue')
+            ow_hw2 = sol.select_atoms('name OW or name HW2').split('residue')
+            ow_mw = sol.select_atoms('name OW or name MW').split('residue')
+            u.add_bonds(ow_hw1 + ow_hw2 + ow_mw)
+
+        You can only add bonds from the same Universe. If you would like to add 
+        AtomGroups, Bonds, or a TopologyGroup from a different Universe, convert 
+        them to indices first. ::
+
+            from MDAnalysis.tests.datafiles import PSF
+            u2 = mda.Universe(PSF)
+            
+            #  assuming you have already added bonds to u
+            u2.add_bonds(u.bonds.to_indices())
 
 
         .. versionadded:: 0.21.0
@@ -1086,10 +1107,12 @@ class Universe(object):
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Angles
+        values : iterable of tuples, AtomGroups, or Angles; or TopologyGroup
             An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms, 
             or Angles. If every value is a Angle, all 
             keywords are ignored.
+            If AtomGroups, Angles, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
@@ -1105,10 +1128,12 @@ class Universe(object):
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Dihedrals
+        values : iterable of tuples, AtomGroups, or Dihedrals; or TopologyGroup
             An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
             or Dihedrals. If every value is a Dihedral, all 
             keywords are ignored.
+            If AtomGroups, Dihedrals, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
@@ -1125,10 +1150,12 @@ class Universe(object):
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Impropers
+        values : iterable of tuples, AtomGroups, or Impropers; or TopologyGroup
             An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
             or Impropers. If every value is an Improper, all 
             keywords are ignored.
+            If AtomGroups, Impropers, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
         guessed : bool or iterable (optional, default False)
@@ -1147,30 +1174,64 @@ class Universe(object):
         ----------
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
             The type of TopologyObject to add.
-        values : iterable of tuples, AtomGroups, or TopologyObjects
+        values : iterable of tuples, AtomGroups, or TopologyObjects; or TopologyGroup
             An iterable of: tuples of atom indices, or AtomGroups, 
             or TopologyObjects.
+            If AtomGroups, TopologyObjects, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
 
         .. versionadded:: 0.21.0
         """
-        values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
-                  else x for x in values]
+        indices = []
+        for x in values:
+            if isinstance(x, (AtomGroup, TopologyObject)):
+                if x.universe is not self:
+                    err_msg = 'Cannot delete {} from different Universes.'
+                    raise ValueError(err_msg.format(object_type))
+                indices.append(x.indices)
+            else:
+                indices.append(x)
 
         try:
             attr = getattr(self._topology, object_type)
         except AttributeError:
             raise ValueError('There are no {} to delete'.format(object_type))
         
-        attr._delete_bonds(values)
+        attr._delete_bonds(indices)
 
     def delete_bonds(self, values):
         """Delete Bonds from this Universe.
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Bonds
+        values : iterable of tuples, AtomGroups, or Bonds; or TopologyGroup
             An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms, 
             or Bonds.
+            If AtomGroups, Bonds, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
+
+
+        Example
+        -------
+
+        Deleting bonds from a Universe::
+
+            import MDAnalysis as mda
+            from MDAnalysis.tests.datafiles import PSF
+            u = mda.Universe(PSF)
+            
+            #  delete first 5 bonds
+            u.delete_bonds(u.bonds[:5])
+
+        
+        If you are deleting bonds in the form of AtomGroups, Bonds, or a 
+        TopologyGroup, they must come from the same Universe. If you want to 
+        delete bonds from another Universe, convert them to indices first. ::
+
+            from MDAnalysis.tests.datafiles import PDB
+            u2 = mda.Universe(PDB)
+
+            u.delete_bonds(u2.bonds.to_indices())
 
 
         .. versionadded:: 0.21.0
@@ -1183,9 +1244,11 @@ class Universe(object):
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Angles
+        values : iterable of tuples, AtomGroups, or Angles; or TopologyGroup
             An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms, 
             or Angles.
+            If AtomGroups, Angles, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
 
         
         .. versionadded:: 0.21.0
@@ -1197,9 +1260,11 @@ class Universe(object):
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Dihedrals
+        values : iterable of tuples, AtomGroups, or Dihedrals; or TopologyGroup
             An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
             or Dihedrals.
+            If AtomGroups, Dihedrals, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
 
         
         .. versionadded:: 0.21.0
@@ -1211,9 +1276,11 @@ class Universe(object):
 
         Parameters
         ----------
-        values : iterable of tuples, AtomGroups, or Impropers
+        values : iterable of tuples, AtomGroups, or Impropers; or TopologyGroup
             An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
             or Impropers.
+            If AtomGroups, Angles, or a TopologyGroup are passed, 
+            they *must* be from the same Universe.
 
         
         .. versionadded:: 0.21.0
