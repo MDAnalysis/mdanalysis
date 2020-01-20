@@ -698,6 +698,12 @@ class TestAddTopologyObjects(object):
         assert all(_a_or_reversed_in_b(x, u_attr.indices)
                    for x in values)
 
+    def test_add_reversed_duplicates(self, empty):
+        assert not hasattr(empty, 'bonds')
+        empty.add_bonds([[0, 1], [1, 0]])
+        assert len(empty.bonds) == 1
+        assert_array_equal(empty.bonds.indices, np.array([[0, 1]]))
+
     @pytest.mark.parametrize(
         'attr,values', (
             ('bonds', [[0, 111], [22, 3]]),
