@@ -772,7 +772,7 @@
 <span class="sd">            Array of the rmsd values of the least rmsd between the mobile_atoms</span>
 <span class="sd">            and reference_atoms after superposition and minimimization of rmsd</span>
 <span class="sd">        filename : str</span>
-<span class="sd">            String reflecting the filename of the file where mobile_atoms</span>
+<span class="sd">            String reflecting the filename of the file where the aligned</span>
 <span class="sd">            positions will be written to upon running RMSD alignment</span>
 
 
@@ -881,6 +881,200 @@
         <span class="c1"># and reference structure</span>
         <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">rmsdfile</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Wrote RMSD timeseries  to file </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="p">)</span></div>
+
+<span class="k">class</span> <span class="nc">AverageStructure</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;RMS-align trajectory to a reference structure using a selection, </span>
+<span class="sd">    and calculate the average coordinates of the trajectory.</span>
+
+<span class="sd">    Both the reference `reference` and the trajectory `mobile` must be</span>
+<span class="sd">    :class:`MDAnalysis.Universe` instances. If they contain a trajectory, then</span>
+<span class="sd">    it is used. You can also use the same universe if you want to fit to the</span>
+<span class="sd">    current frame.</span>
+
+<span class="sd">    The output file format is determined by the file extension of</span>
+<span class="sd">    `filename`. </span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        import MDAnalysis as mda</span>
+<span class="sd">        from MDAnalysis.tests.datafiles import PSF, DCD</span>
+<span class="sd">        from MDAnalysis.analysis import align</span>
+
+<span class="sd">        u = mda.Universe(PSF, DCD)</span>
+
+<span class="sd">        # align to the third frame and average structure</span>
+<span class="sd">        av = align.AverageStructure(u, ref_frame=3).run()</span>
+<span class="sd">        averaged_universe = av.universe</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">ref_frame</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        mobile : Universe</span>
+<span class="sd">            Universe containing trajectory to be fitted to reference</span>
+<span class="sd">        reference : Universe (optional)</span>
+<span class="sd">            Universe containing trajectory frame to be used as reference</span>
+<span class="sd">        select : str (optional)</span>
+<span class="sd">            Set as default to all, is used for Universe.select_atoms to choose</span>
+<span class="sd">            subdomain to be fitted against</span>
+<span class="sd">        filename : str (optional)</span>
+<span class="sd">            Provide a filename for results to be written to</span>
+<span class="sd">        weights : {&quot;mass&quot;, ``None``} or array_like (optional)</span>
+<span class="sd">            choose weights. With ``&quot;mass&quot;`` uses masses of `reference` as</span>
+<span class="sd">            weights; with ``None`` weigh each atom equally. If a float array of</span>
+<span class="sd">            the same length as the selection is provided, use each element of</span>
+<span class="sd">            the `array_like` as a weight for the corresponding atom in the</span>
+<span class="sd">            selection.</span>
+<span class="sd">        tol_mass : float (optional)</span>
+<span class="sd">            Tolerance given to `get_matching_atoms` to find appropriate atoms</span>
+<span class="sd">        match_atoms : bool (optional)</span>
+<span class="sd">            Whether to match the mobile and reference atom-by-atom. Default ``True``. </span>
+<span class="sd">        strict : bool (optional)</span>
+<span class="sd">            Force `get_matching_atoms` to fail if atoms can&#39;t be found using</span>
+<span class="sd">            exact methods</span>
+<span class="sd">        force : bool (optional)</span>
+<span class="sd">            Force overwrite of filename for rmsd-fitting</span>
+<span class="sd">        start : int (optional)</span>
+<span class="sd">            First frame of trajectory to analyse, Default: 0</span>
+<span class="sd">        stop : int (optional)</span>
+<span class="sd">            Last frame of trajectory to analyse, Default: -1</span>
+<span class="sd">        step : int (optional)</span>
+<span class="sd">            Step between frames to analyse, Default: 1</span>
+<span class="sd">        in_memory : bool (optional)</span>
+<span class="sd">            *Permanently* switch `mobile` to an in-memory trajectory</span>
+<span class="sd">            so that alignment can be done in-place, which can improve</span>
+<span class="sd">            performance substantially in some cases. In this case, no file</span>
+<span class="sd">            is written out (`filename` and `prefix` are ignored) and only</span>
+<span class="sd">            the coordinates of `mobile` are *changed in memory*.</span>
+<span class="sd">        ref_frame : int (optional)</span>
+<span class="sd">            frame index to select frame from `reference`</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">            Set logger to show more information and show detailed progress of </span>
+<span class="sd">            the calculation if set to ``True``; the default is ``False``.</span>
+
+
+<span class="sd">        Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        reference_atoms : AtomGroup</span>
+<span class="sd">            Atoms of the reference structure to be aligned against</span>
+<span class="sd">        mobile_atoms : AtomGroup</span>
+<span class="sd">            Atoms inside each trajectory frame to be rmsd_aligned</span>
+<span class="sd">        universe : mda.Universe</span>
+<span class="sd">            New Universe with average positions</span>
+<span class="sd">        positions : np.ndarray(dtype=float)</span>
+<span class="sd">            Average positions</span>
+<span class="sd">        rmsd : float</span>
+<span class="sd">            Average RMSD per frame</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            String reflecting the filename of the file where the average </span>
+<span class="sd">            structure is written</span>
+
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        - If set to ``verbose=False``, it is recommended to wrap the statement</span>
+<span class="sd">          in a ``try ...  finally`` to guarantee restoring of the log level in</span>
+<span class="sd">          the case of an exception.</span>
+<span class="sd">        - The ``in_memory`` option changes the `mobile` universe to an</span>
+<span class="sd">          in-memory representation (see :mod:`MDAnalysis.coordinates.memory`)</span>
+<span class="sd">          for the remainder of the Python session. If ``mobile.trajectory`` is</span>
+<span class="sd">          already a :class:`MemoryReader` then it is *always* treated as if</span>
+<span class="sd">          ``in_memory`` had been set to ``True``.</span>
+
+<span class="sd">        .. versionadded:: 0.21.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">in_memory</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
+            <span class="n">mobile</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Moved mobile trajectory to in-memory representation&quot;</span><span class="p">)</span>
+
+        <span class="c1"># do this after setting the memory reader to have a reference to the</span>
+        <span class="c1"># right reader.</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AverageStructure</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">WARN</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span> <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">mobile</span>
+
+        <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="o">*</span><span class="n">select</span><span class="p">[</span><span class="s1">&#39;mobile&#39;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">):</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Reference and trajectory atom selections do &quot;</span>
+                   <span class="s2">&quot;not contain the same number of atoms: &quot;</span>
+                   <span class="s2">&quot;N_ref=</span><span class="si">{0:d}</span><span class="s2">, N_traj=</span><span class="si">{1:d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RMS calculation &quot;</span>
+                    <span class="s2">&quot;for </span><span class="si">{0:d}</span><span class="s2"> atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)))</span>
+
+        <span class="c1"># store reference to mobile atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span> <span class="o">=</span> <span class="n">ref_frame</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Merge</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">)</span>
+
+        <span class="n">natoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span> <span class="o">=</span> <span class="n">get_matching_atoms</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="n">tol_mass</span><span class="p">,</span>
+            <span class="n">strict</span><span class="o">=</span><span class="n">strict</span><span class="p">,</span> <span class="n">match_atoms</span><span class="o">=</span><span class="n">match_atoms</span><span class="p">)</span>
+
+        <span class="c1"># with self.filename == None (in_memory), the NullWriter is chosen</span>
+        <span class="c1"># (which just ignores input) and so only the in_memory trajectory is</span>
+        <span class="c1"># retained</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">natoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span> <span class="o">=</span> <span class="n">get_weights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;RMS-fitting on </span><span class="si">{0:d}</span><span class="s2"> atoms.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">current_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Move to the ref_frame</span>
+            <span class="c1"># (coordinates MUST be stored in case the ref traj is advanced</span>
+            <span class="c1"># elsewhere or if ref == mobile universe)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
+            <span class="c1"># makes a copy</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ref_positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Move back to the original frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">current_frame</span><span class="p">]</span>
+
+        <span class="c1"># allocate the array for selection atom coords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="p">),</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mobile_com</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)</span>
+        <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">+=</span> <span class="n">_fit_to</span><span class="p">(</span><span class="n">mobile_coordinates</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_ref_coordinates</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">mobile</span><span class="p">,</span>
+                             <span class="n">mobile_com</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">_ref_com</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weights</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mobile_atoms</span><span class="o">.</span><span class="n">positions</span>            
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rmsd</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="sequence_alignment"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.sequence_alignment">[docs]</a><span class="k">def</span> <span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
