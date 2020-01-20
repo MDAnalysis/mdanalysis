@@ -1763,7 +1763,16 @@ class _Connection(AtomAttr):
         """
         .. versionadded:: 0.21.0
         """
-        to_check = set(values) & set(self.values)
+
+        to_check = set(values)
+        self_values = set(self.values)
+        if not to_check.issubset(self_values):
+            missing = to_check-self_values
+            indices = ', '.join(map(str, missing))
+            raise ValueError(('Cannot delete nonexistent '
+                              '{attrname} with atom indices:'
+                              '{indices}').format(attrname=self.attrname,
+                                                  indices=indices))
         idx = [self.values.index(v) for v in to_check]
         for i in sorted(idx, reverse=True):
             del self.values[i]

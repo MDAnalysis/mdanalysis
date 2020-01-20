@@ -666,132 +666,394 @@ class TestAddTopologyAttr(object):
             universe.add_TopologyAttr(attr, values)
     
 
+def _a_or_reversed_in_b(a, b):
+    """
+    Check if smaller array ``a`` or ``a[::-1]`` is in b
+    """
+    return (a==b).all(1).any() or (a[::-1]==b).all(1).any()
+
 class TestAddTopologyObjects(object):
     @pytest.fixture()
-    def universe(self):
+    def empty(self):
         return make_Universe()
+
+    @pytest.fixture()
+    def universe(self):
+        return mda.Universe(PSF)
     
-    def test_add_bond_indices(self, universe):
-        idx = [(1, 0), (1, 2)]
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_add_indices_to_empty(self, empty, attr, values):
+        assert not hasattr(empty, attr)
+        _add_func = getattr(empty, 'add_'+attr)
+        _add_func(values)
+        u_attr = getattr(empty, attr)
+        assert len(u_attr) == len(values)
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in values)
 
-        assert not hasattr(universe, 'bonds')
-        universe.add_bonds(idx)
-        assert len(universe.bonds) == len(idx)
-    
-    def test_add_dihedrals(self, universe):
-        idx = [[1, 2, 3, 1], [3, 1, 5, 2]]
-        dih = [universe.atoms[i].dihedral for i in idx]
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 111], [22, 3]]),
+            ('angles', [[0, 111, 2], [3, 44, 5]]),
+            ('dihedrals', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ('impropers', [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        )
+    )
+    def test_add_indices_to_populated(self, universe, attr, values):
+        assert hasattr(universe, attr)
+        u_attr = getattr(universe, attr)
+        original_length = len(u_attr)
 
-        assert not hasattr(universe, 'dihedrals')
-        universe.add_dihedrals(dih)
-        assert len(universe.dihedrals) == len(idx)
+        _add_func = getattr(universe, 'add_'+attr)
+        _add_func(values)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == len(values) + original_length
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in values)
 
-    def test_add_atomgroups(self, universe):
-        idx = [[1, 2, 3, 1], [3, 1, 5, 2], [3, 1, 5, 2]]
-        imp = [universe.atoms[i] for i in idx]
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_add_atomgroup_to_empty(self, empty, attr, values):
+        assert not hasattr(empty, attr)
+        ag = [empty.atoms[x] for x in values]
+        _add_func = getattr(empty, 'add_'+attr)
+        _add_func(ag)
+        u_attr = getattr(empty, attr)
+        assert len(u_attr) == len(values)
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in values)
 
-        assert not hasattr(universe, 'impropers')
-        universe.add_impropers(imp)
-        assert len(universe.impropers) == 2
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 111], [22, 3]]),
+            ('angles', [[0, 111, 2], [3, 44, 5]]),
+            ('dihedrals', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ('impropers', [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        )
+    )
+    def test_add_atomgroup_to_populated(self, universe, attr, values):
+        assert hasattr(universe, attr)
+        u_attr = getattr(universe, attr)
+        original_length = len(u_attr)
 
-    def test_add_topologygroups(self, universe):
-        arr = np.array([[1, 0, 2], [1, 2, 3]])
+        _add_func = getattr(universe, 'add_'+attr)
+        atomgroup = [universe.atoms[x] for x in values]
+        _add_func(atomgroup)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == len(values) + original_length
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in values)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 111], [22, 3]]),
+            ('angles', [[0, 111, 2], [3, 44, 5]]),
+            ('dihedrals', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ('impropers', [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        )
+    )
+    def test_add_topologyobjects_to_populated(self, universe, attr, values):
+        assert hasattr(universe, attr)
+        u_attr = getattr(universe, attr)
+        original_length = len(u_attr)
+
+        _add_func = getattr(universe, 'add_'+attr)
+        topologyobjects = [getattr(universe.atoms[x], attr[:-1]) for x in values]
+        _add_func(topologyobjects)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == len(values) + original_length
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in values)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 111], [22, 3]]),
+            ('angles', [[0, 111, 2], [3, 44, 5]]),
+            ('dihedrals', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ('impropers', [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        )
+    )
+    def test_add_topologygroups_to_populated(self, universe, attr, values):
+        assert hasattr(universe, attr)
+        u_attr = getattr(universe, attr)
+        original_length = len(u_attr)
+
+        _add_func = getattr(universe, 'add_'+attr)
+        topologygroup = mda.core.topologyobjects.TopologyGroup(np.array(values), 
+                                                               universe)
+        _add_func(topologygroup)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == len(values) + original_length
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in values)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('impropers', [[0, 111], [22, 3]]),
+            ('dihedrals', [[0, 111, 2], [3, 44, 5]]),
+            ('angles', [[8, 222, 1, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ('bonds', [[1, 6, 771, 2], [5, 3, 433, 2]]),
+        )
+    )
+    def test_add_wrong_topologygroup_error(self, universe, attr, values):
+        arr = np.array(values)
         tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
-
-        assert not hasattr(universe, 'angles')
-        assert len(tg) == 2
-        universe.add_angles(tg)
-        assert len(universe.angles) == 2
-
-        ua = universe.angles[-1]
-        tga = tg[0]
-        assert ua.is_guessed == tga.is_guessed
-        assert ua.order == tga.order
-
-        assert list(ua.indices) == list(arr[-1])
-
-    def test_add_topologygroup_error(self, universe):
-        arr = np.array([(1, 0), (1, 2)])
-        tg = mda.core.topologyobjects.TopologyGroup(arr, universe)
+        _add_func = getattr(universe, 'add_'+attr)
 
         with pytest.raises(ValueError):
-            universe.add_angles(tg)
-        
-    def test_add_angles_wrong_number_of_atoms_error(self, universe):
-        indices = [(0, 1, 2), (2, 3, 0), (4, 1)]
-        with pytest.raises(ValueError):
-            universe.add_angles(indices)
+            _add_func(tg)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, -111], [22, 3]]),
+            ('angles', [[0, 11111, 2], [3, 44, 5]]),
+            ('dihedrals', [[8, 222, 28888, 3], [44, 5, 6, 7], [111, 2, 3, 13]]),
+            ('impropers', [[1, 6, 77133, 2], [5, 3, 433, 2]]),
+        )
+    )
+    def test_add_nonexistent_indices_error(self, universe, attr, values):
+        _add_func = getattr(universe, 'add_'+attr)
+        with pytest.raises(ValueError) as excinfo:
+            _add_func(values)
+        assert 'nonexistent atom indices' in str(excinfo.value)
+
+    @pytest.mark.parametrize(
+        'attr,n', (
+            ('bonds', 2),
+            ('angles', 3),
+            ('dihedrals', 4),
+            ('impropers', 4),
+        )
+    )
+    def test_add_wrong_number_of_atoms_error(self, universe, attr, n):
+        _add_func = getattr(universe, 'add_'+attr)
+        with pytest.raises(ValueError) as excinfo:
+            _add_func([(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)])
+        errmsg = ('{} must be an iterable of '
+                  'tuples with {} atom indices').format(attr, n)
+        assert errmsg in str(excinfo.value)
     
-    def test_add_bonds_refresh_fragments(self, universe):
+    def test_add_bonds_refresh_fragments(self, empty):
         with pytest.raises(NoDataError):
-            getattr(universe.atoms, 'fragments')
+            getattr(empty.atoms, 'fragments')
 
-        universe.add_bonds([universe.atoms[:2]])
-        assert len(universe.atoms.fragments) == len(universe.atoms)-1
+        empty.add_bonds([empty.atoms[:2]])
+        assert len(empty.atoms.fragments) == len(empty.atoms)-1
 
-        universe.add_bonds([universe.atoms[2:4]])
-        assert len(universe.atoms.fragments) == len(universe.atoms)-2
+        empty.add_bonds([empty.atoms[2:4]])
+        assert len(empty.atoms.fragments) == len(empty.atoms)-2
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_roundtrip(self, empty, attr, values):
+        _add_func = getattr(empty, 'add_'+attr)
+        _add_func(values)
+        u_attr = getattr(empty, attr)
+        assert len(u_attr) == len(values)
+
+        _delete_func = getattr(empty, 'delete_'+attr)
+        _delete_func(values)
+        u_attr = getattr(empty, attr)
+        assert len(u_attr) == 0
     
 class TestDeleteTopologyObjects(object):
 
     TOP = {'bonds': [(0, 1), (2, 3), (3, 4), (4, 5), (7, 8)],
            'angles': [(0, 1, 2), (3, 4, 5), (8, 2, 4)],
-           'dihedrals': [(9, 2, 3, 4), (1, 3, 4, 2)],
+           'dihedrals': [(9, 2, 3, 4), (1, 3, 4, 2), (8, 22, 1, 3), (4, 5, 6, 7), (11, 2, 3, 13)],
            'impropers': [(1, 3, 5, 2), (1, 6, 7, 2), (5, 3, 4, 2)]}
 
     @pytest.fixture()
     def universe(self):
-        u = make_Universe()
+        u = make_Universe(size=(125, 25, 5))
         for attr, values in self.TOP.items():
             u._add_topology_objects(attr, values)
         return u
 
-    def test_delete_bond_indices(self, universe):
-        assert len(universe.bonds) == 5
-        universe.delete_bonds([(0, 1), (2, 3)])
-        assert len(universe.bonds) == 3
-    
-    def test_delete_angles(self, universe):
-        indices = [(0, 1, 2), (3, 4, 5)]
-        angles = [universe.atoms[[i, j, k]].angle for i, j, k in indices]
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_delete_valid_indices(self, universe, attr, values):
+        u_attr = getattr(universe, attr)
+        original_length = len(self.TOP[attr])
+        assert len(u_attr) == original_length
 
-        assert len(universe.angles) == 3
-        universe.delete_angles(angles)
-        assert len(universe.angles) == 1
+        _delete_func = getattr(universe, 'delete_'+attr)
+        _delete_func(values)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == original_length-len(values)
+
+        not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
+        assert all([x in u_attr.indices or x[::-1] in u_attr.indices 
+                   for x in not_deleted])
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[2, 3], [7, 8], [0, 4]]),
+            ('angles', [[0, 1, 2], [8, 2, 8], [1, 1, 1]]),
+            ('dihedrals', [[0, 0, 0, 0], [1, 1, 1, 1]]),
+            ('impropers', [[8, 22, 1, 3],]),
+        )
+    )
+    def test_delete_missing_indices(self, universe, attr, values):
+        u_attr = getattr(universe, attr)
+        original_length = len(self.TOP[attr])
+        assert len(u_attr) == original_length
+        _delete_func = getattr(universe, 'delete_'+attr)
+        with pytest.raises(ValueError) as excinfo:
+            _delete_func(values)
+        assert 'Cannot delete nonexistent' in str(excinfo.value)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_delete_valid_atomgroup(self, universe, attr, values):
+        u_attr = getattr(universe, attr)
+        original_length = len(self.TOP[attr])
+        assert len(u_attr) == original_length
+
+        _delete_func = getattr(universe, 'delete_'+attr)
+        atomgroups = [universe.atoms[x] for x in values]
+        _delete_func(atomgroups)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == original_length-len(values)
+
+        not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in not_deleted)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[2, 3], [7, 8], [0, 4]]),
+            ('angles', [[0, 1, 2], [8, 2, 8], [1, 1, 1]]),
+            ('dihedrals', [[0, 0, 0, 0], [1, 1, 1, 1]]),
+            ('impropers', [[8, 22, 1, 3],]),
+        )
+    )
+    def test_delete_missing_atomgroup(self, universe, attr, values):
+        u_attr = getattr(universe, attr)
+        original_length = len(self.TOP[attr])
+        assert len(u_attr) == original_length
+        _delete_func = getattr(universe, 'delete_'+attr)
+        atomgroups = [universe.atoms[x] for x in values]
+        with pytest.raises(ValueError) as excinfo:
+            _delete_func(atomgroups)
+        assert 'Cannot delete nonexistent' in str(excinfo.value)
     
-    def test_delete_atomgroups(self, universe):
-        assert len(universe.dihedrals) == 2
-        ag = universe.atoms[[1, 3, 4, 2]]
-        universe.delete_dihedrals([ag])
-        assert len(universe.dihedrals) == 1
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_delete_mixed_topologyobjects_type(self, universe, attr, values):
+        u_attr = getattr(universe, attr)
+        original_length = len(self.TOP[attr])
+        assert len(u_attr) == original_length
+
+        _delete_func = getattr(universe, 'delete_'+attr)
+        mixed = [universe.atoms[values[0]]] + values[1:]
+        _delete_func(mixed)
+        u_attr = getattr(universe, attr)
+        assert len(u_attr) == original_length-len(values)
+
+        not_deleted = [x for x in self.TOP[attr] if list(x) not in values]
+        assert all(_a_or_reversed_in_b(x, u_attr.indices)
+                   for x in not_deleted)
     
-    def test_delete_mixed_topologyobjects_type(self, universe):
-        mixed = [universe.atoms[[1, 3, 5, 2]].improper, (5, 3, 4, 2)]
-        universe.delete_impropers(mixed)
-        assert len(universe.impropers) == 1
+    @pytest.mark.parametrize(
+        'attr,n', (
+            ('bonds', 2),
+            ('angles', 3),
+            ('dihedrals', 4),
+            ('impropers', 4),
+        )
+    )
+    def test_delete_wrong_number_of_atoms_error(self, universe, attr, n):
+        _delete_func = getattr(universe, 'delete_'+attr)
+        with pytest.raises(ValueError) as excinfo:
+            _delete_func([(0, 1), (0, 1, 2), (8, 22, 1, 3), (5, 3, 4, 2)])
+        errmsg = ('{} must be an iterable of '
+                  'tuples with {} atom indices').format(attr, n)
+        assert errmsg in str(excinfo.value)
     
-    def test_delete_angles_wrong_number_of_atoms_error(self, universe):
-        indices = [(0, 1, 2), (2, 3, 0), (4, 1)]
-        with pytest.raises(ValueError):
-            universe.delete_angles(indices)
-    
-    def test_ignore_topologyobjects_not_in_universe(self, universe):
-        n_bonds = len(universe.bonds)
-        bonds = [(0, 1), (99, 100), (22, 2)]
-        universe.delete_bonds(bonds)
-        assert len(universe.bonds) == n_bonds-1
-    
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_delete_missing_attr(self, attr, values):
+        u = make_Universe()
+        assert not hasattr(u, attr)
+        _delete_func = getattr(u, 'delete_'+attr)
+        with pytest.raises(ValueError) as excinfo:
+            _delete_func(values)
+        assert "There are no" in str(excinfo.value)
+
     def test_delete_bonds_refresh_fragments(self, universe):
         n_fragments = len(universe.atoms.fragments)
         universe.delete_bonds([universe.atoms[[2, 3]]])
         assert len(universe.atoms.fragments) == n_fragments + 1
-    
-    def test_delete_bonds_empty_universe(self):
-        u = make_Universe()
-        assert not hasattr(u, 'bonds')
-        bonds = [(0, 1), (99, 100), (22, 2)]
-        with pytest.raises(ValueError):
-            u.delete_bonds(bonds)
+
+    @pytest.mark.parametrize(
+        'attr,values', (
+            ('bonds', [[0, 1], [2, 3]]),
+            ('angles', [[0, 1, 2], [3, 4, 5]]),
+            ('dihedrals', [[8, 22, 1, 3], [4, 5, 6, 7], [11, 2, 3, 13]]),
+            ('impropers', [[1, 6, 7, 2], [5, 3, 4, 2]]),
+        )
+    )
+    def test_roundtrip(self, universe, attr, values):
+        u_attr = getattr(universe, attr)
+        original_length = len(self.TOP[attr])
+        assert len(u_attr) == original_length
+
+        _delete_func = getattr(universe, 'delete_'+attr)
+        _delete_func(values)
+        nu_attr = getattr(universe, attr)
+        assert len(nu_attr) == original_length-len(values)
+
+        _add_func = getattr(universe, 'add_'+attr)
+        _add_func(values)
+        nu_attr = getattr(universe, attr)
+        assert len(nu_attr) == original_length
+
+        assert_array_equal(u_attr.indices, nu_attr.indices)
+
     
 class TestAllCoordinatesKwarg(object):
     @pytest.fixture(scope='class')

@@ -1026,6 +1026,13 @@ class Universe(object):
         
         values = [x.indices if isinstance(x, (AtomGroup, TopologyObject)) 
                   else x for x in values]
+
+        all_indices = set([i for obj in values for i in obj])
+        nonexistent = all_indices - set(self.atoms.indices)
+        if nonexistent:
+            istr = ', '.join(map(str, nonexistent))
+            raise ValueError(('Cannot add {} for nonexistent'
+                              ' atom indices: {}').format(object_type, istr))
         
         try:
             attr = getattr(self._topology, object_type)
@@ -1033,6 +1040,7 @@ class Universe(object):
             self.add_TopologyAttr(object_type, [])
             attr = getattr(self._topology, object_type)
         
+
         attr._add_bonds(values, types=types, guessed=guessed, order=order)
 
     def add_bonds(self, values, types=None, guessed=False, order=None):
