@@ -503,6 +503,5 @@ def q1q2(u, selection='all', radius=4.5,
     last_frame_refs = _new_selections(u, selection, -1)
     return Contacts(u, selection,
                     (first_frame_refs, last_frame_refs),
-                    radius=radius, method=radius_cut_q,
-                    start=start, stop=stop, step=step,
-                    kwargs={'radius': radius})
+                    radius=radius, method='radius_cut',
+                    start=start, stop=stop, step=step)
