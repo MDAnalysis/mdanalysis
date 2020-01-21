@@ -29,7 +29,7 @@ import parmed as pmd
 import numpy as np
 from MDAnalysis.lib.util import isstream
 
-from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
+from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS
 from ..lib import util
 
 
@@ -264,3 +264,26 @@ def get_parser_for(filename, format=None):
                 None)
         else:
             return _PARSERS['MINIMAL']
+
+def get_converter_for(format):
+    """Return the appropriate topology converter for ``format``.
+
+    Parameters
+    ----------
+    format : str
+        description of the file format
+
+    Raises
+    ------
+    TypeError
+        If no appropriate parser could be found.
+
+    
+    .. versionadded:: 0.21.0
+    """
+    try:
+        writer = _CONVERTERS[format]
+    except KeyError:
+        errmsg = 'No converter found for {} format'
+        raise_from(TypeError(errmsg.format(format)), None)
+    return writer

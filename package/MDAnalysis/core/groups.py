@@ -113,7 +113,7 @@ from . import selection
 from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
-from ._get_readers import get_writer_for
+from ._get_readers import get_writer_for, get_converter_for
 
 
 def _unpickle(uhash, ix):
@@ -3099,14 +3099,12 @@ class AtomGroup(GroupBase):
         ------
         TypeError:
             No converter was found for the required format
-        
+
+
+        .. versionadded:: 0.21.0
         """
-        try:
-            writer = _CONVERTERS[format]
-        except KeyError:
-            errmsg = 'No converter found for {} format'
-            raise_from(TypeError(errmsg.format(format)), None)
-        return writer().convert(self.atoms)
+        converter = get_converter_for(format)
+        return converter().convert(self.atoms)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
