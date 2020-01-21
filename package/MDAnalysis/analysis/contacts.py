@@ -208,6 +208,7 @@ import os
 import errno
 import warnings
 import bz2
+import functools
 
 import numpy as np
 
@@ -404,8 +405,7 @@ class Contacts(AnalysisBase):
         elif method == 'soft_cut':
             self.fraction_contacts = soft_cut_q
         elif method == 'radius_cut':
-            self.fraction_contacts = radius_cut_q
-            self.fraction_kwargs['radius'] = radius
+            self.fraction_contacts = functools.partial(radius_cut_q, radius=radius)
         else:
             if not callable(method):
                 raise ValueError("method has to be callable")
