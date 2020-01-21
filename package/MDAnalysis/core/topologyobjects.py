@@ -542,6 +542,7 @@ class TopologyGroup(object):
             raise ValueError("Unsupported btype, use one of '{}'"
                              "".format(', '.join(_BTYPE_TO_SHAPE)))
 
+        bondidx = np.asarray(bondidx)
         nbonds = len(bondidx)
         # remove duplicate bonds
         if type is None:

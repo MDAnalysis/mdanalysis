@@ -2950,15 +2950,15 @@ class AtomGroup(GroupBase):
         box = self.dimensions if self.dimensions.all() else None
         b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii, box=box)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
-        bondattr.add_bonds(b, guessed=True)
+        bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
-        angleattr.add_bonds(a, guessed=True)
+        angleattr._add_bonds(a, guessed=True)
 
         d = guess_dihedrals(self.angles)
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
-        diheattr.add_bonds(d)
+        diheattr._add_bonds(d)
 
     @property
     def bond(self):
