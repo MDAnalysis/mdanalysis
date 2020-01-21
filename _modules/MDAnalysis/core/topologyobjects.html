@@ -716,6 +716,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unsupported btype, use one of &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span>
                              <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_BTYPE_TO_SHAPE</span><span class="p">)))</span>
 
+        <span class="n">bondidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">bondidx</span><span class="p">)</span>
         <span class="n">nbonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bondidx</span><span class="p">)</span>
         <span class="c1"># remove duplicate bonds</span>
         <span class="k">if</span> <span class="nb">type</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
