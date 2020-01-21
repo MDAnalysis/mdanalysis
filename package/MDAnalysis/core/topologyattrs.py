@@ -1645,9 +1645,10 @@ class Segids(SegmentAttr):
 
 def _check_connection_values(func):
     """
-    Checks values passed to _Connection methods for appropriate number of 
-    atom indices and coerces them to tuples of ints.
-
+    Checks values passed to _Connection methods for:
+     - appropriate number of atom indices
+     - coerces them to tuples of ints (for hashing)
+     - ensures that first value is less than last (reversibility & hashing)
 
     .. versionadded:: 0.21.0
 
