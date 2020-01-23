@@ -208,6 +208,7 @@ import os
 import errno
 import warnings
 import bz2
+import functools
 
 import numpy as np
 
@@ -385,7 +386,7 @@ class Contacts(AnalysisBase):
         radius : float, optional (4.5 Angstroms)
             radius within which contacts exist in refgroup
         method : string | callable (optional)
-            Can either be one of ``['hard_cut' , 'soft_cut']`` or a callable
+            Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
             with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
@@ -397,10 +398,14 @@ class Contacts(AnalysisBase):
         self.u = u
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
 
+        self.fraction_kwargs = kwargs if kwargs is not None else {}
+
         if method == 'hard_cut':
             self.fraction_contacts = hard_cut_q
         elif method == 'soft_cut':
             self.fraction_contacts = soft_cut_q
+        elif method == 'radius_cut':
+            self.fraction_contacts = functools.partial(radius_cut_q, radius=radius)
         else:
             if not callable(method):
                 raise ValueError("method has to be callable")
@@ -424,28 +429,23 @@ class Contacts(AnalysisBase):
                 self.initial_contacts.append(contact_matrix(self.r0[-1],
                                                             radius))
 
-        self.fraction_kwargs = kwargs if kwargs is not None else {}
-        self.timeseries = []
+    def _prepare(self):
+        self.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
     def _single_frame(self):
+        self.timeseries[self._frame_index][0] = self._ts.frame
+
         # compute distance array for a frame
         d = distance_array(self.grA.positions, self.grB.positions)
 
-        y = np.empty(len(self.r0) + 1)
-        y[0] = self._ts.frame
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
-                                                       self.r0)):
+                                                       self.r0), 1):
             # select only the contacts that were formed in the reference state
             r = d[initial_contacts]
             r0 = r0[initial_contacts]
-            y[i + 1] = self.fraction_contacts(r, r0, **self.fraction_kwargs)
+            q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
+            self.timeseries[self._frame_index][i] = q
 
-        if len(y) == 1:
-            y = y[0]
-        self.timeseries.append(y)
-
-    def _conclude(self):
-        self.timeseries = np.array(self.timeseries, dtype=float)
 
     @deprecate(release="0.19.0", remove="1.0.0")
     def save(self, outfile):
@@ -501,6 +501,5 @@ def q1q2(u, selection='all', radius=4.5,
     last_frame_refs = _new_selections(u, selection, -1)
     return Contacts(u, selection,
                     (first_frame_refs, last_frame_refs),
-                    radius=radius, method=radius_cut_q,
-                    start=start, stop=stop, step=step,
-                    kwargs={'radius': radius})
+                    radius=radius, method='radius_cut',
+                    start=start, stop=stop, step=step)
