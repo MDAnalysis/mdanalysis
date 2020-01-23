@@ -438,8 +438,6 @@ class Contacts(AnalysisBase):
         # compute distance array for a frame
         d = distance_array(self.grA.positions, self.grB.positions)
 
-        y = np.empty(len(self.r0) + 1)
-        y[0] = self._ts.frame
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
             # select only the contacts that were formed in the reference state
