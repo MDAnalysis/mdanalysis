@@ -2,7 +2,7 @@
   MDAnalysis Repository README
 ================================
 
-|build| |cov| [*]_
+|numfocus| |build| |cov| [*]_
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder|
 
@@ -65,6 +65,8 @@ MDAnalysis issue tracker.)
 Guide for Developers
 ====================
 
+
+
 To setup a development environment and run the testsuite you can use this
 guide_. If you are a new developer who would like to start contributing to
 MDAnalysis as a start you can increase our code coverage, the guides explain how
@@ -100,6 +102,10 @@ to find uncovered code.
 .. |devdocs| image:: https://img.shields.io/badge/docs-development-yellow.svg
    :alt: Documentation (development version)
    :target: https://www.mdanalysis.org/mdanalysis/
+
+.. |numfocus| image:: https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
+   :alt: Powered by NumFOCUS
+   :target: https://www.numfocus.org/
 
 .. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
    :alt: Build Status
