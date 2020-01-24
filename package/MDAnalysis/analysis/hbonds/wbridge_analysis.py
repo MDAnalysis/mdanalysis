@@ -1413,7 +1413,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                 for key, value in frame_dict.items():
                     result_dict[key] += frame_dict[key]
 
-            if output is 'combined':
+            if output == 'combined':
                 result = [[i for i in key] for key in result_dict]
                 [result[i].append(result_dict[key]/length) for i, key in enumerate(result_dict)]
             else:
@@ -1501,7 +1501,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             result_list = []
             for key, time_list in six.iteritems(result):
                 for time in time_list:
-                    if output is 'combined':
+                    if output == 'combined':
                         key = list(key)
                         key.append(time)
                         result_list.append(key)
