@@ -367,15 +367,13 @@ class BaseAuxReaderTest(object):
     def test_step_to_frame_no_time_diff(self, reader):
 
         ts = mda.coordinates.base.Timestep(0, dt=1)
-
-        assert reader.step_to_frame(0, ts) == 0
         
         for idx in range(reader.n_steps):
 
             frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
 
             assert frame == idx
-            assert time_diff == pytest.approx(0)
+            np.testing.assert_almost_equal(time_diff, 0.0)
 
     def test_step_to_frame_time_diff(self, reader):
 
@@ -391,7 +389,7 @@ class BaseAuxReaderTest(object):
             frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
 
             assert frame == expected_frame
-            assert time_diff == pytest.approx(expected_time_diff)
+            np.testing.assert_almost_equal(time_diff, expected_time_diff)
 
 
 
