@@ -377,7 +377,7 @@ class BaseAuxReaderTest(object):
 
     def test_step_to_frame_time_diff(self, reader):
 
-        # Timestep is 0.2 longer than auxiliary data
+        # Timestep is 0.1 longer than auxiliary data
         ts = mda.coordinates.base.Timestep(0, dt=1.1)
 
         for idx in range(reader.n_steps):
