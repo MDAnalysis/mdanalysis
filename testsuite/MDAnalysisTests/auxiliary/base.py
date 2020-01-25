@@ -359,22 +359,31 @@ class BaseAuxReaderTest(object):
 
     def test_step_to_frame(self, ref, reader):
 
-        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
-        u.trajectory.add_auxiliary('test', ref.testdata)
+        ts = mda.coordinates.base.Timestep(0, dt=1)
 
-        assert reader.step_to_frame(-1, u.trajectory.ts) is None
-        assert reader.step_to_frame(u.trajectory.n_frames, u.trajectory.ts) is None
-        assert reader.step_to_frame(0, u.trajectory.ts) == 0
+        assert reader.step_to_frame(-1, ts) is None
+        assert reader.step_to_frame(reader.n_steps, ts) is None
+        assert reader.step_to_frame(0, ts) == 0
         
-        frame, time_diff = reader.step_to_frame(1, u.trajectory.ts, return_time_diff=True)
+        frame, time_diff = reader.step_to_frame(1, ts, return_time_diff=True)
 
         assert frame == 1
         assert time_diff == pytest.approx(0)
 
-        frame, time_diff = reader.step_to_frame(1.5, u.trajectory.ts, return_time_diff=True)
+        # Timestep is 0.2 longer than auxiliary data
+        ts = mda.coordinates.base.Timestep(0, dt=1.2)
 
-        assert frame == 2
-        assert time_diff == pytest.approx(0.5)
+        for idx, expected_frame, expected_time_diff in zip(
+            [0, 1, 2], # idx
+            [0, 1, 2], # expected frame
+            [0, 0.2, 0.4] # expected time difference
+            ):
+
+            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
+            print(frame, time_diff)
+            assert frame == expected_frame
+            assert time_diff == pytest.approx(expected_time_diff)
+
 
 
 def assert_auxstep_equal(A, B):
