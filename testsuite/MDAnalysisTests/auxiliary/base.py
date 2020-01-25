@@ -357,18 +357,27 @@ class BaseAuxReaderTest(object):
         new = mda.auxiliary.core.auxreader(**description)
         assert new == reader, "AuxReader reloaded from description does not match"
 
-    def test_step_to_frame(self, ref, reader):
+    def test_step_to_frame_out_of_bound(self, reader):
 
         ts = mda.coordinates.base.Timestep(0, dt=1)
 
         assert reader.step_to_frame(-1, ts) is None
         assert reader.step_to_frame(reader.n_steps, ts) is None
+
+    def test_step_to_frame_no_time_diff(self, reader):
+
+        ts = mda.coordinates.base.Timestep(0, dt=1)
+
         assert reader.step_to_frame(0, ts) == 0
         
-        frame, time_diff = reader.step_to_frame(1, ts, return_time_diff=True)
+        for idx in range(reader.n_steps):
 
-        assert frame == 1
-        assert time_diff == pytest.approx(0)
+            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
+
+            assert frame == idx
+            assert time_diff == pytest.approx(0)
+
+    def test_step_to_frame_time_diff(self, reader):
 
         # Timestep is 0.2 longer than auxiliary data
         ts = mda.coordinates.base.Timestep(0, dt=1.2)
@@ -380,7 +389,7 @@ class BaseAuxReaderTest(object):
             ):
 
             frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
-            print(frame, time_diff)
+
             assert frame == expected_frame
             assert time_diff == pytest.approx(expected_time_diff)
 
