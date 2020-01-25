@@ -384,8 +384,6 @@ class BaseAuxReaderTest(object):
             assert frame == idx
             np.testing.assert_almost_equal(time_diff, idx * 0.1)
 
-
-
 def assert_auxstep_equal(A, B):
     if not isinstance(A, mda.auxiliary.base.AuxStep):
         raise AssertionError('A is not of type AuxStep')
