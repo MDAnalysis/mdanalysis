@@ -370,10 +370,7 @@ class BaseAuxReaderTest(object):
         
         for idx in range(reader.n_steps):
 
-            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
-
-            assert frame == idx
-            np.testing.assert_almost_equal(time_diff, 0.0)
+            assert reader.step_to_frame(idx, ts) == idx
 
     def test_step_to_frame_time_diff(self, reader):
 
