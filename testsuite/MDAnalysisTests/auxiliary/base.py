@@ -378,18 +378,14 @@ class BaseAuxReaderTest(object):
     def test_step_to_frame_time_diff(self, reader):
 
         # Timestep is 0.2 longer than auxiliary data
-        ts = mda.coordinates.base.Timestep(0, dt=1.2)
+        ts = mda.coordinates.base.Timestep(0, dt=1.1)
 
-        for idx, expected_frame, expected_time_diff in zip(
-            [0, 1, 2], # idx
-            [0, 1, 2], # expected frame
-            [0, 0.2, 0.4] # expected time difference
-            ):
+        for idx in range(reader.n_steps):
 
             frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
 
-            assert frame == expected_frame
-            np.testing.assert_almost_equal(time_diff, expected_time_diff)
+            assert frame == idx
+            np.testing.assert_almost_equal(time_diff, idx * 0.1)
 
 
 
