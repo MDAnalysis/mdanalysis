@@ -371,6 +371,12 @@ class BaseAuxReaderTest(object):
         assert frame == 1
         assert time_diff == pytest.approx(0)
 
+        frame, time_diff = reader.step_to_frame(1.5, u.trajectory.ts, return_time_diff=True)
+
+        assert frame == 2
+        assert time_diff == pytest.approx(0.5)
+
+
 def assert_auxstep_equal(A, B):
     if not isinstance(A, mda.auxiliary.base.AuxStep):
         raise AssertionError('A is not of type AuxStep')
