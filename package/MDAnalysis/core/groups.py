@@ -3069,7 +3069,7 @@ class AtomGroup(GroupBase):
         return topologyobjects.CMap(self.ix, self.universe)
 
 
-    def convert_to(self, format):
+    def convert_to(self, package):
         """
         Convert :class:`AtomGroup` to a structure from another Python package.
 
@@ -3090,24 +3090,24 @@ class AtomGroup(GroupBase):
         
         Parameters
         ----------
-        format: str
-            The name of the library to convert to, e.g. ``"PARMED"``
+        package: str
+            The name of the package to convert to, e.g. ``"PARMED"``
 
 
         Returns
         -------
         output:
-            An instance of the structure type from another library.
+            An instance of the structure type from another package.
         
         Raises
         ------
         TypeError:
-            No converter was found for the required format
+            No converter was found for the required package
 
 
         .. versionadded:: 0.21.0
         """
-        converter = get_converter_for(format)
+        converter = get_converter_for(package)
         return converter().convert(self.atoms)
 
     def write(self, filename=None, file_format=None,
