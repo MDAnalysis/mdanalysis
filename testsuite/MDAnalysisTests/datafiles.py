@@ -102,6 +102,7 @@ __all__ = [
     "PRMNEGATIVE", # Amber negative ATOMIC_NUMBER (Issue 2306)
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PRM_UreyBradley", # prmtop from ParmEd test files with Urey-Bradley angles
+    "PRM7_ala2", "RST7_ala2",  # prmtop and rst files from ParmEd example files
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -372,6 +373,8 @@ PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
 PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
 
 PRM_UreyBradley = resource_filename(__name__, 'data/Amber/parmed_fad.prmtop')
+PRM7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.parm7')
+RST7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.rst7')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')

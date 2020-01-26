@@ -3071,17 +3071,21 @@ class AtomGroup(GroupBase):
 
     def convert_to(self, format):
         """
-        Convert :class:`AtomGroup` to structure from another library.
+        Convert :class:`AtomGroup` to a structure from another Python package.
 
         Example
         -------
 
+        The code below converts a Universe to a :class:`parmed.structure.Structure`.
+
         .. code-block:: python
 
-            import MDAnalysis as mda
-            from MDAnalysis.tests.datafiles import GRO
-            u = mda.Universe(GRO)
-            parmed_structure = u.atoms.convert_to('PARMED')
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysis.tests.datafiles import GRO
+            >>> u = mda.Universe(GRO)
+            >>> parmed_structure = u.atoms.convert_to('PARMED')
+            >>> parmed_structure
+            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
 
         
         Parameters

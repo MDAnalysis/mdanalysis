@@ -94,6 +94,20 @@ class TestParmEdReaderPDB(BaseTestParmEdReader):
 
         assert isinstance(self.universe.trajectory, ParmEdReader), "failed to choose ParmEdReader"
 
+def _parmed_param_eq(a, b):
+    a_idx = [a.atom1.idx, a.atom2.idx]
+    b_idx = [b.atom1.idx, b.atom2.idx]
+
+    for i in (3, 4, 5):
+        atom = 'atom{}'.format(i)
+        if hasattr(a, atom):
+            if not hasattr(b, atom):
+                return False
+            a_idx.append(getattr(a, atom).idx)
+            b_idx.append(getattr(b, atom).idx)
+    
+    atoms = a_idx == b_idx or a_idx == b_idx[::-1]
+    return atoms and a.type == b.type
 
 class BaseTestParmEdConverter:
 
@@ -115,6 +129,11 @@ class BaseTestParmEdConverter:
     @pytest.fixture(scope='class')
     def output(self, universe):
         return universe.atoms.convert_to('PARMED')
+
+    @pytest.fixture(scope='class')
+    def roundtrip(self, ref):
+        u = mda.Universe(ref)
+        return u.atoms.convert_to('PARMED')
 
     def test_equivalent_connectivity_counts(self, universe, output):
         for attr in ('atoms', 'bonds', 'angles', 'dihedrals', 'impropers',
@@ -168,6 +187,24 @@ class BaseTestParmEdConverter:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
                 assert_almost_equal(ra, oa, decimal=3, err_msg='atom {} not almost equal for atoms {} and {}'.format(attr, r, o))
+
+    @pytest.mark.parametrize('attr', ('bonds', 'angles', 'impropers',
+                     'cmaps'))
+    def test_equivalent_connectivity_types(self, ref, roundtrip, attr):
+        original = getattr(ref, attr)
+        for p in getattr(roundtrip, attr):
+            for q in original:
+                _parmed_param_eq(p, q)
+            assert any(_parmed_param_eq(p, q) for q in original)
+
+    def test_equivalent_dihedrals(self, ref, roundtrip):
+        original = ref.dihedrals
+        for p in roundtrip.dihedrals:
+            assert any((_parmed_param_eq(p, q) and
+                        p.improper == q.improper and
+                        p.ignore_end == q.ignore_end) for q in original)
+
+
 
 class BaseTestParmEdConverterSubset:
 

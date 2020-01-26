@@ -25,21 +25,52 @@
 ParmEd topology parser
 ======================
 
-Converts a ParmEd_ structure into a MDAnalysis Topology.
-
-.. _ParmEd: https://parmed.github.io/ParmEd/html/index.html
+Converts a `ParmEd <https://parmed.github.io/ParmEd/html>`_ :class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.
 
 
 Example
 -------
 
-::
+If you want to use an MDAnalysis-written ParmEd structure for simulation 
+in ParmEd, you need to first read your files with ParmEd to include the 
+necessary topology parameters. ::
 
-    import parmed as pmd
-    import MDAnalysis as mda
-    from MDAnalysis.tests.datafiles import PSF
-    universe = mda.Universe(pmd.load_file(PSF))
+    >>> import parmed as pmd
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PRM7_ala2, RST7_ala2
+    >>> prm = pmd.load_file(PRM7_ala2, RST7_ala2)
+    >>> prm
+    <AmberParm 3026 atoms; 1003 residues; 3025 bonds; PBC (orthogonal); parametrized>
 
+We can then convert this to an MDAnalysis structure, select only the 
+protein atoms, and then convert it back to ParmEd. ::
+
+    >>> u = mda.Universe(prm)
+    >>> u
+    <Universe with 3026 atoms>
+    >>> prot = u.select_atoms('protein')
+    >>> prm_prot = prot.convert_to('PARMED')
+    >>> prm_prot
+    <Structure 23 atoms; 2 residues; 22 bonds; PBC (orthogonal); parametrized>
+
+From here you can create an OpenMM simulation system and minimize the energy. ::
+
+    >>> import simtk.openmm as mm
+    >>> import simtk.openmm.app as app
+    >>> from parmed import unit as u
+    >>> system = prm_prot.createSystem(nonbondedMethod=app.NoCutoff,
+    ...                                constraints=app.HBonds,
+    ...                                implicitSolvent=app.GBn2)
+    >>> integrator = mm.LangevinIntegrator(
+    ...                         300*u.kelvin,       # Temperature of heat bath
+    ...                         1.0/u.picoseconds,  # Friction coefficient
+    ...                         2.0*u.femtoseconds, # Time step
+    ... )
+    >>> sim = app.Simulation(prm_prot.topology, system, integrator)
+    >>> sim.context.setPositions(prm_prot.positions)
+    >>> sim.minimizeEnergy(maxIterations=500)
+
+Now you can continue on and run a simulation, if you wish.
 
 Classes
 -------

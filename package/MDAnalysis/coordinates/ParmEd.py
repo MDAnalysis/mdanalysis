@@ -24,18 +24,41 @@
 """ParmEd structure I/O --- :mod:`MDAnalysis.coordinates.ParmEd`
 ================================================================
 
-Read coordinates data from a ParmEd Structure with :class:`ParmEdReader` into a MDAnalysis Universe. Convert it back to a ParmEd Structure with :class:`ParmEdConverter`.
+Read coordinates data from a `ParmEd <https://parmed.github.io/ParmEd/html>`_ :class:`parmed.structure.Structure` with :class:`ParmEdReader` 
+into a MDAnalysis Universe. Convert it back to a :class:`parmed.structure.Structure` with 
+:class:`ParmEdConverter`.
 
 Example
 -------
 
-::
+ParmEd has some neat functions. One such is `HMassRepartition`_. 
+This function changes the mass of the hydrogens in your system to your 
+desired value. It then adjusts the mass of the atom to which it is 
+bonded by the same amount, so that the total mass is unchanged. ::
 
-    import parmed as pmd
-    import MDAnalysis as mda
-    from MDAnalysis.tests.datafiles import GRO
-    universe = mda.Universe(pmd.load_file(GRO))
-    structure = universe.atoms.convert_to('PARMED')
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.tests.datafiles import PRM
+    >>> u = mda.Universe(PRM)
+    >>> u.atoms.masses[:10]
+    array([14.01 ,  1.008,  1.008,  1.008, 12.01 ,  1.008, 12.01 ,  1.008,
+        1.008,  1.008])
+
+We can convert our universe to a ParmEd structure to change our hydrogen masses. ::
+
+    >>> import parmed.tools as pmt
+    >>> parm = u.atoms.convert_to('PARMED')
+    >>> hmass = pmt.HMassRepartition(parm, 5)  # convert to 5 daltons
+    >>> hmass.execute()
+
+We can then convert it back to an MDAnalysis Universe for further analysis. ::
+
+    >>> u2 = mda.Universe(parm)
+    >>> u2.atoms.masses[:10]
+    array([2.03399992, 5.        , 5.        , 5.        , 8.01799965,
+       5.        , 0.034     , 5.        , 5.        , 5.        ])
+
+.. _`HMassRepartition`: http://parmed.github.io/ParmEd/html/parmed.html#hmassrepartition
+
 
 
 Classes
@@ -179,23 +202,23 @@ class ParmEdConverter(base.ConverterBase):
                     akwargs[MDA2PMD.get(attrname, attrname)] = getattr(atom, attrname)
                 except AttributeError:
                     pass
+            try:
+                el = atom.element.lower().capitalize()
+                akwargs['atomic_number'] = SYMB2Z[el]
+            except (KeyError, AttributeError):
                 try:
-                    el = atom.element.lower().capitalize()
-                    akwargs['atomic_number'] = SYMB2Z[el]
+                    tp = atom.type.lower().capitalize()
+                    akwargs['atomic_number'] = SYMB2Z[tp]
                 except (KeyError, AttributeError):
-                    try:
-                        tp = atom.type.lower().capitalize()
-                        akwargs['atomic_number'] = SYMB2Z[tp]
-                    except (KeyError, AttributeError):
-                        pass
-                try:
-                    chain_seg['chain'] = atom.chainID
-                except AttributeError:
                     pass
-                try:
-                    chain_seg['inscode'] = atom.icode
-                except AttributeError:
-                    pass
+            try:
+                chain_seg['chain'] = atom.chainID
+            except AttributeError:
+                pass
+            try:
+                chain_seg['inscode'] = atom.icode
+            except AttributeError:
+                pass
             atom_kwargs.append((akwargs, resname, atom.resid, chain_seg, xyz, vel))
         
 
@@ -208,6 +231,10 @@ class ParmEdConverter(base.ConverterBase):
 
             if vel is not None:
                 atom.vx, atom.vy, atom.vz = vel
+
+            atom.atom_type = pmd.AtomType(akwarg['name'], None, 
+                                          akwarg['mass'],
+                                          atomic_number=akwargs.get('atomic_number'))
             struct.add_atom(atom, resname, resid, **kw)
         
         try:
@@ -215,35 +242,65 @@ class ParmEdConverter(base.ConverterBase):
         except AttributeError:
             struct.box = None
         
-        
+        # bonds
         try:
-            print('trying params')
             params = ag_or_ts.bonds
-            print(params)
         except AttributeError:
             pass
         else:
             for p in params:
                 atoms = [struct.atoms[i] for i in p.indices]
                 try:
-                    print('pre trying', p.type)
                     for obj in p.type:
                         bond = pmd.Bond(*atoms, type=obj.type, order=obj.order)
                         struct.bonds.append(bond)
-                        print(obj, 'trying', bond, len(struct.bonds))
+                    if isinstance(obj.type, pmd.BondType):
+                        struct.bond_types.append(bond.type)
+                        bond.type.list = struct.bond_types
                 except (TypeError, AttributeError):
                     order = p.order if p.order is not None else 1
-                    bond = pmd.Bond(*atoms, order=order)
+                    btype = getattr(p.type, 'type', None)
+
+                    bond = pmd.Bond(*atoms, type=btype, order=order)
                     struct.bonds.append(bond)
-                    print(bond)
-                    print(len(struct.bonds))
-        
-        for param, pmdtype, trackedlist in (
-            ('ureybradleys', pmd.UreyBradley, struct.urey_bradleys),
-            ('angles', pmd.Angle, struct.angles),
-            ('dihedrals', pmd.Dihedral, struct.dihedrals),
-            ('impropers', pmd.Improper, struct.impropers),
-            ('cmaps', pmd.Cmap, struct.cmaps)
+                    if isinstance(bond.type, pmd.BondType):
+                        struct.bond_types.append(bond.type)
+                        bond.type.list = struct.bond_types
+
+        # dihedrals
+        try:
+            params = ag_or_ts.dihedrals
+        except AttributeError:
+            pass
+        else:
+            for p in params:
+                atoms = [struct.atoms[i] for i in p.indices]
+                try:
+                    for obj in p.type:
+                        imp = getattr(obj, 'improper', False)
+                        ign = getattr(obj, 'ignore_end', False)
+                        dih = pmd.Dihedral(*atoms, type=obj.type,
+                                           ignore_end=ign, improper=imp)
+                        struct.dihedrals.append(dih)
+                        if isinstance(dih.type, pmd.DihedralType):
+                            struct.dihedral_types.append(dih.type)
+                            dih.type.list = struct.dihedral_types
+                except (TypeError, AttributeError):
+                    btype = getattr(p.type, 'type', None)
+                    imp = getattr(p.type, 'improper', False)
+                    ign = getattr(p.type, 'ignore_end', False)
+                    dih = pmd.Dihedral(*atoms, type=btype,
+                                        improper=imp, ignore_end=ign)
+                    struct.dihedrals.append(dih)
+                    if isinstance(dih.type, pmd.DihedralType):
+                        struct.dihedral_types.append(dih.type)
+                        dih.type.list = struct.dihedral_types
+
+        for param, pmdtype, trackedlist, typelist, clstype in (
+            ('ureybradleys', pmd.UreyBradley, struct.urey_bradleys, struct.urey_bradley_types, pmd.BondType),
+            ('angles', pmd.Angle, struct.angles, struct.angle_types, pmd.AngleType),
+            ('impropers', pmd.Improper, struct.impropers, struct.improper_types, pmd.ImproperType),
+            ('cmaps', pmd.Cmap, struct.cmaps, struct.cmap_types, pmd.CmapType)
         ):
             try:
                 values = getattr(ag_or_ts, param)
@@ -257,7 +314,15 @@ class ParmEdConverter(base.ConverterBase):
                         for parmed_obj in v.type:
                             p = pmdtype(*atoms, type=parmed_obj.type)
                             trackedlist.append(p)
+                            if isinstance(p.type, clstype):
+                                typelist.append(p.type)
+                                p.type.list = typelist
                     except (TypeError, AttributeError):
-                        p = pmdtype(*atoms)
+                        vtype = getattr(v.type, 'type', None)
+
+                        p = pmdtype(*atoms, type=vtype)
                         trackedlist.append(p)
+                        if isinstance(p.type, clstype):
+                            typelist.append(p.type)
+                            p.type.list = typelist
         return struct
