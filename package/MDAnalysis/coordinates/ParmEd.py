@@ -129,7 +129,7 @@ class ParmEdConverter(base.ConverterBase):
         from MDAnalysis.tests.datafiles import GRO
         pgro = pmd.load_file(GRO)
         mgro = mda.Universe(pgro)
-        parmed_subset = mgro.select_atoms('resname SOL').to_format('PARMED')
+        parmed_subset = mgro.select_atoms('resname SOL').convert_to('PARMED')
 
         
     """
