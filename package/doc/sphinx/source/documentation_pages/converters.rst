@@ -33,6 +33,4 @@ you will have to specify a package name (case-insensitive). ::
    :maxdepth: 1
 
    converters/ParmEdParser
-   topology/MMTFParser
-   coordinates/MMTF
 
