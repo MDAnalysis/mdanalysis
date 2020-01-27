@@ -14,11 +14,12 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli
+         PicoCentauri, davidercruz, jbarnoud, RMeli, mtiberti
 
   * 0.21.0
 
 Fixes
+  * ClusterCollection.get_ids now returns correctly (Issue #2464)
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
   * Chainreader and continuous option work correctly when readers work for more 
@@ -35,6 +36,7 @@ Fixes
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
 
 Enhancements
+  * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
     attribute, if present (#2421).
   * Enhanges exception message when trajectory output file has no extension assigned.
