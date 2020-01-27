@@ -33,6 +33,10 @@ Fixes
   * The expected frames are made available when a trajectory slice is sliced itself
     with an incomplete slice and/or with a negative step (Issue #2413)
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
+  * ITPParser now parses ITP *and* TOP files from GROMACS, reads #include files, and 
+    substitutes #define variables both from the file and when passed in as a keyword 
+    argument. The directives parsed into bonds, angles, impropers, and dihedrals now 
+    match TPRParser. (PR #2408)
 
 Enhancements
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
