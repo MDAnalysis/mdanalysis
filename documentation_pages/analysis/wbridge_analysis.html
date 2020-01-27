@@ -130,16 +130,17 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
             
@@ -835,7 +836,7 @@ of a water bridge existence.</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OH', 'SD', 'OG', 'OH2', 'O', 'OW', 'OC2', 'SG', 'OC1', 'OE2', 'OD2', 'OD1', 'ND1', 'OG1', 'NE2', 'OE1'), 'GLYCAM06': ('OH', 'O', 'OW', 'OS', 'SM', 'NT', 'O2', 'OY', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('SG', 'OG1', 'OH', 'SD', 'O', 'OC1', 'OG', 'OW', 'OE1', 'OH2', 'OC2', 'OD1', 'ND1', 'OD2', 'NE2', 'OE2'), 'GLYCAM06': ('OS', 'O', 'SM', 'OW', 'O2', 'N', 'NT', 'OY', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -843,7 +844,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OH', 'NZ', 'OG', 'OH2', 'OW', 'NH1', 'NE', 'ND2', 'NE1', 'SG', 'ND1', 'OG1', 'NH2', 'N', 'NE2'), 'GLYCAM06': ('OH', 'N3', 'OW', 'NT', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('SG', 'OG1', 'NE', 'NH2', 'OG', 'OW', 'NZ', 'NH1', 'OH2', 'ND1', 'N', 'ND2', 'NE1', 'NE2', 'OH'), 'GLYCAM06': ('N3', 'OW', 'N', 'NT', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>

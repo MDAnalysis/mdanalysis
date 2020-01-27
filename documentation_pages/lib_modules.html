@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>12. Library functions — MDAnalysis.lib &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>13. Library functions — MDAnalysis.lib &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="12.2.1. Fast distance array computation — MDAnalysis.lib.distances" href="lib/distances.html" />
-    <link rel="prev" title="11.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D" href="visualization/streamlines_3D.html" /> 
+    <link rel="next" title="13.2.1. Fast distance array computation — MDAnalysis.lib.distances" href="lib/distances.html" />
+    <link rel="prev" title="12.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D" href="visualization/streamlines_3D.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,37 +101,38 @@
 <li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">12.1. Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#list-of-modules">12.2. List of modules</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="lib/distances.html">12.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/log.html">12.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/util.html">12.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">13.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-modules">13.2. List of modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lib/distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#low-level-file-formats">12.3. Low level file formats</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="lib/formats/libmdaxdr.html">12.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="lib/formats/libdcd.html">12.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#low-level-file-formats">13.3. Low level file formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lib/formats/libmdaxdr.html">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/formats/libdcd.html">13.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
 </ul>
 
             
@@ -177,7 +178,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></li>
+      <li>13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -197,7 +198,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-MDAnalysis.lib">
-<span id="library-functions-mdanalysis-lib"></span><span id="lib"></span><h1>12. Library functions — <a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><a class="headerlink" href="#module-MDAnalysis.lib" title="Permalink to this headline">¶</a></h1>
+<span id="library-functions-mdanalysis-lib"></span><span id="lib"></span><h1>13. Library functions — <a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><a class="headerlink" href="#module-MDAnalysis.lib" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> contains code that is independent of the
 specific MDAnalysis framework, such as fast calculators for distances
 or simple logging support. Modules do not depend on other code inside
@@ -205,7 +206,7 @@ MDAnalysis except in <a class="reference internal" href="#module-MDAnalysis.lib"
 <a class="reference internal" href="exceptions.html#module-MDAnalysis.exceptions" title="MDAnalysis.exceptions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a>) and thus can be easily imported
 elsewhere.</p>
 <div class="section" id="overview">
-<h2>12.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<h2>13.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="lib/distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a> contains many high performance maths
 functions. Most of them have the keyword <em>backend</em> that allows one to
 either select serial (single threaded) code (<code class="docutils literal notranslate"><span class="pre">backend=&quot;serial</span></code>) or
@@ -228,24 +229,24 @@ functions in <a class="reference internal" href="lib/distances.html#module-MDAna
 algorithms to speed up distance calculations.</p>
 </div>
 <div class="section" id="list-of-modules">
-<h2>12.2. List of modules<a class="headerlink" href="#list-of-modules" title="Permalink to this headline">¶</a></h2>
+<h2>13.2. List of modules<a class="headerlink" href="#list-of-modules" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="lib/distances.html">12.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/log.html">12.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/util.html">12.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
 </ul>
 </div>
 </div>
 <div class="section" id="low-level-file-formats">
-<h2>12.3. Low level file formats<a class="headerlink" href="#low-level-file-formats" title="Permalink to this headline">¶</a></h2>
+<h2>13.3. Low level file formats<a class="headerlink" href="#low-level-file-formats" title="Permalink to this headline">¶</a></h2>
 <p>The modules in <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats</span></code> contain code to access various file
 formats in a way that is <em>independent from other MDAnalysis functionality</em>
 (i.e., they do not use any classes from <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core</span></code> or
@@ -254,8 +255,8 @@ formats in a way that is <em>independent from other MDAnalysis functionality</em
 Python-based projects.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="lib/formats/libmdaxdr.html">12.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib/formats/libdcd.html">12.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/formats/libmdaxdr.html">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/formats/libdcd.html">13.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -269,10 +270,10 @@ Python-based projects.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="lib/distances.html" class="btn btn-neutral float-right" title="12.2.1. Fast distance array computation — MDAnalysis.lib.distances" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="lib/distances.html" class="btn btn-neutral float-right" title="13.2.1. Fast distance array computation — MDAnalysis.lib.distances" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="visualization/streamlines_3D.html" class="btn btn-neutral float-left" title="11.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="visualization/streamlines_3D.html" class="btn btn-neutral float-left" title="12.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

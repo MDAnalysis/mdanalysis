@@ -99,16 +99,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
             
@@ -199,10 +200,11 @@
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">mmtf</span>
+<span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">isstream</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_READERS</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span> <span class="n">_SINGLEFRAME_WRITERS</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_READERS</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span> <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span> <span class="n">_CONVERTERS</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
 
@@ -240,6 +242,8 @@
 <span class="sd">      :class:`~MDAnalysis.coordinates.memory.MemoryReader` is returned.</span>
 <span class="sd">    - If `filename` is an MMTF object,</span>
 <span class="sd">      :class:`~MDAnalysis.coordinates.MMTF.MMTFReader` is returned.</span>
+<span class="sd">    - If `filename` is a ParmEd Structure, </span>
+<span class="sd">      :class:`~MDAnalysis.coordinates.ParmEd.ParmEdReader` is returned.</span>
 <span class="sd">    - If `filename` is an iterable of filenames,</span>
 <span class="sd">      :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned.</span>
 
@@ -265,6 +269,8 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
             <span class="c1"># mmtf slurps mmtf object</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pmd</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PARMED&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># else let the guessing begin!</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -408,6 +414,8 @@
     <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;mmtf&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pmd</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
+            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PARMED&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
@@ -431,6 +439,29 @@
                 <span class="kc">None</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="s1">&#39;MINIMAL&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">get_converter_for</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return the appropriate topology converter for ``format``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    format : str</span>
+<span class="sd">        description of the file format</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    TypeError</span>
+<span class="sd">        If no appropriate parser could be found.</span>
+
+<span class="sd">    </span>
+<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">_CONVERTERS</span><span class="p">[</span><span class="nb">format</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;No converter found for </span><span class="si">{}</span><span class="s1"> format&#39;</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">writer</span>
 </pre></div>
 
            </div>

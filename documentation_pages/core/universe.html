@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>10.1.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>11.1.1. Core object: Universe — MDAnalysis.core.universe &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="10.1.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
-    <link rel="prev" title="10. Core modules" href="../core_modules.html" /> 
+    <link rel="next" title="11.1.2. Core objects: Containers — MDAnalysis.core.groups" href="groups.html" />
+    <link rel="prev" title="11. Core modules" href="../core_modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,31 +101,32 @@
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">10. Core modules</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">10.1. Important objects for users</a><ul class="current">
-<li class="toctree-l3 current"><a class="current reference internal" href="#">10.1.1. Core object: Universe — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#working-with-universes">10.1.1.1. Working with Universes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#classes">10.1.1.2. Classes</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#functions">10.1.1.3. Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.1. Important objects for users</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.1.1. Core object: Universe — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#working-with-universes">11.1.1.1. Working with Universes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">11.1.1.2. Classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#functions">11.1.1.3. Functions</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="groups.html">10.1.2. Core objects: Containers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="groups.html">11.1.2. Core objects: Containers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.groups</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">10.2. Topology system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">10.3. Selection system</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">10.4. Flag system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">11.2. Topology system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#selection-system">11.3. Selection system</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">11.4. Flag system</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
             
@@ -171,9 +172,9 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../core_modules.html">10. Core modules</a> &raquo;</li>
+          <li><a href="../core_modules.html">11. Core modules</a> &raquo;</li>
         
-      <li>10.1.1. Core object: Universe — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
+      <li>11.1.1. Core object: Universe — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -193,7 +194,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.core.universe"></span><div class="section" id="core-object-universe-mdanalysis-core-universe">
-<h1>10.1.1. Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Permalink to this headline">¶</a></h1>
+<h1>11.1.1. Core object: Universe — <a class="reference internal" href="#module-MDAnalysis.core.universe" title="MDAnalysis.core.universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.universe</span></code></a><a class="headerlink" href="#core-object-universe-mdanalysis-core-universe" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> class ties a topology
 and a trajectory together. Almost all code in MDAnalysis starts with a
 <code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
@@ -207,9 +208,9 @@ construct a <code class="docutils literal notranslate"><span class="pre">Univers
 <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances with the
 <a class="reference internal" href="#MDAnalysis.core.universe.Merge" title="MDAnalysis.core.universe.Merge"><code class="xref py py-func docutils literal notranslate"><span class="pre">Merge()</span></code></a> function.</p>
 <div class="section" id="working-with-universes">
-<h2>10.1.1.1. Working with Universes<a class="headerlink" href="#working-with-universes" title="Permalink to this headline">¶</a></h2>
+<h2>11.1.1.1. Working with Universes<a class="headerlink" href="#working-with-universes" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="quick-segid-selection">
-<h3>10.1.1.1.1. Quick segid selection<a class="headerlink" href="#quick-segid-selection" title="Permalink to this headline">¶</a></h3>
+<h3>11.1.1.1.1. Quick segid selection<a class="headerlink" href="#quick-segid-selection" title="Permalink to this headline">¶</a></h3>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.16.2: </span>Instant selectors will be removed in the 1.0 release.  See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/1377">#1377</a> for more details.</p>
 </div>
@@ -229,7 +230,7 @@ be returned, otherwise a SegmentGroup will be returned.</p>
 </div>
 </div>
 <div class="section" id="classes">
-<h2>10.1.1.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>11.1.1.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.universe.Universe">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.universe.</code><code class="descname">Universe</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Permalink to this definition">¶</a></dt>
@@ -903,7 +904,7 @@ set to True. Default value is False.</li>
 
 </div>
 <div class="section" id="functions">
-<h2>10.1.1.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>11.1.1.3. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.core.universe.Merge">
 <code class="descclassname">MDAnalysis.core.universe.</code><code class="descname">Merge</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Merge" title="Permalink to this definition">¶</a></dt>
@@ -979,10 +980,10 @@ of them together:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="groups.html" class="btn btn-neutral float-right" title="10.1.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="groups.html" class="btn btn-neutral float-right" title="11.1.2. Core objects: Containers — MDAnalysis.core.groups" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../core_modules.html" class="btn btn-neutral float-left" title="10. Core modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../core_modules.html" class="btn btn-neutral float-left" title="11. Core modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

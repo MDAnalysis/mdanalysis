@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>12.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>13.2.10. Helper functions — MDAnalysis.lib.util &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="12.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" href="formats/libmdaxdr.html" />
-    <link rel="prev" title="12.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" /> 
+    <link rel="next" title="13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" href="formats/libmdaxdr.html" />
+    <link rel="prev" title="13.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" href="qcprot.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,46 +101,47 @@
 <li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">12.1. Overview</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">12.2. List of modules</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="distances.html">12.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">12.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">12.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">12.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">12.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="log.html">12.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="mdamath.html">12.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="transformations.html">12.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qcprot.html">12.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">12.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#files-and-directories">12.2.10.1. Files and directories</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#streams">12.2.10.2. Streams</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#containers-and-lists">12.2.10.3. Containers and lists</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#arrays">12.2.10.4. Arrays</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#file-parsing">12.2.10.5. File parsing</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">12.2.10.6. Data manipulation and handling</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#strings">12.2.10.7. Strings</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#class-decorators">12.2.10.8. Class decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#function-decorators">12.2.10.9. Function decorators</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#code-management">12.2.10.10. Code management</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#data-format-checks">12.2.10.11. Data format checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">13.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">13.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#files-and-directories">13.2.10.1. Files and directories</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#streams">13.2.10.2. Streams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#containers-and-lists">13.2.10.3. Containers and lists</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#arrays">13.2.10.4. Arrays</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-parsing">13.2.10.5. File parsing</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-manipulation-and-handling">13.2.10.6. Data manipulation and handling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#strings">13.2.10.7. Strings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#class-decorators">13.2.10.8. Class decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#function-decorators">13.2.10.9. Function decorators</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#code-management">13.2.10.10. Code management</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#data-format-checks">13.2.10.11. Data format checks</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">12.3. Low level file formats</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
             
@@ -186,9 +187,9 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
+          <li><a href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
         
-      <li>12.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></li>
+      <li>13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -208,13 +209,13 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.lib.util"></span><div class="section" id="helper-functions-mdanalysis-lib-util">
-<h1>12.2.10. Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
+<h1>13.2.10. Helper functions — <a class="reference internal" href="#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a><a class="headerlink" href="#helper-functions-mdanalysis-lib-util" title="Permalink to this headline">¶</a></h1>
 <p>Small helper functions that don’t fit anywhere else.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved mathematical functions into lib.mdamath</p>
 </div>
 <div class="section" id="files-and-directories">
-<h2>12.2.10.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.1. Files and directories<a class="headerlink" href="#files-and-directories" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.filename">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">filename</code><span class="sig-paren">(</span><em>name</em>, <em>ext=None</em>, <em>keep=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.filename" title="Permalink to this definition">¶</a></dt>
@@ -487,7 +488,7 @@ at for a hint to the format</td>
 
 </div>
 <div class="section" id="streams">
-<h2>12.2.10.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.2. Streams<a class="headerlink" href="#streams" title="Permalink to this headline">¶</a></h2>
 <p>Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of <a class="reference internal" href="#MDAnalysis.lib.util.openany" title="MDAnalysis.lib.util.openany"><code class="xref py py-func docutils literal notranslate"><span class="pre">openany()</span></code></a>). It is also possible to provide more
@@ -773,7 +774,7 @@ is supplied). The current file position is not changed.</td>
 
 </div>
 <div class="section" id="containers-and-lists">
-<h2>12.2.10.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.3. Containers and lists<a class="headerlink" href="#containers-and-lists" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.iterable">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">iterable</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#iterable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.iterable" title="Permalink to this definition">¶</a></dt>
@@ -807,7 +808,7 @@ with a single element.</p>
 
 </div>
 <div class="section" id="arrays">
-<h2>12.2.10.4. Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.4. Arrays<a class="headerlink" href="#arrays" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.unique_int_1d">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">unique_int_1d</code><span class="sig-paren">(</span><em>values</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.lib.util.unique_int_1d" title="Permalink to this definition">¶</a></dt>
@@ -922,7 +923,7 @@ be zero, resulting in an empty view!</p>
 
 </div>
 <div class="section" id="file-parsing">
-<h2>12.2.10.5. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.5. File parsing<a class="headerlink" href="#file-parsing" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.lib.util.FORTRANReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">FORTRANReader</code><span class="sig-paren">(</span><em>fmt</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#FORTRANReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.FORTRANReader" title="Permalink to this definition">¶</a></dt>
@@ -1017,7 +1018,7 @@ and neither are the scientific notation <em>Ew.dEe</em> forms.</p>
 
 </div>
 <div class="section" id="data-manipulation-and-handling">
-<h2>12.2.10.6. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.6. Data manipulation and handling<a class="headerlink" href="#data-manipulation-and-handling" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.fixedwidth_bins">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">fixedwidth_bins</code><span class="sig-paren">(</span><em>delta</em>, <em>xmin</em>, <em>xmax</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#fixedwidth_bins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.fixedwidth_bins" title="Permalink to this definition">¶</a></dt>
@@ -1154,7 +1155,7 @@ by user <a class="reference external" href="https://stackoverflow.com/users/1897
 
 </div>
 <div class="section" id="strings">
-<h2>12.2.10.7. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.7. Strings<a class="headerlink" href="#strings" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.convert_aa_code">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">convert_aa_code</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#convert_aa_code"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.convert_aa_code" title="Permalink to this definition">¶</a></dt>
@@ -1221,7 +1222,7 @@ otherwise the original object is passed back.</p>
 
 </div>
 <div class="section" id="class-decorators">
-<h2>12.2.10.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.8. Class decorators<a class="headerlink" href="#class-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.cached">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">cached</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#cached"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.cached" title="Permalink to this definition">¶</a></dt>
@@ -1250,7 +1251,7 @@ decorator:</p>
 
 </div>
 <div class="section" id="function-decorators">
-<h2>12.2.10.9. Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.9. Function decorators<a class="headerlink" href="#function-decorators" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.static_variables">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">static_variables</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#static_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.static_variables" title="Permalink to this definition">¶</a></dt>
@@ -1403,7 +1404,7 @@ arguments.</p>
 
 </div>
 <div class="section" id="code-management">
-<h2>12.2.10.10. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.10. Code management<a class="headerlink" href="#code-management" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.deprecate">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">deprecate</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#deprecate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.deprecate" title="Permalink to this definition">¶</a></dt>
@@ -1523,7 +1524,7 @@ line</td>
 
 </div>
 <div class="section" id="data-format-checks">
-<h2>12.2.10.11. Data format checks<a class="headerlink" href="#data-format-checks" title="Permalink to this headline">¶</a></h2>
+<h2>13.2.10.11. Data format checks<a class="headerlink" href="#data-format-checks" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.lib.util.check_box">
 <code class="descclassname">MDAnalysis.lib.util.</code><code class="descname">check_box</code><span class="sig-paren">(</span><em>box</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/util.html#check_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.util.check_box" title="Permalink to this definition">¶</a></dt>
@@ -1595,10 +1596,10 @@ close it.</td></tr>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="formats/libmdaxdr.html" class="btn btn-neutral float-right" title="12.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="formats/libmdaxdr.html" class="btn btn-neutral float-right" title="13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="qcprot.html" class="btn btn-neutral float-left" title="12.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="qcprot.html" class="btn btn-neutral float-left" title="13.2.9. Fast QCP RMSD structure alignment — MDAnalysis.lib.qcprot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

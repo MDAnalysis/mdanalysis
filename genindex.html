@@ -100,16 +100,17 @@
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">17. References</a></li>
 </ul>
 
             
@@ -816,6 +817,8 @@
 </li>
         <li><a href="documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.close">(MDAnalysis.coordinates.XYZ.XYZWriter method)</a>
 </li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.close">(MDAnalysis.coordinates.base.ConverterBase method)</a>
+</li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.close">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.close">(MDAnalysis.coordinates.base.ReaderBase method)</a>
@@ -874,6 +877,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.close">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.close">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.close">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.close">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -902,6 +907,12 @@
       <li><a href="documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod">ClusteringMethod (class in MDAnalysis.analysis.encore.clustering.ClusteringMethod)</a>
 </li>
       <li><a href="documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection.clusters">clusters (MDAnalysis.analysis.encore.clustering.ClusterCollection.ClusterCollection attribute)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.CMap">CMap (class in MDAnalysis.core.topologyobjects)</a>
+</li>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.cmap">cmap (MDAnalysis.core.groups.AtomGroup attribute)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.CMaps">CMaps (class in MDAnalysis.core.topologyattrs)</a>
 </li>
       <li><a href="documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.HOLE.collect">collect() (MDAnalysis.analysis.hole.HOLE method)</a>
 
@@ -962,7 +973,11 @@
       <li><a href="documentation_pages/exceptions.html#MDAnalysis.exceptions.ConversionWarning">ConversionWarning</a>
 </li>
       <li><a href="documentation_pages/units.html#MDAnalysis.units.convert">convert() (in module MDAnalysis.units)</a>
+
+      <ul>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.coordinates.ParmEd.ParmEdConverter.convert">(MDAnalysis.coordinates.ParmEd.ParmEdConverter method)</a>
 </li>
+      </ul></li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.convert_aa_code">convert_aa_code() (in module MDAnalysis.lib.util)</a>
 </li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_density">convert_density() (MDAnalysis.analysis.density.Density method)</a>
@@ -983,7 +998,7 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_dimensions_to_unitcell">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_forces_from_native">convert_forces_from_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_forces_from_native">convert_forces_from_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_from_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1015,6 +1030,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_forces_from_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_forces_from_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_forces_from_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_forces_from_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1052,6 +1069,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_forces_from_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_forces_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_from_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1061,7 +1080,7 @@
         <li><a href="documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase.convert_forces_from_native">(MDAnalysis.topology.base.TopologyReaderBase method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_forces_to_native">convert_forces_to_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_forces_to_native">convert_forces_to_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_forces_to_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1093,6 +1112,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_forces_to_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_forces_to_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_forces_to_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_forces_to_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1130,6 +1151,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_forces_to_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_forces_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_forces_to_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1141,7 +1164,7 @@
       </ul></li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_length">convert_length() (MDAnalysis.analysis.density.Density method)</a>
 </li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_pos_from_native">convert_pos_from_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_pos_from_native">convert_pos_from_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_from_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1173,6 +1196,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_pos_from_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_pos_from_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_pos_from_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_pos_from_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1212,6 +1237,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_pos_from_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_pos_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_from_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1223,7 +1250,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_pos_to_native">convert_pos_to_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_pos_to_native">convert_pos_to_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_pos_to_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1255,6 +1282,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_pos_to_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_pos_to_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_pos_to_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_pos_to_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1294,6 +1323,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_pos_to_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_pos_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_pos_to_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1303,7 +1334,7 @@
         <li><a href="documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase.convert_pos_to_native">(MDAnalysis.topology.base.TopologyReaderBase method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_time_from_native">convert_time_from_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_time_from_native">convert_time_from_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_time_from_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1335,6 +1366,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_time_from_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_time_from_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_time_from_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_time_from_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1374,6 +1407,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_time_from_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_time_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_time_from_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1383,7 +1418,7 @@
         <li><a href="documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase.convert_time_from_native">(MDAnalysis.topology.base.TopologyReaderBase method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_time_to_native">convert_time_to_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_time_to_native">convert_time_to_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_time_to_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1415,6 +1450,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_time_to_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_time_to_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_time_to_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_time_to_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1454,6 +1491,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_time_to_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_time_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_time_to_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1463,7 +1502,9 @@
         <li><a href="documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase.convert_time_to_native">(MDAnalysis.topology.base.TopologyReaderBase method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_velocities_from_native">convert_velocities_from_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.convert_to">convert_to() (MDAnalysis.core.groups.AtomGroup method)</a>
+</li>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_velocities_from_native">convert_velocities_from_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_from_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1495,6 +1536,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_velocities_from_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_velocities_from_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_velocities_from_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_velocities_from_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1532,6 +1575,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_from_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_velocities_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_from_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1541,7 +1586,7 @@
         <li><a href="documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase.convert_velocities_from_native">(MDAnalysis.topology.base.TopologyReaderBase method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_velocities_to_native">convert_velocities_to_native() (MDAnalysis.coordinates.base.IOBase method)</a>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase.convert_velocities_to_native">convert_velocities_to_native() (MDAnalysis.coordinates.base.ConverterBase method)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/DCD.html#MDAnalysis.coordinates.DCD.DCDReader.convert_velocities_to_native">(MDAnalysis.coordinates.DCD.DCDReader method)</a>
@@ -1573,6 +1618,8 @@
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader.convert_velocities_to_native">(MDAnalysis.coordinates.XTC.XTCReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.convert_velocities_to_native">(MDAnalysis.coordinates.XTC.XTCWriter method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.IOBase.convert_velocities_to_native">(MDAnalysis.coordinates.base.IOBase method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.convert_velocities_to_native">(MDAnalysis.coordinates.base.ReaderBase method)</a>
 </li>
@@ -1610,6 +1657,8 @@
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.convert_velocities_to_native">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
 </li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_velocities_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
+</li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser.convert_velocities_to_native">(MDAnalysis.topology.TPRParser.TPRParser method)</a>
@@ -1619,6 +1668,8 @@
         <li><a href="documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase.convert_velocities_to_native">(MDAnalysis.topology.base.TopologyReaderBase method)</a>
 </li>
       </ul></li>
+      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ConverterBase">ConverterBase (class in MDAnalysis.coordinates.base)</a>
+</li>
       <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.coord">coord (MDAnalysis.core.universe.Universe attribute)</a>
 </li>
       <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ReaderBase.copy">copy() (MDAnalysis.coordinates.base.ReaderBase method)</a>
@@ -1865,6 +1916,8 @@
 </li>
       <li><a href="documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DistanceMatrix.dist_matrix">dist_matrix (MDAnalysis.analysis.diffusionmap.DistanceMatrix attribute)</a>
 </li>
+      <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.distance">distance() (MDAnalysis.core.topologyobjects.UreyBradley method)</a>
+</li>
       <li><a href="documentation_pages/analysis/distances.html#MDAnalysis.analysis.distances.distance_array">distance_array() (in module MDAnalysis.analysis.distances)</a>
 
       <ul>
@@ -1875,14 +1928,14 @@
 </li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.DistanceSelection">DistanceSelection (class in MDAnalysis.core.selection)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/topology/DMSParser.html#MDAnalysis.topology.DMSParser.DMSParser">DMSParser (class in MDAnalysis.topology.DMSParser)</a>
 </li>
       <li><a href="documentation_pages/coordinates/DMS.html#MDAnalysis.coordinates.DMS.DMSReader">DMSReader (class in MDAnalysis.coordinates.DMS)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atom">do_atom() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atoms">do_atoms() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atomtypes">do_atomtypes() (in module MDAnalysis.topology.tpr.utils)</a>
@@ -1986,6 +2039,12 @@
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Elements.dtype">(MDAnalysis.core.topologyattrs.Elements attribute)</a>
 </li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilon14s.dtype">(MDAnalysis.core.topologyattrs.Epsilon14s attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilons.dtype">(MDAnalysis.core.topologyattrs.Epsilons attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.GBScreens.dtype">(MDAnalysis.core.topologyattrs.GBScreens attribute)</a>
+</li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ICodes.dtype">(MDAnalysis.core.topologyattrs.ICodes attribute)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.dtype">(MDAnalysis.core.topologyattrs.Masses attribute)</a>
@@ -1994,7 +2053,13 @@
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Moltypes.dtype">(MDAnalysis.core.topologyattrs.Moltypes attribute)</a>
 </li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.NonbondedIndices.dtype">(MDAnalysis.core.topologyattrs.NonbondedIndices attribute)</a>
+</li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Occupancies.dtype">(MDAnalysis.core.topologyattrs.Occupancies attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMin14s.dtype">(MDAnalysis.core.topologyattrs.RMin14s attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMins.dtype">(MDAnalysis.core.topologyattrs.RMins attribute)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Radii.dtype">(MDAnalysis.core.topologyattrs.Radii attribute)</a>
 </li>
@@ -2007,6 +2072,8 @@
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resnums.dtype">(MDAnalysis.core.topologyattrs.Resnums attribute)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segids.dtype">(MDAnalysis.core.topologyattrs.Segids attribute)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SolventRadii.dtype">(MDAnalysis.core.topologyattrs.SolventRadii attribute)</a>
 </li>
         <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Tempfactors.dtype">(MDAnalysis.core.topologyattrs.Tempfactors attribute)</a>
 </li>
@@ -2049,10 +2116,10 @@
 </li>
       <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.END">END() (MDAnalysis.coordinates.PDB.PDBWriter method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.ENDMDL">ENDMDL() (MDAnalysis.coordinates.PDB.PDBWriter method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     environment variable
 
@@ -2066,6 +2133,10 @@
         <li><a href="documentation_pages/analysis/hole.html#index-0">PATH</a>, <a href="documentation_pages/lib/util.html#index-0">[1]</a>
 </li>
       </ul></li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilon14s">Epsilon14s (class in MDAnalysis.core.topologyattrs)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilons">Epsilons (class in MDAnalysis.core.topologyattrs)</a>
+</li>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.euler_from_quaternion">euler_from_quaternion() (in module MDAnalysis.lib.transformations)</a>
 </li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.expect">expect() (MDAnalysis.core.selection.SelectionParser method)</a>
@@ -2436,6 +2507,8 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.GBScreens">GBScreens (class in MDAnalysis.core.topologyattrs)</a>
+</li>
       <li><a href="documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.gen_kde_pdfs">gen_kde_pdfs() (in module MDAnalysis.analysis.encore.similarity)</a>
 </li>
       <li><a href="documentation_pages/analysis/gnm.html#MDAnalysis.analysis.gnm.generate_grid">generate_grid() (in module MDAnalysis.analysis.gnm)</a>
@@ -2574,10 +2647,10 @@
         <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_atoms">(MDAnalysis.analysis.psa.PSAnalysis method)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_paths">get_num_paths() (MDAnalysis.analysis.psa.PSAnalysis method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_paths">get_num_paths() (MDAnalysis.analysis.psa.PSAnalysis method)</a>
+</li>
       <li><a href="documentation_pages/lib/nsgrid.html#MDAnalysis.lib.nsgrid.NSResults.get_pair_distances">get_pair_distances() (MDAnalysis.lib.nsgrid.NSResults method)</a>
 </li>
       <li><a href="documentation_pages/lib/nsgrid.html#MDAnalysis.lib.nsgrid.NSResults.get_pairs">get_pairs() (MDAnalysis.lib.nsgrid.NSResults method)</a>
@@ -3238,6 +3311,8 @@
 </li>
       <li><a href="documentation_pages/coordinates/null.html#module-MDAnalysis.coordinates.null">MDAnalysis.coordinates.null (module)</a>
 </li>
+      <li><a href="documentation_pages/converters/ParmEdParser.html#module-MDAnalysis.coordinates.ParmEd">MDAnalysis.coordinates.ParmEd (module)</a>
+</li>
       <li><a href="documentation_pages/coordinates/PDB.html#module-MDAnalysis.coordinates.PDB">MDAnalysis.coordinates.PDB (module)</a>
 </li>
       <li><a href="documentation_pages/coordinates/PDBQT.html#module-MDAnalysis.coordinates.PDBQT">MDAnalysis.coordinates.PDBQT (module)</a>
@@ -3347,6 +3422,8 @@
       <li><a href="documentation_pages/topology/MMTFParser.html#module-MDAnalysis.topology.MMTFParser">MDAnalysis.topology.MMTFParser (module)</a>
 </li>
       <li><a href="documentation_pages/topology/MOL2Parser.html#module-MDAnalysis.topology.MOL2Parser">MDAnalysis.topology.MOL2Parser (module)</a>
+</li>
+      <li><a href="documentation_pages/converters/ParmEdParser.html#module-MDAnalysis.topology.ParmEdParser">MDAnalysis.topology.ParmEdParser (module)</a>
 </li>
       <li><a href="documentation_pages/topology/PDBParser.html#module-MDAnalysis.topology.PDBParser">MDAnalysis.topology.PDBParser (module)</a>
 </li>
@@ -3654,6 +3731,8 @@
 </li>
       <li><a href="documentation_pages/exceptions.html#MDAnalysis.exceptions.NoDataError">NoDataError</a>
 </li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.NonbondedIndices">NonbondedIndices (class in MDAnalysis.core.topologyattrs)</a>
+</li>
       <li><a href="documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.norm">norm() (in module MDAnalysis.lib.mdamath)</a>, <a href="documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.norm">[1]</a>
 </li>
       <li><a href="documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.normal">normal() (in module MDAnalysis.lib.mdamath)</a>, <a href="documentation_pages/lib/mdamath.html#MDAnalysis.lib.mdamath.normal">[1]</a>
@@ -3786,6 +3865,12 @@
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.Params">Params (class in MDAnalysis.topology.tpr.obj)</a>
 </li>
+      <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.coordinates.ParmEd.ParmEdConverter">ParmEdConverter (class in MDAnalysis.coordinates.ParmEd)</a>
+</li>
+      <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser">ParmEdParser (class in MDAnalysis.topology.ParmEdParser)</a>
+</li>
+      <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.coordinates.ParmEd.ParmEdReader">ParmEdReader (class in MDAnalysis.coordinates.ParmEd)</a>
+</li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">parse() (MDAnalysis.core.selection.SelectionParser method)</a>
 
       <ul>
@@ -3816,6 +3901,8 @@
         <li><a href="documentation_pages/topology/PQRParser.html#MDAnalysis.topology.PQRParser.PQRParser.parse">(MDAnalysis.topology.PQRParser.PQRParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/PSFParser.html#MDAnalysis.topology.PSFParser.PSFParser.parse">(MDAnalysis.topology.PSFParser.PSFParser method)</a>
+</li>
+        <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.parse">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -3887,7 +3974,11 @@
       <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">parsesection_mapper() (MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
       <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.partner">partner() (MDAnalysis.core.topologyobjects.Bond method)</a>
+
+      <ul>
+        <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.partner">(MDAnalysis.core.topologyobjects.UreyBradley method)</a>
 </li>
+      </ul></li>
       <li><a href="documentation_pages/analysis/hole.html#index-0">PATH</a>, <a href="documentation_pages/lib/util.html#index-0">[1]</a>
 </li>
       <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path">Path (class in MDAnalysis.analysis.psa)</a>
@@ -3900,12 +3991,12 @@
         <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.path_select">(MDAnalysis.analysis.psa.PSAnalysis attribute)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.paths">paths (MDAnalysis.analysis.psa.PSAnalysis attribute)</a>
 </li>
       <li><a href="documentation_pages/lib/pkdtree.html#MDAnalysis.lib.pkdtree.PeriodicKDTree.pbc">pbc (MDAnalysis.lib.pkdtree.PeriodicKDTree attribute)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA">PCA (class in MDAnalysis.analysis.pca)</a>
 </li>
       <li><a href="documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.pca_space">pca_space (MDAnalysis.analysis.pca.PCA attribute)</a>
@@ -4230,10 +4321,10 @@
 </li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">ResidueAttr (class in MDAnalysis.core.topologyattrs)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">ResidueGroup (class in MDAnalysis.core.groups)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidueNameSelection">ResidueNameSelection (class in MDAnalysis.core.selection)</a>
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.residues">residues (MDAnalysis.core.groups.AtomGroup attribute)</a>
@@ -4302,6 +4393,10 @@
         <li><a href="documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.rewind">(MDAnalysis.coordinates.memory.MemoryReader method)</a>
 </li>
       </ul></li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMin14s">RMin14s (class in MDAnalysis.core.topologyattrs)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMins">RMins (class in MDAnalysis.core.topologyattrs)</a>
+</li>
       <li><a href="documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSD">RMSD (class in MDAnalysis.analysis.rms)</a>
 </li>
       <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AlignTraj.rmsd">rmsd (MDAnalysis.analysis.align.AlignTraj attribute)</a>
@@ -4651,6 +4746,8 @@
       <li><a href="documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.soft_cut_q">soft_cut_q() (in module MDAnalysis.analysis.contacts)</a>
 </li>
       <li><a href="documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">solve() (MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel method)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SolventRadii">SolventRadii (class in MDAnalysis.core.topologyattrs)</a>
 </li>
       <li><a href="documentation_pages/analysis/polymer.html#MDAnalysis.analysis.polymer.sort_backbone">sort_backbone() (in module MDAnalysis.analysis.polymer)</a>
 </li>
@@ -5166,6 +5263,12 @@
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup">UpdatingAtomGroup (class in MDAnalysis.core.groups)</a>
 </li>
+      <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley">UreyBradley (class in MDAnalysis.core.topologyobjects)</a>
+</li>
+      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.ureybradley">ureybradley (MDAnalysis.core.groups.AtomGroup attribute)</a>
+</li>
+      <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.UreyBradleys">UreyBradleys (class in MDAnalysis.core.topologyattrs)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -5184,6 +5287,8 @@
         <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond.value">(MDAnalysis.core.topologyobjects.Bond method)</a>
 </li>
         <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral.value">(MDAnalysis.core.topologyobjects.Dihedral method)</a>
+</li>
+        <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.value">(MDAnalysis.core.topologyobjects.UreyBradley method)</a>
 </li>
       </ul></li>
       <li><a href="documentation_pages/core/init.html#MDAnalysis.core.__init__.Flags.values">values() (MDAnalysis.core.__init__.Flags method)</a>

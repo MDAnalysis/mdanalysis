@@ -99,16 +99,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
             
@@ -504,6 +505,50 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dihedral</span><span class="p">()</span></div></div>
 
 
+<div class="viewcode-block" id="UreyBradley"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley">[docs]</a><span class="k">class</span> <span class="nc">UreyBradley</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;A Urey-Bradley angle between two :class:`~MDAnalysis.core.groups.Atom` instances.</span>
+<span class="sd">    Two :class:`UreyBradley` instances can be compared with the ``==`` and</span>
+<span class="sd">    ``!=`` operators. A UreyBradley angle is equal to another if the same atom</span>
+<span class="sd">    numbers are involved.</span>
+
+<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;ureybradley&#39;</span>
+
+<div class="viewcode-block" id="UreyBradley.partner"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.partner">[docs]</a>    <span class="k">def</span> <span class="nf">partner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;UreyBradley.partner(Atom)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        the other :class:`~MDAnalysis.core.groups.Atom` in this</span>
+<span class="sd">        interaction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">atom</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognised Atom&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UreyBradley.distance"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.UreyBradley.distance">[docs]</a>    <span class="k">def</span> <span class="nf">distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Distance between the atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">dimensions</span> <span class="k">if</span> <span class="n">pbc</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">distances</span><span class="o">.</span><span class="n">calc_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="bp">self</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">box</span><span class="p">)</span></div>
+
+    <span class="n">value</span> <span class="o">=</span> <span class="n">distance</span></div>
+
+
+<div class="viewcode-block" id="CMap"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.CMap">[docs]</a><span class="k">class</span> <span class="nc">CMap</span><span class="p">(</span><span class="n">TopologyObject</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Coupled-torsion correction map term between five </span>
+<span class="sd">    :class:`~MDAnalysis.core.groups.Atom` instances.</span>
+
+<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">btype</span> <span class="o">=</span> <span class="s1">&#39;cmap&#39;</span></div>
+
+
 <div class="viewcode-block" id="TopologyDict"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyDict">[docs]</a><span class="k">class</span> <span class="nc">TopologyDict</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
     <span class="sd">&quot;&quot;&quot;A customised dictionary designed for sorting the bonds, angles and</span>
@@ -642,7 +687,8 @@
         <span class="k">return</span> <span class="n">other</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span> <span class="ow">or</span> <span class="n">other</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dict</span></div>
 
 
-<span class="n">_BTYPE_TO_SHAPE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+<span class="n">_BTYPE_TO_SHAPE</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;ureybradley&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> 
+                   <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">}</span>
 
 
 <div class="viewcode-block" id="TopologyGroup"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup">[docs]</a><span class="k">class</span> <span class="nc">TopologyGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -941,7 +987,9 @@
             <span class="n">outclass</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bond&#39;</span><span class="p">:</span> <span class="n">Bond</span><span class="p">,</span>
                         <span class="s1">&#39;angle&#39;</span><span class="p">:</span> <span class="n">Angle</span><span class="p">,</span>
                         <span class="s1">&#39;dihedral&#39;</span><span class="p">:</span> <span class="n">Dihedral</span><span class="p">,</span>
-                        <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="n">ImproperDihedral</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
+                        <span class="s1">&#39;improper&#39;</span><span class="p">:</span> <span class="n">ImproperDihedral</span><span class="p">,</span>
+                        <span class="s1">&#39;ureybradley&#39;</span><span class="p">:</span> <span class="n">UreyBradley</span><span class="p">,</span>
+                        <span class="s1">&#39;cmap&#39;</span><span class="p">:</span> <span class="n">CMap</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">btype</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">outclass</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bix</span><span class="p">[</span><span class="n">item</span><span class="p">],</span>
                             <span class="bp">self</span><span class="o">.</span><span class="n">_u</span><span class="p">,</span>
                             <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bondtypes</span><span class="p">[</span><span class="n">item</span><span class="p">],</span>
@@ -1140,7 +1188,7 @@
                          <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ab</span><span class="p">,</span> <span class="n">bc</span><span class="p">,</span> <span class="n">cd</span><span class="p">)])</span>
 
 <div class="viewcode-block" id="TopologyGroup.dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Calculate the dihedralal angle in radians for this topology</span>
+        <span class="sd">&quot;&quot;&quot;Calculate the dihedral angle in radians for this topology</span>
 <span class="sd">        group.</span>
 
 <span class="sd">        Defined as the angle between a plane formed by atoms 1, 2 and</span>

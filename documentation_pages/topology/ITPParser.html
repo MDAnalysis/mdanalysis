@@ -108,7 +108,8 @@
 <li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.6. GRO topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.7. HOOMD XML topology parser</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">5.8. ITP topology parser</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">5.8.1. Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preprocessor-variables">5.8.1. Preprocessor variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">5.8.2. Classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.9. LAMMPSParser</a></li>
@@ -132,16 +133,17 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
             
@@ -210,27 +212,98 @@
             
   <span class="target" id="module-MDAnalysis.topology.ITPParser"></span><div class="section" id="itp-topology-parser">
 <h1>5.8. ITP topology parser<a class="headerlink" href="#itp-topology-parser" title="Permalink to this headline">¶</a></h1>
-<p>Reads a GROMACS <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file">ITP</a> file to build the system. The topology will
+<p>Reads a GROMACS <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file">ITP</a> or <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/file-formats.html#top">TOP</a> file to build the system. The topology will
 contain atom IDs, segids, residue IDs, residue names, atom names, atom types,
-charges, chargegroups, masses (guessed if not found), and moltypes.
-Bonds, angles, dihedrals and impropers are also read from
-the file.</p>
+charges, chargegroups, masses (guessed if not found), moltypes, and molnums.
+Bonds, angles, dihedrals and impropers are also read from the file.</p>
+<p>If an ITP file is passed without a <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">molecules</span> <span class="pre">]</span></code> directive, passing
+<code class="docutils literal notranslate"><span class="pre">infer_system=True</span></code> (the default option) will create a Universe with
+1 molecule of each defined <code class="docutils literal notranslate"><span class="pre">moleculetype</span></code>.
+If a <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">molecules</span> <span class="pre">]</span></code> section is present, <code class="docutils literal notranslate"><span class="pre">infer_system</span></code> is ignored.</p>
+<p>If files are included with the <cite>#include</cite> directive, they will also be read. If they are not in the working directory, ITPParser will look for them in the <code class="docutils literal notranslate"><span class="pre">include_dir</span></code> directory. By default, this is set to <code class="docutils literal notranslate"><span class="pre">include_dir=&quot;/usr/local/gromacs/share/gromacs/top/&quot;</span></code>.
+Variables can be defined with the <cite>#define</cite> directive in files, or by passing in
+<a class="reference internal" href="#itp-define-kwargs"><span class="std std-ref">keyword arguments</span></a>.</p>
+<p class="rubric">Examples</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><p class="first">import MDAnalysis as mda
+from MDAnalysis.tests.datafiles import ITP_tip5p</p>
+<p class="last">#  override charge of HW2 atom (defined in file as HW2_CHARGE)
+u = mda.Universe(ITP_tip5p, HW2_CHARGE=2, infer_system=True)</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>AMBER also uses topology files with the .top extension. To use ITPParser
+to read GROMACS top files, pass <code class="docutils literal notranslate"><span class="pre">topology_format='ITP'</span></code>.</p>
+<div class="last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s1">&#39;topol.top&#39;</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="s1">&#39;ITP&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="preprocessor-variables">
+<span id="itp-define-kwargs"></span><h2>5.8.1. Preprocessor variables<a class="headerlink" href="#preprocessor-variables" title="Permalink to this headline">¶</a></h2>
+<p>ITP files are often defined with lines that depend on
+whether a keyword flag is given. For example, this modified TIP5P water file:</p>
+<blockquote>
+<div><div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[ moleculetype ]
+; molname       nrexcl
+SOL             2
+
+#ifndef HW1_CHARGE
+    #define HW1_CHARGE 0.241
+#endif
+
+#define HW2_CHARGE 0.241
+
+[ atoms ]
+; id    at type res nr  residu name     at name         cg nr   charge
+1       opls_118     1       SOL              OW             1       0
+2       opls_119     1       SOL             HW1             1       HW1_CHARGE
+3       opls_119     1       SOL             HW2             1       HW2_CHARGE
+4       opls_120     1       SOL             LP1             1      -0.241
+5       opls_120     1       SOL             LP2             1      -0.241
+#ifdef EXTRA_ATOMS  ; added for keyword tests
+6       opls_120     1       SOL             LP3             1      -0.241
+7       opls_120     1       SOL             LP4             1       0.241
+#endif
+</pre></div>
+</div>
+</div></blockquote>
+<p>Define these preprocessor variables by passing keyword arguments. Any arguments that you
+pass in <em>override</em> any variables defined in the file. For example, the universe below
+will have charges of 3 for the HW1 and HW2 atoms:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">ITP_tip5p</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">ITP_tip5p</span><span class="p">,</span> <span class="n">EXTRA_ATOMS</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">HW1_CHARGE</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">HW2_CHARGE</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>These keyword variables are <strong>case-sensitive</strong>. Note that if you set keywords to
+<code class="docutils literal notranslate"><span class="pre">False</span></code> or <code class="docutils literal notranslate"><span class="pre">None</span></code>, they will be treated as if they are not defined in #ifdef conditions.</p>
+<p>For example, the universe below will only have 5 atoms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">ITP_tip5p</span><span class="p">,</span> <span class="n">EXTRA_ATOMS</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="classes">
-<h2>5.8.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<h2>5.8.2. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.ITPParser.ITPParser">
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.ITPParser.</code><code class="descname">ITPParser</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/ITPParser.html#ITPParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.ITPParser.ITPParser" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read topology information from a GROMACS <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file">ITP</a> file.</p>
+<dd><p>Read topology information from a GROMACS <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html#molecule-itp-file">ITP</a> or <a class="reference external" href="http://manual.gromacs.org/current/reference-manual/file-formats.html#top">TOP</a> file.</p>
 <p>Creates a Topology with the following Attributes:
 - ids
 - names
 - types
 - masses
 - charges
+- chargegroups
 - resids
 - resnames
 - segids
 - moltypes
+- molnums
 - bonds
 - angles
 - dihedrals
@@ -474,15 +547,29 @@ is avoided.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.topology.ITPParser.ITPParser.parse">
-<code class="descname">parse</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/ITPParser.html#ITPParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.ITPParser.ITPParser.parse" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parse</code><span class="sig-paren">(</span><em>include_dir='/usr/local/gromacs/share/gromacs/top/'</em>, <em>infer_system=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/ITPParser.html#ITPParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.ITPParser.ITPParser.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse ITP file into Topology</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>include_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – A directory in which to look for other files included
+from the original file, if the files are not first found
+in the current directory.
+Default: “/usr/local/gromacs/share/gromacs/top/”</li>
+<li><strong>infer_system</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em><em> (</em><em>default True</em><em>)</em>) – If a <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">molecules</span> <span class="pre">]</span></code> directive is not found within the the
+topology file, create a Topology with one of every
+<code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">moleculetype</span> <span class="pre">]</span></code> defined. If a <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">molecules</span> <span class="pre">]</span></code> directive is
+found, this keyword is ignored.</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">MDAnalysis <em>Topology</em> object</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">MDAnalysis <em>Topology</em> object</p>
+</td>
 </tr>
 </tbody>
 </table>

@@ -129,7 +129,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#frameiterators">6.24.2. FrameIterators</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#readers">6.24.3. Readers</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#writers">6.24.4. Writers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#helper-classes">6.24.5. Helper classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converters">6.24.5. Converters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-classes">6.24.6. Helper classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.25. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
@@ -137,16 +138,17 @@
 <li class="toctree-l2"><a class="reference internal" href="XDR.html">6.27. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
 </ul>
 
             
@@ -2743,8 +2745,255 @@ when setting up the trajectory.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="converters">
+<h2>6.24.5. Converters<a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h2>
+<p>Converters output information to other libraries.</p>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.base.ConverterBase">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">ConverterBase</code><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ConverterBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for converting to other libraries.</p>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close the trajectory file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_forces_from_native">
+<code class="descname">convert_forces_from_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_forces_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of forces array <em>force</em> from native to base units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, the input <em>force</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_forces_to_native">
+<code class="descname">convert_forces_to_native</code><span class="sig-paren">(</span><em>force</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_forces_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of force array <em>force</em> from base to native units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>force</strong> (<em>array_like</em>) – Forces to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>force</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.7.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_pos_from_native">
+<code class="descname">convert_pos_from_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_pos_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array x from native units to base units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_pos_to_native">
+<code class="descname">convert_pos_to_native</code><span class="sig-paren">(</span><em>x</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_pos_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array <cite>x</cite> from base units to native units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x</strong> (<em>array_like</em>) – Positions to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>x</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_time_from_native">
+<code class="descname">convert_time_from_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_time_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from native units to base units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>t</cite> is modified in place and also returned
+(although note that scalar values <cite>t</cite> are passed by value in Python and
+hence an in-place modification has no effect on the caller.)  In-place
+operations improve performance because allocating new arrays is
+avoided.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <cite>inplace</cite> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <cite>x</cite> is
+returned.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_time_to_native">
+<code class="descname">convert_time_to_native</code><span class="sig-paren">(</span><em>t</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_time_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert time <em>t</em> from base units to native units.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>t</strong> (<em>array_like</em>) – Time values to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, the input <em>t</em> is modified in place and also
+returned. (Also note that scalar values <em>t</em> are passed by
+value in Python and hence an in-place modification has no
+effect on the caller.)</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.7.5: </span>Keyword <em>inplace</em> can be set to <code class="docutils literal notranslate"><span class="pre">False</span></code> so that a
+modified copy is returned <em>unless</em> no conversion takes
+place, in which case the reference to the unmodified <em>x</em> is
+returned.</p>
+</div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_velocities_from_native">
+<code class="descname">convert_velocities_from_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_velocities_from_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of velocities array <em>v</em> from native to base units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <em>v</em> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.ConverterBase.convert_velocities_to_native">
+<code class="descname">convert_velocities_to_native</code><span class="sig-paren">(</span><em>v</em>, <em>inplace=True</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.ConverterBase.convert_velocities_to_native" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conversion of coordinate array <cite>v</cite> from base to native units</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>v</strong> (<em>array_like</em>) – Velocities to transform</li>
+<li><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to modify the array inplace, overwriting previous data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the input <cite>v</cite> is modified in place and also returned.
+In-place operations improve performance because allocating new arrays
+is avoided.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.7.5.</span></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="helper-classes">
-<h2>6.24.5. Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h2>
+<h2>6.24.6. Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h2>
 <p>The following classes contain basic functionality that all readers and
 writers share.</p>
 <dl class="class">

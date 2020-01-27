@@ -99,16 +99,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
             
@@ -1459,6 +1460,82 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="GBScreens"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.GBScreens">[docs]</a><span class="k">class</span> <span class="nc">GBScreens</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generalized Born screening factor&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;gbscreens&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;gbscreen&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SolventRadii"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SolventRadii">[docs]</a><span class="k">class</span> <span class="nc">SolventRadii</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Intrinsic solvation radius&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;solventradii&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;solventradius&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NonbondedIndices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.NonbondedIndices">[docs]</a><span class="k">class</span> <span class="nc">NonbondedIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Nonbonded index (AMBER)&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;nbindices&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;nbindex&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">int</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="RMins"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMins">[docs]</a><span class="k">class</span> <span class="nc">RMins</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;rmins&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;rmin&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Epsilons"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilons">[docs]</a><span class="k">class</span> <span class="nc">Epsilons</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The epsilon LJ parameter&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;epsilons&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;epsilon&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RMin14s"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMin14s">[docs]</a><span class="k">class</span> <span class="nc">RMin14s</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;rmin14s&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;rmin14&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Epsilon14s"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilon14s">[docs]</a><span class="k">class</span> <span class="nc">Epsilon14s</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The epsilon LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;epsilon14s&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;epsilon14&#39;</span>
+    <span class="n">per_object</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="ResidueAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">[docs]</a><span class="k">class</span> <span class="nc">ResidueAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;residueattrs&#39;</span>
@@ -2114,6 +2191,19 @@
         <span class="p">(</span><span class="s1">&#39;n_fragments&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">n_fragments</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
                                  <span class="n">n_fragments</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span></div>
 
+<div class="viewcode-block" id="UreyBradleys"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.UreyBradleys">[docs]</a><span class="k">class</span> <span class="nc">UreyBradleys</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Angles between two atoms</span>
+
+<span class="sd">    Initialise with a list of 2 long tuples</span>
+
+<span class="sd">    These indices refer to the atom indices.</span>
+
+<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;ureybradleys&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;ureybradleys&#39;</span>
+    <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">_n_atoms</span> <span class="o">=</span> <span class="mi">2</span></div>
 
 <div class="viewcode-block" id="Angles"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Angles">[docs]</a><span class="k">class</span> <span class="nc">Angles</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Angles between three atoms</span>
@@ -2144,6 +2234,15 @@
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">_n_atoms</span> <span class="o">=</span> <span class="mi">4</span></div>
 
+<div class="viewcode-block" id="CMaps"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.CMaps">[docs]</a><span class="k">class</span> <span class="nc">CMaps</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A connection between five atoms</span>
+<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;cmaps&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;cmaps&#39;</span>
+    <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="n">_n_atoms</span> <span class="o">=</span> <span class="mi">5</span></div>
 </pre></div>
 
            </div>

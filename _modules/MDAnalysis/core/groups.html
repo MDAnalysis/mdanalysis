@@ -99,16 +99,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
 </ul>
 
             
@@ -276,7 +277,7 @@
 
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_ANCHOR_UNIVERSES</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_CONVERTERS</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
@@ -287,7 +288,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">topologyobjects</span>
-<span class="kn">from</span> <span class="nn">._get_readers</span> <span class="kn">import</span> <span class="n">get_writer_for</span>
+<span class="kn">from</span> <span class="nn">._get_readers</span> <span class="kn">import</span> <span class="n">get_writer_for</span><span class="p">,</span> <span class="n">get_converter_for</span>
 
 
 <span class="k">def</span> <span class="nf">_unpickle</span><span class="p">(</span><span class="n">uhash</span><span class="p">,</span> <span class="n">ix</span><span class="p">):</span>
@@ -3205,6 +3206,84 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;improper only makes sense for a group with exactly 4 atoms&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">topologyobjects</span><span class="o">.</span><span class="n">ImproperDihedral</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ureybradley</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This :class:`AtomGroup` represented as an</span>
+<span class="sd">        :class:`MDAnalysis.core.topologyobjects.UreyBradley` object</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the :class:`AtomGroup` is not length 2</span>
+
+
+<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;urey bradley only makes sense for a group with exactly 2 atoms&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">topologyobjects</span><span class="o">.</span><span class="n">UreyBradley</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This :class:`AtomGroup` represented as an</span>
+<span class="sd">        :class:`MDAnalysis.core.topologyobjects.CMap` object</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If the :class:`AtomGroup` is not length 5</span>
+
+
+<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;cmap only makes sense for a group with exactly 5 atoms&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">topologyobjects</span><span class="o">.</span><span class="n">CMap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AtomGroup.convert_to"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.convert_to">[docs]</a>    <span class="k">def</span> <span class="nf">convert_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert :class:`AtomGroup` to a structure from another Python package.</span>
+
+<span class="sd">        Example</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        The code below converts a Universe to a :class:`parmed.structure.Structure`.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            &gt;&gt;&gt; import MDAnalysis as mda</span>
+<span class="sd">            &gt;&gt;&gt; from MDAnalysis.tests.datafiles import GRO</span>
+<span class="sd">            &gt;&gt;&gt; u = mda.Universe(GRO)</span>
+<span class="sd">            &gt;&gt;&gt; parmed_structure = u.atoms.convert_to(&#39;PARMED&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; parmed_structure</span>
+<span class="sd">            &lt;Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized&gt;</span>
+
+<span class="sd">        </span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        package: str</span>
+<span class="sd">            The name of the package to convert to, e.g. ``&quot;PARMED&quot;``</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        output:</span>
+<span class="sd">            An instance of the structure type from another package.</span>
+<span class="sd">        </span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        TypeError:</span>
+<span class="sd">            No converter was found for the required package</span>
+
+
+<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="n">get_converter_for</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="AtomGroup.write"><a class="viewcode-back" href="../../../documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">filenamefmt</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{trjname}</span><span class="s2">_</span><span class="si">{frame}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>

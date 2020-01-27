@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>14. Constants and unit conversion — MDAnalysis.units &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>15. Constants and unit conversion — MDAnalysis.units &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="15. Custom exceptions and warnings — MDAnalysis.exceptions" href="exceptions.html" />
-    <link rel="prev" title="13. Version information for MDAnalysis - MDAnalysis.version" href="version.html" /> 
+    <link rel="next" title="16. Custom exceptions and warnings — MDAnalysis.exceptions" href="exceptions.html" />
+    <link rel="prev" title="14. Version information for MDAnalysis - MDAnalysis.version" href="version.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,25 +101,26 @@
 <li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">7. Trajectory transformations (“on-the-fly” transformations)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">8. Selection exporters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">9. Auxiliary modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core_modules.html">10. Core modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">11. Visualization modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">12. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="version.html">13. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#implementation-notes">14.1. Implementation notes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#conversions">14.1.1. Conversions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#implementation-notes">15.1. Implementation notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conversions">15.1.1. Conversions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#functions">14.2. Functions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data">14.3. Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#references-and-footnotes">14.4. References and footnotes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">15.2. Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data">15.3. Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references-and-footnotes">15.4. References and footnotes</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="exceptions.html">15. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
-<li class="toctree-l1"><a class="reference internal" href="references.html">16. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
 </ul>
 
             
@@ -165,7 +166,7 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>14. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></li>
+      <li>15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -185,7 +186,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.units"></span><div class="section" id="constants-and-unit-conversion-mdanalysis-units">
-<h1>14. Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this headline">¶</a></h1>
+<h1>15. Constants and unit conversion — <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a><a class="headerlink" href="#constants-and-unit-conversion-mdanalysis-units" title="Permalink to this headline">¶</a></h1>
 <p>The base units of MDAnalysis trajectories are the <strong>Å</strong> (<strong>ångström</strong>) for
 <strong>length</strong> and <strong>ps</strong> (<strong>pico second</strong>) for <strong>time</strong>. By default, all positions
 are in Å and all times are in ps, regardless of how the MD code stored
@@ -235,7 +236,7 @@ table on <a class="reference internal" href="#table-baseunits"><span class="std 
 </tbody>
 </table>
 <div class="section" id="implementation-notes">
-<h2>14.1. Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
+<h2>15.1. Implementation notes<a class="headerlink" href="#implementation-notes" title="Permalink to this headline">¶</a></h2>
 <p>All conversions with <a class="reference internal" href="#MDAnalysis.units.convert" title="MDAnalysis.units.convert"><code class="xref py py-func docutils literal notranslate"><span class="pre">convert()</span></code></a> are carried out in a simple fashion: the
 conversion factor <span class="math notranslate nohighlight">\(f_{b,b'}\)</span> from the base unit <span class="math notranslate nohighlight">\(b\)</span> to another unit
 <span class="math notranslate nohighlight">\(b'\)</span> is precomputed and stored (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>). The numerical value of
@@ -256,7 +257,7 @@ an intermediate step:</p>
 </pre></div>
 </div>
 <div class="section" id="conversions">
-<h3>14.1.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h3>
+<h3>15.1.1. Conversions<a class="headerlink" href="#conversions" title="Permalink to this headline">¶</a></h3>
 <p>Examples for how to calculate some of the conversion factors that are
 hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">units</span></code></a> (see <a class="reference internal" href="#data"><span class="std std-ref">Data</span></a>).</p>
 <dl class="docutils">
@@ -296,7 +297,7 @@ hard-coded in <a class="reference internal" href="#module-MDAnalysis.units" titl
 </div>
 </div>
 <div class="section" id="functions">
-<h2>14.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<h2>15.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.units.get_conversion_factor">
 <code class="descclassname">MDAnalysis.units.</code><code class="descname">get_conversion_factor</code><span class="sig-paren">(</span><em>unit_type</em>, <em>u1</em>, <em>u2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/MDAnalysis/units.html#get_conversion_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.units.get_conversion_factor" title="Permalink to this definition">¶</a></dt>
@@ -328,7 +329,7 @@ incompatible units.</td>
 
 </div>
 <div class="section" id="data">
-<span id="id2"></span><h2>14.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
+<span id="id2"></span><h2>15.3. Data<a class="headerlink" href="#data" title="Permalink to this headline">¶</a></h2>
 <dl class="data">
 <dt id="MDAnalysis.units.constants">
 <code class="descclassname">MDAnalysis.units.</code><code class="descname">constants</code><em class="property"> = {'N_Avogadro': 6.02214129e+23, 'calorie': 4.184, 'elementary_charge': 1.602176565e-19}</em><a class="headerlink" href="#MDAnalysis.units.constants" title="Permalink to this definition">¶</a></dt>
@@ -472,7 +473,7 @@ unit type.</p>
 
 </div>
 <div class="section" id="references-and-footnotes">
-<h2>14.4. References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this headline">¶</a></h2>
+<h2>15.4. References and footnotes<a class="headerlink" href="#references-and-footnotes" title="Permalink to this headline">¶</a></h2>
 <table class="docutils citation" frame="void" id="jorgensen1998" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
@@ -505,10 +506,10 @@ become</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="exceptions.html" class="btn btn-neutral float-right" title="15. Custom exceptions and warnings — MDAnalysis.exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="exceptions.html" class="btn btn-neutral float-right" title="16. Custom exceptions and warnings — MDAnalysis.exceptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="version.html" class="btn btn-neutral float-left" title="13. Version information for MDAnalysis - MDAnalysis.version" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="version.html" class="btn btn-neutral float-left" title="14. Version information for MDAnalysis - MDAnalysis.version" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
