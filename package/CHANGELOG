@@ -14,11 +14,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay
 
   * 0.21.0
 
 Fixes
+  * Adds a more detailed warning when attempting to read chamber-style parm7
+    files (Issue #2475)
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
   * Chainreader and continuous option work correctly when readers work for more 
