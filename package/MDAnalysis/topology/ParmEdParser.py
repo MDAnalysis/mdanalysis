@@ -284,12 +284,15 @@ class ParmEdParser(TopologyReaderBase):
                 bond_values[idx][0].append(bond)
                 bond_values[idx][1].append(bond.order)
 
-
-        bond_values, values = zip(*list(bond_values.items()))
-        bond_types, bond_orders = zip(*values)
-        
-        bond_types = list(map(squash_identical, bond_types))
-        bond_orders = list(map(squash_identical, bond_orders))
+        try:
+            bond_values, values = zip(*list(bond_values.items()))
+        except ValueError:
+            bond_values, bond_types, bond_orders = [], [], []
+        else:
+            bond_types, bond_orders = zip(*values)
+            
+            bond_types = list(map(squash_identical, bond_types))
+            bond_orders = list(map(squash_identical, bond_orders))
 
         attrs.append(Bonds(bond_values, types=bond_types, guessed=False, 
                            order=bond_orders))

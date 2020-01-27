@@ -73,6 +73,7 @@ Classes
 
 """
 from __future__ import absolute_import
+import functools
 
 from . import base
 from ..topology.tables import SYMB2Z
@@ -115,6 +116,9 @@ MDA2PMD = {
     'solventradius': 'solvent_radius',
     'id': 'number'
 }
+
+def get_indices_from_subset(i, atomgroup=None, universe=None):
+    return atomgroup.index(universe.atoms[i])
 
 class ParmEdConverter(base.ConverterBase):
     """Convert MDAnalysis AtomGroup or Universe to ParmEd :class:`~parmed.structure.Structure`.
@@ -241,15 +245,23 @@ class ParmEdConverter(base.ConverterBase):
             struct.box = ag_or_ts.dimensions
         except AttributeError:
             struct.box = None
+
+        if hasattr(ag_or_ts, 'universe'):
+            get_atom_indices = functools.partial(get_indices_from_subset,
+                                                 atomgroup=list(ag_or_ts),
+                                                 universe=ag_or_ts.universe)
+        else:
+            get_atom_indices = lambda x: x
         
         # bonds
         try:
-            params = ag_or_ts.bonds
+            params = ag_or_ts.bonds.atomgroup_intersection(ag_or_ts, 
+                                                           strict=True)
         except AttributeError:
             pass
         else:
             for p in params:
-                atoms = [struct.atoms[i] for i in p.indices]
+                atoms = [struct.atoms[i] for i in map(get_atom_indices, p.indices)]
                 try:
                     for obj in p.type:
                         bond = pmd.Bond(*atoms, type=obj.type, order=obj.order)
@@ -269,12 +281,13 @@ class ParmEdConverter(base.ConverterBase):
 
         # dihedrals
         try:
-            params = ag_or_ts.dihedrals
+            params = ag_or_ts.dihedrals.atomgroup_intersection(ag_or_ts, 
+                                                               strict=True)
         except AttributeError:
             pass
         else:
             for p in params:
-                atoms = [struct.atoms[i] for i in p.indices]
+                atoms = [struct.atoms[i] for i in map(get_atom_indices, p.indices)]
                 try:
                     for obj in p.type:
                         imp = getattr(obj, 'improper', False)
@@ -303,12 +316,13 @@ class ParmEdConverter(base.ConverterBase):
             ('cmaps', pmd.Cmap, struct.cmaps, struct.cmap_types, pmd.CmapType)
         ):
             try:
-                values = getattr(ag_or_ts, param)
+                params = getattr(ag_or_ts, param)
+                values = params.atomgroup_intersection(ag_or_ts, strict=True)
             except AttributeError:
                 pass
             else:
                 for v in values:
-                    atoms = [struct.atoms[i] for i in v.indices]
+                    atoms = [struct.atoms[i] for i in map(get_atom_indices, v.indices)]
 
                     try:
                         for parmed_obj in v.type:

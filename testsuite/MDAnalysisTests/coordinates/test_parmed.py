@@ -35,6 +35,7 @@ from MDAnalysisTests.coordinates.reference import RefAdKSmall
 
 from MDAnalysisTests.datafiles import (
     GRO,
+    PDB,
     PSF,
     PSF_NAMD,
     PSF_cmap,
@@ -186,7 +187,7 @@ class BaseTestParmEdConverter:
             for attr in self.almost_equal_atom_attrs:
                 ra = getattr(r, attr)
                 oa = getattr(o, attr)
-                assert_almost_equal(ra, oa, decimal=3, err_msg='atom {} not almost equal for atoms {} and {}'.format(attr, r, o))
+                assert_almost_equal(ra, oa, decimal=2, err_msg='atom {} not almost equal for atoms {} and {}'.format(attr, r, o))
 
     @pytest.mark.parametrize('attr', ('bonds', 'angles', 'impropers',
                      'cmaps'))
@@ -206,7 +207,7 @@ class BaseTestParmEdConverter:
 
 
 
-class BaseTestParmEdConverterSubset:
+class BaseTestParmEdConverterSubset(BaseTestParmEdConverter):
 
     start_i = 0
     end_i = 0
@@ -219,7 +220,7 @@ class BaseTestParmEdConverterSubset:
         return struct[self.start_i:self.end_i:self.skip_i]
 
     @pytest.fixture(scope='class')
-    def universe(self, ref):
+    def universe(self):
         u = mda.Universe(self.ref_filename)
         return mda.Merge(u.atoms[self.start_i:self.end_i:self.skip_i])
 
@@ -243,12 +244,14 @@ class TestParmEdConverterPRM(BaseTestParmEdConverter):
 
 class TestParmEdConverterParmedPRM(BaseTestParmEdConverterFromParmed):
     ref_filename = PRM_UreyBradley
-    
-class TestParmEdConverterPRMSubset(BaseTestParmEdConverterSubset):
-    ref_filename = PRM12
-    start_i = 101
-    end_i = 8023
-    skip_i = 3
+
+# class TestParmEdConverterPDBSubset(BaseTestParmEdConverterSubset):
+#     ref_filename = PDB
+#     start_i = 101
+#     end_i = 8023
+#     skip_i = 3
+
+# TODO: Add Subset test for PRMs when mda.Merge accepts Universes without positions
 
 class TestParmEdConverterParmedPSF(BaseTestParmEdConverterFromParmed):
     ref_filename = PSF_cmap
@@ -256,10 +259,12 @@ class TestParmEdConverterParmedPSF(BaseTestParmEdConverterFromParmed):
 class TestParmEdConverterPSF(BaseTestParmEdConverter):
     ref_filename = PSF_NAMD
 
-class TestParmEdConverterPSFSubset(BaseTestParmEdConverterSubset):
-    ref_filename = PSF
+class TestParmEdConverterGROSubset(BaseTestParmEdConverterSubset):
+    ref_filename = GRO
     start_i = 5
     end_i = 100
+
+# TODO: Add Subset test for PRMs when mda.Merge accepts Universes without positions
 
 class TestParmEdConverterPDB(BaseTestParmEdConverter):
     ref_filename = PDB_small
