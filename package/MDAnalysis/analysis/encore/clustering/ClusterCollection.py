@@ -215,7 +215,7 @@ belong to its own cluster".format(elements[i]))
         ids : list of int
         list of cluster ids
         """
-        return [v.idn for v in self.clusters]
+        return [v.id for v in self.clusters]
 
     def get_centroids(self):
         """
