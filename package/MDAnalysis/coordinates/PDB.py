@@ -934,7 +934,7 @@ class PDBWriter(base.WriterBase):
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][:1]
+            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works
