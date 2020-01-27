@@ -18,6 +18,8 @@ The rules for this file:
   * 0.20.1
 
 Fixes
+  * Fixed ClusterCollection.get_ids() and changed __repr__ of Cluster and
+    ClusterCollection classes (Issue #2464)
   * The NetCDF writer now writes `cell_angle` units as `degree` instead of
     `degrees` in accordance with the AMBER NetCDF convention (Issue #2327).
   * Fixed installation without Cython (Issue #2337)
