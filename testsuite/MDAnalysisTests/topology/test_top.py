@@ -34,7 +34,8 @@ from MDAnalysisTests.datafiles import (
     PRMNEGATIVE,
     PRMErr1,
     PRMErr2,
-    PRMErr3
+    PRMErr3,
+    PRM_UreyBradley
 )
 
 
@@ -424,13 +425,23 @@ class TestPRMNCRST_negative(TOPBase):
 class TestErrors(object):
     # Check Errors being raised
     def test_versionline(self):
-        with pytest.raises(ValueError):
+        errmatch = "is not a valid TOP file. %VE Missing in header"
+        with pytest.raises(ValueError, match=errmatch):
             u = mda.Universe(PRMErr1)
 
     def test_title(self):
-        with pytest.raises(ValueError):
+        errmatch = "is not a valid TOP file. 'TITLE' missing in header"
+        with pytest.raises(ValueError, match=errmatch):
             u = mda.Universe(PRMErr2)
 
+    def test_ctitle(self):
+        errmatch = ("is detected as a Chamber-style TOP file. "
+                    "At this time MDAnalysis does not support such "
+                    "topologies")
+        with pytest.raises(ValueError, match=errmatch):
+            u = mda.Universe(PRM_UreyBradley)
+
     def test_flag(self):
-        with pytest.raises(IndexError):
+        errmatch = "%FLAG section not found, formatting error for PARM7 file"
+        with pytest.raises(IndexError, match=errmatch):
             u = mda.Universe(PRMErr3)
