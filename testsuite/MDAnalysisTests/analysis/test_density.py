@@ -250,7 +250,7 @@ class Test_density_from_Universe(object):
                 gridcenter=self.gridcenters['static_defined'])
         
         assert len(record) == 3
-        assert str(record[2].message.args[0]) == wmsg
+        assert str(record[1].message.args[0]) == wmsg
 
     def test_density_from_Universe_userdefn_selwarning(self, universe):
         import MDAnalysis.analysis.density
