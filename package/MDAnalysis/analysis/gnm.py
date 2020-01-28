@@ -392,7 +392,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
     .. deprecated:: 0.16.0
        Instead of ``MassWeight=True`` use ``weights="size"``.
 
-    .. removed:: 0.21.0
+    .. versionchanged:: 0.21.0
        MassWeight option (see above deprecation entry).
     """
 
