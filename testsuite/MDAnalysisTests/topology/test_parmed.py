@@ -23,7 +23,6 @@
 from __future__ import absolute_import
 
 import pytest
-import parmed as pmd
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
@@ -31,6 +30,8 @@ from MDAnalysisTests.datafiles import (
     PSF_NAMD_GBIS,
     PRM
 )
+
+pmd = pytest.importorskip('parmed')
 
 class BaseTestParmedParser(ParserBase):
     parser = mda.topology.ParmEdParser.ParmEdParser
@@ -60,7 +61,11 @@ class BaseTestParmedParser(ParserBase):
 
     @pytest.fixture
     def universe(self, filename):
-        return mda.Universe(filename)
+        return mda.Universe(filename, format='parmed')
+
+    def test_creates_universe(self, filename):
+        u = mda.Universe(filename, format='parmed')
+        assert isinstance(u, mda.Universe)
 
     def test_bonds_total_counts(self, top, filename):
         unique = set([(a.atom1.idx, a.atom2.idx)

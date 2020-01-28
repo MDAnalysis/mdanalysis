@@ -23,7 +23,6 @@
 from __future__ import absolute_import
 
 import pytest
-import parmed as pmd
 import MDAnalysis as mda
 
 from numpy.testing import (assert_equal,
@@ -45,10 +44,12 @@ from MDAnalysisTests.datafiles import (
     PRM_UreyBradley,
 )
 
+pmd = pytest.importorskip('parmed')
+
 class TestParmEdReaderGRO:
     ref_filename = GRO
 
-    universe = mda.Universe(pmd.load_file(GRO))
+    universe = mda.Universe(pmd.load_file(GRO), format='parmed')
     ref = mda.Universe(GRO)
     prec = 3
 
@@ -69,7 +70,8 @@ class TestParmEdReaderGRO:
 class BaseTestParmEdReader(_SingleFrameReader):
 
     def setUp(self):
-        self.universe = mda.Universe(pmd.load_file(self.ref_filename))
+        self.universe = mda.Universe(pmd.load_file(self.ref_filename),
+                                     format='parmed')
         self.ref = mda.Universe(self.ref_filename)
         self.prec = 3
 
@@ -133,7 +135,7 @@ class BaseTestParmEdConverter:
 
     @pytest.fixture(scope='class')
     def roundtrip(self, ref):
-        u = mda.Universe(ref)
+        u = mda.Universe(ref, format='parmed')
         return u.atoms.convert_to('PARMED')
 
     def test_equivalent_connectivity_counts(self, universe, output):
@@ -230,7 +232,7 @@ class BaseTestParmEdConverterFromParmed(BaseTestParmEdConverter):
 
     @pytest.fixture(scope='class')
     def universe(self, ref):
-        return mda.Universe(ref)
+        return mda.Universe(ref, format='parmed')
 
     def test_equivalent_connectivity_counts(self, ref, output):
         for attr in ('atoms', 'bonds', 'angles', 'dihedrals', 'impropers',
