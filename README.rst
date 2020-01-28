@@ -70,20 +70,16 @@ guide_. If you are a new developer who would like to start contributing to
 MDAnalysis as a start you can increase our code coverage, the guides explain how
 to find uncovered code.
 
-[//]: # (numfocus-fiscal-sponsor-attribution)
 
-The MDanalysis project uses an [<PROJECT_GOVERNANCE_MODEL_NAME>](./GOVERNANCE.md) 
-and is fiscally sponsored by [NumFOCUS](https://numfocus.org/). Consider making 
-a [tax-deductible donation](<PROJECT_NUMFOCUS_DONATION_LINK>) to help the project 
-pay for developer time, professional services, travel, workshops, and a variety of other needs.
 
-<div align="center">
-  <a href="<PROJECT_NUMFOCUS_SPONSORSHIP_LINK>">
-    <img height="60px" 
-         src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" 
-         align="center">
-  </a>
-</div>
+The MDanalysis project uses an `open governance model` and is fiscally sponsored by `NumFOCUS`_. Consider making 
+a `tax-deductible donation`_ to help the project pay for developer time, professional services, travel, workshops, and a variety of other needs.
+
+.. image:: https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png
+  :scale: 1 %
+  :target: <PROJECT_NUMFOCUS_SPONSORSHIP_LINK>
+  :align: center
+
 
 
 .. Footnotes
@@ -91,6 +87,9 @@ pay for developer time, professional services, travel, workshops, and a variety 
 .. [*] **build**: Unit testing is for the whole package; **coverage** is
        shown for the core library modules and the analysis modules.
 
+.. _NumFOCUS: https://numfocus.org/
+.. _open governance model:https://github.com/MDAnalysis/mdanalysis/blob/master/GOVERNANCE.rst
+.. _tax-deductible donation: (<PROJECT_NUMFOCUS_DONATION_LINK>)
 .. _trajectory formats: https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
 .. _Issue 87: https://github.com/MDAnalysis/mdanalysis/issues/87
