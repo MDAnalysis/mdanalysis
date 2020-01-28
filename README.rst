@@ -65,12 +65,26 @@ MDAnalysis issue tracker.)
 Guide for Developers
 ====================
 
-
-
 To setup a development environment and run the testsuite you can use this
 guide_. If you are a new developer who would like to start contributing to
 MDAnalysis as a start you can increase our code coverage, the guides explain how
 to find uncovered code.
+
+[//]: # (numfocus-fiscal-sponsor-attribution)
+
+The MDanalysis project uses an [<PROJECT_GOVERNANCE_MODEL_NAME>](./GOVERNANCE.md) 
+and is fiscally sponsored by [NumFOCUS](https://numfocus.org/). Consider making 
+a [tax-deductible donation](<PROJECT_NUMFOCUS_DONATION_LINK>) to help the project 
+pay for developer time, professional services, travel, workshops, and a variety of other needs.
+
+<div align="center">
+  <a href="<PROJECT_NUMFOCUS_SPONSORSHIP_LINK>">
+    <img height="60px" 
+         src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" 
+         align="center">
+  </a>
+</div>
+
 
 .. Footnotes
 
