@@ -368,7 +368,8 @@ class BaseAuxReaderTest(object):
 
         ts = mda.coordinates.base.Timestep(0, dt=1)
         
-        for idx in range(reader.n_steps):
+        # Test all 5 frames
+        for idx in range(5):
 
             assert reader.step_to_frame(idx, ts) == idx
 
@@ -377,7 +378,8 @@ class BaseAuxReaderTest(object):
         # Timestep is 0.1 longer than auxiliary data
         ts = mda.coordinates.base.Timestep(0, dt=1.1)
 
-        for idx in range(reader.n_steps):
+        # Test all 5 frames
+        for idx in range(5):
 
             frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
 
