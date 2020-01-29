@@ -335,7 +335,7 @@ the cutoff.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">closeContactGNMAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>weights='size'</em>, <em>MassWeight=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#closeContactGNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.gnm.</code><code class="descname">closeContactGNMAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>selection='protein'</em>, <em>cutoff=4.5</em>, <em>ReportVector=None</em>, <em>weights='size'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/gnm.html#closeContactGNMAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.gnm.closeContactGNMAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>GNMAnalysis only using close contacts.</p>
 <p>This is a version of the GNM where the Kirchoff matrix is
 constructed from the close contacts between individual atoms
@@ -355,17 +355,13 @@ Gaussian network model [4.5 Å].</li>
 <span class="math notranslate nohighlight">\(1/\sqrt{N_i N_j}\)</span> where <span class="math notranslate nohighlight">\(N_i\)</span> and <span class="math notranslate nohighlight">\(N_j\)</span> are the
 number of atoms in the residues <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(j\)</span> that contain
 the atoms that form a contact.</li>
-<li><strong>MassWeight</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>deprecated</em><em>, </em><em>optional</em><em>)</em>) – if set to <code class="docutils literal notranslate"><span class="pre">True</span></code> equivalent to <cite>weights</cite> set to “size”.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>The <cite>MassWeight</cite> option does not perform a true mass weighting but
-weighting by the number of atoms in each residue; the name of the parameter
-exists for historical reasons and will be removed in 0.17.0. Until then,
-setting <cite>MassWeight</cite> to anything but <code class="docutils literal notranslate"><span class="pre">None</span></code> will override <cite>weights</cite>.</p>
+<p>The <cite>MassWeight</cite> option has now been removed.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.analysis.gnm.GNMAnalysis" title="MDAnalysis.analysis.gnm.GNMAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">GNMAnalysis</span></code></a></p>
@@ -375,6 +371,9 @@ setting <cite>MassWeight</cite> to anything but <code class="docutils literal no
 </div>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.16.0: </span>Instead of <code class="docutils literal notranslate"><span class="pre">MassWeight=True</span></code> use <code class="docutils literal notranslate"><span class="pre">weights=&quot;size&quot;</span></code>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>MassWeight option (see above deprecation entry).</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.gnm.closeContactGNMAnalysis.generate_kirchoff">
