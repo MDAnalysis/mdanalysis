@@ -368,8 +368,7 @@ class BaseAuxReaderTest(object):
 
         ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
         
-        # Test all 5 frames
-        for idx in range(5):
+        for idx in range(reader.n_steps):
 
             assert reader.step_to_frame(idx, ts) == idx
 
