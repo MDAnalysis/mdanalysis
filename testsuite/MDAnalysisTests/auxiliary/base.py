@@ -373,10 +373,10 @@ class BaseAuxReaderTest(object):
 
             assert reader.step_to_frame(idx, ts) == idx
 
-    def test_step_to_frame_time_diff(self, reader):
+    def test_step_to_frame_time_diff(self, reader, ref):
 
         # Timestep is 0.1 longer than auxiliary data
-        ts = mda.coordinates.base.Timestep(0, dt=1.1)
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt + 0.1)
 
         # Test all 5 frames
         for idx in range(5):
