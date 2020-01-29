@@ -366,7 +366,7 @@ class BaseAuxReaderTest(object):
 
     def test_step_to_frame_no_time_diff(self, reader):
 
-        ts = mda.coordinates.base.Timestep(0, dt=1)
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
         
         # Test all 5 frames
         for idx in range(5):
