@@ -364,7 +364,7 @@ class BaseAuxReaderTest(object):
         assert reader.step_to_frame(-1, ts) is None
         assert reader.step_to_frame(reader.n_steps, ts) is None
 
-    def test_step_to_frame_no_time_diff(self, reader):
+    def test_step_to_frame_no_time_diff(self, reader, ref):
 
         ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
         
