@@ -173,6 +173,7 @@ _SINGLEFRAME_WRITERS = {}
 _MULTIFRAME_WRITERS = {}
 _PARSERS = {}
 _SELECTION_WRITERS = {}
+_CONVERTERS = {}
 # Registry of TopologyAttributes
 _TOPOLOGY_ATTRS = {}
 

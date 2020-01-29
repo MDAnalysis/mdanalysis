@@ -14,12 +14,13 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli, mtiberti
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti
 
   * 0.21.0
 
 Fixes
   * ClusterCollection.get_ids now returns correctly (Issue #2464)
+  * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
   * Chainreader and continuous option work correctly when readers work for more 
@@ -34,6 +35,10 @@ Fixes
   * The expected frames are made available when a trajectory slice is sliced itself
     with an incomplete slice and/or with a negative step (Issue #2413)
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
+  * ITPParser now parses ITP *and* TOP files from GROMACS, reads #include files, and 
+    substitutes #define variables both from the file and when passed in as a keyword 
+    argument. The directives parsed into bonds, angles, impropers, and dihedrals now 
+    match TPRParser. (PR #2408)
 
 Enhancements
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
@@ -60,6 +65,8 @@ Enhancements
     methods to Universe. Added type and order checking to _Connection
     topologyattrs. (PR #2382)
   * Added radius_cut_q as a method to contacts.Contacts (PR #2458)
+  * Added ParmEdParser, ParmEdReader and ParmEdConverter to 
+    convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
   * The fasta2select now always assumes that the gap character in a sequence

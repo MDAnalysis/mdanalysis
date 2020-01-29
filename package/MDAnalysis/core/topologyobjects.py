@@ -330,6 +330,50 @@ class ImproperDihedral(Dihedral):
         return self.dihedral()
 
 
+class UreyBradley(TopologyObject):
+
+    """A Urey-Bradley angle between two :class:`~MDAnalysis.core.groups.Atom` instances.
+    Two :class:`UreyBradley` instances can be compared with the ``==`` and
+    ``!=`` operators. A UreyBradley angle is equal to another if the same atom
+    numbers are involved.
+
+    .. versionadded:: 0.21.0
+    """
+    btype = 'ureybradley'
+
+    def partner(self, atom):
+        """UreyBradley.partner(Atom)
+        Returns
+        -------
+        the other :class:`~MDAnalysis.core.groups.Atom` in this
+        interaction
+        """
+        if atom == self.atoms[0]:
+            return self.atoms[1]
+        elif atom == self.atoms[1]:
+            return self.atoms[0]
+        else:
+            raise ValueError("Unrecognised Atom")
+
+    def distance(self, pbc=True):
+        """Distance between the atoms.
+        """
+        box = self.universe.dimensions if pbc else None
+        return distances.calc_bonds(self[0].position, self[1].position, box)
+
+    value = distance
+
+
+class CMap(TopologyObject):
+    """
+    Coupled-torsion correction map term between five 
+    :class:`~MDAnalysis.core.groups.Atom` instances.
+
+    .. versionadded:: 0.21.0
+    """
+    btype = 'cmap'
+
+
 class TopologyDict(object):
 
     """A customised dictionary designed for sorting the bonds, angles and
@@ -468,7 +512,8 @@ class TopologyDict(object):
         return other in self.dict or other[::-1] in self.dict
 
 
-_BTYPE_TO_SHAPE = {'bond': 2, 'angle': 3, 'dihedral': 4, 'improper': 4}
+_BTYPE_TO_SHAPE = {'bond': 2, 'ureybradley': 2, 'angle': 3, 
+                   'dihedral': 4, 'improper': 4, 'cmap': 5}
 
 
 class TopologyGroup(object):
@@ -767,7 +812,9 @@ class TopologyGroup(object):
             outclass = {'bond': Bond,
                         'angle': Angle,
                         'dihedral': Dihedral,
-                        'improper': ImproperDihedral}[self.btype]
+                        'improper': ImproperDihedral,
+                        'ureybradley': UreyBradley,
+                        'cmap': CMap}[self.btype]
             return outclass(self._bix[item],
                             self._u,
                             type=self._bondtypes[item],
@@ -966,7 +1013,7 @@ class TopologyGroup(object):
                          for a, b, c in zip(ab, bc, cd)])
 
     def dihedrals(self, result=None, pbc=False):
-        """Calculate the dihedralal angle in radians for this topology
+        """Calculate the dihedral angle in radians for this topology
         group.
 
         Defined as the angle between a plane formed by atoms 1, 2 and

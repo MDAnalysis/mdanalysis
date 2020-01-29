@@ -181,3 +181,22 @@ def change_squash(criteria, to_squash):
             # Should be the same for self consistency...
 
     return residx, new_others
+
+
+def reduce_singular(values):
+    """Returns the value in an array of length 1, or
+    the tuple of an array with a longer lengh.
+
+    Parameters
+    ----------
+    values: array-like
+        Array to squash
+
+    Returns
+    -------
+    values: tuple or single value
+    """
+    if len(values) == 1:
+        return values[0]
+    else:
+        return tuple(values)

@@ -177,6 +177,16 @@ file.
    :inherited-members:
 
 
+Converters
+----------
+
+Converters output information to other libraries.
+
+.. autoclass:: ConverterBase
+   :members:
+   :inherited-members:
+
+
 Helper classes
 --------------
 
@@ -203,6 +213,7 @@ from .. import (
     _READERS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
+    _CONVERTERS
 )
 from .. import units
 from ..auxiliary.base import AuxReader
@@ -2378,3 +2389,27 @@ def range_length(start, stop, step):
     else:
         # The range is empty.
         return 0
+
+
+class _Convertermeta(type):
+    # Auto register upon class creation
+    def __init__(cls, name, bases, classdict):
+        type.__init__(type, name, bases, classdict)
+        try:
+            fmt = asiterable(classdict['lib'])
+        except KeyError:
+            pass
+        else:
+            for f in fmt:
+                f = f.upper()
+                _CONVERTERS[f] = cls
+
+class ConverterBase(six.with_metaclass(_Convertermeta, IOBase)):
+    """Base class for converting to other libraries.
+    """
+
+    def __repr__(self):
+        return "<{cls}>".format(cls=self.__class__.__name__)
+
+    def convert(self, obj):
+        raise NotImplementedError
