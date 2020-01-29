@@ -19,6 +19,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Removes files for stubs mainly introduced in 0.11.0 (Issue #2443)
   * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
