@@ -19,6 +19,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Removes support for reading AMBER NetCDF files with `cell_angle` units set
+    to `degrees` instead of the convention agreed `degree` (Issue #2327). 
   * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
