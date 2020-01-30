@@ -703,7 +703,10 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     Similarly, if you would like to recover a grid containing a histogram of
     atom counts, simply multiply by the volume::
 
-      atom_count_histogram = physical_density * (physical_density.delta[0] ** 3)
+      # Here we assume that numpy is imported as np
+      volume = np.prod(physical_density.delta)
+
+      atom_count_histogram = physical_density * volume
 
 
     .. versionchanged:: 0.21.0
