@@ -354,17 +354,13 @@ class TestPDBWriter(object):
             # test number (only last 4 digits)
             assert int(line[10:14]) == model % 10000
 
-    def test_segid_chainid(self, outfile):
-        #check whether chainID comes from last character of segid (issue #2224)
+    def test_segid_chainid(self, universe2, outfile):
+        """check whether chainID comes from last character of segid (issue #2224)"""
         ref_id = 'E'
-        u = mda.Universe(PSF, DCD) # adk.psf , adk_dims.dcd
+        u = universe2
         u.atoms.write(outfile)
-        in_file = open(outfile)
-        for line in in_file.readlines():
-            if line[0:4] == 'ATOM':
-                chain_id = line[21]
-                break
-        assert chain_id == ref_id
+        u_pdb = mda.Universe(outfile)
+        assert u_pdb.segments.chainIDs[0][0] == ref_id
 
 class TestMultiPDBReader(object):
     @staticmethod

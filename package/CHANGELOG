@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli
+         PicoCentauri, davidercruz, jbarnoud, RMeli, CCook96
 
   * 0.21.0
 
@@ -33,6 +33,7 @@ Fixes
   * The expected frames are made available when a trajectory slice is sliced itself
     with an incomplete slice and/or with a negative step (Issue #2413)
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
+  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
 
 Enhancements
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements

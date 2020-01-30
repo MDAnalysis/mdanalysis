@@ -479,6 +479,11 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
 
+    .. versionchanged:: 1.0.0
+       ChainID now comes from the last character of segid, as stated in the documentation. 
+       An indexing issue meant it previously used the first charater (Issue #2224)
+
+
     """
     fmt = {
         'ATOM': (
@@ -893,6 +898,10 @@ class PDBWriter(base.WriterBase):
            MODEL records are written. (Previously, this was decided based on the
            underlying trajectory and only if ``len(traj) > 1`` would MODEL records
            have been written.)
+
+        .. versionchanged:: 1.0.0
+           ChainID now comes from the last character of segid, as stated in the documentation. 
+           An indexing issue meant it previously used the first charater (Issue #2224)
 
         """
         atoms = self.obj.atoms
