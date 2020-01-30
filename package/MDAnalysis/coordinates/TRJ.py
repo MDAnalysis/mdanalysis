@@ -458,10 +458,9 @@ class NCDFReader(base.ReaderBase):
        kJ/(mol*Angstrom). It is noted that with 0.19.2 and earlier versions,
        velocities would have often been reported in values of angstrom/AKMA
        time units instead (Issue #2323).
-
-    .. TODO:
-       * Remove support for `degrees` units in MDAnalysis version > 1.0
-         (Issue #2327, PR #2326).
+    .. versionchanged:: 1.0.0
+       Support for reading `degrees` units for `cell_angles` has now been
+       removed (Issue #2327)
 
     """
 
@@ -621,21 +620,9 @@ class NCDFReader(base.ReaderBase):
         if self.periodic:
             self._verify_units(self.trjfile.variables['cell_lengths'].units,
                                'angstrom')
-            # Currently the MDA writer outputs 'degrees' rather than the
-            # singular form 'degree' agreed in the conventions. As discussed
-            # in PR #2326 from MDA 1.0 only and 'degree' will be accepted.
+            # As of v1.0.0 only `degree` is accepted as a unit
             cell_angle_units = self.trjfile.variables['cell_angles'].units
-            if (cell_angle_units.decode('utf-8') == 'degrees'):
-                wmsg = ("DEPRECATED (1.0): NCDF trajectory {0} uses units of "
-                        "`degrees` for the `cell_angles` variable instead of "
-                        "`degree`. Support for non-AMBER convention units is "
-                        "now deprecated and will end in MDAnalysis version "
-                        "1.0. Afterwards, reading this file will raise an "
-                        "error.")
-                warnings.warn(wmsg, category=DeprecationWarning)
-                logger.warning(wmsg)
-            else:
-                self._verify_units(cell_angle_units, 'degree')
+            self._verify_units(cell_angle_units, 'degree')
 
         self._current_frame = 0
 
