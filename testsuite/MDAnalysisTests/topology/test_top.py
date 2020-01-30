@@ -34,7 +34,8 @@ from MDAnalysisTests.datafiles import (
     PRMNEGATIVE,
     PRMErr1,
     PRMErr2,
-    PRMErr3
+    PRMErr3,
+    PRM_UreyBradley
 )
 
 
@@ -422,15 +423,16 @@ class TestPRMNCRST_negative(TOPBase):
 
 
 class TestErrors(object):
-    # Check Errors being raised
-    def test_versionline(self):
-        with pytest.raises(ValueError):
-            u = mda.Universe(PRMErr1)
 
-    def test_title(self):
-        with pytest.raises(ValueError):
-            u = mda.Universe(PRMErr2)
+    @pytest.mark.parametrize("parm,errmatch", (
+        [PRMErr1, "%VE Missing in header"],
+        [PRMErr2, "'TITLE' missing in header"],
+        [PRM_UreyBradley, "Chamber-style TOP file"]
+    ))
+    def test_value_errors(self, parm, errmatch):
+        with pytest.raises(ValueError, match=errmatch):
+            u = mda.Universe(parm)
 
-    def test_flag(self):
-        with pytest.raises(IndexError):
+    def test_flag_index_error(self):
+        with pytest.raises(IndexError, match="%FLAG section not found"):
             u = mda.Universe(PRMErr3)
