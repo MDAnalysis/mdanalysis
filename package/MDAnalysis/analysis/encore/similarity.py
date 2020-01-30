@@ -721,7 +721,6 @@ def hes(ensembles,
         cov_estimator="shrinkage",
         weights='mass',
         align=False,
-        details=False,
         estimate_error=False,
         bootstrapping_samples=100,
         calc_diagonal=False):
@@ -937,15 +936,10 @@ def hes(ensembles,
         values[j, i] = value
 
     # Save details as required
-    if details:
-        kwds = {}
-        for i in range(out_matrix_eln):
-            kwds['ensemble{0:d}_mean'.format(i + 1)] = xs[i]
-            kwds['ensemble{0:d}_covariance_matrix'.format(i + 1)] = sigmas[i]
-        details = np.array(kwds)
-
-    else:
-        details = None
+    details = {}
+    for i in range(out_matrix_eln):
+        details['ensemble{0:d}_mean'.format(i + 1)] = xs[i]
+        details['ensemble{0:d}_covariance_matrix'.format(i + 1)] = sigmas[i]
 
     return values, details
 
