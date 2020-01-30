@@ -234,6 +234,7 @@
 <span class="sd">+----------------------------+----------------------+</span>
 
 <span class="sd">TODO:</span>
+<span class="sd">  Add support for Chamber-style topologies</span>
 <span class="sd">  More stringent tests</span>
 
 <span class="sd">.. Note::</span>
@@ -241,6 +242,10 @@
 <span class="sd">   The Amber charge is converted to electron charges as used in</span>
 <span class="sd">   MDAnalysis and other packages. To get back Amber charges, multiply</span>
 <span class="sd">   by 18.2223.</span>
+
+<span class="sd">   Chamber-style Amber topologies (i.e. topologies generated via parmed</span>
+<span class="sd">   conversion of a CHARMM topology to an AMBER one) are not currently supported.</span>
+<span class="sd">   Support will likely be added in future MDAnalysis releases.</span>
 
 <span class="sd">.. _`PARM parameter/topology file specification`:</span>
 <span class="sd">   http://ambermd.org/formats.html#topology</span>
@@ -327,6 +332,8 @@
 <span class="sd">      parses both amber10 and amber12 formats</span>
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">      parses bonds, angles, dihedrals, and impropers</span>
+<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">      warns users that chamber-style topologies are not current supported</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRMTOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PARM7&#39;</span><span class="p">]</span>
 
@@ -366,10 +373,18 @@
                     <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. %VE Missing in header&quot;</span>
                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
             <span class="n">title</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;TITLE&quot;</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. &#39;TITLE&#39; missing in header&quot;</span>
-                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="c1"># Raise a separate warning if Chamber-style TOP is detected</span>
+                <span class="k">if</span> <span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CTITLE&quot;</span><span class="p">:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is detected as a Chamber-style TOP file. &quot;</span>
+                            <span class="s2">&quot;At this time MDAnalysis does not support such &quot;</span>
+                            <span class="s2">&quot;topologies&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. &quot;</span>
+                            <span class="s2">&quot;&#39;TITLE&#39; missing in header&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
             <span class="k">while</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%F</span><span class="s1">LAG POINTERS&#39;</span><span class="p">):</span>
                 <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
             <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
