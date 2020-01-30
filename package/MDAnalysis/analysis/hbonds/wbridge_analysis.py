@@ -891,6 +891,11 @@ class WaterBridgeAnalysis(AnalysisBase):
             self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_h_donors)))
 
     def _update_water_selection(self):
+        self._water_donors = []
+        self._water_h_donors = {}
+        self._water_donors_h = defaultdict(list)
+        self._water_acceptors = []
+
         self._water = self.u.select_atoms(self.water_selection).ix
         self.logger_debug('Size of water selection before filtering:'
                           ' {} atoms'.format(len(self._water)))
@@ -965,11 +970,6 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         self.box = self.u.dimensions if self.pbc else None
         self._update_selection()
-
-        self._water_donors = []
-        self._water_h_donors = {}
-        self._water_donors_h = defaultdict(list)
-        self._water_acceptors = []
 
         self.timesteps = []
         if len(self._s1) and len(self._s2):
