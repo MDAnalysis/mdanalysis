@@ -19,6 +19,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
     files (Issue #2475)
   * ClusterCollection.get_ids now returns correctly (Issue #2464)
@@ -40,7 +41,6 @@ Fixes
   * The expected frames are made available when a trajectory slice is sliced itself
     with an incomplete slice and/or with a negative step (Issue #2413)
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
-  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * ITPParser now parses ITP *and* TOP files from GROMACS, reads #include files, and 
     substitutes #define variables both from the file and when passed in as a keyword 
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now 
