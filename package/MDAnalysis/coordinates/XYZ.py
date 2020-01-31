@@ -108,6 +108,9 @@ class XYZWriter(base.WriterBase):
 
     .. _xyzplugin:
        http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+
+    .. versionchanged: 0.21.0
+       Use elements attribute instead of names attribute, if present
     """
 
     format = 'XYZ'
@@ -149,15 +152,15 @@ class XYZWriter(base.WriterBase):
             self.convert_units = convert_units
         else:
             self.convert_units = flags['convert_lengths']
-        self.atomnames = self._get_atomnames(atoms)
+        self.atomnames = self._get_atoms_elements_or_names(atoms)
         default_remark = "Written by {0} (release {1})".format(
             self.__class__.__name__, __version__)
         self.remark = default_remark if remark is None else remark
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
-    def _get_atomnames(self, atoms):
-        """Return a list of atom names"""
+    def _get_atoms_elements_or_names(self, atoms):
+        """Return a list of atom elements (if present) or fallback to atom names"""
         # Default case
         if atoms is None:
             return itertools.cycle(('X',))
@@ -170,9 +173,12 @@ class XYZWriter(base.WriterBase):
         # AtomGroup or Universe, grab the names else default
         # (AtomGroup.atoms just returns AtomGroup)
         try:
-            return atoms.atoms.names
+            return atoms.atoms.elements
         except (AttributeError, NoDataError):
-            return itertools.cycle(('X',))
+            try:
+                return atoms.atoms.names
+            except (AttributeError, NoDataError):
+                return itertools.cycle(('X',))
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
@@ -184,7 +190,7 @@ class XYZWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Atom names in the output are taken from the `obj` or default
+        Atom elements (or names) in the output are taken from the `obj` or default
         to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
@@ -218,7 +224,7 @@ class XYZWriter(base.WriterBase):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
             # update atom names
-            self.atomnames = self._get_atomnames(atoms)
+            self.atomnames = self._get_atoms_elements_or_names(atoms)
 
         self.write_next_timestep(ts)
 

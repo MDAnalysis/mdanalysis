@@ -376,15 +376,10 @@ class closeContactGNMAnalysis(GNMAnalysis):
           :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the
           number of atoms in the residues :math:`i` and :math:`j` that contain
           the atoms that form a contact.
-    MassWeight : bool (deprecated, optional)
-          if set to ``True`` equivalent to `weights` set to "size".
 
     Notes
     -----
-    The `MassWeight` option does not perform a true mass weighting but
-    weighting by the number of atoms in each residue; the name of the parameter
-    exists for historical reasons and will be removed in 0.17.0. Until then,
-    setting `MassWeight` to anything but ``None`` will override `weights`.
+    The `MassWeight` option has now been removed.
 
     See Also
     --------
@@ -396,6 +391,9 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
     .. deprecated:: 0.16.0
        Instead of ``MassWeight=True`` use ``weights="size"``.
+
+    .. versionchanged:: 0.21.0
+       MassWeight option (see above deprecation entry).
     """
 
     def __init__(self,
@@ -403,8 +401,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
                  selection='protein',
                  cutoff=4.5,
                  ReportVector=None,
-                 weights="size",
-                 MassWeight=None):
+                 weights="size"):
         self.u = universe
         self.selection = selection
         self.cutoff = cutoff
@@ -414,13 +411,6 @@ class closeContactGNMAnalysis(GNMAnalysis):
         self.ca = self.u.select_atoms(self.selection)
 
         self.weights = weights
-        # remove MassWeight in 0.17.0
-        if MassWeight is not None:
-            warnings.warn(
-                "MassWeight=True|False is deprecated in favor of weights='size'|None "
-                "and will be removed in 0.17.0",
-                category=DeprecationWarning)
-            self.weights = "size" if MassWeight else None
 
     def generate_kirchoff(self):
         natoms = self.ca.n_atoms

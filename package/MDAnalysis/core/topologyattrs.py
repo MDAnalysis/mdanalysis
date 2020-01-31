@@ -37,7 +37,6 @@ from six.moves import zip, range
 
 import Bio.Seq
 import Bio.SeqRecord
-import Bio.Alphabet
 from collections import defaultdict
 import copy
 import functools
@@ -1286,6 +1285,82 @@ class AltLocs(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
+class GBScreens(AtomAttr):
+    """Generalized Born screening factor"""
+    attrname = 'gbscreens'
+    singular = 'gbscreen'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class SolventRadii(AtomAttr):
+    """Intrinsic solvation radius"""
+    attrname = 'solventradii'
+    singular = 'solventradius'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class NonbondedIndices(AtomAttr):
+    """Nonbonded index (AMBER)"""
+    attrname = 'nbindices'
+    singular = 'nbindex'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na, dtype=np.int32)
+    
+class RMins(AtomAttr):
+    """The Rmin/2 LJ parameter"""
+    attrname = 'rmins'
+    singular = 'rmin'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class Epsilons(AtomAttr):
+    """The epsilon LJ parameter"""
+    attrname = 'epsilons'
+    singular = 'epsilon'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class RMin14s(AtomAttr):
+    """The Rmin/2 LJ parameter for 1-4 interactions"""
+    attrname = 'rmin14s'
+    singular = 'rmin14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class Epsilon14s(AtomAttr):
+    """The epsilon LJ parameter for 1-4 interactions"""
+    attrname = 'epsilon14s'
+    singular = 'epsilon14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
@@ -1490,7 +1565,7 @@ class Resnames(ResidueAttr):
                              "character".format(err.message)), None)
         if format == "string":
             return sequence
-        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        seq = Bio.Seq.Seq(sequence)
         if format == "Seq":
             return seq
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
@@ -1644,17 +1719,42 @@ class Segids(SegmentAttr):
     transplants[SegmentGroup].append(
         ('_get_named_segment', _get_named_segment))
 
+def _check_connection_values(func):
+    """
+    Checks values passed to _Connection methods for:
+     - appropriate number of atom indices
+     - coerces them to tuples of ints (for hashing)
+     - ensures that first value is less than last (reversibility & hashing)
+
+    .. versionadded:: 0.21.0
+
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, *args, **kwargs):
+        if not all(len(x) == self._n_atoms 
+                and all(isinstance(y, (int, np.integer)) for y in x)
+                for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                            " atom indices").format(self.attrname,
+                            self._n_atoms))
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
+
+        return func(self, clean, *args, **kwargs)
+    return wrapper
 
 class _Connection(AtomAttr):
-    """Base class for connectivity between atoms"""
+    """Base class for connectivity between atoms
+    
+    .. versionchanged:: 0.21.0
+        Added type checking to atom index values.
+    """
+
+    @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        values = [tuple(x) for x in values]
-        if not all(len(x) == self._n_atoms 
-                   and all(isinstance(y, (int, np.integer)) for y in x)
-                   for x in values):
-            raise ValueError(("{} must be an iterable of tuples with {}"
-                              " atom indices").format(self.attrname,
-                              self._n_atoms))
         self.values = values
         if types is None:
             types = [None] * len(values)
@@ -1687,12 +1787,6 @@ class _Connection(AtomAttr):
 
         for b, t, g, o in zip(self.values, self.types,
                               self._guessed, self.order):
-            # We always want the first index
-            # to be less than the last
-            # eg (0, 1) not (1, 0)
-            # and (4, 10, 8) not (8, 10, 4)
-            if b[0] > b[-1]:
-                b = b[::-1]
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -1719,7 +1813,8 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
-    def add_bonds(self, values, types=None, guessed=True, order=None):
+    @_check_connection_values
+    def _add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
@@ -1739,7 +1834,35 @@ class _Connection(AtomAttr):
             del self._cache['bd']
         except KeyError:
             pass
+    
+    @_check_connection_values
+    def _delete_bonds(self, values):
+        """
+        .. versionadded:: 0.21.0
+        """
 
+        to_check = set(values)
+        self_values = set(self.values)
+        if not to_check.issubset(self_values):
+            missing = to_check-self_values
+            indices = ', '.join(map(str, missing))
+            raise ValueError(('Cannot delete nonexistent '
+                              '{attrname} with atom indices:'
+                              '{indices}').format(attrname=self.attrname,
+                                                  indices=indices))
+        idx = [self.values.index(v) for v in to_check]
+        for i in sorted(idx, reverse=True):
+            del self.values[i]
+
+        for attr in ('types', '_guessed', 'order'):
+            arr = np.array(getattr(self, attr), dtype='object')
+            new = np.delete(arr, idx)
+            setattr(self, attr, list(new))
+        # kill the old cache of bond Dict
+        try:
+            del self._cache['bd']
+        except KeyError:
+            pass
 
 class Bonds(_Connection):
     """Bonds between two atoms
@@ -1893,6 +2016,19 @@ class Bonds(_Connection):
         ('n_fragments', property(n_fragments, None, None,
                                  n_fragments.__doc__)))
 
+class UreyBradleys(_Connection):
+    """Angles between two atoms
+
+    Initialise with a list of 2 long tuples
+
+    These indices refer to the atom indices.
+
+    .. versionadded:: 0.21.0
+    """
+    attrname = 'ureybradleys'
+    singular = 'ureybradleys'
+    transplants = defaultdict(list)
+    _n_atoms = 2
 
 class Angles(_Connection):
     """Angles between three atoms
@@ -1922,3 +2058,13 @@ class Impropers(_Connection):
     singular = 'impropers'
     transplants = defaultdict(list)
     _n_atoms = 4
+
+class CMaps(_Connection):
+    """
+    A connection between five atoms
+    .. versionadded:: 0.21.0
+    """
+    attrname = 'cmaps'
+    singular = 'cmaps'
+    transplants = defaultdict(list)
+    _n_atoms = 5

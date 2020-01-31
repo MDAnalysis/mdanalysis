@@ -1,0 +1,45 @@
+;
+;	File 'topol.top' was generated
+;	By user: lily (501)
+;	On host: MacBook-Pro-3.local
+;	At date: Thu Jul 18 15:55:33 2019
+
+;
+;	This is a standalone topology file
+;
+;	Created by:
+;	                    :-) GROMACS - gmx pdb2gmx, 2016.1 (-:
+;	
+;	Executable:   /usr/local/gromacs/bin/gmx
+;	Data prefix:  /usr/local/gromacs
+;	Working dir:  /Users/lily/Documents/ala
+;	Command line:
+;	  gmx pdb2gmx -f 00_ala10.pdb -o 01_ala.gro -ignh -ter
+;	Force field was read from the standard GROMACS share directory.
+;
+
+; Include forcefield parameters
+#include "gromos54a7_edited.ff/forcefield.itp"
+#include "gromacs_ala10.itp"
+
+; Include water topology
+#include "gromos54a7_edited.ff/spc.itp"
+
+#ifdef POSRES_WATER
+; Position restraint for each water oxygen
+[ position_restraints ]
+;  i funct       fcx        fcy        fcz
+   1    1       1000       1000       1000
+#endif
+
+; Include topology for ions
+#include "gromos54a7_edited.ff/ions.itp"
+
+[ system ]
+; Name
+Protein
+
+[ molecules ]
+; Compound        #mols
+Protein             2
+SOL                 3
