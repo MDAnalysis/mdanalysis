@@ -76,6 +76,8 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
+    and rms (Issue #1745).
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
 
