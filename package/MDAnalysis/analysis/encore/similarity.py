@@ -76,17 +76,16 @@ examples first execute: ::
     >>> import MDAnalysis.analysis.encore as encore
     >>> from MDAnalysis.tests.datafiles import PSF, DCD, DCD2
 
-
 To calculate the Harmonic Ensemble Similarity (:func:`hes`)
 two ensemble objects are first created and then used for calculation: ::
 
     >>> ens1 = Universe(PSF, DCD)
     >>> ens2 = Universe(PSF, DCD2)
-    >>> print encore.hes([ens1, ens2])
-    (array([[        0.        ,  38279683.95892926],
-            [ 38279683.95892926,         0.        ]]), None)
+    >>> HES, details = encore.hes([ens1, ens2])
+    >>> print HES
+    [[        0.        ,  38279683.95892926],
+    [ 38279683.95892926,         0.        ]]
 
-Here None is returned in the array as the default details parameter is False.
 HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.
 
