@@ -42,7 +42,7 @@ Classes
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-from struct import unpack, pack
+from struct import pack
 import numpy as np
 
 from . import base
@@ -58,19 +58,20 @@ class NAMDBINReader(base.SingleFrameReaderBase):
     def _read_first_frame(self):
         # Read header
         with open(self.filename, 'rb') as namdbin:
-            self.n_atoms = int(unpack('i', namdbin.read(4))[0])
+            self.n_atoms = np.fromfile(namdbin,dtype=np.int32,count=1)[0]
 
             self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
             self.ts.frame = 0
-            coord_double = unpack('{:d}d'.format(3*self.n_atoms),
-                                  namdbin.read(3*self.n_atoms*8))
+            coord_double = np.fromfile(namdbin,
+                                        dtype=np.float64,
+                                        count=self.n_atoms *3)
             self.ts._pos[:] = np.array(
                 coord_double, float).reshape(self.n_atoms, 3)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
         with open(filename, 'rb') as namdbin:
-            n_atoms = int(unpack('i', namdbin.read(4))[0])
+            n_atoms = np.fromfile(namdbin,dtype=np.int32,count=1)[0]
         return n_atoms
 
     def Writer(self, filename, **kwargs):
@@ -104,7 +105,7 @@ class NAMDBINWriter(base.WriterBase):
             number of atoms for the output coordinate
         """
         self.n_atoms = n_atoms
-        self.filename = util.filename(filename, ext='namdbin')
+        self.filename = util.filename(filename, ext='coor')
 
     def write(self, obj):
         """Write obj at current trajectory frame to file.
