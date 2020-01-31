@@ -87,8 +87,7 @@ The trajectory is included with the test data files. The data in
               select="backbone",             # superimpose on whole backbone of the whole protein
               groupselections=["backbone and (resid 1-29 or resid 60-121 or resid 160-214)",   # CORE
                                "backbone and resid 122-159",                                   # LID
-                               "backbone and resid 30-59"],                                    # NMP
-              filename="rmsd_all_CORE_LID_NMP.dat")
+                               "backbone and resid 30-59"])                                    # NMP
    R.run()
 
    import matplotlib.pyplot as plt
@@ -147,7 +146,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.lib.util import asiterable, iterable, get_weights, deprecate
+from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -331,11 +330,14 @@ class RMSD(AnalysisBase):
     Run the analysis with :meth:`RMSD.run`, which stores the results
     in the array :attr:`RMSD.rmsd`.
 
+    .. versionchanged:: 1.0.0
+       ``save()`` method was removed, use ``np.savetxt()`` on :attr:`rmsd`
+       instead.
+
     """
     def __init__(self, atomgroup, reference=None, select='all',
-                 groupselections=None, filename="rmsd.dat",
-                 weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
-        # DEPRECATION: remove filename kwarg in 1.0
+                 groupselections=None, weights=None, tol_mass=0.1,
+                 ref_frame=0, **kwargs):
         r"""Parameters
         ----------
         atomgroup : AtomGroup or Universe
@@ -379,12 +381,6 @@ class RMSD(AnalysisBase):
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
-        filename : str (optional)
-            write RMSD into file with :meth:`RMSD.save`
-
-            .. deprecated:; 0.19.0
-               `filename` will be removed together with :meth:`save` in 1.0.
-
         weights : {"mass", ``None``} or array_like (optional)
              choose weights. With ``"mass"`` uses masses as weights; with ``None``
              weigh each atom equally. If a float array of the same length as
@@ -469,6 +465,9 @@ class RMSD(AnalysisBase):
         .. deprecated:: 0.19.0
            `filename` will be removed in 1.0
 
+        .. versionchanged:: 1.0.0
+           `filename` keyword was removed.
+
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
                                    **kwargs)
@@ -481,7 +480,6 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        self.filename = filename   # DEPRECATED in 0.19.0, remove in 1.0.0
 
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
@@ -555,10 +553,6 @@ class RMSD(AnalysisBase):
             raise ValueError("groupselections can only be combined with "
                              "weights=None or weights='mass', not a weight "
                              "array.")
-
-        # initialized to note for testing the save function
-        self.rmsd = None
-
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
@@ -652,27 +646,6 @@ class RMSD(AnalysisBase):
                 self._n_atoms, None, self.weights)
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``np.savetxt(filename, RMSD.rmsd)``.")
-    def save(self, filename=None):
-        """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.
-
-        Parameters
-        ----------
-        filename : str (optional)
-            if no filename is given the default provided to the constructor is
-            used.
-
-        """
-        filename = filename or self.filename
-        if filename is not None:
-            if self.rmsd is None:
-                raise NoDataError("rmsd has not been calculated yet")
-            np.savetxt(filename, self.rmsd)
-            logger.info("Wrote RMSD timeseries  to file %r", filename)
-        return filename
 
 
 class RMSF(AnalysisBase):
