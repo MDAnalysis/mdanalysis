@@ -198,7 +198,7 @@ class DistanceMatrix(AnalysisBase):
 
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. You can use np.save on
-       ::class::DistanceMatrix.dist_matrix instead.
+       :attr:`dist_matrix` instead.
 
     """
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,

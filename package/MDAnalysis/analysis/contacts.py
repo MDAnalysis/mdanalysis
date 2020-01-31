@@ -372,7 +372,7 @@ class Contacts(AnalysisBase):
 
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. Use ``np.savetxt()`` on
-       ::class::Contacts.timeseries instead.
+       :attr:`timeseries` instead.
 
     """
     def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
