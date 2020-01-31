@@ -538,7 +538,7 @@ class AlignTraj(AnalysisBase):
 
     .. versionchanged:: 1.0.0
        ``save()`` has now been removed, as an alternative use ``np.savetxt()``
-       on ``:class:AlignTraj.rmsd``.
+       on :attr:`rmsd`.
 
     """
 
