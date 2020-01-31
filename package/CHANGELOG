@@ -45,6 +45,7 @@ Fixes
     substitutes #define variables both from the file and when passed in as a keyword 
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now 
     match TPRParser. (PR #2408)
+  * Added parmed to setup.py
 
 Enhancements
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
