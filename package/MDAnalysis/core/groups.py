@@ -102,7 +102,7 @@ import warnings
 
 from numpy.lib.utils import deprecate
 
-from .. import _ANCHOR_UNIVERSES
+from .. import _ANCHOR_UNIVERSES, _CONVERTERS
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
@@ -113,7 +113,7 @@ from . import selection
 from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
-from ._get_readers import get_writer_for
+from ._get_readers import get_writer_for, get_converter_for
 
 
 def _unpickle(uhash, ix):
@@ -2950,15 +2950,15 @@ class AtomGroup(GroupBase):
         box = self.dimensions if self.dimensions.all() else None
         b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii, box=box)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
-        bondattr.add_bonds(b, guessed=True)
+        bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
-        angleattr.add_bonds(a, guessed=True)
+        angleattr._add_bonds(a, guessed=True)
 
         d = guess_dihedrals(self.angles)
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
-        diheattr.add_bonds(d)
+        diheattr._add_bonds(d)
 
     @property
     def bond(self):
@@ -3031,6 +3031,84 @@ class AtomGroup(GroupBase):
             raise ValueError(
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
+
+    @property
+    def ureybradley(self):
+        """This :class:`AtomGroup` represented as an
+        :class:`MDAnalysis.core.topologyobjects.UreyBradley` object
+
+        Raises
+        ------
+        ValueError
+            If the :class:`AtomGroup` is not length 2
+
+
+        .. versionadded:: 0.21.0
+        """
+        if len(self) != 2:
+            raise ValueError(
+                "urey bradley only makes sense for a group with exactly 2 atoms")
+        return topologyobjects.UreyBradley(self.ix, self.universe)
+
+    @property
+    def cmap(self):
+        """This :class:`AtomGroup` represented as an
+        :class:`MDAnalysis.core.topologyobjects.CMap` object
+
+        Raises
+        ------
+        ValueError
+            If the :class:`AtomGroup` is not length 5
+
+
+        .. versionadded:: 0.21.0
+        """
+        if len(self) != 5:
+            raise ValueError(
+                "cmap only makes sense for a group with exactly 5 atoms")
+        return topologyobjects.CMap(self.ix, self.universe)
+
+
+    def convert_to(self, package):
+        """
+        Convert :class:`AtomGroup` to a structure from another Python package.
+
+        Example
+        -------
+
+        The code below converts a Universe to a :class:`parmed.structure.Structure`.
+
+        .. code-block:: python
+
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysis.tests.datafiles import GRO
+            >>> u = mda.Universe(GRO)
+            >>> parmed_structure = u.atoms.convert_to('PARMED')
+            >>> parmed_structure
+            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
+
+        
+        Parameters
+        ----------
+        package: str
+            The name of the package to convert to, e.g. ``"PARMED"``
+
+
+        Returns
+        -------
+        output:
+            An instance of the structure type from another package.
+        
+        Raises
+        ------
+        TypeError:
+            No converter was found for the required package
+
+
+        .. versionadded:: 0.21.0
+        """
+        converter = get_converter_for(package)
+        return converter().convert(self.atoms)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):

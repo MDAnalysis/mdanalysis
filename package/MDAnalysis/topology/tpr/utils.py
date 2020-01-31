@@ -116,6 +116,9 @@ class TPXUnpacker(xdrlib.Unpacker):
     def unpack_int64(self):
         return self._unpack_value(8, '>q')
 
+    def unpack_uint64(self):
+        return self._unpack_value(8, '>Q')
+
     def unpack_ushort(self):
         return self.unpack_uint()
 
@@ -124,30 +127,32 @@ class TPXUnpacker(xdrlib.Unpacker):
         # (4 bytes) instead of unsigned chars.
         return self._unpack_value(4, '>I')
 
+    def do_string(self):
+        """
+        Emulate gmx_fio_do_string
 
-class TPXUnpacker2020:
+        gmx_fio_do_string reads a string from a XDR file. On the contrary to the
+        python unpack_string, gmx_fio_do_string reads the size as an unsigned
+        integer before reading the actual string.
+
+        See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
+        """
+        self.unpack_int()
+        return self.unpack_string()
+
+
+class TPXUnpacker2020(TPXUnpacker):
     """
-    Unpacker for TPX file later than gromacs 2020.
+    Unpacker for TPX files from and later than gromacs 2020.
 
-    The body of TPX files is encoded differently since TPX version 119 (gromacs 2020).
-    On the contrary to regular XDR files, these TPX files are little-endian, and each
-    byte to read in padded to be 4 bytes; so b'\x02\xAB\x03\x01' in a XDR file becomes
-    b'\x00\x00\x00\x01\x00\x00\x00\x03\x00\x00\x00\xAB\x00\x00\x00\x02' in a TPX body
-    since TPX version 119.
+    A new implementation of the serializer (InMemorySerializer), introduced in
+    gromacs 2020, changes le meaning of some types in the file body (the header
+    keep using the previous implementation of the serializer).
     """
-    base_size = 4
-
-    def __init__(self, data):
-        self.reset(data)
-
-    def reset(self, data):
-        self._pos = 0
-        self._buf = data
-
     @classmethod
     def from_unpacker(cls, unpacker):
         new_unpacker = cls(unpacker._buf)
-        new_unpacker._pos = unpacker._pos
+        new_unpacker._pos = new_unpacker._Unpacker__pos = unpacker._Unpacker__pos
         if hasattr(unpacker, 'unpack_real'):
             if unpacker.unpack_real == unpacker.unpack_float:
                 new_unpacker.unpack_real = new_unpacker.unpack_float
@@ -157,70 +162,32 @@ class TPXUnpacker2020:
                 raise ValueError("Unrecognized precision")
         return new_unpacker
 
-    def _unpack_value(self, item_size, struct_template):
-        padded_size = self.base_size * item_size
-        start_position = self._pos
-        end_position = self._pos = start_position + padded_size
-        full_content = self._buf[start_position:end_position]
-        if len(full_content) != padded_size:
-            raise EOFError
-        content = full_content[self.base_size - 1::self.base_size]
-        return struct.unpack(struct_template, content)[0]
-
-    def unpack_float(self):
-        return self._unpack_value(4, '<f')
-
-    def unpack_double(self):
-        return self._unpack_value(8, '<d')
-
-    def unpack_int(self):
-        return self._unpack_value(4, '<i')
-
-    def unpack_uint(self):
-        return self._unpack_value(4, '<I')
-
-    def unpack_ushort(self):
-        return self._unpack_value(2, '<H')
-
-    def unpack_char(self):
-        return self._unpack_value(1, '<c')
-
-    def unpack_uchar(self):
-        return self._unpack_value(1, '>B')
-
-    def unpack_string(self):
-        self._pos -= 4 * self.base_size
-        n = self.unpack_int()
-        self.unpack_uint()
-        value = self.unpack_fstring(n)
-        return value
-
     def unpack_fstring(self, n):
         if n < 0:
             raise ValueError('Size of fstring cannot be negative.')
-        start_position = self._pos
-        end_position = self._pos = start_position + n * self.base_size
+        start_position = self._Unpacker__pos # pylint: disable=access-member-before-definition
+        end_position = self._pos = self._Unpacker__pos = start_position + n
         if end_position > len(self._buf):
             raise EOFError
-        full_content = self._buf[start_position:end_position]
-        content = full_content[self.base_size - 1::self.base_size]
+        content = self._buf[start_position:end_position]
         return content
 
-    def unpack_farray(self, n, unpack_item):
-        return [unpack_item() for _ in range(n)]
+    def unpack_ushort(self):
+        # The InMemorySerializer implements ushort according to the XDR standard
+        # on the contrary to the IO serializer.
+        return self._unpack_value(2, '>H')
 
+    def unpack_uchar(self):
+        # The InMemorySerializer implements uchar according to the XDR standard
+        # on the contrary to the IO serializer.
+        return self._unpack_value(1, '>B')
 
-def do_string(data):
-    """Emulate gmx_fio_do_string
-
-    gmx_fio_do_string reads a string from a XDR file. On the contraty to the
-    python unpack_string, gmx_fio_do_string reads the size as an unsigned
-    interger before reading the actual string.
-
-    See <gromacs-2016-src>/src/gromacs/fileio/gmx_system_xdr.c:454
-    """
-    data.unpack_int()
-    return data.unpack_string()
+    def do_string(self):
+        """
+        Emulate gmx_fio_do_string
+        """
+        n = self.unpack_uint64()
+        return self.unpack_fstring(n)
 
 
 def ndo_int(data, n):
@@ -268,7 +235,7 @@ def read_tpxheader(data):
     """this function is now compatible with do_tpxheader in tpxio.cpp
     """
     # Last compatibility check with gromacs-2016
-    ver_str = do_string(data)  # version string e.g. VERSION 4.0.5
+    ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file
@@ -278,7 +245,7 @@ def read_tpxheader(data):
     # the tag was, mistakenly, placed before the generation.
     if 77 <= fileVersion <= 79:
         data.unpack_int()  # the value is 8, but haven't found the
-        file_tag = do_string(data)
+        file_tag = data.do_string()
 
     fileGeneration = data.unpack_int() if fileVersion >= 26 else 0  # generation of tpx file, e.g. 17
 
@@ -287,7 +254,7 @@ def read_tpxheader(data):
     # tpx_tag from a lower or the same version of gromacs code can be parsed by
     # the tpxio.c
 
-    file_tag = do_string(data) if fileVersion >= 81 else S.TPX_TAG_RELEASE
+    file_tag = data.do_string() if fileVersion >= 81 else S.TPX_TAG_RELEASE
 
     natoms = data.unpack_int()  # total number of atoms
     ngtc = data.unpack_int() if fileVersion >= 28 else 0  # number of groups for T-coupling
@@ -309,12 +276,13 @@ def read_tpxheader(data):
     bF = data.unpack_int()  # has force or not
     bBox = data.unpack_int()  # has box or not
 
+    sizeOfTprBody = None
     if fileVersion >= S.tpxv_AddSizeField and fileGeneration >= 27:
         sizeOfTprBody = data.unpack_int64()
 
     th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
                        file_tag, natoms, ngtc, fep_state, lamb,
-                       bIr, bTop, bX, bV, bF, bBox)
+                       bIr, bTop, bX, bV, bF, bBox, sizeOfTprBody)
     return th
 
 
@@ -461,7 +429,7 @@ def do_symtab(data):
     symtab_nr = data.unpack_int()  # number of symbols
     symtab = []
     for i in range(symtab_nr):
-        j = do_string(data)
+        j = data.do_string()
         symtab.append(j)
     return symtab
 

@@ -219,7 +219,6 @@ class TestContacts(object):
 
 
     def test_villin_unfolded(self):
-
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -260,6 +259,19 @@ class TestContacts(object):
                     0.45631068, 0.37864078, 0.42718447]
         assert len(ca.timeseries) == len(expected)
         assert_array_almost_equal(ca.timeseries[:, 1], expected)
+
+    def test_radius_cut_method(self, universe):
+        acidic = universe.select_atoms(self.sel_acidic)
+        basic = universe.select_atoms(self.sel_basic)
+        r = contacts.distance_array(acidic.positions, basic.positions)
+        initial_contacts = contacts.contact_matrix(r, 6.0)
+        expected = []
+        for ts in universe.trajectory:
+            r = contacts.distance_array(acidic.positions, basic.positions)
+            expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
+
+        ca = self._run_Contacts(universe, method='radius_cut')
+        assert_array_equal(ca.timeseries[:, 1], expected)
 
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):

@@ -148,6 +148,7 @@ if __name__ == '__main__':
                          'data/Amber/*.bz2',
                          'data/Amber/*.prmtop', 'data/Amber/*.top',
                          'data/Amber/*.parm7',
+                         'data/Amber/*.rst7',
                          'data/Amber/*.trj', 'data/Amber/*.mdcrd',
                          'data/Amber/*.ncdf', 'data/Amber/*.nc',
                          'data/Amber/*.inpcrd',

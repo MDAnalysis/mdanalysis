@@ -47,6 +47,7 @@ __all__ = [
     "PSF_NAMD_TRICLINIC", "DCD_NAMD_TRICLINIC", # NAMD, triclinic unitcell (Issue 187)
     "PSF_NAMD_GBIS", "DCD_NAMD_GBIS",  # NAMD, implicit solvent, 100 steps, #1819
     "PSF_nosegid",  # psf without a segid, Issue 121
+    "PSF_cmap",  # ala3 PSF from ParmEd test files with cmap
     "PDB_small",  # PDB
     "PDB_closed",
     "PDB_multiframe",
@@ -79,8 +80,9 @@ __all__ = [
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
-    "TPR2018", "TPR2019B3", "TPR2020B2",
-    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded", "TPR2020B2_bonded",
+    "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020",
+    "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
+    "TPR2020B2_bonded", "TPR2020_bonded",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -99,6 +101,8 @@ __all__ = [
     "PRM_NCBOX", "TRJ_NCBOX", # Amber parm7 + nc w/ pos/forces/vels/box
     "PRMNEGATIVE", # Amber negative ATOMIC_NUMBER (Issue 2306)
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
+    "PRM_UreyBradley", # prmtop from ParmEd test files with Urey-Bradley angles
+    "PRM7_ala2", "RST7_ala2",  # prmtop and rst files from ParmEd example files
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -175,6 +179,13 @@ __all__ = [
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
     "NAMDBIN", # for NAMD generated binary file
+    "ITP_edited", # to check different directives are read properly
+    "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
+    "ITP_spce", # spce water from gromos54a7, edited with additional keywords,
+    "GMX_TOP", # 2 ala10 chains + 3 spc water
+    "GMX_DIR", # GROMACS directory
+    "GMX_TOP_BAD", # file with an #include that doesn't exist
+    "ITP_no_endif", # file missing an #endif
 ]
 
 from pkg_resources import resource_filename
@@ -234,6 +245,8 @@ PSF_NAMD_GBIS = resource_filename(__name__, 'data/adk_closed_NAMD.psf')
 DCD_NAMD_GBIS = resource_filename(__name__, 'data/adk_gbis_tmd-fast1_NAMD.dcd')
 
 PSF_nosegid = resource_filename(__name__, 'data/nosegid.psf')
+
+PSF_cmap = resource_filename(__name__, 'data/parmed_ala3.psf')
 
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
@@ -312,6 +325,7 @@ TPR2016 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2016.tpr')
 TPR2018 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2018.tpr')
 TPR2019B3 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2019-beta3.tpr')
 TPR2020B2 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020-beta2.tpr')
+TPR2020 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020.tpr')
 # double precision
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
@@ -322,6 +336,7 @@ TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tp
 TPR2018_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2018.tpr')
 TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-beta3.tpr')
 TPR2020B2_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020-beta2.tpr')
+TPR2020_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')
@@ -364,6 +379,10 @@ PRMNEGATIVE = resource_filename(__name__, 'data/Amber/ace_mbondi3.negative.parm7
 PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
 PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
 PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
+
+PRM_UreyBradley = resource_filename(__name__, 'data/Amber/parmed_fad.prmtop')
+PRM7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.parm7')
+RST7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.rst7')
 
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')
@@ -481,6 +500,13 @@ PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
+ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
+ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
+ITP_spce = resource_filename(__name__, 'data/spce.itp')
+GMX_TOP = resource_filename(__name__, 'data/gromacs_ala10.top')
+GMX_DIR = resource_filename(__name__, 'data/gromacs/')
+GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')
+ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 # This should be the last line: clean up namespace

@@ -14,11 +14,19 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96
 
   * 0.21.0
 
 Fixes
+  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
+  * Adds a more detailed warning when attempting to read chamber-style parm7
+    files (Issue #2475)
+  * ClusterCollection.get_ids now returns correctly (Issue #2464)
+  * Removes files for stubs mainly introduced in 0.11.0 (Issue #2443)
+  * Removes support for reading AMBER NetCDF files with `cell_angle` units set
+    to `degrees` instead of the convention agreed `degree` (Issue #2327). 
+  * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
   * Chainreader and continuous option work correctly when readers work for more 
@@ -33,8 +41,16 @@ Fixes
   * The expected frames are made available when a trajectory slice is sliced itself
     with an incomplete slice and/or with a negative step (Issue #2413)
   * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
+  * ITPParser now parses ITP *and* TOP files from GROMACS, reads #include files, and 
+    substitutes #define variables both from the file and when passed in as a keyword 
+    argument. The directives parsed into bonds, angles, impropers, and dihedrals now 
+    match TPRParser. (PR #2408)
+  * Added parmed to setup.py
 
 Enhancements
+  * Improved ClusterCollection and Cluster string representations (Issue #2464)
+  * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
+    attribute, if present (#2421).
   * Enhanges exception message when trajectory output file has no extension assigned.
   * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
     do not contain previous exceptions traceback. Uses six package to handle
@@ -49,8 +65,19 @@ Enhancements
   * Added ITPParser to parse GROMACS itp topology files (PR #2381)
   * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
   * Added wrap/unwrap transformations (PR #2038)
-  * Read TPR files from Gromacs 2020 (Issue #2412)
+  * Read TPR files from Gromacs 2020 (Issue #2412 and #2428)
+  * Added analysis.align.AverageStructure to get the average structure of an 
+    out-of-memory trajectory (Issue #2039)
+  * Added _add_TopologyObjects, _delete_TopologyObjects, and public convenience 
+    methods to Universe. Added type and order checking to _Connection
+    topologyattrs. (PR #2382)
+  * Added radius_cut_q as a method to contacts.Contacts (PR #2458)
+  * Added ParmEdParser, ParmEdReader and ParmEdConverter to 
+    convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
+Changes
+  * The fasta2select now always assumes that the gap character in a sequence
+    is "-" (Issue #2448, PR #2457)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0

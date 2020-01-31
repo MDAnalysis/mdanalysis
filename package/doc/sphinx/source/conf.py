@@ -151,7 +151,7 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 5,
+    'navigation_depth': 4,
     'includehidden': True,
     'titles_only': False,
 }
@@ -333,4 +333,5 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://networkx.github.io/documentation/stable/': None,
                        'https://www.mdanalysis.org/GridDataFormats/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
+                       'https://parmed.github.io/ParmEd/html/': None,
                        }
