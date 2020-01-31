@@ -536,6 +536,10 @@ class AlignTraj(AnalysisBase):
     `filename`. One can also use the same universe if one wants to fit to the
     current frame.
 
+    .. versionchanged:: 1.0.0
+       `save()` has now been removed, as an alternative use `np.savetxt()` on
+       :class:AlignTraj.rmsd.
+
     """
 
     def __init__(self, mobile, reference, select='all', filename=None,
