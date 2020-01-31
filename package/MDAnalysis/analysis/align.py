@@ -204,7 +204,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
-from MDAnalysis.lib.util import get_weights, deprecate
+from MDAnalysis.lib.util import get_weights
 
 from .base import AnalysisBase
 
