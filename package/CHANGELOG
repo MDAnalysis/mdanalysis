@@ -19,6 +19,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * encore.hes() returns non-array details (Issue #2465)
   * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
     files (Issue #2475)
@@ -48,6 +49,7 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
+  * encore.hes() always returns details, consistently with ces and dres (Issue #2465)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
     attribute, if present (#2421).
