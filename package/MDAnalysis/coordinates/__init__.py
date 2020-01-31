@@ -251,6 +251,9 @@ also recognized when they are compressed with :program:`gzip` or
    | MMTF [#a]_    | mmtf      |  r    | Macromolecular Transmission Format                   |
    |               |           |       | :mod:`MDAnalysis.coordinates.MMTF`                   |
    +---------------+-----------+-------+------------------------------------------------------+
+   | NAMD          | coor,     |  r/w  | NAMD binary file format for coordinates              |
+   |               | namdbin   |       | :mod:`MDAnalysis.coordinates.NAMDBIN`                |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -750,3 +753,4 @@ from . import memory
 from . import MMTF
 from . import GSD
 from . import null
+from . import NAMDBIN

@@ -174,6 +174,7 @@ __all__ = [
     "GRO_huge_box", # for testing gro parser with hige box sizes
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
+    "NAMDBIN", # for NAMD generated binary file
 ]
 
 from pkg_resources import resource_filename
@@ -481,5 +482,6 @@ PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
 ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
 
+NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 # This should be the last line: clean up namespace
 del resource_filename

@@ -41,6 +41,7 @@ provide the format in the keyword argument *format* to
    coordinates/TRZ
    coordinates/memory
    coordinates/null
+   coordinates/NAMDBIN
 
 .. rubric:: Coordinate core modules
 
