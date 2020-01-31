@@ -14,11 +14,12 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96
 
   * 0.21.0
 
 Fixes
+  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
     files (Issue #2475)
   * ClusterCollection.get_ids now returns correctly (Issue #2464)
@@ -44,6 +45,7 @@ Fixes
     substitutes #define variables both from the file and when passed in as a keyword 
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now 
     match TPRParser. (PR #2408)
+  * Added parmed to setup.py
 
 Enhancements
   * Improved ClusterCollection and Cluster string representations (Issue #2464)

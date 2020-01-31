@@ -354,6 +354,13 @@ class TestPDBWriter(object):
             # test number (only last 4 digits)
             assert int(line[10:14]) == model % 10000
 
+    def test_segid_chainid(self, universe2, outfile):
+        """check whether chainID comes from last character of segid (issue #2224)"""
+        ref_id = 'E'
+        u = universe2
+        u.atoms.write(outfile)
+        u_pdb = mda.Universe(outfile)
+        assert u_pdb.segments.chainIDs[0][0] == ref_id
 
 class TestMultiPDBReader(object):
     @staticmethod
@@ -798,7 +805,7 @@ class TestWriterAlignments(object):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self, writtenstuff):
-        result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
+        result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA H\n")
         assert_equal(writtenstuff[3], result_line)
 
