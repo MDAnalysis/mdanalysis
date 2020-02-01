@@ -479,7 +479,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             return frame_index
         else:
             time_frame = time_frame_0 + frame_index*ts.dt
-            time_diff = abs(time_frame_0 - time_step)
+            time_diff = abs(time_frame - time_step)
             return frame_index, time_diff
 
     def move_to_ts(self, ts):
@@ -909,7 +909,7 @@ class AuxFileReader(AuxReader):
 
     def _reopen(self):
         """ Close and then reopen *auxfile*. """
-        if self.auxfile != None:
+        if self.auxfile is not None:
             self.auxfile.close()
         self.auxfile = open(self._auxdata)
         self.auxstep.step = -1

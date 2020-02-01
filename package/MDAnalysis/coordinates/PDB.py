@@ -479,6 +479,11 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
 
+    .. versionchanged:: 1.0.0
+       ChainID now comes from the last character of segid, as stated in the documentation. 
+       An indexing issue meant it previously used the first charater (Issue #2224)
+
+
     """
     fmt = {
         'ATOM': (
@@ -894,6 +899,10 @@ class PDBWriter(base.WriterBase):
            underlying trajectory and only if ``len(traj) > 1`` would MODEL records
            have been written.)
 
+        .. versionchanged:: 1.0.0
+           ChainID now comes from the last character of segid, as stated in the documentation. 
+           An indexing issue meant it previously used the first charater (Issue #2224)
+
         """
         atoms = self.obj.atoms
         pos = atoms.positions
@@ -934,7 +943,7 @@ class PDBWriter(base.WriterBase):
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][:1]
+            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works

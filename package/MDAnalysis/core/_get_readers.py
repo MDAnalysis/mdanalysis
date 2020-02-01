@@ -25,10 +25,11 @@ from six import raise_from
 import copy
 import inspect
 import mmtf
+import parmed as pmd
 import numpy as np
 from MDAnalysis.lib.util import isstream
 
-from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
+from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS
 from ..lib import util
 
 
@@ -66,6 +67,8 @@ def get_reader_for(filename, format=None):
       :class:`~MDAnalysis.coordinates.memory.MemoryReader` is returned.
     - If `filename` is an MMTF object,
       :class:`~MDAnalysis.coordinates.MMTF.MMTFReader` is returned.
+    - If `filename` is a ParmEd Structure, 
+      :class:`~MDAnalysis.coordinates.ParmEd.ParmEdReader` is returned.
     - If `filename` is an iterable of filenames,
       :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned.
 
@@ -91,6 +94,8 @@ def get_reader_for(filename, format=None):
         elif isinstance(filename, mmtf.MMTFDecoder):
             # mmtf slurps mmtf object
             format = 'MMTF'
+        elif isinstance(filename, pmd.Structure):
+            format = 'PARMED'
         else:
             # else let the guessing begin!
             format = util.guess_format(filename)
@@ -234,6 +239,8 @@ def get_parser_for(filename, format=None):
     if format is None:
         if isinstance(filename, mmtf.MMTFDecoder):
             format = 'mmtf'
+        elif isinstance(filename, pmd.Structure):
+            format = 'PARMED'
         else:
             format = util.guess_format(filename)
     format = format.upper()
@@ -257,3 +264,26 @@ def get_parser_for(filename, format=None):
                 None)
         else:
             return _PARSERS['MINIMAL']
+
+def get_converter_for(format):
+    """Return the appropriate topology converter for ``format``.
+
+    Parameters
+    ----------
+    format : str
+        description of the file format
+
+    Raises
+    ------
+    TypeError
+        If no appropriate parser could be found.
+
+    
+    .. versionadded:: 0.21.0
+    """
+    try:
+        writer = _CONVERTERS[format]
+    except KeyError:
+        errmsg = 'No converter found for {} format'
+        raise_from(TypeError(errmsg.format(format)), None)
+    return writer
