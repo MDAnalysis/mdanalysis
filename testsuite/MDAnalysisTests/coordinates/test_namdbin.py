@@ -56,7 +56,7 @@ class NAMDBINReference(BaseReference):
         self.topology = PDB_small
         self.reader = mda.coordinates.NAMDBIN.NAMDBINReader
         self.writer = mda.coordinates.NAMDBIN.NAMDBINWriter
-        self.ext = 'namdbin'
+        self.ext = 'coor'
         self.volume = 0
         self.dimensions = np.zeros(6)
         self.container_format = True
