@@ -32,11 +32,12 @@ from numpy.testing import (assert_allclose,
                             assert_almost_equal)
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (NAMDBIN, PDB_small)
+from MDAnalysis.coordinates.NAMDBIN import (NAMDBINReader,
+                                            NAMDBINWriter)
+from MDAnalysisTests.datafiles import NAMDBIN, PDB_small
 from MDAnalysisTests.coordinates.base import (_SingleFrameReader,
                                                 BaseReference,
                                                 BaseWriterTest)
-
 
 
 class TestNAMDBINReader(_SingleFrameReader):
@@ -47,7 +48,15 @@ class TestNAMDBINReader(_SingleFrameReader):
         self.universe = mda.Universe(PDB_small,NAMDBIN)
         # 6 decimals in NAMDBIN spec
         self.prec = 6
-
+        self.ref_n_atoms = 3341
+    def test_parse_n_atoms(self):
+        n_atoms = mda.coordinates.NAMDBIN.NAMDBINReader.parse_n_atoms(NAMDBIN)
+        assert_equal(n_atoms, self.ref_n_atoms)       
+    def test_get_writer_from_reader(self):
+        universe = mda.Universe(PDB_small,NAMDBIN)
+        writer = universe.trajectory.Writer('NAMDBIN-test')
+        assert isinstance(writer,
+                            mda.coordinates.NAMDBIN.NAMDBINWriter)
 
 class NAMDBINReference(BaseReference):
     def __init__(self):

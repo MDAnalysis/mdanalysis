@@ -104,8 +104,7 @@ class NAMDBINWriter(base.WriterBase):
         n_atoms  : int
             number of atoms for the output coordinate
         """
-        self.n_atoms = n_atoms
-        self.filename = util.filename(filename, ext='coor')
+        self.filename = util.filename(filename)
 
     def write(self, obj):
         """Write obj at current trajectory frame to file.
