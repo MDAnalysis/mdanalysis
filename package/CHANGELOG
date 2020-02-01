@@ -48,6 +48,7 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
+  * Added parser for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
     attribute, if present (#2421).
@@ -95,7 +96,7 @@ Fixes
 08/28/19 micaela-matta, xiki-tempula, zemanj, mattwthompson, orbeckst, aliehlen,
          dpadula85, jbarnoud, manuel.nuno.melo, richardjgowers, mattwthompson,
          ayushsuhane, picocentauri, NinadBhat, bieniekmateusz, p-j-smith, Lp0lp,
-         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium
+         IAlibay, tyler.je.reddy, aakognole, RMeli, lilyminium, Yuan-Yu
 
   * 0.20.0
 
