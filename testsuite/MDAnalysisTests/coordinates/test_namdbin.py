@@ -30,10 +30,8 @@ import pytest
 from numpy.testing import (assert_allclose,
                             assert_equal, 
                             assert_almost_equal)
-
+                            
 import MDAnalysis as mda
-from MDAnalysis.coordinates.NAMDBIN import (NAMDBINReader,
-                                            NAMDBINWriter)
 from MDAnalysisTests.datafiles import NAMDBIN, PDB_small
 from MDAnalysisTests.coordinates.base import (_SingleFrameReader,
                                                 BaseReference,

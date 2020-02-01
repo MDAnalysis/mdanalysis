@@ -40,7 +40,7 @@ Classes
    :members:
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import
 
 from struct import pack
 import numpy as np
@@ -52,14 +52,13 @@ from ..lib import util
 class NAMDBINReader(base.SingleFrameReaderBase):
     """Reader for NAMD binary files."""
 
-    format = ['NAMDBIN','COOR']
+    format = ['COOR', 'NAMDBIN']
     units = {'length': 'Angstrom'}
 
     def _read_first_frame(self):
         # Read header
         with open(self.filename, 'rb') as namdbin:
             self.n_atoms = np.fromfile(namdbin,dtype=np.int32,count=1)[0]
-
             self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
             self.ts.frame = 0
             coord_double = np.fromfile(namdbin,
@@ -92,7 +91,7 @@ class NAMDBINReader(base.SingleFrameReaderBase):
 
 class NAMDBINWriter(base.WriterBase):
     """Writer for NAMD binary files."""
-    format = ['NAMDBIN','COOR']
+    format = ['COOR', 'NAMDBIN']
     units = {'time': None, 'length': 'Angstrom'}
 
     def __init__(self, filename, n_atoms=None, **kwargs):
@@ -119,9 +118,8 @@ class NAMDBINWriter(base.WriterBase):
             n_atoms = obj.n_atoms
             coor = obj.positions.reshape(n_atoms*3)
         elif hasattr(obj, 'atoms'):  # AtomGroup or Universe
-            atoms = obj.atoms  # make sure to use atoms (Issue 46)
+            atoms = obj.atoms
             n_atoms = len(atoms)
-            # can write from obj == Universe (Issue 49)
             coor = atoms.positions.reshape(n_atoms*3)
         else:
             raise TypeError
