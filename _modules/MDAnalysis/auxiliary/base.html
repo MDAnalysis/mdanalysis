@@ -654,7 +654,7 @@
             <span class="k">return</span> <span class="n">frame_index</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">time_frame</span> <span class="o">=</span> <span class="n">time_frame_0</span> <span class="o">+</span> <span class="n">frame_index</span><span class="o">*</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
-            <span class="n">time_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">time_frame_0</span> <span class="o">-</span> <span class="n">time_step</span><span class="p">)</span>
+            <span class="n">time_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">time_frame</span> <span class="o">-</span> <span class="n">time_step</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">time_diff</span></div>
 
 <div class="viewcode-block" id="AuxReader.move_to_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.move_to_ts">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
@@ -1084,7 +1084,7 @@
 
     <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Close and then reopen *auxfile*. &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxdata</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
