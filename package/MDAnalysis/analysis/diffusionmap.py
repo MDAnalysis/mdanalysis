@@ -197,7 +197,7 @@ class DistanceMatrix(AnalysisBase):
         This matrix is symmetric with zeros on the diagonal.
 
     .. versionchanged:: 1.0.0
-       ``save()`` method has been removed. You can use np.save on
+       ``save()`` method has been removed. You can use ``np.save`` on
        :attr:`dist_matrix` instead.
 
     """
