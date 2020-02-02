@@ -215,7 +215,6 @@ import warnings
 
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
-from MDAnalysis.lib.util import deprecate
 from MDAnalysis.core.groups import requires
 
 from MDAnalysis.due import due, Doi
@@ -285,6 +284,10 @@ class HydrogenBondAutoCorrel(object):
         Within each run, the number of frames to analyse [50]
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
+
+    ..versionchanged: 1.0.0
+      ``save_results()`` method was removed. You can instead use ``np.savez()``
+      on :attr:`solution['time']` and :attr:`solution['results']` instead.
     """
 
     def __init__(self, universe,
@@ -426,7 +429,7 @@ class HydrogenBondAutoCorrel(object):
             # set to above dist crit to exclude
             exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
             pair = np.delete(pair, np.where(pair==exclude), 0)
-        
+
         hidx, aidx = np.transpose(pair)
 
 
@@ -480,28 +483,6 @@ class HydrogenBondAutoCorrel(object):
         results /= nbonds
 
         return results
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``np.savez(filename, time=HydrogenBondAutoCorrel.solution['time'], "
-               "results=HydrogenBondAutoCorrel.solution['results'])``.")
-    def save_results(self, filename='hbond_autocorrel'):
-        """Saves the results to a numpy zipped array (.npz, see np.savez)
-
-        This can be loaded using np.load(filename)
-
-        Parameters
-        ----------
-        filename : str, optional
-            The desired filename [hbond_autocorrel]
-
-        """
-        if self.solution['results'] is not None:
-            np.savez(filename, time=self.solution['time'],
-                        results=self.solution['results'])
-        else:
-            raise ValueError(
-                "Results have not been generated, use the run method first")
 
     def solve(self, p_guess=None):
         """Fit results to an multi exponential decay and integrate to find
