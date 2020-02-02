@@ -183,11 +183,6 @@ Classes, methods, and functions
 
       int, frame index to select frame from :attr:`Path.u_reference`
 
-   .. attribute:: filename
-
-      string, name of file to store calculated distance matrix
-      (:attr:`PSAnalysis.D`)
-
    .. attribute:: paths
 
       list of :class:`numpy.ndarray` objects representing the set/ensemble of
@@ -195,8 +190,7 @@ Classes, methods, and functions
 
    .. attribute:: D
 
-      string, name of file to store calculated distance matrix
-      (:attr:`PSAnalysis.D`)
+      :class:`numpy.ndarray` whichs store calculated distance matrix
 
 
 .. Markup definitions
@@ -1702,7 +1696,7 @@ class PSAnalysis(object):
 
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         npaths = len(self.D)
         dist_matrix = self.D
 
@@ -1841,7 +1835,7 @@ class PSAnalysis(object):
 
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         dist_matrix = self.D
 
         Z, dgram = self.cluster(method=linkage,                                 \
@@ -2143,8 +2137,7 @@ class PSAnalysis(object):
 
         Note
         ----
-        Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
-        calling this method.
+        Must run :meth:`PSAnalysis.run` prior to calling this method.
 
         Parameters
         ----------
@@ -2162,7 +2155,7 @@ class PSAnalysis(object):
         """
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         if vectorform:
             return spatial.distance.squareform(self.D, force='tovector',
                                                checks=checks)

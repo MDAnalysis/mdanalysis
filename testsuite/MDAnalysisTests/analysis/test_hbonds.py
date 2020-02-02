@@ -78,7 +78,7 @@ class TestHydrogenBondAnalysis(object):
         kw = self.kwargs.copy()
         # kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **kw)
-        # remove in 1.0
+        # remove in 2.0?
         if kw['detect_hydrogens'] == 'heuristic':
             with pytest.warns(DeprecationWarning):
                 h.run(verbose=False)
