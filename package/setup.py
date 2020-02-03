@@ -608,7 +608,7 @@ if __name__ == '__main__':
                   'netCDF4>=1.0',  # for fast AMBER writing, also needs HDF5
               ],
               'analysis': [
-                  'seaborn',  # for annotated heat map and nearest neighbor
+                  'seaborn<=0.9',  # for annotated heat map and nearest neighbor
                               # plotting in PSA
                   'sklearn',  # For clustering and dimensionality reduction
                               # functionality in encore
