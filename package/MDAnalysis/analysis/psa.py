@@ -1747,6 +1747,8 @@ class PSAnalysis(object):
         dist_matrix_clus
           clustered distance matrix (reordered)
 
+        .. versionchanged:: 0.21.0
+            Fix upstream deprecation of `matplotlib.axis.Tick` attributes
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
@@ -1870,6 +1872,9 @@ class PSAnalysis(object):
         with `pip install seaborn` or `conda install seaborn`.
 
         .. _seaborn: https://seaborn.pydata.org/
+
+        .. versionchanged:: 0.21.0
+            Fix upstream deprecation of `matplotlib.axis.Tick` attributes
 
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
