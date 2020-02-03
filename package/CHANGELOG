@@ -19,6 +19,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
+    `MDAnalysis.analysis.psa`
   * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
     files (Issue #2475)
