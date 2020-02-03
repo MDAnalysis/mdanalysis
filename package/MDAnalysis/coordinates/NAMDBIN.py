@@ -25,9 +25,9 @@
 """NAMDBIN files format --- :mod:`MDAnalysis.coordinates.NAMDBIN`
 ================================================================================
 
-Read/Write coordinates in NAMD_ double-precision binary file (suffix "coor" or "namdbin").
+Read/Write coordinates in `NAMD double-precision binary format`_ (suffix "coor" or "namdbin").
 
-.. _NAMD: https://www.ks.uiuc.edu/Research/namd/2.10/ug/node11.html
+.. _`NAMD double-precision binary format` : https://www.ks.uiuc.edu/Research/namd/2.10/ug/node11.html#SECTION00061500000000000000
 
 
 Classes
@@ -50,7 +50,11 @@ from ..lib import util
 
 
 class NAMDBINReader(base.SingleFrameReaderBase):
-    """Reader for NAMD binary files."""
+    """Reader for NAMD binary files.
+
+    .. versionchanged:: 1.0.0
+       
+    """
 
     format = ['COOR', 'NAMDBIN']
     units = {'length': 'Angstrom'}
@@ -58,19 +62,19 @@ class NAMDBINReader(base.SingleFrameReaderBase):
     def _read_first_frame(self):
         # Read header
         with open(self.filename, 'rb') as namdbin:
-            self.n_atoms = np.fromfile(namdbin,dtype=np.int32,count=1)[0]
+            self.n_atoms = np.fromfile(namdbin, dtype=np.int32, count=1)[0]
             self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
             self.ts.frame = 0
             coord_double = np.fromfile(namdbin,
-                                        dtype=np.float64,
-                                        count=self.n_atoms *3)
+                                       dtype=np.float64,
+                                       count=self.n_atoms * 3)
             self.ts._pos[:] = np.array(
                 coord_double, float).reshape(self.n_atoms, 3)
 
     @staticmethod
     def parse_n_atoms(filename, **kwargs):
         with open(filename, 'rb') as namdbin:
-            n_atoms = np.fromfile(namdbin,dtype=np.int32,count=1)[0]
+            n_atoms = np.fromfile(namdbin, dtype=np.int32, count=1)[0]
         return n_atoms
 
     def Writer(self, filename, **kwargs):
@@ -90,7 +94,11 @@ class NAMDBINReader(base.SingleFrameReaderBase):
 
 
 class NAMDBINWriter(base.WriterBase):
-    """Writer for NAMD binary files."""
+    """Writer for NAMD binary files.
+    
+    .. versionchanged:: 1.0.0
+
+    """
     format = ['COOR', 'NAMDBIN']
     units = {'time': None, 'length': 'Angstrom'}
 
