@@ -745,9 +745,6 @@ def hes(ensembles,
         Note: this changes the ensembles in-place, and will thus leave your
         ensembles in an altered state.
         (default is False)
-    details : bool, optional
-        Save the mean and covariance matrix for each
-        ensemble in a numpy array (default is False).
     estimate_error : bool, optional
         Whether to perform error estimation (default is False).
     bootstrapping_samples : int, optional
@@ -824,6 +821,11 @@ def hes(ensembles,
         >>> print encore.hes([ens1, ens2])[0]
         [[    0.          7032.19607004]
          [ 7032.19607004     0.        ]]
+
+    .. versionchanged:: 1.0.0
+    hes doesn't accept the details argument anymore, it always returns the
+    details of the calculation instead, in the form of a dictionary
+
     """
 
     if not isinstance(weights, (list, tuple, np.ndarray)) and weights == 'mass':
