@@ -2847,6 +2847,8 @@ class AtomGroup(GroupBase):
            Added periodic kwarg (default True)
         .. versionchanged:: 0.19.2
            Empty sel string now returns an empty Atom group.
+        .. versionchanged:: 1.0.0
+           The ``fullgroup`` selection has now been removed.
         """
 
         if not sel:

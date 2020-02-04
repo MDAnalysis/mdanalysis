@@ -255,6 +255,9 @@ global *selection*
    The use of ``fullgroup`` has been deprecated in favor of the equivalent
    ``global group``.
 
+.. versionchanged:: 1.0.0
+   The ``fullgroup`` selection has now been removed.
+
 Dynamic selections
 ==================
 
