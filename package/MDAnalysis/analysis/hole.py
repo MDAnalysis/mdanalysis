@@ -391,7 +391,7 @@ class BaseHOLE(object):
 
     .. versionchanged:: 1.0.0
        ``save()`` method was removed. You can use ``cPickle.dump()`` on
-       :attr:`profiles` instead.
+       :attr:`BaseHOLE.profiles` instead.
 
     """
 

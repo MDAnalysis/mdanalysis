@@ -80,8 +80,9 @@ class LinearDensity(AnalysisBase):
     .. versionadded:: 0.14.0
 
     .. versionchanged:: 1.0.0
-       ``save()`` method was removed, you can use ``np.savetxt`` or ``np.save``
-       on the :attr:`results` dictionary contents instead.
+       ``save()`` method was removed, you can use ``np.savetxt()`` or
+       ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
+       instead.
 
     """
 

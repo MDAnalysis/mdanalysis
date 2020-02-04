@@ -197,8 +197,8 @@ class DistanceMatrix(AnalysisBase):
         This matrix is symmetric with zeros on the diagonal.
 
     .. versionchanged:: 1.0.0
-       ``save()`` method has been removed. You can use ``np.save`` on
-       :attr:`dist_matrix` instead.
+       ``save()`` method has been removed. You can use ``np.save()`` on
+       :attr:`DistanceMatrix.dist_matrix` instead.
 
     """
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,

@@ -331,8 +331,8 @@ class RMSD(AnalysisBase):
     in the array :attr:`RMSD.rmsd`.
 
     .. versionchanged:: 1.0.0
-       ``save()`` method was removed, use ``np.savetxt()`` on :attr:`rmsd`
-       instead.
+       ``save()`` method was removed, use ``np.savetxt()`` on
+       :attr:`RMSD.rmsd` instead.
 
     """
     def __init__(self, atomgroup, reference=None, select='all',
@@ -464,7 +464,6 @@ class RMSD(AnalysisBase):
            are *not* rotationally superimposed any more.
         .. deprecated:: 0.19.0
            `filename` will be removed in 1.0
-
         .. versionchanged:: 1.0.0
            `filename` keyword was removed.
 
