@@ -30,7 +30,7 @@ r"""Hydrogen Bond analysis (Deprecated) --- :mod:`MDAnalysis.analysis.hbonds.hbo
 :Copyright: GNU Public License v3
 
 ..Warning:
-    This module will be deprecated in version 2.0.
+    This module is deprecated and will be removed in version 2.0.
     Please use :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` instead.
 
 Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
@@ -572,7 +572,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         super(HydrogenBondAnalysis, self).__init__(universe.trajectory, **kwargs)
 
         warnings.warn(
-            "This class is deprecated as of MDANalysis version 1.0 and will "
+            "This class is deprecated as of MDAnalysis version 1.0 and will "
             "be removed in version 2.0."
             "Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis instead.",
             category=DeprecationWarning

@@ -1508,10 +1508,6 @@ class PSAnalysis(object):
         stop : int
         step : int
 
-        .. deprecated:: 0.19.0
-           `store` and `filename` will be removed together with
-           :meth:`save_result` in 1.0.0.
-
         .. versionchanged:: 1.0.0
            `store` and `filename` have been removed.
 
