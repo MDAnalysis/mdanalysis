@@ -78,6 +78,8 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * AlignTraj `save()` method has been removed and the `filename` variable now
+    defaults to the current working directory (Issues #2099, #1745, #2443)
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
