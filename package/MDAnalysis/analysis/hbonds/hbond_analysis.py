@@ -30,7 +30,7 @@ r"""Hydrogen Bond analysis (Deprecated) --- :mod:`MDAnalysis.analysis.hbonds.hbo
 :Copyright: GNU Public License v3
 
 ..Warning:
-    This module will be deprecated in version 1.0.
+    This module will be deprecated in version 2.0.
     Please use :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` instead.
 
 Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
@@ -1125,12 +1125,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         In 0.16.1, donor and acceptor are stored as a tuple(resname,
         resid, atomid). In 0.16.0 and earlier they were stored as a string.
-
-        .. deprecated:: 1.0
-           This is a compatibility layer so that we can provide the same output
-           in timeseries as before. However, for 1.0 we should make timeseries
-           just return _timeseries, i.e., change the format of timeseries to
-           the un-ambiguous representation provided in _timeseries.
 
         """
         return (hb[:2]

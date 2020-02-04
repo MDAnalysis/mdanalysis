@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+# Note: to be removed with MDAnalysis.analysis.hbonds.hbond_analysis in 2.0
+
 from __future__ import print_function, absolute_import
 
 
@@ -78,7 +80,6 @@ class TestHydrogenBondAnalysis(object):
         kw = self.kwargs.copy()
         # kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **kw)
-        # remove in 2.0?
         if kw['detect_hydrogens'] == 'heuristic':
             with pytest.warns(DeprecationWarning):
                 h.run(verbose=False)
