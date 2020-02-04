@@ -210,8 +210,6 @@ from .coordinates.core import writer as Writer
 # After Universe import
 from .coordinates.MMTF import fetch_mmtf
 
-from .migration.ten2eleven import ten2eleven
-
 from .due import due, Doi, BibTeX
 
 due.cite(Doi("10.25080/majora-629e541a-00e"),
