@@ -1747,6 +1747,10 @@ class PSAnalysis(object):
         dist_matrix_clus
           clustered distance matrix (reordered)
 
+        .. versionchanged:: 0.21.0
+            :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
+            changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
+            :attr:`label2` due to upstream deprecation (see #2493)
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
@@ -1795,21 +1799,28 @@ class PSAnalysis(object):
                 format="%0.1f")
         ax_color.tick_params(labelsize=labelsize)
 
-        # Remove major ticks from both heat map axes
+        # Remove major ticks and labels from both heat map axes
         for tic in ax_hmap.xaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         for tic in ax_hmap.yaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         # Remove minor ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
         for tic in ax_hmap.yaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
         # Remove tickmarks from colorbar
         for tic in ax_color.yaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
 
         if filename is not None:
             head = os.path.join(self.targetdir, self.datadirs['plots'])
@@ -1864,6 +1875,11 @@ class PSAnalysis(object):
 
         .. _seaborn: https://seaborn.pydata.org/
 
+        .. versionchanged:: 0.21.0
+            :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
+            changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
+            :attr:`label2` due to upstream deprecation (see #2493)
+
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
@@ -1913,16 +1929,22 @@ class PSAnalysis(object):
 
         # Remove major ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         for tic in ax_hmap.yaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         # Remove minor ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
         for tic in ax_hmap.yaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
 
         if filename is not None:
             head = os.path.join(self.targetdir, self.datadirs['plots'])
