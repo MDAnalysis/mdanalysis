@@ -1284,7 +1284,7 @@ class PSAnalysis(object):
 
     .. versionchanged:: 1.0.0
        ``save_result()`` method has been removed. You can use ``np.save()`` on
-       :attr:`D` instead.
+       :attr:`PSAnalysis.D` instead.
     """
     def __init__(self, universes, reference=None, ref_select='name CA',
                  ref_frame=0, path_select=None, labels=None,

@@ -287,7 +287,8 @@ class HydrogenBondAutoCorrel(object):
 
     ..versionchanged: 1.0.0
       ``save_results()`` method was removed. You can instead use ``np.savez()``
-      on :attr:`solution['time']` and :attr:`solution['results']` instead.
+      on :attr:`HydrogenBondAutoCorrel.solution['time']` and
+      :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
     """
 
     def __init__(self, universe,

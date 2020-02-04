@@ -384,7 +384,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
     .. versionchanged:: 1.0.0
        ``save_table()`` method has been removed. You can use ``np.save()`` or
-       ``cPickle.dump()`` on :attr:`table` instead.
+       ``cPickle.dump()`` on :attr:`HydrogenBondAnalysis.table` instead.
     """
 
     # use tuple(set()) here so that one can just copy&paste names from the
