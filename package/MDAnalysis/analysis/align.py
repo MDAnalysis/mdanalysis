@@ -204,7 +204,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.exceptions import SelectionError, SelectionWarning
 import MDAnalysis.analysis.rms as rms
 from MDAnalysis.coordinates.memory import MemoryReader
-from MDAnalysis.lib.util import get_weights, deprecate
+from MDAnalysis.lib.util import get_weights
 
 from .base import AnalysisBase
 
@@ -536,6 +536,10 @@ class AlignTraj(AnalysisBase):
     `filename`. One can also use the same universe if one wants to fit to the
     current frame.
 
+    .. versionchanged:: 1.0.0
+       ``save()`` has now been removed, as an alternative use ``np.savetxt()``
+       on :attr:`rmsd`.
+
     """
 
     def __init__(self, mobile, reference, select='all', filename=None,
@@ -613,6 +617,9 @@ class AlignTraj(AnalysisBase):
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
 
+        .. versionchanged:: 1.0.0
+           Default ``filename`` has now been changed to the current directory.
+
         .. deprecated:: 0.19.1
            Default ``filename`` directory will change in 1.0 to the current directory.
 
@@ -635,13 +642,8 @@ class AlignTraj(AnalysisBase):
             logger.info("Moved mobile trajectory to in-memory representation")
         else:
             if filename is None:
-                # DEPRECATED in 0.19.1
-                # Change in 1.0
-                #
-                # fn = os.path.split(mobile.trajectory.filename)[1]
-                # filename = prefix + fn
-                path, fn = os.path.split(mobile.trajectory.filename)
-                filename = os.path.join(path, prefix + fn)
+                fn = os.path.split(mobile.trajectory.filename)[1]
+                filename = prefix + fn
                 logger.info('filename of rms_align with no filename given'
                             ': {0}'.format(filename))
 
@@ -699,14 +701,6 @@ class AlignTraj(AnalysisBase):
         if not self._verbose:
             logging.disable(logging.NOTSET)
 
-    @deprecate(release="0.19.0", remove="1.0")
-    def save(self, rmsdfile):
-        """save rmsd as a numpy array
-        """
-        # these are the values of the new rmsd between the aligned trajectory
-        # and reference structure
-        np.savetxt(rmsdfile, self.rmsd)
-        logger.info("Wrote RMSD timeseries  to file %r", rmsdfile)
 
 class AverageStructure(AnalysisBase):
     """RMS-align trajectory to a reference structure using a selection, 
