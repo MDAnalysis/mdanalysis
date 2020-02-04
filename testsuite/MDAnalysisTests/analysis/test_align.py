@@ -211,8 +211,6 @@ class TestAlign(object):
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
     def test_AlignTraj_outfile_default(self, universe, reference):
-        # NOTE: Remove the line os.remove() with release 1.0,
-        #       when the default behavior of AlignTraj changes.
         with tempdir.in_tempdir():
             reference.trajectory[-1]
             x = align.AlignTraj(universe, reference)
@@ -220,7 +218,6 @@ class TestAlign(object):
                 assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
             finally:
                 x._writer.close()
-                os.remove(x.filename)
 
     def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
         reference.trajectory[-1]
@@ -250,9 +247,6 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference, filename=outfile).run()
         fitted = mda.Universe(PSF, outfile)
 
-        rmsd_outfile = str(tmpdir.join('rmsd'))
-        x.save(rmsd_outfile)
-
         assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
         assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
@@ -261,11 +255,6 @@ class TestAlign(object):
         # VMD: 6.9378711
         self._assert_rmsd(reference, fitted, 0, 6.929083044751061)
         self._assert_rmsd(reference, fitted, -1, 0.0)
-
-        # superficially check saved file rmsd_outfile
-        rmsd = np.loadtxt(rmsd_outfile)
-        assert_array_almost_equal(rmsd, x.rmsd,
-                                  err_msg="saved RMSD not correct")
 
     def test_AlignTraj_weighted(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
