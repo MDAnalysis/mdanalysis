@@ -462,8 +462,6 @@ class RMSD(AnalysisBase):
         .. versionchanged:: 0.17.0
            removed deprecated `mass_weighted` keyword; `groupselections`
            are *not* rotationally superimposed any more.
-        .. deprecated:: 0.19.0
-           `filename` will be removed in 1.0
         .. versionchanged:: 1.0.0
            `filename` keyword was removed.
 
