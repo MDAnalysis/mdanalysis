@@ -1422,6 +1422,9 @@ dendrogram default to 3 points smaller [<code class="docutils literal notranslat
 <li><em>Z</em> – <cite>Z</cite> from <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.cluster" title="MDAnalysis.analysis.psa.PSAnalysis.cluster"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster()</span></code></a></li>
 <li><em>dgram</em> – <cite>dgram</cite> from <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.cluster" title="MDAnalysis.analysis.psa.PSAnalysis.cluster"><code class="xref py py-meth docutils literal notranslate"><span class="pre">cluster()</span></code></a></li>
 <li><em>dist_matrix_clus</em> – clustered distance matrix (reordered)</li>
+<li><em>.. versionchanged:: 0.21.0</em> – <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick1On</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick2On</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">label1On</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">label2On</span></code>
+changed to <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick1line</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick2line</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">label1</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">label2</span></code> due to upstream deprecation (see #2493)</li>
 </ul>
 </p>
 </td>
@@ -1466,8 +1469,13 @@ keyword arguments are passed on to <a class="reference external" href="https://m
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This function requires the <a class="reference external" href="https://seaborn.pydata.org/">seaborn</a> package, which can be installed
+<p>This function requires the <a class="reference external" href="https://seaborn.pydata.org/">seaborn</a> package, which can be installed
 with <cite>pip install seaborn</cite> or <cite>conda install seaborn</cite>.</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span><code class="xref py py-attr docutils literal notranslate"><span class="pre">tick1On</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick2On</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">label1On</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">label2On</span></code>
+changed to <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick1line</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">tick2line</span></code>, <code class="xref py py-attr docutils literal notranslate"><span class="pre">label1</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">label2</span></code> due to upstream deprecation (see #2493)</p>
+</div>
 </div>
 </dd></dl>
 

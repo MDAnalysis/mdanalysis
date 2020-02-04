@@ -484,6 +484,10 @@ the old behavior was the equivalent of <code class="docutils literal notranslate
 it is used. The output file format is determined by the file extension of
 <cite>filename</cite>. One can also use the same universe if one wants to fit to the
 current frame.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> has now been removed, as an alternative use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code>
+on <a class="reference internal" href="#MDAnalysis.analysis.align.AlignTraj.rmsd" title="MDAnalysis.analysis.align.AlignTraj.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rmsd</span></code></a>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -590,6 +594,9 @@ for the remainder of the Python session. If <code class="docutils literal notran
 already a <code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code> then it is <em>always</em> treated as if
 <code class="docutils literal notranslate"><span class="pre">in_memory</span></code> had been set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 </ul>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Default <code class="docutils literal notranslate"><span class="pre">filename</span></code> has now been changed to the current directory.</p>
+</div>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.19.1: </span>Default <code class="docutils literal notranslate"><span class="pre">filename</span></code> directory will change in 1.0 to the current directory.</p>
 </div>

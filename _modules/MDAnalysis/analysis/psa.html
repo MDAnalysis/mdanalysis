@@ -1922,6 +1922,10 @@
 <span class="sd">        dist_matrix_clus</span>
 <span class="sd">          clustered distance matrix (reordered)</span>
 
+<span class="sd">        .. versionchanged:: 0.21.0</span>
+<span class="sd">            :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`</span>
+<span class="sd">            changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and</span>
+<span class="sd">            :attr:`label2` due to upstream deprecation (see #2493)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">colorbar</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">savefig</span><span class="p">,</span> <span class="n">clf</span>
 
@@ -1970,21 +1974,28 @@
                 <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%0.1f</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">ax_color</span><span class="o">.</span><span class="n">tick_params</span><span class="p">(</span><span class="n">labelsize</span><span class="o">=</span><span class="n">labelsize</span><span class="p">)</span>
 
-        <span class="c1"># Remove major ticks from both heat map axes</span>
+        <span class="c1"># Remove major ticks and labels from both heat map axes</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">label1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">label2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label1</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label2</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">label1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">label2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label1</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label2</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Remove minor ticks from both heat map axes</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_minor_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_minor_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Remove tickmarks from colorbar</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_color</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
@@ -2039,6 +2050,11 @@
 
 <span class="sd">        .. _seaborn: https://seaborn.pydata.org/</span>
 
+<span class="sd">        .. versionchanged:: 0.21.0</span>
+<span class="sd">            :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`</span>
+<span class="sd">            changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and</span>
+<span class="sd">            :attr:`label2` due to upstream deprecation (see #2493)</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">import</span> <span class="n">figure</span><span class="p">,</span> <span class="n">colorbar</span><span class="p">,</span> <span class="n">cm</span><span class="p">,</span> <span class="n">savefig</span><span class="p">,</span> <span class="n">clf</span>
 
@@ -2088,16 +2104,22 @@
 
         <span class="c1"># Remove major ticks from both heat map axes</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">label1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">label2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label1</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label2</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_major_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">label1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">label2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label1</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">label2</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="c1"># Remove minor ticks from both heat map axes</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">get_minor_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">tic</span> <span class="ow">in</span> <span class="n">ax_hmap</span><span class="o">.</span><span class="n">yaxis</span><span class="o">.</span><span class="n">get_minor_ticks</span><span class="p">():</span>
-            <span class="n">tic</span><span class="o">.</span><span class="n">tick1On</span> <span class="o">=</span> <span class="n">tic</span><span class="o">.</span><span class="n">tick2On</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick1line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">tic</span><span class="o">.</span><span class="n">tick2line</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">head</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">targetdir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">datadirs</span><span class="p">[</span><span class="s1">&#39;plots&#39;</span><span class="p">])</span>
