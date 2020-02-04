@@ -62,7 +62,6 @@ from six.moves import range
 import os
 import errno
 import numpy as np
-from numpy.lib.utils import deprecate
 import struct
 import types
 import warnings
@@ -299,12 +298,6 @@ class DCDReader(base.ReaderBase):
             where the shape is (frame, number of atoms,
             coordinates)
 
-
-        .. deprecated:: 0.16.0
-           `skip` has been deprecated in favor of the standard keyword `step`.
-
-        .. deprecated:: 0.17.0
-           `format` has been deprecated in favor of the standard keyword `order`.
 
         .. versionchanged:: 1.0.0
            `skip` and `format` keywords have been removed.
