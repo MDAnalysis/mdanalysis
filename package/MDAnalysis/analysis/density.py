@@ -566,7 +566,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
 
     The trajectory is read, frame by frame, and the atoms selected with
     `atomselection` are histogrammed on a grid with spacing `delta`.
-    A physical density of units [Angstroem^{-3}] is returned (see
+    A physical density of units [Angstrom^{-3}] is returned (see
     :class:`Density` for more details).
 
     Parameters
@@ -577,7 +577,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             selection string (MDAnalysis syntax) for the species to be analyzed
             ["name OH2"]
     delta : float (optional)
-            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+            bin size for the density grid in Angstrom (same in x,y,z) [1.0]
     start : int (optional)
     stop : int (optional)
     step : int (optional)
@@ -588,7 +588,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             are passed through as they are.
     padding : float (optional)
             increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem. Padding is ignored when setting a user defined grid. [2.0]
+            in Angstrom. Padding is ignored when setting a user defined grid. [2.0]
     soluteselection : str (optional)
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
     cutoff : float (optional)
@@ -613,15 +613,15 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             `dict` with some special parameters for :class:`Density` (see docs)
     gridcenter : numpy ndarray, float32 (optional)
             3 element numpy array detailing the x, y and z coordinates of the
-            center of a user defined grid box in Angstroem [``None``]
+            center of a user defined grid box in Angstrom [``None``]
     xdim : float (optional)
-            User defined x dimension box edge in ångström; ignored if
+            User defined x dimension box edge in Angstrom; ignored if
             gridcenter is ``None``
     ydim : float (optional)
-            User defined y dimension box edge in ångström; ignored if
+            User defined y dimension box edge in Angstrom; ignored if
             gridcenter is ``None``
     zdim : float (optional)
-            User defined z dimension box edge in ångström; ignored if
+            User defined z dimension box edge in Angstrom; ignored if
             gridcenter is ``None``
 
     Returns
@@ -692,7 +692,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       defined grid is assigned).
 
     As detailed above, the :class:`Density` object returned contains a
-    physical density in units of Angstroem^{-3}. If you are interested in
+    physical density in units of Angstrom^{-3}. If you are interested in
     recovering the underlying probability density, simply divide by the sum::
 
       physical_density = density_from_Universe(universe, delta=1.0,
@@ -993,7 +993,7 @@ def density_from_PDB(pdb, **kwargs):
           selection string (MDAnalysis syntax) for the species to be analyzed
           ['resname HOH and name O']
     delta : float
-          bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+          bin size for the density grid in Angstrom (same in x,y,z) [1.0]
     metadata : dict
           dictionary of additional data to be saved with the object [``None``]
     padding : float
@@ -1053,7 +1053,7 @@ class BfactorDensityCreator(object):
         atomselection : str
             selection string (MDAnalysis syntax) for the species to be analyzed
         delta : float
-            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+            bin size for the density grid in Angstrom (same in x,y,z) [1.0]
         metadata : dict
             dictionary of additional data to be saved with the object
         padding : float
