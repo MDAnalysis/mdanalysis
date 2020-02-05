@@ -51,12 +51,6 @@ class LinearDensity(AnalysisBase):
           Bin width in Angstrom used to build linear density
           histograms. Defines the resolution of the resulting density
           profile (smaller --> higher resolution) [0.25]
-    start : int
-          The frame to start at [0]
-    stop : int
-          The frame to end at [-1]
-    step : int
-          The step size through the trajectory in frames [0]
     verbose : bool (optional)
           Show detailed progress of the calculation if set to ``True``; the
           default is ``False``.
@@ -79,6 +73,10 @@ class LinearDensity(AnalysisBase):
 
 
     .. versionadded:: 0.14.0
+
+    .. versionchanged:: 1.0.0
+       Support for the ``start``, ``stop``, and ``step`` keywords has been
+       removed. These should instead be passed to :meth:`LinearDensity.run`.
 
     """
 
