@@ -223,7 +223,6 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
@@ -671,24 +670,6 @@
     <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
-
-<span class="c1"># TODO: remove in 1.0 (should have been removed in 0.15.0)</span>
-<span class="k">class</span> <span class="nc">FullSelgroupSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
-    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;fullgroup&#39;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
-        <span class="n">grpname</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">grp</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">selgroups</span><span class="p">[</span><span class="n">grpname</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to find group: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grpname</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
-
-    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">old_name</span><span class="o">=</span><span class="s1">&#39;fullgroup&#39;</span><span class="p">,</span> <span class="n">new_name</span><span class="o">=</span><span class="s1">&#39;global group&#39;</span><span class="p">,</span>
-               <span class="n">message</span><span class="o">=</span><span class="s1">&#39; This will be removed in v0.15.0&#39;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="o">.</span><span class="n">unique</span>
 
 
 <div class="viewcode-block" id="StringSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.StringSelection">[docs]</a><span class="k">class</span> <span class="nc">StringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>

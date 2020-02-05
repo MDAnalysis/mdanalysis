@@ -3009,8 +3009,6 @@
 
 <span class="sd">        .. versionchanged:: 0.7.4 Added *resnum* selection.</span>
 <span class="sd">        .. versionchanged:: 0.8.1 Added *group* and *fullgroup* selections.</span>
-<span class="sd">        .. deprecated:: 0.11 The use of *fullgroup* has been deprecated in favor</span>
-<span class="sd">            of the equivalent *global group* selections.</span>
 <span class="sd">        .. versionchanged:: 0.13.0 Added *bonded* selection.</span>
 <span class="sd">        .. versionchanged:: 0.16.0 Resid selection now takes icodes into account</span>
 <span class="sd">            where present.</span>
@@ -3022,6 +3020,9 @@
 <span class="sd">           Added periodic kwarg (default True)</span>
 <span class="sd">        .. versionchanged:: 0.19.2</span>
 <span class="sd">           Empty sel string now returns an empty Atom group.</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           The ``fullgroup`` selection has now been removed in favor of the</span>
+<span class="sd">           equivalent ``global group`` selection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>
