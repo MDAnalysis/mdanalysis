@@ -79,6 +79,8 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
+    (Issue #2443)
   * `fullgroup` selection has now been removed (#268)
   * AlignTraj `save()` method has been removed and the `filename` variable now
     defaults to the current working directory (Issues #2099, #1745, #2443)
