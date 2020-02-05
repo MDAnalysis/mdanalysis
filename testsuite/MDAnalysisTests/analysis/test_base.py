@@ -183,16 +183,3 @@ def test_analysis_class_decorator():
 
     with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
-
-@pytest.mark.parametrize('param', ['start', 'stop', 'step'])
-def test_runargs_deprecation(param):
-    u = mda.Universe(PSF, DCD)
-
-    class NothingAnalysis(base.AnalysisBase):
-        def _single_frame(self):
-            self.results = []
-
-    with pytest.warns(DeprecationWarning):
-        ana = NothingAnalysis(u.trajectory, **{param: 10})
-
-    ana.run()
