@@ -468,8 +468,7 @@ def _new_selections(u_orig, selections, frame):
     return [u.select_atoms(s) for s in selections]
 
 
-def q1q2(u, selection='all', radius=4.5,
-         start=None, stop=None, step=None):
+def q1q2(u, selection='all', radius=4.5):
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
@@ -483,17 +482,15 @@ def q1q2(u, selection='all', radius=4.5,
         atoms to do analysis on
     radius : float, optional
         distance at which contact is formed
-    start : int, optional
-        First frame of trajectory to analyse, Default: 0
-    stop : int, optional
-        Last frame of trajectory to analyse, Default: -1
-    step : int, optional
-        Step between frames to analyse, Default: 1
 
     Returns
     -------
     contacts : :class:`Contacts`
         Contact Analysis that is set up for a q1-q2 analysis
+
+    .. versionchanged:: 1.0.0
+       Support for setting ``start``, ``stop``, and ``step`` has been removed.
+       These should now be directly passed to :meth:`Contacts.run`.
 
     """
     selection = (selection, selection)
@@ -501,5 +498,4 @@ def q1q2(u, selection='all', radius=4.5,
     last_frame_refs = _new_selections(u, selection, -1)
     return Contacts(u, selection,
                     (first_frame_refs, last_frame_refs),
-                    radius=radius, method='radius_cut',
-                    start=start, stop=stop, step=step)
+                    radius=radius, method='radius_cut')
