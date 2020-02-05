@@ -19,6 +19,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
   * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
     `MDAnalysis.analysis.psa`
   * PDBWriter now uses first character of segid as ChainID (Issue #2224)
@@ -80,6 +81,7 @@ Enhancements
 Changes
   * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
     (Issue #2443)
+  * `fullgroup` selection has now been removed (#268)
   * AlignTraj `save()` method has been removed and the `filename` variable now
     defaults to the current working directory (Issues #2099, #1745, #2443)
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
