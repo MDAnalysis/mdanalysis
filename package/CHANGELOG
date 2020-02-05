@@ -79,9 +79,9 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
-  * `start`, `stop`, and `step` keywords have been removed from `__init__` in
-    :class:`AnalysisBase`. These should now be called in
-    :meth:`AnalysisBase.run` (Issue #1463)
+  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
+    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
+    (Issue #1463)
   * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
     (Issue #2443)
   * `fullgroup` selection has now been removed (#268)
