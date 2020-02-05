@@ -237,7 +237,6 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
@@ -447,9 +446,7 @@
                    <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                    <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">skip</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                   <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">,</span>
-                   <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                   <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup</span>
 
 <span class="sd">        Parameters</span>
@@ -475,22 +472,11 @@
 <span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
 <span class="sd">            where the shape is (frame, number of atoms,</span>
 <span class="sd">            coordinates)</span>
-<span class="sd">        format : str (optional)</span>
-<span class="sd">            deprecated, equivalent to `order`</span>
 
 
-<span class="sd">        .. deprecated:: 0.16.0</span>
-<span class="sd">           `skip` has been deprecated in favor of the standard keyword `step`.</span>
-
-<span class="sd">        .. deprecated:: 0.17.0</span>
-<span class="sd">           `format` has been deprecated in favor of the standard keyword `order`.</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           `skip` and `format` keywords have been removed.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">skip</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">step</span> <span class="o">=</span> <span class="n">skip</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;Skip is deprecated and will be removed in&quot;</span>
-                <span class="s2">&quot;in 1.0. Use step instead.&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
         <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
 
@@ -501,12 +487,6 @@
             <span class="n">atom_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">asel</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">atom_numbers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;&#39;format&#39; is deprecated and will be removed in 1.0. Use &#39;order&#39; instead&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="nb">format</span>
 
         <span class="n">frames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="o">.</span><span class="n">readframes</span><span class="p">(</span>
             <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">indices</span><span class="o">=</span><span class="n">atom_numbers</span><span class="p">)</span>

@@ -919,7 +919,7 @@ time = <code class="xref py py-attr docutils literal notranslate"><span class="p
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.DCD.DCDReader.timeseries">
-<code class="descname">timeseries</code><span class="sig-paren">(</span><em>asel=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>skip=None</em>, <em>order='afc'</em>, <em>format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timeseries</code><span class="sig-paren">(</span><em>asel=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>order='afc'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/DCD.html#DCDReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.DCD.DCDReader.timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -942,17 +942,13 @@ to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
 where the shape is (frame, number of atoms,
 coordinates)</li>
-<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – deprecated, equivalent to <cite>order</cite></li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.0: </span><cite>skip</cite> has been deprecated in favor of the standard keyword <cite>step</cite>.</p>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.17.0: </span><cite>format</cite> has been deprecated in favor of the standard keyword <cite>order</cite>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><cite>skip</cite> and <cite>format</cite> keywords have been removed.</p>
 </div>
 </dd></dl>
 
