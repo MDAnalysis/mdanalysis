@@ -268,8 +268,10 @@ any manner.</p>
 <dt id="MDAnalysis.analysis.density.density_from_Universe">
 <code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>update_selection=False</em>, <em>verbose=False</em>, <em>interval=1</em>, <em>quiet=None</em>, <em>parameters=None</em>, <em>gridcenter=None</em>, <em>xdim=None</em>, <em>ydim=None</em>, <em>zdim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object.</p>
-<p>The trajectory is read, frame by frame, and the atoms selected with <cite>atomselection</cite> are
-histogrammed on a grid with spacing <cite>delta</cite>.</p>
+<p>The trajectory is read, frame by frame, and the atoms selected with
+<cite>atomselection</cite> are histogrammed on a grid with spacing <cite>delta</cite>.
+A physical density of units [Angstrom^{-3}] is returned (see
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> for more details).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -278,7 +280,7 @@ histogrammed on a grid with spacing <cite>delta</cite>.</p>
 <li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object with a trajectory</li>
 <li><strong>atomselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string (MDAnalysis syntax) for the species to be analyzed
 [“name OH2”]</li>
-<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – bin size for the density grid in Angstroem (same in x,y,z) [1.0]</li>
+<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
 <li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Slice the trajectory as <code class="docutils literal notranslate"><span class="pre">trajectory[start:stop:step]</span></code>; default
@@ -286,7 +288,7 @@ is to read the whole trajectory.</li>
 <li><strong>metadata</strong> (<em>dict. optional</em>) – <cite>dict</cite> of additional data to be saved with the object; the meta data
 are passed through as they are.</li>
 <li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – increase histogram dimensions by padding (on top of initial box size)
-in Angstroem. Padding is ignored when setting a user defined grid. [2.0]</li>
+in Angstrom. Padding is ignored when setting a user defined grid. [2.0]</li>
 <li><strong>soluteselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection for the solute, e.g. “protein” [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – With <cite>cutoff</cite>, select “&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;”
 (Special routines that are faster than the standard <code class="docutils literal notranslate"><span class="pre">AROUND</span></code> selection);
@@ -308,12 +310,12 @@ processed, which is interesting with <code class="docutils literal notranslate">
 <li><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Show status update every <cite>interval</cite> frame [1]</li>
 <li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – <cite>dict</cite> with some special parameters for <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> (see docs)</li>
 <li><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em><em> (</em><em>optional</em><em>)</em>) – 3 element numpy array detailing the x, y and z coordinates of the
-center of a user defined grid box in Angstroem [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström; ignored if
+center of a user defined grid box in Angstrom [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in Angstrom; ignored if
 gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström; ignored if
+<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in Angstrom; ignored if
 gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström; ignored if
+<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in Angstrom; ignored if
 gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
 </ul>
 </td>
@@ -382,6 +384,26 @@ water_density = density_from_Universe(universe, delta=1.0,
 defined grid is assigned).
 </pre></div>
 </div>
+<p>As detailed above, the <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object returned contains a
+physical density in units of Angstrom^{-3}. If you are interested in
+recovering the underlying probability density, simply divide by the sum:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">physical_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                         <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
+
+<span class="n">probability_density</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">/</span> <span class="n">physical_density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Similarly, if you would like to recover a grid containing a histogram of
+atom counts, simply multiply by the volume:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here we assume that numpy is imported as np</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">physical_density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+
+<span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">*</span> <span class="n">volume</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Warns users that <cite>padding</cite> value is not used in user defined grids</p>
+</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>ProgressMeter now iterates over the number of frames analysed.</p>
 </div>
@@ -417,7 +439,7 @@ calculated as described for <a class="reference internal" href="#MDAnalysis.anal
 records are currently <em>not</em> processed</li>
 <li><strong>atomselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed
 [‘resname HOH and name O’]</li>
-<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstroem (same in x,y,z) [1.0]</li>
+<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
 <li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of additional data to be saved with the object [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – increase histogram dimensions by padding (on top of initial box size) [1.0]</li>
 <li><strong>sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – width (in Angstrom) of the gaussians that are used to build up the
@@ -988,7 +1010,7 @@ sigma is taken as sqrt(3.*B/8.)/pi (see <code class="xref py py-func docutils li
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>pdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – PDB file or <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code>;</li>
 <li><strong>atomselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed</li>
-<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstroem (same in x,y,z) [1.0]</li>
+<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
 <li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of additional data to be saved with the object</li>
 <li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – increase histogram dimensions by padding (on top of initial box size)</li>
 <li><strong>sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – width (in Angstrom) of the gaussians that are used to build up the

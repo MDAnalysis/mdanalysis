@@ -739,8 +739,10 @@
                           <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a density grid from a :class:`MDAnalysis.Universe` object.</span>
 
-<span class="sd">    The trajectory is read, frame by frame, and the atoms selected with `atomselection` are</span>
-<span class="sd">    histogrammed on a grid with spacing `delta`.</span>
+<span class="sd">    The trajectory is read, frame by frame, and the atoms selected with</span>
+<span class="sd">    `atomselection` are histogrammed on a grid with spacing `delta`.</span>
+<span class="sd">    A physical density of units [Angstrom^{-3}] is returned (see</span>
+<span class="sd">    :class:`Density` for more details).</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
@@ -750,7 +752,7 @@
 <span class="sd">            selection string (MDAnalysis syntax) for the species to be analyzed</span>
 <span class="sd">            [&quot;name OH2&quot;]</span>
 <span class="sd">    delta : float (optional)</span>
-<span class="sd">            bin size for the density grid in Angstroem (same in x,y,z) [1.0]</span>
+<span class="sd">            bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
 <span class="sd">    start : int (optional)</span>
 <span class="sd">    stop : int (optional)</span>
 <span class="sd">    step : int (optional)</span>
@@ -761,7 +763,7 @@
 <span class="sd">            are passed through as they are.</span>
 <span class="sd">    padding : float (optional)</span>
 <span class="sd">            increase histogram dimensions by padding (on top of initial box size)</span>
-<span class="sd">            in Angstroem. Padding is ignored when setting a user defined grid. [2.0]</span>
+<span class="sd">            in Angstrom. Padding is ignored when setting a user defined grid. [2.0]</span>
 <span class="sd">    soluteselection : str (optional)</span>
 <span class="sd">            MDAnalysis selection for the solute, e.g. &quot;protein&quot; [``None``]</span>
 <span class="sd">    cutoff : float (optional)</span>
@@ -786,15 +788,15 @@
 <span class="sd">            `dict` with some special parameters for :class:`Density` (see docs)</span>
 <span class="sd">    gridcenter : numpy ndarray, float32 (optional)</span>
 <span class="sd">            3 element numpy array detailing the x, y and z coordinates of the</span>
-<span class="sd">            center of a user defined grid box in Angstroem [``None``]</span>
+<span class="sd">            center of a user defined grid box in Angstrom [``None``]</span>
 <span class="sd">    xdim : float (optional)</span>
-<span class="sd">            User defined x dimension box edge in ångström; ignored if</span>
+<span class="sd">            User defined x dimension box edge in Angstrom; ignored if</span>
 <span class="sd">            gridcenter is ``None``</span>
 <span class="sd">    ydim : float (optional)</span>
-<span class="sd">            User defined y dimension box edge in ångström; ignored if</span>
+<span class="sd">            User defined y dimension box edge in Angstrom; ignored if</span>
 <span class="sd">            gridcenter is ``None``</span>
 <span class="sd">    zdim : float (optional)</span>
-<span class="sd">            User defined z dimension box edge in ångström; ignored if</span>
+<span class="sd">            User defined z dimension box edge in Angstrom; ignored if</span>
 <span class="sd">            gridcenter is ``None``</span>
 
 <span class="sd">    Returns</span>
@@ -864,6 +866,26 @@
 <span class="sd">      (It should be noted that the `padding` keyword is not used when a user</span>
 <span class="sd">      defined grid is assigned).</span>
 
+<span class="sd">    As detailed above, the :class:`Density` object returned contains a</span>
+<span class="sd">    physical density in units of Angstrom^{-3}. If you are interested in</span>
+<span class="sd">    recovering the underlying probability density, simply divide by the sum::</span>
+
+<span class="sd">      physical_density = density_from_Universe(universe, delta=1.0,</span>
+<span class="sd">                                               atomselection=&#39;name OW&#39;)</span>
+
+<span class="sd">      probability_density = physical_density / physical_density.grid.sum()</span>
+
+<span class="sd">    Similarly, if you would like to recover a grid containing a histogram of</span>
+<span class="sd">    atom counts, simply multiply by the volume::</span>
+
+<span class="sd">      # Here we assume that numpy is imported as np</span>
+<span class="sd">      volume = np.prod(physical_density.delta)</span>
+
+<span class="sd">      atom_count_histogram = physical_density * volume</span>
+
+
+<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">       Warns users that `padding` value is not used in user defined grids</span>
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       ProgressMeter now iterates over the number of frames analysed.</span>
 <span class="sd">    .. versionchanged:: 0.19.0</span>
@@ -902,11 +924,18 @@
     <span class="c1"># so the box information is rather meaningless</span>
     <span class="n">box</span><span class="p">,</span> <span class="n">angles</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
     <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">):</span>
-        <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Non-orthorhombic unit-cell --- make sure that it has been remapped properly!&quot;</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Non-orthorhombic unit-cell --- &quot;</span>
+               <span class="s2">&quot;make sure that it has been remapped properly!&quot;</span><span class="p">)</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Issue 2372: padding is ignored, defaults to 2.0 therefore warn</span>
+        <span class="k">if</span> <span class="n">padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{0}</span><span class="s2">) &quot;</span>
+                   <span class="s2">&quot;is not used in user defined grids.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">padding</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
         <span class="c1"># Generate a copy of smin/smax from coords to later check if the</span>
         <span class="c1"># defined box might be too small for the selection</span>
         <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1139,7 +1168,7 @@
 <span class="sd">          selection string (MDAnalysis syntax) for the species to be analyzed</span>
 <span class="sd">          [&#39;resname HOH and name O&#39;]</span>
 <span class="sd">    delta : float</span>
-<span class="sd">          bin size for the density grid in Angstroem (same in x,y,z) [1.0]</span>
+<span class="sd">          bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
 <span class="sd">    metadata : dict</span>
 <span class="sd">          dictionary of additional data to be saved with the object [``None``]</span>
 <span class="sd">    padding : float</span>
@@ -1199,7 +1228,7 @@
 <span class="sd">        atomselection : str</span>
 <span class="sd">            selection string (MDAnalysis syntax) for the species to be analyzed</span>
 <span class="sd">        delta : float</span>
-<span class="sd">            bin size for the density grid in Angstroem (same in x,y,z) [1.0]</span>
+<span class="sd">            bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
 <span class="sd">        metadata : dict</span>
 <span class="sd">            dictionary of additional data to be saved with the object</span>
 <span class="sd">        padding : float</span>
