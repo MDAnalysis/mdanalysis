@@ -140,12 +140,14 @@ def simple_function(mobile):
         (20, 50, None, 30)
     ])
 def test_AnalysisFromFunction(u, start, stop, step, nframes):
-    ana1 = base.AnalysisFromFunction(
-            simple_function, mobile=u.atoms).run(start=start, stop=stop, step=step)
-    ana2 = base.AnalysisFromFunction(
-            simple_function, u.atoms).run(start=start, stop=stop, step=step)
-    ana3 = base.AnalysisFromFunction(
-            simple_function, u.trajectory, u.atoms).run(start=start, stop=stop, step=step)
+    ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
+    ana1.run(start=start, stop=stop, step=step)
+
+    ana2 = base.AnalysisFromFunction(simple_function, u.atoms)
+    ana2.run(start=start, stop=stop, step=step)
+
+    ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
+    ana3.run(start=start, stop=stop, step=step)
 
     results = []
 
