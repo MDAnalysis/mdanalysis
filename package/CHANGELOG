@@ -79,6 +79,9 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * `start`, `stop`, and `step` keywords have been removed from `__init__` in
+    :class:`AnalysisBase`. These should now be called in
+    :meth:`AnalysisBase.run` (Issue #1463)
   * AlignTraj `save()` method has been removed and the `filename` variable now
     defaults to the current working directory (Issues #2099, #1745, #2443)
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
