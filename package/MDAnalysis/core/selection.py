@@ -48,7 +48,6 @@ import functools
 import warnings
 
 import numpy as np
-from numpy.lib.utils import deprecate
 
 
 from MDAnalysis.lib.util import unique_int_1d
@@ -496,24 +495,6 @@ class SelgroupSelection(Selection):
     def apply(self, group):
         mask = np.in1d(group.indices, self.grp.indices)
         return group[mask]
-
-# TODO: remove in 1.0 (should have been removed in 0.15.0)
-class FullSelgroupSelection(Selection):
-    token = 'fullgroup'
-
-    def __init__(self, parser, tokens):
-        grpname = tokens.popleft()
-        try:
-            self.grp = parser.selgroups[grpname]
-        except KeyError:
-            six.raise_from(
-                ValueError("Failed to find group: {0}".format(grpname)),
-                None)
-
-    @deprecate(old_name='fullgroup', new_name='global group',
-               message=' This will be removed in v0.15.0')
-    def apply(self, group):
-        return self.grp.unique
 
 
 class StringSelection(Selection):
