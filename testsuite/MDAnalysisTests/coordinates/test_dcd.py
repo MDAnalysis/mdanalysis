@@ -199,11 +199,6 @@ def test_timeseries_slices(slice, length, universe_dcd):
     assert_array_almost_equal(xyz, allframes[start:stop:step])
 
 
-def test_timeseries_deprecation(universe_dcd):
-    with pytest.warns(DeprecationWarning):
-        universe_dcd.trajectory.timeseries(format='fac')
-
-
 @pytest.mark.parametrize("order, shape", (
     ('fac', (98, 3341, 3)),
     ('fca', (98, 3, 3341)),
@@ -230,12 +225,6 @@ def test_timeseries_empty_selection(universe_dcd):
     with pytest.raises(NoDataError):
         asel = universe_dcd.select_atoms('name FOO')
         universe_dcd.trajectory.timeseries(asel=asel)
-
-
-def test_timeseries_skip(universe_dcd):
-    with pytest.warns(DeprecationWarning):
-        xyz = universe_dcd.trajectory.timeseries(skip=2, order='fac')
-    assert len(xyz) == universe_dcd.trajectory.n_frames / 2
 
 
 def test_reader_set_dt():
