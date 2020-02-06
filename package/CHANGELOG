@@ -79,6 +79,11 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
+    `save_results()` from :class:`HydrogenBondAutoCorrel`, and
+    `save_results()`/`filename`/`store` from :class:`PSAnalysis`. Also sets
+    the deprecation of `hbonds/hbond_analysis.py` to v1.0 (Issues #1745,
+    #2486, #2487, #2491, #2492).
   * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
     (Issue #2443)
   * `fullgroup` selection has now been removed (#268)
@@ -89,7 +94,7 @@ Changes
     is "-" (Issue #2448, PR #2457)
 
 Deprecations
-  * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
+  * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
 09/05/19 IAlibay, richardjgowers
 

@@ -183,11 +183,6 @@ Classes, methods, and functions
 
       int, frame index to select frame from :attr:`Path.u_reference`
 
-   .. attribute:: filename
-
-      string, name of file to store calculated distance matrix
-      (:attr:`PSAnalysis.D`)
-
    .. attribute:: paths
 
       list of :class:`numpy.ndarray` objects representing the set/ensemble of
@@ -195,8 +190,7 @@ Classes, methods, and functions
 
    .. attribute:: D
 
-      string, name of file to store calculated distance matrix
-      (:attr:`PSAnalysis.D`)
+      :class:`numpy.ndarray` whichs store calculated distance matrix
 
 
 .. Markup definitions
@@ -1287,6 +1281,10 @@ class PSAnalysis(object):
     alignment of the original trajectories to a reference structure.
 
     .. versionadded:: 0.8
+
+    .. versionchanged:: 1.0.0
+       ``save_result()`` method has been removed. You can use ``np.save()`` on
+       :attr:`PSAnalysis.D` instead.
     """
     def __init__(self, universes, reference=None, ref_select='name CA',
                  ref_frame=0, path_select=None, labels=None,
@@ -1509,31 +1507,15 @@ class PSAnalysis(object):
              ``trajectory[start:stop:step]`` [``None``]
         stop : int
         step : int
-        store : bool
-             if ``True`` then writes :attr:`PSAnalysis.D` to text and
-             compressed npz (numpy) files [``True``]
 
-             .. deprecated:: 0.19.0
-                `store` will be removed together with :meth:`save_results` in 1.0.0.
-
-        filename : str
-             string, filename to save :attr:`PSAnalysis.D`
-
-             .. deprecated:: 0.19.0
-                `filename` will be removed together with :meth:`save_results` in 1.0.0.
-
+        .. versionchanged:: 1.0.0
+           `store` and `filename` have been removed.
 
         """
         metric = kwargs.pop('metric', 'hausdorff')
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
         step = kwargs.pop('step', None)
-        # DEPRECATED 0.19.0: remove in 1.0
-        if 'store' in kwargs:
-            warnings.warn("PSAnalysis.run(): 'store' was deprecated in 0.19.0 "
-                          "and will be removed in 1.0",
-                          category=DeprecationWarning)
-        store = kwargs.pop('store', True)
 
         if isinstance(metric, string_types):
             metric_func = get_path_metric_func(str(metric))
@@ -1549,16 +1531,6 @@ class PSAnalysis(object):
                 D[i,j] = metric_func(P, Q)
                 D[j,i] = D[i,j]
         self.D = D
-        if store:
-            # DEPRECATED 0.19.0: remove in 1.0
-            if 'filename' in kwargs:
-                warnings.warn("PSAnalysis.run(): 'filename' was deprecated in "
-                              "0.19.0 and will be removed in 1.0",
-                              category=DeprecationWarning)
-            filename = kwargs.pop('filename', metric)
-            if not isinstance(metric, string_types):
-                filename = 'custom_metric'
-            self.save_result(filename=filename)
 
     def run_pairs_analysis(self, **kwargs):
         """Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique
@@ -1617,38 +1589,6 @@ class PSAnalysis(object):
                 if hausdorff_pairs:
                     self._HP.append(pp.get_hausdorff_pair())
         self.D = D
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can save the distance matrix :attr:`D` to a numpy "
-               "file with ``np.save(filename, PSAnalysis.D)``.")
-    def save_result(self, filename=None):
-        """Save distance matrix :attr:`PSAnalysis.D` to a numpy compressed npz
-        file and text file.
-
-        The data are saved with :func:`numpy.savez_compressed` and
-        :func:`numpy.savetxt` in the directory specified by
-        :attr:`PSAnalysis.targetdir`.
-
-        Parameters
-        ----------
-        filename : str
-             specifies filename [``None``]
-
-        Returns
-        -------
-        filename : str
-
-        """
-        filename = filename or 'psa_distances'
-        head = os.path.join(self.targetdir, self.datadirs['distance_matrices'])
-        outfile = os.path.join(head, filename)
-        if self.D is None:
-            raise NoDataError("Distance matrix has not been calculated yet")
-        np.save(outfile + '.npy', self.D)
-        np.savetxt(outfile + '.dat', self.D)
-        logger.info("Wrote distance matrix to file %r.npz", outfile)
-        logger.info("Wrote distance matrix to file %r.dat", outfile)
-        return filename
 
 
     def save_paths(self, filename=None):
@@ -1756,7 +1696,7 @@ class PSAnalysis(object):
 
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         npaths = len(self.D)
         dist_matrix = self.D
 
@@ -1907,7 +1847,7 @@ class PSAnalysis(object):
 
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         dist_matrix = self.D
 
         Z, dgram = self.cluster(method=linkage,                                 \
@@ -2215,8 +2155,7 @@ class PSAnalysis(object):
 
         Note
         ----
-        Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
-        calling this method.
+        Must run :meth:`PSAnalysis.run` prior to calling this method.
 
         Parameters
         ----------
@@ -2234,7 +2173,7 @@ class PSAnalysis(object):
         """
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         if vectorform:
             return spatial.distance.squareform(self.D, force='tovector',
                                                checks=checks)
