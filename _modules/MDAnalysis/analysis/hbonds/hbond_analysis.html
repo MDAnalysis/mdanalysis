@@ -205,7 +205,7 @@
 <span class="sd">:Copyright: GNU Public License v3</span>
 
 <span class="sd">..Warning:</span>
-<span class="sd">    This module will be deprecated in version 1.0.</span>
+<span class="sd">    This module is deprecated and will be removed in version 2.0.</span>
 <span class="sd">    Please use :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` instead.</span>
 
 <span class="sd">Given a :class:`~MDAnalysis.core.universe.Universe` (simulation</span>
@@ -496,7 +496,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">map</span><span class="p">,</span> <span class="n">cPickle</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
 
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -509,16 +509,17 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">distances</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.hbonds&#39;</span><span class="p">)</span>
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;This module will be deprecated in version 1.0.&quot;</span>
+            <span class="s2">&quot;This module is deprecated as of MDAnalysis version 1.0.&quot;</span>
+            <span class="s2">&quot;It will be removed in MDAnalysis version 2.0&quot;</span>
             <span class="s2">&quot;Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis instead.&quot;</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
         <span class="p">)</span>
+
 
 <div class="viewcode-block" id="HydrogenBondAnalysis"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis">[docs]</a><span class="k">class</span> <span class="nc">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a hydrogen bond analysis</span>
@@ -555,6 +556,10 @@
 <span class="sd">    .. versionchanged:: 0.7.6</span>
 <span class="sd">       DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between</span>
 <span class="sd">       default values for different force fields.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       ``save_table()`` method has been removed. You can use ``np.save()`` or</span>
+<span class="sd">       ``cPickle.dump()`` on :attr:`HydrogenBondAnalysis.table` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># use tuple(set()) here so that one can just copy&amp;paste names from the</span>
@@ -742,7 +747,8 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">HydrogenBondAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-            <span class="s2">&quot;This class will be deprecated in version 1.0.&quot;</span>
+            <span class="s2">&quot;This class is deprecated as of MDAnalysis version 1.0 and will &quot;</span>
+            <span class="s2">&quot;be removed in version 2.0.&quot;</span>
             <span class="s2">&quot;Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis instead.&quot;</span><span class="p">,</span>
             <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
         <span class="p">)</span>
@@ -1295,12 +1301,6 @@
 <span class="sd">        In 0.16.1, donor and acceptor are stored as a tuple(resname,</span>
 <span class="sd">        resid, atomid). In 0.16.0 and earlier they were stored as a string.</span>
 
-<span class="sd">        .. deprecated:: 1.0</span>
-<span class="sd">           This is a compatibility layer so that we can provide the same output</span>
-<span class="sd">           in timeseries as before. However, for 1.0 we should make timeseries</span>
-<span class="sd">           just return _timeseries, i.e., change the format of timeseries to</span>
-<span class="sd">           the un-ambiguous representation provided in _timeseries.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">hb</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
                 <span class="o">+</span> <span class="p">[</span><span class="n">atomformat</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hb</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">atomformat</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hb</span><span class="p">[</span><span class="mi">3</span><span class="p">])]</span>
@@ -1345,33 +1345,6 @@
         <span class="k">assert</span> <span class="n">cursor</span> <span class="o">==</span> <span class="n">num_records</span><span class="p">,</span> <span class="s2">&quot;Internal Error: Not all HB records stored&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">recarray</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;HBond: Stored results as table with </span><span class="si">%(num_records)d</span><span class="s2"> entries.&quot;</span><span class="p">,</span> <span class="nb">vars</span><span class="p">())</span></div>
-
-    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You can instead use ``np.save(filename, &quot;</span>
-               <span class="s2">&quot;HydrogendBondAnalysis.table)``.&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">save_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hbond_table.pickle&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.</span>
-
-<span class="sd">        If :attr:`~HydrogenBondAnalysis.table` does not exist yet,</span>
-<span class="sd">        :meth:`generate_table` is called first.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        filename : str (optional)</span>
-<span class="sd">             path to the filename</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        Load with ::</span>
-
-<span class="sd">           import cPickle</span>
-<span class="sd">           table = cPickle.load(open(filename))</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">generate_table</span><span class="p">()</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">table</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_has_timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">has_timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

@@ -424,6 +424,9 @@ bonds for [100]</li>
 to use [1]</li>
 <li><strong>nsamples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Within each run, the number of frames to analyse [50]</li>
 <li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to consider periodic boundaries in calculations [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>.versionchanged</strong> (<em>1.0.0</em>) – <code class="docutils literal notranslate"><span class="pre">save_results()</span></code> method was removed. You can instead use <code class="docutils literal notranslate"><span class="pre">np.savez()</span></code>
+on <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['time']</span></code> and
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAutoCorrel.solution['results']</span></code> instead.</li>
 </ul>
 </td>
 </tr>
@@ -441,26 +444,6 @@ to use [1]</li>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results">
-<code class="descname">save_results</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.save_results" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save_results</cite> is deprecated!</p>
-<p>Saves the results to a numpy zipped array (.npz, see np.savez)</p>
-<p>This can be loaded using np.load(filename)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – The desired filename [hbond_autocorrel]</td>
-</tr>
-</tbody>
-</table>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal notranslate"><span class="pre">np.savez(filename,</span> <span class="pre">time=HydrogenBondAutoCorrel.solution['time'],</span> <span class="pre">results=HydrogenBondAutoCorrel.solution['results'])</span></code>.
-<cite>save_results</cite> will be removed in release 1.0.0.</p>
-</div>
 </dd></dl>
 
 <dl class="method">

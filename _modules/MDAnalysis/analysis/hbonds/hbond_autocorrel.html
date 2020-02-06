@@ -390,7 +390,6 @@
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span><span class="p">,</span> <span class="n">calc_bonds</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">requires</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
@@ -460,6 +459,11 @@
 <span class="sd">        Within each run, the number of frames to analyse [50]</span>
 <span class="sd">    pbc : bool, optional</span>
 <span class="sd">        Whether to consider periodic boundaries in calculations [``True``]</span>
+
+<span class="sd">    ..versionchanged: 1.0.0</span>
+<span class="sd">      ``save_results()`` method was removed. You can instead use ``np.savez()``</span>
+<span class="sd">      on :attr:`HydrogenBondAutoCorrel.solution[&#39;time&#39;]` and</span>
+<span class="sd">      :attr:`HydrogenBondAutoCorrel.solution[&#39;results&#39;]` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span>
@@ -601,7 +605,7 @@
             <span class="c1"># set to above dist crit to exclude</span>
             <span class="n">exclude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclusions</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
             <span class="n">pair</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">pair</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">pair</span><span class="o">==</span><span class="n">exclude</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
-        
+
         <span class="n">hidx</span><span class="p">,</span> <span class="n">aidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span>
 
 
@@ -655,28 +659,6 @@
         <span class="n">results</span> <span class="o">/=</span> <span class="n">nbonds</span>
 
         <span class="k">return</span> <span class="n">results</span>
-
-    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You can instead use &quot;</span>
-               <span class="s2">&quot;``np.savez(filename, time=HydrogenBondAutoCorrel.solution[&#39;time&#39;], &quot;</span>
-               <span class="s2">&quot;results=HydrogenBondAutoCorrel.solution[&#39;results&#39;])``.&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;hbond_autocorrel&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Saves the results to a numpy zipped array (.npz, see np.savez)</span>
-
-<span class="sd">        This can be loaded using np.load(filename)</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        filename : str, optional</span>
-<span class="sd">            The desired filename [hbond_autocorrel]</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span>
-                        <span class="n">results</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Results have not been generated, use the run method first&quot;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="HydrogenBondAutoCorrel.solve"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_autocorrel.html#MDAnalysis.analysis.hbonds.hbond_autocorrel.HydrogenBondAutoCorrel.solve">[docs]</a>    <span class="k">def</span> <span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p_guess</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit results to an multi exponential decay and integrate to find</span>

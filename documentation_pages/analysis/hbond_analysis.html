@@ -219,7 +219,7 @@
 </table>
 <dl class="docutils">
 <dt>..Warning:</dt>
-<dd>This module will be deprecated in version 1.0.
+<dd>This module is deprecated and will be removed in version 2.0.
 Please use <a class="reference internal" href="hydrogenbonds.html#module-MDAnalysis.analysis.hydrogenbonds.hbond_analysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span></code></a> instead.</dd>
 </dl>
 <p>Given a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> (simulation
@@ -578,6 +578,10 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 <p><span class="versionmodified">Changed in version 0.7.6: </span>DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
 default values for different force fields.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save_table()</span></code> method has been removed. You can use <code class="docutils literal notranslate"><span class="pre">np.save()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">cPickle.dump()</span></code> on <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.table</span></code></a> instead.</p>
+</div>
 <p>Set up calculation of hydrogen bonds between two selections in a universe.</p>
 <p>The timeseries is accessible as the attribute <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.timeseries</span></code></a>.</p>
 <p>Some initial checks are performed. If there are no atoms selected by
@@ -862,7 +866,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OE1', 'OC2', 'O', 'OC1', 'OW', 'OD1', 'OG1', 'OH', 'OE2', 'NE2', 'OH2', 'ND1', 'OG', 'SG', 'SD', 'OD2'), 'GLYCAM06': ('OH', 'NT', 'O', 'OW', 'OS', 'O2', 'N', 'SM', 'OY'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OG1', 'OC2', 'ND1', 'OH2', 'OG', 'SD', 'SG', 'NE2', 'OW', 'O', 'OC1', 'OD2', 'OD1', 'OE1', 'OH', 'OE2'), 'GLYCAM06': ('O2', 'OS', 'N', 'OW', 'O', 'OY', 'NT', 'SM', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -870,7 +874,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OH', 'OW', 'NE', 'N', 'NE2', 'OH2', 'NH2', 'ND1', 'NH1', 'OG', 'NE1', 'ND2', 'SG', 'OG1', 'NZ'), 'GLYCAM06': ('OH', 'NT', 'OW', 'N', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OG1', 'ND1', 'OH2', 'OG', 'N', 'SG', 'NE2', 'OW', 'NH2', 'ND2', 'NE1', 'NZ', 'NH1', 'OH', 'NE'), 'GLYCAM06': ('N', 'OW', 'NT', 'OH', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -1000,33 +1004,6 @@ no donors or acceptors were found in a particular frame.</p>
 <p><span class="versionmodified">Deprecated since version 0.16: </span>The <cite>quiet</cite> keyword argument is deprecated in favor of the <cite>verbose</cite>
 one. Previous use of <cite>verbose</cite> now corresponds to the new keyword
 argument <cite>debug</cite>.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table">
-<code class="descname">save_table</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.save_table" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save_table</cite> is deprecated!</p>
-<p>Saves <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal notranslate"><span class="pre">table</span></code></a> to a pickled file.</p>
-<p>If <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal notranslate"><span class="pre">table</span></code></a> does not exist yet,
-<a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.generate_table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.generate_table"><code class="xref py py-meth docutils literal notranslate"><span class="pre">generate_table()</span></code></a> is called first.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – path to the filename</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<p>Load with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
-<span class="n">table</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal notranslate"><span class="pre">np.save(filename,</span> <span class="pre">HydrogendBondAnalysis.table)</span></code>.
-<cite>save_table</cite> will be removed in release 1.0.0.</p>
 </div>
 </dd></dl>
 

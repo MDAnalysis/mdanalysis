@@ -1057,6 +1057,10 @@ alignment of the original trajectories to a reference structure.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.8.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save_result()</span></code> method has been removed. You can use <code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on
+<a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a> instead.</p>
+</div>
 <p>Setting up Path Similarity Analysis.</p>
 <p>The mutual similarity between all unique pairs of trajectories
 are computed using a selected path metric.</p>
@@ -1136,13 +1140,6 @@ to compose <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.pat
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.analysis.psa.PSAnalysis.filename">
-<code class="descname">filename</code><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.filename" title="Permalink to this definition">¶</a></dt>
-<dd><p>string, name of file to store calculated distance matrix
-(<a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>)</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.paths">
 <code class="descname">paths</code><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.paths" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> objects representing the set/ensemble of
@@ -1152,8 +1149,7 @@ fitted trajectories</p>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.D">
 <code class="descname">D</code><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="Permalink to this definition">¶</a></dt>
-<dd><p>string, name of file to store calculated distance matrix
-(<a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>)</p>
+<dd><p><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> whichs store calculated distance matrix</p>
 </dd></dl>
 
 <dl class="method">
@@ -1302,8 +1298,7 @@ method.</p>
 <dd><p>Return the distance matrix (or vector) of pairwise path distances.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Must run <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> with <code class="docutils literal notranslate"><span class="pre">store=True</span></code> prior to
-calling this method.</p>
+<p class="last">Must run <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> prior to calling this method.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1565,17 +1560,7 @@ same call signature as <a class="reference internal" href="#MDAnalysis.analysis.
 <code class="docutils literal notranslate"><span class="pre">trajectory[start:stop:step]</span></code> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – </li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – </li>
-<li><strong>store</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – <p>if <code class="docutils literal notranslate"><span class="pre">True</span></code> then writes <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a> to text and
-compressed npz (numpy) files [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span><cite>store</cite> will be removed together with <code class="xref py py-meth docutils literal notranslate"><span class="pre">save_results()</span></code> in 1.0.0.</p>
-</div>
-</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – <p>string, filename to save <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a></p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span><cite>filename</cite> will be removed together with <code class="xref py py-meth docutils literal notranslate"><span class="pre">save_results()</span></code> in 1.0.0.</p>
-</div>
-</li>
+<li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: <cite>store</cite> and <cite>filename</cite> have been removed.</li>
 </ul>
 </td>
 </tr>
@@ -1639,33 +1624,6 @@ specified by <code class="xref py py-attr docutils literal notranslate"><span cl
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.load" title="MDAnalysis.analysis.psa.PSAnalysis.load"><code class="xref py py-meth docutils literal notranslate"><span class="pre">load()</span></code></a></p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.psa.PSAnalysis.save_result">
-<code class="descname">save_result</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.save_result" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save_result</cite> is deprecated!</p>
-<p>Save distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a> to a numpy compressed npz
-file and text file.</p>
-<p>The data are saved with <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savez_compressed.html#numpy.savez_compressed" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savez_compressed()</span></code></a> and
-<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.savetxt.html#numpy.savetxt" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savetxt()</span></code></a> in the directory specified by
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.targetdir</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – specifies filename [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>filename</strong></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
-</tr>
-</tbody>
-</table>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can save the distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">D</span></code></a> to a numpy file with <code class="docutils literal notranslate"><span class="pre">np.save(filename,</span> <span class="pre">PSAnalysis.D)</span></code>.
-<cite>save_result</cite> will be removed in release 1.0.0.</p>
 </div>
 </dd></dl>
 
