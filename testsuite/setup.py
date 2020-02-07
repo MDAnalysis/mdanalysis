@@ -176,6 +176,7 @@ if __name__ == '__main__':
                          'data/*.gsd',
                          'data/windows/*',
                          'data/*.itp',
+                         'data/*.coor',
                         ],
           },
           install_requires=[
