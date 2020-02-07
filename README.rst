@@ -13,7 +13,7 @@ MDAnalysis also includes widely used analysis algorithms in the `MDAnalysis.anal
 
 .. _numfocus-fiscal-sponsor-attribution:
 
-The MDAnalysis project uses an `open governance model` and is fiscally sponsored by `NumFOCUS`_. Consider making 
+The MDAnalysis project uses an `open governance model`_ and is fiscally sponsored by `NumFOCUS`_. Consider making 
 a `tax-deductible donation`_ to help the project pay for developer time, professional services, travel, workshops, and a variety of other needs.
 
 .. image:: https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png
@@ -95,7 +95,7 @@ to find uncovered code.
 
 .. _NumFOCUS: https://numfocus.org/
 .. _open governance model: https://www.mdanalysis.org/about/#governance
-.. _tax-deductible donation: https://numfocus.salsalabs.org/supportmdanalysis
+.. _tax-deductible donation: https://numfocus.org/donate-to-mdanalysis
 .. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
 .. _trajectory formats: https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
