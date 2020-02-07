@@ -221,20 +221,15 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_mass_weighted_and_save(self, universe, outfile, correct_values):
+    def test_mass_weighted(self, universe, correct_values):
         # mass weighting the CA should give the same answer as weighing
         # equally because all CA have the same mass
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             weights='mass').run(step=49)
-        RMSD.save(outfile)
 
         assert_almost_equal(RMSD.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
-        saved = np.loadtxt(outfile)
-        assert_almost_equal(RMSD.rmsd, saved, 4,
-                            err_msg="error: rmsd profile should match "
-                            "saved test values")
 
     def test_custom_weighted(self, universe, correct_values_mass):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights="mass").run(step=49)
@@ -323,11 +318,6 @@ class TestRMSD(object):
                                                 reference=reference,
                                                 groupselections=
                                                 ['resname MET','type NH3'])
-
-    def test_save_before_run(self, universe):
-        with pytest.raises(NoDataError):
-            RMSD = MDAnalysis.analysis.rms.RMSD(universe)
-            RMSD.save('blah')
 
 
 class TestRMSF(object):
