@@ -210,7 +210,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
 <div class="viewcode-block" id="LinearDensity"><a class="viewcode-back" href="../../../documentation_pages/analysis/lineardensity.html#MDAnalysis.analysis.lineardensity.LinearDensity">[docs]</a><span class="k">class</span> <span class="nc">LinearDensity</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Linear density profile</span>
@@ -254,6 +253,11 @@
 
 
 <span class="sd">    .. versionadded:: 0.14.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       ``save()`` method was removed, you can use ``np.savetxt()`` or</span>
+<span class="sd">       ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents</span>
+<span class="sd">       instead.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -366,87 +370,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">]</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;slice volume&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span>
-
-    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Instead save the :attr:`results` dictionary directly in &quot;</span>
-               <span class="s2">&quot;your favorite format (pickle, json, hdf5, ...).&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save density profile to file</span>
-
-<span class="sd">        Allows to save the density profile to either a ASCII txt file or a</span>
-<span class="sd">        binary numpy npz file. Output file has extension &#39;ldens&#39; and begins</span>
-<span class="sd">        with the name of the trajectory file.</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        description : str</span>
-<span class="sd">          An arbitrary description added to the output filename. Can be useful</span>
-<span class="sd">        form : str {&#39;txt&#39;, &#39;npz&#39;}</span>
-<span class="sd">          Format of the output. &#39;txt&#39; will generate an ASCII text file while</span>
-<span class="sd">          &#39;npz&#39; will produce a numpy binary file.</span>
-
-<span class="sd">        Example</span>
-<span class="sd">        -------</span>
-<span class="sd">        After initializing and running a `LinearDensity` object, results can be</span>
-<span class="sd">        written to file as follows::</span>
-
-<span class="sd">          ldens.save(description=&#39;mydensprof&#39;, form=&#39;txt&#39;)</span>
-
-<span class="sd">        which will output the linear density profiles in a file named</span>
-<span class="sd">        `&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens`.</span>
-
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Take root of trajectory filename for output file naming</span>
-        <span class="n">trajname</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="c1"># additional string for naming the output file</span>
-        <span class="n">description</span> <span class="o">=</span> <span class="n">description</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grouping</span><span class="p">)</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">trajname</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">description</span> <span class="o">+</span> <span class="s2">&quot;.ldens&quot;</span>
-
-        <span class="k">if</span> <span class="n">form</span> <span class="o">==</span> <span class="s1">&#39;txt&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">form</span> <span class="o">==</span> <span class="s1">&#39;npz&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_savez</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;form argument must be either txt or npz&#39;</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_savetxt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="c1"># DEPRECATED: remove in 1.0.0</span>
-        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
-
-        <span class="c1"># Create list of results which will be output</span>
-        <span class="n">output</span> <span class="o">=</span> <span class="p">[</span><span class="n">bins</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
-            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos&#39;</span><span class="p">])</span>
-            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;pos_std&#39;</span><span class="p">])</span>
-
-        <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">]:</span>
-            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char&#39;</span><span class="p">])</span>
-            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="s1">&#39;char_std&#39;</span><span class="p">])</span>
-
-        <span class="n">density</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">totalmass</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">volume</span>
-        <span class="n">header</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;1 coord [Ang] 2-7 mass density (x,sx,y,sz,z,sz) [g/cm^3]&quot;</span>
-                  <span class="s2">&quot;8-13 charge density (x,sx,y,sz,z,sz) [e/A^3]</span><span class="se">\n</span><span class="s2"> Average &quot;</span>
-                  <span class="s2">&quot;density: </span><span class="si">{}</span><span class="s2"> g/cm3&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">density</span><span class="p">))</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span>
-                   <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">output</span><span class="p">),</span>
-                   <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%10.5f</span><span class="s1">&#39;</span><span class="p">,</span>
-                   <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_savez</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="c1"># DEPRECATED: remove in 1.0.0</span>
-        <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimensions</span><span class="p">),</span> <span class="n">num</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nbins</span><span class="p">)</span>
-        <span class="n">dictionary</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="n">bins</span><span class="p">}</span>
-
-        <span class="k">for</span> <span class="n">dim</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dim&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;slice volume&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">]:</span>
-                <span class="n">dictionary</span><span class="p">[</span><span class="n">dim</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">dim</span><span class="p">][</span><span class="n">key</span><span class="p">]</span>
-
-        <span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">dictionary</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_add_other_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="c1"># For parallel analysis</span>

@@ -452,7 +452,7 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">ApplicationError</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">which</span><span class="p">,</span> <span class="n">realpath</span><span class="p">,</span> <span class="n">asiterable</span><span class="p">,</span>
-                                 <span class="n">FORTRANReader</span><span class="p">,</span> <span class="n">deprecate</span><span class="p">)</span>
+                                 <span class="n">FORTRANReader</span><span class="p">)</span>
 
 <span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
@@ -562,23 +562,13 @@
 
 
 <span class="k">class</span> <span class="nc">BaseHOLE</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Baseclass for HOLE analysis, providing plotting and utility functions&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Baseclass for HOLE analysis, providing plotting and utility functions</span>
 
-    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span>
-               <span class="n">message</span><span class="o">=</span><span class="s2">&quot;You can instead use &quot;</span>
-               <span class="s2">&quot;``cPickle.dump(HOLE.profiles, open(filename, &#39;wb&#39;))``.&quot;</span><span class="p">)</span>
-    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;hole.pickle&quot;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Save :attr:`profiles` as a Python pickle file *filename*.</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       ``save()`` method was removed. You can use ``cPickle.dump()`` on</span>
+<span class="sd">       :attr:`BaseHOLE.profiles` instead.</span>
 
-<span class="sd">        Load profiles dictionary with ::</span>
-
-<span class="sd">           import cPickle</span>
-<span class="sd">           profiles = cPickle.load(open(filename))</span>
-
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profiles</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">),</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">HIGHEST_PROTOCOL</span><span class="p">)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_process_plot_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="n">kw</span> <span class="o">=</span> <span class="p">{}</span>

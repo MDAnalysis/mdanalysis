@@ -253,41 +253,11 @@ then use the <code class="xref py py-meth docutils literal notranslate"><span cl
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.14.0.</span></p>
 </div>
-<dl class="method">
-<dt id="MDAnalysis.analysis.lineardensity.LinearDensity.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity.save" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save</cite> is deprecated!</p>
-<p>Save density profile to file</p>
-<p>Allows to save the density profile to either a ASCII txt file or a
-binary numpy npz file. Output file has extension ‘ldens’ and begins
-with the name of the trajectory file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – An arbitrary description added to the output filename. Can be useful</li>
-<li><strong>form</strong> (<em>str {'txt'</em><em>, </em><em>'npz'}</em>) – Format of the output. ‘txt’ will generate an ASCII text file while
-‘npz’ will produce a numpy binary file.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<p>After initializing and running a <cite>LinearDensity</cite> object, results can be
-written to file as follows:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ldens</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;mydensprof&#39;</span><span class="p">,</span> <span class="n">form</span><span class="o">=</span><span class="s1">&#39;txt&#39;</span><span class="p">)</span>
-</pre></div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> method was removed, you can use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> or
+<code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LinearDensity.results</span></code></a> dictionary contents
+instead.</p>
 </div>
-<p>which will output the linear density profiles in a file named
-<cite>&lt;trajectory_filename&gt;.mydensprof_&lt;grouping&gt;.ldens</cite>.</p>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>Instead save the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">results</span></code></a> dictionary directly in your favorite format (pickle, json, hdf5, …).
-<cite>save</cite> will be removed in release 1.0.0.</p>
-</div>
-</dd></dl>
-
 </dd></dl>
 
 </div>

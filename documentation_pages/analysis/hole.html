@@ -749,22 +749,6 @@ maximum value for the z axis</a>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="MDAnalysis.analysis.hole.HOLE.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.save" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save</cite> is deprecated!</p>
-<p>Save <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
-<p>Load profiles dictionary with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
-<span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal notranslate"><span class="pre">cPickle.dump(HOLE.profiles,</span> <span class="pre">open(filename,</span> <span class="pre">'wb'))</span></code>.
-<cite>save</cite> will be removed in release 1.0.0.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLE.sorted_profiles_iter">
 <code class="descname">sorted_profiles_iter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLE.sorted_profiles_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an iterator over profiles sorted by frame/order parameter <em>q</em>.</p>
@@ -950,22 +934,6 @@ analyse part of the trajectory.</p>
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.run_hole">
 <code class="descname">run_hole</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.run_hole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run_hole" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run HOLE on a single PDB file <em>pdbfile</em>.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.hole.HOLEtraj.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.save" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save</cite> is deprecated!</p>
-<p>Save <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.profiles" title="MDAnalysis.analysis.hole.HOLEtraj.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">profiles</span></code></a> as a Python pickle file <em>filename</em>.</p>
-<p>Load profiles dictionary with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cPickle</span>
-<span class="n">profiles</span> <span class="o">=</span> <span class="n">cPickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal notranslate"><span class="pre">cPickle.dump(HOLE.profiles,</span> <span class="pre">open(filename,</span> <span class="pre">'wb'))</span></code>.
-<cite>save</cite> will be removed in release 1.0.0.</p>
-</div>
 </dd></dl>
 
 <dl class="method">

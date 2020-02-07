@@ -273,8 +273,7 @@ using backbone atoms</li>
            <span class="n">select</span><span class="o">=</span><span class="s2">&quot;backbone&quot;</span><span class="p">,</span>             <span class="c1"># superimpose on whole backbone of the whole protein</span>
            <span class="n">groupselections</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;backbone and (resid 1-29 or resid 60-121 or resid 160-214)&quot;</span><span class="p">,</span>   <span class="c1"># CORE</span>
                             <span class="s2">&quot;backbone and resid 122-159&quot;</span><span class="p">,</span>                                   <span class="c1"># LID</span>
-                            <span class="s2">&quot;backbone and resid 30-59&quot;</span><span class="p">],</span>                                    <span class="c1"># NMP</span>
-           <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;rmsd_all_CORE_LID_NMP.dat&quot;</span><span class="p">)</span>
+                            <span class="s2">&quot;backbone and resid 30-59&quot;</span><span class="p">])</span>                                    <span class="c1"># NMP</span>
 <span class="n">R</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -364,7 +363,7 @@ the number of coordinates.</p>
 <h2>4.2.4.3. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.rms.RMSD">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">RMSD</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>filename='rmsd.dat'</em>, <em>weights=None</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">RMSD</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>weights=None</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to perform RMSD analysis on a trajectory.</p>
 <p>The RMSD will be computed for two groups of atoms and all frames in the
 trajectory belonging to <cite>atomgroup</cite>. The groups of atoms are obtained by
@@ -379,6 +378,10 @@ and reference structure are properly superimposed.</p>
 </div>
 <p>Run the analysis with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.run" title="MDAnalysis.analysis.rms.RMSD.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSD.run()</span></code></a>, which stores the results
 in the array <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> method was removed, use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> on
+<a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> instead.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -421,8 +424,6 @@ selection.</p>
 <p class="last">Experimental feature. Only limited error checking
 implemented.</p>
 </div>
-</li>
-<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – <p>write RMSD into file with <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.save" title="MDAnalysis.analysis.rms.RMSD.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">RMSD.save()</span></code></a></p>
 </li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
@@ -497,8 +498,8 @@ correct for comparison). If masses should not be checked, just set
 <p><span class="versionmodified">Changed in version 0.17.0: </span>removed deprecated <cite>mass_weighted</cite> keyword; <cite>groupselections</cite>
 are <em>not</em> rotationally superimposed any more.</p>
 </div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span><cite>filename</cite> will be removed in 1.0</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span><cite>filename</cite> keyword was removed.</p>
 </div>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.rms.RMSD.rmsd">
@@ -525,26 +526,6 @@ array with content <code class="docutils literal notranslate"><span class="pre">
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.analysis.rms.RMSD.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD.save" title="Permalink to this definition">¶</a></dt>
-<dd><p><cite>save</cite> is deprecated!</p>
-<p>Save RMSD from <a class="reference internal" href="#MDAnalysis.analysis.rms.RMSD.rmsd" title="MDAnalysis.analysis.rms.RMSD.rmsd"><code class="xref py py-attr docutils literal notranslate"><span class="pre">RMSD.rmsd</span></code></a> to text file <em>filename</em>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – if no filename is given the default provided to the constructor is
-used.</td>
-</tr>
-</tbody>
-</table>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.19.0: </span>You can instead use <code class="docutils literal notranslate"><span class="pre">np.savetxt(filename,</span> <span class="pre">RMSD.rmsd)</span></code>.
-<cite>save</cite> will be removed in release 1.0.0.</p>
-</div>
 </dd></dl>
 
 </dd></dl>
