@@ -30,18 +30,18 @@ provide the format in the keyword argument *format* to
    coordinates/LAMMPS
    coordinates/MMTF
    coordinates/MOL2
+   coordinates/NAMDBIN
    coordinates/PDB
    coordinates/PDBQT
    coordinates/PQR
    coordinates/TRJ
    coordinates/TRR
+   coordinates/TRZ   
    coordinates/TXYZ
    coordinates/XTC
    coordinates/XYZ
-   coordinates/TRZ
    coordinates/memory
    coordinates/null
-   coordinates/NAMDBIN
 
 .. rubric:: Coordinate core modules
 
