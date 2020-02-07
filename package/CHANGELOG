@@ -79,6 +79,9 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes the `nproc` keyword from
+    :class:`Waterdynamics.HydrogenBondLifetimes` as it did not work in most
+    cases (Issues #2511).
   * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
     and rms (Issue #1745).
   * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
