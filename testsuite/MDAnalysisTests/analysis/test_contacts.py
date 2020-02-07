@@ -302,16 +302,6 @@ class TestContacts(object):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
 
-    def test_save(self, universe):
-        with tempdir.in_tempdir():
-            ca = self._run_Contacts(universe)
-            ca.save('testfile.npy')
-            saved = np.genfromtxt('testfile.npy')
-            assert_array_almost_equal(ca.timeseries, saved)
-            # check the header was written correctly
-            with open('testfile.npy', 'r') as fin:
-                assert fin.readline().strip() == '# q1 analysis'
-
 
 def test_q1q2():
     u = mda.Universe(PSF, DCD)

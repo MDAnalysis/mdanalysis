@@ -79,6 +79,8 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
+    and rms (Issue #1745).
   * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
     `save_results()` from :class:`HydrogenBondAutoCorrel`, and
     `save_results()`/`filename`/`store` from :class:`PSAnalysis`. Also sets
