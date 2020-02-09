@@ -820,6 +820,18 @@ class WaterBridgeAnalysis(AnalysisBase):
         logger.info("WaterBridgeAnalysis: force field %s to guess donor and \
         acceptor names", self.forcefield)
 
+    def _build_residue_dict(self, selection):
+        # Build the residue_dict where the key is the residue name
+        # The content is a dictionary where hydrogen bond donor heavy atom names is the key
+        # The content is the hydrogen bond donor hydrogen atom names
+        atom_group = self.u.select_atoms(selection)
+        for residue in atom_group.residues:
+            if not residue.resname in self._residue_dict:
+                self._residue_dict[residue.resname] = defaultdict(set)
+            for atom in residue.atoms:
+                if atom.name in self.donors:
+                    self._residue_dict[residue.resname][atom.name].update(self._get_bonded_hydrogens(atom).names)
+
     def _update_selection(self):
         self._s1_donors = []
         self._s1_h_donors = {}
@@ -861,9 +873,12 @@ class WaterBridgeAnalysis(AnalysisBase):
         if self.selection1_type in ('donor', 'both'):
             self._s1_donors = self.u.atoms[self._s1].select_atoms(
                 'name {0}'.format(' '.join(self.donors))).ix
-            for i, atom_ix in enumerate(self._s1_donors):
-                tmp = self._get_bonded_hydrogens(self.u.atoms[atom_ix]).ix
-                for atom in tmp:
+            for atom_ix in self._s1_donors:
+                atom = self.u.atoms[atom_ix]
+                residue = atom.residue
+                hydrogens = residue.atoms.select_atoms('name {0}'.format(
+                    ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
+                for atom in hydrogens:
                     self._s1_h_donors[atom] = atom_ix
                     self._s1_donors_h[atom_ix].append(atom)
             self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
@@ -882,9 +897,12 @@ class WaterBridgeAnalysis(AnalysisBase):
         if self.selection1_type in ('acceptor', 'both'):
             self._s2_donors = self.u.atoms[self._s2].select_atoms(
                 'name {0}'.format(' '.join(self.donors))).ix
-            for i, atom_ix in enumerate(self._s2_donors):
-                tmp = self._get_bonded_hydrogens(self.u.atoms[atom_ix]).ix
-                for atom in tmp:
+            for atom_ix in self._s2_donors:
+                atom = self.u.atoms[atom_ix]
+                residue = atom.residue
+                hydrogens = residue.atoms.select_atoms('name {0}'.format(
+                    ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
+                for atom in hydrogens:
                     self._s2_h_donors[atom] = atom_ix
                     self._s2_donors_h[atom_ix].append(atom)
             self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
@@ -914,9 +932,12 @@ class WaterBridgeAnalysis(AnalysisBase):
         else:
             self._water_donors = self.u.atoms[self._water].select_atoms(
                 'name {0}'.format(' '.join(self.donors))).ix
-            for i, atom_ix in enumerate(self._water_donors):
-                tmp = self._get_bonded_hydrogens(self.u.atoms[atom_ix]).ix
-                for atom in tmp:
+            for atom_ix in self._water_donors:
+                atom = self.u.atoms[atom_ix]
+                residue = atom.residue
+                hydrogens = residue.atoms.select_atoms('name {0}'.format(
+                    ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
+                for atom in hydrogens:
                     self._water_h_donors[atom] = atom_ix
                     self._water_donors_h[atom_ix].append(atom)
             self.logger_debug("Water donors: {0}".format(len(self._water_donors)))
@@ -969,11 +990,17 @@ class WaterBridgeAnalysis(AnalysisBase):
         self.selection_distance = (2 * 2 + self.order * (2 + self.distance))
 
         self.box = self.u.dimensions if self.pbc else None
+        self._residue_dict = {}
+        self._build_residue_dict(self.selection1)
+        self._build_residue_dict(self.selection2)
+        self._build_residue_dict(self.water_selection)
+
         self._update_selection()
 
         self.timesteps = []
         if len(self._s1) and len(self._s2):
             self._update_water_selection()
+        else:
             logger.info("WaterBridgeAnalysis: no atoms found in the selection.")
 
         logger.info("WaterBridgeAnalysis: initial checks passed.")
