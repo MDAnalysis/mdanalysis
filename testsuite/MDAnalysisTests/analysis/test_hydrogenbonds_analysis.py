@@ -187,8 +187,12 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
     def test_guess_hydrogens_min_max_mass(self, h):
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError) as err:
+
             hydrogens = h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
+
+        assert err.value.args[0] == "min_mass is higher than (or equal to) max_mass"
+
 
 class TestHydrogenBondAnalysisTIP3PStartStep(object):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P` but starting
