@@ -96,6 +96,10 @@ Changes
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
+  * Removed core.flags.  Default behaviour (eg pbc, units) now defaults to
+    the default setting of the flag before removal.  If you were using flags
+    you will now have to supply the flag setting as keyword arguments to
+    function calls.
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
