@@ -61,10 +61,10 @@ class BaseTestParmedParser(ParserBase):
 
     @pytest.fixture
     def universe(self, filename):
-        return mda.Universe(filename, format='parmed')
+        return mda.Universe(filename)
 
     def test_creates_universe(self, filename):
-        u = mda.Universe(filename, format='parmed')
+        u = mda.Universe(filename)
         assert isinstance(u, mda.Universe)
 
     def test_bonds_total_counts(self, top, filename):
@@ -241,4 +241,3 @@ class TestParmedParserPRM(BaseTestParmedParser):
         )):
             assert dih.type[i].type.phi_k == phi_k
             assert dih.type[i].type.per == per
-                                            

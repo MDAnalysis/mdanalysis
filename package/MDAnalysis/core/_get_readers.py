@@ -32,6 +32,15 @@ from .. import (_READERS, _READER_HINTS,
 from ..lib import util
 
 
+def _is_parmed_object(thing):
+    module = inspect.getmodule(thing.__class__)
+
+    if module is None:
+        return False
+    else:
+        return module.__name__.startswith('parmed')
+
+
 def get_reader_for(filename, format=None):
     """Return the appropriate trajectory reader class for `filename`.
 
@@ -66,7 +75,7 @@ def get_reader_for(filename, format=None):
       :class:`~MDAnalysis.coordinates.memory.MemoryReader` is returned.
     - If `filename` is an MMTF object,
       :class:`~MDAnalysis.coordinates.MMTF.MMTFReader` is returned.
-    - If `filename` is a ParmEd Structure, 
+    - If `filename` is a ParmEd Structure,
       :class:`~MDAnalysis.coordinates.ParmEd.ParmEdReader` is returned.
     - If `filename` is an iterable of filenames,
       :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned.
@@ -177,7 +186,7 @@ def get_writer_for(filename, format=None, multiframe=None):
                 None)
         else:
             format = util.check_compressed_format(root, ext)
-    
+
     if format == '':
         raise ValueError((
             'File format could not be guessed from {}, '
@@ -276,7 +285,7 @@ def get_converter_for(format):
     TypeError
         If no appropriate parser could be found.
 
-    
+
     .. versionadded:: 0.21.0
     """
     try:
