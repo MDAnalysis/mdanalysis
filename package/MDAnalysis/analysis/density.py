@@ -212,10 +212,6 @@ class Density(Grid):
         - *density*: unit of the density if ``isDensity=True`` or ``None``
           otherwise; the default is "Angstrom^{-3}" for densities
           (meaning :math:`\text{Å}^{-3}`).
-
-        (Actually, the default unit is the value of
-        ``MDAnalysis.core.flags['length_unit']``; in most
-        cases this is "Angstrom".)
     metadata : dict
         a user defined dictionary of arbitrary values associated with the
         density; the class does not touch :attr:`Density.metadata` but
@@ -325,7 +321,7 @@ class Density(Grid):
     """
 
     def __init__(self, *args, **kwargs):
-        length_unit = MDAnalysis.core.flags['length_unit']
+        length_unit = 'Angstrom'
 
         parameters = kwargs.pop('parameters', {})
         if len(args) > 0 and isinstance(args[0], string_types) or isinstance(kwargs.get('grid', None), string_types):
@@ -718,10 +714,11 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
        defined boxes
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
-
     .. deprecated:: 0.16
        The keyword argument *quiet* is deprecated in favor of *verbose*.
-
+    .. versionchanged:: 0.21.0
+       time_unit and length_unit default to ps and Angstrom now flags have
+       been removed (same as previous flag defaults)
     """
     u = universe
 
@@ -815,7 +812,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     metadata['n_frames'] = n_frames
     metadata['totaltime'] = round(u.trajectory.n_frames * u.trajectory.dt, 3)
     metadata['dt'] = u.trajectory.dt
-    metadata['time_unit'] = MDAnalysis.core.flags['time_unit']
+    metadata['time_unit'] = 'ps'
     try:
         metadata['trajectory_skip'] = u.trajectory.skip_timestep  # frames
     except AttributeError:
@@ -832,7 +829,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     parameters['isDensity'] = False  # must override
 
 
-    g = Density(grid=grid, edges=edges, units={'length': MDAnalysis.core.flags['length_unit']},
+    g = Density(grid=grid, edges=edges, units={'length': 'Angstrom'},
                 parameters=parameters, metadata=metadata)
     g.make_density()
     logger.info("Density completed (initial density in Angstrom**-3)")
