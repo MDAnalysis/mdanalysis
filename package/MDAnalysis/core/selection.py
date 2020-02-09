@@ -50,8 +50,7 @@ import warnings
 import numpy as np
 
 
-from MDAnalysis.lib.util import unique_int_1d
-from MDAnalysis.core import flags
+from ..lib.util import unique_int_1d
 from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
 
