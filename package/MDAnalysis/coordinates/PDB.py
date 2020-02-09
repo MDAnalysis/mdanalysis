@@ -653,6 +653,10 @@ class PDBWriter(base.WriterBase):
         coordinates and closes the file.
 
         Raises :exc:`ValueError` if the coordinates fail the check.
+
+        .. versionchanged: 1.0.0
+            Check if :attr:`finename` is `StringIO` when attempting to remove
+            an invalid file.
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
         # can write from selection == Universe (Issue 49)
