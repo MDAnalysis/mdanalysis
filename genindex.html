@@ -3307,6 +3307,8 @@
 </li>
       <li><a href="documentation_pages/coordinates/MOL2.html#module-MDAnalysis.coordinates.MOL2">MDAnalysis.coordinates.MOL2 (module)</a>
 </li>
+      <li><a href="documentation_pages/coordinates/NAMDBIN.html#module-MDAnalysis.coordinates.NAMDBIN">MDAnalysis.coordinates.NAMDBIN (module)</a>
+</li>
       <li><a href="documentation_pages/coordinates/null.html#module-MDAnalysis.coordinates.null">MDAnalysis.coordinates.null (module)</a>
 </li>
       <li><a href="documentation_pages/converters/ParmEdParser.html#module-MDAnalysis.coordinates.ParmEd">MDAnalysis.coordinates.ParmEd (module)</a>
@@ -3631,6 +3633,10 @@
       </ul></li>
       <li><a href="documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.n_steps">n_steps (MDAnalysis.auxiliary.base.AuxReader attribute)</a>
 </li>
+      <li><a href="documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader">NAMDBINReader (class in MDAnalysis.coordinates.NAMDBIN)</a>
+</li>
+      <li><a href="documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter">NAMDBINWriter (class in MDAnalysis.coordinates.NAMDBIN)</a>
+</li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream">NamedStream (class in MDAnalysis.lib.util)</a>
 </li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.Namespace">Namespace (class in MDAnalysis.lib.util)</a>
@@ -3937,6 +3943,8 @@
         <li><a href="documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DATAReader.parse_n_atoms">(MDAnalysis.coordinates.LAMMPS.DATAReader class method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DCDReader.parse_n_atoms">(MDAnalysis.coordinates.LAMMPS.DCDReader static method)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader.parse_n_atoms">(MDAnalysis.coordinates.NAMDBIN.NAMDBINReader static method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.ExtendedPDBReader.parse_n_atoms">(MDAnalysis.coordinates.PDB.ExtendedPDBReader class method)</a>
 </li>
@@ -5350,6 +5358,8 @@
 </li>
         <li><a href="documentation_pages/coordinates/MOL2.html#MDAnalysis.coordinates.MOL2.MOL2Writer.write">(MDAnalysis.coordinates.MOL2.MOL2Writer method)</a>
 </li>
+        <li><a href="documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter.write">(MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter method)</a>
+</li>
         <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.write">(MDAnalysis.coordinates.PDB.PDBWriter method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/PDBQT.html#MDAnalysis.coordinates.PDBQT.PDBQTWriter.write">(MDAnalysis.coordinates.PDBQT.PDBQTWriter method)</a>
@@ -5448,6 +5458,8 @@
 </li>
         <li><a href="documentation_pages/coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DCDReader.Writer">(MDAnalysis.coordinates.LAMMPS.DCDReader method)</a>
 </li>
+        <li><a href="documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINReader.Writer">(MDAnalysis.coordinates.NAMDBIN.NAMDBINReader method)</a>
+</li>
         <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.ExtendedPDBReader.Writer">(MDAnalysis.coordinates.PDB.ExtendedPDBReader method)</a>
 </li>
         <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader.Writer">(MDAnalysis.coordinates.PDB.PDBReader method)</a>
@@ -5528,7 +5540,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein
 
     </p>
   </div>
