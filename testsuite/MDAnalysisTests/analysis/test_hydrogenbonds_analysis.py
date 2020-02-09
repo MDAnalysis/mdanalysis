@@ -139,7 +139,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
         ref_donors = "(resname TIP3 and name OH2)"
         donors = h.guess_donors(selection='all', max_charge=-0.5)
         assert donors == ref_donors
-class TestHydrogenBondAnalysisTIP3P_GuessHyrdogens_NoTopology(object):
+class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
     """
     Guess the hydrogen atoms involved in hydrogen bonds using the mass and
     partial charge of the atoms.
@@ -187,7 +187,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHyrdogens_NoTopology(object):
 
     def test_guess_hydrogens_min_max_mass(self, h):
 
-        with pytest.raises(AssertionError):
+        with pytest.raises(ValueError):
             hydrogens = h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
 
 class TestHydrogenBondAnalysisTIP3PStartStep(object):

@@ -273,7 +273,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             Added `min_mass` parameter to specify minimum mass (Issue #2472)
         """
 
-        assert min_mass < max_mass
+        if min_mass > max_mass:
+            raise ValueError("min_mass is higher than (or equal to) max_mass")
 
         ag = self.u.select_atoms(selection)
         hydrogens_ag = ag[
