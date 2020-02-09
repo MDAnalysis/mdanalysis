@@ -81,6 +81,8 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Added `min_mass` parameter to `guess_hydrogens` function in `HydrogenBondAnalysis`
+    set to 0.9 by default (Issue #2472)
   * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
     and rms (Issue #1745).
   * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
