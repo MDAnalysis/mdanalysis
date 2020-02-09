@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
+         Yuan-Yu
 
   * 0.21.0
 
@@ -51,6 +52,7 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
+  * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
     attribute, if present (#2421).
@@ -79,6 +81,13 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
+    and rms (Issue #1745).
+  * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
+    `save_results()` from :class:`HydrogenBondAutoCorrel`, and
+    `save_results()`/`filename`/`store` from :class:`PSAnalysis`. Also sets
+    the deprecation of `hbonds/hbond_analysis.py` to v1.0 (Issues #1745,
+    #2486, #2487, #2491, #2492).
   * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
     (Issue #2443)
   * `fullgroup` selection has now been removed (#268)
@@ -89,7 +98,7 @@ Changes
     is "-" (Issue #2448, PR #2457)
 
 Deprecations
-  * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
+  * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
 09/05/19 IAlibay, richardjgowers
 

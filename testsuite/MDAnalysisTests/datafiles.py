@@ -178,6 +178,7 @@ __all__ = [
     "GRO_huge_box", # for testing gro parser with hige box sizes
     "ITP", # for GROMACS generated itps
     "ITP_nomass", # for ATB generated itps
+    "NAMDBIN", # for NAMD generated binary file
     "ITP_edited", # to check different directives are read properly
     "ITP_tip5p", # tip5p water from opls-aa, edited with additional keywords
     "ITP_spce", # spce water from gromos54a7, edited with additional keywords,
@@ -507,5 +508,6 @@ GMX_DIR = resource_filename(__name__, 'data/gromacs/')
 GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')
 ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
+NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 # This should be the last line: clean up namespace
 del resource_filename
