@@ -655,8 +655,8 @@ class PDBWriter(base.WriterBase):
         Raises :exc:`ValueError` if the coordinates fail the check.
 
         .. versionchanged: 1.0.0
-            Check if :attr:`finename` is `StringIO` when attempting to remove
-            an invalid file.
+            Check if :attr:`filename` is `StringIO` when attempting to remove
+            a PDB file with invalid coordinates (Issue #2512)
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
         # can write from selection == Universe (Issue 49)
@@ -682,7 +682,7 @@ class PDBWriter(base.WriterBase):
             except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
-            except TypeError as err:
+            except TypeError:
                 if isinstance(self.filename, StringIO):
                     pass
 
