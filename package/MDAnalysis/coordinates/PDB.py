@@ -678,6 +678,10 @@ class PDBWriter(base.WriterBase):
             except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
+            except TypeError as err:
+                if isinstance(self.filename, StringIO):
+                    pass
+
         raise ValueError("PDB files must have coordinate values between "
                          "{0:.3f} and {1:.3f} Angstroem: file writing was "
                          "aborted.".format(self.pdb_coor_limits["min"],
