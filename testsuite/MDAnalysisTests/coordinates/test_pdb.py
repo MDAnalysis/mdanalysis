@@ -383,8 +383,9 @@ class TestPDBWriter(object):
             with mda.coordinates.PDB.PDBWriter(outstring) as writer:
                 writer.write(u.atoms)
 
-            expectedmsg = "PDB files must have coordinate values between"
-            assert error.msg[:len(expectedmsg)] == expectedmsg
+        expectedmsg = "PDB files must have coordinate values between"
+        
+        assert error.value.args[0][:len(expectedmsg)] == expectedmsg
 
 
 class TestMultiPDBReader(object):
