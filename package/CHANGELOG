@@ -79,6 +79,10 @@ Enhancements
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
 
 Changes
+  * Removes support for setting `start`/`stop`/`step` trajecotry slicing
+    keywords on :class:`HOLEtraj` construction. Also removes undocumented
+    support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
+    (Issue #2513). 
   * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
     and rms (Issue #1745).
   * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,

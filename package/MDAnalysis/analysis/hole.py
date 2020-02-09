@@ -1282,6 +1282,11 @@ class HOLEtraj(BaseHOLE):
             Last frame of trajectory to analyse, Default: None (last frame)
         step : int, optional
             Step between frames to analyse, Default: None (use every frame)
+
+        .. versionchanged:: 1.0.0
+           Undocumented support for setting :class:`HOLE` parameters via
+           :meth:`HOLEtraj.run` has been removed. This should now exclusively
+           be done on :class:`HOLEtraj` construction.
         """
         start, stop, step = self.universe.trajectory.check_slice_indices(
             start,
@@ -1289,7 +1294,6 @@ class HOLEtraj(BaseHOLE):
             step
         )
         hole_kw = self.hole_kwargs.copy()
-        hole_kw.update(kwargs)
 
         profiles = OrderedDict()  # index by orderparameters: NOTE: can overwrite!
 
