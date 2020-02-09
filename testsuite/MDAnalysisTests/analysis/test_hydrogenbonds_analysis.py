@@ -139,7 +139,56 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
         ref_donors = "(resname TIP3 and name OH2)"
         donors = h.guess_donors(selection='all', max_charge=-0.5)
         assert donors == ref_donors
+class TestHydrogenBondAnalysisTIP3P_GuessHyrdogens_NoTopology(object):
+    """
+    Guess the hydrogen atoms involved in hydrogen bonds using the mass and
+    partial charge of the atoms.
+    """
 
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    kwargs = {
+        'donors_sel': None,
+        'hydrogens_sel': None,
+        'acceptors_sel': None,
+        'd_h_cutoff': 1.2,
+        'd_a_cutoff': 3.0,
+        'd_h_a_angle_cutoff': 120.0
+    }
+
+    @pytest.fixture(scope='class')
+    def h(self, universe):
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        return h
+
+    def test_guess_hydrogens(self, h):
+
+        ref_hydrogens = "(resname TIP3 and name H1) or (resname TIP3 and name H2)"
+        hydrogens = h.guess_hydrogens(selection='all')
+        assert hydrogens == ref_hydrogens
+
+    def test_guess_hydrogens_min_mass(self, h):
+
+        hydrogens = h.guess_hydrogens(selection='all', min_mass=1.05)
+        assert hydrogens == ""
+
+    def test_guess_hydrogens_max_mass(self, h):
+
+        hydrogens = h.guess_hydrogens(selection='all', max_mass=0.95)
+        assert hydrogens == ""
+
+    def test_guess_hydrogens_min_charge(self, h):
+
+        hydrogens = h.guess_hydrogens(selection='all', min_charge=1.0)
+        assert hydrogens == ""
+
+    def test_guess_hydrogens_min_max_mass(self, h):
+
+        with pytest.raises(AssertionError):
+            hydrogens = h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
 
 class TestHydrogenBondAnalysisTIP3PStartStep(object):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P` but starting
