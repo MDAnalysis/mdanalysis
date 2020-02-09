@@ -14,11 +14,22 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
-         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, xiki-tempula 
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
+         Yuan-Yu, xiki-tempula
 
   * 0.21.0
 
 Fixes
+  * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
+  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
+    `MDAnalysis.analysis.psa`
+  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
+  * Adds a more detailed warning when attempting to read chamber-style parm7
+    files (Issue #2475)
+  * ClusterCollection.get_ids now returns correctly (Issue #2464)
+  * Removes files for stubs mainly introduced in 0.11.0 (Issue #2443)
+  * Removes support for reading AMBER NetCDF files with `cell_angle` units set
+    to `degrees` instead of the convention agreed `degree` (Issue #2327). 
   * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
@@ -38,8 +49,11 @@ Fixes
     substitutes #define variables both from the file and when passed in as a keyword
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now
     match TPRParser. (PR #2408)
+  * Added parmed to setup.py
 
 Enhancements
+  * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
+  * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
     attribute, if present (#2421).
   * Enhanges exception message when trajectory output file has no extension assigned.
@@ -68,11 +82,24 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
+    and rms (Issue #1745).
+  * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
+    `save_results()` from :class:`HydrogenBondAutoCorrel`, and
+    `save_results()`/`filename`/`store` from :class:`PSAnalysis`. Also sets
+    the deprecation of `hbonds/hbond_analysis.py` to v1.0 (Issues #1745,
+    #2486, #2487, #2491, #2492).
+  * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
+    (Issue #2443)
+  * `fullgroup` selection has now been removed (#268)
+  * AlignTraj `save()` method has been removed and the `filename` variable now
+    defaults to the current working directory (Issues #2099, #1745, #2443)
+  * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
 
 Deprecations
-  * analysis.hbonds.HydrogenBondAnalysis will be deprecated in 1.0
+  * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
 09/05/19 IAlibay, richardjgowers
 

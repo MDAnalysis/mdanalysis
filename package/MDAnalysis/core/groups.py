@@ -2834,8 +2834,6 @@ class AtomGroup(GroupBase):
 
         .. versionchanged:: 0.7.4 Added *resnum* selection.
         .. versionchanged:: 0.8.1 Added *group* and *fullgroup* selections.
-        .. deprecated:: 0.11 The use of *fullgroup* has been deprecated in favor
-            of the equivalent *global group* selections.
         .. versionchanged:: 0.13.0 Added *bonded* selection.
         .. versionchanged:: 0.16.0 Resid selection now takes icodes into account
             where present.
@@ -2847,6 +2845,9 @@ class AtomGroup(GroupBase):
            Added periodic kwarg (default True)
         .. versionchanged:: 0.19.2
            Empty sel string now returns an empty Atom group.
+        .. versionchanged:: 1.0.0
+           The ``fullgroup`` selection has now been removed in favor of the
+           equivalent ``global group`` selection.
         """
 
         if not sel:

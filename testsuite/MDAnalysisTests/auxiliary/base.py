@@ -357,8 +357,33 @@ class BaseAuxReaderTest(object):
         new = mda.auxiliary.core.auxreader(**description)
         assert new == reader, "AuxReader reloaded from description does not match"
 
-    
+    def test_step_to_frame_out_of_bounds(self, reader, ref):
 
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
+
+        assert reader.step_to_frame(-1, ts) is None
+        assert reader.step_to_frame(reader.n_steps, ts) is None
+
+    def test_step_to_frame_no_time_diff(self, reader, ref):
+
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
+        
+        for idx in range(reader.n_steps):
+
+            assert reader.step_to_frame(idx, ts) == idx
+
+    def test_step_to_frame_time_diff(self, reader, ref):
+
+        # Timestep is 0.1 longer than auxiliary data
+        ts = mda.coordinates.base.Timestep(0, dt=ref.dt + 0.1)
+
+        # Test all 5 frames
+        for idx in range(5):
+
+            frame, time_diff = reader.step_to_frame(idx, ts, return_time_diff=True)
+
+            assert frame == idx
+            np.testing.assert_almost_equal(time_diff, idx * 0.1)
 
 def assert_auxstep_equal(A, B):
     if not isinstance(A, mda.auxiliary.base.AuxStep):
