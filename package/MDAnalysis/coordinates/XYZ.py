@@ -147,6 +147,7 @@ class XYZWriter(base.WriterBase):
         """
         self.filename = filename
         self.n_atoms = n_atoms
+        self.convert_units = convert_units
 
         self.atomnames = self._get_atoms_elements_or_names(atoms)
         default_remark = "Written by {0} (release {1})".format(
