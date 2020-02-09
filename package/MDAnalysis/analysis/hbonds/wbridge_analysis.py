@@ -832,6 +832,17 @@ class WaterBridgeAnalysis(AnalysisBase):
                 if atom.name in self.donors:
                     self._residue_dict[residue.resname][atom.name].update(self._get_bonded_hydrogens(atom).names)
 
+    def _update_donor_h(self, atom_ix, h_donors, donors_h):
+        atom = self.u.atoms[atom_ix]
+        residue = atom.residue
+        hydrogen_names = self._residue_dict[residue.resname][atom.name]
+        if hydrogen_names:
+            hydrogens = residue.atoms.select_atoms('name {0}'.format(
+                ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
+            for atom in hydrogens:
+                h_donors[atom] = atom_ix
+                donors_h[atom_ix].append(atom)
+
     def _update_selection(self):
         self._s1_donors = []
         self._s1_h_donors = {}
@@ -874,13 +885,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             self._s1_donors = self.u.atoms[self._s1].select_atoms(
                 'name {0}'.format(' '.join(self.donors))).ix
             for atom_ix in self._s1_donors:
-                atom = self.u.atoms[atom_ix]
-                residue = atom.residue
-                hydrogens = residue.atoms.select_atoms('name {0}'.format(
-                    ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
-                for atom in hydrogens:
-                    self._s1_h_donors[atom] = atom_ix
-                    self._s1_donors_h[atom_ix].append(atom)
+                self._update_donor_h(atom_ix, self._s1_h_donors, self._s1_donors_h)
             self.logger_debug("Selection 1 donors: {0}".format(len(self._s1_donors)))
             self.logger_debug("Selection 1 donor hydrogens: {0}".format(len(self._s1_h_donors)))
         if self.selection1_type in ('acceptor', 'both'):
@@ -898,13 +903,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             self._s2_donors = self.u.atoms[self._s2].select_atoms(
                 'name {0}'.format(' '.join(self.donors))).ix
             for atom_ix in self._s2_donors:
-                atom = self.u.atoms[atom_ix]
-                residue = atom.residue
-                hydrogens = residue.atoms.select_atoms('name {0}'.format(
-                    ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
-                for atom in hydrogens:
-                    self._s2_h_donors[atom] = atom_ix
-                    self._s2_donors_h[atom_ix].append(atom)
+                self._update_donor_h(atom_ix, self._s2_h_donors, self._s2_donors_h)
             self.logger_debug("Selection 2 donors: {0:d}".format(len(self._s2_donors)))
             self.logger_debug("Selection 2 donor hydrogens: {0:d}".format(len(self._s2_h_donors)))
 
@@ -933,13 +932,7 @@ class WaterBridgeAnalysis(AnalysisBase):
             self._water_donors = self.u.atoms[self._water].select_atoms(
                 'name {0}'.format(' '.join(self.donors))).ix
             for atom_ix in self._water_donors:
-                atom = self.u.atoms[atom_ix]
-                residue = atom.residue
-                hydrogens = residue.atoms.select_atoms('name {0}'.format(
-                    ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
-                for atom in hydrogens:
-                    self._water_h_donors[atom] = atom_ix
-                    self._water_donors_h[atom_ix].append(atom)
+                self._update_donor_h(atom_ix, self._water_h_donors, self._water_donors_h)
             self.logger_debug("Water donors: {0}".format(len(self._water_donors)))
             self.logger_debug("Water donor hydrogens: {0}".format(len(self._water_h_donors)))
             self._water_acceptors = self.u.atoms[self._water].select_atoms(
