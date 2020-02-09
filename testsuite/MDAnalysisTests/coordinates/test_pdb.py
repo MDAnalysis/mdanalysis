@@ -368,8 +368,8 @@ class TestPDBWriter(object):
 
     def test_stringio_outofrange(self, universe3):
         """
-        Check that when StrinIO is used, the correct out-of-range error for
-        coordinates is raised (instead of failing trying to removeStrinIO
+        Check that when StringIO is used, the correct out-of-range error for
+        coordinates is raised (instead of failing trying to remove StringIO
         as a file).
         """
 
