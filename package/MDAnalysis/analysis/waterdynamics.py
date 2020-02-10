@@ -1237,27 +1237,16 @@ class SurvivalProbability(object):
 
 
     .. versionadded:: 0.11.0
-
+    .. versionchanged:: 1.0.0
+       Removes support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
+       These should instead be passed to :meth:`SurvivalProbability.run` as
+       the `start`, `stop`, and `tau_max` keywords respectively. 
     """
 
     def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
         self.selection = selection
         self.verbose = verbose
-
-        # backward compatibility
-        self.start = self.stop = self.tau_max = None
-        if t0 is not None:
-            self.start = t0
-            warnings.warn("t0 is deprecated, use run(start=t0) instead", category=DeprecationWarning)
-
-        if tf is not None:
-            self.stop = tf
-            warnings.warn("tf is deprecated, use run(stop=tf) instead", category=DeprecationWarning)
-
-        if dtmax is not None:
-            self.tau_max = dtmax
-            warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
 
     def print(self, verbose, *args):
         if self.verbose:
