@@ -82,6 +82,11 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removes the deprecated `t0`, `tf`, and `dtmax` from
+    :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
+    `tau_max` keywords should be passed to
+    :meth:`Waterdynamics.SurvivalProbability.run`. Furthermore, the `stop`
+    keyword is now exclusive instead of inclusive (Issue #2524).
   * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
     and rms (Issue #1745).
   * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
