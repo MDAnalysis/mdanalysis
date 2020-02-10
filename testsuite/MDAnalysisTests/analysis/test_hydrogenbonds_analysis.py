@@ -57,7 +57,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
     def test_hbond_analysis(self, h):
 
-        assert len(np.unique(h.hbonds[:,0])) == 10
+        assert len(np.unique(h.hbonds[:, 0])) == 10
         assert len(h.hbonds) == 32
 
         reference = {
@@ -98,6 +98,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
         assert_array_equal(counts, ref_counts)
 
+
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P`, so the
     results are identical, but the hydrogens and acceptors are guessed whilst the donor-hydrogen pairs are determined
@@ -110,6 +111,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_a_cutoff': 3.0,
         'd_h_a_angle_cutoff': 120.0
     }
+
 
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
@@ -139,6 +141,8 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
         ref_donors = "(resname TIP3 and name OH2)"
         donors = h.guess_donors(selection='all', max_charge=-0.5)
         assert donors == ref_donors
+
+
 class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
     """
     Guess the hydrogen atoms involved in hydrogen bonds using the mass and
@@ -170,17 +174,15 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
         hydrogens = h.guess_hydrogens(selection='all')
         assert hydrogens == ref_hydrogens
 
-    def test_guess_hydrogens_min_mass(self, h):
-
-        hydrogens = h.guess_hydrogens(selection='all', min_mass=1.05)
-        assert hydrogens == ""
-
-    def test_guess_hydrogens_max_mass(self, h):
-
-        hydrogens = h.guess_hydrogens(selection='all', max_mass=0.95)
-        assert hydrogens == ""
-
-    def test_guess_hydrogens_min_charge(self, h):
+    pytest.mark.parametrize(
+        "min_mass, max_mass, min_charge",
+        [
+            (1.05, 1.10, 0.30),
+            (0.90, 0.95, 0.30),
+            (0.90, 1.10, 1.00)
+        ]
+    )
+    def test_guess_hydrogens_empty_selection(self, h):
 
         hydrogens = h.guess_hydrogens(selection='all', min_charge=1.0)
         assert hydrogens == ""
@@ -189,7 +191,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
         with pytest.raises(ValueError) as err:
 
-            hydrogens = h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
+            h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
 
         assert err.value.args[0] == "min_mass is higher than (or equal to) max_mass"
 
@@ -221,7 +223,7 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
     def test_hbond_analysis(self, h):
 
-        assert len(np.unique(h.hbonds[:,0])) == 5
+        assert len(np.unique(h.hbonds[:, 0])) == 5
         assert len(h.hbonds) == 15
 
         reference = {
