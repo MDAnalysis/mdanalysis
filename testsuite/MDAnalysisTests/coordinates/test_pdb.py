@@ -379,13 +379,11 @@ class TestPDBWriter(object):
 
         outstring = StringIO()
 
-        with pytest.raises(ValueError) as error:
+        errmsg = "PDB files must have coordinate values between"
+
+        with pytest.raises(ValueError, match=errmsg):
             with mda.coordinates.PDB.PDBWriter(outstring) as writer:
                 writer.write(u.atoms)
-
-        expectedmsg = "PDB files must have coordinate values between"
-        
-        assert error.value.args[0][:len(expectedmsg)] == expectedmsg
 
 
 class TestMultiPDBReader(object):
