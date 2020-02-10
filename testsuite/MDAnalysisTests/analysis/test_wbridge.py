@@ -335,6 +335,14 @@ class TestWaterBridgeAnalysis(object):
         network = wb._network[0]
         assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
 
+    def test_donor_accepter_heavy(self, universe_DA):
+        '''Test zeroth order donor to acceptor hydrogen bonding'''
+        wb = WaterBridgeAnalysis(universe_DA, 'protein and (resid 1)',
+        'protein and (resid 4)', order=0, update_selection=True, debug=True, distance_type='heavy')
+        wb.run(verbose=False)
+        network = wb._network[0]
+        assert_equal(list(network.keys())[0][:4], (1, 0, 2, None))
+
     def test_donor_accepter_pbc(self, universe_DA_PBC):
         '''Test zeroth order donor to acceptor hydrogen bonding in PBC conditions'''
         wb = WaterBridgeAnalysis(universe_DA_PBC, 'protein and (resid 1)',
