@@ -1243,7 +1243,7 @@ class SurvivalProbability(object):
        the `start`, `stop`, and `tau_max` keywords respectively. 
     """
 
-    def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
+    def __init__(self, universe, selection, verbose=False):
         self.universe = universe
         self.selection = selection
         self.verbose = verbose
