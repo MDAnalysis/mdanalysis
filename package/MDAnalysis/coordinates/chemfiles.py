@@ -301,8 +301,10 @@ class ChemfilesWriter(base.WriterBase):
                 chemfiles_atom["altloc"] = str(atom.altLoc)
 
             if hasattr(atom, 'segid'):
-                # TODO: what is the type of atom.segid?
-                chemfiles_atom["segid"] = atom.segid
+                chemfiles_atom["segid"] = str(atom.segid)
+
+            if hasattr(atom, 'segindex'):
+                chemfiles_atom["segindex"] = int(atom.segindex)
 
             if hasattr(atom, 'resid'):
                 resname = getattr(atom, 'resname', "")
