@@ -838,7 +838,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         hydrogen_names = self._residue_dict[residue.resname][atom.name]
         if hydrogen_names:
             hydrogens = residue.atoms.select_atoms('name {0}'.format(
-                ' '.join(self._residue_dict[residue.resname][atom.name]))).ix
+                ' '.join(hydrogen_names))).ix
             for atom in hydrogens:
                 h_donors[atom] = atom_ix
                 donors_h[atom_ix].append(atom)
