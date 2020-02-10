@@ -1305,55 +1305,63 @@ class SurvivalProbability(object):
                     seen_frames_ago[atomid] = 0
 
 
-    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
+    def run(self, tau_max=20, start=None, stop=None, step=None, residues=False,
+            intermittency=0, verbose=False):
         """
         Computes and returns the Survival Probability (SP) timeseries
 
         Parameters
         ----------
         start : int, optional
-            Zero-based index of the first frame to be analysed
+            Zero-based index of the first frame to be analysed, Default: None
+            (first frame).
         stop : int, optional
-            Zero-based index of the last frame to be analysed (inclusive)
+            Zero-based index of the last frame to be analysed (exclusive),
+            Default: None (last frame).
         step : int, optional
-            Jump every `step`-th frame. This is compatible but independant of the taus used, and it is good to consider
-            using the  `step` equal to `tau_max` to remove the overlap.
-            Note that `step` and `tau_max` work consistently with intermittency.
+            Jump every `step`-th frame. This is compatible but independant of
+            the taus used, and it is good to consider using the  `step` equal
+            to `tau_max` to remove the overlap. Note that `step` and `tau_max`
+            work consistently with intermittency. Default: None
+            (use every frame).
         tau_max : int, optional
-            Survival probability is calculated for the range 1 <= `tau` <= `tau_max`
+            Survival probability is calculated for the range
+            1 <= `tau` <= `tau_max`.
         residues : Boolean, optional
-            If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).
-            A single atom is sufficient to classify the residue as within the distance.
+            If true, the analysis will be carried out on the residues
+            (.resids) rather than on atom (.ids). A single atom is sufficient
+            to classify the residue as within the distance.
         intermittency : int, optional
-            The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns
-            at the next frame. An intermittency of `0` is equivalent to a continuous survival probability, which does
-            not allow for the leaving and returning of atoms. For example, for `intermittency=2`, any given atom may
-            leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.
-            The default is continuous (0).
+            The maximum number of consecutive frames for which an atom can
+            leave but be counted as present if it returns at the next frame.
+            An intermittency of `0` is equivalent to a continuous survival
+            probability, which does not allow for the leaving and returning of
+            atoms. For example, for `intermittency=2`, any given atom may leave
+            a region of interest for up to two consecutive frames yet be
+            treated as being present at all frames. The default is continuous
+            (0).
         verbose : Boolean, optional
-            Print the progress to the console
+            Print the progress to the console.
 
         Returns
         -------
         tau_timeseries : list
             tau from 1 to `tau_max`. Saved in the field tau_timeseries.
         sp_timeseries : list
-            survival probability for each value of `tau`. Saved in the field sp_timeseries.
+            survival probability for each value of `tau`. Saved in the field
+            sp_timeseries.
+
+
+        .. versionchanged:: 1.0.0
+           To math other analysis methods, the `stop` keyword is now exclusive
+           rather than inclusive.
         """
 
-        # backward compatibility (and priority)
-        start = self.start if self.start is not None else start
-        stop = self.stop if self.stop is not None else stop
-        tau_max = self.tau_max if self.tau_max is not None else tau_max
-
-        # sanity checks
-        if stop is not None and stop >= len(self.universe.trajectory):
-            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
-
-        if stop is None:
-            stop = len(self.universe.trajectory)
-        else:
-            stop = stop + 1
+        start, stop, step = self.universe.trajectory.check_slice_indices(
+            start,
+            stop,
+            step
+        )
 
         if tau_max > (stop - start):
             raise ValueError("Too few frames selected for given tau_max.")
