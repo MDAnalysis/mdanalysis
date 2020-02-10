@@ -74,15 +74,11 @@ class LinearDensity(AnalysisBase):
     .. versionadded:: 0.14.0
 
     .. versionchanged:: 1.0.0
-<<<<<<< HEAD
        Support for the ``start``, ``stop``, and ``step`` keywords has been
        removed. These should instead be passed to :meth:`LinearDensity.run`.
-=======
-       ``save()`` method was removed, you can use ``np.savetxt()`` or
+       The ``save()`` method was also removed, you can use ``np.savetxt()`` or
        ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
        instead.
->>>>>>> develop
-
     """
 
     def __init__(self, selection, grouping='atoms', binsize=0.25, **kwargs):
