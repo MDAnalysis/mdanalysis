@@ -828,6 +828,10 @@
 <span class="sd">        coordinates and closes the file.</span>
 
 <span class="sd">        Raises :exc:`ValueError` if the coordinates fail the check.</span>
+
+<span class="sd">        .. versionchanged: 1.0.0</span>
+<span class="sd">            Check if :attr:`filename` is `StringIO` when attempting to remove</span>
+<span class="sd">            a PDB file with invalid coordinates (Issue #2512)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>  <span class="c1"># make sure to use atoms (Issue 46)</span>
         <span class="c1"># can write from selection == Universe (Issue 49)</span>
@@ -853,6 +857,14 @@
             <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">err</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOENT</span><span class="p">:</span>
                     <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
+
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;PDB files must have coordinate values between &quot;</span>
                          <span class="s2">&quot;</span><span class="si">{0:.3f}</span><span class="s2"> and </span><span class="si">{1:.3f}</span><span class="s2"> Angstroem: file writing was &quot;</span>
                          <span class="s2">&quot;aborted.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pdb_coor_limits</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
