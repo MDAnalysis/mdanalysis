@@ -279,9 +279,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         ag = self.u.select_atoms(selection)
         hydrogens_ag = ag[
             np.logical_and.reduce((
-                ag.masses > min_mass,
                 ag.masses < max_mass,
-                ag.charges > min_charge
+                ag.charges > min_charge,
+                ag.masses > min_mass,
             ))
         ]
 
