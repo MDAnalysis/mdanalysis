@@ -133,7 +133,7 @@ class TestChemfiles(TestCase):
         with ChemfilesWriter(outfile, topology=datafiles.CONECT) as writer:
             writer.write_next_timestep(u.trajectory.ts)
         # FIXME: this does not work, since chemfiles also insert the bonds
-        # which are implicit in PDB format (bewteen standard residues), while
+        # which are implicit in PDB format (between standard residues), while
         # MDAnalysis only read the explicit CONNECT records.
 
         # self.check_topology(datafiles.CONECT, outfile)

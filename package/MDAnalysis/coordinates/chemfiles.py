@@ -236,9 +236,13 @@ class ChemfilesWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Topology for the output is taken from the `obj` or default
-        to the value of the `topology` keyword supplied to the
-        :class:`ChemfilesWriter` constructor.
+        Topology for the output is taken from the `obj` or default to the value
+        of the `topology` keyword supplied to the :class:`ChemfilesWriter`
+        constructor.
+
+        If `obj` contains velocities, and the underlying format supports it, the
+        velocities are writen to the file. Writing forces is unsupported at the
+        moment.
 
         Parameters
         ----------
