@@ -184,6 +184,12 @@ class ChemfilesWriter(base.WriterBase):
 
     format = 'chemfiles'
     multiframe = True
+
+    # chemfiles mostly[1] uses these units for the in-memory representation,
+    # and convert into the file format units when writing.
+    #
+    # [1] mostly since some format don't have a specified unit
+    # (XYZ for example), so then chemfiles just assume they are in A and fs.
     units = {'time': 'fs', 'length': 'Angstrom'}
 
     def __init__(self, filename, n_atoms=0, mode="w", chemfiles_format="", topology=None, **kwargs):
