@@ -27,6 +27,8 @@ import MDAnalysis as mda
 import numpy as np
 from unittest import TestCase
 
+from chemfiles import ChemfilesError
+
 from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter
 
 from MDAnalysisTests import datafiles, tempdir
@@ -65,6 +67,10 @@ class TestChemfilesWriter(BaseWriterTest):
     # extension.
     def test_no_container(self, ref):
         pass
+
+    def test_no_extension_raises(self, ref):
+        with pytest.raises(ChemfilesError):
+            ref.writer('foo')
 
 
 class TestChemfiles(TestCase):
