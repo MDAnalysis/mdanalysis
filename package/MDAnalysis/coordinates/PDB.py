@@ -653,6 +653,10 @@ class PDBWriter(base.WriterBase):
         coordinates and closes the file.
 
         Raises :exc:`ValueError` if the coordinates fail the check.
+
+        .. versionchanged: 1.0.0
+            Check if :attr:`filename` is `StringIO` when attempting to remove
+            a PDB file with invalid coordinates (Issue #2512)
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
         # can write from selection == Universe (Issue 49)
@@ -678,6 +682,14 @@ class PDBWriter(base.WriterBase):
             except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
+                else:
+                    raise
+            except TypeError:
+                if isinstance(self.filename, StringIO):
+                    pass
+                else:
+                    raise
+
         raise ValueError("PDB files must have coordinate values between "
                          "{0:.3f} and {1:.3f} Angstroem: file writing was "
                          "aborted.".format(self.pdb_coor_limits["min"],

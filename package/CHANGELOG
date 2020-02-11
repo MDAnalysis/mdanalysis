@@ -20,6 +20,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Handle exception when PDBWriter is trying to remove an invalid StringIO
+    (Issue #2512)
   * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
   * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
     `MDAnalysis.analysis.psa`
