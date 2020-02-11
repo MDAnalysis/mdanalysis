@@ -43,6 +43,7 @@ from __future__ import print_function, unicode_literals
 
 import numpy as np
 from six import string_types
+from distutils.version import LooseVersion
 
 from . import base, core
 
@@ -50,7 +51,17 @@ import chemfiles
 from chemfiles import Trajectory, Frame, Atom, UnitCell, Residue, Topology
 
 
-assert chemfiles.__version__.startswith("0.9.")
+MIN_CHEMFILES_VERSION = LooseVersion("0.9")
+MAX_CHEMFILES_VERSION = LooseVersion("0.10")
+
+
+def check_chemfiles_version():
+    version = LooseVersion(chemfiles.__version__)
+    if version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION:
+        raise RuntimeError(
+            "unsupported Chemfiles version {}, we need a version >{} and <{}"
+            .format(version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION)
+        )
 
 
 class ChemfilesReader(base.ReaderBase):
@@ -80,6 +91,7 @@ class ChemfilesReader(base.ReaderBase):
 
         .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
+        check_chemfiles_version()
         super(ChemfilesReader, self).__init__(filename, **kwargs)
         self._format = chemfiles_format
         self._cached_n_atoms = None
@@ -201,6 +213,7 @@ class ChemfilesWriter(base.WriterBase):
 
         .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
+        check_chemfiles_version()
         self.filename = filename
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":
