@@ -169,7 +169,7 @@ The class and its methods
 """
 from __future__ import absolute_import, division
 
-import numpy as  np
+import numpy as np
 
 from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
@@ -234,7 +234,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.d_h_a_angle = d_h_a_angle_cutoff
         self.update_selections = update_selections
 
-    def guess_hydrogens(self, selection='all', max_mass=1.1, min_charge=0.3):
+    def guess_hydrogens(self,
+                        selection='all',
+                        max_mass=1.1,
+                        min_charge=0.3,
+                        min_mass=0.9
+                        ):
         """Guesses which hydrogen atoms should be used in the analysis.
 
         Parameters
@@ -263,14 +268,21 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential hydrogen atoms involved
         in hydrogen bonding. This str may then be modified before being used to set the attribute
         :attr:`hydrogens_sel`.
+
+        .. versionchanged: 1.0.0
+            Added `min_mass` parameter to specify minimum mass (Issue #2472)
         """
+
+        if min_mass > max_mass:
+            raise ValueError("min_mass is higher than (or equal to) max_mass")
 
         ag = self.u.select_atoms(selection)
         hydrogens_ag = ag[
-            np.logical_and(
+            np.logical_and.reduce((
                 ag.masses < max_mass,
-                ag.charges > min_charge
-            )
+                ag.charges > min_charge,
+                ag.masses > min_mass,
+            ))
         ]
 
         hydrogens_list = np.unique(
