@@ -99,7 +99,7 @@ Changes
   * Removed core.flags.  Default behaviour (eg pbc, units) now defaults to
     the default setting of the flag before removal.  If you were using flags
     you will now have to supply the flag setting as keyword arguments to
-    function calls.
+    function calls. (Issue #782)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
