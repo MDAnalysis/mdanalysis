@@ -344,7 +344,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span>  <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
@@ -409,7 +409,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">d_h_a_angle</span> <span class="o">=</span> <span class="n">d_h_a_angle_cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span> <span class="o">=</span> <span class="n">update_selections</span>
 
-<div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>    <span class="k">def</span> <span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_mass</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_charge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>    <span class="k">def</span> <span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                        <span class="n">max_mass</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+                        <span class="n">min_charge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+                        <span class="n">min_mass</span><span class="o">=</span><span class="mf">0.9</span>
+                        <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Guesses which hydrogen atoms should be used in the analysis.</span>
 
 <span class="sd">        Parameters</span>
@@ -438,14 +443,21 @@
 <span class="sd">        Alternatively, this function may be used to quickly generate a :class:`str` of potential hydrogen atoms involved</span>
 <span class="sd">        in hydrogen bonding. This str may then be modified before being used to set the attribute</span>
 <span class="sd">        :attr:`hydrogens_sel`.</span>
+
+<span class="sd">        .. versionchanged: 1.0.0</span>
+<span class="sd">            Added `min_mass` parameter to specify minimum mass (Issue #2472)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">min_mass</span> <span class="o">&gt;</span> <span class="n">max_mass</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;min_mass is higher than (or equal to) max_mass&quot;</span><span class="p">)</span>
 
         <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
         <span class="n">hydrogens_ag</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">((</span>
                 <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&lt;</span> <span class="n">max_mass</span><span class="p">,</span>
-                <span class="n">ag</span><span class="o">.</span><span class="n">charges</span> <span class="o">&gt;</span> <span class="n">min_charge</span>
-            <span class="p">)</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">charges</span> <span class="o">&gt;</span> <span class="n">min_charge</span><span class="p">,</span>
+                <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&gt;</span> <span class="n">min_mass</span><span class="p">,</span>
+            <span class="p">))</span>
         <span class="p">]</span>
 
         <span class="n">hydrogens_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
