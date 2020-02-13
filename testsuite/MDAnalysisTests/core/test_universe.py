@@ -1147,3 +1147,8 @@ class TestEmpty(object):
         assert len(u.atoms) == 0
         assert len(u.residues) == 0
         assert len(u.segments) == 0
+
+    def test_empty_creation(self):
+        u = mda.Universe()
+        assert u.atoms is None
+        assert u._topology is None

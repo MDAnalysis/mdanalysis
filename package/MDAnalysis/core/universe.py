@@ -363,7 +363,7 @@ class Universe(object):
     """
 
     
-    def __init__(self, topology, *coordinates, all_coordinates=False,
+    def __init__(self, topology=None, *coordinates, all_coordinates=False,
                  format=None, topology_format=None, transformations=None,
                  guess_bonds=False, vdwradii=None, anchor_name=None,
                  is_anchor=True, in_memory=False, in_memory_step=1,
@@ -405,6 +405,8 @@ class Universe(object):
 
         if topology is not None:
             _generate_from_topology(self)  # make real atoms, res, segments
+        else:
+            self.atoms = None
         
         coordinates = _resolve_coordinates(self.filename, *coordinates,
                                            format=format,
