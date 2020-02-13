@@ -1347,9 +1347,9 @@
 <span class="sd">    universe and feed it to HOLE. It sequentially creates a temporary PDB for</span>
 <span class="sd">    each frame and runs HOLE on the frame.</span>
 
-<span class="sd">    The trajectory can be sliced with the `start`, `stop`, and `step`</span>
-<span class="sd">    keywords. (:program:`hole` is not fast so slicing a trajectory is</span>
-<span class="sd">    recommended.)</span>
+<span class="sd">    The trajectory can be sliced by passing the `start`, `stop`, and `step`</span>
+<span class="sd">    keywords to :meth:`HOLEtraj.run`. (:program:`hole` is not fast so slicing a</span>
+<span class="sd">    trajectory is recommended.)</span>
 
 <span class="sd">    Frames of the trajectory can be associated with order parameters (e.g.,</span>
 <span class="sd">    RMSD) in order to group the HOLE profiles by order parameter (see the</span>
@@ -1370,10 +1370,6 @@
 <span class="sd">        orderparameters : array_like or string, optional</span>
 <span class="sd">             Sequence or text file containing order parameters (float</span>
 <span class="sd">             numbers) corresponding to the frames in the trajectory.</span>
-<span class="sd">        start, stop, step : int, optional</span>
-<span class="sd">             slice the trajectory as</span>
-<span class="sd">             ``universe.trajectory[start:stop:step]``. The default is ``None``</span>
-<span class="sd">             so that the whole trajectory is analyzed</span>
 <span class="sd">        selection : string, optional</span>
 <span class="sd">             selection string for</span>
 <span class="sd">             :meth:`~MDAnalysis.core.universe.Universe.select_atoms` to select</span>
@@ -1393,15 +1389,15 @@
 <span class="sd">             All other keywords are passed on to :class:`HOLE` (see there for</span>
 <span class="sd">             description).</span>
 
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Support for the `start`, `stop`, and `step` keywords has been</span>
+<span class="sd">           removed. These should instead be passed to :meth:`HOLEtraj.run`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;selection&quot;</span><span class="p">,</span> <span class="s2">&quot;protein&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">orderparametersfile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;orderparameters&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;stop&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cpoint&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -1450,17 +1446,29 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">q</span>
 
-<div class="viewcode-block" id="HOLEtraj.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.HOLEtraj.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="HOLEtraj.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.HOLEtraj.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run HOLE on the whole trajectory and collect profiles.</span>
 
-<span class="sd">        Keyword arguments `start`, `stop`, and `step` can be used to only</span>
-<span class="sd">        analyse part of the trajectory.</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        start : int, optional</span>
+<span class="sd">            First frame of trajectory to analyse, Default: None (first frame)</span>
+<span class="sd">        stop : int, optional</span>
+<span class="sd">            Last frame of trajectory to analyse, Default: None (last frame)</span>
+<span class="sd">        step : int, optional</span>
+<span class="sd">            Step between frames to analyse, Default: None (use every frame)</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Undocumented support for setting :class:`HOLE` parameters via</span>
+<span class="sd">           :meth:`HOLEtraj.run` has been removed. This should now exclusively</span>
+<span class="sd">           be done on :class:`HOLEtraj` construction.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;start&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">)</span>
-        <span class="n">stop</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;stop&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
+            <span class="n">start</span><span class="p">,</span>
+            <span class="n">stop</span><span class="p">,</span>
+            <span class="n">step</span>
+        <span class="p">)</span>
         <span class="n">hole_kw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hole_kwargs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">hole_kw</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">profiles</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>  <span class="c1"># index by orderparameters: NOTE: can overwrite!</span>
 

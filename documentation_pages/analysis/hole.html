@@ -766,9 +766,9 @@ has limited support for analysing trajectories but cannot deal with all the
 trajectory formats understood by MDAnalysis. This class can take any
 universe and feed it to HOLE. It sequentially creates a temporary PDB for
 each frame and runs HOLE on the frame.</p>
-<p>The trajectory can be sliced with the <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>
-keywords. (<strong class="program">hole</strong> is not fast so slicing a trajectory is
-recommended.)</p>
+<p>The trajectory can be sliced by passing the <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite>
+keywords to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="MDAnalysis.analysis.hole.HOLEtraj.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HOLEtraj.run()</span></code></a>. (<strong class="program">hole</strong> is not fast so slicing a
+trajectory is recommended.)</p>
 <p>Frames of the trajectory can be associated with order parameters (e.g.,
 RMSD) in order to group the HOLE profiles by order parameter (see the
 <cite>orderparameters</cite> keyword).</p>
@@ -784,9 +784,6 @@ converted to a sequence of PDB files and <a class="reference internal" href="#MD
 each individual file.</li>
 <li><strong>orderparameters</strong> (<em>array_like</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – Sequence or text file containing order parameters (float
 numbers) corresponding to the frames in the trajectory.</li>
-<li><strong>stop</strong><strong>, </strong><strong>step</strong> (<em>start</em><em>,</em>) – slice the trajectory as
-<code class="docutils literal notranslate"><span class="pre">universe.trajectory[start:stop:step]</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">None</span></code>
-so that the whole trajectory is analyzed</li>
 <li><strong>selection</strong> (<em>string</em><em>, </em><em>optional</em>) – selection string for
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.select_atoms" title="MDAnalysis.core.universe.Universe.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> to select
 the group of atoms that is to be analysed by HOLE. The default is
@@ -806,6 +803,10 @@ description).</li>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite> keywords has been
+removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="MDAnalysis.analysis.hole.HOLEtraj.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HOLEtraj.run()</span></code></a>.</p>
+</div>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.profiles">
 <code class="descname">profiles</code><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.profiles" title="Permalink to this definition">¶</a></dt>
@@ -924,10 +925,24 @@ maximum value for the z axis</a>.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run HOLE on the whole trajectory and collect profiles.</p>
-<p>Keyword arguments <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite> can be used to only
-analyse part of the trajectory.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: None (first frame)</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to analyse, Default: None (last frame)</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames to analyse, Default: None (use every frame)</li>
+<li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Undocumented support for setting <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE" title="MDAnalysis.analysis.hole.HOLE"><code class="xref py py-class docutils literal notranslate"><span class="pre">HOLE</span></code></a> parameters via
+<a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="MDAnalysis.analysis.hole.HOLEtraj.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HOLEtraj.run()</span></code></a> has been removed. This should now exclusively
+be done on <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj" title="MDAnalysis.analysis.hole.HOLEtraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">HOLEtraj</span></code></a> construction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
