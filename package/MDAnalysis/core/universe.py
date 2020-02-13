@@ -401,12 +401,12 @@ class Universe(object):
                                                 topology_format=topology_format,
                                                 **kwargs)
 
-        self._topology = topology
-
         if topology is not None:
-            _generate_from_topology(self)  # make real atoms, res, segments
+            self._topology = topology
         else:
-            self.atoms = None
+            self._topology = Topology(0, 0, 0)
+
+        _generate_from_topology(self)  # make real atoms, res, segments
         
         coordinates = _resolve_coordinates(self.filename, *coordinates,
                                            format=format,
@@ -488,17 +488,31 @@ class Universe(object):
            Universes can now be created with 0 atoms
         """
         if not n_atoms:
-            return cls(None)
+            return cls()
             
         if atom_resindex is None:
             warnings.warn(
                 'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
+
         if residue_segindex is None:
             warnings.warn(
                 'Segments specified but no segment_resindex given.  '
+                'All residues will be placed in first Segment',
+                UserWarning)
+
+        top = Topology(n_atoms, n_residues, n_segments,
+                       atom_resindex=atom_resindex,
+                       residue_segindex=residue_segindex,
+        )
+
+        u = cls(top)
+
+        if trajectory:
+            coords = np.zeros((1, n_atoms, 3), dtype=np.float32)
             dims = np.zeros(6, dtype=np.float32)
+            vels = np.zeros_like(coords) if velocities else None
             forces = np.zeros_like(coords) if forces else None
 
             # grab and attach a MemoryReader
