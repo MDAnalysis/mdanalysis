@@ -629,8 +629,6 @@
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">zip_longest</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">multiprocessing</span>
-
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
 
@@ -676,22 +674,21 @@
 <span class="sd">      frame where analysis ends</span>
 <span class="sd">    dtmax : int</span>
 <span class="sd">      Maximum dt size, `dtmax` &lt; `tf` or it will crash.</span>
-<span class="sd">    nproc : int</span>
-<span class="sd">      Number of processors to use, by default is 1.</span>
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       The ``nproc`` keyword was removed as it linked to a portion of code that</span>
+<span class="sd">       may have failed in some cases.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span>
-                 <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span> <span class="o">=</span> <span class="n">selection1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span> <span class="o">=</span> <span class="n">selection2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">=</span> <span class="n">nproc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_getC_i</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">HBP</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
@@ -808,82 +805,17 @@
             <span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fix</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">a</span>
 
-    <span class="k">def</span> <span class="nf">_HBA</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">conn</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selAtom1</span><span class="p">,</span> <span class="n">selAtom2</span><span class="p">,</span>
-             <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Main function for calculate C_i and C_c in parallel.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">finalGetResidue1</span> <span class="o">=</span> <span class="n">selAtom1</span>
-        <span class="n">finalGetResidue2</span> <span class="o">=</span> <span class="n">selAtom2</span>
-        <span class="n">frame</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span>
-                                                            <span class="n">finalGetResidue1</span><span class="p">,</span>
-                                                            <span class="n">finalGetResidue2</span><span class="p">,</span>
-                                                            <span class="n">distance</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
-                                                            <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span>
-                                                            <span class="n">start</span><span class="o">=</span><span class="n">frame</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
-                                                            <span class="n">stop</span><span class="o">=</span><span class="n">frame</span><span class="p">)</span>
-        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">h</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
-                <span class="k">break</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">)</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;trying again&quot;</span><span class="p">)</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <div class="viewcode-block" id="HydrogenBondLifetimes.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Analyze trajectory and produce timeseries&quot;&quot;&quot;</span>
-        <span class="n">h_list</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
-            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">):</span>
-                <span class="n">jobs</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="n">i</span>
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc</span><span class="p">):</span>
-                    <span class="c1"># start</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ts=&quot;</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">):</span>
-                        <span class="k">break</span>
-                    <span class="n">conn_parent</span><span class="p">,</span> <span class="n">conn_child</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pipe</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="c1"># new thread</span>
-                            <span class="n">jobs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                                <span class="p">(</span><span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span>
-                                    <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_HBA</span><span class="p">,</span>
-                                    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
-                                          <span class="n">conn_child</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span>
-                                          <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,)),</span>
-                                 <span class="n">conn_parent</span><span class="p">))</span>
-                            <span class="k">break</span>
-                        <span class="k">except</span><span class="p">:</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;error in jobs.append&quot;</span><span class="p">)</span>
-                    <span class="n">jobs</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-                    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
-
-                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nproc</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">):</span>
-                        <span class="k">break</span>
-                    <span class="n">rec01</span> <span class="o">=</span> <span class="n">jobs</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">received</span> <span class="o">=</span> <span class="n">rec01</span><span class="o">.</span><span class="n">recv</span><span class="p">()</span>
-                    <span class="n">h_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">received</span><span class="p">)</span>
-                    <span class="n">jobs</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
-                    <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span>
-                <span class="n">h_list</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">h_list</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span>
-                                                                     <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span>
-                                                                     <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span>
-                                                                     <span class="n">distance</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
-                                                                     <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
-            <span class="n">h_list</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span>
-                <span class="n">h_list</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span></div></div>
+        <span class="n">h_list</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">hbonds</span><span class="o">.</span><span class="n">HydrogenBondAnalysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span>
+                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span><span class="p">,</span>
+                                                                 <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span><span class="p">,</span>
+                                                                 <span class="n">distance</span><span class="o">=</span><span class="mf">3.5</span><span class="p">,</span>
+                                                                 <span class="n">angle</span><span class="o">=</span><span class="mf">120.0</span><span class="p">)</span>
+        <span class="n">h_list</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getGraphics</span><span class="p">(</span><span class="n">h_list</span><span class="o">.</span><span class="n">timeseries</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span><span class="p">)</span></div></div>
 
 
 <div class="viewcode-block" id="WaterOrientationalRelaxation"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">[docs]</a><span class="k">class</span> <span class="nc">WaterOrientationalRelaxation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>

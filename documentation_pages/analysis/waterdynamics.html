@@ -625,7 +625,7 @@ a list of all SPs calculated for each tau. This can be used to compute the distr
 <h2>4.8.3.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">HydrogenBondLifetimes</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1</em>, <em>selection2</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#HydrogenBondLifetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">HydrogenBondLifetimes</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1</em>, <em>selection2</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#HydrogenBondLifetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hydrogen bond lifetime analysis</p>
 <p>This is a autocorrelation function that gives the “Hydrogen Bond Lifetimes”
 (HBL) proposed by D.C. Rapaport <a class="reference internal" href="#rapaport1983" id="id14">[Rapaport1983]</a>. From this function we can
@@ -656,7 +656,6 @@ It could be any selection available in MDAnalysis, not just water.</li>
 <li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
 <li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
 <li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
-<li><strong>nproc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of processors to use, by default is 1.</li>
 </ul>
 </td>
 </tr>
@@ -664,6 +663,10 @@ It could be any selection available in MDAnalysis, not just water.</li>
 </table>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>The <code class="docutils literal notranslate"><span class="pre">nproc</span></code> keyword was removed as it linked to a portion of code that
+may have failed in some cases.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes.run">
