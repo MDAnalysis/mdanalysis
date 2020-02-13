@@ -823,8 +823,8 @@ def hes(ensembles,
          [ 7032.19607004     0.        ]]
 
     .. versionchanged:: 1.0.0
-    hes doesn't accept the *details* argument anymore, it always returns the
-    details of the calculation instead, in the form of a dictionary
+       hes doesn't accept the *details* argument anymore, it always returns the
+       details of the calculation instead, in the form of a dictionary
 
     """
 
