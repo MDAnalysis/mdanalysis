@@ -757,8 +757,9 @@ def hes(ensembles,
 
     Returns
     -------
-    numpy.array (bidimensional)
-        Harmonic similarity measurements between each pair of ensembles.
+    hes, details : numpy.array, dictionary
+        Harmonic similarity measurements between each pair of ensembles,
+        and dict containing mean and covariance matrix for each ensemble
 
     Notes
     -----
