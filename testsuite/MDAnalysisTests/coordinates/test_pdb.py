@@ -186,6 +186,10 @@ class TestPDBWriter(object):
         return mda.Universe(PSF, DCD)
 
     @pytest.fixture
+    def universe3(self):
+        return mda.Universe(PDB)
+
+    @pytest.fixture
     def outfile(self, tmpdir):
         return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
 
@@ -361,6 +365,26 @@ class TestPDBWriter(object):
         u.atoms.write(outfile)
         u_pdb = mda.Universe(outfile)
         assert u_pdb.segments.chainIDs[0][0] == ref_id
+
+    def test_stringio_outofrange(self, universe3):
+        """
+        Check that when StringIO is used, the correct out-of-range error for
+        coordinates is raised (instead of failing trying to remove StringIO
+        as a file).
+        """
+
+        u = universe3
+
+        u.atoms.translate([-9999, -9999, -9999])
+
+        outstring = StringIO()
+
+        errmsg = "PDB files must have coordinate values between"
+
+        with pytest.raises(ValueError, match=errmsg):
+            with mda.coordinates.PDB.PDBWriter(outstring) as writer:
+                writer.write(u.atoms)
+
 
 class TestMultiPDBReader(object):
     @staticmethod
