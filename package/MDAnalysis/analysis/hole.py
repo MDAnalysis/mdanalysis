@@ -1218,6 +1218,9 @@ class HOLEtraj(BaseHOLE):
         .. versionchanged:: 1.0.0
            Support for the `start`, `stop`, and `step` keywords has been
            removed. These should instead be passed to :meth:`HOLEtraj.run`.
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
         self.universe = universe
@@ -1241,6 +1244,8 @@ class HOLEtraj(BaseHOLE):
         This method simply uses the center of geometry of the selection as a
         guess. `select` is "protein" by default.
 
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
         return self.universe.select_atoms(select).center_of_geometry()
 
