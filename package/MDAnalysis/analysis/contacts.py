@@ -216,7 +216,7 @@ import logging
 
 import MDAnalysis
 import MDAnalysis.lib.distances
-from MDAnalysis.lib.util import openany, deprecate
+from MDAnalysis.lib.util import openany
 from MDAnalysis.analysis.distances import distance_array
 from MDAnalysis.core.groups import AtomGroup
 from .base import AnalysisBase
@@ -370,6 +370,10 @@ class Contacts(AnalysisBase):
     timeseries : list
         list containing *Q* for all refgroup pairs and analyzed frames
 
+    .. versionchanged:: 1.0.0
+       ``save()`` method has been removed. Use ``np.savetxt()`` on
+       :attr:`Contacts.timeseries` instead.
+
     """
     def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
                  kwargs=None, **basekwargs):
@@ -445,20 +449,6 @@ class Contacts(AnalysisBase):
             r0 = r0[initial_contacts]
             q = self.fraction_contacts(r, r0, **self.fraction_kwargs)
             self.timeseries[self._frame_index][i] = q
-
-
-    @deprecate(release="0.19.0", remove="1.0.0")
-    def save(self, outfile):
-        """save contacts timeseries
-
-        Parameters
-        ----------
-        outfile : str
-            file to save contacts
-
-        """
-        np.savetxt(outfile, self.timeseries,
-                   header="# q1 analysis\n", comments='')
 
 
 def _new_selections(u_orig, selections, frame):

@@ -251,9 +251,9 @@ global *selection*
     :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from a
     :class:`~MDAnalysis.core.universe.Universe`, ``global`` is ignored.
 
-.. deprecated:: 0.11
-   The use of ``fullgroup`` has been deprecated in favor of the equivalent
-   ``global group``.
+.. versionchanged:: 1.0.0
+   The ``fullgroup`` selection has now been removed. Please use the equivalent
+   ``global group`` selection.
 
 Dynamic selections
 ==================

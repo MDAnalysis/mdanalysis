@@ -277,7 +277,7 @@ import matplotlib.pyplot as plt
 from MDAnalysis import Universe
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysis.lib.util import (which, realpath, asiterable,
-                                 FORTRANReader, deprecate)
+                                 FORTRANReader)
 
 from ..due import due, Doi
 
@@ -387,23 +387,13 @@ def seq2str(v):
 
 
 class BaseHOLE(object):
-    """Baseclass for HOLE analysis, providing plotting and utility functions"""
+    """Baseclass for HOLE analysis, providing plotting and utility functions
 
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``cPickle.dump(HOLE.profiles, open(filename, 'wb'))``.")
-    def save(self, filename="hole.pickle"):
-        """Save :attr:`profiles` as a Python pickle file *filename*.
+    .. versionchanged:: 1.0.0
+       ``save()`` method was removed. You can use ``cPickle.dump()`` on
+       :attr:`BaseHOLE.profiles` instead.
 
-        Load profiles dictionary with ::
-
-           import cPickle
-           profiles = cPickle.load(open(filename))
-
-
-        """
-
-        cPickle.dump(self.profiles, open(filename, "wb"), cPickle.HIGHEST_PROTOCOL)
+    """
 
     def _process_plot_kwargs(self, kwargs):
         kw = {}
@@ -1182,9 +1172,9 @@ class HOLEtraj(BaseHOLE):
     universe and feed it to HOLE. It sequentially creates a temporary PDB for
     each frame and runs HOLE on the frame.
 
-    The trajectory can be sliced with the `start`, `stop`, and `step`
-    keywords. (:program:`hole` is not fast so slicing a trajectory is
-    recommended.)
+    The trajectory can be sliced by passing the `start`, `stop`, and `step`
+    keywords to :meth:`HOLEtraj.run`. (:program:`hole` is not fast so slicing a
+    trajectory is recommended.)
 
     Frames of the trajectory can be associated with order parameters (e.g.,
     RMSD) in order to group the HOLE profiles by order parameter (see the
@@ -1205,10 +1195,6 @@ class HOLEtraj(BaseHOLE):
         orderparameters : array_like or string, optional
              Sequence or text file containing order parameters (float
              numbers) corresponding to the frames in the trajectory.
-        start, stop, step : int, optional
-             slice the trajectory as
-             ``universe.trajectory[start:stop:step]``. The default is ``None``
-             so that the whole trajectory is analyzed
         selection : string, optional
              selection string for
              :meth:`~MDAnalysis.core.universe.Universe.select_atoms` to select
@@ -1228,15 +1214,15 @@ class HOLEtraj(BaseHOLE):
              All other keywords are passed on to :class:`HOLE` (see there for
              description).
 
+
+        .. versionchanged:: 1.0.0
+           Support for the `start`, `stop`, and `step` keywords has been
+           removed. These should instead be passed to :meth:`HOLEtraj.run`.
         """
 
         self.universe = universe
         self.selection = kwargs.pop("selection", "protein")
         self.orderparametersfile = kwargs.pop("orderparameters", None)
-
-        self.start = kwargs.pop('start', None)
-        self.stop = kwargs.pop('stop', None)
-        self.step = kwargs.pop('step', None)
 
         self.cpoint = kwargs.pop('cpoint', None)
         if self.cpoint is True:
@@ -1285,17 +1271,29 @@ class HOLEtraj(BaseHOLE):
             raise ValueError(errmsg)
         return q
 
-    def run(self, **kwargs):
+    def run(self, start=None, stop=None, step=None):
         """Run HOLE on the whole trajectory and collect profiles.
 
-        Keyword arguments `start`, `stop`, and `step` can be used to only
-        analyse part of the trajectory.
+        Parameters
+        ----------
+        start : int, optional
+            First frame of trajectory to analyse, Default: None (first frame)
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: None (last frame)
+        step : int, optional
+            Step between frames to analyse, Default: None (use every frame)
+
+        .. versionchanged:: 1.0.0
+           Undocumented support for setting :class:`HOLE` parameters via
+           :meth:`HOLEtraj.run` has been removed. This should now exclusively
+           be done on :class:`HOLEtraj` construction.
         """
-        start = kwargs.pop('start', self.start)
-        stop = kwargs.pop('stop', self.stop)
-        step = kwargs.pop('step', self.step)
+        start, stop, step = self.universe.trajectory.check_slice_indices(
+            start,
+            stop,
+            step
+        )
         hole_kw = self.hole_kwargs.copy()
-        hole_kw.update(kwargs)
 
         profiles = OrderedDict()  # index by orderparameters: NOTE: can overwrite!
 
