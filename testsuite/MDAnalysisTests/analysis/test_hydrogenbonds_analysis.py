@@ -57,7 +57,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
     def test_hbond_analysis(self, h):
 
-        assert len(np.unique(h.hbonds[:,0])) == 10
+        assert len(np.unique(h.hbonds[:, 0])) == 10
         assert len(h.hbonds) == 32
 
         reference = {
@@ -98,6 +98,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
         assert_array_equal(counts, ref_counts)
 
+
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P`, so the
     results are identical, but the hydrogens and acceptors are guessed whilst the donor-hydrogen pairs are determined
@@ -110,6 +111,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_a_cutoff': 3.0,
         'd_h_a_angle_cutoff': 120.0
     }
+
 
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
@@ -141,6 +143,58 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
         assert donors == ref_donors
 
 
+class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
+    """
+    Guess the hydrogen atoms involved in hydrogen bonds using the mass and
+    partial charge of the atoms.
+    """
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    kwargs = {
+        'donors_sel': None,
+        'hydrogens_sel': None,
+        'acceptors_sel': None,
+        'd_h_cutoff': 1.2,
+        'd_a_cutoff': 3.0,
+        'd_h_a_angle_cutoff': 120.0
+    }
+
+    @pytest.fixture(scope='class')
+    def h(self, universe):
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        return h
+
+    def test_guess_hydrogens(self, h):
+
+        ref_hydrogens = "(resname TIP3 and name H1) or (resname TIP3 and name H2)"
+        hydrogens = h.guess_hydrogens(selection='all')
+        assert hydrogens == ref_hydrogens
+
+    pytest.mark.parametrize(
+        "min_mass, max_mass, min_charge",
+        [
+            (1.05, 1.10, 0.30),
+            (0.90, 0.95, 0.30),
+            (0.90, 1.10, 1.00)
+        ]
+    )
+    def test_guess_hydrogens_empty_selection(self, h):
+
+        hydrogens = h.guess_hydrogens(selection='all', min_charge=1.0)
+        assert hydrogens == ""
+
+    def test_guess_hydrogens_min_max_mass(self, h):
+
+        errmsg = "min_mass is higher than \(or equal to\) max_mass"
+
+        with pytest.raises(ValueError, match=errmsg):
+
+            h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
+
 class TestHydrogenBondAnalysisTIP3PStartStep(object):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P` but starting
     with the second frame and using every other frame in the analysis.
@@ -168,7 +222,7 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
     def test_hbond_analysis(self, h):
 
-        assert len(np.unique(h.hbonds[:,0])) == 5
+        assert len(np.unique(h.hbonds[:, 0])) == 5
         assert len(h.hbonds) == 15
 
         reference = {
