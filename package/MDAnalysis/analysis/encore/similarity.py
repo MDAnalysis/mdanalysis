@@ -1421,7 +1421,7 @@ def dres(ensembles,
 
     details = {}
     details["reduced_coordinates"] = coordinates
-    details["dimensionality_reduction_details"] = details
+    details["dimensionality_reduction_details"] = dim_red_details
 
     if estimate_error:
         k = 0
