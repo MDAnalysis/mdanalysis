@@ -84,6 +84,10 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removes support for setting `start`/`stop`/`step` trajecotry slicing
+    keywords on :class:`HOLEtraj` construction. Also removes undocumented
+    support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
+    (Issue #2513). 
   * Removes the `nproc` keyword from
     :class:`Waterdynamics.HydrogenBondLifetimes` as the multiprocessing functionality
     did not work in some cases(Issues #2511).
