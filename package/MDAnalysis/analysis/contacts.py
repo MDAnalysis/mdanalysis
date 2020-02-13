@@ -398,6 +398,12 @@ class Contacts(AnalysisBase):
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
+
+        Notes
+        -----
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
         self.u = u
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
@@ -484,6 +490,12 @@ def q1q2(u, select='all', radius=4.5,
     -------
     contacts : :class:`Contacts`
         Contact Analysis that is set up for a q1-q2 analysis
+
+    Notes
+    -----
+    
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
 
     """
     selection = (select, select)

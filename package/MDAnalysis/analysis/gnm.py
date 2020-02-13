@@ -229,6 +229,9 @@ class GNMAnalysis(object):
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
+
     """
 
     def __init__(self,
@@ -394,6 +397,9 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
     .. versionchanged:: 0.21.0
        MassWeight option (see above deprecation entry).
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
     def __init__(self,
