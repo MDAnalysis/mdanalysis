@@ -375,14 +375,14 @@ class Contacts(AnalysisBase):
        :attr:`Contacts.timeseries` instead.
 
     """
-    def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
+    def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  kwargs=None, **basekwargs):
         """
         Parameters
         ----------
         u : Universe
             trajectory
-        selection : tuple(string, string)
+        select : tuple(string, string)
             two contacting groups that change over time
         refgroup : tuple(AtomGroup, AtomGroup)
             two contacting atomgroups in their reference conformation. This
@@ -415,9 +415,9 @@ class Contacts(AnalysisBase):
                 raise ValueError("method has to be callable")
             self.fraction_contacts = method
 
-        self.selection = selection
-        self.grA = u.select_atoms(selection[0])
-        self.grB = u.select_atoms(selection[1])
+        self.select = select
+        self.grA = u.select_atoms(select[0])
+        self.grB = u.select_atoms(select[1])
 
         # contacts formed in reference
         self.r0 = []
@@ -458,7 +458,7 @@ def _new_selections(u_orig, selections, frame):
     return [u.select_atoms(s) for s in selections]
 
 
-def q1q2(u, selection='all', radius=4.5,
+def q1q2(u, select='all', radius=4.5,
          start=None, stop=None, step=None):
     """Perform a q1-q2 analysis.
 
@@ -469,7 +469,7 @@ def q1q2(u, selection='all', radius=4.5,
     ----------
     u : Universe
         Universe with a trajectory
-    selection : string, optional
+    select : string, optional
         atoms to do analysis on
     radius : float, optional
         distance at which contact is formed
@@ -486,7 +486,7 @@ def q1q2(u, selection='all', radius=4.5,
         Contact Analysis that is set up for a q1-q2 analysis
 
     """
-    selection = (selection, selection)
+    selection = (select, select)
     first_frame_refs = _new_selections(u, selection, 0)
     last_frame_refs = _new_selections(u, selection, -1)
     return Contacts(u, selection,
