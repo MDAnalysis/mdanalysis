@@ -404,7 +404,10 @@ class Universe(object):
         if topology is not None:
             self._topology = topology
         else:
-            self._topology = Topology(0, 0, 0)
+            # point to Universe.empty instead of making empty universe
+            raise TypeError('Topology argument required to make Universe. '
+                            'Try Universe.empty(n_atoms, ...) to construct '
+                            'your own Universe.')
 
         _generate_from_topology(self)  # make real atoms, res, segments
         
@@ -412,8 +415,9 @@ class Universe(object):
                                            format=format,
                                            all_coordinates=all_coordinates)
         
-        self.load_new(coordinates, format=format, in_memory=in_memory,
-                      in_memory_step=in_memory_step, **kwargs)
+        if coordinates:
+            self.load_new(coordinates, format=format, in_memory=in_memory,
+                        in_memory_step=in_memory_step, **kwargs)
 
         if transformations:
             if callable(transformations):
@@ -432,7 +436,7 @@ class Universe(object):
 
 
     @classmethod
-    def empty(cls, n_atoms=0, n_residues=1, n_segments=1,
+    def empty(cls, n_atoms, n_residues=1, n_segments=1,
               atom_resindex=None, residue_segindex=None,
               trajectory=False, velocities=False, forces=False):
         """Create a blank Universe
@@ -446,7 +450,7 @@ class Universe(object):
 
         Parameters
         ----------
-        n_atoms: int, default 0
+        n_atoms: int
           number of Atoms in the Universe
         n_residues: int, default 1
           number of Residues in the Universe, defaults to 1
@@ -488,7 +492,8 @@ class Universe(object):
            Universes can now be created with 0 atoms
         """
         if not n_atoms:
-            return cls()
+            n_residues = 0
+            n_segments = 0
             
         if atom_resindex is None:
             warnings.warn(
@@ -607,7 +612,7 @@ class Universe(object):
            and detected file type.
         """
         # filename==None happens when only a topology is provided
-        if not filename:
+        if filename is None:
             return self
 
         if len(util.asiterable(filename)) == 1:

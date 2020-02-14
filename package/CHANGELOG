@@ -84,6 +84,9 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * refactored Universe.__init__ with clear arguments. Calling Universe() 
+    now raises a TypeError advising you to use Universe.empty. 
+    Universe.empty() now no longer has n_atoms=0 as default. (Issue #2282)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
@@ -108,8 +111,6 @@ Changes
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
-  * refactored Universe.__init__ with clear arguments. 
-    Universe.empty() now has n_atoms=0 as default. (Issue #2282)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
