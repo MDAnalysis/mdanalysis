@@ -77,7 +77,7 @@ in MDAnalysis. ::
     basic = u.select_atoms(sel_basic)
     # set up analysis of native contacts ("salt bridges"); salt bridges have a
     # distance <6 A
-    ca1 = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+    ca1 = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                             refgroup=(acidic, basic), radius=6.0)
     # iterate through trajectory and perform analysis of "native contacts" Q
     ca1.run()
@@ -168,7 +168,7 @@ Next we are creating an instance of the :class:`Contacts` class and use the
     acidic = u.select_atoms(sel_acidic)
     basic = u.select_atoms(sel_basic)
 
-    nc = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+    nc = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                            method=is_any_closer,
                            refgroup=(acidic, basic), kwargs={'dist': 2.5})
     nc.run()
