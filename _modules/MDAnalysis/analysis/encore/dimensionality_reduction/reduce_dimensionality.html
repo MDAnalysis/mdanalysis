@@ -217,7 +217,7 @@
 
 <div class="viewcode-block" id="reduce_dimensionality"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality">[docs]</a><span class="k">def</span> <span class="nf">reduce_dimensionality</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
                           <span class="n">method</span><span class="o">=</span><span class="n">StochasticProximityEmbeddingNative</span><span class="p">(),</span>
-                          <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+                          <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
                           <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                           <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
@@ -252,7 +252,7 @@
 <span class="sd">        the same dimensionality reduction class. Options are Stochastic</span>
 <span class="sd">        Proximity Embedding or Principal Component Analysis.</span>
 
-<span class="sd">    selection : str, optional</span>
+<span class="sd">    select : str, optional</span>
 <span class="sd">        Atom selection string in the MDAnalysis format (default is &quot;name CA&quot;)</span>
 
 <span class="sd">    distance_matrix : encore.utils.TriangularMatrix, optional</span>
@@ -370,7 +370,7 @@
             <span class="n">distance_matrix</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
                 <span class="n">distance_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merged_ensemble</span><span class="p">,</span>
-                                                           <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                                                           <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                                                            <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>

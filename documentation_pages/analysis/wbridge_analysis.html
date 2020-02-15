@@ -836,7 +836,7 @@ of a water bridge existence.</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('NE2', 'OE2', 'OD2', 'OH', 'OG1', 'OW', 'OC1', 'SD', 'ND1', 'OH2', 'OC2', 'O', 'OG', 'OD1', 'OE1', 'SG'), 'GLYCAM06': ('OS', 'OY', 'OH', 'OW', 'SM', 'NT', 'O', 'O2', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('SG', 'O', 'OH2', 'OD2', 'ND1', 'OG', 'OE2', 'SD', 'OG1', 'OC1', 'OE1', 'NE2', 'OC2', 'OH', 'OW', 'OD1'), 'GLYCAM06': ('O', 'N', 'SM', 'OY', 'NT', 'OS', 'OH', 'O2', 'OW'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -844,7 +844,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NH1', 'NE2', 'SG', 'OH', 'OG', 'OW', 'NZ', 'OG1', 'ND2', 'ND1', 'OH2', 'NE1', 'NH2', 'NE', 'N'), 'GLYCAM06': ('OH', 'N3', 'OW', 'NT', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('SG', 'OH2', 'NH1', 'N', 'ND1', 'OG', 'NH2', 'OG1', 'NE', 'NE2', 'NZ', 'OH', 'NE1', 'OW', 'ND2'), 'GLYCAM06': ('N', 'NT', 'OH', 'N3', 'OW'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -900,7 +900,7 @@ detected. This method returns None if method
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table">
 <code class="descname">generate_table</code><span class="sig-paren">(</span><em>output_format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/wbridge_analysis.html#WaterBridgeAnalysis.generate_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.generate_table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a normalised table of the results.</p>
-<p>The table is stored as a <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a> in the
+<p>The table is stored as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a> in the
 attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">table</span></code>.</p>
 <p>The output format of <code class="xref py py-attr docutils literal notranslate"><span class="pre">table</span></code> can also be
 changed using output_format in a fashion similar to <a class="reference internal" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.timeseries" title="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">WaterBridgeAnalysis.timeseries</span></code></a></p>

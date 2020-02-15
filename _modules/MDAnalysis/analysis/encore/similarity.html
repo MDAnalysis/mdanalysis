@@ -477,7 +477,7 @@
 
 
 <div class="viewcode-block" id="clustering_ensemble_similarity"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">[docs]</a><span class="k">def</span> <span class="nf">clustering_ensemble_similarity</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">ens1_id</span><span class="p">,</span> <span class="n">ens2</span><span class="p">,</span> <span class="n">ens2_id</span><span class="p">,</span>
-                                   <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
+                                   <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Clustering ensemble similarity: calculate the probability densities from</span>
 <span class="sd">     the clusters and calculate discrete Jensen-Shannon divergence.</span>
 
@@ -500,7 +500,7 @@
 <span class="sd">    ens2_id : int</span>
 <span class="sd">        Second ensemble id as detailed in the ClustersCollection metadata</span>
 
-<span class="sd">    selection : str</span>
+<span class="sd">    select : str</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;.</span>
 
 <span class="sd">    Returns</span>
@@ -510,9 +510,9 @@
 <span class="sd">        Jensen-Shannon divergence between the two ensembles, as calculated by</span>
 <span class="sd">        the clustering ensemble similarity method</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ens1_coordinates</span> <span class="o">=</span> <span class="n">ens1</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
+    <span class="n">ens1_coordinates</span> <span class="o">=</span> <span class="n">ens1</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens1</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
                                                   <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
-    <span class="n">ens2_coordinates</span> <span class="o">=</span> <span class="n">ens2</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
+    <span class="n">ens2_coordinates</span> <span class="o">=</span> <span class="n">ens2</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ens2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
                                                   <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
     <span class="n">tmpA</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">ens1_id</span><span class="p">)[</span>
                             <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">ens1_coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span>
@@ -839,7 +839,7 @@
 
 <div class="viewcode-block" id="prepare_ensembles_for_convergence_increasing_window"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">[docs]</a><span class="k">def</span> <span class="nf">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span><span class="n">ensemble</span><span class="p">,</span>
                                                         <span class="n">window_size</span><span class="p">,</span>
-                                                        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
+                                                        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate ensembles to be fed to ces_convergence or dres_convergence</span>
 <span class="sd">    from a single ensemble. Basically, the different slices the algorithm</span>
@@ -854,7 +854,7 @@
 <span class="sd">    window_size : int</span>
 <span class="sd">        size of the window (in number of frames) to be used</span>
 
-<span class="sd">    selection : str</span>
+<span class="sd">    select : str</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
 
 <span class="sd">    Returns</span>
@@ -868,7 +868,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ens_size</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
+    <span class="n">ens_size</span> <span class="o">=</span> <span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
                                               <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">rest_slices</span> <span class="o">=</span> <span class="n">ens_size</span> <span class="o">//</span> <span class="n">window_size</span>
@@ -892,7 +892,7 @@
 
 
 <div class="viewcode-block" id="hes"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">[docs]</a><span class="k">def</span> <span class="nf">hes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
         <span class="n">cov_estimator</span><span class="o">=</span><span class="s2">&quot;shrinkage&quot;</span><span class="p">,</span>
         <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
         <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -910,7 +910,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    ensembles : list</span>
 <span class="sd">        List of Universe objects for similarity measurements.</span>
-<span class="sd">    selection : str, optional</span>
+<span class="sd">    select : str, optional</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
 <span class="sd">    cov_estimator : str, optional</span>
 <span class="sd">        Covariance matrix estimator method, either shrinkage, `shrinkage`,</span>
@@ -1017,7 +1017,7 @@
     <span class="k">if</span> <span class="n">align</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
             <span class="n">mda</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                                         <span class="n">select</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                                         <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                                          <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
                                          <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
@@ -1064,13 +1064,13 @@
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">e_orig</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
                 <span class="n">xs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
                     <span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">]</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span>
-                        <span class="n">e_orig</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
+                        <span class="n">e_orig</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
                         <span class="n">order</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;fac&#39;</span><span class="p">)),</span>
                     <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
                 <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">ensembles_list</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">t</span><span class="p">],</span>
                                                 <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
                                                 <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
-                                                <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">))</span>
+                                                <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">))</span>
 
             <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span>
@@ -1091,7 +1091,7 @@
 
     <span class="k">for</span> <span class="n">e</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
         <span class="c1"># Extract coordinates from each ensemble</span>
-        <span class="n">coordinates_system</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">),</span>
+        <span class="n">coordinates_system</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">),</span>
                                                      <span class="n">order</span><span class="o">=</span><span class="s1">&#39;fac&#39;</span><span class="p">)</span>
 
         <span class="c1"># Average coordinates in each system</span>
@@ -1101,7 +1101,7 @@
         <span class="n">sigmas</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covariance_matrix</span><span class="p">(</span><span class="n">e</span><span class="p">,</span>
                                         <span class="n">weights</span><span class="o">=</span><span class="n">w</span><span class="p">,</span>
                                         <span class="n">estimator</span><span class="o">=</span><span class="n">covariance_estimator</span><span class="p">,</span>
-                                        <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">))</span>
+                                        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">pairs_indices</span><span class="p">:</span>
         <span class="n">value</span> <span class="o">=</span> <span class="n">harmonic_ensemble_similarity</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
@@ -1126,7 +1126,7 @@
 
 
 <div class="viewcode-block" id="ces"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces">[docs]</a><span class="k">def</span> <span class="nf">ces</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-        <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
         <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
             <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
             <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -1151,7 +1151,7 @@
 <span class="sd">    ensembles : list</span>
 <span class="sd">        List of ensemble objects for similarity measurements</span>
 
-<span class="sd">    selection : str, optional</span>
+<span class="sd">    select : str, optional</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
 
 <span class="sd">    clustering_method :</span>
@@ -1282,7 +1282,7 @@
     <span class="c1"># Calculate distance matrix if not provided</span>
     <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">distance_matrix</span><span class="p">:</span>
         <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                                              <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                                              <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                                               <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
@@ -1314,7 +1314,7 @@
     <span class="c1"># Call clustering procedure</span>
     <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
                   <span class="n">method</span><span class="o">=</span> <span class="n">clustering_methods</span><span class="p">,</span>
-                  <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                  <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                   <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">,</span>
                   <span class="n">ncores</span> <span class="o">=</span> <span class="n">ncores</span><span class="p">,</span>
                   <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1346,7 +1346,7 @@
                                                        <span class="n">ensembles</span><span class="p">[</span><span class="n">j</span><span class="p">][</span>
                                                            <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
                                                        <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                                       <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
+                                                       <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_djs</span>
                     <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_djs</span>
                 <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1378,7 +1378,7 @@
                                                    <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                                    <span class="n">ensembles</span><span class="p">[</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span>
                                                    <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                                   <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
+                                                   <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
                 <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_val</span>
                 <span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">pair</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">this_val</span>
 
@@ -1391,7 +1391,7 @@
 
 
 <div class="viewcode-block" id="dres"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres">[docs]</a><span class="k">def</span> <span class="nf">dres</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-         <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+         <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
          <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
              <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
              <span class="n">distance_cutoff</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span>
@@ -1419,7 +1419,7 @@
 <span class="sd">    ensembles : list</span>
 <span class="sd">        List of ensemble objects for similarity measurements</span>
 
-<span class="sd">    selection : str, optional</span>
+<span class="sd">    select : str, optional</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
 
 <span class="sd">    dimensionality_reduction_method :</span>
@@ -1558,7 +1558,7 @@
     <span class="c1"># Calculate distance matrix if not provided</span>
     <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">distance_matrix</span><span class="p">:</span>
         <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">),</span>
-                                              <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                                              <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                                               <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">estimate_error</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
@@ -1589,7 +1589,7 @@
     <span class="n">coordinates</span><span class="p">,</span> <span class="n">dim_red_details</span> <span class="o">=</span> <span class="n">reduce_dimensionality</span><span class="p">(</span>
         <span class="n">ensembles</span><span class="p">,</span>
         <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_methods</span><span class="p">,</span>
-        <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+        <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
         <span class="n">distance_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="p">,</span>
         <span class="n">ncores</span> <span class="o">=</span> <span class="n">ncores</span><span class="p">,</span>
         <span class="n">allow_collapsed_result</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>
@@ -1664,7 +1664,7 @@
 
 <div class="viewcode-block" id="ces_convergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.ces_convergence">[docs]</a><span class="k">def</span> <span class="nf">ces_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
                     <span class="n">window_size</span><span class="p">,</span>
-                    <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+                    <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
                     <span class="n">clustering_method</span><span class="o">=</span><span class="n">AffinityPropagationNative</span><span class="p">(</span>
                         <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
                         <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
@@ -1691,7 +1691,7 @@
 <span class="sd">    window_size : int</span>
 <span class="sd">        Size of window to be used, in number of frames</span>
 
-<span class="sd">    selection : str, optional</span>
+<span class="sd">    select : str, optional</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
 
 <span class="sd">    clustering_method : MDAnalysis.analysis.encore.clustering.ClusteringMethod</span>
@@ -1740,10 +1740,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
-        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
+        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
 
     <span class="n">ccs</span> <span class="o">=</span> <span class="n">cluster</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
-                  <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                  <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                   <span class="n">method</span><span class="o">=</span><span class="n">clustering_method</span><span class="p">,</span>
                   <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                   <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>
@@ -1765,7 +1765,7 @@
 
 <div class="viewcode-block" id="dres_convergence"><a class="viewcode-back" href="../../../../documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.dres_convergence">[docs]</a><span class="k">def</span> <span class="nf">dres_convergence</span><span class="p">(</span><span class="n">original_ensemble</span><span class="p">,</span>
                      <span class="n">window_size</span><span class="p">,</span>
-                     <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+                     <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
                      <span class="n">dimensionality_reduction_method</span> <span class="o">=</span> \
                             <span class="n">StochasticProximityEmbeddingNative</span><span class="p">(</span>
                                 <span class="n">dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
@@ -1795,7 +1795,7 @@
 <span class="sd">    window_size : int</span>
 <span class="sd">        Size of window to be used, in number of frames</span>
 
-<span class="sd">    selection : str, optional</span>
+<span class="sd">    select : str, optional</span>
 <span class="sd">        Atom selection string in the MDAnalysis format. Default is &quot;name CA&quot;</span>
 
 <span class="sd">    dimensionality_reduction_method :</span>
@@ -1850,12 +1850,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">ensembles</span> <span class="o">=</span> <span class="n">prepare_ensembles_for_convergence_increasing_window</span><span class="p">(</span>
-        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">)</span>
+        <span class="n">original_ensemble</span><span class="p">,</span> <span class="n">window_size</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">)</span>
 
     <span class="n">coordinates</span><span class="p">,</span> <span class="n">dimred_details</span> <span class="o">=</span> \
         <span class="n">reduce_dimensionality</span><span class="p">(</span>
             <span class="n">ensembles</span><span class="p">,</span>
-            <span class="n">selection</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
             <span class="n">method</span><span class="o">=</span><span class="n">dimensionality_reduction_method</span><span class="p">,</span>
             <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">ncores</span><span class="o">=</span><span class="n">ncores</span><span class="p">)</span>

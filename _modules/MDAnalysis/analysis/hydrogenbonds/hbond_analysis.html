@@ -410,7 +410,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">update_selections</span> <span class="o">=</span> <span class="n">update_selections</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.guess_hydrogens"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens">[docs]</a>    <span class="k">def</span> <span class="nf">guess_hydrogens</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                        <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                        <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
                         <span class="n">max_mass</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
                         <span class="n">min_charge</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
                         <span class="n">min_mass</span><span class="o">=</span><span class="mf">0.9</span>
@@ -419,7 +419,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        selection: str (optional)</span>
+<span class="sd">        select: str (optional)</span>
 <span class="sd">            Selection string for atom group from which hydrogens will be identified.</span>
 <span class="sd">        max_mass: float (optional)</span>
 <span class="sd">            Maximum allowed mass of a hydrogen atom.</span>
@@ -446,12 +446,15 @@
 
 <span class="sd">        .. versionchanged: 1.0.0</span>
 <span class="sd">            Added `min_mass` parameter to specify minimum mass (Issue #2472)</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">min_mass</span> <span class="o">&gt;</span> <span class="n">max_mass</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;min_mass is higher than (or equal to) max_mass&quot;</span><span class="p">)</span>
 
-        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">hydrogens_ag</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[</span>
             <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="o">.</span><span class="n">reduce</span><span class="p">((</span>
                 <span class="n">ag</span><span class="o">.</span><span class="n">masses</span> <span class="o">&lt;</span> <span class="n">max_mass</span><span class="p">,</span>
@@ -468,13 +471,13 @@
 
         <span class="k">return</span> <span class="s2">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hydrogens_list</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HydrogenBondAnalysis.guess_donors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_donors">[docs]</a>    <span class="k">def</span> <span class="nf">guess_donors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAnalysis.guess_donors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_donors">[docs]</a>    <span class="k">def</span> <span class="nf">guess_donors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Guesses which atoms could be considered donors in the analysis. Only use if the universe topology does not</span>
 <span class="sd">        contain bonding information, otherwise donor-hydrogen pairs may be incorrectly assigned.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        selection: str (optional)</span>
+<span class="sd">        select: str (optional)</span>
 <span class="sd">            Selection string for atom group from which donors will be identified.</span>
 <span class="sd">        max_charge: float (optional)</span>
 <span class="sd">            Maximum allowed charge of a donor atom.</span>
@@ -498,6 +501,8 @@
 <span class="sd">        in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute</span>
 <span class="sd">        :attr:`donors_sel`.</span>
 
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># We need to know `hydrogens_sel` before we can find donors</span>
@@ -510,7 +515,7 @@
 
         <span class="n">ag</span> <span class="o">=</span> <span class="n">hydrogens_ag</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
             <span class="s2">&quot;(</span><span class="si">{donors_sel}</span><span class="s2">) and around </span><span class="si">{d_h_cutoff}</span><span class="s2"> </span><span class="si">{hydrogens_sel}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">donors_sel</span><span class="o">=</span><span class="n">selection</span><span class="p">,</span>
+                <span class="n">donors_sel</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
                 <span class="n">d_h_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">d_h_cutoff</span><span class="p">,</span>
                 <span class="n">hydrogens_sel</span><span class="o">=</span><span class="n">hydrogens_sel</span>
             <span class="p">)</span>
@@ -524,12 +529,12 @@
 
         <span class="k">return</span> <span class="s2">&quot; or &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">donors_list</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="HydrogenBondAnalysis.guess_acceptors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors">[docs]</a>    <span class="k">def</span> <span class="nf">guess_acceptors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
+<div class="viewcode-block" id="HydrogenBondAnalysis.guess_acceptors"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors">[docs]</a>    <span class="k">def</span> <span class="nf">guess_acceptors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">max_charge</span><span class="o">=-</span><span class="mf">0.5</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Guesses which atoms could be considered acceptors in the analysis.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        selection: str (optional)</span>
+<span class="sd">        select: str (optional)</span>
 <span class="sd">            Selection string for atom group from which acceptors will be identified.</span>
 <span class="sd">        max_charge: float (optional)</span>
 <span class="sd">            Maximum allowed charge of an acceptor atom.</span>
@@ -551,9 +556,12 @@
 <span class="sd">        Alternatively, this function may be used to quickly generate a :class:`str` of potential acceptor atoms involved</span>
 <span class="sd">        in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute</span>
 <span class="sd">        :attr:`acceptors_sel`.</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+        <span class="n">ag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">acceptors_ag</span> <span class="o">=</span> <span class="n">ag</span><span class="p">[</span><span class="n">ag</span><span class="o">.</span><span class="n">charges</span> <span class="o">&lt;</span> <span class="n">max_charge</span><span class="p">]</span>
         <span class="n">acceptors_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span>
             <span class="p">[</span>

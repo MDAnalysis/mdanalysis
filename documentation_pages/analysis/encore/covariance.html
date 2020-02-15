@@ -222,7 +222,7 @@ an ensemble of structures.</p>
 </div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.covariance.covariance_matrix">
-<code class="descclassname">MDAnalysis.analysis.encore.covariance.</code><code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>ensemble</em>, <em>selection='name CA'</em>, <em>estimator=&lt;function shrinkage_covariance_estimator&gt;</em>, <em>weights='mass'</em>, <em>reference=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/covariance.html#covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.covariance.covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.covariance.</code><code class="descname">covariance_matrix</code><span class="sig-paren">(</span><em>ensemble</em>, <em>select='name CA'</em>, <em>estimator=&lt;function shrinkage_covariance_estimator&gt;</em>, <em>weights='mass'</em>, <em>reference=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/covariance.html#covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.covariance.covariance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates (optionally mass weighted) covariance matrix</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -230,7 +230,7 @@ an ensemble of structures.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensemble</strong> (<em>Universe object</em>) – The structural ensemble</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Atom selection string in the MDAnalysis format.</li>
 <li><strong>estimator</strong> (<em>function</em><em> (</em><em>optional</em><em>)</em>) – Function that estimates the covariance matrix. It requires at least
 a “coordinates” numpy array (of shape (N,M,3), where N is the number
 of frames and M the number of atoms). See ml_covariance_estimator and

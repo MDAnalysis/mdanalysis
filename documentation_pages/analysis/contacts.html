@@ -251,7 +251,7 @@ in MDAnalysis.</p>
 <span class="n">basic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_basic</span><span class="p">)</span>
 <span class="c1"># set up analysis of native contacts (&quot;salt bridges&quot;); salt bridges have a</span>
 <span class="c1"># distance &lt;6 A</span>
-<span class="n">ca1</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
+<span class="n">ca1</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
                         <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">radius</span><span class="o">=</span><span class="mf">6.0</span><span class="p">)</span>
 <span class="c1"># iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
 <span class="n">ca1</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -327,7 +327,7 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
 <span class="n">acidic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">)</span>
 <span class="n">basic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_basic</span><span class="p">)</span>
 
-<span class="n">nc</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
+<span class="n">nc</span> <span class="o">=</span> <span class="n">contacts</span><span class="o">.</span><span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="p">(</span><span class="n">sel_acidic</span><span class="p">,</span> <span class="n">sel_basic</span><span class="p">),</span>
                        <span class="n">method</span><span class="o">=</span><span class="n">is_any_closer</span><span class="p">,</span>
                        <span class="n">refgroup</span><span class="o">=</span><span class="p">(</span><span class="n">acidic</span><span class="p">,</span> <span class="n">basic</span><span class="p">),</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;dist&#39;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">})</span>
 <span class="n">nc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -352,7 +352,7 @@ using the <cite>kwargs</cite> parameter in <a class="reference internal" href="#
 <dt id="MDAnalysis.analysis.contacts.hard_cut_q">
 <code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">hard_cut_q</code><span class="sig-paren">(</span><em>r</em>, <em>cutoff</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#hard_cut_q"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.hard_cut_q" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate fraction of native contacts <em>Q</em> for a hard cut off.</p>
-<p>The cutoff can either be a float or a <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of the same
+<p>The cutoff can either be a float or a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of the same
 shape as <cite>r</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -483,7 +483,7 @@ order to increase performance.</li>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.contacts.q1q2">
-<code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">q1q2</code><span class="sig-paren">(</span><em>u</em>, <em>selection='all'</em>, <em>radius=4.5</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#q1q2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.q1q2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">q1q2</code><span class="sig-paren">(</span><em>u</em>, <em>select='all'</em>, <em>radius=4.5</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#q1q2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.q1q2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a q1-q2 analysis.</p>
 <p>Compares native contacts between the starting structure and final structure
 of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Franklin2007]</a>.</p>
@@ -493,7 +493,7 @@ of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Fra
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe with a trajectory</li>
-<li><strong>selection</strong> (<em>string</em><em>, </em><em>optional</em>) – atoms to do analysis on</li>
+<li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – atoms to do analysis on</li>
 <li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – distance at which contact is formed</li>
 <li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: 0</li>
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to analyse, Default: -1</li>
@@ -509,6 +509,10 @@ of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Fra
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 </dd></dl>
 
 </div>
@@ -516,7 +520,7 @@ of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Fra
 <h2>4.2.2.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.contacts.Contacts">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">Contacts</code><span class="sig-paren">(</span><em>u</em>, <em>selection</em>, <em>refgroup</em>, <em>method='hard_cut'</em>, <em>radius=4.5</em>, <em>kwargs=None</em>, <em>**basekwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">Contacts</code><span class="sig-paren">(</span><em>u</em>, <em>select</em>, <em>refgroup</em>, <em>method='hard_cut'</em>, <em>radius=4.5</em>, <em>kwargs=None</em>, <em>**basekwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate contacts based observables.</p>
 <p>The standard methods used in this class calculate the fraction of native
 contacts <em>Q</em> from a trajectory.</p>
@@ -553,7 +557,7 @@ argument <cite>method</cite>.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – trajectory</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><em>string</em><em>, </em><em>string</em><em>)</em>) – two contacting groups that change over time</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><em>string</em><em>, </em><em>string</em><em>)</em>) – two contacting groups that change over time</li>
 <li><strong>refgroup</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em>(</em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>, </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em>)</em>) – two contacting atomgroups in their reference conformation. This
 can also be a list of tuples containing different atom groups</li>
 <li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>4.5 Angstroms</em><em>)</em>) – radius within which contacts exist in refgroup</li>
@@ -568,6 +572,10 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 </dd></dl>
 
 </div>

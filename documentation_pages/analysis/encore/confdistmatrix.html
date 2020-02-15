@@ -224,7 +224,7 @@ class to compute an RMSD matrix in such a way is also available.</p>
 </div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.confdistmatrix.conformational_distance_matrix">
-<code class="descclassname">MDAnalysis.analysis.encore.confdistmatrix.</code><code class="descname">conformational_distance_matrix</code><span class="sig-paren">(</span><em>ensemble</em>, <em>conf_dist_function</em>, <em>selection=''</em>, <em>superimposition_selection=''</em>, <em>n_jobs=1</em>, <em>pairwise_align=True</em>, <em>weights='mass'</em>, <em>metadata=True</em>, <em>verbose=False</em>, <em>max_nbytes=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/confdistmatrix.html#conformational_distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.confdistmatrix.conformational_distance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.confdistmatrix.</code><code class="descname">conformational_distance_matrix</code><span class="sig-paren">(</span><em>ensemble</em>, <em>conf_dist_function</em>, <em>select=''</em>, <em>superimposition_select=''</em>, <em>n_jobs=1</em>, <em>pairwise_align=True</em>, <em>weights='mass'</em>, <em>metadata=True</em>, <em>verbose=False</em>, <em>max_nbytes=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/confdistmatrix.html#conformational_distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.confdistmatrix.conformational_distance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the conformational distance matrix calculation.
 args and kwargs are passed to conf_dist_function.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -236,9 +236,9 @@ args and kwargs are passed to conf_dist_function.</p>
 be computed.</li>
 <li><strong>conf_dist_function</strong> (<em>function object</em>) – Function that fills the matrix with conformational distance
 values. See set_rmsd_matrix_elements for an example.</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – use this selection for the calculation of conformational distance</li>
-<li><strong>superimposition_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – use atoms from this selection for fitting instead of those of
-“selection”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – use this selection for the calculation of conformational distance</li>
+<li><strong>superimposition_select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – use atoms from this selection for fitting instead of those of
+<cite>select</cite></li>
 <li><strong>pairwise_align</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to perform pairwise alignment between conformations.
 Default is True (do the superimposition)</li>
 <li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – weights to be used for fit. Can be either ‘mass’ or an array_like</li>
@@ -264,7 +264,7 @@ See <a class="reference external" href="https://joblib.readthedocs.io/en/latest/
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.confdistmatrix.get_distance_matrix">
-<code class="descclassname">MDAnalysis.analysis.encore.confdistmatrix.</code><code class="descname">get_distance_matrix</code><span class="sig-paren">(</span><em>ensemble</em>, <em>selection='name CA'</em>, <em>load_matrix=None</em>, <em>save_matrix=None</em>, <em>superimpose=True</em>, <em>superimposition_subset='name CA'</em>, <em>weights='mass'</em>, <em>n_jobs=1</em>, <em>max_nbytes=None</em>, <em>verbose=False</em>, <em>*conf_dist_args</em>, <em>**conf_dist_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/confdistmatrix.html#get_distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.confdistmatrix.get_distance_matrix" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.confdistmatrix.</code><code class="descname">get_distance_matrix</code><span class="sig-paren">(</span><em>ensemble</em>, <em>select='name CA'</em>, <em>load_matrix=None</em>, <em>save_matrix=None</em>, <em>superimpose=True</em>, <em>superimposition_subset='name CA'</em>, <em>weights='mass'</em>, <em>n_jobs=1</em>, <em>max_nbytes=None</em>, <em>verbose=False</em>, <em>*conf_dist_args</em>, <em>**conf_dist_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/confdistmatrix.html#get_distance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.confdistmatrix.get_distance_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieves or calculates the conformational distance (RMSD)
 matrix. The distance matrix is calculated between all the frames of all
 the <a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> objects given as input.
@@ -273,7 +273,7 @@ of the ensembles and on the order of the input ensembles themselves,
 therefore the order of the input list is significant.</p>
 <p>The distance matrix can either be calculated from input ensembles or
 loaded from an input numpy binary file.</p>
-<p>Please notice that the .npz file does not contain a bidimensional array,
+<p>Please notice that the .npz file does not contain a bi-dimensional array,
 but a flattened representation that is meant to represent the elements of
 an encore.utils.TriangularMatrix object.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -282,7 +282,7 @@ an encore.utils.TriangularMatrix object.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – </li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>load_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Load similarity/dissimilarity matrix from numpy binary file instead
 of calculating it (default is None). A filename is required.</li>
 <li><strong>save_matrix</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Save calculated matrix as numpy binary file (default is None). A

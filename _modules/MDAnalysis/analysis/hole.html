@@ -1370,7 +1370,7 @@
 <span class="sd">        orderparameters : array_like or string, optional</span>
 <span class="sd">             Sequence or text file containing order parameters (float</span>
 <span class="sd">             numbers) corresponding to the frames in the trajectory.</span>
-<span class="sd">        selection : string, optional</span>
+<span class="sd">        select : string, optional</span>
 <span class="sd">             selection string for</span>
 <span class="sd">             :meth:`~MDAnalysis.core.universe.Universe.select_atoms` to select</span>
 <span class="sd">             the group of atoms that is to be analysed by HOLE. The default is</span>
@@ -1381,7 +1381,7 @@
 
 <span class="sd">             If set to ``True`` then *cpoint* is guessed as the</span>
 <span class="sd">             :meth:`~MDAnalysis.core.groups.AtomGroup.center_of_geometry` of</span>
-<span class="sd">             the `selection` from the first frame of the trajectory.</span>
+<span class="sd">             the `select` from the first frame of the trajectory.</span>
 
 <span class="sd">             If `cpoint` is not set or set to ``None`` then HOLE guesses it</span>
 <span class="sd">             with its own algorithm (for each individual frame).</span>
@@ -1393,15 +1393,18 @@
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Support for the `start`, `stop`, and `step` keywords has been</span>
 <span class="sd">           removed. These should instead be passed to :meth:`HOLEtraj.run`.</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;selection&quot;</span><span class="p">,</span> <span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;select&quot;</span><span class="p">,</span> <span class="s2">&quot;protein&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">orderparametersfile</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;orderparameters&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cpoint&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_cpoint</span><span class="p">(</span><span class="n">selection</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_cpoint</span><span class="p">(</span><span class="n">select</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Guessed CPOINT = </span><span class="si">%r</span><span class="s2"> from selection </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cpoint&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cpoint</span>
 
@@ -1410,14 +1413,16 @@
         <span class="c1"># processing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">orderparameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_orderparameters</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">orderparametersfile</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HOLEtraj.guess_cpoint"><a class="viewcode-back" href="../../../documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint">[docs]</a>    <span class="k">def</span> <span class="nf">guess_cpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="HOLEtraj.guess_cpoint"><a class="viewcode-back" href="../../../documentation_pages/analysis/hole.html#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint">[docs]</a>    <span class="k">def</span> <span class="nf">guess_cpoint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;protein&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Guess a point inside the pore.</span>
 
 <span class="sd">        This method simply uses the center of geometry of the selection as a</span>
-<span class="sd">        guess. `selection` is &quot;protein&quot; by default.</span>
+<span class="sd">        guess. `select` is &quot;protein&quot; by default.</span>
 
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="nf">_process_orderparameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Read orderparameters.</span>

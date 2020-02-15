@@ -380,7 +380,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">          Analyze the full trajectory in the universe.</span>
-<span class="sd">    selection : str (optional)</span>
+<span class="sd">    select : str (optional)</span>
 <span class="sd">          MDAnalysis selection string, default &quot;protein and name CA&quot;</span>
 <span class="sd">    cutoff : float (optional)</span>
 <span class="sd">          Consider selected atoms within the cutoff as neighbors for the</span>
@@ -404,23 +404,26 @@
 <span class="sd">    .. versionchanged:: 0.16.0</span>
 <span class="sd">       Made :meth:`generate_output` a private method :meth:`_generate_output`.</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">universe</span><span class="p">,</span>
-                 <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;protein and name CA&#39;</span><span class="p">,</span>
+                 <span class="n">select</span><span class="o">=</span><span class="s1">&#39;protein and name CA&#39;</span><span class="p">,</span>
                  <span class="n">cutoff</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
                  <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">Bonus_groups</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># final result</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># time for each frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ReportVector</span> <span class="o">=</span> <span class="n">ReportVector</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">Bonus_groups</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">Bonus_groups</span><span class="p">]</span> \
                             <span class="k">if</span> <span class="n">Bonus_groups</span> <span class="k">else</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_generate_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outputobject</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span>
                          <span class="n">nmodes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -538,7 +541,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">          Analyze the full trajectory in the universe.</span>
-<span class="sd">    selection : str (optional)</span>
+<span class="sd">    select : str (optional)</span>
 <span class="sd">          MDAnalysis selection string, default &quot;protein&quot;</span>
 <span class="sd">    cutoff : float (optional)</span>
 <span class="sd">          Consider selected atoms within the cutoff as neighbors for the</span>
@@ -569,21 +572,24 @@
 
 <span class="sd">    .. versionchanged:: 0.21.0</span>
 <span class="sd">       MassWeight option (see above deprecation entry).</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">universe</span><span class="p">,</span>
-                 <span class="n">selection</span><span class="o">=</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span>
+                 <span class="n">select</span><span class="o">=</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span>
                  <span class="n">cutoff</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
                  <span class="n">ReportVector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">weights</span><span class="o">=</span><span class="s2">&quot;size&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># final result</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timesteps</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># time for each frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ReportVector</span> <span class="o">=</span> <span class="n">ReportVector</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ca</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">weights</span> <span class="o">=</span> <span class="n">weights</span>
 

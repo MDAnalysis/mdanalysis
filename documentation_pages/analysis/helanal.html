@@ -292,7 +292,7 @@ HELANAL - A program to characterise helix geometry in proteins.
 <h2>4.7.2.2. Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.helanal.helanal_trajectory">
-<code class="descclassname">MDAnalysis.analysis.helanal.</code><code class="descname">helanal_trajectory</code><span class="sig-paren">(</span><em>universe</em>, <em>selection='name CA'</em>, <em>begin=None</em>, <em>finish=None</em>, <em>matrix_filename='bending_matrix.dat'</em>, <em>origin_pdbfile='origin.pdb'</em>, <em>summary_filename='summary.txt'</em>, <em>screw_filename='screw.xvg'</em>, <em>tilt_filename='local_tilt.xvg'</em>, <em>fitted_tilt_filename='fit_tilt.xvg'</em>, <em>bend_filename='local_bend.xvg'</em>, <em>twist_filename='unit_twist.xvg'</em>, <em>prefix='helanal_'</em>, <em>ref_axis=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.helanal.</code><code class="descname">helanal_trajectory</code><span class="sig-paren">(</span><em>universe</em>, <em>select='name CA'</em>, <em>begin=None</em>, <em>finish=None</em>, <em>matrix_filename='bending_matrix.dat'</em>, <em>origin_pdbfile='origin.pdb'</em>, <em>summary_filename='summary.txt'</em>, <em>screw_filename='screw.xvg'</em>, <em>tilt_filename='local_tilt.xvg'</em>, <em>fitted_tilt_filename='fit_tilt.xvg'</em>, <em>bend_filename='local_bend.xvg'</em>, <em>twist_filename='unit_twist.xvg'</em>, <em>prefix='helanal_'</em>, <em>ref_axis=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_trajectory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform HELANAL helix analysis on all frames in <cite>universe</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -300,7 +300,7 @@ HELANAL - A program to characterise helix geometry in proteins.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – </li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string that selects Calpha atoms [<code class="docutils literal notranslate"><span class="pre">&quot;name</span> <span class="pre">CA&quot;</span></code>]</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string that selects Calpha atoms [<code class="docutils literal notranslate"><span class="pre">&quot;name</span> <span class="pre">CA&quot;</span></code>]</li>
 <li><strong>begin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – start analysing for time (ps) &gt;= <em>begin</em>; <code class="docutils literal notranslate"><span class="pre">None</span></code> starts from the
 beginning [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>finish</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – stop analysis for time (ps) =&lt; <em>finish</em>; <code class="docutils literal notranslate"><span class="pre">None</span></code> goes to the
@@ -342,7 +342,7 @@ output that used to be printed to stdout is now logged to the logger
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.16.0: </span>Removed the <cite>start</cite> and <cite>end</cite> keywords for selecting residues because this can
-be accomplished more transparently with <cite>selection</cite>. The first and last resid
+be accomplished more transparently with <cite>select</cite>. The first and last resid
 are directly obtained from the selection.</p>
 </div>
 <div class="deprecated">
@@ -352,11 +352,14 @@ are directly obtained from the selection.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>ProgressMeter now iterates over the number of frames analysed.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.helanal.helanal_main">
-<code class="descclassname">MDAnalysis.analysis.helanal.</code><code class="descname">helanal_main</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>selection='name CA'</em>, <em>ref_axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.helanal.</code><code class="descname">helanal_main</code><span class="sig-paren">(</span><em>pdbfile</em>, <em>select='name CA'</em>, <em>ref_axis=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/helanal.html#helanal_main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.helanal.helanal_main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> run on a single frame PDB/GRO.</p>
 <p>Computed data are returned as a dict and also logged at level INFO to the
 logger <em>MDAnalysis.analysis.helanal</em>. A simple way to enable a logger is to
@@ -367,7 +370,7 @@ use <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.start
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>pdbfile</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – filename of the single-frame input file</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string, default is “name CA” to select all C-alpha atoms.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string, default is “name CA” to select all C-alpha atoms.</li>
 <li><strong>ref_axis</strong> (<em>array_like</em><em> (</em><em>optional</em><em>)</em>) – Calculate tilt angle relative to the axis; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then <code class="docutils literal notranslate"><span class="pre">[0,0,1]</span></code>
 is chosen [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 </ul>
@@ -402,7 +405,7 @@ helix, e.g. with “name CA and resid 1:20”.</p>
 <p>Analyze helix 8 in AdK (PDB 4AKE); the standard logger is started and
 writes output to the file <code class="docutils literal notranslate"><span class="pre">MDAnalysis.log</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">start_logging</span><span class="p">()</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">helanal_main</span><span class="p">(</span><span class="s2">&quot;4ake_A.pdb&quot;</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA and resnum 161-187&quot;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">analysis</span><span class="o">.</span><span class="n">helanal_main</span><span class="p">(</span><span class="s2">&quot;4ake_A.pdb&quot;</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA and resnum 161-187&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="versionchanged">
@@ -411,7 +414,10 @@ writes output to the file <code class="docutils literal notranslate"><span class
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.16.0: </span>Removed the <cite>start</cite> and <cite>end</cite> keywords for selecting residues because this can
-be accomplished more transparently with <cite>selection</cite>.</p>
+be accomplished more transparently with <cite>select</cite>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 </dd></dl>
 

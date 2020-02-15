@@ -322,7 +322,7 @@ minimum radius as function of order parameter</p>
 </div>
 <div class="section" id="data-structures">
 <h2>4.4.1.2. Data structures<a class="headerlink" href="#data-structures" title="Permalink to this headline">¶</a></h2>
-<p>A profile is stored as a <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>:</p>
+<p>A profile is stored as a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">frame</span>   <span class="n">rxncoord</span>   <span class="n">radius</span>
 </pre></div>
 </div>
@@ -605,7 +605,7 @@ manually rename the file or recompile your version of HOLE.</p>
 </div>
 <p>The method saves the result as <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLE.profiles" title="MDAnalysis.analysis.hole.HOLE.profiles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HOLE.profiles</span></code></a>, a dictionary
 indexed by the frame number. Each entry is a
-<a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>.</p>
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.recarray.html#numpy.recarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.recarray</span></code></a>.</p>
 <p>If the keyword <cite>outdir</cite> is supplied (e.g. “.”) then each profile is
 saved to a gzipped data file.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -784,7 +784,7 @@ converted to a sequence of PDB files and <a class="reference internal" href="#MD
 each individual file.</li>
 <li><strong>orderparameters</strong> (<em>array_like</em><em> or </em><em>string</em><em>, </em><em>optional</em>) – Sequence or text file containing order parameters (float
 numbers) corresponding to the frames in the trajectory.</li>
-<li><strong>selection</strong> (<em>string</em><em>, </em><em>optional</em>) – selection string for
+<li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – selection string for
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe.select_atoms" title="MDAnalysis.core.universe.Universe.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> to select
 the group of atoms that is to be analysed by HOLE. The default is
 “protein” to include all protein residues.</li>
@@ -792,7 +792,7 @@ the group of atoms that is to be analysed by HOLE. The default is
 default is <code class="docutils literal notranslate"><span class="pre">None</span></code> to select HOLE’s internal search procedure.</p>
 <p>If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> then <em>cpoint</em> is guessed as the
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center_of_geometry()</span></code></a> of
-the <cite>selection</cite> from the first frame of the trajectory.</p>
+the <cite>select</cite> from the first frame of the trajectory.</p>
 <p>If <cite>cpoint</cite> is not set or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then HOLE guesses it
 with its own algorithm (for each individual frame).</p>
 </li>
@@ -806,6 +806,9 @@ description).</li>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <cite>start</cite>, <cite>stop</cite>, and <cite>step</cite> keywords has been
 removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.hole.HOLEtraj.run" title="MDAnalysis.analysis.hole.HOLEtraj.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HOLEtraj.run()</span></code></a>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.profiles">
@@ -824,10 +827,13 @@ previous values. This is arguably a bug.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint">
-<code class="descname">guess_cpoint</code><span class="sig-paren">(</span><em>selection='protein'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.guess_cpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">guess_cpoint</code><span class="sig-paren">(</span><em>select='protein'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole.html#HOLEtraj.guess_cpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole.HOLEtraj.guess_cpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Guess a point inside the pore.</p>
 <p>This method simply uses the center of geometry of the selection as a
-guess. <cite>selection</cite> is “protein” by default.</p>
+guess. <cite>select</cite> is “protein” by default.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 </dd></dl>
 
 <dl class="method">

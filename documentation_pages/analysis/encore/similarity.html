@@ -341,7 +341,7 @@ a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</p
 <h2>4.2.6.1.1.1. Functions for ensemble comparisons<a class="headerlink" href="#functions-for-ensemble-comparisons" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.hes">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>selection='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>details=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>details=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
 the symmetrized version of Kullback-Leibler divergence as described
 in <a class="reference internal" href="#tiberti2015" id="id4">[Tiberti2015]</a>.</p>
@@ -351,7 +351,7 @@ in <a class="reference internal" href="#tiberti2015" id="id4">[Tiberti2015]</a>.
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of Universe objects for similarity measurements.</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>cov_estimator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Covariance matrix estimator method, either shrinkage, <cite>shrinkage</cite>,
 or Maximum Likelyhood, <cite>ml</cite>. Default is shrinkage.</li>
 <li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – specify optional weights. If <code class="docutils literal notranslate"><span class="pre">mass</span></code> then chose masses of ensemble atoms</li>
@@ -433,7 +433,7 @@ you can call use an AlignTraj object manually:</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.ces">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">ces</code><span class="sig-paren">(</span><em>ensembles</em>, <em>selection='name CA'</em>, <em>clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>distance_matrix=None</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=10</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">ces</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>distance_matrix=None</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=10</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Clustering Ensemble Similarity (CES) between ensembles
 using the Jensen-Shannon divergence as described in
 <a class="reference internal" href="#tiberti2015" id="id5">[Tiberti2015]</a>.</p>
@@ -443,7 +443,7 @@ using the Jensen-Shannon divergence as described in
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of ensemble objects for similarity measurements</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>clustering_method</strong> – A single or a list of instances of the
 <a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a> classes
 from the clustering module. Different parameters for the same clustering
@@ -531,7 +531,7 @@ instances of the same clustering class:</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.dres">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dres</code><span class="sig-paren">(</span><em>ensembles</em>, <em>selection='name CA'</em>, <em>dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>distance_matrix=None</em>, <em>nsamples=1000</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dres</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>distance_matrix=None</em>, <em>nsamples=1000</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
 ensembles using the Jensen-Shannon divergence as described in
 <a class="reference internal" href="#tiberti2015" id="id6">[Tiberti2015]</a>.</p>
@@ -541,7 +541,7 @@ ensembles using the Jensen-Shannon divergence as described in
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of ensemble objects for similarity measurements</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>dimensionality_reduction_method</strong> – A single or a list of instances of the DimensionalityReductionMethod
 classes from the dimensionality_reduction module. Different parameters
 for the same method can be explored by adding different instances of
@@ -638,7 +638,7 @@ instances of the same method  class:</p>
 <h2>4.2.6.1.1.2. Function reference<a class="headerlink" href="#function-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt>
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">ces</code><span class="sig-paren">(</span><em>ensembles</em>, <em>selection='name CA'</em>, <em>clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>distance_matrix=None</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=10</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces"><span class="viewcode-link">[source]</span></a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">ces</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>distance_matrix=None</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=10</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Calculates the Clustering Ensemble Similarity (CES) between ensembles
 using the Jensen-Shannon divergence as described in
 <a class="reference internal" href="#tiberti2015" id="id7">[Tiberti2015]</a>.</p>
@@ -648,7 +648,7 @@ using the Jensen-Shannon divergence as described in
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of ensemble objects for similarity measurements</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>clustering_method</strong> – A single or a list of instances of the
 <a class="reference internal" href="clustering.html#module-MDAnalysis.analysis.encore.clustering.ClusteringMethod" title="MDAnalysis.analysis.encore.clustering.ClusteringMethod"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore.clustering.ClusteringMethod</span></code></a> classes
 from the clustering module. Different parameters for the same clustering
@@ -736,7 +736,7 @@ instances of the same clustering class:</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.ces_convergence">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">ces_convergence</code><span class="sig-paren">(</span><em>original_ensemble</em>, <em>window_size</em>, <em>selection='name CA'</em>, <em>clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>ncores=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces_convergence" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">ces_convergence</code><span class="sig-paren">(</span><em>original_ensemble</em>, <em>window_size</em>, <em>select='name CA'</em>, <em>clustering_method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>ncores=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#ces_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.ces_convergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use the CES to evaluate the convergence of the ensemble/trajectory.
 CES will be calculated between the whole trajectory contained in an
 ensemble and windows of such trajectory of increasing sizes, so that
@@ -751,7 +751,7 @@ therefore of convergence.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Size of window to be used, in number of frames</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>clustering_method</strong> (<em>MDAnalysis.analysis.encore.clustering.ClusteringMethod</em>) – A single or a list of instances of the ClusteringMethod classes from
 the clustering module. Different parameters for the same clustering
 method can be explored by adding different instances of the same
@@ -794,7 +794,7 @@ splitting the trajectory into a window_size of 10 frames :</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">clustering_ensemble_similarity</code><span class="sig-paren">(</span><em>cc</em>, <em>ens1</em>, <em>ens1_id</em>, <em>ens2</em>, <em>ens2_id</em>, <em>selection='name CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#clustering_ensemble_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">clustering_ensemble_similarity</code><span class="sig-paren">(</span><em>cc</em>, <em>ens1</em>, <em>ens1_id</em>, <em>ens2</em>, <em>ens2_id</em>, <em>select='name CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#clustering_ensemble_similarity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.clustering_ensemble_similarity" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
 <dt>Clustering ensemble similarity: calculate the probability densities from</dt>
 <dd>the clusters and calculate discrete Jensen-Shannon divergence.</dd>
@@ -810,7 +810,7 @@ splitting the trajectory into a window_size of 10 frames :</p>
 <li><strong>ens1_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – First ensemble id as detailed in the ClustersCollection metadata</li>
 <li><strong>ens2</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – Second ensemble to be used in comparison</li>
 <li><strong>ens2_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Second ensemble id as detailed in the ClustersCollection metadata</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”.</li>
 </ul>
 </td>
 </tr>
@@ -1007,7 +1007,7 @@ Notice that since this measure is not symmetric ::
 
 <dl class="function">
 <dt>
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dres</code><span class="sig-paren">(</span><em>ensembles</em>, <em>selection='name CA'</em>, <em>dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>distance_matrix=None</em>, <em>nsamples=1000</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres"><span class="viewcode-link">[source]</span></a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dres</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>distance_matrix=None</em>, <em>nsamples=1000</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>ncores=1</em>, <em>calc_diagonal=False</em>, <em>allow_collapsed_result=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Calculates the Dimensional Reduction Ensemble Similarity (DRES) between
 ensembles using the Jensen-Shannon divergence as described in
 <a class="reference internal" href="#tiberti2015" id="id8">[Tiberti2015]</a>.</p>
@@ -1017,7 +1017,7 @@ ensembles using the Jensen-Shannon divergence as described in
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of ensemble objects for similarity measurements</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>dimensionality_reduction_method</strong> – A single or a list of instances of the DimensionalityReductionMethod
 classes from the dimensionality_reduction module. Different parameters
 for the same method can be explored by adding different instances of
@@ -1111,7 +1111,7 @@ instances of the same method  class:</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.dres_convergence">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dres_convergence</code><span class="sig-paren">(</span><em>original_ensemble</em>, <em>window_size</em>, <em>selection='name CA'</em>, <em>dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>nsamples=1000</em>, <em>ncores=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres_convergence" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">dres_convergence</code><span class="sig-paren">(</span><em>original_ensemble</em>, <em>window_size</em>, <em>select='name CA'</em>, <em>dimensionality_reduction_method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>nsamples=1000</em>, <em>ncores=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#dres_convergence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.dres_convergence" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use the DRES to evaluate the convergence of the ensemble/trajectory.
 DRES will be calculated between the whole trajectory contained in an
 ensemble and windows of such trajectory of increasing sizes, so that
@@ -1126,7 +1126,7 @@ therefore of convergence.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>original_ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – ensemble containing the trajectory whose convergence has to estimated</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Size of window to be used, in number of frames</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>dimensionality_reduction_method</strong> – A single or a list of instances of the DimensionalityReductionMethod
 classes from the dimensionality_reduction module. Different parameters
 for the same method can be explored by adding different instances of
@@ -1239,7 +1239,7 @@ ensemble.</li>
 
 <dl class="function">
 <dt>
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>selection='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>details=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>details=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
 the symmetrized version of Kullback-Leibler divergence as described
 in <a class="reference internal" href="#tiberti2015" id="id10">[Tiberti2015]</a>.</p>
@@ -1249,7 +1249,7 @@ in <a class="reference internal" href="#tiberti2015" id="id10">[Tiberti2015]</a>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensembles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of Universe objects for similarity measurements.</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>cov_estimator</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Covariance matrix estimator method, either shrinkage, <cite>shrinkage</cite>,
 or Maximum Likelyhood, <cite>ml</cite>. Default is shrinkage.</li>
 <li><strong>weights</strong> (<em>str/array_like</em><em>, </em><em>optional</em>) – specify optional weights. If <code class="docutils literal notranslate"><span class="pre">mass</span></code> then chose masses of ensemble atoms</li>
@@ -1331,7 +1331,7 @@ you can call use an AlignTraj object manually:</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">prepare_ensembles_for_convergence_increasing_window</code><span class="sig-paren">(</span><em>ensemble</em>, <em>window_size</em>, <em>selection='name CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#prepare_ensembles_for_convergence_increasing_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">prepare_ensembles_for_convergence_increasing_window</code><span class="sig-paren">(</span><em>ensemble</em>, <em>window_size</em>, <em>select='name CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#prepare_ensembles_for_convergence_increasing_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.prepare_ensembles_for_convergence_increasing_window" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate ensembles to be fed to ces_convergence or dres_convergence
 from a single ensemble. Basically, the different slices the algorithm
 needs are generated here.</p>
@@ -1342,7 +1342,7 @@ needs are generated here.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>ensemble</strong> (<a class="reference internal" href="../../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object) – Input ensemble</li>
 <li><strong>window_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – size of the window (in number of frames) to be used</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 </ul>
 </td>
 </tr>

@@ -224,7 +224,7 @@ algorithms, wrapping them to allow them to be used interchangably.</p>
 </div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.clustering.cluster.cluster">
-<code class="descclassname">MDAnalysis.analysis.encore.clustering.cluster.</code><code class="descname">cluster</code><span class="sig-paren">(</span><em>ensembles</em>, <em>method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>selection='name CA'</em>, <em>distance_matrix=None</em>, <em>allow_collapsed_result=True</em>, <em>ncores=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/cluster.html#cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.cluster.cluster" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.clustering.cluster.</code><code class="descname">cluster</code><span class="sig-paren">(</span><em>ensembles</em>, <em>method=&lt;MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative object&gt;</em>, <em>select='name CA'</em>, <em>distance_matrix=None</em>, <em>allow_collapsed_result=True</em>, <em>ncores=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/clustering/cluster.html#cluster"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.clustering.cluster.cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cluster frames from one or more ensembles, using one or more
 clustering methods. The function optionally takes pre-calculated distances
 matrices as an argument. Note that not all clustering procedure can work
@@ -248,7 +248,7 @@ the clustering module. A separate analysis will be run for each
 method. Note that different parameters for the same clustering method
 can be explored by adding different instances of the same clustering
 class.</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format. Default is “name CA”</li>
 <li><strong>distance_matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a><em> or </em><em>list thereof</em><em>, </em><em>optional</em>) – Distance matrix used for clustering. If this parameter
 is not supplied the matrix will be calculated on the fly.
 If several distance matrices are supplied, an analysis will be done
@@ -653,7 +653,7 @@ variance estimated from the data.
 If an ndarray is passed, it should be of shape
 (n_clusters, n_features) and gives the initial centers.
 If a callable is passed, it should take arguments X, k and
-and a ranndom state and return an initialization.</li>
+and a random state and return an initialization.</li>
 <li><strong>precompute_distances</strong> (<em>{'auto'</em><em>, </em><em>True</em><em>, </em><em>False}</em>) – Precompute distances (faster but takes more memory).
 ‘auto’ : do not precompute distances if
 n_samples * n_clusters &gt; 12 million. This corresponds to about

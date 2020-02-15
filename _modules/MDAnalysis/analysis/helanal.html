@@ -333,7 +333,7 @@
         <span class="n">mean_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fabs</span><span class="p">(</span><span class="n">a</span> <span class="o">-</span> <span class="n">mean_a</span><span class="p">))</span>
 
-<div class="viewcode-block" id="helanal_trajectory"><a class="viewcode-back" href="../../../documentation_pages/analysis/helanal.html#MDAnalysis.analysis.helanal.helanal_trajectory">[docs]</a><span class="k">def</span> <span class="nf">helanal_trajectory</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+<div class="viewcode-block" id="helanal_trajectory"><a class="viewcode-back" href="../../../documentation_pages/analysis/helanal.html#MDAnalysis.analysis.helanal.helanal_trajectory">[docs]</a><span class="k">def</span> <span class="nf">helanal_trajectory</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
                        <span class="n">begin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">finish</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                        <span class="n">matrix_filename</span><span class="o">=</span><span class="s2">&quot;bending_matrix.dat&quot;</span><span class="p">,</span>
                        <span class="n">origin_pdbfile</span><span class="o">=</span><span class="s2">&quot;origin.pdb&quot;</span><span class="p">,</span>
@@ -350,7 +350,7 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
-<span class="sd">    selection : str (optional)</span>
+<span class="sd">    select : str (optional)</span>
 <span class="sd">        selection string that selects Calpha atoms [``&quot;name CA&quot;``]</span>
 <span class="sd">    begin : float (optional)</span>
 <span class="sd">        start analysing for time (ps) &gt;= *begin*; ``None`` starts from the</span>
@@ -406,7 +406,7 @@
 
 <span class="sd">    .. versionchanged:: 0.16.0</span>
 <span class="sd">       Removed the `start` and `end` keywords for selecting residues because this can</span>
-<span class="sd">       be accomplished more transparently with `selection`. The first and last resid</span>
+<span class="sd">       be accomplished more transparently with `select`. The first and last resid</span>
 <span class="sd">       are directly obtained from the selection.</span>
 
 <span class="sd">    .. deprecated:: 0.16.0</span>
@@ -415,6 +415,9 @@
 
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       ProgressMeter now iterates over the number of frames analysed.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ref_axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
@@ -423,7 +426,7 @@
         <span class="c1"># two atoms</span>
         <span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ref_axis</span><span class="p">)</span>
 
-    <span class="n">ca</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+    <span class="n">ca</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
     <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">ca</span><span class="o">.</span><span class="n">resids</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
 
@@ -702,7 +705,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">list_mean</span><span class="p">,</span> <span class="n">list_sd</span><span class="p">,</span> <span class="n">list_abdev</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="helanal_main"><a class="viewcode-back" href="../../../documentation_pages/analysis/helanal.html#MDAnalysis.analysis.helanal.helanal_main">[docs]</a><span class="k">def</span> <span class="nf">helanal_main</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="n">selection</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="helanal_main"><a class="viewcode-back" href="../../../documentation_pages/analysis/helanal.html#MDAnalysis.analysis.helanal.helanal_main">[docs]</a><span class="k">def</span> <span class="nf">helanal_main</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">ref_axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Simple HELANAL_ run on a single frame PDB/GRO.</span>
 
 <span class="sd">    Computed data are returned as a dict and also logged at level INFO to the</span>
@@ -713,7 +716,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    pdbfile : str</span>
 <span class="sd">        filename of the single-frame input file</span>
-<span class="sd">    selection : str (optional)</span>
+<span class="sd">    select : str (optional)</span>
 <span class="sd">        selection string, default is &quot;name CA&quot; to select all C-alpha atoms.</span>
 <span class="sd">    ref_axis : array_like (optional)</span>
 <span class="sd">        Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``</span>
@@ -744,7 +747,7 @@
 <span class="sd">    writes output to the file ``MDAnalysis.log``::</span>
 
 <span class="sd">       MDAnalysis.start_logging()</span>
-<span class="sd">       data = MDAnalysis.analysis.helanal_main(&quot;4ake_A.pdb&quot;, selection=&quot;name CA and resnum 161-187&quot;)</span>
+<span class="sd">       data = MDAnalysis.analysis.helanal_main(&quot;4ake_A.pdb&quot;, select=&quot;name CA and resnum 161-187&quot;)</span>
 
 
 <span class="sd">    .. versionchanged:: 0.13.0</span>
@@ -753,12 +756,15 @@
 
 <span class="sd">    .. versionchanged:: 0.16.0</span>
 <span class="sd">       Removed the `start` and `end` keywords for selecting residues because this can</span>
-<span class="sd">       be accomplished more transparently with `selection`.</span>
+<span class="sd">       be accomplished more transparently with `select`.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
-    <span class="n">ca</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">selection</span><span class="p">)</span>
+    <span class="n">ca</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Analysing </span><span class="si">%d</span><span class="s2">/</span><span class="si">%d</span><span class="s2"> residues&quot;</span><span class="p">,</span> <span class="n">ca</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
 

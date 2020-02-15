@@ -244,7 +244,7 @@ trajectory is already appropriately treated for periodic boundary artifacts and
 is suitably superimposed to provide a fixed reference frame) <a class="footnote-reference" href="#testraj" id="id4">[3]</a></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.density</span> <span class="kn">import</span> <span class="n">density_from_Universe</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
 <span class="n">D</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
 </pre></div>
@@ -266,10 +266,10 @@ any manner.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object.</p>
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.density_from_Universe">
-<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>universe</em>, <em>delta=1.0</em>, <em>atomselection='name OH2'</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>update_selection=False</em>, <em>verbose=False</em>, <em>interval=1</em>, <em>quiet=None</em>, <em>parameters=None</em>, <em>gridcenter=None</em>, <em>xdim=None</em>, <em>ydim=None</em>, <em>zdim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>universe</em>, <em>delta=1.0</em>, <em>select='name OH2'</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>update_selection=False</em>, <em>verbose=False</em>, <em>interval=1</em>, <em>quiet=None</em>, <em>parameters=None</em>, <em>gridcenter=None</em>, <em>xdim=None</em>, <em>ydim=None</em>, <em>zdim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object.</p>
 <p>The trajectory is read, frame by frame, and the atoms selected with
-<cite>atomselection</cite> are histogrammed on a grid with spacing <cite>delta</cite>.
+<cite>select</cite> are histogrammed on a grid with spacing <cite>delta</cite>.
 A physical density of units [Angstrom^{-3}] is returned (see
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> for more details).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -278,7 +278,7 @@ A physical density of units [Angstrom^{-3}] is returned (see
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object with a trajectory</li>
-<li><strong>atomselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string (MDAnalysis syntax) for the species to be analyzed
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string (MDAnalysis syntax) for the species to be analyzed
 [“name OH2”]</li>
 <li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
 <li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
@@ -330,7 +330,7 @@ with associated metadata.</p>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
-<p>By default, the <cite>atomselection</cite> is static, i.e., atoms are only selected
+<p>By default, the <cite>select</cite> is static, i.e., atoms are only selected
 once at the beginning. If you want <em>dynamically changing selections</em> (such
 as “name OW and around 4.0 (protein and not name H*)”, i.e., the water
 oxygen atoms that are within 4 Å of the protein heavy atoms) then set
@@ -339,14 +339,14 @@ the “bulk” solvent away from a solute use the optimized selections with
 keywords <em>cutoff</em> and <em>soluteselection</em> (see Examples below).</p>
 <p class="rubric">Examples</p>
 <p>Basic use for creating a water density (just using the water oxygen atoms “OW”):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>If you are only interested in water within a certain region, e.g., within a
 vicinity around a binding site, you can use a selection that updates every
 step by setting the <cite>update_selection</cite> keyword argument:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">site_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                                     <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OW and around 5 (resid 156 157 305)&#39;</span><span class="p">,</span>
+                                     <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW and around 5 (resid 156 157 305)&#39;</span><span class="p">,</span>
                                      <span class="n">update_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -354,7 +354,7 @@ step by setting the <cite>update_selection</cite> keyword argument:</p>
 i.e., the water outside the immediate solvation shell of a protein: Select
 all water oxygen atoms that are <em>farther away</em> than a given cut-off (say, 4
 Å) from the solute (here, heavy atoms of the protein):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bulk</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bulk</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">,</span>
                              <span class="n">solute</span><span class="o">=</span><span class="s2">&quot;protein and not name H*&quot;</span><span class="p">,</span>
                              <span class="n">cutoff</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
@@ -375,7 +375,7 @@ ligand_COM = ligand_selection.center_of_mass()
 # Generate a density of waters on a cubic grid centered on the ligand COM
 # In this case, we update the atom selection as shown above.
 water_density = density_from_Universe(universe, delta=1.0,
-                                      atomselection=&#39;name OW around 5 resname LIG&#39;,
+                                      select=&#39;name OW around 5 resname LIG&#39;,
                                       update_selection=True,
                                       gridcenter=ligand_COM,
                                       xdim=20.0, ydim=20.0, zdim=20.0)
@@ -388,7 +388,7 @@ defined grid is assigned).
 physical density in units of Angstrom^{-3}. If you are interested in
 recovering the underlying probability density, simply divide by the sum:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">physical_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                                         <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
+                                         <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
 
 <span class="n">probability_density</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">/</span> <span class="n">physical_density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
@@ -437,7 +437,7 @@ calculated as described for <a class="reference internal" href="#MDAnalysis.anal
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>pdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – PDB filename (should have the temperatureFactor set); ANISO
 records are currently <em>not</em> processed</li>
-<li><strong>atomselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed
 [‘resname HOH and name O’]</li>
 <li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
 <li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of additional data to be saved with the object [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
@@ -501,7 +501,7 @@ can be used in downstream processing).</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></li>
+<li><strong>grid</strong> (<em>array_like</em>) – histogram or density, typically a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></li>
 <li><strong>edges</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – list of arrays, the lower and upper bin edges along the axes</li>
 <li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – <p>dictionary of class parameters; saved with
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.save" title="MDAnalysis.analysis.density.Density.save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.save()</span></code></a>. The following keys are meaningful to
@@ -553,7 +553,7 @@ stores it with <a class="reference internal" href="#MDAnalysis.analysis.density.
 <dt id="MDAnalysis.analysis.density.Density.edges">
 <code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.density.Density.edges" title="Permalink to this definition">¶</a></dt>
 <dd><p>The boundaries of each cell in <cite>grid</cite> along all axes (equivalent
-to what <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.18)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
+to what <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogramdd()</span></code></a> returns).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -626,7 +626,7 @@ ensure that the DX file is written in a format suitable for <a class="reference 
 <p>If the input histogram consists of counts per cell then the
 <a class="reference internal" href="#MDAnalysis.analysis.density.Density.make_density" title="MDAnalysis.analysis.density.Density.make_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.make_density()</span></code></a> method converts the grid to a physical density. For
 a probability density, divide it by <code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.grid.sum()</span></code> or use <code class="docutils literal notranslate"><span class="pre">normed=True</span></code>
-right away in <a class="reference external" href="https://numpy.org/doc/1.18/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.18)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
+right away in <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">histogramdd()</span></code></a>.</p>
 <p>The user <em>should</em> set the <em>parameters</em> keyword (see docs for the
 constructor); in particular, if the data are already a density, one must
 set <code class="docutils literal notranslate"><span class="pre">isDensity=True</span></code> because there is no reliable way to detect if
@@ -992,7 +992,7 @@ is a better alternative for portability.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">BfactorDensityCreator</code><span class="sig-paren">(</span><em>pdb</em>, <em>delta=1.0</em>, <em>atomselection='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">BfactorDensityCreator</code><span class="sig-paren">(</span><em>pdb</em>, <em>delta=1.0</em>, <em>select='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a pdb file using MDAnalysis.</p>
 <p>The main purpose of this function is to convert crystal waters in
 an X-ray structure into a density so that one can compare the
@@ -1002,14 +1002,14 @@ estimated by placing Gaussians of width sigma at the position of
 all selected atoms.</p>
 <p>Sigma can be fixed or taken from the B-factor field, in which case
 sigma is taken as sqrt(3.*B/8.)/pi (see <code class="xref py py-func docutils literal notranslate"><span class="pre">BFactor2RMSF()</span></code>).</p>
-<p>Construct the density from psf and pdb and the atomselection.</p>
+<p>Construct the density from psf and pdb and the select.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>pdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – PDB file or <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code>;</li>
-<li><strong>atomselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed</li>
 <li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
 <li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of additional data to be saved with the object</li>
 <li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – increase histogram dimensions by padding (on top of initial box size)</li>
@@ -1024,9 +1024,12 @@ density; if <code class="docutils literal notranslate"><span class="pre">None</s
 <p>For assigning X-ray waters to MD densities one might have to use a sigma
 of about 0.5 A to obtain a well-defined and resolved x-ray water density
 that can be easily matched to a broader density distribution.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 <p class="rubric">Examples</p>
 <p>The following creates the density with the B-factors from the pdb file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DC</span> <span class="o">=</span> <span class="n">BfactorDensityCreator</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s2">&quot;name HOH&quot;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DC</span> <span class="o">=</span> <span class="n">BfactorDensityCreator</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name HOH&quot;</span><span class="p">,</span>
                            <span class="n">padding</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">density</span> <span class="o">=</span> <span class="n">DC</span><span class="o">.</span><span class="n">Density</span><span class="p">()</span>
 </pre></div>

@@ -224,7 +224,7 @@ reduction algorithms, wrapping them to allow them to be used interchangably.</p>
 </div>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality">
-<code class="descclassname">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.</code><code class="descname">reduce_dimensionality</code><span class="sig-paren">(</span><em>ensembles</em>, <em>method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>selection='name CA'</em>, <em>distance_matrix=None</em>, <em>allow_collapsed_result=True</em>, <em>ncores=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/reduce_dimensionality.html#reduce_dimensionality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.</code><code class="descname">reduce_dimensionality</code><span class="sig-paren">(</span><em>ensembles</em>, <em>method=&lt;MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod.StochasticProximityEmbeddingNative object&gt;</em>, <em>select='name CA'</em>, <em>distance_matrix=None</em>, <em>allow_collapsed_result=True</em>, <em>ncores=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/dimensionality_reduction/reduce_dimensionality.html#reduce_dimensionality"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce dimensions in frames from one or more ensembles, using one or more
 dimensionality reduction methods. The function optionally takes
 pre-calculated distances matrices as an argument. Note that not all
@@ -250,7 +250,7 @@ will be run for each method. Note that different parameters for the
 same method can be explored by adding different instances of
 the same dimensionality reduction class. Options are Stochastic
 Proximity Embedding or Principal Component Analysis.</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format (default is “name CA”)</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Atom selection string in the MDAnalysis format (default is “name CA”)</li>
 <li><strong>distance_matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a><em>, </em><em>optional</em>) – Distance matrix for stochastic proximity embedding. If this parameter
 is not supplied an RMSD distance matrix will be calculated on the fly (default).
 If several distance matrices are supplied, an analysis will be done

@@ -240,7 +240,7 @@
 
 <span class="sd">  from MDAnalysis.analysis.density import density_from_Universe</span>
 <span class="sd">  u = Universe(TPR, XTC)</span>
-<span class="sd">  D = density_from_Universe(u, delta=1.0, atomselection=&quot;name OW&quot;)</span>
+<span class="sd">  D = density_from_Universe(u, delta=1.0, select=&quot;name OW&quot;)</span>
 <span class="sd">  D.convert_density(&#39;TIP4P&#39;)</span>
 <span class="sd">  D.export(&quot;water.dx&quot;, type=&quot;double&quot;)</span>
 
@@ -730,7 +730,7 @@
     <span class="k">return</span> <span class="n">umin</span><span class="p">,</span> <span class="n">umax</span>
 
 
-<div class="viewcode-block" id="density_from_Universe"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_Universe">[docs]</a><span class="k">def</span> <span class="nf">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;name OH2&#39;</span><span class="p">,</span>
+<div class="viewcode-block" id="density_from_Universe"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_Universe">[docs]</a><span class="k">def</span> <span class="nf">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OH2&#39;</span><span class="p">,</span>
                           <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">soluteselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                           <span class="n">use_kdtree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_selection</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -740,7 +740,7 @@
     <span class="sd">&quot;&quot;&quot;Create a density grid from a :class:`MDAnalysis.Universe` object.</span>
 
 <span class="sd">    The trajectory is read, frame by frame, and the atoms selected with</span>
-<span class="sd">    `atomselection` are histogrammed on a grid with spacing `delta`.</span>
+<span class="sd">    `select` are histogrammed on a grid with spacing `delta`.</span>
 <span class="sd">    A physical density of units [Angstrom^{-3}] is returned (see</span>
 <span class="sd">    :class:`Density` for more details).</span>
 
@@ -748,7 +748,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : MDAnalysis.Universe</span>
 <span class="sd">            :class:`MDAnalysis.Universe` object with a trajectory</span>
-<span class="sd">    atomselection : str (optional)</span>
+<span class="sd">    select : str (optional)</span>
 <span class="sd">            selection string (MDAnalysis syntax) for the species to be analyzed</span>
 <span class="sd">            [&quot;name OH2&quot;]</span>
 <span class="sd">    delta : float (optional)</span>
@@ -809,7 +809,7 @@
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 
-<span class="sd">    By default, the `atomselection` is static, i.e., atoms are only selected</span>
+<span class="sd">    By default, the `select` is static, i.e., atoms are only selected</span>
 <span class="sd">    once at the beginning. If you want *dynamically changing selections* (such</span>
 <span class="sd">    as &quot;name OW and around 4.0 (protein and not name H*)&quot;, i.e., the water</span>
 <span class="sd">    oxygen atoms that are within 4 Å of the protein heavy atoms) then set</span>
@@ -821,14 +821,14 @@
 <span class="sd">    --------</span>
 <span class="sd">    Basic use for creating a water density (just using the water oxygen atoms &quot;OW&quot;)::</span>
 
-<span class="sd">      density = density_from_Universe(universe, delta=1.0, atomselection=&#39;name OW&#39;)</span>
+<span class="sd">      density = density_from_Universe(universe, delta=1.0, select=&#39;name OW&#39;)</span>
 
 <span class="sd">    If you are only interested in water within a certain region, e.g., within a</span>
 <span class="sd">    vicinity around a binding site, you can use a selection that updates every</span>
 <span class="sd">    step by setting the `update_selection` keyword argument::</span>
 
 <span class="sd">      site_density = density_from_Universe(universe, delta=1.0,</span>
-<span class="sd">                                           atomselection=&#39;name OW and around 5 (resid 156 157 305)&#39;,</span>
+<span class="sd">                                           select=&#39;name OW and around 5 (resid 156 157 305)&#39;,</span>
 <span class="sd">                                           update_selection=True)</span>
 
 <span class="sd">    A special case for an updating selection is to create the &quot;bulk density&quot;,</span>
@@ -836,7 +836,7 @@
 <span class="sd">    all water oxygen atoms that are *farther away* than a given cut-off (say, 4</span>
 <span class="sd">    Å) from the solute (here, heavy atoms of the protein)::</span>
 
-<span class="sd">      bulk = density_from_Universe(universe, delta=1.0, atomselection=&#39;name OW&#39;,</span>
+<span class="sd">      bulk = density_from_Universe(universe, delta=1.0, select=&#39;name OW&#39;,</span>
 <span class="sd">                                   solute=&quot;protein and not name H*&quot;,</span>
 <span class="sd">                                   cutoff=4)</span>
 
@@ -858,7 +858,7 @@
 <span class="sd">      # Generate a density of waters on a cubic grid centered on the ligand COM</span>
 <span class="sd">      # In this case, we update the atom selection as shown above.</span>
 <span class="sd">      water_density = density_from_Universe(universe, delta=1.0,</span>
-<span class="sd">                                            atomselection=&#39;name OW around 5 resname LIG&#39;,</span>
+<span class="sd">                                            select=&#39;name OW around 5 resname LIG&#39;,</span>
 <span class="sd">                                            update_selection=True,</span>
 <span class="sd">                                            gridcenter=ligand_COM,</span>
 <span class="sd">                                            xdim=20.0, ydim=20.0, zdim=20.0)</span>
@@ -871,7 +871,7 @@
 <span class="sd">    recovering the underlying probability density, simply divide by the sum::</span>
 
 <span class="sd">      physical_density = density_from_Universe(universe, delta=1.0,</span>
-<span class="sd">                                               atomselection=&#39;name OW&#39;)</span>
+<span class="sd">                                               select=&#39;name OW&#39;)</span>
 
 <span class="sd">      probability_density = physical_density / physical_density.grid.sum()</span>
 
@@ -903,12 +903,12 @@
     <span class="k">if</span> <span class="n">cutoff</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">soluteselection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># special fast selection for &#39;&lt;atomsel&gt; not within &lt;cutoff&gt; of &lt;solutesel&gt;&#39;</span>
         <span class="n">notwithin_coordinates</span> <span class="o">=</span> <span class="n">notwithin_coordinates_factory</span><span class="p">(</span>
-            <span class="n">u</span><span class="p">,</span> <span class="n">atomselection</span><span class="p">,</span> <span class="n">soluteselection</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">soluteselection</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span>
             <span class="n">use_kdtree</span><span class="o">=</span><span class="n">use_kdtree</span><span class="p">,</span> <span class="n">updating_selection</span><span class="o">=</span><span class="n">update_selection</span><span class="p">)</span>
         <span class="k">def</span> <span class="nf">current_coordinates</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">notwithin_coordinates</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="n">update_selection</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="n">update_selection</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">current_coordinates</span><span class="p">():</span>
             <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span>
@@ -916,8 +916,8 @@
     <span class="n">coord</span> <span class="o">=</span> <span class="n">current_coordinates</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
         <span class="s2">&quot;Selected </span><span class="si">{0:d}</span><span class="s2"> atoms out of </span><span class="si">{1:d}</span><span class="s2"> atoms (</span><span class="si">{2!s}</span><span class="s2">) from </span><span class="si">{3:d}</span><span class="s2"> total.&quot;</span>
-        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)),</span>
-                  <span class="n">atomselection</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)),</span>
+                  <span class="n">select</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
     <span class="p">)</span>
 
     <span class="c1"># mild warning; typically this is run on RMS-fitted trajectories and</span>
@@ -986,7 +986,7 @@
     <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span> <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;psf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">filename</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;dcd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span>
-    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;atomselection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atomselection</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">select</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;totaltime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>
@@ -1164,7 +1164,7 @@
 <span class="sd">    pdb : str</span>
 <span class="sd">          PDB filename (should have the temperatureFactor set); ANISO</span>
 <span class="sd">          records are currently *not* processed</span>
-<span class="sd">    atomselection : str</span>
+<span class="sd">    select : str</span>
 <span class="sd">          selection string (MDAnalysis syntax) for the species to be analyzed</span>
 <span class="sd">          [&#39;resname HOH and name O&#39;]</span>
 <span class="sd">    delta : float</span>
@@ -1217,15 +1217,15 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdb</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">atomselection</span><span class="o">=</span><span class="s1">&#39;resname HOH and name O&#39;</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdb</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;resname HOH and name O&#39;</span><span class="p">,</span>
                  <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Construct the density from psf and pdb and the atomselection.</span>
+        <span class="sd">&quot;&quot;&quot;Construct the density from psf and pdb and the select.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        pdb : str</span>
 <span class="sd">            PDB file or :class:`MDAnalysis.Universe`;</span>
-<span class="sd">        atomselection : str</span>
+<span class="sd">        select : str</span>
 <span class="sd">            selection string (MDAnalysis syntax) for the species to be analyzed</span>
 <span class="sd">        delta : float</span>
 <span class="sd">            bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
@@ -1244,11 +1244,14 @@
 <span class="sd">        of about 0.5 A to obtain a well-defined and resolved x-ray water density</span>
 <span class="sd">        that can be easily matched to a broader density distribution.</span>
 
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
 <span class="sd">        The following creates the density with the B-factors from the pdb file::</span>
 
-<span class="sd">          DC = BfactorDensityCreator(pdb, delta=1.0, atomselection=&quot;name HOH&quot;,</span>
+<span class="sd">          DC = BfactorDensityCreator(pdb, delta=1.0, select=&quot;name HOH&quot;,</span>
 <span class="sd">                                     padding=2, sigma=None)</span>
 <span class="sd">          density = DC.Density()</span>
 
@@ -1258,9 +1261,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">as_Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
-        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">atomselection</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
         <span class="n">coord</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Selected </span><span class="si">{0:d}</span><span class="s2"> atoms (</span><span class="si">{1!s}</span><span class="s2">) out of </span><span class="si">{2:d}</span><span class="s2"> total.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">atomselection</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Selected </span><span class="si">{0:d}</span><span class="s2"> atoms (</span><span class="si">{1!s}</span><span class="s2">) out of </span><span class="si">{2:d}</span><span class="s2"> total.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">select</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
         <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">padding</span>
         <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">padding</span>
 
@@ -1297,7 +1300,7 @@
             <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pdb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdb</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pdb&#39;</span><span class="p">:</span> <span class="n">pdb</span><span class="p">}</span>
-        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;atomselection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atomselection</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">select</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>

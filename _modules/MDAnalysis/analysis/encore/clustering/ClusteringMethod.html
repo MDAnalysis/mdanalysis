@@ -492,11 +492,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                      <span class="n">n_clusters</span><span class="p">,</span>
-                     <span class="n">max_iter</span> <span class="o">=</span> <span class="mi">300</span><span class="p">,</span>
-                     <span class="n">n_init</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
-                     <span class="n">init</span> <span class="o">=</span> <span class="s1">&#39;k-means++&#39;</span><span class="p">,</span>
+                     <span class="n">max_iter</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                     <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                     <span class="n">init</span><span class="o">=</span><span class="s1">&#39;k-means++&#39;</span><span class="p">,</span>
                      <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
-                     <span class="n">tol</span> <span class="o">=</span> <span class="mf">1e-4</span><span class="p">,</span>
+                     <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
                      <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                      <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                      <span class="n">copy_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -527,7 +527,7 @@
 <span class="sd">                If an ndarray is passed, it should be of shape</span>
 <span class="sd">                (n_clusters, n_features) and gives the initial centers.</span>
 <span class="sd">                If a callable is passed, it should take arguments X, k and</span>
-<span class="sd">                and a ranndom state and return an initialization.</span>
+<span class="sd">                and a random state and return an initialization.</span>
 
 <span class="sd">            precompute_distances : {&#39;auto&#39;, True, False}</span>
 <span class="sd">                Precompute distances (faster but takes more memory).</span>
@@ -566,12 +566,12 @@
 <span class="sd">                but one are used.</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span> <span class="o">=</span> <span class="n">n_clusters</span><span class="p">,</span>
-                                                 <span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span><span class="p">,</span>
-                                                 <span class="n">n_init</span> <span class="o">=</span> <span class="n">n_init</span><span class="p">,</span>
-                                                 <span class="n">init</span> <span class="o">=</span> <span class="n">init</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+                                                 <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+                                                 <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span>
+                                                 <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
                                                  <span class="n">precompute_distances</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
-                                                 <span class="n">tol</span> <span class="o">=</span> <span class="n">tol</span><span class="p">,</span>
+                                                 <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
                                                  <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
                                                  <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
                                                  <span class="n">copy_x</span><span class="o">=</span><span class="n">copy_x</span><span class="p">,</span>
