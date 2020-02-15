@@ -85,9 +85,9 @@ def get_reader_for(filename, format=None):
         format = 'CHAIN'
     # Only guess if format is not specified
     if format is None:
-        for f, test in _READER_HINTS.items():
+        for fmt_name, test in _READER_HINTS.items():
             if test(filename):
-                format = f
+                format = fmt_name
                 break
         else:  # hits else if for loop completes
             # else let the guessing begin!
@@ -230,9 +230,9 @@ def get_parser_for(filename, format=None):
 
     # Only guess if format is not provided
     if format is None:
-        for f, test in _PARSER_HINTS.items():
+        for fmt_name, test in _PARSER_HINTS.items():
             if test(filename):
-                format = f
+                format = fmt_name
                 break
         else:
             format = util.guess_format(filename)
