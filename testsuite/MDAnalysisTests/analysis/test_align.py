@@ -227,12 +227,12 @@ class TestAlign(object):
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
-        align.AlignTraj(fitted, reference,
-                        prefix=os.path.join(tmpdir, "rmsfit_"))
-        # we are careful now. The default does nothing
-        with pytest.raises(IOError):
-            align.AlignTraj(fitted, reference, force=False, 
-                            prefix=os.path.join(tmpdir, "rmsfit_"))
+        with tempdir.in_tempdir():
+            align.AlignTraj(fitted, reference)
+
+            # we are careful now. The default does nothing
+            with pytest.raises(IOError):
+                align.AlignTraj(fitted, reference, force=False)
 
     def test_AlignTraj_step_works(self, universe, reference, tmpdir):
         reference.trajectory[-1]
