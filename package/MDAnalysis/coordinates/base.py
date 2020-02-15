@@ -2086,7 +2086,8 @@ class ReaderBase(ProtoReader):
        functionality, all ReaderBase subclasses must now :func:`super` through this
        class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
        Provides kwargs to be passed to :class:`Timestep`
-
+    .. versionchanged:: 1.0
+       Removed deprecated flags functionality, use convert_units kwarg instead
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):

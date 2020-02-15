@@ -141,6 +141,9 @@ class XYZWriter(base.WriterBase):
             information. If you write a :class:`AtomGroup` with
             :meth:`XYZWriter.write` then atom information is taken
             at each step and *atoms* is ignored.
+        convert_units : bool (optional)
+            convert quantities to default MDAnalysis units of Angstrom upon
+            writing  [``True``]
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version

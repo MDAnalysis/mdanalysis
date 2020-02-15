@@ -2581,6 +2581,7 @@ class AtomGroup(GroupBase):
         updating : bool (optional)
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
+          [``True``]
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
