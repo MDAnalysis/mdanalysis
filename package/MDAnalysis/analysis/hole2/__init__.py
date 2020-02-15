@@ -2,6 +2,7 @@
 from __future__ import absolute_import
 from ...due import due, Doi
 from .hole import hole, HoleAnalysis
+from .helper import create_vmd_surface
 
 due.cite(Doi("10.1016/S0006-3495(93)81293-1"),
          description="HOLE program",

@@ -1,3 +1,131 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- https://www.mdanalysis.org
+# Copyright (c) 2006-2020 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
+"""HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.hole`
+=====================================================================================
+
+:Author: Lily Wang
+:Year: 2020
+:Copyright: GNU Public License v3
+
+.. versionadded:: 1.0
+
+This module provides an interface for the HOLE_ suite of tools [Smart1993]_ 
+[Smart1996]_ to analyse an ion channel pore or transporter pathway [Stelzl2014]_ 
+as a function of time or arbitrary order parameters.
+
+HOLE_ must be installed separately and can be obtained in binary form
+from http://www.holeprogram.org/ or as source from
+https://github.com/osmart/hole2. (HOLE is open source and available
+under the Apache v2.0 license.)
+
+
+Using HOLE on a PDB file
+------------------------
+
+Use the :func:``hole`` function to run `HOLE`_ on a single PDB file. For example, 
+the code below runs the `HOLE`_ program installed at '~/hole2/exe/hole' ::
+
+    from MDAnalysis.tests.datafiles import PDB_HOLE
+    from MDAnalysis.analysis import hole2
+    profiles = hole2.hole(PDB_HOLE, executable='~/hole2/exe/hole')
+    # to create a VMD surface of the pore
+    hole2.create_vmd_surface(filename='hole.vmd')
+
+``profiles`` is a dictionary of HOLE profiles, indexed by the frame number. If only 
+a PDB file is passed to the function, there will only be one profile at frame 0. 
+You can visualise the pore by loading your PDB file into VMD, and in 
+Extensions > Tk Console, type::
+
+    source hole.vmd
+
+You can also pass a DCD trajectory with the same atoms in the same order as 
+your PDB file with the ``dcd`` keyword argument. In that case, ``profiles`` will 
+contain multiple HOLE profiles, indexed by frame.
+
+The HOLE program will create some output files:
+
+    * an output file (default name: hole.out)
+    * an sphpdb file (default name: hole.sph)
+    * a file of van der Waals' radii 
+      (if not specified with ``vdwradii_file``. Default name: simple2.rad)
+    * a symlink of your PDB or DCD files (if the original name is too long)
+    * the input text (if you specify ``infile``)
+
+By default (`keep_files=True`), these files are kept. If you would like to 
+delete the files after the function is wrong, set `keep_files=False`. Keep in 
+mind that if you delete the sphpdb file, you cannot then create a VMD surface.
+
+
+Using HOLE on a trajectory
+--------------------------
+
+You can also run HOLE on a trajectory through the :class:`HoleAnalysis` class. 
+This behaves similarly to the ``hole`` function, although arguments such as ``cpoint`` 
+and ``cvect`` become runtime arguments for the :meth:`~HoleAnalysis.run` function.
+
+The class can be set-up and run like a normal MDAnalysis analysis class::
+
+    import MDAnalysis as mda
+    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
+    from MDAnalysis.analysis import hole2
+
+    ha = hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
+    ha.run()
+    ha.create_vmd_surface(filename='hole.vmd')
+
+The VMD surface created by the class updates the pore for each frame of the trajectory.
+Use it as normal by loading your trajectory in VMD and sourcing the file in the Tk Console.
+
+Again, HOLE writes out files for each frame. If you would like to delete these files 
+after the analysis, you can call :meth:`~HoleAnalysis.delete_temporary_files`::
+
+    ha.delete_temporary_files()
+
+Alternatively, you can use HoleAnalysis as a context manager that deletes temporary 
+files when you are finished with the context manager::
+
+    import MDAnalysis as mda
+    from MDAnalysis.tests.datafiles import MULTIPDB_HOLE
+    from MDAnalysis.analysis import hole2
+
+    with hole2.HoleAnalysis(u, executable='~/hole2/exe/hole') as h2:
+        h2.run()
+        h2.create_vmd_surface()
+
+
+.. _HOLE: http://www.holeprogram.org
+
+
+Functions and classes
+---------------------
+
+.. autofunction:: hole
+
+.. autoclass:: HoleAnalysis
+   :members:
+
+"""
 
 from __future__ import absolute_import, division
 
@@ -372,12 +500,13 @@ class HoleAnalysis(AnalysisBase):
 
     """.format(IGNORE_RESIDUES)
 
+    input_file = '{prefix}hole{i:03d}.inp'
     output_file = '{prefix}hole{i:03d}.out'
     sphpdb_file = '{prefix}hole{i:03d}.sph'
 
     hole_header = textwrap.dedent("""
         ! Input file for Oliver Smart's HOLE program
-        ! written by MDAnalysis.analysis.hole.HOLE
+        ! written by MDAnalysis.analysis.hole2.HoleAnalysis
         ! for a Universe
         ! u = mda.Universe({}
         !   )
@@ -470,7 +599,7 @@ class HoleAnalysis(AnalysisBase):
     def run(self, start=None, stop=None, step=None, verbose=None,
             cpoint=None, cvect=None, sample=0.2, end_radius=22,
             output_level=0, random_seed=None,
-            prefix=None):
+            prefix=None, write_input_files=False):
         """
         Perform the calculation
 
@@ -566,6 +695,10 @@ class HoleAnalysis(AnalysisBase):
 
         prefix: str, optional
             Prefix for HOLE output files. Default: None
+
+        write_input_files: bool, optional
+            Whether to write out the input HOLE text as files. 
+            Files are called `hole.inp`. Default: ``False``
         """
 
         if output_level > 3:
@@ -589,6 +722,7 @@ class HoleAnalysis(AnalysisBase):
         self.end_radius = end_radius
         self.output_level = output_level
         self.random_seed = random_seed
+        self.write_input_files = write_input_files
         super(HoleAnalysis, self).run(start=start, stop=stop,
                                       step=step, verbose=verbose)
 
@@ -651,6 +785,11 @@ class HoleAnalysis(AnalysisBase):
         if self._guess_cpoint:
             fmt_kwargs['cpoint'] = self.guess_cpoint()
         infile_text = self.infile_text.format(**fmt_kwargs)
+
+        if self.write_input_files:
+            infile = self.input_file.format(prefix=self.prefix, i=frame)
+            with open(infile, 'w') as f:
+                f.write(infile_text)
 
         try:
             self.ag.write(pdbfile)
@@ -761,11 +900,14 @@ class HoleAnalysis(AnalysisBase):
 
         return filename
 
-    def __enter__(self):
-        return self
+    def min_radius(self):
+        """Return the minimum radius over all profiles as a function of q"""
+        if not self.profiles:
+            raise ValueError('No profiles available. Try calling run()')
+        return np.array([[q, p.radius.min()] for q, p in self.profiles.items()])
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """Delete temporary files on exit"""
+    def delete_temporary_files(self):
+        """Delete temporary files"""
         for f in self.tmp_files + list(self.outfiles) + list(self.sphpdbs):
             try:
                 os.unlink(f)
@@ -774,6 +916,13 @@ class HoleAnalysis(AnalysisBase):
         self.tmp_files = []
         self.outfiles = []
         self.sphpdbs = []
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Delete temporary files on exit"""
+        self.delete_temporary_files()
 
     def _process_plot_kwargs(self, frames=None,
                              color=None, cmap='viridis',

@@ -1,3 +1,37 @@
+# -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
+#
+# MDAnalysis --- https://www.mdanalysis.org
+# Copyright (c) 2006-2020 The MDAnalysis Development Team and contributors
+# (see the file AUTHORS for the full list of names)
+#
+# Released under the GNU Public Licence, v2 or any higher version
+#
+# Please cite your use of MDAnalysis in published work:
+#
+# R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,
+# D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.
+# MDAnalysis: A Python package for the rapid analysis of molecular dynamics
+# simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th
+# Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.
+# doi: 10.25080/majora-629e541a-00e
+#
+# N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.
+# MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
+# J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
+#
+
+"""HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.templates`
+=====================================================================================
+
+:Author: Lily Wang
+:Year: 2020
+:Copyright: GNU Public License v3
+
+.. versionadded:: 1.0
+
+Templates used in :mod:`MDAnalysis.analysis.hole2.hole`
+"""
 
 exe_err = ('HOLE binary {name} not found. {name} must be on the '
            'PATH, or the path must provided with the keyword '
@@ -52,7 +86,7 @@ BOND ???? 0.85
 
 hole_input = """
 ! Input file for Oliver Smart's HOLE program
-! written by MDAnalysis.analysis.hole.HOLE
+! written by MDAnalysis.analysis.hole2.hole
 ! filename = {filename}
 COORD  {coordinates}
 RADIUS {radius}
