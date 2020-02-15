@@ -88,7 +88,7 @@ class ParmEdReader(base.SingleFrameReaderBase):
     units = {'time': None, 'length': 'Angstrom'}
 
     @staticmethod
-    def format_test(thing):
+    def _format_hint(thing):
         try:
             import parmed as pmd
         except ImportError:

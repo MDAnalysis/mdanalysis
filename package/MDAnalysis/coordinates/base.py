@@ -1370,13 +1370,13 @@ class _Readermeta(type):
         except KeyError:
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _READERS[f] = cls
+            for fmt_name in fmt:
+                fmt_name = fmt_name.upper()
+                _READERS[fmt_name] = cls
 
-                if 'format_test' in classdict:
+                if '_format_hint' in classdict:
                     # isn't bound yet, so access __func__
-                    _READER_HINTS[f] = classdict['format_test'].__func__
+                    _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 
 class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):

@@ -62,7 +62,7 @@ class MMTFReader(base.SingleFrameReaderBase):
     format = 'MMTF'
 
     @staticmethod
-    def format_test(thing):
+    def _format_hint(thing):
         return isinstance(thing, mmtf.MMTFDecoder)
 
     @due.dcite(

@@ -401,7 +401,7 @@ class MemoryReader(base.ProtoReader):
         self._read_next_timestep()
 
     @staticmethod
-    def format_test(thing):
+    def _format_hint(thing):
         """For internal use: Check if MemoryReader can operate on *thing*"""
         return isinstance(thing, np.ndarray)
 
