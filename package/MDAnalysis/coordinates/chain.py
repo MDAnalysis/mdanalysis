@@ -52,6 +52,7 @@ import copy
 
 import numpy as np
 
+from ..lib import util
 from ..lib.util import asiterable
 from . import base
 from . import core
@@ -366,6 +367,13 @@ class ChainReader(base.ProtoReader):
         # rewind() also sets self.ts
         self.ts = None
         self.rewind()
+
+    @staticmethod
+    def format_test(thing):
+        """Can ChainReader read the object *thing*"""
+        return (not isinstance(thing, np.ndarray) and
+                util.iterable(thing) and
+                not util.isstream(thing))
 
     def _get_local_frame(self, k):
         """Find trajectory index and trajectory frame for chained frame `k`.

@@ -210,7 +210,7 @@ import weakref
 from . import core
 from .. import NoDataError
 from .. import (
-    _READERS,
+    _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
     _CONVERTERS
@@ -1373,6 +1373,10 @@ class _Readermeta(type):
             for f in fmt:
                 f = f.upper()
                 _READERS[f] = cls
+
+                if 'format_test' in classdict:
+                    # isn't bound yet, so access __func__
+                    _READER_HINTS[f] = classdict['format_test'].__func__
 
 
 class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):

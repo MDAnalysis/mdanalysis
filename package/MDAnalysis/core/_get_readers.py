@@ -27,9 +27,10 @@ import inspect
 import mmtf
 import parmed as pmd
 import numpy as np
-from MDAnalysis.lib.util import isstream
 
-from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS
+from .. import (_READERS, _READER_HINTS,
+                _PARSERS, _PARSER_HINTS,
+                _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS)
 from ..lib import util
 
 
@@ -83,20 +84,15 @@ def get_reader_for(filename, format=None):
         return format
 
     # ChainReader gets returned even if format is specified
-    if not isinstance(filename, np.ndarray) and util.iterable(filename) and not isstream(filename):
+    if _READER_HINTS['CHAIN'](filename):
         format = 'CHAIN'
     # Only guess if format is not specified
-    elif format is None:
-        # Checks for specialised formats
-        if isinstance(filename, np.ndarray):
-            # memoryreader slurps numpy arrays
-            format = 'MEMORY'
-        elif isinstance(filename, mmtf.MMTFDecoder):
-            # mmtf slurps mmtf object
-            format = 'MMTF'
-        elif isinstance(filename, pmd.Structure):
-            format = 'PARMED'
-        else:
+    if format is None:
+        for f, test in _READER_HINTS.items():
+            if test(filename):
+                format = f
+                break;
+        else:  # hits else if for loop completes
             # else let the guessing begin!
             format = util.guess_format(filename)
     format = format.upper()

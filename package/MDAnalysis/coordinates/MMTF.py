@@ -61,6 +61,10 @@ class MMTFReader(base.SingleFrameReaderBase):
     """Coordinate reader for the Macromolecular Transmission Format format (MMTF_)."""
     format = 'MMTF'
 
+    @staticmethod
+    def format_test(thing):
+        return isinstance(thing, mmtf.MMTFDecoder)
+
     @due.dcite(
         Doi('10.1371/journal.pcbi.1005575'),
         description="MMTF Reader",

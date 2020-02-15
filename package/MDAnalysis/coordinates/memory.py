@@ -401,6 +401,11 @@ class MemoryReader(base.ProtoReader):
         self._read_next_timestep()
 
     @staticmethod
+    def format_test(thing):
+        """For internal use: Check if MemoryReader can operate on *thing*"""
+        return isinstance(thing, np.ndarray)
+
+    @staticmethod
     def parse_n_atoms(filename, order='fac', **kwargs):
         """Deduce number of atoms in a given array of coordinates
 
