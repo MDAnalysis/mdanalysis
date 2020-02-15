@@ -133,19 +133,30 @@ def simple_function(mobile):
     return mobile.center_of_geometry()
 
 
-def test_AnalysisFromFunction():
-    u = mda.Universe(PSF, DCD)
-    step = 2
-    ana1 = base.AnalysisFromFunction(
-        simple_function, mobile=u.atoms).run(step=step)
-    ana2 = base.AnalysisFromFunction(simple_function, u.atoms).run(step=step)
-    ana3 = base.AnalysisFromFunction(
-        simple_function, u.trajectory, u.atoms).run(step=step)
+@pytest.mark.parametrize('start, stop, step, nframes', [
+        (None, None, 2, 49),
+        (None, 50, 2, 25),
+        (20, 50, 2, 15),
+        (20, 50, None, 30)
+    ])
+def test_AnalysisFromFunction(u, start, stop, step, nframes):
+    ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
+    ana1.run(start=start, stop=stop, step=step)
+
+    ana2 = base.AnalysisFromFunction(simple_function, u.atoms)
+    ana2.run(start=start, stop=stop, step=step)
+
+    ana3 = base.AnalysisFromFunction(simple_function, u.trajectory, u.atoms)
+    ana3.run(start=start, stop=stop, step=step)
 
     results = []
-    for ts in u.trajectory[::step]:
+
+    for ts in u.trajectory[start:stop:step]:
         results.append(simple_function(u.atoms))
+
     results = np.asarray(results)
+
+    assert np.size(results, 0) == nframes
 
     for ana in (ana1, ana2, ana3):
         assert_equal(results, ana.results)
@@ -183,16 +194,3 @@ def test_analysis_class_decorator():
 
     with no_deprecated_call():
         d = Distances(u.atoms[:10], u.atoms[10:20]).run()
-
-@pytest.mark.parametrize('param', ['start', 'stop', 'step'])
-def test_runargs_deprecation(param):
-    u = mda.Universe(PSF, DCD)
-
-    class NothingAnalysis(base.AnalysisBase):
-        def _single_frame(self):
-            self.results = []
-
-    with pytest.warns(DeprecationWarning):
-        ana = NothingAnalysis(u.trajectory, **{param: 10})
-
-    ana.run()

@@ -575,12 +575,6 @@ class AlignTraj(AnalysisBase):
             exact methods
         force : bool (optional)
             Force overwrite of filename for rmsd-fitting
-        start : int (optional)
-            First frame of trajectory to analyse, Default: 0
-        stop : int (optional)
-            Last frame of trajectory to analyse, Default: -1
-        step : int (optional)
-            Step between frames to analyse, Default: 1
         in_memory : bool (optional)
             *Permanently* switch `mobile` to an in-memory trajectory
             so that alignment can be done in-place, which can improve
@@ -631,6 +625,10 @@ class AlignTraj(AnalysisBase):
 
         .. versionchanged:: 0.17.0
            removed deprecated `mass_weighted` keyword
+
+        .. versionchanged:: 1.0.0
+           Support for the ``start``, ``stop``, and ``step`` keywords has been
+           removed. These should instead be passed to :meth:`AlignTraj.run`.
 
         """
         select = rms.process_selection(select)
@@ -761,12 +759,6 @@ class AverageStructure(AnalysisBase):
             exact methods
         force : bool (optional)
             Force overwrite of filename for rmsd-fitting
-        start : int (optional)
-            First frame of trajectory to analyse, Default: 0
-        stop : int (optional)
-            Last frame of trajectory to analyse, Default: -1
-        step : int (optional)
-            Step between frames to analyse, Default: 1
         in_memory : bool (optional)
             *Permanently* switch `mobile` to an in-memory trajectory
             so that alignment can be done in-place, which can improve
@@ -809,6 +801,11 @@ class AverageStructure(AnalysisBase):
           ``in_memory`` had been set to ``True``.
 
         .. versionadded:: 0.21.0
+
+        .. versionchanged:: 1.0.0
+           Support for the ``start``, ``stop``, and ``step`` keywords has been
+           removed. These should instead be passed
+           to :meth:`AverageStructure.run`.
 
         """
         if in_memory or isinstance(mobile.trajectory, MemoryReader):

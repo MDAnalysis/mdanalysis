@@ -86,6 +86,9 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
+    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
+    (Issue #1463)
   * Standardize `select` keyword by removing `selection`, `atomselection`
     and `ref_select` (Issue #2461)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
