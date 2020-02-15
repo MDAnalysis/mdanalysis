@@ -143,8 +143,8 @@ rotating/changing direction very fast::
   from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
 
   u = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 6.0 protein and resid 42"
-  WOR_analysis = WOR(universe, selection, 0, 1000, 20)
+  select = "byres name OH2 and sphzone 6.0 protein and resid 42"
+  WOR_analysis = WOR(universe, select, 0, 1000, 20)
   WOR_analysis.run()
   time = 0
   #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,
@@ -253,8 +253,8 @@ water molecules, a weak rise mean slow movement of particles::
   from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD
 
   u = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
-  MSD_analysis = MSD(universe, selection, 0, 1000, 20)
+  select = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
+  MSD_analysis = MSD(universe, select, 0, 1000, 20)
   MSD_analysis.run()
   #now we print data ready to graph. The graph
   #represents MSD vs t
@@ -287,8 +287,8 @@ the zone, on the other hand, a fast decay means a short permanence time::
   import matplotlib.pyplot as plt
 
   universe = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
-  sp = SP(universe, selection, verbose=True)
+  select = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
+  sp = SP(universe, select, verbose=True)
   sp.run(start=0, stop=100, tau_max=20)
   tau_timeseries = sp.tau_timeseries
   sp_timeseries = sp.sp_timeseries
@@ -328,8 +328,8 @@ simulation is not being reloaded into memory for each lipid::
   for lipid in lipids.residues:
       print("Lipid ID: %d" % lipid.resid)
 
-      selection = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
-      sp = SP(u, selection, verbose=True)
+      select = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
+      sp = SP(u, select, verbose=True)
       sp.run(tau_max=20)
 
       # Raw SP points for each tau:
@@ -674,11 +674,13 @@ class WaterOrientationalRelaxation(object):
 
     .. versionadded:: 0.11.0
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.t0 = t0
         self.tf = tf
         self.dtmax = dtmax
@@ -855,7 +857,7 @@ class AngularDistribution(object):
     ----------
     universe : Universe
         Universe object
-    selection : str
+    select : str
         Selection string to evaluate its angular distribution ['byres name OH2']
     bins : int (optional)
         Number of bins to create the histogram by means of :func:`numpy.histogram`
@@ -865,11 +867,14 @@ class AngularDistribution(object):
 
 
     .. versionadded:: 0.11.0
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection_str, bins=40, nproc=1, axis="z"):
+    def __init__(self, universe, select, bins=40, nproc=1, axis="z"):
         self.universe = universe
-        self.selection_str = selection_str
+        self.selection_str = select
         self.bins = bins
         self.nproc = nproc
         self.axis = axis
@@ -1007,7 +1012,7 @@ class MeanSquareDisplacement(object):
     ----------
     universe : Universe
       Universe object
-    selection : str
+    select : str
       Selection string for water [‘byres name OH2’].
     t0 : int
       frame  where analysis begins
@@ -1018,11 +1023,14 @@ class MeanSquareDisplacement(object):
 
 
     .. versionadded:: 0.11.0
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.t0 = t0
         self.tf = tf
         self.dtmax = dtmax
@@ -1161,7 +1169,7 @@ class SurvivalProbability(object):
     ----------
     universe : Universe
       Universe object
-    selection : str
+    select : str
       Selection string; any selection is allowed. With this selection you
       define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
     verbose : Boolean, optional
@@ -1170,11 +1178,13 @@ class SurvivalProbability(object):
 
     .. versionadded:: 0.11.0
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
+    def __init__(self, universe, select, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.verbose = verbose
 
         # backward compatibility
