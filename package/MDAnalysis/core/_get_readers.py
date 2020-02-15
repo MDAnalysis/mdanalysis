@@ -24,9 +24,6 @@ from six import raise_from
 
 import copy
 import inspect
-import mmtf
-import parmed as pmd
-import numpy as np
 
 from .. import (_READERS, _READER_HINTS,
                 _PARSERS, _PARSER_HINTS,
@@ -91,7 +88,7 @@ def get_reader_for(filename, format=None):
         for f, test in _READER_HINTS.items():
             if test(filename):
                 format = f
-                break;
+                break
         else:  # hits else if for loop completes
             # else let the guessing begin!
             format = util.guess_format(filename)
@@ -233,10 +230,10 @@ def get_parser_for(filename, format=None):
 
     # Only guess if format is not provided
     if format is None:
-        if isinstance(filename, mmtf.MMTFDecoder):
-            format = 'mmtf'
-        elif isinstance(filename, pmd.Structure):
-            format = 'PARMED'
+        for f, test in _PARSER_HINTS.items():
+            if test(filename):
+                format = f
+                break
         else:
             format = util.guess_format(filename)
     format = format.upper()

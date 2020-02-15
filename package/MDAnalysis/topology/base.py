@@ -46,7 +46,7 @@ import itertools
 import numpy as np
 import warnings
 
-from .. import _PARSERS
+from .. import _PARSERS, _PARSER_HINTS
 from ..coordinates.base import IOBase
 from ..lib import util
 
@@ -59,10 +59,12 @@ class _Topologymeta(type):
         except KeyError:
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _PARSERS[f] = cls
+            for fmt_name in fmt:
+                fmt_name = fmt_name.upper()
+                _PARSERS[fmt_name] = cls
 
+                if '_format_hint' in classdict:
+                    _PARSER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     """Base class for topology readers

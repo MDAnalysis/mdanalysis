@@ -152,6 +152,10 @@ class ModelSelection(RangeSelection):
 class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
 
+    @staticmethod
+    def _format_hint(thing):
+        return isinstance(thing, mmtf.MMTFDecoder)
+
     @due.dcite(
         Doi('10.1371/journal.pcbi.1005575'),
         description="MMTF Parser",
