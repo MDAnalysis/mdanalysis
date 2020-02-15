@@ -41,7 +41,7 @@ class LinearDensity(AnalysisBase):
 
     Parameters
     ----------
-    selection : AtomGroup
+    select : AtomGroup
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
@@ -79,14 +79,17 @@ class LinearDensity(AnalysisBase):
        The ``save()`` method was also removed, you can use ``np.savetxt()`` or
        ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
        instead.
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, selection, grouping='atoms', binsize=0.25, **kwargs):
-        super(LinearDensity, self).__init__(selection.universe.trajectory,
+    def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
+        super(LinearDensity, self).__init__(select.universe.trajectory,
                                             **kwargs)
         # allows use of run(parallel=True)
-        self._ags = [selection]
-        self._universe = selection.universe
+        self._ags = [select]
+        self._universe = select.universe
 
         self.binsize = binsize
 
