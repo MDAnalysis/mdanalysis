@@ -369,7 +369,7 @@ class ChainReader(base.ProtoReader):
         self.rewind()
 
     @staticmethod
-    def format_test(thing):
+    def _format_hint(thing):
         """Can ChainReader read the object *thing*"""
         return (not isinstance(thing, np.ndarray) and
                 util.iterable(thing) and
