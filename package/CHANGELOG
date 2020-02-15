@@ -90,7 +90,7 @@ Changes
     in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
     (Issue #1463)
   * Standardize `select` keyword by removing `selection`, `atomselection`
-    and `ref_select` (Issue #2461)
+    and `ref_select` (Issue #2461, Issue #2530)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
