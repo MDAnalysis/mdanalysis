@@ -2562,11 +2562,29 @@ class AtomGroup(GroupBase):
     # As with universe.select_atoms, needing to fish out specific kwargs
     # (namely, 'updating') doesn't allow a very clean signature.
     def select_atoms(self, sel, *othersel, **selgroups):
-        """Select :class:`Atoms<Atom>` using a selection string.
+        """Select atoms from within this Group using a selection string.
 
-        Returns an :class:`AtomGroup` with :class:`Atoms<Atom>` sorted according
-        to their index in the topology (this is to ensure that there are no
-        duplicates, which can happen with complicated selections).
+        Returns an :class:`AtomGroup` sorted according to their index in the
+        topology (this is to ensure that there are no duplicates, which can
+        happen with complicated selections).
+
+        Parameters
+        ----------
+        sel : str
+          string of the selection, eg "name Ca", see below for possibilities.
+        othersel : iterable of str
+          further selections to perform.  The results of these selections
+          will be appended onto the results of the first.
+        periodic : bool (optional)
+          for geometric selections, whether to account for atoms in different
+          periodic images when searching
+        updating : bool (optional)
+          force the selection to be re evaluated each time the Timestep of the
+          trajectory is changed.  See section on **Dynamic selections** below.
+        **selgroups : keyword arguments of str: AtomGroup (optional)
+          when using the "group" keyword in selections, groups are defined by
+          passing them as keyword arguments.  See section on **preexisting
+          selections** below.
 
         Raises
         ------
@@ -2684,7 +2702,6 @@ class AtomGroup(GroupBase):
             not
                 all atoms not in the selection, e.g. ``not protein`` selects
                 all atoms that aren't part of a protein
-
             and, or
                 combine two selections according to the rules of boolean
                 algebra, e.g. ``protein and not resname ALA LYS``
@@ -2763,8 +2780,8 @@ class AtomGroup(GroupBase):
 
             group `group-name`
                 selects the atoms in the :class:`AtomGroup` passed to the
-                function as an argument named `group-name`. Only the atoms
-                common to `group-name` and the instance
+                function as a keyword argument named `group-name`. Only the
+                atoms common to `group-name` and the instance
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
                 was called from will be considered, unless ``group`` is
                 preceded by the ``global`` keyword. `group-name` will be
@@ -2772,7 +2789,6 @@ class AtomGroup(GroupBase):
                 This means that it is up to the user to make sure the
                 `group-name` group was defined in an appropriate
                 :class:`~MDAnalysis.core.universe.Universe`.
-
             global *selection*
                 by default, when issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from an
