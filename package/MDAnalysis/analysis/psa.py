@@ -104,7 +104,7 @@ Classes, methods, and functions
 
       :class:`MDAnalysis.Universe` object containing a reference structure
 
-   .. attribute:: ref_select
+   .. attribute:: select
 
       string, selection for
       :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select frame
@@ -167,7 +167,7 @@ Classes, methods, and functions
 
       :class:`MDAnalysis.Universe` object containing a reference structure
 
-   .. attribute:: ref_select
+   .. attribute:: select
 
       string, selection for
       :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select frame
@@ -788,7 +788,7 @@ class Path(object):
 
     """
 
-    def __init__(self, universe, reference, ref_select='name CA',
+    def __init__(self, universe, reference, select='name CA',
                  path_select='all', ref_frame=0):
         """Setting up trajectory alignment and fitted path generation.
 
@@ -798,7 +798,7 @@ class Path(object):
              :class:`MDAnalysis.Universe` object containing a trajectory
         reference : Universe
              reference structure (uses `ref_frame` from the trajectory)
-        ref_select : str or dict or tuple (optional)
+        select : str or dict or tuple (optional)
              The selection to operate on for rms fitting; can be one of:
 
              1. any valid selection string for
@@ -816,15 +816,15 @@ class Path(object):
              :ref:`ordered-selections-label`).
         ref_frame : int
              frame index to select the coordinate frame from
-             `ref_select.trajectory`
+             `select.trajectory`
         path_select : selection_string
              atom selection composing coordinates of (fitted) path; if ``None``
-             then `path_select` is set to `ref_select` [``None``]
+             then `path_select` is set to `select` [``None``]
 
         """
         self.u_original = universe
         self.u_reference = reference
-        self.ref_select = ref_select
+        self.select = select
         self.ref_frame = ref_frame
         self.path_select = path_select
 
@@ -885,7 +885,7 @@ class Path(object):
         self.u_reference.trajectory[self.ref_frame] # select frame from ref traj
         aligntrj = MDAnalysis.analysis.align.AlignTraj(self.u_original,
                                                        self.u_reference,
-                                                       select=self.ref_select,
+                                                       select=self.select,
                                                        filename=self.newtrj_name,
                                                        prefix=prefix,
                                                        weights=weights,
@@ -971,7 +971,7 @@ class Path(object):
         Parameters
         ----------
         align : bool (optional)
-             Align trajectory to atom selection :attr:`Path.ref_select` of
+             Align trajectory to atom selection :attr:`Path.select` of
              :attr:`Path.u_reference`. If ``True``, a universe containing an
              aligned trajectory is produced with :meth:`Path.fit_to_reference`
              [``False``]
@@ -1286,7 +1286,7 @@ class PSAnalysis(object):
        ``save_result()`` method has been removed. You can use ``np.save()`` on
        :attr:`PSAnalysis.D` instead.
     """
-    def __init__(self, universes, reference=None, ref_select='name CA',
+    def __init__(self, universes, reference=None, select='name CA',
                  ref_frame=0, path_select=None, labels=None,
                  targetdir=os.path.curdir):
         """Setting up Path Similarity Analysis.
@@ -1303,7 +1303,7 @@ class PSAnalysis(object):
              reference coordinates; :class:`MDAnalysis.Universe` object; if
              ``None`` the first time step of the first item in `universes` is used
              [``None``]
-        ref_select : str or dict or tuple
+        select : str or dict or tuple
              The selection to operate on; can be one of:
 
              1. any valid selection string for
@@ -1326,7 +1326,7 @@ class PSAnalysis(object):
              frame index to select frame from *reference* [0]
         path_select : str
              atom selection composing coordinates of (fitted) path; if ``None``
-             then *path_select* is set to *ref_select* [``None``]
+             then *path_select* is set to *select* [``None``]
         targetdir : str
             output files are saved there; if ``None`` then "./psadata" is
             created and used [.]
@@ -1342,9 +1342,9 @@ class PSAnalysis(object):
         """
         self.universes = universes
         self.u_reference = self.universes[0] if reference is None else reference
-        self.ref_select = ref_select
+        self.select = select
         self.ref_frame = ref_frame
-        self.path_select = self.ref_select if path_select is None else path_select
+        self.path_select = self.select if path_select is None else path_select
         if targetdir is None:
             try:
                 targetdir = os.path.join(os.path.curdir, 'psadata')
@@ -1411,7 +1411,7 @@ class PSAnalysis(object):
         Parameters
         ----------
         align : bool
-             Align trajectories to atom selection :attr:`PSAnalysis.ref_select`
+             Align trajectories to atom selection :attr:`PSAnalysis.select`
              of :attr:`PSAnalysis.u_reference` [``False``]
         filename : str
              strings representing base filename for fitted trajectories and
@@ -1466,7 +1466,7 @@ class PSAnalysis(object):
         paths = []
         fit_trj_names = []
         for i, u in enumerate(self.universes):
-            p = Path(u, self.u_reference, ref_select=self.ref_select,
+            p = Path(u, self.u_reference, select=self.select,
                      path_select=self.path_select, ref_frame=ref_frame)
             trj_dir = os.path.join(self.targetdir, self.datadirs['fitted_trajs'])
             postfix = '{0}{1}{2:03n}'.format(infix, '_psa', i+1)

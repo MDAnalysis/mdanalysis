@@ -235,7 +235,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.update_selections = update_selections
 
     def guess_hydrogens(self,
-                        selection='all',
+                        select='all',
                         max_mass=1.1,
                         min_charge=0.3,
                         min_mass=0.9
@@ -244,7 +244,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         Parameters
         ----------
-        selection: str (optional)
+        select: str (optional)
             Selection string for atom group from which hydrogens will be identified.
         max_mass: float (optional)
             Maximum allowed mass of a hydrogen atom.
@@ -271,12 +271,15 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         .. versionchanged: 1.0.0
             Added `min_mass` parameter to specify minimum mass (Issue #2472)
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
         if min_mass > max_mass:
             raise ValueError("min_mass is higher than (or equal to) max_mass")
 
-        ag = self.u.select_atoms(selection)
+        ag = self.u.select_atoms(select)
         hydrogens_ag = ag[
             np.logical_and.reduce((
                 ag.masses < max_mass,
@@ -293,13 +296,13 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         return " or ".join(hydrogens_list)
 
-    def guess_donors(self, selection='all', max_charge=-0.5):
+    def guess_donors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered donors in the analysis. Only use if the universe topology does not
         contain bonding information, otherwise donor-hydrogen pairs may be incorrectly assigned.
 
         Parameters
         ----------
-        selection: str (optional)
+        select: str (optional)
             Selection string for atom group from which donors will be identified.
         max_charge: float (optional)
             Maximum allowed charge of a donor atom.
@@ -323,6 +326,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`donors_sel`.
 
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
         # We need to know `hydrogens_sel` before we can find donors
@@ -335,7 +340,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         ag = hydrogens_ag.residues.atoms.select_atoms(
             "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
-                donors_sel=selection,
+                donors_sel=select,
                 d_h_cutoff=self.d_h_cutoff,
                 hydrogens_sel=hydrogens_sel
             )
@@ -349,12 +354,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         return " or ".join(donors_list)
 
-    def guess_acceptors(self, selection='all', max_charge=-0.5):
+    def guess_acceptors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered acceptors in the analysis.
 
         Parameters
         ----------
-        selection: str (optional)
+        select: str (optional)
             Selection string for atom group from which acceptors will be identified.
         max_charge: float (optional)
             Maximum allowed charge of an acceptor atom.
@@ -376,9 +381,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential acceptor atoms involved
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`acceptors_sel`.
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
-        ag = self.u.select_atoms(selection)
+        ag = self.u.select_atoms(select)
         acceptors_ag = ag[ag.charges < max_charge]
         acceptors_list = np.unique(
             [
