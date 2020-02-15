@@ -172,18 +172,13 @@ prop [abs] *property*  *operator*  *value*
     ``prop z >= 5.0`` selects all atoms with z coordinate greater than 5.0;
     ``prop abs z <= 5.0`` selects all atoms within -5.0 <= z <= 5.0.
 
-From version 0.6 onwards, some geometric selections (around, sphlayer,
-sphzone, point) can use a k-d tree based, fast search algorithm (about three
-times faster than the previous version). However, it does not take periodicity
-into account. The fast algorithm is the default for *around*. Periodicity is
-only taken into account with the
-:func:`~MDAnalysis.lib.distances.distance_array` functions via a minimum
-image convention (and this only works for rectangular simulation cells). If
-periodic boundary conditions should be taken into account then change the
-default behaviour of MDAnalysis by setting these two flags::
 
-  MDAnalysis.core.flags['use_periodic_selections'] = True
-  MDAnalysis.core.flags['use_KDTree_routines'] = False
+.. note::
+   By default periodicity **is** taken into account with geometric
+   selections, i.e. selections will find atoms that are in different
+   periodic images.
+   To control this behaviour, use the boolean ``"periodic"`` keyword
+   argument of :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`.
 
 
 Similarity and connectivity
