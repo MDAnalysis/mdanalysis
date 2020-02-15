@@ -483,7 +483,7 @@ order to increase performance.</li>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.contacts.q1q2">
-<code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">q1q2</code><span class="sig-paren">(</span><em>u</em>, <em>select='all'</em>, <em>radius=4.5</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#q1q2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.q1q2" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">q1q2</code><span class="sig-paren">(</span><em>u</em>, <em>select='all'</em>, <em>radius=4.5</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#q1q2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.q1q2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a q1-q2 analysis.</p>
 <p>Compares native contacts between the starting structure and final structure
 of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Franklin2007]</a>.</p>
@@ -495,9 +495,6 @@ of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Fra
 <li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe with a trajectory</li>
 <li><strong>select</strong> (<em>string</em><em>, </em><em>optional</em>) – atoms to do analysis on</li>
 <li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – distance at which contact is formed</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – First frame of trajectory to analyse, Default: 0</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Last frame of trajectory to analyse, Default: -1</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Step between frames to analyse, Default: 1</li>
 </ul>
 </td>
 </tr>
@@ -509,9 +506,10 @@ of a trajectory <a class="reference internal" href="#franklin2007" id="id4">[Fra
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite>
+Support for setting <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> has been removed.
+These should now be directly passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">Contacts.run()</span></code>.</p>
 </div>
 </dd></dl>
 

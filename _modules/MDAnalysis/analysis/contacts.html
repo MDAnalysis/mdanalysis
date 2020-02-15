@@ -639,8 +639,7 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selections</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="q1q2"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a><span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
-         <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="q1q2"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a><span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Perform a q1-q2 analysis.</span>
 
 <span class="sd">    Compares native contacts between the starting structure and final structure</span>
@@ -654,32 +653,24 @@
 <span class="sd">        atoms to do analysis on</span>
 <span class="sd">    radius : float, optional</span>
 <span class="sd">        distance at which contact is formed</span>
-<span class="sd">    start : int, optional</span>
-<span class="sd">        First frame of trajectory to analyse, Default: 0</span>
-<span class="sd">    stop : int, optional</span>
-<span class="sd">        Last frame of trajectory to analyse, Default: -1</span>
-<span class="sd">    step : int, optional</span>
-<span class="sd">        Step between frames to analyse, Default: 1</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    contacts : :class:`Contacts`</span>
 <span class="sd">        Contact Analysis that is set up for a q1-q2 analysis</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
 <span class="sd">    </span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed `selection` keyword to `select`</span>
-
+<span class="sd">       Support for setting ``start``, ``stop``, and ``step`` has been removed.</span>
+<span class="sd">       These should now be directly passed to :meth:`Contacts.run`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">select</span><span class="p">)</span>
     <span class="n">first_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">last_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span>
                     <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
-                    <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;radius_cut&#39;</span><span class="p">,</span>
-                    <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">)</span></div>
+                    <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;radius_cut&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

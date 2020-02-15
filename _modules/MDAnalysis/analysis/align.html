@@ -750,12 +750,6 @@
 <span class="sd">            exact methods</span>
 <span class="sd">        force : bool (optional)</span>
 <span class="sd">            Force overwrite of filename for rmsd-fitting</span>
-<span class="sd">        start : int (optional)</span>
-<span class="sd">            First frame of trajectory to analyse, Default: 0</span>
-<span class="sd">        stop : int (optional)</span>
-<span class="sd">            Last frame of trajectory to analyse, Default: -1</span>
-<span class="sd">        step : int (optional)</span>
-<span class="sd">            Step between frames to analyse, Default: 1</span>
 <span class="sd">        in_memory : bool (optional)</span>
 <span class="sd">            *Permanently* switch `mobile` to an in-memory trajectory</span>
 <span class="sd">            so that alignment can be done in-place, which can improve</span>
@@ -806,6 +800,10 @@
 
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           removed deprecated `mass_weighted` keyword</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
+<span class="sd">           removed. These should instead be passed to :meth:`AlignTraj.run`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">select</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">process_selection</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
@@ -936,12 +934,6 @@
 <span class="sd">            exact methods</span>
 <span class="sd">        force : bool (optional)</span>
 <span class="sd">            Force overwrite of filename for rmsd-fitting</span>
-<span class="sd">        start : int (optional)</span>
-<span class="sd">            First frame of trajectory to analyse, Default: 0</span>
-<span class="sd">        stop : int (optional)</span>
-<span class="sd">            Last frame of trajectory to analyse, Default: -1</span>
-<span class="sd">        step : int (optional)</span>
-<span class="sd">            Step between frames to analyse, Default: 1</span>
 <span class="sd">        in_memory : bool (optional)</span>
 <span class="sd">            *Permanently* switch `mobile` to an in-memory trajectory</span>
 <span class="sd">            so that alignment can be done in-place, which can improve</span>
@@ -984,6 +976,11 @@
 <span class="sd">          ``in_memory`` had been set to ``True``.</span>
 
 <span class="sd">        .. versionadded:: 0.21.0</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
+<span class="sd">           removed. These should instead be passed</span>
+<span class="sd">           to :meth:`AverageStructure.run`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">in_memory</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>

@@ -216,9 +216,6 @@ of a selected group of atoms [‘atoms’]</li>
 <li><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
 histograms. Defines the resolution of the resulting density
 profile (smaller –&gt; higher resolution) [0.25]</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The frame to start at [0]</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The frame to end at [-1]</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The step size through the trajectory in frames [0]</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
 default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
 </ul>
@@ -254,7 +251,9 @@ then use the <code class="xref py py-meth docutils literal notranslate"><span cl
 <p><span class="versionmodified">New in version 0.14.0.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save()</span></code> method was removed, you can use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> or
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
+removed. These should instead be passed to <code class="xref py py-meth docutils literal notranslate"><span class="pre">LinearDensity.run()</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method was also removed, you can use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> or
 <code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LinearDensity.results</span></code></a> dictionary contents
 instead.</p>
 </div>

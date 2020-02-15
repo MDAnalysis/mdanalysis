@@ -307,13 +307,6 @@
 <span class="sd">    exclusion_block : tuple (optional)</span>
 <span class="sd">          A tuple representing the tile to exclude from the distance</span>
 <span class="sd">          array. [None]</span>
-<span class="sd">    start : int (optional)</span>
-<span class="sd">          The frame to start at (default is first)</span>
-<span class="sd">    stop : int (optional)</span>
-<span class="sd">          The frame to end at (default is last)</span>
-<span class="sd">    step : int (optional)</span>
-<span class="sd">          The step size through the trajectory in frames (default is</span>
-<span class="sd">          every frame)</span>
 <span class="sd">    verbose : bool (optional)</span>
 <span class="sd">          Show detailed progress of the calculation if set to ``True``; the</span>
 <span class="sd">          default is ``False``.</span>
@@ -338,6 +331,10 @@
 
 
 <span class="sd">    .. versionadded:: 0.13.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
+<span class="sd">       removed. These should instead be passed to :meth:`InterRDF.run`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">,</span>
@@ -423,13 +420,6 @@
 <span class="sd">          Number of bins in the histogram [75]</span>
 <span class="sd">    range : tuple or list (optional)</span>
 <span class="sd">          The size of the RDF [0.0, 15.0]</span>
-<span class="sd">    start : int (optional)</span>
-<span class="sd">          The frame to start at (default is first)</span>
-<span class="sd">    stop : int (optional)</span>
-<span class="sd">          The frame to end at (default is last)</span>
-<span class="sd">    step : int (optional)</span>
-<span class="sd">          The step size through the trajectory in frames (default is</span>
-<span class="sd">          every frame)</span>
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
@@ -471,6 +461,10 @@
 
 
 <span class="sd">    .. versionadded:: 0.19.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
+<span class="sd">       removed. These should instead be passed to :meth:`InterRDF_s.run`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">ags</span><span class="p">,</span>

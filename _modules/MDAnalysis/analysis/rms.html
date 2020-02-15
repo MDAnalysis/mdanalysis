@@ -841,14 +841,6 @@
 <span class="sd">        ----------</span>
 <span class="sd">        atomgroup : AtomGroup</span>
 <span class="sd">            Atoms for which RMSF is calculated</span>
-<span class="sd">        start : int (optional)</span>
-<span class="sd">            starting frame, default None becomes 0.</span>
-<span class="sd">        stop : int (optional)</span>
-<span class="sd">            Frame index to stop analysis. Default: None becomes</span>
-<span class="sd">            n_frames. Iteration stops *before* this frame number,</span>
-<span class="sd">            which means that the trajectory would be read until the end.</span>
-<span class="sd">        step : int (optional)</span>
-<span class="sd">            step between frames, default None becomes 1.</span>
 <span class="sd">        verbose : bool (optional)</span>
 <span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
 <span class="sd">             default is ``False``.</span>
@@ -950,6 +942,9 @@
 <span class="sd">           the keyword argument `quiet` is deprecated in favor of `verbose`.</span>
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           removed unused keyword `weights`</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
+<span class="sd">           removed. These should instead be passed to :meth:`RMSF.run`.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RMSF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
