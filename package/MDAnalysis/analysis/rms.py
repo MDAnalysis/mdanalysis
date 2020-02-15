@@ -666,14 +666,6 @@ class RMSF(AnalysisBase):
         ----------
         atomgroup : AtomGroup
             Atoms for which RMSF is calculated
-        start : int (optional)
-            starting frame, default None becomes 0.
-        stop : int (optional)
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int (optional)
-            step between frames, default None becomes 1.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
@@ -775,6 +767,9 @@ class RMSF(AnalysisBase):
            the keyword argument `quiet` is deprecated in favor of `verbose`.
         .. versionchanged:: 0.17.0
            removed unused keyword `weights`
+        .. versionchanged:: 1.0.0
+           Support for the ``start``, ``stop``, and ``step`` keywords has been
+           removed. These should instead be passed to :meth:`RMSF.run`.
 
         """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)

@@ -139,7 +139,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     def test_guess_donors(self, h):
 
         ref_donors = "(resname TIP3 and name OH2)"
-        donors = h.guess_donors(selection='all', max_charge=-0.5)
+        donors = h.guess_donors(select='all', max_charge=-0.5)
         assert donors == ref_donors
 
 
@@ -171,7 +171,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
     def test_guess_hydrogens(self, h):
 
         ref_hydrogens = "(resname TIP3 and name H1) or (resname TIP3 and name H2)"
-        hydrogens = h.guess_hydrogens(selection='all')
+        hydrogens = h.guess_hydrogens(select='all')
         assert hydrogens == ref_hydrogens
 
     pytest.mark.parametrize(
@@ -184,7 +184,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
     )
     def test_guess_hydrogens_empty_selection(self, h):
 
-        hydrogens = h.guess_hydrogens(selection='all', min_charge=1.0)
+        hydrogens = h.guess_hydrogens(select='all', min_charge=1.0)
         assert hydrogens == ""
 
     def test_guess_hydrogens_min_max_mass(self, h):
@@ -193,7 +193,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
 
         with pytest.raises(ValueError, match=errmsg):
 
-            h.guess_hydrogens(selection='all', min_mass=1.1, max_mass=0.9)
+            h.guess_hydrogens(select='all', min_mass=1.1, max_mass=0.9)
 
 class TestHydrogenBondAnalysisTIP3PStartStep(object):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P` but starting
