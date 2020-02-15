@@ -35,7 +35,7 @@ from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
 
 # reference data from a single PDB file:
 #   data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
-#                    selection="name CA and resnum 161-187")
+#                    select="name CA and resnum 161-187")
 HELANAL_SINGLE_DATA = {
     'Best fit tilt': 1.3309656332019535,
     'Height': np.array([ 1.5286051 ,  0.19648294,  0.11384312],
@@ -116,7 +116,7 @@ def test_helanal_trajectory(tmpdir, reference=HELANAL_BENDING_MATRIX,
     with tmpdir.as_cwd():
         # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
         MDAnalysis.analysis.helanal.helanal_trajectory(
-            u, selection="name CA and resnum 161-187")
+            u, select="name CA and resnum 161-187")
         bendingmatrix = read_bending_matrix(outfile)
         ref = read_bending_matrix(reference)
         assert_equal(sorted(bendingmatrix.keys()), sorted(ref.keys()),
@@ -137,7 +137,7 @@ def test_helanal_trajectory_slice(tmpdir,
     with tmpdir.as_cwd():
         # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
         MDAnalysis.analysis.helanal.helanal_trajectory(
-            u, selection="name CA and resnum 161-187", begin=10, finish=80
+            u, select="name CA and resnum 161-187", begin=10, finish=80
         )
         bendingmatrix = read_bending_matrix(outfile)
         ref = read_bending_matrix(reference)
@@ -153,7 +153,7 @@ def test_helanal_main(reference=HELANAL_SINGLE_DATA):
     u = mda.Universe(PDB_small)
     # Helix 8: 161 - 187 http://www.rcsb.org/pdb/explore.do?structureId=4AKE
     data = MDAnalysis.analysis.helanal.helanal_main(
-        PDB_small, selection="name CA and resnum 161-187")
+        PDB_small, select="name CA and resnum 161-187")
     ref = reference
     assert_equal(sorted(data.keys()), sorted(ref.keys()),
                      err_msg="different contents in data dict")
@@ -171,19 +171,19 @@ def test_exceptions(tmpdir):
     with tmpdir.as_cwd():
         with pytest.raises(ValueError):
             MDAnalysis.analysis.helanal.helanal_trajectory(
-                u, selection="name CA", finish=5
+                u, select="name CA", finish=5
             )
 
     with tmpdir.as_cwd():
         with pytest.raises(ValueError):
             MDAnalysis.analysis.helanal.helanal_trajectory(
-                u, selection="name CA", begin=1, finish=0
+                u, select="name CA", begin=1, finish=0
             )
 
     with tmpdir.as_cwd():
         with pytest.raises(ValueError):
             MDAnalysis.analysis.helanal.helanal_trajectory(
-                u, selection="name CA", begin=99999
+                u, select="name CA", begin=99999
             )
 
 
@@ -195,7 +195,7 @@ def test_warnings(tmpdir):
     with tmpdir.as_cwd():
         with pytest.warns(UserWarning) as record:
             MDAnalysis.analysis.helanal.helanal_trajectory(
-                u, selection="name CA", begin=-1, finish=99999
+                u, select="name CA", begin=-1, finish=99999
             )
 
             assert len(record) == 2

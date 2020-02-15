@@ -1172,9 +1172,9 @@ class HOLEtraj(BaseHOLE):
     universe and feed it to HOLE. It sequentially creates a temporary PDB for
     each frame and runs HOLE on the frame.
 
-    The trajectory can be sliced with the `start`, `stop`, and `step`
-    keywords. (:program:`hole` is not fast so slicing a trajectory is
-    recommended.)
+    The trajectory can be sliced by passing the `start`, `stop`, and `step`
+    keywords to :meth:`HOLEtraj.run`. (:program:`hole` is not fast so slicing a
+    trajectory is recommended.)
 
     Frames of the trajectory can be associated with order parameters (e.g.,
     RMSD) in order to group the HOLE profiles by order parameter (see the
@@ -1195,11 +1195,7 @@ class HOLEtraj(BaseHOLE):
         orderparameters : array_like or string, optional
              Sequence or text file containing order parameters (float
              numbers) corresponding to the frames in the trajectory.
-        start, stop, step : int, optional
-             slice the trajectory as
-             ``universe.trajectory[start:stop:step]``. The default is ``None``
-             so that the whole trajectory is analyzed
-        selection : string, optional
+        select : string, optional
              selection string for
              :meth:`~MDAnalysis.core.universe.Universe.select_atoms` to select
              the group of atoms that is to be analysed by HOLE. The default is
@@ -1210,7 +1206,7 @@ class HOLEtraj(BaseHOLE):
 
              If set to ``True`` then *cpoint* is guessed as the
              :meth:`~MDAnalysis.core.groups.AtomGroup.center_of_geometry` of
-             the `selection` from the first frame of the trajectory.
+             the `select` from the first frame of the trajectory.
 
              If `cpoint` is not set or set to ``None`` then HOLE guesses it
              with its own algorithm (for each individual frame).
@@ -1218,19 +1214,22 @@ class HOLEtraj(BaseHOLE):
              All other keywords are passed on to :class:`HOLE` (see there for
              description).
 
+
+        .. versionchanged:: 1.0.0
+           Support for the `start`, `stop`, and `step` keywords has been
+           removed. These should instead be passed to :meth:`HOLEtraj.run`.
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
         self.universe = universe
-        self.selection = kwargs.pop("selection", "protein")
+        self.selection = kwargs.pop("select", "protein")
         self.orderparametersfile = kwargs.pop("orderparameters", None)
-
-        self.start = kwargs.pop('start', None)
-        self.stop = kwargs.pop('stop', None)
-        self.step = kwargs.pop('step', None)
 
         self.cpoint = kwargs.pop('cpoint', None)
         if self.cpoint is True:
-            self.cpoint = self.guess_cpoint(selection=self.selection)
+            self.cpoint = self.guess_cpoint(select=self.selection)
             logger.info("Guessed CPOINT = %r from selection %r", self.cpoint, self.selection)
         kwargs['cpoint'] = self.cpoint
 
@@ -1239,14 +1238,16 @@ class HOLEtraj(BaseHOLE):
         # processing
         self.orderparameters = self._process_orderparameters(self.orderparametersfile)
 
-    def guess_cpoint(self, selection="protein", **kwargs):
+    def guess_cpoint(self, select="protein", **kwargs):
         """Guess a point inside the pore.
 
         This method simply uses the center of geometry of the selection as a
-        guess. `selection` is "protein" by default.
+        guess. `select` is "protein" by default.
 
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
-        return self.universe.select_atoms(selection).center_of_geometry()
+        return self.universe.select_atoms(select).center_of_geometry()
 
     def _process_orderparameters(self, data):
         """Read orderparameters.
@@ -1275,17 +1276,29 @@ class HOLEtraj(BaseHOLE):
             raise ValueError(errmsg)
         return q
 
-    def run(self, **kwargs):
+    def run(self, start=None, stop=None, step=None):
         """Run HOLE on the whole trajectory and collect profiles.
 
-        Keyword arguments `start`, `stop`, and `step` can be used to only
-        analyse part of the trajectory.
+        Parameters
+        ----------
+        start : int, optional
+            First frame of trajectory to analyse, Default: None (first frame)
+        stop : int, optional
+            Last frame of trajectory to analyse, Default: None (last frame)
+        step : int, optional
+            Step between frames to analyse, Default: None (use every frame)
+
+        .. versionchanged:: 1.0.0
+           Undocumented support for setting :class:`HOLE` parameters via
+           :meth:`HOLEtraj.run` has been removed. This should now exclusively
+           be done on :class:`HOLEtraj` construction.
         """
-        start = kwargs.pop('start', self.start)
-        stop = kwargs.pop('stop', self.stop)
-        step = kwargs.pop('step', self.step)
+        start, stop, step = self.universe.trajectory.check_slice_indices(
+            start,
+            stop,
+            step
+        )
         hole_kw = self.hole_kwargs.copy()
-        hole_kw.update(kwargs)
 
         profiles = OrderedDict()  # index by orderparameters: NOTE: can overwrite!
 
