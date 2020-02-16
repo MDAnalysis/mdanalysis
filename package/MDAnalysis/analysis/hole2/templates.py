@@ -98,8 +98,8 @@ SHORTO {output_level:d}
 """
 
 hole_lines = {
-    'cpoint': 'CPOINT {} {} {}\n',
-    'cvect': 'CVECT {} {} {}\n',
+    'cpoint': 'CPOINT {:.10f} {:.10f} {:.10f}\n',
+    'cvect': 'CVECT {:.10f} {:.10f} {:.10f}\n',
     'random_seed': 'RASEED {}\n',
     'dcd': '\nCHARMD {dcd}\nCHARMS {iniskip} {step}\n',
 }

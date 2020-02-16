@@ -34,6 +34,8 @@
 Helper functions used in :mod:`MDAnalysis.analysis.hole2.hole`
 """
 
+from __future__ import absolute_import
+
 import logging
 import tempfile
 import subprocess
@@ -41,7 +43,8 @@ import os
 import numpy as np
 
 from MDAnalysis.lib.util import FORTRANReader
-from .templates import SIMPLE2_RAD, IGNORE_RESIDUES
+from .templates import (SIMPLE2_RAD, IGNORE_RESIDUES, hole_input,
+                        hole_lines)
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +130,7 @@ def check_and_fix_long_filename(filename, tmpdir=os.path.curdir,
         if len(newname) > max_length:
             fd, newname = tempfile.mkstemp(suffix='.pdb', dir=dirname)
             os.close(fd)
-        os.symlink(filename, newname, overwrite=True)
+        os.symlink(filename, newname)
         msg = 'Using symlink: {} -> {}'
         logger.debug(msg.format(filename, newname))
         return newname
@@ -320,13 +323,15 @@ def set_up_hole_input(pdbfile,
     if infile_text is None:
         infile_text = hole_input
 
+    residues = ' '.join(ignore_residues)
+
     infile_text = infile_text.format(filename=pdbfile,
                                      coordinates=short_filename,
                                      radius=vdwradii_file,
                                      sphpdb=sphpdb_file,
                                      sample=sample,
                                      end_radius=end_radius,
-                                     ignore=ignore_residues,
+                                     ignore=residues,
                                      output_level=output_level)
 
     if random_seed is not None:
