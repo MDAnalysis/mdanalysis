@@ -116,7 +116,6 @@ import numpy as np
 
 from . import base
 from .core import triclinic_box, triclinic_vectors
-from ..core import flags
 from ..exceptions import NoDataError
 from ..lib import util
 
@@ -301,21 +300,17 @@ class GROWriter(base.WriterBase):
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
 
         Parameters
         -----------
         filename : str
             output filename
-
         n_atoms : int (optional)
             number of atoms
-
-        convert_units : str (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
-
+        convert_units : bool (optional)
+            units are converted to the MDAnalysis base format; [``True``]
         reindex : bool (optional)
             By default, all the atoms were reindexed to have a atom id starting
             from 1. [``True``] However, this behaviour can be turned off by
@@ -342,8 +337,6 @@ class GROWriter(base.WriterBase):
         self.n_atoms = n_atoms
         self.reindex = kwargs.pop('reindex', True)
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
     def write(self, obj):

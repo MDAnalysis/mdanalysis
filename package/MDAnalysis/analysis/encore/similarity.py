@@ -302,7 +302,7 @@ def harmonic_ensemble_similarity(sigma1,
 
 
 def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
-                                   selection="name CA"):
+                                   select="name CA"):
     """Clustering ensemble similarity: calculate the probability densities from
      the clusters and calculate discrete Jensen-Shannon divergence.
 
@@ -325,7 +325,7 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
     ens2_id : int
         Second ensemble id as detailed in the ClustersCollection metadata
 
-    selection : str
+    select : str
         Atom selection string in the MDAnalysis format. Default is "name CA".
 
     Returns
@@ -335,9 +335,9 @@ def clustering_ensemble_similarity(cc, ens1, ens1_id, ens2, ens2_id,
         Jensen-Shannon divergence between the two ensembles, as calculated by
         the clustering ensemble similarity method
     """
-    ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(selection),
+    ens1_coordinates = ens1.trajectory.timeseries(ens1.select_atoms(select),
                                                   order='fac')
-    ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(selection),
+    ens2_coordinates = ens2.trajectory.timeseries(ens2.select_atoms(select),
                                                   order='fac')
     tmpA = np.array([np.where(c.metadata['ensemble_membership'] == ens1_id)[
                             0].shape[0] / float(ens1_coordinates.shape[0]) for
@@ -664,7 +664,7 @@ def write_output(matrix, base_fname=None, header="", suffix="",
 
 def prepare_ensembles_for_convergence_increasing_window(ensemble,
                                                         window_size,
-                                                        selection="name CA"):
+                                                        select="name CA"):
     """
     Generate ensembles to be fed to ces_convergence or dres_convergence
     from a single ensemble. Basically, the different slices the algorithm
@@ -679,7 +679,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     window_size : int
         size of the window (in number of frames) to be used
 
-    selection : str
+    select : str
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     Returns
@@ -693,7 +693,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
     """
 
-    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(selection),
+    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(select),
                                               order='fac').shape[0]
 
     rest_slices = ens_size // window_size
@@ -717,7 +717,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
 
 def hes(ensembles,
-        selection="name CA",
+        select="name CA",
         cov_estimator="shrinkage",
         weights='mass',
         align=False,
@@ -735,7 +735,7 @@ def hes(ensembles,
     ----------
     ensembles : list
         List of Universe objects for similarity measurements.
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
     cov_estimator : str, optional
         Covariance matrix estimator method, either shrinkage, `shrinkage`,
@@ -842,7 +842,7 @@ def hes(ensembles,
     if align:
         for e, w in zip(ensembles, weights):
             mda.analysis.align.AlignTraj(e, ensembles[0],
-                                         select=selection,
+                                         select=select,
                                          weights=w,
                                          in_memory=True).run()
     else:
@@ -889,13 +889,13 @@ def hes(ensembles,
             for i, e_orig in enumerate(ensembles):
                 xs.append(np.average(
                     ensembles_list[i][t].trajectory.timeseries(
-                        e_orig.select_atoms(selection),
+                        e_orig.select_atoms(select),
                         order=('fac')),
                     axis=0).flatten())
                 sigmas.append(covariance_matrix(ensembles_list[i][t],
                                                 weights=weights[i],
                                                 estimator=covariance_estimator,
-                                                selection=selection))
+                                                select=select))
 
             for pair in pairs_indices:
                 value = harmonic_ensemble_similarity(x1=xs[pair[0]],
@@ -916,7 +916,7 @@ def hes(ensembles,
 
     for e, w in zip(ensembles, weights):
         # Extract coordinates from each ensemble
-        coordinates_system = e.trajectory.timeseries(e.select_atoms(selection),
+        coordinates_system = e.trajectory.timeseries(e.select_atoms(select),
                                                      order='fac')
 
         # Average coordinates in each system
@@ -926,7 +926,7 @@ def hes(ensembles,
         sigmas.append(covariance_matrix(e,
                                         weights=w,
                                         estimator=covariance_estimator,
-                                        selection=selection))
+                                        select=select))
 
     for i, j in pairs_indices:
         value = harmonic_ensemble_similarity(x1=xs[i],
@@ -951,7 +951,7 @@ def hes(ensembles,
 
 
 def ces(ensembles,
-        selection="name CA",
+        select="name CA",
         clustering_method=AffinityPropagationNative(
             preference=-1.0,
             max_iter=500,
@@ -976,7 +976,7 @@ def ces(ensembles,
     ensembles : list
         List of ensemble objects for similarity measurements
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     clustering_method :
@@ -1107,7 +1107,7 @@ def ces(ensembles,
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
         distance_matrix = get_distance_matrix(merge_universes(ensembles),
-                                              selection=selection,
+                                              select=select,
                                               ncores=ncores)
     if estimate_error:
         if any_method_accept_distance_matrix:
@@ -1139,7 +1139,7 @@ def ces(ensembles,
     # Call clustering procedure
     ccs = cluster(ensembles,
                   method= clustering_methods,
-                  selection=selection,
+                  select=select,
                   distance_matrix = distance_matrix,
                   ncores = ncores,
                   allow_collapsed_result=False)
@@ -1171,7 +1171,7 @@ def ces(ensembles,
                                                        ensembles[j][
                                                            pair[1]],
                                                        pair[1] + 1,
-                                                       selection=selection)
+                                                       select=select)
                     values[i][-1][pair[0], pair[1]] = this_djs
                     values[i][-1][pair[1], pair[0]] = this_djs
                 k += 1
@@ -1203,7 +1203,7 @@ def ces(ensembles,
                                                    pair[0] + 1,
                                                    ensembles[pair[1]],
                                                    pair[1] + 1,
-                                                   selection=selection)
+                                                   select=select)
                 values[-1][pair[0], pair[1]] = this_val
                 values[-1][pair[1], pair[0]] = this_val
 
@@ -1216,7 +1216,7 @@ def ces(ensembles,
 
 
 def dres(ensembles,
-         selection="name CA",
+         select="name CA",
          dimensionality_reduction_method = StochasticProximityEmbeddingNative(
              dimension=3,
              distance_cutoff = 1.5,
@@ -1244,7 +1244,7 @@ def dres(ensembles,
     ensembles : list
         List of ensemble objects for similarity measurements
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     dimensionality_reduction_method :
@@ -1383,7 +1383,7 @@ def dres(ensembles,
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
         distance_matrix = get_distance_matrix(merge_universes(ensembles),
-                                              selection=selection,
+                                              select=select,
                                               ncores=ncores)
     if estimate_error:
         if any_method_accept_distance_matrix:
@@ -1414,14 +1414,14 @@ def dres(ensembles,
     coordinates, dim_red_details = reduce_dimensionality(
         ensembles,
         method=dimensionality_reduction_methods,
-        selection=selection,
+        select=select,
         distance_matrix = distance_matrix,
         ncores = ncores,
         allow_collapsed_result = False)
 
     details = {}
     details["reduced_coordinates"] = coordinates
-    details["dimensionality_reduction_details"] = details
+    details["dimensionality_reduction_details"] = dim_red_details
 
     if estimate_error:
         k = 0
@@ -1489,7 +1489,7 @@ def dres(ensembles,
 
 def ces_convergence(original_ensemble,
                     window_size,
-                    selection="name CA",
+                    select="name CA",
                     clustering_method=AffinityPropagationNative(
                         preference=-1.0,
                         max_iter=500,
@@ -1516,7 +1516,7 @@ def ces_convergence(original_ensemble,
     window_size : int
         Size of window to be used, in number of frames
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     clustering_method : MDAnalysis.analysis.encore.clustering.ClusteringMethod
@@ -1565,10 +1565,10 @@ def ces_convergence(original_ensemble,
     """
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size, selection=selection)
+        original_ensemble, window_size, select=select)
 
     ccs = cluster(ensembles,
-                  selection=selection,
+                  select=select,
                   method=clustering_method,
                   allow_collapsed_result=False,
                   ncores=ncores)
@@ -1590,7 +1590,7 @@ def ces_convergence(original_ensemble,
 
 def dres_convergence(original_ensemble,
                      window_size,
-                     selection="name CA",
+                     select="name CA",
                      dimensionality_reduction_method = \
                             StochasticProximityEmbeddingNative(
                                 dimension=3,
@@ -1620,7 +1620,7 @@ def dres_convergence(original_ensemble,
     window_size : int
         Size of window to be used, in number of frames
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     dimensionality_reduction_method :
@@ -1675,12 +1675,12 @@ def dres_convergence(original_ensemble,
     """
 
     ensembles = prepare_ensembles_for_convergence_increasing_window(
-        original_ensemble, window_size, selection=selection)
+        original_ensemble, window_size, select=select)
 
     coordinates, dimred_details = \
         reduce_dimensionality(
             ensembles,
-            selection=selection,
+            select=select,
             method=dimensionality_reduction_method,
             allow_collapsed_result=False,
             ncores=ncores)

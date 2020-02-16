@@ -211,7 +211,7 @@ class DistanceMatrix(AnalysisBase):
             computational cost of eigenvalue decomposition
             scales at O(N^3) where N is the number of frames.
             Cost can be reduced by increasing step interval or specifying a
-            start and stop.
+            start and stop value when calling :meth:`DistanceMatrix.run`.
         select: str, optional
             Any valid selection string for
             :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`

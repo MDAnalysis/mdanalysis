@@ -110,7 +110,6 @@ from ..lib import transformations
 from ..lib import mdamath
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
-from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
 from ._get_readers import get_writer_for, get_converter_for
@@ -670,7 +669,7 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center(self, weights, pbc=None, compound='group', unwrap=False):
+    def center(self, weights, pbc=False, compound='group', unwrap=False):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
@@ -685,14 +684,14 @@ class GroupBase(_MutableBase):
         weights : array_like or None
             Weights to be used. Setting `weights=None` is equivalent to passing
             identical weights for all atoms of the group.
-        pbc : bool or None, optional
+        pbc : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``,
             the center of each compound will be calculated without moving any
             :class:`Atoms<Atom>` to keep the compounds intact. Instead, the
             resulting position vectors will be moved to the primary unit cell
-            after calculation.
+            after calculation. Default [``False``].
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the weighted center of all atoms in the group will
             be returned as a single position vector. Else, the weighted centers
@@ -738,21 +737,13 @@ class GroupBase(_MutableBase):
             >>> sel = u.select_atoms('name CA')
             >>> sel.center(sel.masses, compound='residues')
 
-        Notes
-        -----
-        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
-        ``True`` then the `pbc` keyword is used by default.
-
 
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
         """
-
-        if pbc is None:
-            pbc = flags['use_pbc']
-
         atoms = self.atoms
 
         # enforce calculations in double precision:
@@ -838,7 +829,7 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
+    def center_of_geometry(self, pbc=False, compound='group', unwrap=False):
         """Center of geometry of (compounds of) the group.
 
         Computes the center of geometry (a.k.a. centroid) of
@@ -848,13 +839,13 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        pbc : bool or None, optional
+        pbc : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'`` or ``'residues'``, the center of each compound will
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
-            moved to the primary unit cell after calculation.
+            moved to the primary unit cell after calculation. Default False.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
             in the group will be returned as a single position vector. Else, the
@@ -875,17 +866,13 @@ class GroupBase(_MutableBase):
             output will be a 2d array of shape ``(n, 3)`` where ``n`` is the
             number of compounds.
 
-        Notes
-        -----
-        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
-        ``True`` then the `pbc` keyword is used by default.
-
 
         .. versionchanged:: 0.8 Added `pbc` keyword
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
         """
         return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 
@@ -1036,7 +1023,7 @@ class GroupBase(_MutableBase):
             accumulation[compound_mask] = _accumulation
         return accumulation
 
-    def bbox(self, **kwargs):
+    def bbox(self, pbc=False):
         """Return the bounding box of the selection.
 
         The lengths A,B,C of the orthorhombic enclosing box are ::
@@ -1056,17 +1043,12 @@ class GroupBase(_MutableBase):
             2x3 array giving corners of bounding box as
             ``[[xmin, ymin, zmin], [xmax, ymax, zmax]]``.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
         """
         atomgroup = self.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -1075,7 +1057,7 @@ class GroupBase(_MutableBase):
 
         return np.array([x.min(axis=0), x.max(axis=0)])
 
-    def bsphere(self, **kwargs):
+    def bsphere(self, pbc=False):
         """Return the bounding sphere of the selection.
 
         The sphere is calculated relative to the
@@ -1094,17 +1076,11 @@ class GroupBase(_MutableBase):
         center : numpy.ndarray
             Coordinates of the sphere center as ``[xcen, ycen, zcen]``.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = self.atoms.unique
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -2586,11 +2562,30 @@ class AtomGroup(GroupBase):
     # As with universe.select_atoms, needing to fish out specific kwargs
     # (namely, 'updating') doesn't allow a very clean signature.
     def select_atoms(self, sel, *othersel, **selgroups):
-        """Select :class:`Atoms<Atom>` using a selection string.
+        """Select atoms from within this Group using a selection string.
 
-        Returns an :class:`AtomGroup` with :class:`Atoms<Atom>` sorted according
-        to their index in the topology (this is to ensure that there are no
-        duplicates, which can happen with complicated selections).
+        Returns an :class:`AtomGroup` sorted according to their index in the
+        topology (this is to ensure that there are no duplicates, which can
+        happen with complicated selections).
+
+        Parameters
+        ----------
+        sel : str
+          string of the selection, eg "name Ca", see below for possibilities.
+        othersel : iterable of str
+          further selections to perform.  The results of these selections
+          will be appended onto the results of the first.
+        periodic : bool (optional)
+          for geometric selections, whether to account for atoms in different
+          periodic images when searching
+        updating : bool (optional)
+          force the selection to be re evaluated each time the Timestep of the
+          trajectory is changed.  See section on **Dynamic selections** below.
+          [``True``]
+        **selgroups : keyword arguments of str: AtomGroup (optional)
+          when using the "group" keyword in selections, groups are defined by
+          passing them as keyword arguments.  See section on **preexisting
+          selections** below.
 
         Raises
         ------
@@ -2708,7 +2703,6 @@ class AtomGroup(GroupBase):
             not
                 all atoms not in the selection, e.g. ``not protein`` selects
                 all atoms that aren't part of a protein
-
             and, or
                 combine two selections according to the rules of boolean
                 algebra, e.g. ``protein and not resname ALA LYS``
@@ -2787,8 +2781,8 @@ class AtomGroup(GroupBase):
 
             group `group-name`
                 selects the atoms in the :class:`AtomGroup` passed to the
-                function as an argument named `group-name`. Only the atoms
-                common to `group-name` and the instance
+                function as a keyword argument named `group-name`. Only the
+                atoms common to `group-name` and the instance
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
                 was called from will be considered, unless ``group`` is
                 preceded by the ``global`` keyword. `group-name` will be
@@ -2796,7 +2790,6 @@ class AtomGroup(GroupBase):
                 This means that it is up to the user to make sure the
                 `group-name` group was defined in an appropriate
                 :class:`~MDAnalysis.core.universe.Universe`.
-
             global *selection*
                 by default, when issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from an
@@ -2848,6 +2841,8 @@ class AtomGroup(GroupBase):
         .. versionchanged:: 1.0.0
            The ``fullgroup`` selection has now been removed in favor of the
            equivalent ``global group`` selection.
+           Removed flags affecting default behaviour for periodic selections;
+           periodic are now on by default (as with default flags)
         """
 
         if not sel:
@@ -2855,8 +2850,7 @@ class AtomGroup(GroupBase):
                           UserWarning)
             return self[[]]
 
-        # once flags removed, replace with default=True
-        periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
+        periodic = selgroups.pop('periodic', True)
 
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel

@@ -77,9 +77,7 @@ import functools
 
 from . import base
 from ..topology.tables import SYMB2Z
-from ..core import flags
 from ..core.universe import Universe
-
 
 
 class ParmEdReader(base.SingleFrameReaderBase):

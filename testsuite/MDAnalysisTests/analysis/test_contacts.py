@@ -176,7 +176,7 @@ class TestContacts(object):
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
             universe,
-            selection=(self.sel_acidic, self.sel_basic),
+            select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
@@ -209,7 +209,7 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
@@ -227,7 +227,7 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
