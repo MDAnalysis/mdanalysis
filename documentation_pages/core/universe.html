@@ -271,51 +271,56 @@ loaded from the “topology” file unless a trajectory is supplied.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>topology</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>Topology object</em><em> or </em><em>stream</em>) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
+<li><strong>topology</strong> (str, stream, <cite>~MDAnalysis.core.topology.Topology</cite>, <cite>np.ndarray</cite>, None) – A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
 define the list of atoms. If the file includes bond information,
 partial charges, atom masses, … then these data will be available to
-MDAnalysis. A “structure” file (PSF, PDB or GRO, in the sense of a
-topology) is always required. Alternatively, an existing
-<a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance may also be given.</li>
-<li><strong>topology_format</strong> – Provide the file format of the topology file; <code class="docutils literal notranslate"><span class="pre">None</span></code> guesses it from
-the file extension [<code class="docutils literal notranslate"><span class="pre">None</span></code>] Can also pass a subclass of
+MDAnalysis. Alternatively, an existing
+<a class="reference internal" href="topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance may be given,
+numpy coordinates, or None for an empty universe.</li>
+<li><strong>coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>stream</em><em>, </em><em>list of str</em><em>, </em><em>list of stream</em><em> (</em><em>optional</em><em>)</em>) – Coordinates can be provided as files of
+a single frame (eg a PDB, CRD, or GRO file); a list of single
+frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs
+XTC/TRR, or generic XYZ format). The coordinates must be
+ordered in the same way as the list of atoms in the topology.
+See <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a> for what can be read
+as coordinates. Alternatively, streams can be given.</li>
+<li><strong>topology_format</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide the file format of the topology file; <code class="docutils literal notranslate"><span class="pre">None</span></code> guesses it from
+the file extension. Can also pass a subclass of
 <a class="reference internal" href="../topology/base.html#MDAnalysis.topology.base.TopologyReaderBase" title="MDAnalysis.topology.base.TopologyReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.topology.base.TopologyReaderBase</span></code></a> to define a custom
 reader to be used on the topology file.</li>
-<li><strong>format</strong> – Provide the file format of the coordinate or trajectory file; <code class="docutils literal notranslate"><span class="pre">None</span></code>
+<li><strong>format</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide the file format of the coordinate or trajectory file; <code class="docutils literal notranslate"><span class="pre">None</span></code>
 guesses it from the file extension. Note that this keyword has no
 effect if a list of file names is supplied because the “chained” reader
 has to guess the file format for each individual list member.
-[<code class="docutils literal notranslate"><span class="pre">None</span></code>] Can also pass a subclass of
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a> to define a custom
-reader to be used on the trajectory file.</li>
-<li><strong>all_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> specifies that if more than one filename is passed
+Can also pass a subclass of <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ProtoReader</span></code></a>
+to define a custom reader to be used on the trajectory file.</li>
+<li><strong>all_coordinates</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code> specifies that if more than one filename is passed
 they are all to be used, if possible, as coordinate files (employing a
-<a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain.ChainReader</span></code></a>). [<code class="docutils literal notranslate"><span class="pre">False</span></code>] The
+<a class="reference internal" href="../coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain.ChainReader</span></code></a>). The
 default behavior is to take the first file as a topology and the
 remaining as coordinates. The first argument will always always be used
-to infer a topology regardless of <em>all_coordinates</em>. This parameter is
-ignored if only one argument is passed.</li>
-<li><strong>guess_bonds</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Once Universe has been loaded, attempt to guess the connectivity
-between atoms.  This will populate the .bonds .angles and .dihedrals
+to infer a topology regardless of <em>all_coordinates</em>.</li>
+<li><strong>guess_bonds</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – Once Universe has been loaded, attempt to guess the connectivity
+between atoms.  This will populate the .bonds, .angles, and .dihedrals
 attributes of the Universe.</li>
-<li><strong>vdwradii</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>, </em><em>optional</em>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
+<li><strong>vdwradii</strong> (dict, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
 atom type which are used in guessing bonds.</li>
-<li><strong>is_anchor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – When unpickling instances of
+<li><strong>is_anchor</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">True</span></code>) – When unpickling instances of
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> existing Universes are
 searched for one where to anchor those atoms. Set to <code class="docutils literal notranslate"><span class="pre">False</span></code> to
-prevent this Universe from being considered. [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>anchor_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Setting to other than <code class="docutils literal notranslate"><span class="pre">None</span></code> will cause
+prevent this Universe from being considered.</li>
+<li><strong>anchor_name</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Setting to other than <code class="docutils literal notranslate"><span class="pre">None</span></code> will cause
 <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> instances pickled from the
 Universe to only unpickle if a compatible Universe with matching
 <em>anchor_name</em> is found. Even if <em>anchor_name</em> is set <em>is_anchor</em> will
 still be honored when unpickling.</li>
-<li><strong>transformations</strong> (<em>function</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em>, </em><em>optional</em>) – Provide a list of transformations that you wish to apply to the
+<li><strong>transformations</strong> (function or list, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide a list of transformations that you wish to apply to the
 trajectory upon reading. Transformations can be found in
 <a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a>, or can be user-created.</li>
-<li><strong>in_memory</strong> – After reading in the trajectory, transfer it to an in-memory
+<li><strong>in_memory</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – After reading in the trajectory, transfer it to an in-memory
 representations, which allow for manipulation of coordinates.</li>
-<li><strong>in_memory_step</strong> – Only read every nth frame into in-memory representation.</li>
-<li><strong>continuous</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – The <cite>continuous</cite> option is used by the
+<li><strong>in_memory_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – Only read every nth frame into in-memory representation.</li>
+<li><strong>continuous</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">False</span></code>) – The <cite>continuous</cite> option is used by the
 <a class="reference internal" href="../coordinates/chain.html#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ChainReader</span></code></a>, which contains the
 functionality to treat independent trajectory files as a single virtual
 trajectory.</li>
@@ -347,6 +352,12 @@ trajectory)</p>
 <dt>
 <code class="descname">bonds, angles, dihedrals</code></dt>
 <dd><p>master ConnectivityGroups for each connectivity type</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">.. versionchanged:: 0.21.0</code></dt>
+<dd><p>Universe() now raises an error. Use Universe(None) or <a class="reference internal" href="#MDAnalysis.core.universe.Universe.empty" title="MDAnalysis.core.universe.Universe.empty"><code class="xref py py-func docutils literal notranslate"><span class="pre">Universe.empty()</span></code></a> instead.</p>
 </dd></dl>
 
 <dl class="method">
@@ -719,7 +730,7 @@ they <em>must</em> be from the same Universe.</td>
 
 <dl class="classmethod">
 <dt id="MDAnalysis.core.universe.Universe.empty">
-<em class="property">classmethod </em><code class="descname">empty</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>n_residues=None</em>, <em>n_segments=None</em>, <em>atom_resindex=None</em>, <em>residue_segindex=None</em>, <em>trajectory=False</em>, <em>velocities=False</em>, <em>forces=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.empty" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="descname">empty</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>n_residues=1</em>, <em>n_segments=1</em>, <em>atom_resindex=None</em>, <em>residue_segindex=None</em>, <em>trajectory=False</em>, <em>velocities=False</em>, <em>forces=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a blank Universe</p>
 <p>Useful for building a Universe without requiring existing files,
 for example for system building.</p>
@@ -732,8 +743,8 @@ attached to the Universe.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of Atoms in the Universe</li>
-<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of Residues in the Universe, defaults to 1</li>
-<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of Segments in the Universe, defaults to 1</li>
+<li><strong>n_residues</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Residues in the Universe, defaults to 1</li>
+<li><strong>n_segments</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>default 1</em>) – number of Segments in the Universe, defaults to 1</li>
 <li><strong>atom_resindex</strong> (<em>array like</em><em>, </em><em>optional</em>) – mapping of atoms to residues, e.g. with 6 atoms,
 <cite>atom_resindex=[0, 0, 1, 1, 2, 2]</cite> would put 2 atoms
 into each of 3 residues.</li>
@@ -794,7 +805,7 @@ positions for the atoms and a mass attribute:</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.universe.Universe.load_new">
-<code class="descname">load_new</code><span class="sig-paren">(</span><em>filename</em>, <em>format=None</em>, <em>in_memory=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.load_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.load_new" title="Permalink to this definition">¶</a></dt>
+<code class="descname">load_new</code><span class="sig-paren">(</span><em>filename</em>, <em>format=None</em>, <em>in_memory=False</em>, <em>in_memory_step=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.load_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.load_new" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load coordinates from <cite>filename</cite>.</p>
 <p>The file format of <cite>filename</cite> is autodetected from the file name suffix
 or can be explicitly set with the <cite>format</cite> keyword. A sequence of files
