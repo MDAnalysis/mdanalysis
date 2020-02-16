@@ -169,7 +169,11 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
-def _resolve_formats(*coordinates, format=None, topology_format=None):
+# py3 TODO
+#def _resolve_formats(*coordinates, format=None, topology_format=None):
+def _resolve_formats(*coordinates, **kwargs):
+    format = kwargs.get('format', None)
+    topology_format = kwargs.get('topology_format', None)
     if not coordinates:
         if format is None:
             format = topology_format
@@ -177,8 +181,15 @@ def _resolve_formats(*coordinates, format=None, topology_format=None):
             topology_format = format
     return format, topology_format
 
-def _resolve_coordinates(filename, *coordinates, format=None,
-                         all_coordinates=False):
+# py3 TODO
+#def _resolve_coordinates(filename, *coordinates, format=None,
+#                         all_coordinates=False):
+def _resolve_coordinates(*args, **kwargs):
+    filename = args[0]
+    coordinates = args[1:]
+    format = kwargs.get('format', None)
+    all_coordinates = kwargs.get('all_coordinates', False)
+
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
@@ -358,16 +369,29 @@ class Universe(object):
     bonds, angles, dihedrals
         master ConnectivityGroups for each connectivity type
 
-    .. versionchanged:: 0.20.0
+    .. versionchanged:: 0.21.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
     """
+# Py3 TODO
+#    def __init__(self, topology=None, *coordinates, all_coordinates=False,
+#                 format=None, topology_format=None, transformations=None,
+#                 guess_bonds=False, vdwradii=None, anchor_name=None,
+#                 is_anchor=True, in_memory=False, in_memory_step=1,
+#                 **kwargs):
+    def __init__(self, *args, **kwargs):
+        topology = args[0] if args else None
+        coordinates = args[1:]
+        all_coordinates = kwargs.pop('all_coordinates', False)
+        format = kwargs.pop('format', None)
+        topology_format = kwargs.pop('topology_format', None)
+        transformations = kwargs.pop('transformations', None)
+        guess_bonds = kwargs.pop('guess_bonds', False)
+        vdwradii = kwargs.pop('vdwradii', None)
+        anchor_name = kwargs.pop('anchor_name', None)
+        is_anchor = kwargs.pop('is_anchor', True)
+        in_memory = kwargs.pop('in_memory', False)
+        in_memory_step = kwargs.pop('in_memory_step', 1)
 
-    
-    def __init__(self, topology=None, *coordinates, all_coordinates=False,
-                 format=None, topology_format=None, transformations=None,
-                 guess_bonds=False, vdwradii=None, anchor_name=None,
-                 is_anchor=True, in_memory=False, in_memory_step=1,
-                 **kwargs):
         self._instant_selectors = {}  # for storing segments. Deprecated?
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
@@ -426,14 +450,12 @@ class Universe(object):
         
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii)
-        
 
     def copy(self):
         """Return an independent copy of this Universe"""
         new = self.__class__(self._topology.copy())
         new.trajectory = self.trajectory.copy()
         return new
-
 
     @classmethod
     def empty(cls, n_atoms, n_residues=1, n_segments=1,
