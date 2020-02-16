@@ -223,7 +223,7 @@ class TestAlign(object):
         fitted = mda.Universe(PSF, outfile)
 
         # ensure default file exists
-        with mda.Writer(os.path.join(tmpdir, "rmsfit_align_test.dcd"),
+        with mda.Writer(str(tmpdir.join("rmsfit_align_test.dcd")),
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
