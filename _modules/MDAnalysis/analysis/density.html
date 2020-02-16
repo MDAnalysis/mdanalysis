@@ -387,10 +387,6 @@
 <span class="sd">        - *density*: unit of the density if ``isDensity=True`` or ``None``</span>
 <span class="sd">          otherwise; the default is &quot;Angstrom^{-3}&quot; for densities</span>
 <span class="sd">          (meaning :math:`\text{Å}^{-3}`).</span>
-
-<span class="sd">        (Actually, the default unit is the value of</span>
-<span class="sd">        ``MDAnalysis.core.flags[&#39;length_unit&#39;]``; in most</span>
-<span class="sd">        cases this is &quot;Angstrom&quot;.)</span>
 <span class="sd">    metadata : dict</span>
 <span class="sd">        a user defined dictionary of arbitrary values associated with the</span>
 <span class="sd">        density; the class does not touch :attr:`Density.metadata` but</span>
@@ -500,7 +496,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">length_unit</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">]</span>
+        <span class="n">length_unit</span> <span class="o">=</span> <span class="s1">&#39;Angstrom&#39;</span>
 
         <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="p">{})</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">string_types</span><span class="p">):</span>
@@ -893,10 +889,11 @@
 <span class="sd">       defined boxes</span>
 <span class="sd">    .. versionchanged:: 0.13.0</span>
 <span class="sd">       *update_selection* and *quiet* keywords added</span>
-
 <span class="sd">    .. deprecated:: 0.16</span>
 <span class="sd">       The keyword argument *quiet* is deprecated in favor of *verbose*.</span>
-
+<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">       time_unit and length_unit default to ps and Angstrom now flags have</span>
+<span class="sd">       been removed (same as previous flag defaults)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
 
@@ -990,7 +987,7 @@
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;totaltime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
     <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>
-    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">]</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ps&#39;</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;trajectory_skip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">skip_timestep</span>  <span class="c1"># frames</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -1007,7 +1004,7 @@
     <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># must override</span>
 
 
-    <span class="n">g</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">]},</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">},</span>
                 <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
     <span class="n">g</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Density completed (initial density in Angstrom**-3)&quot;</span><span class="p">)</span>

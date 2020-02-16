@@ -401,7 +401,7 @@ Now passes a weakref of self to ts (ts._reader).</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.TRZ.TRZWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRZ.</code><code class="descname">TRZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>title='TRZ'</em>, <em>convert_units=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRZ.</code><code class="descname">TRZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>title='TRZ'</em>, <em>convert_units=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRZ.TRZWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a TRZ format trajectory.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -417,9 +417,7 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of atoms in trajectory</li>
 <li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
 shorter, a longer title raises a ValueError exception.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal notranslate"><span class="pre">None</span></code> selects
-the value of <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’].
-(see <a class="reference internal" href="../core/init.html#flags-label"><span class="std std-ref">Flags</span></a>)</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -523,7 +521,7 @@ Now passes a weakref of self to ts (ts._reader).</p>
 
 <dl class="class">
 <dt>
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRZ.</code><code class="descname">TRZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>title='TRZ'</em>, <em>convert_units=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.TRZ.</code><code class="descname">TRZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms</em>, <em>title='TRZ'</em>, <em>convert_units=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRZ.html#TRZWriter"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Writes a TRZ format trajectory.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -539,9 +537,7 @@ Now passes a weakref of self to ts (ts._reader).</p>
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – number of atoms in trajectory</li>
 <li><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – title of the trajectory; the title must be 80 characters or
 shorter, a longer title raises a ValueError exception.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal notranslate"><span class="pre">None</span></code> selects
-the value of <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’].
-(see <a class="reference internal" href="../core/init.html#flags-label"><span class="std std-ref">Flags</span></a>)</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 </ul>
 </td>
 </tr>

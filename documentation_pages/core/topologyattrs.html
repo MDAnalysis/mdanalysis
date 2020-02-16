@@ -731,7 +731,7 @@ where <code class="docutils literal notranslate"><span class="pre">n</span></cod
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.asphericity">
-<code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.asphericity" title="Permalink to this definition">¶</a></dt>
+<code class="descname">asphericity</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>unwrap=None</em>, <em>compound='group'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.asphericity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.asphericity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asphericity.</p>
 <p>See <a class="reference internal" href="#dima2004b" id="id1">[Dima2004b]</a> for background information.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -740,8 +740,7 @@ where <code class="docutils literal notranslate"><span class="pre">n</span></cod
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
-calculation. If <code class="docutils literal notranslate"><span class="pre">None</span></code> use value defined in
-MDAnalysis.core.flags[‘use_pbc’]</li>
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>unwrap</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, compounds will be unwrapped before computing their centers.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – Which type of component to keep together during unwrapping.</li>
 </ul>
@@ -749,11 +748,6 @@ MDAnalysis.core.flags[‘use_pbc’]</li>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="dima2004b" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
@@ -777,7 +771,7 @@ proteins. <em>J Phys Chem B</em>, 108(21),
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.center_of_mass">
-<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_mass</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.center_of_mass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of mass of (compounds of) the group.</p>
 <p>Computes the center of mass of <code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code> in the group.
 Centers of mass per <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>, molecule, or
@@ -826,8 +820,6 @@ is the number of compounds.</p>
 <ul class="last simple">
 <li>This method can only be accessed if the underlying topology has
 information about atomic masses.</li>
-<li>The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</li>
 </ul>
 </div>
 <div class="versionchanged">
@@ -869,7 +861,7 @@ attributes.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.moment_of_inertia">
-<code class="descname">moment_of_inertia</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.moment_of_inertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia" title="Permalink to this definition">¶</a></dt>
+<code class="descname">moment_of_inertia</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.moment_of_inertia"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tensor moment of inertia relative to center of mass as 3x3 numpy
 array.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -881,11 +873,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
@@ -896,7 +883,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.principal_axes">
-<code class="descname">principal_axes</code><span class="sig-paren">(</span><em>pbc=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.principal_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.principal_axes" title="Permalink to this definition">¶</a></dt>
+<code class="descname">principal_axes</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.principal_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.principal_axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the principal axes from the moment of inertia.</p>
 <p>e1,e2,e3 = AtomGroup.principal_axes()</p>
 <p>The eigenvectors are sorted by eigenvalue, i.e. the first one
@@ -907,7 +894,7 @@ axes.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, move all atoms within the primary unit cell before
-calculation. If <code class="docutils literal notranslate"><span class="pre">None</span></code> use value defined in setup flags.</td>
+calculation. [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>axis_vectors</strong> – 3 x 3 array with <code class="docutils literal notranslate"><span class="pre">v[0]</span></code> as first, <code class="docutils literal notranslate"><span class="pre">v[1]</span></code> as second, and
 <code class="docutils literal notranslate"><span class="pre">v[2]</span></code> as third eigenvector.</td>
@@ -916,11 +903,6 @@ calculation. If <code class="docutils literal notranslate"><span class="pre">Non
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
@@ -928,7 +910,7 @@ calculation. If <code class="docutils literal notranslate"><span class="pre">Non
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.radius_of_gyration">
-<code class="descname">radius_of_gyration</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.radius_of_gyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
+<code class="descname">radius_of_gyration</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.radius_of_gyration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.radius_of_gyration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Radius of gyration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -939,11 +921,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
@@ -951,7 +928,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Masses.shape_parameter">
-<code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.shape_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">shape_parameter</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Masses.shape_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shape parameter.</p>
 <p>See <a class="reference internal" href="#dima2004a" id="id2">[Dima2004a]</a> for background information.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -963,11 +940,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <p class="rubric">References</p>
 <table class="docutils citation" frame="void" id="dima2004a" rules="none">
 <colgroup><col class="label" /><col /></colgroup>

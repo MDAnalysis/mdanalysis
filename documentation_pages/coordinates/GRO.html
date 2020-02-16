@@ -289,7 +289,7 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.GRO.GROReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.GRO.</code><code class="descname">GROReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.GRO.</code><code class="descname">GROReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader for the Gromacs GRO structure format.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -320,7 +320,7 @@ the <code class="docutils literal notranslate"><span class="pre">has_*</span></c
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.GRO.GROWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.GRO.</code><code class="descname">GROWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.GRO.</code><code class="descname">GROWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/GRO.html#GROWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.GRO.GROWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>GRO Writer that conforms to the Trajectory API.</p>
 <dl class="docutils">
 <dt>Will attempt to write the following information from the topology:</dt>
@@ -357,8 +357,7 @@ ids to be kept.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – output filename</li>
 <li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – number of atoms</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal notranslate"><span class="pre">None</span></code> selects
-the value of <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’]</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>reindex</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – By default, all the atoms were reindexed to have a atom id starting
 from 1. [<code class="docutils literal notranslate"><span class="pre">True</span></code>] However, this behaviour can be turned off by
 specifying <cite>reindex</cite> <code class="docutils literal notranslate"><span class="pre">=False</span></code>.</li>

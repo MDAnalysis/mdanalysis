@@ -318,8 +318,8 @@
 <span class="sd">  from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR</span>
 
 <span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
-<span class="sd">  selection = &quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
-<span class="sd">  WOR_analysis = WOR(universe, selection, 0, 1000, 20)</span>
+<span class="sd">  select = &quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
+<span class="sd">  WOR_analysis = WOR(universe, select, 0, 1000, 20)</span>
 <span class="sd">  WOR_analysis.run()</span>
 <span class="sd">  time = 0</span>
 <span class="sd">  #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,</span>
@@ -428,8 +428,8 @@
 <span class="sd">  from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD</span>
 
 <span class="sd">  u = MDAnalysis.Universe(pdb, trajectory)</span>
-<span class="sd">  selection = &quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
-<span class="sd">  MSD_analysis = MSD(universe, selection, 0, 1000, 20)</span>
+<span class="sd">  select = &quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
+<span class="sd">  MSD_analysis = MSD(universe, select, 0, 1000, 20)</span>
 <span class="sd">  MSD_analysis.run()</span>
 <span class="sd">  #now we print data ready to graph. The graph</span>
 <span class="sd">  #represents MSD vs t</span>
@@ -462,8 +462,8 @@
 <span class="sd">  import matplotlib.pyplot as plt</span>
 
 <span class="sd">  universe = MDAnalysis.Universe(pdb, trajectory)</span>
-<span class="sd">  selection = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
-<span class="sd">  sp = SP(universe, selection, verbose=True)</span>
+<span class="sd">  select = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
+<span class="sd">  sp = SP(universe, select, verbose=True)</span>
 <span class="sd">  sp.run(start=0, stop=100, tau_max=20)</span>
 <span class="sd">  tau_timeseries = sp.tau_timeseries</span>
 <span class="sd">  sp_timeseries = sp.sp_timeseries</span>
@@ -503,8 +503,8 @@
 <span class="sd">  for lipid in lipids.residues:</span>
 <span class="sd">      print(&quot;Lipid ID: %d&quot; % lipid.resid)</span>
 
-<span class="sd">      selection = &quot;resname POTASSIUM and around 3.5 (resid %d and name O13 O14) &quot; % lipid.resid</span>
-<span class="sd">      sp = SP(u, selection, verbose=True)</span>
+<span class="sd">      select = &quot;resname POTASSIUM and around 3.5 (resid %d and name O13 O14) &quot; % lipid.resid</span>
+<span class="sd">      sp = SP(u, select, verbose=True)</span>
 <span class="sd">      sp.run(tau_max=20)</span>
 
 <span class="sd">      # Raw SP points for each tau:</span>
@@ -849,11 +849,13 @@
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
@@ -1030,7 +1032,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">        Universe object</span>
-<span class="sd">    selection : str</span>
+<span class="sd">    select : str</span>
 <span class="sd">        Selection string to evaluate its angular distribution [&#39;byres name OH2&#39;]</span>
 <span class="sd">    bins : int (optional)</span>
 <span class="sd">        Number of bins to create the histogram by means of :func:`numpy.histogram`</span>
@@ -1040,11 +1042,14 @@
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection_str</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;z&quot;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection_str</span> <span class="o">=</span> <span class="n">selection_str</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection_str</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="n">bins</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nproc</span> <span class="o">=</span> <span class="n">nproc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span>
@@ -1182,7 +1187,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">      Universe object</span>
-<span class="sd">    selection : str</span>
+<span class="sd">    select : str</span>
 <span class="sd">      Selection string for water [‘byres name OH2’].</span>
 <span class="sd">    t0 : int</span>
 <span class="sd">      frame  where analysis begins</span>
@@ -1193,11 +1198,14 @@
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dtmax</span> <span class="o">=</span> <span class="n">dtmax</span>
@@ -1336,7 +1344,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">      Universe object</span>
-<span class="sd">    selection : str</span>
+<span class="sd">    select : str</span>
 <span class="sd">      Selection string; any selection is allowed. With this selection you</span>
 <span class="sd">      define the region/zone where to analyze, e.g.: &quot;resname SOL and around 5 (resid 10)&quot;. See `SP-examples`_.</span>
 <span class="sd">    verbose : Boolean, optional</span>
@@ -1345,11 +1353,13 @@
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">selection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
         <span class="c1"># backward compatibility</span>

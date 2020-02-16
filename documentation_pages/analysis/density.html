@@ -417,6 +417,10 @@ defined boxes</p>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.16: </span>The keyword argument <em>quiet</em> is deprecated in favor of <em>verbose</em>.</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>time_unit and length_unit default to ps and Angstrom now flags have
+been removed (same as previous flag defaults)</p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -523,9 +527,6 @@ the class. Meaning of the values are listed:</p>
 otherwise; the default is “Angstrom^{-3}” for densities
 (meaning <span class="math notranslate nohighlight">\(\text{Å}^{-3}\)</span>).</li>
 </ul>
-<p>(Actually, the default unit is the value of
-<code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.flags['length_unit']</span></code>; in most
-cases this is “Angstrom”.)</p>
 </li>
 <li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – a user defined dictionary of arbitrary values associated with the
 density; the class does not touch <code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.metadata</span></code> but

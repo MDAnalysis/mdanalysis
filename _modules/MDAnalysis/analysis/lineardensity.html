@@ -216,7 +216,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    selection : AtomGroup</span>
+<span class="sd">    select : AtomGroup</span>
 <span class="sd">          any atomgroup</span>
 <span class="sd">    grouping : str {&#39;atoms&#39;, &#39;residues&#39;, &#39;segments&#39;, &#39;fragments&#39;}</span>
 <span class="sd">          Density profiles will be computed on the center of geometry</span>
@@ -254,14 +254,17 @@
 <span class="sd">       The ``save()`` method was also removed, you can use ``np.savetxt()`` or</span>
 <span class="sd">       ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents</span>
 <span class="sd">       instead.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">LinearDensity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">selection</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">grouping</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">binsize</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LinearDensity</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">select</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span>
                                             <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># allows use of run(parallel=True)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span> <span class="o">=</span> <span class="p">[</span><span class="n">selection</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">universe</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ags</span> <span class="o">=</span> <span class="p">[</span><span class="n">select</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_universe</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">universe</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">binsize</span> <span class="o">=</span> <span class="n">binsize</span>
 

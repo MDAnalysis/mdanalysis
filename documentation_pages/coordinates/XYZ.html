@@ -341,7 +341,7 @@ the reader instance is used</li>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.XYZ.XYZWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XYZ.</code><code class="descname">XYZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>atoms=None</em>, <em>convert_units=None</em>, <em>remark=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XYZ.</code><code class="descname">XYZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>atoms=None</em>, <em>convert_units=True</em>, <em>remark=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes an XYZ file</p>
 <p>The XYZ file format is not formally defined. This writer follows
 the VMD implementation for the molfile <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a>.</p>
@@ -366,6 +366,8 @@ used when a trajectory is written from raw
 information. If you write a <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> with
 <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">XYZWriter.write()</span></code></a> then atom information is taken
 at each step and <em>atoms</em> is ignored.</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
+writing  [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
 version</li>
 </ul>

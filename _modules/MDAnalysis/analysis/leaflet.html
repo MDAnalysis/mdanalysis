@@ -274,7 +274,7 @@
 <span class="sd">    universe : Universe or str</span>
 <span class="sd">        :class:`MDAnalysis.Universe` or a file name (e.g., in PDB or</span>
 <span class="sd">        GRO format)</span>
-<span class="sd">    selection : AtomGroup or str</span>
+<span class="sd">    select : AtomGroup or str</span>
 <span class="sd">        A AtomGroup instance or a</span>
 <span class="sd">        :meth:`Universe.select_atoms` selection string</span>
 <span class="sd">        for atoms that define the lipid head groups, e.g.</span>
@@ -309,12 +309,15 @@
 <span class="sd">    instance. Similarly, all atoms in the first leaflet are then ::</span>
 
 <span class="sd">       leaflet0.residues.atoms</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selectionstring</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">universe</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">as_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span> <span class="o">=</span> <span class="n">selectionstring</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span> <span class="o">=</span> <span class="n">select</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span>
         <span class="k">else</span><span class="p">:</span>
@@ -418,7 +421,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sw</span> <span class="o">=</span> <span class="n">selections</span><span class="o">.</span><span class="n">get_writer</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
         <span class="k">with</span> <span class="n">sw</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">),</span>
-                <span class="n">preamble</span><span class="o">=</span><span class="s2">&quot;leaflets based on selection=</span><span class="si">{selectionstring!r}</span><span class="s2"> cutoff=</span><span class="si">{cutoff:f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">preamble</span><span class="o">=</span><span class="s2">&quot;leaflets based on select=</span><span class="si">{selectionstring!r}</span><span class="s2"> cutoff=</span><span class="si">{cutoff:f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="o">**</span><span class="nb">vars</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span>
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups_iter</span><span class="p">()):</span>
@@ -431,7 +434,7 @@
             <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">components</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="optimize_cutoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">[docs]</a><span class="k">def</span> <span class="nf">optimize_cutoff</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">dmin</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<div class="viewcode-block" id="optimize_cutoff"><a class="viewcode-back" href="../../../documentation_pages/analysis/leaflet.html#MDAnalysis.analysis.leaflet.optimize_cutoff">[docs]</a><span class="k">def</span> <span class="nf">optimize_cutoff</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">dmin</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">dmax</span><span class="o">=</span><span class="mf">20.0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
                     <span class="n">max_imbalance</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find cutoff that minimizes number of disconnected groups.</span>
 
@@ -452,7 +455,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    universe : Universe</span>
 <span class="sd">        :class:`MDAnalysis.Universe` instance</span>
-<span class="sd">    selection : AtomGroup or str</span>
+<span class="sd">    select : AtomGroup or str</span>
 <span class="sd">        AtomGroup or selection string as used for :class:`LeafletFinder`</span>
 <span class="sd">    dmin : float (optional)</span>
 <span class="sd">    dmax : float (optional)</span>
@@ -473,11 +476,13 @@
 <span class="sd">              appropriate number of groups can be found; it ought  to be</span>
 <span class="sd">              made more robust.</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;cutoff&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># not used, so we filter it</span>
     <span class="n">_sizes</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">cutoff</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">dmin</span><span class="p">,</span> <span class="n">dmax</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
-        <span class="n">LF</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">LF</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># heuristic:</span>
         <span class="c1">#  1) N &gt; 1</span>
         <span class="c1">#  2) no imbalance between large groups:</span>

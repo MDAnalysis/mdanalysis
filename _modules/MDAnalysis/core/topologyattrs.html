@@ -222,7 +222,6 @@
 
 <span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
                         <span class="n">unique_int_1d</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">transformations</span><span class="p">,</span> <span class="n">mdamath</span>
@@ -947,7 +946,7 @@
 
 <div class="viewcode-block" id="Masses.center_of_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.center_of_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@check_pbc_and_unwrap</span>
-    <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
 
 <span class="sd">        Computes the center of mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
@@ -993,8 +992,6 @@
 <span class="sd">        ----</span>
 <span class="sd">        * This method can only be accessed if the underlying topology has</span>
 <span class="sd">          information about atomic masses.</span>
-<span class="sd">        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">          ``True`` allows the *pbc* flag to be used by default.</span>
 
 
 <span class="sd">        .. versionchanged:: 0.8 Added `pbc` parameter</span>
@@ -1047,7 +1044,7 @@
 
 <div class="viewcode-block" id="Masses.moment_of_inertia"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@check_pbc_and_unwrap</span>
-    <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">moment_of_inertia</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tensor moment of inertia relative to center of mass as 3x3 numpy</span>
 <span class="sd">        array.</span>
 
@@ -1057,18 +1054,12 @@
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
 <span class="sd">            calculation. [``False``]</span>
 
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">        ``True`` allows the *pbc* flag to be used by default.</span>
-
 
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="n">unwrap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;unwrap&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">compound</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;compound&#39;</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span>
 
@@ -1113,7 +1104,7 @@
         <span class="p">(</span><span class="s1">&#39;moment_of_inertia&#39;</span><span class="p">,</span> <span class="n">moment_of_inertia</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.radius_of_gyration"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.radius_of_gyration">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">radius_of_gyration</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">radius_of_gyration</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Radius of gyration.</span>
 
 <span class="sd">        Parameters</span>
@@ -1122,17 +1113,11 @@
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
 <span class="sd">            calculation. [``False``]</span>
 
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">        ``True`` allows the *pbc* flag to be used by default.</span>
-
 
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
 
         <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
@@ -1150,7 +1135,7 @@
         <span class="p">(</span><span class="s1">&#39;radius_of_gyration&#39;</span><span class="p">,</span> <span class="n">radius_of_gyration</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.shape_parameter"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.shape_parameter">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">shape_parameter</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">shape_parameter</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Shape parameter.</span>
 
 <span class="sd">        See [Dima2004a]_ for background information.</span>
@@ -1160,11 +1145,6 @@
 <span class="sd">        pbc : bool, optional</span>
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
 <span class="sd">            calculation. [``False``]</span>
-
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">        ``True`` allows the *pbc* flag to be used by default.</span>
 
 
 <span class="sd">        References</span>
@@ -1181,7 +1161,6 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="n">pbc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;pbc&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">])</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
 
         <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">)</span>
@@ -1205,7 +1184,7 @@
 
 <div class="viewcode-block" id="Masses.asphericity"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.asphericity">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@check_pbc_and_unwrap</span>
-    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">asphericity</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Asphericity.</span>
 
 <span class="sd">        See [Dima2004b]_ for background information.</span>
@@ -1214,17 +1193,11 @@
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool, optional</span>
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
-<span class="sd">            calculation. If ``None`` use value defined in</span>
-<span class="sd">            MDAnalysis.core.flags[&#39;use_pbc&#39;]</span>
+<span class="sd">            calculation. [``False``]</span>
 <span class="sd">        unwrap : bool, optional</span>
 <span class="sd">            If ``True``, compounds will be unwrapped before computing their centers.</span>
 <span class="sd">        compound : {&#39;group&#39;, &#39;segments&#39;, &#39;residues&#39;, &#39;molecules&#39;, &#39;fragments&#39;}, optional</span>
 <span class="sd">            Which type of component to keep together during unwrapping.</span>
-
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">        ``True`` allows the *pbc* flag to be used by default.</span>
 
 
 <span class="sd">        References</span>
@@ -1237,15 +1210,12 @@
 <span class="sd">           &lt;https://doi.org/10.1021/jp037128y&gt;`_</span>
 
 
-
 <span class="sd">        .. versionadded:: 0.7.7</span>
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pbc</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">]</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
 
         <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
@@ -1275,7 +1245,7 @@
         <span class="p">(</span><span class="s1">&#39;asphericity&#39;</span><span class="p">,</span> <span class="n">asphericity</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Masses.principal_axes"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.principal_axes">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
-    <span class="k">def</span> <span class="nf">principal_axes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">principal_axes</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Calculate the principal axes from the moment of inertia.</span>
 
 <span class="sd">        e1,e2,e3 = AtomGroup.principal_axes()</span>
@@ -1288,7 +1258,7 @@
 <span class="sd">        ----------</span>
 <span class="sd">        pbc : bool, optional</span>
 <span class="sd">            If ``True``, move all atoms within the primary unit cell before</span>
-<span class="sd">            calculation. If ``None`` use value defined in setup flags.</span>
+<span class="sd">            calculation. [``False``]</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1296,18 +1266,11 @@
 <span class="sd">            3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and</span>
 <span class="sd">            ``v[2]`` as third eigenvector.</span>
 
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to</span>
-<span class="sd">        ``True`` allows the *pbc* flag to be used by default.</span>
-
 
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
-        <span class="k">if</span> <span class="n">pbc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">pbc</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_pbc&#39;</span><span class="p">]</span>
         <span class="n">e_val</span><span class="p">,</span> <span class="n">e_vec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">moment_of_inertia</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">))</span>
 
         <span class="c1"># Sort</span>

@@ -291,7 +291,6 @@
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
@@ -476,21 +475,17 @@
     <span class="p">}</span>
     <span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Set up a GROWriter with a precision of 3 decimal places.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
 <span class="sd">        filename : str</span>
 <span class="sd">            output filename</span>
-
 <span class="sd">        n_atoms : int (optional)</span>
 <span class="sd">            number of atoms</span>
-
-<span class="sd">        convert_units : str (optional)</span>
-<span class="sd">            units are converted to the MDAnalysis base format; ``None`` selects</span>
-<span class="sd">            the value of :data:`MDAnalysis.core.flags` [&#39;convert_lengths&#39;]</span>
-
+<span class="sd">        convert_units : bool (optional)</span>
+<span class="sd">            units are converted to the MDAnalysis base format; [``True``]</span>
 <span class="sd">        reindex : bool (optional)</span>
 <span class="sd">            By default, all the atoms were reindexed to have a atom id starting</span>
 <span class="sd">            from 1. [``True``] However, this behaviour can be turned off by</span>
@@ -517,8 +512,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">reindex</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;reindex&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c1"># convert length and time to base units</span>
 
 <div class="viewcode-block" id="GROWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>

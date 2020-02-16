@@ -231,7 +231,7 @@ algorithm.</p>
 <h2>4.4.2.2. Classes and Functions<a class="headerlink" href="#classes-and-functions" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.leaflet.</code><code class="descname">LeafletFinder</code><span class="sig-paren">(</span><em>universe</em>, <em>selectionstring</em>, <em>cutoff=15.0</em>, <em>pbc=False</em>, <em>sparse=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.leaflet.</code><code class="descname">LeafletFinder</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>cutoff=15.0</em>, <em>pbc=False</em>, <em>sparse=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#LeafletFinder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Identify atoms in the same leaflet of a lipid bilayer.</p>
 <p>This class implements the <em>LeafletFinder</em> algorithm <a class="reference internal" href="../references.html#michaud-agrawal2011" id="id3">[Michaud-Agrawal2011]</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -241,7 +241,7 @@ algorithm.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> or a file name (e.g., in PDB or
 GRO format)</li>
-<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A AtomGroup instance or a
+<li><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A AtomGroup instance or a
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.select_atoms()</span></code> selection string
 for atoms that define the lipid head groups, e.g.
 universe.atoms.PO4 or “name PO4” or “name P*”</li>
@@ -275,6 +275,9 @@ use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFind
 instance. Similarly, all atoms in the first leaflet are then</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">leaflet0</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span>
 </pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
@@ -325,7 +328,7 @@ options.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.leaflet.optimize_cutoff">
-<code class="descclassname">MDAnalysis.analysis.leaflet.</code><code class="descname">optimize_cutoff</code><span class="sig-paren">(</span><em>universe</em>, <em>selection</em>, <em>dmin=10.0</em>, <em>dmax=20.0</em>, <em>step=0.5</em>, <em>max_imbalance=0.2</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#optimize_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.leaflet.</code><code class="descname">optimize_cutoff</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>dmin=10.0</em>, <em>dmax=20.0</em>, <em>step=0.5</em>, <em>max_imbalance=0.2</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/leaflet.html#optimize_cutoff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.leaflet.optimize_cutoff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find cutoff that minimizes number of disconnected groups.</p>
 <p>Applies heuristics to find best groups:</p>
 <ol class="arabic">
@@ -345,7 +348,7 @@ lipids.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> instance</li>
-<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – AtomGroup or selection string as used for <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">LeafletFinder</span></code></a></li>
+<li><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – AtomGroup or selection string as used for <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder" title="MDAnalysis.analysis.leaflet.LeafletFinder"><code class="xref py py-class docutils literal notranslate"><span class="pre">LeafletFinder</span></code></a></li>
 <li><strong>dmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>dmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – scan cutoffs from <cite>dmin</cite> to <cite>dmax</cite> at stepsize <cite>step</cite> (in Angstroms)</li>
@@ -367,6 +370,9 @@ lipids.</p>
 <p class="last">This function can die in various ways if really no
 appropriate number of groups can be found; it ought  to be
 made more robust.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 </dd></dl>
 

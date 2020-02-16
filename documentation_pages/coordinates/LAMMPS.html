@@ -1937,7 +1937,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.LAMMPS.DATAWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DATAWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DATAWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.LAMMPS.</code><code class="descname">DATAWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/LAMMPS.html#DATAWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.LAMMPS.DATAWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write out the current time step as a LAMMPS DATA file.</p>
 <p>This writer supports the sections Atoms, Masses, Velocities, Bonds,
 Angles, Dihedrals, and Impropers. This writer will write the header
@@ -1964,7 +1964,11 @@ an integer &gt;= 1.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – output filename</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – output filename</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

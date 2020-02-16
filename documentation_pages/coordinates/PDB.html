@@ -491,7 +491,7 @@ frame numbers.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
 altLoc is written.</p>
@@ -551,8 +551,7 @@ because the PDB standard prescribes MODEL numbers starting at 1)</li>
 any remarks from the trajectory that serves as input are
 written to REMARK records with lines longer than <code class="xref py py-attr docutils literal notranslate"><span class="pre">remark_max_length</span></code> (66
 characters) being wrapped.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal notranslate"><span class="pre">None</span></code> selects
-the value of <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’]</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>bonds</strong> (<em>{&quot;conect&quot;</em><em>, </em><em>&quot;all&quot;</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – If set to “conect”, then only write those bonds that were already
 defined in an input PDB file as PDB <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a> record. If set to “all”,
 write all bonds (including guessed ones) to the file. <code class="docutils literal notranslate"><span class="pre">None</span></code> does
@@ -777,7 +776,7 @@ its argument so that topology information can be gathered.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.MultiPDBWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">MultiPDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=None</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">MultiPDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
 is written.</p>
@@ -805,8 +804,7 @@ because the PDB standard prescribes MODEL numbers starting at 1)</li>
 any remarks from the trajectory that serves as input are
 written to REMARK records with lines longer than <code class="xref py py-attr docutils literal notranslate"><span class="pre">remark_max_length</span></code> (66
 characters) being wrapped.</li>
-<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; <code class="docutils literal notranslate"><span class="pre">None</span></code> selects
-the value of <code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> [‘convert_lengths’]</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>bonds</strong> (<em>{&quot;conect&quot;</em><em>, </em><em>&quot;all&quot;</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – If set to “conect”, then only write those bonds that were already
 defined in an input PDB file as PDB <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a> record. If set to “all”,
 write all bonds (including guessed ones) to the file. <code class="docutils literal notranslate"><span class="pre">None</span></code> does

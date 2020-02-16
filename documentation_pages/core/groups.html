@@ -527,7 +527,7 @@ not affect any code but only speed up calculations.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.bbox">
-<code class="descname">bbox</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bbox</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -548,16 +548,14 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.2.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
@@ -581,7 +579,7 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.bsphere">
-<code class="descname">bsphere</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bsphere" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bsphere</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.bsphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="MDAnalysis.core.groups.AtomGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center</span> <span class="pre">of</span> <span class="pre">geometry</span></code></a>.</p>
@@ -600,11 +598,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.3.</span></p>
 </div>
@@ -615,7 +608,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -630,13 +623,13 @@ number).</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
 the center of each compound will be calculated without moving any
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
 resulting position vectors will be moved to the primary unit cell
-after calculation.</li>
+after calculation. Default [<code class="docutils literal notranslate"><span class="pre">False</span></code>].</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
 of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
@@ -681,9 +674,6 @@ contain molecule information (molnums) or if <cite>compound</cite> is
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
@@ -693,12 +683,15 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -709,12 +702,12 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
+moved to the primary unit cell after calculation. Default False.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
@@ -738,9 +731,6 @@ number of compounds.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
@@ -753,12 +743,15 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -769,12 +762,12 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
+moved to the primary unit cell after calculation. Default False.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
@@ -798,9 +791,6 @@ number of compounds.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
@@ -813,6 +803,9 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
@@ -1484,16 +1477,32 @@ to new coordinates <span class="math notranslate nohighlight">\(\mathbf{x}'\)</s
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.select_atoms">
 <code class="descname">select_atoms</code><span class="sig-paren">(</span><em>sel</em>, <em>*othersel</em>, <em>**selgroups</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/groups.html#AtomGroup.select_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="Permalink to this definition">¶</a></dt>
-<dd><p>Select <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> using a selection string.</p>
-<p>Returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> sorted according
-to their index in the topology (this is to ensure that there are no
-duplicates, which can happen with complicated selections).</p>
+<dd><p>Select atoms from within this Group using a selection string.</p>
+<p>Returns an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> sorted according to their index in the
+topology (this is to ensure that there are no duplicates, which can
+happen with complicated selections).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If the arbitrary groups passed are not of type
-<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – string of the selection, eg “name Ca”, see below for possibilities.</li>
+<li><strong>othersel</strong> (<em>iterable of str</em>) – further selections to perform.  The results of these selections
+will be appended onto the results of the first.</li>
+<li><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – for geometric selections, whether to account for atoms in different
+periodic images when searching</li>
+<li><strong>updating</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – force the selection to be re evaluated each time the Timestep of the
+trajectory is changed.  See section on <strong>Dynamic selections</strong> below.
+[<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>**selgroups</strong> (<em>keyword arguments of str: AtomGroup</em><em> (</em><em>optional</em><em>)</em>) – when using the “group” keyword in selections, groups are defined by
+passing them as keyword arguments.  See section on <strong>preexisting
+selections</strong> below.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If the arbitrary groups passed are not of type
+<a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a></p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1685,8 +1694,8 @@ total number of atoms - 1.</dd>
 <div><dl class="docutils">
 <dt>group <cite>group-name</cite></dt>
 <dd>selects the atoms in the <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> passed to the
-function as an argument named <cite>group-name</cite>. Only the atoms
-common to <cite>group-name</cite> and the instance
+function as a keyword argument named <cite>group-name</cite>. Only the
+atoms common to <cite>group-name</cite> and the instance
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a>
 was called from will be considered, unless <code class="docutils literal notranslate"><span class="pre">group</span></code> is
 preceded by the <code class="docutils literal notranslate"><span class="pre">global</span></code> keyword. <cite>group-name</cite> will be
@@ -1759,7 +1768,9 @@ Added periodic kwarg (default True)</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>The <code class="docutils literal notranslate"><span class="pre">fullgroup</span></code> selection has now been removed in favor of the
-equivalent <code class="docutils literal notranslate"><span class="pre">global</span> <span class="pre">group</span></code> selection.</p>
+equivalent <code class="docutils literal notranslate"><span class="pre">global</span> <span class="pre">group</span></code> selection.
+Removed flags affecting default behaviour for periodic selections;
+periodic are now on by default (as with default flags)</p>
 </div>
 </dd></dl>
 
@@ -2390,7 +2401,7 @@ contain molecule information (molnums), or if <cite>compound</cite> is
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.bbox">
-<code class="descname">bbox</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bbox" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bbox</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -2411,22 +2422,20 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.2.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.bsphere">
-<code class="descname">bsphere</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bsphere" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bsphere</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.bsphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the
 <a class="reference internal" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="MDAnalysis.core.groups.ResidueGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center</span> <span class="pre">of</span> <span class="pre">geometry</span></code></a>.</p>
@@ -2445,11 +2454,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.3.</span></p>
 </div>
@@ -2460,7 +2464,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -2475,13 +2479,13 @@ number).</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
 the center of each compound will be calculated without moving any
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
 resulting position vectors will be moved to the primary unit cell
-after calculation.</li>
+after calculation. Default [<code class="docutils literal notranslate"><span class="pre">False</span></code>].</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
 of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
@@ -2526,9 +2530,6 @@ contain molecule information (molnums) or if <cite>compound</cite> is
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
@@ -2538,12 +2539,15 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -2554,12 +2558,12 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
+moved to the primary unit cell after calculation. Default False.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
@@ -2583,9 +2587,6 @@ number of compounds.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
@@ -2598,12 +2599,15 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.ResidueGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -2614,12 +2618,12 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
+moved to the primary unit cell after calculation. Default False.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
@@ -2643,9 +2647,6 @@ number of compounds.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
@@ -2658,6 +2659,9 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
@@ -3664,7 +3668,7 @@ Duplicates are <em>not</em> removed.</p>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.bbox">
-<code class="descname">bbox</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bbox" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bbox</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bbox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding box of the selection.</p>
 <p>The lengths A,B,C of the orthorhombic enclosing box are</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">AtomGroup</span><span class="o">.</span><span class="n">bbox</span><span class="p">()</span>
@@ -3685,22 +3689,20 @@ before calculation. [<code class="docutils literal notranslate"><span class="pre
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.2.</span></p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <em>pbc</em> keyword</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.bsphere">
-<code class="descname">bsphere</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bsphere" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bsphere</code><span class="sig-paren">(</span><em>pbc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.bsphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the bounding sphere of the selection.</p>
 <p>The sphere is calculated relative to the
 <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="MDAnalysis.core.groups.SegmentGroup.center_of_geometry"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center</span> <span class="pre">of</span> <span class="pre">geometry</span></code></a>.</p>
@@ -3719,11 +3721,6 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> when set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> allows the <em>pbc</em> flag to be used by default.</p>
-</div>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.7.3.</span></p>
 </div>
@@ -3734,7 +3731,7 @@ calculation. [<code class="docutils literal notranslate"><span class="pre">False
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center">
-<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center</code><span class="sig-paren">(</span><em>weights</em>, <em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center" title="Permalink to this definition">¶</a></dt>
 <dd><p>Weighted center of (compounds of) the group</p>
 <p>Computes the weighted center of <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group.
 Weighted centers per <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, molecule, or
@@ -3749,13 +3746,13 @@ number).</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>weights</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a>) – Weights to be used. Setting <cite>weights=None</cite> is equivalent to passing
 identical weights for all atoms of the group.</li>
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code>, <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, <code class="docutils literal notranslate"><span class="pre">'molecules'</span></code>, or <code class="docutils literal notranslate"><span class="pre">'fragments'</span></code>,
 the center of each compound will be calculated without moving any
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the compounds intact. Instead, the
 resulting position vectors will be moved to the primary unit cell
-after calculation.</li>
+after calculation. Default [<code class="docutils literal notranslate"><span class="pre">False</span></code>].</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the weighted center of all atoms in the group will
 be returned as a single position vector. Else, the weighted centers
 of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a>, <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>, molecule, or fragment
@@ -3800,9 +3797,6 @@ contain molecule information (molnums) or if <cite>compound</cite> is
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sel</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">masses</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>Added <cite>compound</cite> parameter</p>
 </div>
@@ -3812,12 +3806,15 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.center_of_geometry">
-<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
+<code class="descname">center_of_geometry</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.center_of_geometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -3828,12 +3825,12 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
+moved to the primary unit cell after calculation. Default False.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
@@ -3857,9 +3854,6 @@ number of compounds.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
@@ -3872,12 +3866,15 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.centroid">
-<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=None</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">centroid</code><span class="sig-paren">(</span><em>pbc=False</em>, <em>compound='group'</em>, <em>unwrap=False</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.core.groups.SegmentGroup.centroid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Center of geometry of (compounds of) the group.</p>
 <p>Computes the center of geometry (a.k.a. centroid) of
 <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the group. Centers of geometry per
@@ -3888,12 +3885,12 @@ obtained by setting the <cite>compound</cite> parameter accordingly.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)"><em>None</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, move all atoms to the
 primary unit cell before calculation. If <code class="docutils literal notranslate"><span class="pre">True</span></code> and <cite>compound</cite> is
 <code class="docutils literal notranslate"><span class="pre">'segments'</span></code> or <code class="docutils literal notranslate"><span class="pre">'residues'</span></code>, the center of each compound will
 be calculated without moving any <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> to keep the
 compounds intact. Instead, the resulting position vectors will be
-moved to the primary unit cell after calculation.</li>
+moved to the primary unit cell after calculation. Default False.</li>
 <li><strong>compound</strong> (<em>{'group'</em><em>, </em><em>'segments'</em><em>, </em><em>'residues'</em><em>, </em><em>'molecules'</em><em>, </em><em>'fragments'}</em><em>, </em><em>optional</em>) – If <code class="docutils literal notranslate"><span class="pre">'group'</span></code>, the center of geometry of all <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a>
 in the group will be returned as a single position vector. Else, the
 centers of geometry of each <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> or <a class="reference internal" href="#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>
@@ -3917,9 +3914,6 @@ number of compounds.</p>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>If the <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.flags</span></code> flag <em>use_pbc</em> is set to
-<code class="docutils literal notranslate"><span class="pre">True</span></code> then the <cite>pbc</cite> keyword is used by default.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>Added <cite>pbc</cite> keyword</p>
 </div>
@@ -3932,6 +3926,9 @@ compounds</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Added <cite>unwrap</cite> parameter</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Removed flags affecting default behaviour</p>
 </div>
 </dd></dl>
 

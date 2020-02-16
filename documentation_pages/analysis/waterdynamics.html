@@ -350,8 +350,8 @@ rotating/changing direction very fast:</p>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">WaterOrientationalRelaxation</span> <span class="k">as</span> <span class="n">WOR</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
-<span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
-<span class="n">WOR_analysis</span> <span class="o">=</span> <span class="n">WOR</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
+<span class="n">WOR_analysis</span> <span class="o">=</span> <span class="n">WOR</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">WOR_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="c1">#now we print the data ready to plot. The first two columns are WOR_OH vs t plot,</span>
@@ -456,8 +456,8 @@ water molecules, a weak rise mean slow movement of particles:</p>
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">MeanSquareDisplacement</span> <span class="k">as</span> <span class="n">MSD</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
-<span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
-<span class="n">MSD_analysis</span> <span class="o">=</span> <span class="n">MSD</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
+<span class="n">MSD_analysis</span> <span class="o">=</span> <span class="n">MSD</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
 <span class="n">MSD_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="c1">#now we print data ready to graph. The graph</span>
 <span class="c1">#represents MSD vs t</span>
@@ -487,8 +487,8 @@ the zone, on the other hand, a fast decay means a short permanence time:</p>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
-<span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
-<span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">tau_timeseries</span>
 <span class="n">sp_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sp_timeseries</span>
@@ -527,8 +527,8 @@ simulation is not being reloaded into memory for each lipid:</p>
 <span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="n">lipids</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lipid ID: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
 
-    <span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;resname POTASSIUM and around 3.5 (resid </span><span class="si">%d</span><span class="s2"> and name O13 O14) &quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span>
-    <span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;resname POTASSIUM and around 3.5 (resid </span><span class="si">%d</span><span class="s2"> and name O13 O14) &quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span>
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 
     <span class="c1"># Raw SP points for each tau:</span>
@@ -678,7 +678,7 @@ may have failed in some cases.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">WaterOrientationalRelaxation</code><span class="sig-paren">(</span><em>universe</em>, <em>selection</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#WaterOrientationalRelaxation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">WaterOrientationalRelaxation</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#WaterOrientationalRelaxation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Water orientation relaxation analysis</p>
 <p>Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
 Yeh and Chung-Yuan Mou [<a class="reference internal" href="#yeh1999">Yeh1999</a>]. WaterOrientationalRelaxation indicates
@@ -706,6 +706,9 @@ a unit vector along HH, OH or dipole vector.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 <dl class="staticmethod">
 <dt id="MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2">
 <em class="property">static </em><code class="descname">lg2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#WaterOrientationalRelaxation.lg2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2" title="Permalink to this definition">¶</a></dt>
@@ -722,7 +725,7 @@ a unit vector along HH, OH or dipole vector.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.AngularDistribution">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">AngularDistribution</code><span class="sig-paren">(</span><em>universe</em>, <em>selection_str</em>, <em>bins=40</em>, <em>nproc=1</em>, <em>axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#AngularDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.AngularDistribution" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">AngularDistribution</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>bins=40</em>, <em>nproc=1</em>, <em>axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#AngularDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.AngularDistribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Angular distribution function analysis</p>
 <p>The angular distribution function (AD) is defined as the distribution
 probability of the cosine of the <span class="math notranslate nohighlight">\(\theta\)</span> angle formed by the OH
@@ -737,7 +740,7 @@ of lists, see <a class="reference internal" href="#output">Output</a>. The AD is
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</li>
 <li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.17)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></li>
 <li><strong>axis</strong> (<em>{'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em><em> (</em><em>optional</em><em>)</em>) – Axis to create angle with the vector (HH, OH or dipole) and calculate
 cosine theta [‘z’].</li>
@@ -749,6 +752,9 @@ cosine theta [‘z’].</li>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.waterdynamics.AngularDistribution.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#AngularDistribution.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.AngularDistribution.run" title="Permalink to this definition">¶</a></dt>
@@ -759,7 +765,7 @@ cosine theta [‘z’].</li>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">MeanSquareDisplacement</code><span class="sig-paren">(</span><em>universe</em>, <em>selection</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#MeanSquareDisplacement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">MeanSquareDisplacement</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#MeanSquareDisplacement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mean square displacement analysis</p>
 <p>Function to evaluate the Mean Square Displacement (<a class="reference external" href="http://en.wikipedia.org/wiki/Mean_squared_displacement">MSD</a>). The MSD gives the
 average distance that particles travels. The MSD is given by:</p>
@@ -775,7 +781,7 @@ average distance that particles travels. The MSD is given by:</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
 <li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
 <li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
 <li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
@@ -787,6 +793,9 @@ average distance that particles travels. The MSD is given by:</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#MeanSquareDisplacement.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run" title="Permalink to this definition">¶</a></dt>
@@ -797,7 +806,7 @@ average distance that particles travels. The MSD is given by:</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">SurvivalProbability</code><span class="sig-paren">(</span><em>universe</em>, <em>selection</em>, <em>t0=None</em>, <em>tf=None</em>, <em>dtmax=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">SurvivalProbability</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>t0=None</em>, <em>tf=None</em>, <em>dtmax=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
 The SP is given by:</p>
 <div class="math notranslate nohighlight">
@@ -811,7 +820,7 @@ timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number 
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
-<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
 define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resid 10)”. See <a class="reference internal" href="#sp-examples">SP-examples</a>.</li>
 <li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – When True, prints progress and comments to the console.</li>
 </ul>
@@ -821,6 +830,9 @@ define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resi
 </table>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">

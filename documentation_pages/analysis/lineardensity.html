@@ -203,14 +203,14 @@ cartesian axes of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.lineardensity.LinearDensity">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.lineardensity.</code><code class="descname">LinearDensity</code><span class="sig-paren">(</span><em>selection</em>, <em>grouping='atoms'</em>, <em>binsize=0.25</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.lineardensity.</code><code class="descname">LinearDensity</code><span class="sig-paren">(</span><em>select</em>, <em>grouping='atoms'</em>, <em>binsize=0.25</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/lineardensity.html#LinearDensity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.lineardensity.LinearDensity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Linear density profile</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>selection</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</li>
+<li><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – any atomgroup</li>
 <li><strong>grouping</strong> (<em>str {'atoms'</em><em>, </em><em>'residues'</em><em>, </em><em>'segments'</em><em>, </em><em>'fragments'}</em>) – Density profiles will be computed on the center of geometry
 of a selected group of atoms [‘atoms’]</li>
 <li><strong>binsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Bin width in Angstrom used to build linear density
@@ -256,6 +256,9 @@ removed. These should instead be passed to <code class="xref py py-meth docutils
 The <code class="docutils literal notranslate"><span class="pre">save()</span></code> method was also removed, you can use <code class="docutils literal notranslate"><span class="pre">np.savetxt()</span></code> or
 <code class="docutils literal notranslate"><span class="pre">np.save()</span></code> on the <a class="reference internal" href="#MDAnalysis.analysis.lineardensity.LinearDensity.results" title="MDAnalysis.analysis.lineardensity.LinearDensity.results"><code class="xref py py-attr docutils literal notranslate"><span class="pre">LinearDensity.results</span></code></a> dictionary contents
 instead.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 </dd></dl>
 

@@ -393,7 +393,6 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.base</span> <span class="kn">import</span> <span class="n">AuxReader</span>
 <span class="kn">from</span> <span class="nn">..auxiliary.core</span> <span class="kn">import</span> <span class="n">auxreader</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">Namespace</span>
 
 
@@ -1303,8 +1302,8 @@
 <span class="sd">           returned.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">],</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">])</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">],</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1332,7 +1331,7 @@
 <span class="sd">        .. versionadded:: 0.7.5</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">],</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1359,7 +1358,7 @@
 <span class="sd">        .. versionadded:: 0.7.7</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">],</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">],</span> <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">force</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1394,7 +1393,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">],</span> <span class="s1">&#39;ps&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1427,7 +1426,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;length_unit&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">x</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1455,7 +1454,7 @@
 <span class="sd">        .. versionadded:: 0.7.5</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;speed_unit&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;speed&#39;</span><span class="p">,</span> <span class="s1">&#39;Angstrom/ps&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;velocity&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1483,7 +1482,7 @@
 <span class="sd">        .. versionadded:: 0.7.7</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;force_unit&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="s1">&#39;kJ/(mol*Angstrom)&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">force</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1516,7 +1515,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span>
-            <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
+            <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">])</span>
         <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">t</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
@@ -2262,16 +2261,14 @@
 <span class="sd">       functionality, all ReaderBase subclasses must now :func:`super` through this</span>
 <span class="sd">       class.  Added attribute :attr:`_ts_kwargs`, which is created in init.</span>
 <span class="sd">       Provides kwargs to be passed to :class:`Timestep`</span>
-
+<span class="sd">    .. versionchanged:: 1.0</span>
+<span class="sd">       Removed deprecated flags functionality, use convert_units kwarg instead</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">ReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-
-        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
         <span class="n">ts_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -2435,12 +2432,10 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_err</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> only contains a single frame&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SingleFrameReaderBase</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
-        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">=</span> <span class="mi">1</span>

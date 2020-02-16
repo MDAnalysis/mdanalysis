@@ -338,7 +338,6 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
@@ -951,9 +950,7 @@
 <span class="sd">    dt : float (optional)</span>
 <span class="sd">        timestep</span>
 <span class="sd">    convert_units : bool (optional)</span>
-<span class="sd">        ``True``: units are converted to the AMBER base format; ``None``</span>
-<span class="sd">        selects the value of :data:`MDAnalysis.core.flags`</span>
-<span class="sd">        [&#39;convert_lengths&#39;] (see :ref:`flags-label`).</span>
+<span class="sd">        ``True``: units are converted to the AMBER base format; [``True``]</span>
 <span class="sd">    velocities : bool (optional)</span>
 <span class="sd">        Write velocities into the trajectory [``False``]</span>
 <span class="sd">    forces : bool (optional)</span>
@@ -1039,14 +1036,12 @@
                  <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                  <span class="n">dt</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
                  <span class="n">remarks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;NCDFWriter: no atoms in output trajectory&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
-        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="c1"># convert length and time to base units on the fly?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 

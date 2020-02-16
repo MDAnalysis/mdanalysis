@@ -343,18 +343,13 @@ the following <em>operators</em>: <strong>&lt;, &gt;, &lt;=, &gt;=, ==, !=</stro
 <code class="docutils literal notranslate"><span class="pre">prop</span> <span class="pre">z</span> <span class="pre">&gt;=</span> <span class="pre">5.0</span></code> selects all atoms with z coordinate greater than 5.0;
 <code class="docutils literal notranslate"><span class="pre">prop</span> <span class="pre">abs</span> <span class="pre">z</span> <span class="pre">&lt;=</span> <span class="pre">5.0</span></code> selects all atoms within -5.0 &lt;= z &lt;= 5.0.</dd>
 </dl>
-<p>From version 0.6 onwards, some geometric selections (around, sphlayer,
-sphzone, point) can use a k-d tree based, fast search algorithm (about three
-times faster than the previous version). However, it does not take periodicity
-into account. The fast algorithm is the default for <em>around</em>. Periodicity is
-only taken into account with the
-<a class="reference internal" href="lib/distances.html#MDAnalysis.lib.distances.distance_array" title="MDAnalysis.lib.distances.distance_array"><code class="xref py py-func docutils literal notranslate"><span class="pre">distance_array()</span></code></a> functions via a minimum
-image convention (and this only works for rectangular simulation cells). If
-periodic boundary conditions should be taken into account then change the
-default behaviour of MDAnalysis by setting these two flags:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_periodic_selections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="n">MDAnalysis</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;use_KDTree_routines&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-</pre></div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default periodicity <strong>is</strong> taken into account with geometric
+selections, i.e. selections will find atoms that are in different
+periodic images.
+To control this behaviour, use the boolean <code class="docutils literal notranslate"><span class="pre">&quot;periodic&quot;</span></code> keyword
+argument of <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a>.</p>
 </div>
 </div>
 <div class="section" id="similarity-and-connectivity">

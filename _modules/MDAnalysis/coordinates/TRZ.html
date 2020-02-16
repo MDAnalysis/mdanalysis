@@ -270,7 +270,6 @@
 <span class="kn">import</span> <span class="nn">errno</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
-<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">flags</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span>
 <span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
@@ -622,7 +621,7 @@
 
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="s1">&#39;ps&#39;</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">}</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;TRZ&#39;</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;TRZ&#39;</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a TRZWriter</span>
 
 <span class="sd">        Parameters</span>
@@ -635,9 +634,7 @@
 <span class="sd">            title of the trajectory; the title must be 80 characters or</span>
 <span class="sd">            shorter, a longer title raises a ValueError exception.</span>
 <span class="sd">        convert_units : bool (optional)</span>
-<span class="sd">            units are converted to the MDAnalysis base format; ``None`` selects</span>
-<span class="sd">            the value of :data:`MDAnalysis.core.flags` [&#39;convert_lengths&#39;].</span>
-<span class="sd">            (see :ref:`flags-label`)</span>
+<span class="sd">            units are converted to the MDAnalysis base format; [``True``]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
         <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -649,8 +646,6 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">80</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;TRZWriter: &#39;title&#39; must be 80 characters of shorter&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">convert_units</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">convert_units</span> <span class="o">=</span> <span class="n">flags</span><span class="p">[</span><span class="s1">&#39;convert_lengths&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span>

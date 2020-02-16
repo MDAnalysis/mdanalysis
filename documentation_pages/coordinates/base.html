@@ -717,7 +717,7 @@ method can lead to undesirable side effects (such as memory leaks). In this
 case, <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a> should be used.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.ReaderBase">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">ReaderBase</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ReaderBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ReaderBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">ReaderBase</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#ReaderBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.ReaderBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for trajectory readers that extends <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a> with a
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">__del__()</span></code> method.</p>
 <p>New Readers should subclass <a class="reference internal" href="#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ReaderBase</span></code></a> and properly implement a
@@ -738,6 +738,9 @@ methods.</p>
 functionality, all ReaderBase subclasses must now <a class="reference external" href="https://docs.python.org/3/library/functions.html#super" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">super()</span></code></a> through this
 class.  Added attribute <code class="xref py py-attr docutils literal notranslate"><span class="pre">_ts_kwargs</span></code>, which is created in init.
 Provides kwargs to be passed to <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0: </span>Removed deprecated flags functionality, use convert_units kwarg instead</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.ReaderBase.OtherWriter">
@@ -1383,7 +1386,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.SingleFrameReaderBase">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">SingleFrameReaderBase</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=None</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#SingleFrameReaderBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.SingleFrameReaderBase" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.base.</code><code class="descname">SingleFrameReaderBase</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#SingleFrameReaderBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.SingleFrameReaderBase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for Readers that only have one frame.</p>
 <p>To use this base class, define the method <code class="xref py py-meth docutils literal notranslate"><span class="pre">_read_first_frame()</span></code> to
 read from file <cite>self.filename</cite>.  This should populate the attribute
