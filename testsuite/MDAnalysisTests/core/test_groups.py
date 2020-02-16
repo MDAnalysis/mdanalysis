@@ -1239,53 +1239,6 @@ class TestAtomGroup(object):
         assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
 
 
-class TestInstantSelectorDeprecationWarnings(object):
-    @pytest.fixture()
-    def u(self):
-        return make_Universe(("resids", "resnames", "segids", "names"))
-
-    def test_AtomGroup_warn_getitem(self, u):
-        name = u.atoms[0].name
-        with pytest.deprecated_call():
-            u.atoms[name]
-
-    def test_AtomGroup_nowarn_getitem_index(self, u):
-        with no_deprecated_call():
-            u.atoms[0]
-
-    def test_AtomGroup_nowarn_segids_attribute(self, u):
-        with no_deprecated_call():
-            getattr(u.atoms, 'segids')
-
-    def test_AtomGroup_warn_getattr(self, u):
-        name = u.atoms[0].name
-        with pytest.deprecated_call():
-            getattr(u.atoms, name)
-
-    def test_ResidueGroup_warn_getattr_resname(self, u):
-        name = u.residues[0].resname
-        with pytest.deprecated_call():
-            getattr(u.residues, name)
-
-    def test_Segment_warn_getattr_resname(self, u):
-        name = u.residues[0].resname
-        with pytest.deprecated_call():
-            getattr(u.segments[0], name)
-
-    def test_Segment_warn_getattr_rRESNUM(self, u):
-        with pytest.deprecated_call():
-            getattr(u.segments[0], 'r1')
-
-    def test_SegmentGroup_warn_getattr(self, u):
-        name = u.segments[0].segid
-        with pytest.deprecated_call():
-            getattr(u.segments, name)
-
-    def test_SegmentGroup_nowarn_getitem(self, u):
-        with no_deprecated_call():
-            u.segments[0]
-
-
 @pytest.fixture()
 def attr_universe():
     return make_Universe(('names', 'resids', 'segids'))

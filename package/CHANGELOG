@@ -86,6 +86,8 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removed instant selectors on Universe and Group objects (e.g. AtomGroup.C,
+    Segment.r1, Universe.s4AKE).  Use select_atoms instead (Issue #1377)
   * Calling Universe() now raises a TypeError advising you to use Universe.empty.
     Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
   * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
