@@ -21,12 +21,17 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-r"""Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.hole`
+r"""Generation and Analysis of HOLE pore profiles (Deprecated) --- :mod:`MDAnalysis.analysis.hole`
 =================================================================================
 
 :Author: Lukas Stelzl, Oliver Beckstein
 :Year: 2011-2012
 :Copyright: GNU Public License v2
+
+.. warning:
+
+    This module is deprecated and will be removed in version 2.0.
+    Please use :mod:`MDAnalysis.analysis.hole2` instead.
 
 With the help of this module, the :program:`hole` program from the HOLE_ suite
 of tools [Smart1993]_ [Smart1996]_ can be run on frames in an MD trajectory or

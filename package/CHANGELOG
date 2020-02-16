@@ -57,6 +57,9 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
+  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
+    for running HOLE on singular PDB files and class (HoleAnalysis) for 
+    trajectories (PR #2523)
   * Changed selection wildcards to support multiple wildcards (#2436)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
@@ -134,6 +137,7 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
+  * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
 
