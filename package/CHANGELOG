@@ -86,6 +86,8 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Calling Universe() now raises a TypeError advising you to use Universe.empty.
+    Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
   * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
     in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
     (Issue #1463)
@@ -122,6 +124,7 @@ Changes
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
+
 
 09/05/19 IAlibay, richardjgowers
 
