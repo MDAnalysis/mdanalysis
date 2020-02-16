@@ -84,9 +84,8 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
-  * refactored Universe.__init__ with clear arguments. Calling Universe() 
-    now raises a TypeError advising you to use Universe.empty. 
-    Universe.empty() now no longer has n_atoms=0 as default. (Issue #2282)
+  * Calling Universe() now raises a TypeError advising you to use Universe.empty.
+    Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
