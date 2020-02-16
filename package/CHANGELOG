@@ -86,11 +86,13 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Calling Universe() now raises a TypeError advising you to use Universe.empty.
+    Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
   * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
     in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
     (Issue #1463)
   * Standardize `select` keyword by removing `selection`, `atomselection`
-    and `ref_select` (Issue #2461)
+    and `ref_select` (Issue #2461, Issue #2530)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
@@ -115,9 +117,14 @@ Changes
   * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
   * The fasta2select now always assumes that the gap character in a sequence
     is "-" (Issue #2448, PR #2457)
+  * Removed core.flags.  Default behaviour (eg pbc, units) now defaults to
+    the default setting of the flag before removal.  If you were using flags
+    you will now have to supply the flag setting as keyword arguments to
+    function calls. (Issue #782)
 
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
+
 
 09/05/19 IAlibay, richardjgowers
 

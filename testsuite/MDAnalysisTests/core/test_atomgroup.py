@@ -341,12 +341,6 @@ class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
-    def test_flag_convert_length(self):
-        assert mda.core.flags['convert_lengths'] is True, \
-                     "The flag convert_lengths SHOULD be True by default! "\
-                     "(If it is not then this might indicate a race condition"\
-                     " in the testing suite.)"
-
 
 class TestAtomGroupTransformations(object):
 

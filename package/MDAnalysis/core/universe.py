@@ -132,6 +132,125 @@ from .topologyobjects import TopologyObject
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
+
+def _check_file_like(topology):
+    if isstream(topology):
+        if hasattr(topology, 'name'):
+            _name = topology.name
+        else:
+            _name = None
+        return NamedStream(topology, _name)
+    return topology
+
+def _topology_from_file_like(topology_file, topology_format=None,
+                             **kwargs):
+    parser = get_parser_for(topology_file, format=topology_format)
+
+    try:
+        with parser(topology_file) as p:
+            topology = p.parse(**kwargs)
+    except (IOError, OSError) as err:
+        # There are 2 kinds of errors that might be raised here:
+        # one because the file isn't present
+        # or the permissions are bad, second when the parser fails
+        if (err.errno is not None and
+            errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
+            # Runs if the error is propagated due to no permission / file not found
+            six.reraise(*sys.exc_info())
+        else:
+            # Runs when the parser fails
+            raise IOError("Failed to load from the topology file {0}"
+                            " with parser {1}.\n"
+                            "Error: {2}".format(topology_file, parser, err))
+    except (ValueError, NotImplementedError) as err:
+        raise ValueError(
+            "Failed to construct topology from file {0}"
+            " with parser {1}.\n"
+            "Error: {2}".format(topology_file, parser, err))
+    return topology
+
+# py3 TODO
+#def _resolve_formats(*coordinates, format=None, topology_format=None):
+def _resolve_formats(*coordinates, **kwargs):
+    format = kwargs.get('format', None)
+    topology_format = kwargs.get('topology_format', None)
+    if not coordinates:
+        if format is None:
+            format = topology_format
+        elif topology_format is None:
+            topology_format = format
+    return format, topology_format
+
+# py3 TODO
+#def _resolve_coordinates(filename, *coordinates, format=None,
+#                         all_coordinates=False):
+def _resolve_coordinates(*args, **kwargs):
+    filename = args[0]
+    coordinates = args[1:]
+    format = kwargs.get('format', None)
+    all_coordinates = kwargs.get('all_coordinates', False)
+
+    if all_coordinates or not coordinates and filename is not None:
+        try:
+            get_reader_for(filename, format=format)
+        except ValueError:
+            warnings.warn('No coordinate reader found for {}. Skipping '
+                            'this file.'.format(filename))
+        else:
+            coordinates = (filename,) + coordinates
+    return coordinates
+    
+def _generate_from_topology(universe):
+    # generate Universe version of each class
+    # AG, RG, SG, A, R, S
+    universe._class_bases, universe._classes = groups.make_classes()
+
+    # Put Group level stuff from topology into class
+    for attr in universe._topology.attrs:
+        universe._process_attr(attr)
+
+    # Generate atoms, residues and segments.
+    # These are the first such groups generated for this universe, so
+    #  there are no cached merged classes yet. Otherwise those could be
+    #  used directly to get a (very) small speedup. (Only really pays off
+    #  the readability loss if instantiating millions of AtomGroups at
+    #  once.)
+    universe.atoms = AtomGroup(np.arange(universe._topology.n_atoms), universe)
+
+    universe.residues = ResidueGroup(
+            np.arange(universe._topology.n_residues), universe)
+
+    universe.segments = SegmentGroup(
+            np.arange(universe._topology.n_segments), universe)
+
+    # Update Universe namespace with segids
+    # Many segments can have same segid, so group together first
+    #
+    # DEPRECATED in 0.16.2
+    # REMOVE in 1.0
+    # See https://github.com/MDAnalysis/mdanalysis/issues/1377
+    try:
+        # returns dict of segid:segment
+        segids = universe.segments.groupby('segids')
+    except AttributeError:
+        # no segids, don't do this step
+        pass
+    else:
+        for segid, segment in segids.items():
+            if not segid:  # ignore blank segids
+                continue
+
+            # cannot start attribute with number
+            if segid[0].isdigit():
+                # prefix 's' if starts with number
+                name = 's' + segid
+            else:
+                name = segid
+            # if len 1 SegmentGroup, convert to Segment
+            if len(segment) == 1:
+                segment = segment[0]
+            universe._instant_selectors[name] = segment
+
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
 
@@ -171,62 +290,68 @@ class Universe(object):
 
     Parameters
     ----------
-    topology : str, Topology object or stream
+    topology: str, stream, `~MDAnalysis.core.topology.Topology`, `np.ndarray`, None
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
-        MDAnalysis. A "structure" file (PSF, PDB or GRO, in the sense of a
-        topology) is always required. Alternatively, an existing
-        :class:`MDAnalysis.core.topology.Topology` instance may also be given.
-    topology_format
+        MDAnalysis. Alternatively, an existing 
+        :class:`MDAnalysis.core.topology.Topology` instance may be given, 
+        numpy coordinates, or None for an empty universe.
+    coordinates: str, stream, list of str, list of stream (optional)
+        Coordinates can be provided as files of  
+        a single frame (eg a PDB, CRD, or GRO file); a list of single 
+        frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs 
+        XTC/TRR, or generic XYZ format). The coordinates must be 
+        ordered in the same way as the list of atoms in the topology. 
+        See :ref:`Supported coordinate formats` for what can be read 
+        as coordinates. Alternatively, streams can be given.
+    topology_format: str, ``None``, default ``None``
         Provide the file format of the topology file; ``None`` guesses it from
-        the file extension [``None``] Can also pass a subclass of
+        the file extension. Can also pass a subclass of
         :class:`MDAnalysis.topology.base.TopologyReaderBase` to define a custom
         reader to be used on the topology file.
-    format
+    format: str, ``None``, default ``None``
         Provide the file format of the coordinate or trajectory file; ``None``
         guesses it from the file extension. Note that this keyword has no
         effect if a list of file names is supplied because the "chained" reader
         has to guess the file format for each individual list member.
-        [``None``] Can also pass a subclass of
-        :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom
-        reader to be used on the trajectory file.
-    all_coordinates : bool
+        Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader` 
+        to define a custom reader to be used on the trajectory file.
+    all_coordinates: bool, default ``False``
         If set to ``True`` specifies that if more than one filename is passed
         they are all to be used, if possible, as coordinate files (employing a
-        :class:`MDAnalysis.coordinates.chain.ChainReader`). [``False``] The
+        :class:`MDAnalysis.coordinates.chain.ChainReader`). The
         default behavior is to take the first file as a topology and the
         remaining as coordinates. The first argument will always always be used
-        to infer a topology regardless of *all_coordinates*. This parameter is
-        ignored if only one argument is passed.
-    guess_bonds : bool, optional
+        to infer a topology regardless of *all_coordinates*. 
+    guess_bonds: bool, default ``False``
         Once Universe has been loaded, attempt to guess the connectivity
-        between atoms.  This will populate the .bonds .angles and .dihedrals
+        between atoms.  This will populate the .bonds, .angles, and .dihedrals
         attributes of the Universe.
-    vdwradii : dict, optional
+    vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    is_anchor : bool, optional
+    is_anchor: bool, default ``True``
         When unpickling instances of
         :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
         searched for one where to anchor those atoms. Set to ``False`` to
-        prevent this Universe from being considered. [``True``]
-    anchor_name : str, optional
+        prevent this Universe from being considered.
+    anchor_name: str, ``None``, default ``None``
         Setting to other than ``None`` will cause
         :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
         Universe to only unpickle if a compatible Universe with matching
         *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
         still be honored when unpickling.
-    transformations: function or list, optional
+    transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the 
         trajectory upon reading. Transformations can be found in 
         :mod:`MDAnalysis.transformations`, or can be user-created.
-    in_memory
+    in_memory: bool, default ``False``
         After reading in the trajectory, transfer it to an in-memory
         representations, which allow for manipulation of coordinates.
-    in_memory_step
+    in_memory_step: int, default 1
         Only read every nth frame into in-memory representation.
-    continuous : bool, optional
+    continuous: bool, default ``False``
         The `continuous` option is used by the
         :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
         functionality to treat independent trajectory files as a single virtual
@@ -244,116 +369,87 @@ class Universe(object):
     bonds, angles, dihedrals
         master ConnectivityGroups for each connectivity type
 
+    .. versionchanged:: 0.21.0
+        Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
     """
-
+# Py3 TODO
+#    def __init__(self, topology=None, *coordinates, all_coordinates=False,
+#                 format=None, topology_format=None, transformations=None,
+#                 guess_bonds=False, vdwradii=None, anchor_name=None,
+#                 is_anchor=True, in_memory=False, in_memory_step=1,
+#                 **kwargs):
     def __init__(self, *args, **kwargs):
-        # Store the segments for the deprecated instant selector feature.
-        # This attribute has to be defined early to avoid recursion in
-        # __getattr__.
-        self._instant_selectors = {}
-        # hold on to copy of kwargs; used by external libraries that
-        # reinitialize universes
-        self._kwargs = copy.deepcopy(kwargs)
+        topology = args[0] if args else None
+        coordinates = args[1:]
+        all_coordinates = kwargs.pop('all_coordinates', False)
+        format = kwargs.pop('format', None)
+        topology_format = kwargs.pop('topology_format', None)
+        transformations = kwargs.pop('transformations', None)
+        guess_bonds = kwargs.pop('guess_bonds', False)
+        vdwradii = kwargs.pop('vdwradii', None)
+        anchor_name = kwargs.pop('anchor_name', None)
+        is_anchor = kwargs.pop('is_anchor', True)
+        in_memory = kwargs.pop('in_memory', False)
+        in_memory_step = kwargs.pop('in_memory_step', 1)
 
-        # managed attribute holding Reader
-        self._trajectory = None
+        self._instant_selectors = {}  # for storing segments. Deprecated?
+        self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
+        self._anchor_name = anchor_name
+        self.is_anchor = is_anchor
+        self.atoms = None
+        self.residues = None
+        self.segments = None
+        self.filename = None
 
-        if not args:
-            # create an empty universe
-            self._topology = None
-            self.atoms = None
+        self._kwargs = {
+            'transformations': transformations,
+            'guess_bonds': guess_bonds,
+            'vdwradii': vdwradii,
+            'anchor_name': anchor_name,
+            'is_anchor': is_anchor,
+            'in_memory': in_memory,
+            'in_memory_step': in_memory_step,
+            'format': format,
+            'topology_format': topology_format,
+            'all_coordinates': all_coordinates
+        }
+        self._kwargs.update(kwargs)
+
+        format, topology_format = _resolve_formats(*coordinates, format=format,
+                                                   topology_format=topology_format)
+
+        if not isinstance(topology, Topology) and not topology is None:
+            self.filename = _check_file_like(topology)
+            topology = _topology_from_file_like(self.filename, 
+                                                topology_format=topology_format,
+                                                **kwargs)
+
+        if topology is not None:
+            self._topology = topology
         else:
-            topology_format = kwargs.pop('topology_format', None)
-            if len(args) == 1:
-                # special hacks to treat a coordinate file as a coordinate AND
-                # topology file
-                if kwargs.get('format', None) is None:
-                    kwargs['format'] = topology_format
-                elif topology_format is None:
-                    topology_format = kwargs.get('format', None)
+            # point to Universe.empty instead of making empty universe
+            raise TypeError('Topology argument required to make Universe. '
+                            'Try Universe.empty(n_atoms, ...) to construct '
+                            'your own Universe.')
 
-            # if we're given a Topology object, we don't need to parse anything
-            if isinstance(args[0], Topology):
-                self._topology = args[0]
-                self.filename = None
-            else:
-                if isinstance(args[0], NamedStream):
-                    self.filename = args[0]
-                elif isstream(args[0]):
-                    filename = None
-                    if hasattr(args[0], 'name'):
-                        filename = args[0].name
-                    self.filename = NamedStream(args[0], filename)
-                else:
-                    self.filename = args[0]
-                parser = get_parser_for(self.filename, format=topology_format)
-                try:
-                    with parser(self.filename) as p:
-                        self._topology = p.parse(**kwargs)
-                except (IOError, OSError) as err:
-                    # There are 2 kinds of errors that might be raised here:
-                    # one because the file isn't present
-                    # or the permissions are bad, second when the parser fails
-                    if (err.errno is not None and
-                        errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
-                        # Runs if the error is propagated due to no permission / file not found
-                        six.reraise(*sys.exc_info())
-                    else:
-                        # Runs when the parser fails
-                        six.raise_from(IOError(
-                            "Failed to load from the topology file {0}"
-                            " with parser {1}.\n"
-                            "Error: {2}".format(self.filename, parser, err)),
-                            None)
-                except (ValueError, NotImplementedError) as err:
-                    six.raise_from(ValueError(
-                        "Failed to construct topology from file {0}"
-                        " with parser {1}.\n"
-                        "Error: {2}".format(self.filename, parser, err)), None)
-
-            # generate and populate Universe version of each class
-            self._generate_from_topology()
-
-            # Load coordinates
-            if len(args) == 1 or kwargs.get('all_coordinates', False):
-                if self.filename is None:
-                    # If we got the topology as a Topology object, then we
-                    # cannot read coordinates from it.
-                    coordinatefile = args[1:]
-                else:
-                    # Can the topology file also act as coordinate file?
-                    try:
-                        _ = get_reader_for(self.filename,
-                                           format=kwargs.get('format', None))
-                    except ValueError:
-                        coordinatefile = args[1:]
-                    else:
-                        coordinatefile = (self.filename,) + args[1:]
-            else:
-                coordinatefile = args[1:]
-
-            if not coordinatefile:
-                coordinatefile = None
-                
-            self.load_new(coordinatefile, **kwargs)
-            # parse transformations
-            trans_arg = kwargs.pop('transformations', None)
-            if trans_arg:
-                transforms =[trans_arg] if callable(trans_arg) else trans_arg
-                self.trajectory.add_transformations(*transforms)
-
-        # Check for guess_bonds
-        if kwargs.pop('guess_bonds', False):
-            self.atoms.guess_bonds(vdwradii=kwargs.pop('vdwradii', None))
-
-        # None causes generic hash to get used.
-        # We store the name ieven if is_anchor is False in case the user later
-        #  wants to make the universe an anchor.
-        self._anchor_name = kwargs.get('anchor_name', None)
-        # Universes are anchors by default
-        self.is_anchor = kwargs.get('is_anchor', True)
+        _generate_from_topology(self)  # make real atoms, res, segments
         
+        coordinates = _resolve_coordinates(self.filename, *coordinates,
+                                           format=format,
+                                           all_coordinates=all_coordinates)
+        
+        if coordinates:
+            self.load_new(coordinates, format=format, in_memory=in_memory,
+                        in_memory_step=in_memory_step, **kwargs)
+
+        if transformations:
+            if callable(transformations):
+                transformations = [transformations]
+            self._trajectory.add_transformations(*transformations)
+        
+        if guess_bonds:
+            self.atoms.guess_bonds(vdwradii=vdwradii)
 
     def copy(self):
         """Return an independent copy of this Universe"""
@@ -361,59 +457,8 @@ class Universe(object):
         new.trajectory = self.trajectory.copy()
         return new
 
-    def _generate_from_topology(self):
-        # generate Universe version of each class
-        # AG, RG, SG, A, R, S
-        self._class_bases, self._classes = groups.make_classes()
-
-        # Put Group level stuff from topology into class
-        for attr in self._topology.attrs:
-            self._process_attr(attr)
-
-        # Generate atoms, residues and segments.
-        # These are the first such groups generated for this universe, so
-        #  there are no cached merged classes yet. Otherwise those could be
-        #  used directly to get a (very) small speedup. (Only really pays off
-        #  the readability loss if instantiating millions of AtomGroups at
-        #  once.)
-        self.atoms = AtomGroup(np.arange(self._topology.n_atoms), self)
-
-        self.residues = ResidueGroup(
-                np.arange(self._topology.n_residues), self)
-
-        self.segments = SegmentGroup(
-                np.arange(self._topology.n_segments), self)
-
-        # Update Universe namespace with segids
-        # Many segments can have same segid, so group together first
-        #
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        # See https://github.com/MDAnalysis/mdanalysis/issues/1377
-        try:
-            # returns dict of segid:segment
-            segids = self.segments.groupby('segids')
-        except AttributeError:
-            # no segids, don't do this step
-            pass
-        else:
-            for segid, segment in segids.items():
-                if not segid:  # ignore blank segids
-                    continue
-
-                # cannot start attribute with number
-                if segid[0].isdigit():
-                    # prefix 's' if starts with number
-                    name = 's' + segid
-                else:
-                    name = segid
-                # if len 1 SegmentGroup, convert to Segment
-                if len(segment) == 1:
-                    segment = segment[0]
-                self._instant_selectors[name] = segment
-
     @classmethod
-    def empty(cls, n_atoms, n_residues=None, n_segments=None,
+    def empty(cls, n_atoms, n_residues=1, n_segments=1,
               atom_resindex=None, residue_segindex=None,
               trajectory=False, velocities=False, forces=False):
         """Create a blank Universe
@@ -427,24 +472,24 @@ class Universe(object):
 
         Parameters
         ----------
-        n_atoms : int
+        n_atoms: int
           number of Atoms in the Universe
-        n_residues : int, optional
+        n_residues: int, default 1
           number of Residues in the Universe, defaults to 1
-        n_segments : int, optional
+        n_segments: int, default 1
           number of Segments in the Universe, defaults to 1
-        atom_resindex : array like, optional
+        atom_resindex: array like, optional
           mapping of atoms to residues, e.g. with 6 atoms,
           `atom_resindex=[0, 0, 1, 1, 2, 2]` would put 2 atoms
           into each of 3 residues.
-        residue_segindex : array like, optional
+        residue_segindex: array like, optional
           mapping of residues to segments
-        trajectory : bool, optional
+        trajectory: bool, optional
           if True, attaches a :class:`MDAnalysis.coordinates.memory.MemoryReader`
           allowing coordinates to be set and written.  Default is False
-        velocities : bool, optional
+        velocities: bool, optional
           include velocities in the :class:`MDAnalysis.coordinates.memory.MemoryReader`
-        forces : bool, optional
+        forces: bool, optional
           include forces in the :class:`MDAnalysis.coordinates.memory.MemoryReader`
 
         Returns
@@ -472,18 +517,15 @@ class Universe(object):
             n_residues = 0
             n_segments = 0
             
-        if n_residues is None and n_atoms:
-            n_residues = 1
-        elif atom_resindex is None:
+        if atom_resindex is None:
             warnings.warn(
-                'Multiple residues specified but no atom_resindex given.  '
+                'Residues specified but no atom_resindex given.  '
                 'All atoms will be placed in first Residue.',
                 UserWarning)
-        if n_segments is None and n_atoms:
-            n_segments = 1
-        elif residue_segindex is None:
+
+        if residue_segindex is None:
             warnings.warn(
-                'Multiple segments specified but no segment_resindex given.  '
+                'Segments specified but no segment_resindex given.  '
                 'All residues will be placed in first Segment',
                 UserWarning)
 
@@ -535,7 +577,8 @@ class Universe(object):
         # It is also cleaner than a weakref.
         return self
 
-    def load_new(self, filename, format=None, in_memory=False, **kwargs):
+    def load_new(self, filename, format=None, in_memory=False, 
+                 in_memory_step=1, **kwargs):
         """Load coordinates from `filename`.
 
         The file format of `filename` is autodetected from the file name suffix
@@ -546,10 +589,10 @@ class Universe(object):
 
         Parameters
         ----------
-        filename : str or list
+        filename: str or list
             the coordinate file (single frame or trajectory) *or* a list of
             filenames, which are read one after another.
-        format : str or list or object (optional)
+        format: str or list or object (optional)
             provide the file format of the coordinate or trajectory file;
             ``None`` guesses it from the file extension. Note that this
             keyword has no effect if a list of file names is supplied because
@@ -557,19 +600,19 @@ class Universe(object):
             individual list member [``None``]. Can also pass a subclass of
             :class:`MDAnalysis.coordinates.base.ProtoReader` to define a custom
             reader to be used on the trajectory file.
-        in_memory : bool (optional)
+        in_memory: bool (optional)
             Directly load trajectory into memory with the
             :class:`~MDAnalysis.coordinates.memory.MemoryReader`
 
             .. versionadded:: 0.16.0
 
-        **kwargs : dict
+        **kwargs: dict
             Other kwargs are passed to the trajectory reader (only for
             advanced use)
 
         Returns
         -------
-        universe : Universe
+        universe: Universe
 
         Raises
         ------
@@ -621,7 +664,7 @@ class Universe(object):
                                  trj_n_atoms=self.trajectory.n_atoms))
 
         if in_memory:
-            self.transfer_to_memory(step=kwargs.get("in_memory_step", 1))
+            self.transfer_to_memory(step=in_memory_step)
 
         return self
 
@@ -639,9 +682,9 @@ class Universe(object):
             start reading from the nth frame.
         stop: int, optional
             read upto and excluding the nth frame.
-        step : int, optional
+        step: int, optional
             Read in every nth frame. [1]
-        verbose : bool, optional
+        verbose: bool, optional
             Will print the progress of loading trajectory to memory, if
             set to True. Default value is False.
 
@@ -728,15 +771,6 @@ class Universe(object):
 
     @property
     def anchor_name(self):
-        return self._gen_anchor_hash()
-
-    @anchor_name.setter
-    def anchor_name(self, name):
-        self.remove_anchor()  # clear any old anchor
-        self._anchor_name = str(name) if not name is None else name
-        self.make_anchor()  # add anchor again
-
-    def _gen_anchor_hash(self):
         # hash used for anchoring.
         # Try and use anchor_name, else use (and store) uuid
         if self._anchor_name is not None:
@@ -749,10 +783,18 @@ class Universe(object):
                 self._anchor_uuid = uuid.uuid4()
                 return self._anchor_uuid
 
+    @anchor_name.setter
+    def anchor_name(self, name):
+        self.remove_anchor()  # clear any old anchor
+        self._anchor_name = str(name) if not name is None else name
+        self.make_anchor()  # add anchor again
+
+
+
     @property
     def is_anchor(self):
         """Is this Universe an anchoring for unpickling AtomGroups"""
-        return self._gen_anchor_hash() in _ANCHOR_UNIVERSES
+        return self.anchor_name in _ANCHOR_UNIVERSES
 
     @is_anchor.setter
     def is_anchor(self, new):
@@ -763,10 +805,10 @@ class Universe(object):
 
     def remove_anchor(self):
         """Remove this Universe from the possible anchor list for unpickling"""
-        _ANCHOR_UNIVERSES.pop(self._gen_anchor_hash(), None)
+        _ANCHOR_UNIVERSES.pop(self.anchor_name, None)
 
     def make_anchor(self):
-        _ANCHOR_UNIVERSES[self._gen_anchor_hash()] = self
+        _ANCHOR_UNIVERSES[self.anchor_name] = self
 
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
@@ -843,10 +885,10 @@ class Universe(object):
 
         Parameters
         ----------
-        topologyattr : TopologyAttr or string
+        topologyattr: TopologyAttr or string
           Either a MDAnalysis TopologyAttr object or the name of a possible
           topology attribute.
-        values : np.ndarray, optional
+        values: np.ndarray, optional
           If initiating an attribute from a string, the initial values to
           use.  If not supplied, the new TopologyAttribute will have empty
           or zero values.
@@ -927,10 +969,10 @@ class Universe(object):
 
         Parameters
         ----------
-        segment : MDAnalysis.Segment
+        segment: MDAnalysis.Segment
           If there are multiple segments, then the Segment that the new
           Residue will belong in must be specified.
-        attrs : dict
+        attrs: dict
           For each Residue attribute, the value for the new Residue must be
           specified
 
@@ -973,7 +1015,7 @@ class Universe(object):
 
         Parameters
         ----------
-        attrs : dict
+        attrs: dict
             For each Segment attribute as a key, give the value in the new
             Segment
 
@@ -1359,12 +1401,12 @@ def Merge(*args):
 
     Parameters
     ----------
-    *args : :class:`~MDAnalysis.core.groups.AtomGroup`
+    *args: :class:`~MDAnalysis.core.groups.AtomGroup`
         One or more AtomGroups.
 
     Returns
     -------
-    universe : :class:`Universe`
+    universe: :class:`Universe`
 
     Raises
     ------

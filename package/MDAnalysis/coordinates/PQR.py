@@ -105,7 +105,6 @@ import itertools
 import numpy as np
 import warnings
 
-from ..core import flags
 from ..lib import util
 from . import base
 
@@ -197,23 +196,21 @@ class PQRWriter(base.WriterBase):
                 " {pos[2]:-8.3f} {charge:-7.4f} {radius:6.4f}\n")
     fmt_remark = "REMARK   {0} {1}\n"
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         """Set up a PQRWriter with full whitespace separation.
 
         Parameters
         ----------
         filename : str
              output filename
+        convert_units: bool (optional)
+            units are converted to the MDAnalysis base format; [``True``]
         remarks : str (optional)
              remark lines (list of strings) or single string to be added to the
              top of the PQR file
         """
         self.filename = util.filename(filename, ext='pqr')
-
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
-
         self.remarks = kwargs.pop('remarks', "PQR file written by MDAnalysis")
 
     def write(self, selection, frame=None):
