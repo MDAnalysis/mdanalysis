@@ -41,33 +41,6 @@ construct a ``Universe`` from existing
 :func:`Merge` function.
 
 
-Working with Universes
-======================
-
-
-Quick segid selection
----------------------
-
-.. deprecated:: 0.16.2
-   Instant selectors will be removed in the 1.0 release.  See issue `#1377
-   <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more details.
-
-
-If the loaded topology provided segids, then these are made accessible
-as attributes of the Universe.  If the segid starts with a number such
-as '4AKE', the letter 's' will be prepended to the segid.
-For example::
-
-   import MDAnalysis as mda
-   from MDAnalysisTests.datafiles import PSF, DCD
-
-   u = mda.Universe(PSF, DCD)
-   u.select_atoms('segid 4AKE')  # selects all segments with segid 4AKE
-
-If only a single segment has that segid then a Segment object will
-be returned, otherwise a SegmentGroup will be returned.
-
-
 Classes
 =======
 
@@ -223,33 +196,6 @@ def _generate_from_topology(universe):
     universe.segments = SegmentGroup(
             np.arange(universe._topology.n_segments), universe)
 
-    # Update Universe namespace with segids
-    # Many segments can have same segid, so group together first
-    #
-    # DEPRECATED in 0.16.2
-    # REMOVE in 1.0
-    # See https://github.com/MDAnalysis/mdanalysis/issues/1377
-    try:
-        # returns dict of segid:segment
-        segids = universe.segments.groupby('segids')
-    except AttributeError:
-        # no segids, don't do this step
-        pass
-    else:
-        for segid, segment in segids.items():
-            if not segid:  # ignore blank segids
-                continue
-
-            # cannot start attribute with number
-            if segid[0].isdigit():
-                # prefix 's' if starts with number
-                name = 's' + segid
-            else:
-                name = segid
-            # if len 1 SegmentGroup, convert to Segment
-            if len(segment) == 1:
-                segment = segment[0]
-            universe._instant_selectors[name] = segment
 
 class Universe(object):
     """The MDAnalysis Universe contains all the information describing the system.
@@ -369,8 +315,9 @@ class Universe(object):
     bonds, angles, dihedrals
         master ConnectivityGroups for each connectivity type
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
+        Removed instant selectors.
     """
 # Py3 TODO
 #    def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -392,7 +339,6 @@ class Universe(object):
         in_memory = kwargs.pop('in_memory', False)
         in_memory_step = kwargs.pop('in_memory_step', 1)
 
-        self._instant_selectors = {}  # for storing segments. Deprecated?
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
         self._anchor_name = anchor_name
@@ -548,25 +494,6 @@ class Universe(object):
                 dimensions=dims, velocities=vels, forces=forces)
 
         return u
-
-    def __getattr__(self, key):
-        # This implements the instant selector of segments from a Universe.
-        # It is implemented as __getattr__ so a deprecation warning can be
-        # issued when the feature is used. Instant selectors are deprecated
-        # since version 0.16.2 and are tareted to be deleted in version 1.0.
-        # self._instant_selectors is populated in self._process_attr and
-        # created at the beginning of __init__.
-        try:
-            segment = self._instant_selectors[key]
-        except KeyError:
-            six.raise_from(AttributeError('No attribute "{}".'.format(key)), None)
-        else:
-            warnings.warn("Instant selector Universe.<segid> "
-                          "is deprecated and will be removed in 1.0. "
-                          "Use SegmentGroup[SegmentGroup.segids == '<segid>'] "
-                          "instead.",
-                          DeprecationWarning)
-            return segment
 
     @property
     def universe(self):
@@ -788,8 +715,6 @@ class Universe(object):
         self.remove_anchor()  # clear any old anchor
         self._anchor_name = str(name) if not name is None else name
         self.make_anchor()  # add anchor again
-
-
 
     @property
     def is_anchor(self):
@@ -1328,7 +1253,6 @@ class Universe(object):
         .. versionadded:: 0.21.0
         """
         self._delete_topology_objects('impropers', values)
-
 
     # TODO: Maybe put this as a Bond attribute transplant
     # Problems: Can we transplant onto Universe?
