@@ -93,7 +93,6 @@ import logging
 logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
 
 from . import base
-from ..core import flags
 from ..lib import util
 from ..lib.util import cached
 from ..exceptions import NoDataError
@@ -118,7 +117,7 @@ class XYZWriter(base.WriterBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=None,
+    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=True,
                  remark=None, **kwargs):
         """Initialize the XYZ trajectory writer
 
@@ -142,16 +141,17 @@ class XYZWriter(base.WriterBase):
             information. If you write a :class:`AtomGroup` with
             :meth:`XYZWriter.write` then atom information is taken
             at each step and *atoms* is ignored.
+        convert_units : bool (optional)
+            convert quantities to default MDAnalysis units of Angstrom upon
+            writing  [``True``]
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version
         """
         self.filename = filename
         self.n_atoms = n_atoms
-        if convert_units is not None:
-            self.convert_units = convert_units
-        else:
-            self.convert_units = flags['convert_lengths']
+        self.convert_units = convert_units
+
         self.atomnames = self._get_atoms_elements_or_names(atoms)
         default_remark = "Written by {0} (release {1})".format(
             self.__class__.__name__, __version__)

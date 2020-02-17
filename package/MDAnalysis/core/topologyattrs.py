@@ -47,7 +47,6 @@ import warnings
 
 from numpy.lib.utils import deprecate
 
-from . import flags
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
 from ..lib import transformations, mdamath
@@ -772,7 +771,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center_of_mass(group, pbc=None, compound='group', unwrap=False):
+    def center_of_mass(group, pbc=False, compound='group', unwrap=False):
         """Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
@@ -818,8 +817,6 @@ class Masses(AtomAttr):
         ----
         * This method can only be accessed if the underlying topology has
           information about atomic masses.
-        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-          ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
@@ -872,7 +869,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def moment_of_inertia(group, **kwargs):
+    def moment_of_inertia(group, pbc=False, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
 
@@ -882,18 +879,12 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         unwrap = kwargs.pop('unwrap', False)
         compound = kwargs.pop('compound', 'group')
 
@@ -938,7 +929,7 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
-    def radius_of_gyration(group, **kwargs):
+    def radius_of_gyration(group, pbc=False, **kwargs):
         """Radius of gyration.
 
         Parameters
@@ -947,17 +938,11 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc)
@@ -975,7 +960,7 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
-    def shape_parameter(group, **kwargs):
+    def shape_parameter(group, pbc=False, **kwargs):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -985,11 +970,6 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
-
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
 
 
         References
@@ -1006,7 +986,6 @@ class Masses(AtomAttr):
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc)
@@ -1030,7 +1009,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def asphericity(group, pbc=None, unwrap=None, compound='group'):
+    def asphericity(group, pbc=False, unwrap=None, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1039,17 +1018,11 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. If ``None`` use value defined in
-            MDAnalysis.core.flags['use_pbc']
+            calculation. [``False``]
         unwrap : bool, optional
             If ``True``, compounds will be unwrapped before computing their centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             Which type of component to keep together during unwrapping.
-
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
 
 
         References
@@ -1062,15 +1035,12 @@ class Masses(AtomAttr):
            <https://doi.org/10.1021/jp037128y>`_
 
 
-
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
 
         """
         atomgroup = group.atoms
-        if pbc is None:
-            pbc = flags['use_pbc']
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
@@ -1100,7 +1070,7 @@ class Masses(AtomAttr):
         ('asphericity', asphericity))
 
     @warn_if_not_unique
-    def principal_axes(group, pbc=None):
+    def principal_axes(group, pbc=False):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -1113,7 +1083,7 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. If ``None`` use value defined in setup flags.
+            calculation. [``False``]
 
         Returns
         -------
@@ -1121,18 +1091,11 @@ class Masses(AtomAttr):
             3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
             ``v[2]`` as third eigenvector.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
         atomgroup = group.atoms
-        if pbc is None:
-            pbc = flags['use_pbc']
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort

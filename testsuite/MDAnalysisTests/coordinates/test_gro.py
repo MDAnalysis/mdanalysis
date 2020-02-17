@@ -55,11 +55,6 @@ class TestGROReaderOld(RefAdK):
     def universe(self):
         return mda.Universe(GRO)
 
-    def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be True "
-                     "by default")
-
     def test_load_gro(self, universe):
         U = universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
@@ -178,11 +173,6 @@ class TestGROReader(BaseReaderTest):
     @pytest.fixture(scope='class')
     def ref():
         return GROReference()
-
-    def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be True "
-                     "by default")
 
     def test_time(self, ref, reader):
         u = mda.Universe(ref.topology, ref.trajectory)

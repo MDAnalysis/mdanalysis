@@ -163,7 +163,6 @@ import errno
 import logging
 
 import MDAnalysis
-from ..core import flags
 from . import base
 from ..lib import util
 
@@ -776,9 +775,7 @@ class NCDFWriter(base.WriterBase):
     dt : float (optional)
         timestep
     convert_units : bool (optional)
-        ``True``: units are converted to the AMBER base format; ``None``
-        selects the value of :data:`MDAnalysis.core.flags`
-        ['convert_lengths'] (see :ref:`flags-label`).
+        ``True``: units are converted to the AMBER base format; [``True``]
     velocities : bool (optional)
         Write velocities into the trajectory [``False``]
     forces : bool (optional)
@@ -864,14 +861,12 @@ class NCDFWriter(base.WriterBase):
                  step=1,
                  dt=1.0,
                  remarks=None,
-                 convert_units=None,
+                 convert_units=True,
                  **kwargs):
         self.filename = filename
         if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
         self.n_atoms = n_atoms
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         # convert length and time to base units on the fly?
         self.convert_units = convert_units
 
