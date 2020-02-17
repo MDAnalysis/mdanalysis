@@ -370,7 +370,10 @@ class ChainReader(base.ProtoReader):
 
     @staticmethod
     def _format_hint(thing):
-        """Can ChainReader read the object *thing*"""
+        """Can ChainReader read the object *thing*
+
+        .. versionadded:: 1.0.0
+        """
         return (not isinstance(thing, np.ndarray) and
                 util.iterable(thing) and
                 not util.isstream(thing))

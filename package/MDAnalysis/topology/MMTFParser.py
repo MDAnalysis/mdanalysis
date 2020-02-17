@@ -154,6 +154,10 @@ class MMTFParser(base.TopologyReaderBase):
 
     @staticmethod
     def _format_hint(thing):
+        """Can parser read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
         return isinstance(thing, mmtf.MMTFDecoder)
 
     @due.dcite(

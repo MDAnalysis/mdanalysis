@@ -1362,6 +1362,11 @@ class IOBase(object):
 
 
 class _Readermeta(type):
+    """Automatic Reader registration metaclass
+
+    .. versionchanged:: 1.0.0
+       Added _format_hint functionality
+    """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)

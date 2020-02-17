@@ -89,9 +89,14 @@ class ParmEdReader(base.SingleFrameReaderBase):
 
     @staticmethod
     def _format_hint(thing):
+        """Can this reader read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
         try:
             import parmed as pmd
         except ImportError:
+            # if we can't import parmed, it's probably not parmed
             return False
         else:
             return isinstance(thing, pmd.Structure)

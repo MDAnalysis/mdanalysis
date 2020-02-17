@@ -52,6 +52,31 @@ from ..lib import util
 
 
 class _Topologymeta(type):
+    """Internal: Topology Parser registration voodoo
+
+    When classes which inherit from TopologyReaderBase are *defined*
+    this metaclass makes it known to MDAnalysis.  The optional `format`
+    attribute and `_format_hint` staticmethod are read:
+     - `format` defines the file extension this Parser targets.
+     - `_format_hint` defines a function which returns a boolean if the
+       Parser can process a particular object
+
+    Eg::
+
+      class Thing(TopologyReaderBase):
+          format = ['foo', 'bar']
+
+          @staticmethod
+          _format_hint(thing):
+              try:
+                  import WeirdPackage
+              except ImportError:
+                  return False
+              return isinstance(thing, Weirdpackage.Thing)
+
+    .. versionchanged:: 1.0.0
+       Added format_hint functionality
+    """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:

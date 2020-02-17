@@ -75,6 +75,8 @@ def get_reader_for(filename, format=None):
     :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned and `format`
     passed to the :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
+    .. versionchanged:: 1.0.0
+       Added format_hint functionalityx
     """
     # check if format is actually a Reader
     if inspect.isclass(format):
@@ -224,6 +226,8 @@ def get_parser_for(filename, format=None):
     ValueError
         If no appropriate parser could be found.
 
+    .. versionchanged:: 1.0.0
+       Added format_hint functionality
     """
     if inspect.isclass(format):
         return format
