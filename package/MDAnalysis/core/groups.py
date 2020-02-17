@@ -2211,7 +2211,7 @@ class AtomGroup(GroupBase):
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0
        release.
-    .. versionchanged:: 1.0
+    .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms('name ...') to select
        atoms by name.
     """
