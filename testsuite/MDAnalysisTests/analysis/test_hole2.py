@@ -72,7 +72,7 @@ class TestHole(object):
             filename = PDB_HOLE
             hole2.hole(filename, random_seed=31415, infile='hole.inp')
 
-        infile = tmpdir.join('hole.inp')
+        infile = str(tmpdir.join('hole.inp'))
         with open(infile, 'r') as f:
             contents = f.read()
 
@@ -98,7 +98,7 @@ class TestHole(object):
             hole2.hole(filename, random_seed=31415,
                        infile='hole.inp', cpoint=cog)
 
-        infile = tmpdir.join('hole.inp')
+        infile = str(tmpdir.join('hole.inp'))
         with open(infile, 'r') as f:
             contents = f.read()
 
