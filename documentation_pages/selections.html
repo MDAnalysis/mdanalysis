@@ -108,14 +108,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#dynamic-selections">3.2. Dynamic selections</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#instant-selectors">3.3. Instant selectors</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#segment-selector">3.3.1. Segment selector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#resid-selector">3.3.2. Resid selector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#residue-name-selector">3.3.3. Residue name selector</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#atom-name-selector">3.3.4. Atom name selector</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#ordered-selections">3.4. Ordered selections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ordered-selections">3.3. Ordered selections</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
@@ -469,152 +462,8 @@ across frames:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="instant-selectors">
-<span id="instance-selectors"></span><h2>3.3. Instant selectors<a class="headerlink" href="#instant-selectors" title="Permalink to this headline">¶</a></h2>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> will be removed in the 1.0 release in order to
-streamline the MDAnalysis user interface. They do not seem to be
-widely used anymore, can produce cryptic error messages, and are
-not considered “Pythonic” (and therefore not very intuitive for new
-users). See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/1377">#1377</a> for more
-details.</p>
-</div>
-<p>For interactive work it becomes rather tedious to type common selection strings
-repeatedly. MDAnalysis automatically generates a number of <em>instant selectors</em>
-as attributes of the <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> and number of
-other levels of the structural hierarchy, namely for
-<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>,
-<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a>,
-<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>,
-<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> and
-<a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a>.</p>
-<div class="section" id="segment-selector">
-<h3>3.3.1. Segment selector<a class="headerlink" href="#segment-selector" title="Permalink to this headline">¶</a></h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span>Use <code class="docutils literal notranslate"><span class="pre">SegmentGroup[SegmentGroup.segids</span> <span class="pre">==</span> <span class="pre">'&lt;name&gt;']</span></code> instead. Note that this
-<em>always</em> returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code> and <em>never</em> a <code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code>
-(unlike the instant selector).</p>
-</div>
-<ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">universe.&lt;segid&gt;</span></code> or <code class="docutils literal notranslate"><span class="pre">universe.s&lt;segid&gt;</span></code> (if <em>&lt;segid&gt;</em> starts with a
-number)</p>
-</li>
-<li><p class="first">returns a <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a></p>
-</li>
-<li><p class="first">works for <a class="reference internal" href="core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> and <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a></p>
-</li>
-<li><dl class="first docutils">
-<dt>example</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span>
-<span class="go">&lt;Segment &#39;4AKE&#39;&gt;</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
-<div class="section" id="resid-selector">
-<h3>3.3.2. Resid selector<a class="headerlink" href="#resid-selector" title="Permalink to this headline">¶</a></h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span>Use <code class="docutils literal notranslate"><span class="pre">Segment.residues[N-1]</span></code> instead.</p>
-</div>
-<ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">seg.r&lt;N&gt;</span></code> selects residue with number <code class="docutils literal notranslate"><span class="pre">&lt;N&gt;</span></code></p>
-</li>
-<li><p class="first">returns a <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Residue" title="MDAnalysis.core.groups.Residue"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a></p>
-</li>
-<li><p class="first">works for <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> and <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a></p>
-</li>
-<li><dl class="first docutils">
-<dt>example</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span> <span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">r100</span>
-<span class="go">&lt;Residue &#39;GLY&#39;, 100&gt;</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
-<div class="section" id="residue-name-selector">
-<h3>3.3.3. Residue name selector<a class="headerlink" href="#residue-name-selector" title="Permalink to this headline">¶</a></h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span>Use <code class="docutils literal notranslate"><span class="pre">ResidueGroup[ResidueGroup.resnames</span> <span class="pre">==</span> <span class="pre">'&lt;name&gt;']</span></code> or
-<code class="docutils literal notranslate"><span class="pre">Segment.residues[Segment.residues</span> <span class="pre">==</span> <span class="pre">'&lt;name&gt;']</span></code> instead. Note that this
-<em>always</em> returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code> and <em>never</em> a <code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code>
-(unlike the instant selector).</p>
-</div>
-<ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">seg.&lt;resname&gt;</span></code> selects residues with residue name <code class="docutils literal notranslate"><span class="pre">&lt;resname&gt;</span></code></p>
-</li>
-<li><p class="first">returns a <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a></p>
-</li>
-<li><p class="first">works for <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> and <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a></p>
-</li>
-<li><dl class="first docutils">
-<dt>examples</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">MET</span>
-<span class="go">&lt;ResidueGroup [&lt;Residue &#39;MET&#39;, 1&gt;, &lt;Residue &#39;MET&#39;, 21&gt;, &lt;Residue &#39;MET&#39;, 34&gt;, &lt;Residue &#39;MET&#39;, 53&gt;, &lt;Residue &#39;MET&#39;, 96&gt;, &lt;Residue &#39;MET&#39;, 174&gt;]&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">CYS</span>
-<span class="go">&lt;ResidueGroup [&lt;Residue &#39;CYS&#39;, 77&gt;]&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">TRP</span>
-<span class="go">NoDataError: No atoms defined for AtomGroup</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-<li><p class="first">The result is always a <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>; if no
-residues can be found then a <code class="xref py py-exc docutils literal notranslate"><span class="pre">MDAnalysis.NoDataError</span></code> is raised.</p>
-</li>
-</ul>
-</div>
-<div class="section" id="atom-name-selector">
-<h3>3.3.4. Atom name selector<a class="headerlink" href="#atom-name-selector" title="Permalink to this headline">¶</a></h3>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span>Use <code class="docutils literal notranslate"><span class="pre">AtomGroup.select_atoms('name</span> <span class="pre">&lt;name&gt;')</span></code> instead. Note that this
-<em>always</em> returns an <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> and <em>never</em> an <code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code> (unlike
-the instant selector).</p>
-</div>
-<ul>
-<li><p class="first"><code class="docutils literal notranslate"><span class="pre">g.&lt;atomname&gt;</span></code> selects a single atom or a group of atoms with name
-<code class="docutils literal notranslate"><span class="pre">&lt;atomname&gt;</span></code></p>
-</li>
-<li><dl class="first docutils">
-<dt>returns</dt>
-<dd><ul class="first last simple">
-<li>a <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> if only a single atom was found,</li>
-<li>a <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> if more than one atom was
-found, or</li>
-<li>raises a <code class="xref py py-exc docutils literal notranslate"><span class="pre">MDAnalysis.SelectionError</span></code> if no atom was found.</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p class="first">works for any group derived from <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
-(i.e. all the ones mentioned above)</p>
-</li>
-<li><dl class="first docutils">
-<dt>examples</dt>
-<dd><div class="first last highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">CG</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="o">&lt;</span><span class="n">AtomGroup</span> <span class="k">with</span> <span class="mi">125</span> <span class="n">atoms</span><span class="o">&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">CG</span>
-<span class="go">&lt;AtomGroup with 125 atoms&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">r100</span><span class="o">.</span><span class="n">CA</span>
-<span class="go">&lt; Atom 1516: name &#39;CA&#39; of type &#39;23&#39; of resname &#39;GLY&#39;, resid 100 and segid &#39;4AKE&#39;&gt;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">s4AKE</span><span class="o">.</span><span class="n">r100</span><span class="o">.</span><span class="n">CB</span>
-<span class="go">SelectionError: No atom in residue GLY with name CB</span>
-</pre></div>
-</div>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
-</div>
 <div class="section" id="ordered-selections">
-<span id="ordered-selections-label"></span><h2>3.4. Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this headline">¶</a></h2>
+<span id="ordered-selections-label"></span><h2>3.3. Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> sorts the atoms
 in the <a class="reference internal" href="core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> by atom index before
 returning them (this is to eliminate possible duplicates in the

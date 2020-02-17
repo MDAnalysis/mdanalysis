@@ -220,7 +220,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">numpy.lib.utils</span> <span class="kn">import</span> <span class="n">deprecate</span>
 
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
                         <span class="n">unique_int_1d</span><span class="p">)</span>
@@ -655,63 +654,6 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">getattr__</span><span class="p">(</span><span class="n">atomgroup</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">_get_named_atom</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">selection</span><span class="o">.</span><span class="n">SelectionError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">atomgroup</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">name</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_get_named_atom</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get all atoms with name *name* in the current AtomGroup.</span>
-
-<span class="sd">        For more than one atom it returns a list of :class:`Atom`</span>
-<span class="sd">        instance. A single :class:`Atom` is returned just as such. If</span>
-<span class="sd">        no atoms are found, a :exc:`SelectionError` is raised.</span>
-
-<span class="sd">        .. versionadded:: 0.9.2</span>
-
-<span class="sd">        .. deprecated:: 0.16.2</span>
-<span class="sd">           *Instant selectors* will be removed in the 1.0 release.</span>
-<span class="sd">           Use ``AtomGroup.select_atoms(&#39;name &lt;name&gt;&#39;)`` instead.</span>
-<span class="sd">           See issue `#1377</span>
-<span class="sd">           &lt;https://github.com/MDAnalysis/mdanalysis/issues/1377&gt;`_ for</span>
-<span class="sd">           more details.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># There can be more than one atom with the same name</span>
-        <span class="n">atomlist</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">unique</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">name</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">selection</span><span class="o">.</span><span class="n">SelectionError</span><span class="p">(</span>
-                <span class="s2">&quot;No atoms with name &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">atomlist</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># XXX: keep this, makes more sense for names</span>
-            <span class="n">atomlist</span> <span class="o">=</span> <span class="n">atomlist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Instant selector AtomGroup[&#39;&lt;name&gt;&#39;] or AtomGroup.&lt;name&gt; &quot;</span>
-                      <span class="s2">&quot;is deprecated and will be removed in 1.0. &quot;</span>
-                      <span class="s2">&quot;Use AtomGroup.select_atoms(&#39;name &lt;name&gt;&#39;) instead.&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">atomlist</span>
-
-    <span class="c1"># AtomGroup already has a getattr</span>
-<span class="c1">#    transplants[AtomGroup].append(</span>
-<span class="c1">#        (&#39;__getattr__&#39;, getattr__))</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="n">getattr__</span><span class="p">))</span>
-
-    <span class="c1"># this is also getitem for a residue</span>
-    <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="n">getattr__</span><span class="p">))</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">AtomGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;_get_named_atom&#39;</span><span class="p">,</span> <span class="n">_get_named_atom</span><span class="p">))</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;_get_named_atom&#39;</span><span class="p">,</span> <span class="n">_get_named_atom</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.phi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;AtomGroup corresponding to the phi protein backbone dihedral</span>
@@ -1558,63 +1500,6 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nr</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">getattr__</span><span class="p">(</span><span class="n">residuegroup</span><span class="p">,</span> <span class="n">resname</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">residuegroup</span><span class="o">.</span><span class="n">_get_named_residue</span><span class="p">(</span><span class="n">resname</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">selection</span><span class="o">.</span><span class="n">SelectionError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">residuegroup</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">resname</span><span class="p">)),</span>
-                    <span class="kc">None</span><span class="p">)</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="n">getattr__</span><span class="p">))</span>
-    <span class="c1"># This transplant is hardcoded for now to allow for multiple getattr things</span>
-    <span class="c1">#transplants[Segment].append((&#39;__getattr__&#39;, getattr__))</span>
-
-    <span class="k">def</span> <span class="nf">_get_named_residue</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">resname</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get all residues with name *resname* in the current ResidueGroup</span>
-<span class="sd">        or Segment.</span>
-
-<span class="sd">        For more than one residue it returns a</span>
-<span class="sd">        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single</span>
-<span class="sd">        :class:`MDAnalysis.core.group.Residue` is returned for a single match.</span>
-<span class="sd">        If no residues are found, a :exc:`SelectionError` is raised.</span>
-
-<span class="sd">        .. versionadded:: 0.9.2</span>
-
-<span class="sd">        .. deprecated:: 0.16.2</span>
-<span class="sd">           *Instant selectors* will be removed in the 1.0 release.</span>
-<span class="sd">           Use ``ResidueGroup[ResidueGroup.resnames == &#39;&lt;name&gt;&#39;]``</span>
-<span class="sd">           or ``Segment.residues[Segment.residues == &#39;&lt;name&gt;&#39;]``</span>
-<span class="sd">           instead.</span>
-<span class="sd">           See issue `#1377</span>
-<span class="sd">           &lt;https://github.com/MDAnalysis/mdanalysis/issues/1377&gt;`_ for</span>
-<span class="sd">           more details.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># There can be more than one residue with the same name</span>
-        <span class="n">residues</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">unique</span><span class="p">[</span>
-                <span class="n">group</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">unique</span><span class="o">.</span><span class="n">resnames</span> <span class="o">==</span> <span class="n">resname</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">selection</span><span class="o">.</span><span class="n">SelectionError</span><span class="p">(</span>
-                <span class="s2">&quot;No residues with resname &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">resname</span><span class="p">))</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Instant selector ResidueGroup.&lt;name&gt; &quot;</span>
-                      <span class="s2">&quot;or Segment.&lt;name&gt; &quot;</span>
-                      <span class="s2">&quot;is deprecated and will be removed in 1.0. &quot;</span>
-                      <span class="s2">&quot;Use ResidueGroup[ResidueGroup.resnames == &#39;&lt;name&gt;&#39;] &quot;</span>
-                      <span class="s2">&quot;or Segment.residues[Segment.residues == &#39;&lt;name&gt;&#39;] &quot;</span>
-                      <span class="s2">&quot;instead.&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># XXX: keep this, makes more sense for names</span>
-            <span class="k">return</span> <span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># XXX: but inconsistent (see residues and Issue 47)</span>
-            <span class="k">return</span> <span class="n">residues</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;_get_named_residue&#39;</span><span class="p">,</span> <span class="n">_get_named_residue</span><span class="p">))</span>
-
 <div class="viewcode-block" id="Resnames.sequence"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resnames.sequence">[docs]</a>    <span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the amino acid sequence.</span>
 
@@ -1800,62 +1685,8 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ns</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ns</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">getattr__</span><span class="p">(</span><span class="n">segmentgroup</span><span class="p">,</span> <span class="n">segid</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">segmentgroup</span><span class="o">.</span><span class="n">_get_named_segment</span><span class="p">(</span><span class="n">segid</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">selection</span><span class="o">.</span><span class="n">SelectionError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">{0}</span><span class="s2">&#39; object has no attribute &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">segmentgroup</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">segid</span><span class="p">)),</span>
-                <span class="kc">None</span><span class="p">)</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">SegmentGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="n">getattr__</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">_get_named_segment</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">segid</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get all segments with name *segid* in the current SegmentGroup.</span>
-
-<span class="sd">        For more than one residue it returns a</span>
-<span class="sd">        :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single</span>
-<span class="sd">        :class:`MDAnalysis.core.group.Segment` is returned for a single match.</span>
-<span class="sd">        If no residues are found, a :exc:`SelectionError` is raised.</span>
-
-<span class="sd">        .. versionadded:: 0.9.2</span>
-
-<span class="sd">        .. deprecated:: 0.16.2</span>
-<span class="sd">           *Instant selectors* will be removed in the 1.0 release.</span>
-<span class="sd">           Use ``SegmentGroup[SegmentGroup.segids == &#39;&lt;name&gt;&#39;]`` instead.</span>
-<span class="sd">           See issue `#1377</span>
-<span class="sd">           &lt;https://github.com/MDAnalysis/mdanalysis/issues/1377&gt;`_ for</span>
-<span class="sd">           more details.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Undo adding &#39;s&#39; if segid started with digit</span>
-        <span class="k">if</span> <span class="n">segid</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;s&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">segid</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">segid</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
-            <span class="n">segid</span> <span class="o">=</span> <span class="n">segid</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-
-        <span class="c1"># There can be more than one segment with the same name</span>
-        <span class="n">segments</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">unique</span><span class="p">[</span>
-                <span class="n">group</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">unique</span><span class="o">.</span><span class="n">segids</span> <span class="o">==</span> <span class="n">segid</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">selection</span><span class="o">.</span><span class="n">SelectionError</span><span class="p">(</span>
-                <span class="s2">&quot;No segments with segid &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">segid</span><span class="p">))</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Instant selector SegmentGroup.&lt;name&gt; &quot;</span>
-                      <span class="s2">&quot;is deprecated and will be removed in 1.0. &quot;</span>
-                      <span class="s2">&quot;Use SegmentGroup[SegmentGroup.segids == &#39;&lt;name&gt;&#39;] &quot;</span>
-                      <span class="s2">&quot;instead.&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="c1"># XXX: keep this, makes more sense for names</span>
-            <span class="k">return</span> <span class="n">segments</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># XXX: but inconsistent (see residues and Issue 47)</span>
-            <span class="k">return</span> <span class="n">segments</span>
-
-    <span class="n">transplants</span><span class="p">[</span><span class="n">SegmentGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-        <span class="p">(</span><span class="s1">&#39;_get_named_segment&#39;</span><span class="p">,</span> <span class="n">_get_named_segment</span><span class="p">))</span></div>
 
 <span class="k">def</span> <span class="nf">_check_connection_values</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

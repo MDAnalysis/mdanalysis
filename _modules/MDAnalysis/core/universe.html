@@ -216,33 +216,6 @@
 <span class="sd">:func:`Merge` function.</span>
 
 
-<span class="sd">Working with Universes</span>
-<span class="sd">======================</span>
-
-
-<span class="sd">Quick segid selection</span>
-<span class="sd">---------------------</span>
-
-<span class="sd">.. deprecated:: 0.16.2</span>
-<span class="sd">   Instant selectors will be removed in the 1.0 release.  See issue `#1377</span>
-<span class="sd">   &lt;https://github.com/MDAnalysis/mdanalysis/issues/1377&gt;`_ for more details.</span>
-
-
-<span class="sd">If the loaded topology provided segids, then these are made accessible</span>
-<span class="sd">as attributes of the Universe.  If the segid starts with a number such</span>
-<span class="sd">as &#39;4AKE&#39;, the letter &#39;s&#39; will be prepended to the segid.</span>
-<span class="sd">For example::</span>
-
-<span class="sd">   import MDAnalysis as mda</span>
-<span class="sd">   from MDAnalysisTests.datafiles import PSF, DCD</span>
-
-<span class="sd">   u = mda.Universe(PSF, DCD)</span>
-<span class="sd">   u.select_atoms(&#39;segid 4AKE&#39;)  # selects all segments with segid 4AKE</span>
-
-<span class="sd">If only a single segment has that segid then a Segment object will</span>
-<span class="sd">be returned, otherwise a SegmentGroup will be returned.</span>
-
-
 <span class="sd">Classes</span>
 <span class="sd">=======</span>
 
@@ -398,33 +371,6 @@
     <span class="n">universe</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span>
             <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="n">universe</span><span class="p">)</span>
 
-    <span class="c1"># Update Universe namespace with segids</span>
-    <span class="c1"># Many segments can have same segid, so group together first</span>
-    <span class="c1">#</span>
-    <span class="c1"># DEPRECATED in 0.16.2</span>
-    <span class="c1"># REMOVE in 1.0</span>
-    <span class="c1"># See https://github.com/MDAnalysis/mdanalysis/issues/1377</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># returns dict of segid:segment</span>
-        <span class="n">segids</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;segids&#39;</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="c1"># no segids, don&#39;t do this step</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">segid</span><span class="p">,</span> <span class="n">segment</span> <span class="ow">in</span> <span class="n">segids</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">segid</span><span class="p">:</span>  <span class="c1"># ignore blank segids</span>
-                <span class="k">continue</span>
-
-            <span class="c1"># cannot start attribute with number</span>
-            <span class="k">if</span> <span class="n">segid</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
-                <span class="c1"># prefix &#39;s&#39; if starts with number</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;s&#39;</span> <span class="o">+</span> <span class="n">segid</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">segid</span>
-            <span class="c1"># if len 1 SegmentGroup, convert to Segment</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">segment</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">segment</span> <span class="o">=</span> <span class="n">segment</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">universe</span><span class="o">.</span><span class="n">_instant_selectors</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">segment</span>
 
 <div class="viewcode-block" id="Universe"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe">[docs]</a><span class="k">class</span> <span class="nc">Universe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The MDAnalysis Universe contains all the information describing the system.</span>
@@ -544,8 +490,9 @@
 <span class="sd">    bonds, angles, dihedrals</span>
 <span class="sd">        master ConnectivityGroups for each connectivity type</span>
 
-<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.</span>
+<span class="sd">        Removed instant selectors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="c1"># Py3 TODO</span>
 <span class="c1">#    def __init__(self, topology=None, *coordinates, all_coordinates=False,</span>
@@ -567,7 +514,6 @@
         <span class="n">in_memory</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;in_memory&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">in_memory_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;in_memory_step&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_instant_selectors</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># for storing segments. Deprecated?</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># managed attribute holding Reader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_name</span> <span class="o">=</span> <span class="n">anchor_name</span>
@@ -723,25 +669,6 @@
                 <span class="n">dimensions</span><span class="o">=</span><span class="n">dims</span><span class="p">,</span> <span class="n">velocities</span><span class="o">=</span><span class="n">vels</span><span class="p">,</span> <span class="n">forces</span><span class="o">=</span><span class="n">forces</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">u</span></div>
-
-    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="c1"># This implements the instant selector of segments from a Universe.</span>
-        <span class="c1"># It is implemented as __getattr__ so a deprecation warning can be</span>
-        <span class="c1"># issued when the feature is used. Instant selectors are deprecated</span>
-        <span class="c1"># since version 0.16.2 and are tareted to be deleted in version 1.0.</span>
-        <span class="c1"># self._instant_selectors is populated in self._process_attr and</span>
-        <span class="c1"># created at the beginning of __init__.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">segment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instant_selectors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;No attribute &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Instant selector Universe.&lt;segid&gt; &quot;</span>
-                          <span class="s2">&quot;is deprecated and will be removed in 1.0. &quot;</span>
-                          <span class="s2">&quot;Use SegmentGroup[SegmentGroup.segids == &#39;&lt;segid&gt;&#39;] &quot;</span>
-                          <span class="s2">&quot;instead.&quot;</span><span class="p">,</span>
-                          <span class="ne">DeprecationWarning</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">segment</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">universe</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -963,8 +890,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">remove_anchor</span><span class="p">()</span>  <span class="c1"># clear any old anchor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_name</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">make_anchor</span><span class="p">()</span>  <span class="c1"># add anchor again</span>
-
-
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">is_anchor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1503,7 +1428,6 @@
 <span class="sd">        .. versionadded:: 0.21.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
-
 
     <span class="c1"># TODO: Maybe put this as a Bond attribute transplant</span>
     <span class="c1"># Problems: Can we transplant onto Universe?</span>

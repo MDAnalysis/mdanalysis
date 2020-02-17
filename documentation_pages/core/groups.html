@@ -384,30 +384,15 @@ in <code class="docutils literal notranslate"><span class="pre">t</span></code><
 <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
 <p><a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> instances are always bound to a
 <a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a>. They cannot exist in isolation.</p>
-<p class="rubric">Deprecated functionality</p>
-<p><em>Instant selectors</em> will be removed in the 1.0 release.  See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/1377">#1377</a> for more details.</p>
-<p><a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> can also be accessed in a Pythonic fashion by using the
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> name as an attribute. For instance,</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span><span class="o">.</span><span class="n">CA</span>
-</pre></div>
-</div>
-<p>will provide an <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> of all CA <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> in the
-group. These <em>instant selector</em> attributes are auto-generated for
-each atom name encountered in the group.</p>
-<p class="rubric">Notes</p>
-<p>The name-attribute instant selector access to <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atoms</span></code></a> is mainly
-meant for quick interactive work. Thus it either returns a single
-<a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> if there is only one matching <a class="reference internal" href="#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a>, <em>or</em> a
-new <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> for multiple matches.  This makes it difficult to use
-the feature consistently in scripts.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a></p>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> will be removed in the 1.0
-release. See <a class="reference internal" href="../selections.html#instance-selectors"><span class="std std-ref">Instant selectors</span></a> for details
-and alternatives.</p>
+<p><a class="reference internal" href="universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.universe.Universe</span></code></a></p>
+<dl class="last docutils">
+<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
+<dd><em>Instant selectors</em> of <a class="reference internal" href="#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> will be removed in the 1.0 release.</dd>
+<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
+<dd>Removed instant selectors, use select_atoms(‘name …’) to select atoms by name.</dd>
+</dl>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.core.groups.AtomGroup.accumulate">
@@ -2306,9 +2291,10 @@ specific to <a class="reference internal" href="#MDAnalysis.core.groups.ResidueG
 <p>ResidueGroups can be compared and combined using group operators. See the
 list of these operators on <code class="xref py py-class docutils literal notranslate"><span class="pre">GroupBase</span></code>.</p>
 <div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of Segments will be removed in the 1.0 release.
-See <a class="reference internal" href="../selections.html#instance-selectors"><span class="std std-ref">Instant selectors</span></a> for details and
-alternatives.</p>
+<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of Segments will be removed in the 1.0 release.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Removed instant selectors, use select_atoms instead</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.core.groups.ResidueGroup.accumulate">
@@ -3572,9 +3558,10 @@ to <a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" tit
 <p><a class="reference internal" href="#MDAnalysis.core.groups.SegmentGroup" title="MDAnalysis.core.groups.SegmentGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroups</span></code></a> can be compared and combined using
 group operators. See the list of these operators on <code class="xref py py-class docutils literal notranslate"><span class="pre">GroupBase</span></code>.</p>
 <div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of Segments will be removed in the 1.0 release.
-See <a class="reference internal" href="../selections.html#instance-selectors"><span class="std std-ref">Instant selectors</span></a> for details and
-alternatives.</p>
+<p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of Segments will be removed in the 1.0 release.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Removed instant selectors, use select_atoms instead</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.core.groups.SegmentGroup.accumulate">
@@ -5102,8 +5089,12 @@ from <code class="xref py py-class docutils literal notranslate"><span class="pr
 specific to <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segments</span></code></a>.</p>
 <div class="deprecated">
 <p><span class="versionmodified">Deprecated since version 0.16.2: </span><em>Instant selectors</em> of <a class="reference internal" href="#MDAnalysis.core.groups.Segment" title="MDAnalysis.core.groups.Segment"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segments</span></code></a> will be removed in the
-1.0 release. See <a class="reference internal" href="../selections.html#instance-selectors"><span class="std std-ref">Instant selectors</span></a> for
-details and alternatives.</p>
+1.0 release.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Removed instant selectors, use either segment.residues[…] to select
+residue by number, or segment.residues[segment.residue.resnames = …]
+to select by resname.</p>
 </div>
 <dl class="attribute">
 <dt id="MDAnalysis.core.groups.Segment.atoms">
