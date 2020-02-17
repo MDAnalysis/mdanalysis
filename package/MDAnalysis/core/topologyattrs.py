@@ -45,7 +45,6 @@ import numbers
 import numpy as np
 import warnings
 
-from numpy.lib.utils import deprecate
 
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
@@ -480,63 +479,6 @@ class Atomnames(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
-
-    def getattr__(atomgroup, name):
-        try:
-            return atomgroup._get_named_atom(name)
-        except selection.SelectionError:
-            six.raise_from(
-                AttributeError("'{0}' object has no attribute '{1}'".format(
-                    atomgroup.__class__.__name__, name)),
-                None)
-
-    def _get_named_atom(group, name):
-        """Get all atoms with name *name* in the current AtomGroup.
-
-        For more than one atom it returns a list of :class:`Atom`
-        instance. A single :class:`Atom` is returned just as such. If
-        no atoms are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``AtomGroup.select_atoms('name <name>')`` instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # There can be more than one atom with the same name
-        atomlist = group.atoms.unique[group.atoms.unique.names == name]
-        if len(atomlist) == 0:
-            raise selection.SelectionError(
-                "No atoms with name '{0}'".format(name))
-        elif len(atomlist) == 1:
-            # XXX: keep this, makes more sense for names
-            atomlist = atomlist[0]
-        warnings.warn("Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use AtomGroup.select_atoms('name <name>') instead.",
-                      DeprecationWarning)
-        return atomlist
-
-    # AtomGroup already has a getattr
-#    transplants[AtomGroup].append(
-#        ('__getattr__', getattr__))
-
-    transplants[Residue].append(
-        ('__getattr__', getattr__))
-
-    # this is also getitem for a residue
-    transplants[Residue].append(
-        ('__getitem__', getattr__))
-
-    transplants[AtomGroup].append(
-        ('_get_named_atom', _get_named_atom))
-
-    transplants[Residue].append(
-        ('_get_named_atom', _get_named_atom))
 
     def phi_selection(residue):
         """AtomGroup corresponding to the phi protein backbone dihedral
@@ -1383,63 +1325,6 @@ class Resnames(ResidueAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(nr)], dtype=object)
 
-    def getattr__(residuegroup, resname):
-        try:
-            return residuegroup._get_named_residue(resname)
-        except selection.SelectionError:
-            six.raise_from(
-                AttributeError("'{0}' object has no attribute '{1}'".format(
-                    residuegroup.__class__.__name__, resname)),
-                    None)
-
-    transplants[ResidueGroup].append(('__getattr__', getattr__))
-    # This transplant is hardcoded for now to allow for multiple getattr things
-    #transplants[Segment].append(('__getattr__', getattr__))
-
-    def _get_named_residue(group, resname):
-        """Get all residues with name *resname* in the current ResidueGroup
-        or Segment.
-
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-        :class:`MDAnalysis.core.group.Residue` is returned for a single match.
-        If no residues are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``ResidueGroup[ResidueGroup.resnames == '<name>']``
-           or ``Segment.residues[Segment.residues == '<name>']``
-           instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # There can be more than one residue with the same name
-        residues = group.residues.unique[
-                group.residues.unique.resnames == resname]
-        if len(residues) == 0:
-            raise selection.SelectionError(
-                "No residues with resname '{0}'".format(resname))
-        warnings.warn("Instant selector ResidueGroup.<name> "
-                      "or Segment.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
-                      "or Segment.residues[Segment.residues == '<name>'] "
-                      "instead.",
-                      DeprecationWarning)
-        if len(residues) == 1:
-            # XXX: keep this, makes more sense for names
-            return residues[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return residues
-
-    transplants[ResidueGroup].append(
-        ('_get_named_residue', _get_named_residue))
-
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
 
@@ -1627,60 +1512,6 @@ class Segids(SegmentAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(ns)], dtype=object)
 
-    def getattr__(segmentgroup, segid):
-        try:
-            return segmentgroup._get_named_segment(segid)
-        except selection.SelectionError:
-            six.raise_from(
-                AttributeError("'{0}' object has no attribute '{1}'".format(
-                    segmentgroup.__class__.__name__, segid)),
-                None)
-
-    transplants[SegmentGroup].append(
-        ('__getattr__', getattr__))
-
-    def _get_named_segment(group, segid):
-        """Get all segments with name *segid* in the current SegmentGroup.
-
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single
-        :class:`MDAnalysis.core.group.Segment` is returned for a single match.
-        If no residues are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # Undo adding 's' if segid started with digit
-        if segid.startswith('s') and len(segid) >= 2 and segid[1].isdigit():
-            segid = segid[1:]
-
-        # There can be more than one segment with the same name
-        segments = group.segments.unique[
-                group.segments.unique.segids == segid]
-        if len(segments) == 0:
-            raise selection.SelectionError(
-                "No segments with segid '{0}'".format(segid))
-        warnings.warn("Instant selector SegmentGroup.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
-                      "instead.",
-                      DeprecationWarning)
-        if len(segments) == 1:
-            # XXX: keep this, makes more sense for names
-            return segments[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return segments
-
-    transplants[SegmentGroup].append(
-        ('_get_named_segment', _get_named_segment))
 
 def _check_connection_values(func):
     """

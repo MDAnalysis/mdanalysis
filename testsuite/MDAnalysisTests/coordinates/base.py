@@ -101,8 +101,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
                             err_msg="wrong coordinates for A10:CA")
 
     def test_distances(self):
-        NTERM = self.universe.atoms.N[0]
-        CTERM = self.universe.atoms.C[-1]
+        NTERM = self.universe.select_atoms('name N')[0]
+        CTERM = self.universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d,
                             self.ref_distances['endtoend'],

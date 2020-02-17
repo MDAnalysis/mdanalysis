@@ -674,8 +674,8 @@ class TestPDBReaderBig(RefAdK):
                             err_msg="wrong coordinates for A10:CA")
 
     def test_distances(self, universe):
-        NTERM = universe.atoms.N[0]
-        CTERM = universe.atoms.C[-1]
+        NTERM = universe.select_atoms('name N')[0]
+        CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
