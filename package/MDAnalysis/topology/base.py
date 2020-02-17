@@ -63,7 +63,7 @@ class _Topologymeta(type):
 
     Eg::
 
-      class Thing(TopologyReaderBase):
+      class ThingParser(TopologyReaderBase):
           format = ['foo', 'bar']
 
           @staticmethod
@@ -72,7 +72,11 @@ class _Topologymeta(type):
                   import WeirdPackage
               except ImportError:
                   return False
-              return isinstance(thing, Weirdpackage.Thing)
+              return isinstance(thing, WeirdPackage.Thing)
+
+    This way there is no strict dependency on "WeirdPackage", but if
+    a user supplies a WeirdPackage.Thing the "ThingParser' will be able
+    to step up and read it.
 
     .. versionchanged:: 1.0.0
        Added format_hint functionality
