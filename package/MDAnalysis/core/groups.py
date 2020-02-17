@@ -3214,8 +3214,8 @@ class ResidueGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-    .. versionchanged:: 1.0
-       Removed instant selectors
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms instead
     """
 
     @property
@@ -3377,8 +3377,8 @@ class SegmentGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-    .. versionchanged:: 1.0
-       Removed instant selectors
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms instead
     """
 
     @property
@@ -3800,7 +3800,7 @@ class Segment(ComponentBase):
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`Segments<Segment>` will be removed in the
        1.0 release.
-    .. versionchanged:: 1.0
+    .. versionchanged:: 1.0.0
        Removed instant selectors, use either segment.residues[...] to select
        residue by number, or segment.residues[segment.residue.resnames = ...]
        to select by resname.
