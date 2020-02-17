@@ -481,137 +481,7 @@ class HoleAnalysis(AnalysisBase):
         the path name. HOLE can only read filenames up to a certain length.
         Default: current working directory
 
-
-
-
-    Returns
-    -------
-    dict
-        A dictionary of :class:`numpy.recarray`\ s, indexed by frame.
-
-
-    .. versionadded:: 1.0
-
-    """.format(IGNORE_RESIDUES)
-
-    input_file = '{prefix}hole{i:03d}.inp'
-    output_file = '{prefix}hole{i:03d}.out'
-    sphpdb_file = '{prefix}hole{i:03d}.sph'
-
-    hole_header = textwrap.dedent("""
-        ! Input file for Oliver Smart's HOLE program
-        ! written by MDAnalysis.analysis.hole2.HoleAnalysis
-        ! for a Universe
-        ! u = mda.Universe({}
-        !   )
-        ! Frame {{i}}
-        """)
-
-    hole_body = textwrap.dedent("""
-        COORD  {{coordinates}}
-        RADIUS {radius}
-        SPHPDB {{sphpdb}}
-        SAMPLE {sample:f}
-        ENDRAD {end_radius:f}
-        IGNORE {ignore}
-        SHORTO {output_level:d}
-        """)
-
-    _guess_cpoint = False
-
-    sphpdbs = None
-    outfiles = None
-    frames = None
-    profiles = None
-
-    def __init__(self, universe,
-                 select='protein',
-                 verbose=False,
-                 ignore_residues=IGNORE_RESIDUES,
-                 vdwradii_file=None,
-                 executable='hole',
-                 sos_triangle='sos_triangle',
-                 sph_process='sph_process',
-                 tmpdir=os.path.curdir,
-                 ):
-        super(HoleAnalysis, self).__init__(universe.universe.trajectory,
-                                           verbose=verbose)
-        self.select = select
-        self.ag = universe.select_atoms(select, updating=True)
-        self.universe = universe
-        self.tmpdir = tmpdir
-        self.ignore_residues = ignore_residues
-
-        # --- finding executables ----
-        hole = util.which(executable)
-        if hole is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=hole,
-                                                       kw='executable'))
-        self.base_path = os.path.dirname(hole)
-
-        sos_triangle_path = util.which(sos_triangle)
-        if sos_triangle_path is None:
-            path = os.path.join(self.base_path, sos_triangle)
-            sos_triangle_path = util.which(path)
-        if sos_triangle_path is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=sos_triangle,
-                                                       kw='sos_triangle'))
-        sph_process_path = util.which(sph_process)
-        if sph_process_path is None:
-            path = os.path.join(self.base_path, 'sph_process')
-            sph_process_path = util.which(path)
-        if sph_process_path is None:
-            raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
-                                                       kw='sph_process'))
-
-        self.exe = {
-            'hole': hole,
-            'sos_triangle': sos_triangle_path,
-            'sph_process': sph_process_path
-        }
-
-        # --- setting up temp files ----
-        self.tmp_files = []
-        if vdwradii_file is not None:
-            self.vdwradii_file = check_and_fix_long_filename(vdwradii_file,
-                                                             tmpdir=self.tmpdir)
-            if os.path.islink(self.vdwradii_file):
-                self.tmp_files.append(self.vdwradii_file)
-        else:
-            self.vdwradii_file = write_simplerad2()
-            self.tmp_files.append(self.vdwradii_file)
-
-        # --- setting up input header ----
-        filenames = [universe.filename]
-        try:
-            filenames.extend(universe.trajectory.filenames)
-        except AttributeError:
-            filenames.append(universe.trajectory.filename)
-        hole_filenames = '\n!    '.join(filenames)
-        self._input_header = self.hole_header.format(hole_filenames)
-
-    def run(self, start=None, stop=None, step=None, verbose=None,
-            cpoint=None, cvect=None, sample=0.2, end_radius=22,
-            output_level=0, random_seed=None,
-            prefix=None, write_input_files=False):
-        """
-        Perform the calculation
-
-        Parameters
-        ----------
-        start : int, optional
-            start frame of analysis
-
-        stop : int, optional
-            stop frame of analysis
-
-        step : int, optional
-            number of frames to skip between each analysed frame
-
-        verbose : bool, optional
-            Turn on verbosity
-
-        cpoint : array_like, 'center_of_geometry' or None, optional
+            cpoint : array_like, 'center_of_geometry' or None, optional
             coordinates of a point inside the pore, e.g. ``[12.3, 0.7,
             18.55]``. If set to ``None`` (the default) then HOLE's own search
             algorithm is used.
@@ -673,13 +543,6 @@ class HoleAnalysis(AnalysisBase):
             turned off. 
             Default: 0
 
-        random_seed : int, optional
-            integer number to start the random number generator.
-            By default,
-            :program:`hole` will use the time of the day. 
-            For reproducible runs (e.g., for testing) set ``random_seed`` 
-            to an integer. Default: ``None``
-
         ignore_residues : array_like, optional
             sequence of three-letter residues that are not taken into
             account during the calculation; wildcards are *not*
@@ -693,8 +556,66 @@ class HoleAnalysis(AnalysisBase):
         write_input_files: bool, optional
             Whether to write out the input HOLE text as files. 
             Files are called `hole.inp`. Default: ``False``
-        """
 
+
+    Returns
+    -------
+    dict
+        A dictionary of :class:`numpy.recarray`\ s, indexed by frame.
+
+
+    .. versionadded:: 1.0
+
+    """.format(IGNORE_RESIDUES)
+
+    input_file = '{prefix}hole{i:03d}.inp'
+    output_file = '{prefix}hole{i:03d}.out'
+    sphpdb_file = '{prefix}hole{i:03d}.sph'
+
+    hole_header = textwrap.dedent("""
+        ! Input file for Oliver Smart's HOLE program
+        ! written by MDAnalysis.analysis.hole2.HoleAnalysis
+        ! for a Universe
+        ! u = mda.Universe({}
+        !   )
+        ! Frame {{i}}
+        """)
+
+    hole_body = textwrap.dedent("""
+        COORD  {{coordinates}}
+        RADIUS {radius}
+        SPHPDB {{sphpdb}}
+        SAMPLE {sample:f}
+        ENDRAD {end_radius:f}
+        IGNORE {ignore}
+        SHORTO {output_level:d}
+        """)
+
+    _guess_cpoint = False
+
+    sphpdbs = None
+    outfiles = None
+    frames = None
+    profiles = None
+
+    def __init__(self, universe,
+                 select='protein',
+                 verbose=False,
+                 ignore_residues=IGNORE_RESIDUES,
+                 vdwradii_file=None,
+                 executable='hole',
+                 sos_triangle='sos_triangle',
+                 sph_process='sph_process',
+                 tmpdir=os.path.curdir,
+                 cpoint=None,
+                 cvect=None,
+                 sample=0.2,
+                 end_radius=22,
+                 output_level=0,
+                 prefix=None,
+                 write_input_files=False):
+        super(HoleAnalysis, self).__init__(universe.universe.trajectory,
+                                           verbose=verbose)
         if output_level > 3:
             msg = 'output_level ({}) needs to be < 3 in order to extract a HOLE profile!'
             logger.warning(msg.format(output_level))
@@ -715,10 +636,90 @@ class HoleAnalysis(AnalysisBase):
         self.sample = sample
         self.end_radius = end_radius
         self.output_level = output_level
-        self.random_seed = random_seed
         self.write_input_files = write_input_files
-        super(HoleAnalysis, self).run(start=start, stop=stop,
-                                      step=step, verbose=verbose)
+        self.select = select
+        self.ag = universe.select_atoms(select, updating=True)
+        self.universe = universe
+        self.tmpdir = tmpdir
+        self.ignore_residues = ignore_residues
+
+        # --- finding executables ----
+        hole = util.which(executable)
+        if hole is None:
+            raise OSError(errno.ENOENT, exe_err.format(name=hole,
+                                                       kw='executable'))
+        self.base_path = os.path.dirname(hole)
+
+        sos_triangle_path = util.which(sos_triangle)
+        if sos_triangle_path is None:
+            path = os.path.join(self.base_path, sos_triangle)
+            sos_triangle_path = util.which(path)
+        if sos_triangle_path is None:
+            raise OSError(errno.ENOENT, exe_err.format(name=sos_triangle,
+                                                       kw='sos_triangle'))
+        sph_process_path = util.which(sph_process)
+        if sph_process_path is None:
+            path = os.path.join(self.base_path, 'sph_process')
+            sph_process_path = util.which(path)
+        if sph_process_path is None:
+            raise OSError(errno.ENOENT, exe_err.format(name=sph_process,
+                                                       kw='sph_process'))
+
+        self.exe = {
+            'hole': hole,
+            'sos_triangle': sos_triangle_path,
+            'sph_process': sph_process_path
+        }
+
+        # --- setting up temp files ----
+        self.tmp_files = []
+        if vdwradii_file is not None:
+            self.vdwradii_file = check_and_fix_long_filename(vdwradii_file,
+                                                             tmpdir=self.tmpdir)
+            if os.path.islink(self.vdwradii_file):
+                self.tmp_files.append(self.vdwradii_file)
+        else:
+            self.vdwradii_file = write_simplerad2()
+            self.tmp_files.append(self.vdwradii_file)
+
+        # --- setting up input header ----
+        filenames = [universe.filename]
+        try:
+            filenames.extend(universe.trajectory.filenames)
+        except AttributeError:
+            filenames.append(universe.trajectory.filename)
+        hole_filenames = '\n!    '.join(filenames)
+        self._input_header = self.hole_header.format(hole_filenames)
+
+    def run(self, start=None, stop=None, step=None, verbose=None,
+            random_seed=None):
+        """
+        Perform the calculation
+
+        Parameters
+        ----------
+        start : int, optional
+            start frame of analysis
+
+        stop : int, optional
+            stop frame of analysis
+
+        step : int, optional
+            number of frames to skip between each analysed frame
+
+        verbose : bool, optional
+            Turn on verbosity
+
+        random_seed : int, optional
+            integer number to start the random number generator.
+            By default,
+            :program:`hole` will use the time of the day. 
+            For reproducible runs (e.g., for testing) set ``random_seed`` 
+            to an integer. Default: ``None``
+        """
+        self.random_seed = random_seed
+        return super(HoleAnalysis, self).run(start=start, stop=stop,
+                                             step=step, verbose=verbose)
 
     def _prepare(self):
         """Set up containers and generate input file text"""

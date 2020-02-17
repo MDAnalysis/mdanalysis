@@ -72,7 +72,7 @@ class TestHole(object):
             filename = PDB_HOLE
             hole2.hole(filename, random_seed=31415, infile='hole.inp')
 
-        infile = os.path.join(tmpdir, 'hole.inp')
+        infile = tmpdir.join('hole.inp')
         with open(infile, 'r') as f:
             contents = f.read()
 
@@ -98,7 +98,7 @@ class TestHole(object):
             hole2.hole(filename, random_seed=31415,
                        infile='hole.inp', cpoint=cog)
 
-        infile = os.path.join(tmpdir, 'hole.inp')
+        infile = tmpdir.join('hole.inp')
         with open(infile, 'r') as f:
             contents = f.read()
 
@@ -195,18 +195,18 @@ class TestHoleAnalysis(object):
                 h.run()
                 h.create_vmd_surface(filename='hole.vmd')
 
-        sphpdbs = os.path.join(tmpdir, '*.sph')
-        assert len(glob.glob(sphpdbs)) == 0
-        outfiles = os.path.join(tmpdir, '*.out')
-        assert len(glob.glob(outfiles)) == 0
-        vdwradii = os.path.join(tmpdir, 'simple2.rad')
-        assert len(glob.glob(vdwradii)) == 0
-        pdbfiles = os.path.join(tmpdir, '*.pdb')
-        assert len(glob.glob(pdbfiles)) == 0
-        oldfiles = os.path.join(tmpdir, '*.old')
-        assert len(glob.glob(oldfiles)) == 0
-        vmd_file = os.path.join(tmpdir, 'hole.vmd')
-        assert len(glob.glob(vmd_file)) == 1
+        sphpdbs = tmpdir.join('*.sph')
+        assert len(glob.glob(str(sphpdbs))) == 0
+        outfiles = tmpdir.join('*.out')
+        assert len(glob.glob(str(outfiles))) == 0
+        vdwradii = tmpdir.join('simple2.rad')
+        assert len(glob.glob(str(vdwradii))) == 0
+        pdbfiles = tmpdir.join('*.pdb')
+        assert len(glob.glob(str(pdbfiles))) == 0
+        oldfiles = tmpdir.join('*.old')
+        assert len(glob.glob(str(oldfiles))) == 0
+        vmd_file = tmpdir.join('hole.vmd')
+        assert len(glob.glob(str(vmd_file))) == 1
 
 
 @pytest.mark.skipif(executable_not_found("hole"),
