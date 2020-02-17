@@ -82,7 +82,7 @@ two ensemble objects are first created and then used for calculation: ::
     >>> ens1 = Universe(PSF, DCD)
     >>> ens2 = Universe(PSF, DCD2)
     >>> HES, details = encore.hes([ens1, ens2])
-    >>> print HES
+    >>> print(HES)
     [[        0.        ,  38279683.95892926],
     [ 38279683.95892926,         0.        ]]
 
@@ -99,7 +99,7 @@ The RMSD matrix is automatically calculated. ::
     >>> ens1 = Universe(PSF, DCD)
     >>> ens2 = Universe(PSF, DCD2)
     >>> CES, details = encore.ces([ens1, ens2])
-    >>> print CES
+    >>> print(CES)
     [[ 0.          0.68070702]
     [ 0.68070702  0.        ]]
 
@@ -132,7 +132,7 @@ saved RMSD matrix and the default SPE dimensional reduction method.   : ::
 
     >>> DRES,details = encore.dres([ens1, ens2],
                                    distance_matrix = rmsd_matrix)
-    >>> print DRES
+    >>> print(DRES)
     [[ 0.        ,   0.67453198]
      [  0.67453198,  0.        ]]
 
@@ -800,7 +800,7 @@ def hes(ensembles,
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
         >>> HES, details = encore.hes([ens1, ens2])
-        >>> print HES
+        >>> print(HES)
         [[        0.          38279683.95892926]
          [ 38279683.95892926         0.        ]]
 
@@ -809,7 +809,7 @@ def hes(ensembles,
     align everything to the current timestep in the first ensemble. Note that
     this changes the ens1 and ens2 objects:
 
-        >>> print encore.hes([ens1, ens2], align=True)[0]
+        >>> print(encore.hes([ens1, ens2], align=True)[0])
         [[    0.          6880.34140106]
         [ 6880.34140106     0.        ]]
 
@@ -819,7 +819,7 @@ def hes(ensembles,
         >>> from MDAnalysis.analysis import align
         >>> align.AlignTraj(ens1, ens1, select="name CA", in_memory=True).run()
         >>> align.AlignTraj(ens2, ens1, select="name CA", in_memory=True).run()
-        >>> print encore.hes([ens1, ens2])[0]
+        >>> print(encore.hes([ens1, ens2])[0])
         [[    0.          7032.19607004]
          [ 7032.19607004     0.        ]]
 
@@ -1056,8 +1056,8 @@ def ces(ensembles,
 
         >>> ens1 = Universe(PSF, DCD)
         >>> ens2 = Universe(PSF, DCD2)
-        >>> CES,details = encore.ces([ens1,ens2])
-        >>> print CES
+        >>> CES, details = encore.ces([ens1,ens2])
+        >>> print(CES)
         [[ 0.          0.68070702]
          [ 0.68070702  0.        ]]
 
@@ -1069,10 +1069,10 @@ def ces(ensembles,
         >>> CES, details = encore.ces([ens1,ens2],
                                       clustering_method = [encore.DBSCAN(eps=0.45),
                                                            encore.DBSCAN(eps=0.50)])
-        >>> print "eps=0.45: ", CES[0]
+        >>> print("eps=0.45: ", CES[0])
         eps=0.45:  [[ 0.          0.20447236]
         [ 0.20447236  0.        ]]
-        >>> print "eps=0.5: ", CES[1]
+        >>> print("eps=0.5: ", CES[1])
         eps=0.5:  [[ 0.          0.25331629]
         [ 0.25331629  0.        ]]"
 
@@ -1332,7 +1332,7 @@ def dres(ensembles,
         >>> ens1 = Universe(PSF,DCD)
         >>> ens2 = Universe(PSF,DCD2)
         >>> DRES, details = encore.dres([ens1,ens2])
-        >>> print DRES
+        >>> print(DRES)
         [[ 0.          0.67996043]
          [ 0.67996043  0.        ]]
 
@@ -1348,7 +1348,7 @@ def dres(ensembles,
 
         >>> DRES, details = encore.dres([ens1,ens2],
                                         dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))
-        >>> print DRES
+        >>> print(DRES)
         [[ 0.          0.69314718]
          [ 0.69314718  0.        ]]
 
@@ -1545,7 +1545,7 @@ def ces_convergence(original_ensemble,
 
         >>> ens1 = Universe(PSF,DCD)
         >>> ces_conv = encore.ces_convergence(ens1, 10)
-        >>> print ces_conv
+        >>> print(ces_conv)
         [[ 0.48194205]
         [ 0.40284672]
         [ 0.31699026]
@@ -1654,7 +1654,7 @@ def dres_convergence(original_ensemble,
 
         >>> ens1 = Universe(PSF,DCD)
         >>> dres_conv = encore.dres_convergence(ens1, 10)
-        >>> print dres_conv
+        >>> print(dres_conv)
         [[ 0.5295528 ]
          [ 0.40716539]
          [ 0.31158669]
