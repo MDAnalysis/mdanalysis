@@ -315,7 +315,7 @@ class Universe(object):
     bonds, angles, dihedrals
         master ConnectivityGroups for each connectivity type
 
-    .. versionchanged:: 1.0
+    .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
         Removed instant selectors.
     """
