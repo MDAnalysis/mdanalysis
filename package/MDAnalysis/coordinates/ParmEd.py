@@ -87,6 +87,20 @@ class ParmEdReader(base.SingleFrameReaderBase):
     # Structure.coordinates always in Angstrom
     units = {'time': None, 'length': 'Angstrom'}
 
+    @staticmethod
+    def _format_hint(thing):
+        """Can this reader read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            import parmed as pmd
+        except ImportError:
+            # if we can't import parmed, it's probably not parmed
+            return False
+        else:
+            return isinstance(thing, pmd.Structure)
+
     def _read_first_frame(self):
         self.n_atoms = len(self.filename.atoms)
 

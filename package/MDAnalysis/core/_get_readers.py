@@ -24,12 +24,10 @@ from six import raise_from
 
 import copy
 import inspect
-import mmtf
-import parmed as pmd
-import numpy as np
-from MDAnalysis.lib.util import isstream
 
-from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS
+from .. import (_READERS, _READER_HINTS,
+                _PARSERS, _PARSER_HINTS,
+                _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS)
 from ..lib import util
 
 
@@ -77,26 +75,23 @@ def get_reader_for(filename, format=None):
     :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned and `format`
     passed to the :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
+    .. versionchanged:: 1.0.0
+       Added format_hint functionalityx
     """
     # check if format is actually a Reader
     if inspect.isclass(format):
         return format
 
     # ChainReader gets returned even if format is specified
-    if not isinstance(filename, np.ndarray) and util.iterable(filename) and not isstream(filename):
+    if _READER_HINTS['CHAIN'](filename):
         format = 'CHAIN'
     # Only guess if format is not specified
-    elif format is None:
-        # Checks for specialised formats
-        if isinstance(filename, np.ndarray):
-            # memoryreader slurps numpy arrays
-            format = 'MEMORY'
-        elif isinstance(filename, mmtf.MMTFDecoder):
-            # mmtf slurps mmtf object
-            format = 'MMTF'
-        elif isinstance(filename, pmd.Structure):
-            format = 'PARMED'
-        else:
+    if format is None:
+        for fmt_name, test in _READER_HINTS.items():
+            if test(filename):
+                format = fmt_name
+                break
+        else:  # hits else if for loop completes
             # else let the guessing begin!
             format = util.guess_format(filename)
     format = format.upper()
@@ -231,16 +226,18 @@ def get_parser_for(filename, format=None):
     ValueError
         If no appropriate parser could be found.
 
+    .. versionchanged:: 1.0.0
+       Added format_hint functionality
     """
     if inspect.isclass(format):
         return format
 
     # Only guess if format is not provided
     if format is None:
-        if isinstance(filename, mmtf.MMTFDecoder):
-            format = 'mmtf'
-        elif isinstance(filename, pmd.Structure):
-            format = 'PARMED'
+        for fmt_name, test in _PARSER_HINTS.items():
+            if test(filename):
+                format = fmt_name
+                break
         else:
             format = util.guess_format(filename)
     format = format.upper()
