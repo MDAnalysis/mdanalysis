@@ -25,20 +25,10 @@ from six import raise_from
 import copy
 import inspect
 
-
 from .. import (_READERS, _READER_HINTS,
                 _PARSERS, _PARSER_HINTS,
                 _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS)
 from ..lib import util
-
-
-def _is_parmed_object(thing):
-    module = inspect.getmodule(thing.__class__)
-
-    if module is None:
-        return False
-    else:
-        return module.__name__.startswith('parmed')
 
 
 def get_reader_for(filename, format=None):
