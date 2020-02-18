@@ -128,6 +128,7 @@ Changes
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
   * analysis.density.density_from_Universe() (remove in 2.0)
+  * analysis.density.notwithin_coordinates_factory() (remove in 2.0)
 
         
 09/05/19 IAlibay, richardjgowers

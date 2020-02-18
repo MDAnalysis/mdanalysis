@@ -1129,6 +1129,7 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
     return g
 
 
+@deprecate(release="1.0.0", remove="2.0.0")
 def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
                                   not_within=True, use_kdtree=True, updating_selection=False):
     """Generate optimized selection for '*sel1* not within *cutoff* of *sel2*'
@@ -1190,6 +1191,9 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
 
     (Readability is enhanced by properly naming the generated function
     ``within_coordinates()``.)
+
+
+    .. deprecated:: 1.0.0
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
     #                    cpu/s    relative   speedup       use_kdtree
