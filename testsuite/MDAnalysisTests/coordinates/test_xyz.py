@@ -31,8 +31,6 @@ from numpy.testing import (
     assert_almost_equal,
 )
 
-from MDAnalysis.coordinates import chemfiles
-
 from MDAnalysis.coordinates.XYZ import XYZWriter
 
 from MDAnalysisTests.datafiles import COORDINATES_XYZ, COORDINATES_XYZ_BZ2
@@ -178,21 +176,3 @@ class TestXYZWriterNames(object):
             names = ''.join(l.split()[0].strip() for l in r.readlines()[2:-1])
 
         assert names[:-1].lower() == 'testing'
-
-
-class TestChemFileXYZ(MultiframeReaderTest):
-    @staticmethod
-    @pytest.fixture
-    def ref():
-        base = XYZReference()
-        base.writer = chemfiles.ChemfilesWriter
-        base.dimensions = np.array([0, 0, 0, 90, 90, 90], dtype=np.float32)
-
-        return base
-
-    @pytest.fixture
-    def reader(self, ref):
-        reader = chemfiles.ChemfilesReader(ref.trajectory)
-        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
-        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
-        return reader

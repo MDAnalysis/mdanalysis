@@ -47,8 +47,13 @@ from distutils.version import LooseVersion
 
 from . import base, core
 
-import chemfiles
-from chemfiles import Trajectory, Frame, Atom, UnitCell, Residue, Topology
+try:
+    import chemfiles
+except ImportError:
+    HAS_CHEMFILES = False
+else:
+    HAS_CHEMFILES = True
+
 
 
 MIN_CHEMFILES_VERSION = LooseVersion("0.9")
@@ -56,6 +61,11 @@ MAX_CHEMFILES_VERSION = LooseVersion("0.10")
 
 
 def check_chemfiles_version():
+    if not HAS_CHEMFILES:
+        raise RuntimeError(
+            "No Chemfiles package found.  "
+            "Try installing with 'pip install chemfiles'"
+        )
     version = LooseVersion(chemfiles.__version__)
     if version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION:
         raise RuntimeError(
@@ -65,8 +75,7 @@ def check_chemfiles_version():
 
 
 class ChemfilesReader(base.ReaderBase):
-    """
-    Coordinate reader using chemfiles.
+    """Coordinate reader using chemfiles.
 
     The file format to used is guessed based on the file extension. If no
     matching format is found, a ``ChemfilesError`` is raised. It is also
@@ -79,12 +88,13 @@ class ChemfilesReader(base.ReaderBase):
         """
         Parameters
         ----------
-        filename : str
-            trajectory filename
+        filename : chemfiles.Trajectory or str
+            the chemfiles object to read or filename to read
         chemfiles_format : str (optional)
-            use the given format name instead of guessing from the extension.
-            The `list of supported formats <formats>`_ and the associated names
-            is available in chemfiles documentation.
+            if *filename* was a string, use the given format name instead of
+            guessing from the extension. The `list of supported formats
+            <formats>`_ and the associated names is available in chemfiles
+            documentation.
         **kwargs : dict
             General reader arguments.
 
@@ -99,13 +109,21 @@ class ChemfilesReader(base.ReaderBase):
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.next()
 
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Reader read *thing*"""
+        # nb, filename strings can still get passed through if
+        # format='CHEMFILES' is used
+        return HAS_CHEMFILES and isinstance(thing, chemfiles.Trajectory)
+
     def _open(self):
         self._closed = False
         self._step = 0
         self._frame = -1
-        # Open file last to ensure that all other attributes are set
-        # in case of exception
-        self._file = Trajectory(self.filename, 'r', self._format)
+        if isinstance(self.filename, chemfiles.Trajectory):
+            self._file = self.filename
+        else:
+            self._file = chemfiles.Trajectory(self.filename, 'r', self._format)
 
     def close(self):
         """close reader"""
@@ -224,7 +242,7 @@ class ChemfilesWriter(base.WriterBase):
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":
             raise IOError("Expected 'a' or 'w' as mode in ChemfilesWriter")
-        self._file = Trajectory(self.filename, mode, chemfiles_format)
+        self._file = chemfiles.Trajectory(self.filename, mode, chemfiles_format)
         self._closed = False
         if topology is not None:
             if isinstance(topology, string_types):
@@ -293,21 +311,22 @@ class ChemfilesWriter(base.WriterBase):
         """
         Convert a Timestep to a chemfiles Frame
         """
-        frame = Frame()
+        # TODO: CONVERTERS?
+        frame = chemfiles.Frame()
         frame.resize(ts.n_atoms)
         if ts.has_positions:
             frame.positions[:] = ts.positions[:]
         if ts.has_velocities:
             frame.add_velocities()
             frame.velocities[:] = ts.velocities[:]
-        frame.cell = UnitCell(*ts.dimensions)
+        frame.cell = chemfiles.UnitCell(*ts.dimensions)
         return frame
 
     def _topology_to_chemfiles(self, obj, n_atoms):
         """
         Convert an AtomGroup or an Universe to a chemfiles Topology
         """
-        topology = Topology()
+        topology = chemfiles.Topology()
         if not hasattr(obj, "atoms"):
             # use an empty topology
             topology.resize(n_atoms)
@@ -318,7 +337,7 @@ class ChemfilesWriter(base.WriterBase):
         for atom in obj.atoms:
             name = getattr(atom, 'name', "")
             type = getattr(atom, 'type', name)
-            chemfiles_atom = Atom(name, type)
+            chemfiles_atom = chemfiles.Atom(name, type)
 
             if hasattr(atom, 'altLoc'):
                 chemfiles_atom["altloc"] = str(atom.altLoc)
@@ -332,7 +351,7 @@ class ChemfilesWriter(base.WriterBase):
             if hasattr(atom, 'resid'):
                 resname = getattr(atom, 'resname', "")
                 if atom.resid not in residues.keys():
-                    residues[atom.resid] = Residue(resname, atom.resid)
+                    residues[atom.resid] = chemfiles.Residue(resname, atom.resid)
                 residue = residues[atom.resid]
 
                 atom_idx = len(topology.atoms)

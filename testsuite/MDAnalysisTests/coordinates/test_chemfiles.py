@@ -21,20 +21,39 @@
 #
 from __future__ import absolute_import
 
+import numpy as np
 import pytest
 
 import MDAnalysis as mda
-import numpy as np
-from unittest import TestCase
-
-from chemfiles import ChemfilesError
-
 from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter
 
 from MDAnalysisTests import datafiles, tempdir
 from MDAnalysisTests.coordinates.base import (
     MultiframeReaderTest, BaseWriterTest, BaseReference
 )
+from MDAnalysisTests.coordinates.test_xyz import XYZReference
+
+
+chemfiles = pytest.importorskip('chemfiles')
+
+
+class TestChemFileXYZ(MultiframeReaderTest):
+    @staticmethod
+    @pytest.fixture
+    def ref():
+        base = XYZReference()
+        base.writer = ChemfilesWriter
+        base.dimensions = np.array([0, 0, 0, 90, 90, 90], dtype=np.float32)
+
+        return base
+
+    @pytest.fixture
+    def reader(self, ref):
+        reader = ChemfilesReader(ref.trajectory)
+        reader.add_auxiliary('lowf', ref.aux_lowf, dt=ref.aux_lowf_dt, initial_time=0, time_selector=None)
+        reader.add_auxiliary('highf', ref.aux_highf, dt=ref.aux_highf_dt, initial_time=0, time_selector=None)
+        return reader
+
 
 
 class ChemfilesXYZReference(BaseReference):
@@ -69,11 +88,11 @@ class TestChemfilesWriter(BaseWriterTest):
         pass
 
     def test_no_extension_raises(self, ref):
-        with pytest.raises(ChemfilesError):
+        with pytest.raises(chemfiles.ChemfilesError):
             ref.writer('foo')
 
 
-class TestChemfiles(TestCase):
+class TestChemfiles(object):
     def test_read_chemfiles_format(self):
         u = mda.Universe(
             datafiles.LAMMPSdata,
@@ -83,7 +102,7 @@ class TestChemfiles(TestCase):
         )
 
         for ts in u.trajectory:
-            self.assertEqual(ts.n_atoms, 18364)
+            assert ts.n_atoms == 18364
 
     def test_changing_system_size(self):
         outfile = tempdir.TempDir().name + "chemfiles-changing-size.xyz"
@@ -92,11 +111,11 @@ class TestChemfiles(TestCase):
 
         u = mda.Universe(outfile, format="chemfiles", topology_format="XYZ")
 
-        with self.assertRaises(IOError):
+        with pytest.raises(IOError):
             u.trajectory._read_next_timestep()
 
     def test_wrong_open_mode(self):
-        with self.assertRaises(IOError):
+        with pytest.raises(IOError):
             _ = ChemfilesWriter("", mode="r")
 
     def check_topology(self, reference, file):
@@ -117,10 +136,10 @@ class TestChemfiles(TestCase):
         )
 
         for atom in check.atoms:
-            self.assertIn((atom.name, atom.type, atom.record_type), atoms)
+            assert (atom.name, atom.type, atom.record_type) in atoms
 
         for bond in check.bonds:
-            self.assertIn((bond.atoms[0].ix, bond.atoms[1].ix), bonds)
+            assert (bond.atoms[0].ix, bond.atoms[1].ix) in bonds
 
     def test_write_topology(self):
         u = mda.Universe(datafiles.CONECT)
@@ -174,7 +193,7 @@ class TestChemfiles(TestCase):
 
         with open(outfile) as file:
             content = file.read()
-            self.assertEqual(content, EXPECTED_LAMMPS_DATA)
+            assert content == EXPECTED_LAMMPS_DATA
 
 
 VARYING_XYZ = """2

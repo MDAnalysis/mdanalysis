@@ -716,6 +716,7 @@ import six
 from . import base
 from .core import reader, writer
 from . import chain
+from . import chemfiles
 from . import CRD
 from . import DCD
 from . import DLPoly

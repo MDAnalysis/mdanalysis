@@ -559,7 +559,6 @@ if __name__ == '__main__':
           'matplotlib>=1.5.1',
           'mock',
           'parmed',
-          'chemfiles>=0.9.3',
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
@@ -602,7 +601,6 @@ if __name__ == '__main__':
                 'scipy (>=1.0.0)',
                 'matplotlib (>=1.5.1)',
                 'parmed',
-                'chemfiles (>=0.9.3)',
             ],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
