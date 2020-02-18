@@ -199,12 +199,10 @@
 
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">mmtf</span>
-<span class="kn">import</span> <span class="nn">parmed</span> <span class="k">as</span> <span class="nn">pmd</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">isstream</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_READERS</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span> <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span> <span class="n">_CONVERTERS</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_READERS</span><span class="p">,</span> <span class="n">_READER_HINTS</span><span class="p">,</span>
+                <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_PARSER_HINTS</span><span class="p">,</span>
+                <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span> <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span> <span class="n">_CONVERTERS</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
 
@@ -252,26 +250,23 @@
 <span class="sd">    :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned and `format`</span>
 <span class="sd">    passed to the :class:`~MDAnalysis.coordinates.chain.ChainReader`.</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added format_hint functionalityx</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># check if format is actually a Reader</span>
     <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">format</span>
 
     <span class="c1"># ChainReader gets returned even if format is specified</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="ow">and</span> <span class="n">util</span><span class="o">.</span><span class="n">iterable</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">isstream</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_READER_HINTS</span><span class="p">[</span><span class="s1">&#39;CHAIN&#39;</span><span class="p">](</span><span class="n">filename</span><span class="p">):</span>
         <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;CHAIN&#39;</span>
     <span class="c1"># Only guess if format is not specified</span>
-    <span class="k">elif</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Checks for specialised formats</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="c1"># memoryreader slurps numpy arrays</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MEMORY&#39;</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
-            <span class="c1"># mmtf slurps mmtf object</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pmd</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PARMED&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">fmt_name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">_READER_HINTS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">test</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="nb">format</span> <span class="o">=</span> <span class="n">fmt_name</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># hits else if for loop completes</span>
             <span class="c1"># else let the guessing begin!</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
@@ -406,16 +401,18 @@
 <span class="sd">    ValueError</span>
 <span class="sd">        If no appropriate parser could be found.</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added format_hint functionality</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="nb">format</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">format</span>
 
     <span class="c1"># Only guess if format is not provided</span>
     <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">):</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;mmtf&#39;</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">pmd</span><span class="o">.</span><span class="n">Structure</span><span class="p">):</span>
-            <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PARMED&#39;</span>
+        <span class="k">for</span> <span class="n">fmt_name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">_PARSER_HINTS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">test</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="nb">format</span> <span class="o">=</span> <span class="n">fmt_name</span>
+                <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>

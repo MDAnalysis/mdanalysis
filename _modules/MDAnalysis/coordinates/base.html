@@ -385,7 +385,7 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">core</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">_READERS</span><span class="p">,</span>
+    <span class="n">_READERS</span><span class="p">,</span> <span class="n">_READER_HINTS</span><span class="p">,</span>
     <span class="n">_SINGLEFRAME_WRITERS</span><span class="p">,</span>
     <span class="n">_MULTIFRAME_WRITERS</span><span class="p">,</span>
     <span class="n">_CONVERTERS</span>
@@ -1537,6 +1537,11 @@
 
 
 <span class="k">class</span> <span class="nc">_Readermeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Automatic Reader registration metaclass</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added _format_hint functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Auto register upon class creation</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
@@ -1545,9 +1550,13 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-                <span class="n">_READERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+            <span class="k">for</span> <span class="n">fmt_name</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
+                <span class="n">fmt_name</span> <span class="o">=</span> <span class="n">fmt_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="n">_READERS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+
+                <span class="k">if</span> <span class="s1">&#39;_format_hint&#39;</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
+                    <span class="c1"># isn&#39;t bound yet, so access __func__</span>
+                    <span class="n">_READER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;_format_hint&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
 
 
 <div class="viewcode-block" id="ProtoReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ProtoReader">[docs]</a><span class="k">class</span> <span class="nc">ProtoReader</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Readermeta</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)):</span>

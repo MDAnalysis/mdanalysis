@@ -107,12 +107,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#timesteps">6.1.3. Timesteps</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-coordinate-formats">6.1.4. Supported coordinate formats</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#trajectory-api">6.1.5. Trajectory API</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#history">6.1.5.1. History</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#registry">6.1.5.2. Registry</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#timestep-class">6.1.5.3. Timestep class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#trajectory-reader-class">6.1.5.4. Trajectory Reader class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#trajectory-writer-class">6.1.5.5. Trajectory Writer class</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#single-frame-writer-class">6.1.5.6. Single Frame Writer class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#registry">6.1.5.1. Registry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#timestep-class">6.1.5.2. Timestep class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trajectory-reader-class">6.1.5.3. Trajectory Reader class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#trajectory-writer-class">6.1.5.4. Trajectory Writer class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#single-frame-writer-class">6.1.5.5. Single Frame Writer class</a></li>
 </ul>
 </li>
 </ul>
@@ -548,30 +547,8 @@ I/O code can be written in C or python or a mixture thereof.</p>
 (and using upper case by convention).</p>
 <p>Reader and Writer classes are derived from base classes in
 <a class="reference internal" href="base.html#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a>.</p>
-<div class="section" id="history">
-<h3>6.1.5.1. History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h3>
-<ul class="simple">
-<li>2010-04-30 Draft [orbeckst]</li>
-<li>2010-08-20 added single frame writers to API [orbeckst]</li>
-<li>2010-10-09 added write() method to Writers [orbeckst]</li>
-<li>2010-10-19 use close() instead of close_trajectory() [orbeckst]</li>
-<li>2010-10-30 clarified Writer write() methods (see also <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/49">Issue 49</a>)</li>
-<li>2011-02-01 extended call signature of Reader class</li>
-<li>2011-03-30 optional Writer() method for Readers</li>
-<li>2011-04-18 added time and frame managed attributes to Reader</li>
-<li>2011-04-20 added volume to Timestep</li>
-<li>2012-02-11 added _velocities to Timestep</li>
-<li>2012-05-24 multiframe keyword to distinguish trajectory from single frame writers</li>
-<li>2012-06-04 missing implementations of Reader.__getitem__ should raise <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a></li>
-<li>2013-08-02 Readers/Writers must conform to the Python <a class="reference external" href="http://docs.python.org/2/reference/datamodel.html#context-managers">Context Manager</a> API</li>
-<li>2015-01-15 Timestep._init_unitcell() method added</li>
-<li>2015-06-11 Reworked Timestep init.  Base Timestep now does Vels &amp; Forces</li>
-<li>2015-07-21 Major changes to Timestep and Reader API (release 0.11.0)</li>
-<li>2016-04-03 Removed references to Strict Readers for PDBS [jdetle]</li>
-</ul>
-</div>
 <div class="section" id="registry">
-<h3>6.1.5.2. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.5.1. Registry<a class="headerlink" href="#registry" title="Permalink to this headline">¶</a></h3>
 <p>In various places, MDAnalysis tries to automatically select appropriate formats
 (e.g. by looking at file extensions). In order to allow it to choose the
 correct format, all I/O classes must subclass either
@@ -581,6 +558,12 @@ or <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Wri
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">format</span></code> attribute with a string
 defining the expected suffix.  To assign multiple suffixes to an I/O class, a
 list of suffixes can be given.</p>
+<p>In addition to this, a Reader may define a <code class="docutils literal notranslate"><span class="pre">_format_hint</span></code> staticmethod, which
+returns a boolean of if it can process a given object. E.g. the
+<a class="reference internal" href="memory.html#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory.MemoryReader</span></code></a> identifies itself as
+capable of reading numpy arrays.  This functionality is used in
+<code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.core._get_readers.get_reader_for()</span></code> when figuring out how to
+read an object (which was usually supplied to mda.Universe).</p>
 <p>To define that a Writer can write multiple trajectory frames, set the
 <cite>multiframe</cite> attribute to <code class="docutils literal notranslate"><span class="pre">True</span></code>.  The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.
 To define that a Writer <em>does not</em> support single frame writing the
@@ -588,7 +571,7 @@ To define that a Writer <em>does not</em> support single frame writing the
 by default, ie we assume all Writers can also do a single frame.</p>
 </div>
 <div class="section" id="timestep-class">
-<span id="timestep-api"></span><h3>6.1.5.3. Timestep class<a class="headerlink" href="#timestep-class" title="Permalink to this headline">¶</a></h3>
+<span id="timestep-api"></span><h3>6.1.5.2. Timestep class<a class="headerlink" href="#timestep-class" title="Permalink to this headline">¶</a></h3>
 <p>A Timestep instance holds data for the current frame. It is updated whenever a
 new frame of the trajectory is read.</p>
 <p>Timestep classes are derived from
@@ -596,7 +579,7 @@ new frame of the trajectory is read.</p>
 implementation example (and used directly for the DCDReader).</p>
 <p>The discussion on this format is detailed in <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/250">Issue 250</a></p>
 <div class="section" id="methods">
-<h4>6.1.5.3.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.2.1. Methods<a class="headerlink" href="#methods" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">__init__(n_atoms,</span> <span class="pre">positions=True,</span> <span class="pre">velocities=False,</span> <span class="pre">forces=False)</span></code></dt>
@@ -621,7 +604,7 @@ initialize <code class="xref py py-attr docutils literal notranslate"><span clas
 </div></blockquote>
 </div>
 <div class="section" id="attributes">
-<h4>6.1.5.3.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.2.2. Attributes<a class="headerlink" href="#attributes" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">n_atoms</span></code></dt>
@@ -676,7 +659,7 @@ in <code class="xref py py-attr docutils literal notranslate"><span class="pre">
 </div></blockquote>
 </div>
 <div class="section" id="private-attributes">
-<h4>6.1.5.3.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.2.3. Private attributes<a class="headerlink" href="#private-attributes" title="Permalink to this headline">¶</a></h4>
 <p>These attributes are set directly by the underlying trajectory
 readers. Normally the user should not have to directly access those,
 but instead should use the attribute above.</p>
@@ -704,11 +687,11 @@ this attribute.</p>
 </div>
 </div>
 <div class="section" id="trajectory-reader-class">
-<h3>6.1.5.4. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.5.3. Trajectory Reader class<a class="headerlink" href="#trajectory-reader-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory readers are derived from <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.ReaderBase" title="MDAnalysis.coordinates.base.ReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.ReaderBase</span></code></a>.
 Typically, many methods and attributes are overriden.</p>
 <div class="section" id="id18">
-<h4>6.1.5.4.1. Methods<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.3.1. Methods<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h4>
 <p>The <a class="reference internal" href="DCD.html#MDAnalysis.coordinates.DCD.DCDReader" title="MDAnalysis.coordinates.DCD.DCDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD.DCDReader</span></code></a> class is the primary
 implementation example.</p>
 <p><strong>Mandatory methods</strong></p>
@@ -825,7 +808,7 @@ filled in; the actual keyword arguments depend on the Writer.</p>
 </div></blockquote>
 </div>
 <div class="section" id="id19">
-<h4>6.1.5.4.2. Attributes<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.3.2. Attributes<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">filename</span></code></dt>
@@ -883,7 +866,7 @@ the stride at which the MD simulation was sampled)</dd>
 </div>
 </div>
 <div class="section" id="trajectory-writer-class">
-<h3>6.1.5.5. Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.5.4. Trajectory Writer class<a class="headerlink" href="#trajectory-writer-class" title="Permalink to this headline">¶</a></h3>
 <p>Trajectory writers are derived from
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.WriterBase" title="MDAnalysis.coordinates.base.WriterBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.WriterBase</span></code></a>. They are used to write
 multiple frames to a trajectory file. Every time the
@@ -902,7 +885,7 @@ another frame is appended to the trajectory.</p>
 </pre></div>
 </div>
 <div class="section" id="id20">
-<h4>6.1.5.5.1. Methods<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.4.1. Methods<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">__init__(filename,n_atoms[,start[,step[,delta[,remarks]]]])</span></code></dt>
@@ -922,7 +905,7 @@ unitcell representation of the format</dd>
 </div></blockquote>
 </div>
 <div class="section" id="id21">
-<h4>6.1.5.5.2. Attributes<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.4.2. Attributes<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">filename</span></code></dt>
@@ -949,7 +932,7 @@ Any field not used should be set to <code class="docutils literal notranslate"><
 </div>
 </div>
 <div class="section" id="single-frame-writer-class">
-<h3>6.1.5.6. Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Permalink to this headline">¶</a></h3>
+<h3>6.1.5.5. Single Frame Writer class<a class="headerlink" href="#single-frame-writer-class" title="Permalink to this headline">¶</a></h3>
 <p>A single frame writer is a special case of a trajectory writer in that it
 writes only a single coordinate frame to a file, for instance, a pdb or gro
 file. Unlike trajectory formats, which only contains coordinates, <em>single
@@ -967,7 +950,7 @@ arguments (filename and n_atoms) as for the Trajectory writers. In
 this way, the simple <a class="reference internal" href="core.html#MDAnalysis.coordinates.core.writer" title="MDAnalysis.coordinates.core.writer"><code class="xref py py-func docutils literal notranslate"><span class="pre">writer()</span></code></a>
 factory function can be used for all writers.</p>
 <div class="section" id="id22">
-<h4>6.1.5.6.1. Methods<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
+<h4>6.1.5.5.1. Methods<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h4>
 <blockquote>
 <div><dl class="docutils">
 <dt><code class="docutils literal notranslate"><span class="pre">__init__(filename,</span> <span class="pre">**kwargs)</span></code></dt>

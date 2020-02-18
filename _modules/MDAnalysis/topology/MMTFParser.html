@@ -327,6 +327,14 @@
 <div class="viewcode-block" id="MMTFParser"><a class="viewcode-back" href="../../../documentation_pages/topology/MMTFParser.html#MDAnalysis.topology.MMTFParser.MMTFParser">[docs]</a><span class="k">class</span> <span class="nc">MMTFParser</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MMTF&#39;</span>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_format_hint</span><span class="p">(</span><span class="n">thing</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Can parser read *thing*?</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">thing</span><span class="p">,</span> <span class="n">mmtf</span><span class="o">.</span><span class="n">MMTFDecoder</span><span class="p">)</span>
+
     <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
         <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1371/journal.pcbi.1005575&#39;</span><span class="p">),</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;MMTF Parser&quot;</span><span class="p">,</span>

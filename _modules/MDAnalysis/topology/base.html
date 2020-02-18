@@ -221,12 +221,41 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_PARSERS</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_PARSERS</span><span class="p">,</span> <span class="n">_PARSER_HINTS</span>
 <span class="kn">from</span> <span class="nn">..coordinates.base</span> <span class="kn">import</span> <span class="n">IOBase</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 
 
 <span class="k">class</span> <span class="nc">_Topologymeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Internal: Topology Parser registration voodoo</span>
+
+<span class="sd">    When classes which inherit from TopologyReaderBase are *defined*</span>
+<span class="sd">    this metaclass makes it known to MDAnalysis.  The optional `format`</span>
+<span class="sd">    attribute and `_format_hint` staticmethod are read:</span>
+<span class="sd">     - `format` defines the file extension this Parser targets.</span>
+<span class="sd">     - `_format_hint` defines a function which returns a boolean if the</span>
+<span class="sd">       Parser can process a particular object</span>
+
+<span class="sd">    Eg::</span>
+
+<span class="sd">      class ThingParser(TopologyReaderBase):</span>
+<span class="sd">          format = [&#39;foo&#39;, &#39;bar&#39;]</span>
+
+<span class="sd">          @staticmethod</span>
+<span class="sd">          _format_hint(thing):</span>
+<span class="sd">              try:</span>
+<span class="sd">                  import WeirdPackage</span>
+<span class="sd">              except ImportError:</span>
+<span class="sd">                  return False</span>
+<span class="sd">              return isinstance(thing, WeirdPackage.Thing)</span>
+
+<span class="sd">    This way there is no strict dependency on &quot;WeirdPackage&quot;, but if</span>
+<span class="sd">    a user supplies a WeirdPackage.Thing the &quot;ThingParser&#39; will be able</span>
+<span class="sd">    to step up and read it.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Added format_hint functionality</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -234,10 +263,12 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
-                <span class="n">_PARSERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+            <span class="k">for</span> <span class="n">fmt_name</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
+                <span class="n">fmt_name</span> <span class="o">=</span> <span class="n">fmt_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="n">_PARSERS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
+                <span class="k">if</span> <span class="s1">&#39;_format_hint&#39;</span> <span class="ow">in</span> <span class="n">classdict</span><span class="p">:</span>
+                    <span class="n">_PARSER_HINTS</span><span class="p">[</span><span class="n">fmt_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;_format_hint&#39;</span><span class="p">]</span><span class="o">.</span><span class="vm">__func__</span>
 
 <div class="viewcode-block" id="TopologyReaderBase"><a class="viewcode-back" href="../../../documentation_pages/topology/base.html#MDAnalysis.topology.base.TopologyReaderBase">[docs]</a><span class="k">class</span> <span class="nc">TopologyReaderBase</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Topologymeta</span><span class="p">,</span> <span class="n">IOBase</span><span class="p">)):</span>
     <span class="sd">&quot;&quot;&quot;Base class for topology readers</span>
