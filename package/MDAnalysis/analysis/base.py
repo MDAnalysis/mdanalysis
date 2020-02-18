@@ -33,7 +33,6 @@ import six
 from six.moves import range, zip
 import inspect
 import logging
-import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -226,7 +225,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         .. versionchanged:: 1.0.0
            Support for directly passing the ``start``, ``stop``, and ``step``
-           arguments has been removed. These should isntead be passed
+           arguments has been removed. These should instead be passed
            to :meth:`AnalysisFromFunction.run`.
 
         """
