@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
-         Yuan-Yu, xiki-tempula
+         Yuan-Yu, xiki-tempula, orbeckst
 
   * 0.21.0
 
@@ -56,6 +56,7 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
+  * Added new density.DensityAnalysis (Issue #2502)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
