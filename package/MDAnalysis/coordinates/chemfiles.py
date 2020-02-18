@@ -44,6 +44,7 @@ from __future__ import print_function, unicode_literals
 import numpy as np
 from six import string_types
 from distutils.version import LooseVersion
+import warnings
 
 from . import base, core
 
@@ -55,23 +56,29 @@ else:
     HAS_CHEMFILES = True
 
 
-
 MIN_CHEMFILES_VERSION = LooseVersion("0.9")
 MAX_CHEMFILES_VERSION = LooseVersion("0.10")
 
 
 def check_chemfiles_version():
+    """Check an appropriate Chemfiles is available
+
+    .. versionadded:: 1.0.0
+    """
     if not HAS_CHEMFILES:
-        raise RuntimeError(
+        warnings.warn(
             "No Chemfiles package found.  "
             "Try installing with 'pip install chemfiles'"
         )
+        return False
     version = LooseVersion(chemfiles.__version__)
-    if version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION:
-        raise RuntimeError(
+    wrong = version < MIN_CHEMFILES_VERSION or version >= MAX_CHEMFILES_VERSION
+    if wrong:
+        warnings.warn(
             "unsupported Chemfiles version {}, we need a version >{} and <{}"
             .format(version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION)
         )
+    return wrong
 
 
 class ChemfilesReader(base.ReaderBase):
@@ -80,6 +87,8 @@ class ChemfilesReader(base.ReaderBase):
     The file format to used is guessed based on the file extension. If no
     matching format is found, a ``ChemfilesError`` is raised. It is also
     possible to manually specify the format to use for a given file.
+
+    .. versionadded:: 1.0.0
     """
     format = 'chemfiles'
     units = {'time': 'fs', 'length': 'Angstrom'}
@@ -101,7 +110,9 @@ class ChemfilesReader(base.ReaderBase):
 
         .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
-        check_chemfiles_version()
+        if not check_chemfiles_version():
+            raise RuntimeError("Please install Chemfiles > {}"
+                               "".format(MIN_CHEMFILES_VERSION))
         super(ChemfilesReader, self).__init__(filename, **kwargs)
         self._format = chemfiles_format
         self._cached_n_atoms = None
@@ -198,8 +209,9 @@ class ChemfilesWriter(base.WriterBase):
     Chemfiles support writting to files with varying number of atoms if the
     underlying format support it. This is the case of most of text-based
     formats.
-    """
 
+    .. versionadded:: 1.0.0
+    """
     format = 'chemfiles'
     multiframe = True
 
@@ -237,7 +249,9 @@ class ChemfilesWriter(base.WriterBase):
 
         .. _formats: http://chemfiles.org/chemfiles/latest/formats.html
         """
-        check_chemfiles_version()
+        if not check_chemfiles_version():
+            raise RuntimeError("Please install Chemfiles > {}"
+                               "".format(MIN_CHEMFILES_VERSION))
         self.filename = filename
         self.n_atoms = n_atoms
         if mode != "a" and mode != "w":

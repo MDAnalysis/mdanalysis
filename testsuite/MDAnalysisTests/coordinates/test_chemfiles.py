@@ -25,7 +25,9 @@ import numpy as np
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysis.coordinates.chemfiles import ChemfilesReader, ChemfilesWriter
+from MDAnalysis.coordinates.chemfiles import (
+    ChemfilesReader, ChemfilesWriter, check_chemfiles_version,
+)
 
 from MDAnalysisTests import datafiles, tempdir
 from MDAnalysisTests.coordinates.base import (
@@ -34,6 +36,8 @@ from MDAnalysisTests.coordinates.base import (
 from MDAnalysisTests.coordinates.test_xyz import XYZReference
 
 
+# skip entire test module if no appropriate chemfiles
+pytest.mark.skipif(check_chemfiles_version())
 chemfiles = pytest.importorskip('chemfiles')
 
 
