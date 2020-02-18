@@ -251,17 +251,16 @@
 <span class="sd">    &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
 <span class="sd">    &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
 
-
 <span class="sd">To calculate the Harmonic Ensemble Similarity (:func:`hes`)</span>
 <span class="sd">two ensemble objects are first created and then used for calculation: ::</span>
 
 <span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
-<span class="sd">    &gt;&gt;&gt; print encore.hes([ens1, ens2])</span>
-<span class="sd">    (array([[        0.        ,  38279683.95892926],</span>
-<span class="sd">            [ 38279683.95892926,         0.        ]]), None)</span>
+<span class="sd">    &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
+<span class="sd">    &gt;&gt;&gt; print(HES)</span>
+<span class="sd">    [[        0.        ,  38279683.95892926],</span>
+<span class="sd">    [ 38279683.95892926,         0.        ]]</span>
 
-<span class="sd">Here None is returned in the array as the default details parameter is False.</span>
 <span class="sd">HES can assume any non-negative value, i.e. no upper bound exists and the</span>
 <span class="sd">measurement can therefore be used as an absolute scale.</span>
 
@@ -275,7 +274,7 @@
 <span class="sd">    &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">    &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
 <span class="sd">    &gt;&gt;&gt; CES, details = encore.ces([ens1, ens2])</span>
-<span class="sd">    &gt;&gt;&gt; print CES</span>
+<span class="sd">    &gt;&gt;&gt; print(CES)</span>
 <span class="sd">    [[ 0.          0.68070702]</span>
 <span class="sd">    [ 0.68070702  0.        ]]</span>
 
@@ -308,7 +307,7 @@
 
 <span class="sd">    &gt;&gt;&gt; DRES,details = encore.dres([ens1, ens2],</span>
 <span class="sd">                                   distance_matrix = rmsd_matrix)</span>
-<span class="sd">    &gt;&gt;&gt; print DRES</span>
+<span class="sd">    &gt;&gt;&gt; print(DRES)</span>
 <span class="sd">    [[ 0.        ,   0.67453198]</span>
 <span class="sd">     [  0.67453198,  0.        ]]</span>
 
@@ -896,7 +895,6 @@
         <span class="n">cov_estimator</span><span class="o">=</span><span class="s2">&quot;shrinkage&quot;</span><span class="p">,</span>
         <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span>
         <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">details</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">estimate_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">bootstrapping_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
         <span class="n">calc_diagonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -922,9 +920,6 @@
 <span class="sd">        Note: this changes the ensembles in-place, and will thus leave your</span>
 <span class="sd">        ensembles in an altered state.</span>
 <span class="sd">        (default is False)</span>
-<span class="sd">    details : bool, optional</span>
-<span class="sd">        Save the mean and covariance matrix for each</span>
-<span class="sd">        ensemble in a numpy array (default is False).</span>
 <span class="sd">    estimate_error : bool, optional</span>
 <span class="sd">        Whether to perform error estimation (default is False).</span>
 <span class="sd">    bootstrapping_samples : int, optional</span>
@@ -937,8 +932,9 @@
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    numpy.array (bidimensional)</span>
-<span class="sd">        Harmonic similarity measurements between each pair of ensembles.</span>
+<span class="sd">    hes, details : numpy.array, dictionary</span>
+<span class="sd">        Harmonic similarity measurements between each pair of ensembles,</span>
+<span class="sd">        and dict containing mean and covariance matrix for each ensemble</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
@@ -979,7 +975,7 @@
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
 <span class="sd">        &gt;&gt;&gt; HES, details = encore.hes([ens1, ens2])</span>
-<span class="sd">        &gt;&gt;&gt; print HES</span>
+<span class="sd">        &gt;&gt;&gt; print(HES)</span>
 <span class="sd">        [[        0.          38279683.95892926]</span>
 <span class="sd">         [ 38279683.95892926         0.        ]]</span>
 
@@ -988,7 +984,7 @@
 <span class="sd">    align everything to the current timestep in the first ensemble. Note that</span>
 <span class="sd">    this changes the ens1 and ens2 objects:</span>
 
-<span class="sd">        &gt;&gt;&gt; print encore.hes([ens1, ens2], align=True)[0]</span>
+<span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2], align=True)[0])</span>
 <span class="sd">        [[    0.          6880.34140106]</span>
 <span class="sd">        [ 6880.34140106     0.        ]]</span>
 
@@ -998,9 +994,14 @@
 <span class="sd">        &gt;&gt;&gt; from MDAnalysis.analysis import align</span>
 <span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens1, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
 <span class="sd">        &gt;&gt;&gt; align.AlignTraj(ens2, ens1, select=&quot;name CA&quot;, in_memory=True).run()</span>
-<span class="sd">        &gt;&gt;&gt; print encore.hes([ens1, ens2])[0]</span>
+<span class="sd">        &gt;&gt;&gt; print(encore.hes([ens1, ens2])[0])</span>
 <span class="sd">        [[    0.          7032.19607004]</span>
 <span class="sd">         [ 7032.19607004     0.        ]]</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       hes doesn&#39;t accept the *details* argument anymore, it always returns the</span>
+<span class="sd">       details of the calculation instead, in the form of a dictionary</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">))</span> <span class="ow">and</span> <span class="n">weights</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
@@ -1112,15 +1113,10 @@
         <span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="c1"># Save details as required</span>
-    <span class="k">if</span> <span class="n">details</span><span class="p">:</span>
-        <span class="n">kwds</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out_matrix_eln</span><span class="p">):</span>
-            <span class="n">kwds</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_mean&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="n">kwds</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_covariance_matrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">details</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">kwds</span><span class="p">)</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">details</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out_matrix_eln</span><span class="p">):</span>
+        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_mean&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble</span><span class="si">{0:d}</span><span class="s1">_covariance_matrix&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="n">sigmas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">values</span><span class="p">,</span> <span class="n">details</span></div>
 
@@ -1235,8 +1231,8 @@
 
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
-<span class="sd">        &gt;&gt;&gt; CES,details = encore.ces([ens1,ens2])</span>
-<span class="sd">        &gt;&gt;&gt; print CES</span>
+<span class="sd">        &gt;&gt;&gt; CES, details = encore.ces([ens1,ens2])</span>
+<span class="sd">        &gt;&gt;&gt; print(CES)</span>
 <span class="sd">        [[ 0.          0.68070702]</span>
 <span class="sd">         [ 0.68070702  0.        ]]</span>
 
@@ -1248,10 +1244,10 @@
 <span class="sd">        &gt;&gt;&gt; CES, details = encore.ces([ens1,ens2],</span>
 <span class="sd">                                      clustering_method = [encore.DBSCAN(eps=0.45),</span>
 <span class="sd">                                                           encore.DBSCAN(eps=0.50)])</span>
-<span class="sd">        &gt;&gt;&gt; print &quot;eps=0.45: &quot;, CES[0]</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;eps=0.45: &quot;, CES[0])</span>
 <span class="sd">        eps=0.45:  [[ 0.          0.20447236]</span>
 <span class="sd">        [ 0.20447236  0.        ]]</span>
-<span class="sd">        &gt;&gt;&gt; print &quot;eps=0.5: &quot;, CES[1]</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;eps=0.5: &quot;, CES[1])</span>
 <span class="sd">        eps=0.5:  [[ 0.          0.25331629]</span>
 <span class="sd">        [ 0.25331629  0.        ]]&quot;</span>
 
@@ -1511,7 +1507,7 @@
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF,DCD2)</span>
 <span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2])</span>
-<span class="sd">        &gt;&gt;&gt; print DRES</span>
+<span class="sd">        &gt;&gt;&gt; print(DRES)</span>
 <span class="sd">        [[ 0.          0.67996043]</span>
 <span class="sd">         [ 0.67996043  0.        ]]</span>
 
@@ -1527,7 +1523,7 @@
 
 <span class="sd">        &gt;&gt;&gt; DRES, details = encore.dres([ens1,ens2],</span>
 <span class="sd">                                        dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
-<span class="sd">        &gt;&gt;&gt; print DRES</span>
+<span class="sd">        &gt;&gt;&gt; print(DRES)</span>
 <span class="sd">        [[ 0.          0.69314718]</span>
 <span class="sd">         [ 0.69314718  0.        ]]</span>
 
@@ -1724,7 +1720,7 @@
 
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
 <span class="sd">        &gt;&gt;&gt; ces_conv = encore.ces_convergence(ens1, 10)</span>
-<span class="sd">        &gt;&gt;&gt; print ces_conv</span>
+<span class="sd">        &gt;&gt;&gt; print(ces_conv)</span>
 <span class="sd">        [[ 0.48194205]</span>
 <span class="sd">        [ 0.40284672]</span>
 <span class="sd">        [ 0.31699026]</span>
@@ -1833,7 +1829,7 @@
 
 <span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF,DCD)</span>
 <span class="sd">        &gt;&gt;&gt; dres_conv = encore.dres_convergence(ens1, 10)</span>
-<span class="sd">        &gt;&gt;&gt; print dres_conv</span>
+<span class="sd">        &gt;&gt;&gt; print(dres_conv)</span>
 <span class="sd">        [[ 0.5295528 ]</span>
 <span class="sd">         [ 0.40716539]</span>
 <span class="sd">         [ 0.31158669]</span>

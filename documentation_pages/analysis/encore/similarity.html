@@ -270,13 +270,13 @@ examples first execute:</p>
 two ensemble objects are first created and then used for calculation:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
-<span class="go">(array([[        0.        ,  38279683.95892926],</span>
-<span class="go">        [ 38279683.95892926,         0.        ]]), None)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HES</span><span class="p">)</span>
+<span class="go">[[        0.        ,  38279683.95892926],</span>
+<span class="go">[ 38279683.95892926,         0.        ]]</span>
 </pre></div>
 </div>
-<p>Here None is returned in the array as the default details parameter is False.
-HES can assume any non-negative value, i.e. no upper bound exists and the
+<p>HES can assume any non-negative value, i.e. no upper bound exists and the
 measurement can therefore be used as an absolute scale.</p>
 <p>The calculation of the Clustering Ensemble Similarity (<a class="reference internal" href="#MDAnalysis.analysis.encore.similarity.ces" title="MDAnalysis.analysis.encore.similarity.ces"><code class="xref py py-func docutils literal notranslate"><span class="pre">ces()</span></code></a>)
 is computationally more expensive. It is based on clustering algorithms that in
@@ -287,7 +287,7 @@ The RMSD matrix is automatically calculated.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.68070702]</span>
 <span class="go">[ 0.68070702  0.        ]]</span>
 </pre></div>
@@ -319,7 +319,7 @@ In the following example the dimensions are reduced to 3 using the
 saved RMSD matrix and the default SPE dimensional reduction method.   :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span>
 <span class="go">                               distance_matrix = rmsd_matrix)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
 <span class="go">[[ 0.        ,   0.67453198]</span>
 <span class="go"> [  0.67453198,  0.        ]]</span>
 </pre></div>
@@ -341,7 +341,7 @@ a symmetrized version of the Kullback-Leibler divergence, which is unbounded.</p
 <h2>4.2.6.1.1.1. Functions for ensemble comparisons<a class="headerlink" href="#functions-for-ensemble-comparisons" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="MDAnalysis.analysis.encore.similarity.hes">
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>details=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.similarity.hes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
 the symmetrized version of Kullback-Leibler divergence as described
 in <a class="reference internal" href="#tiberti2015" id="id4">[Tiberti2015]</a>.</p>
@@ -359,8 +359,6 @@ or Maximum Likelyhood, <cite>ml</cite>. Default is shrinkage.</li>
 Note: this changes the ensembles in-place, and will thus leave your
 ensembles in an altered state.
 (default is False)</li>
-<li><strong>details</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Save the mean and covariance matrix for each
-ensemble in a numpy array (default is False).</li>
 <li><strong>estimate_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to perform error estimation (default is False).</li>
 <li><strong>bootstrapping_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of times the similarity matrix will be bootstrapped (default
 is 100), only if estimate_error is True.</li>
@@ -370,10 +368,11 @@ If this is False (default), 0.0 will be used instead.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Harmonic similarity measurements between each pair of ensembles.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>hes, details</strong> – Harmonic similarity measurements between each pair of ensembles,
+and dict containing mean and covariance matrix for each ensemble</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array (bidimensional)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array, dictionary</p>
 </td>
 </tr>
 </tbody>
@@ -406,7 +405,7 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">HES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HES</span><span class="p">)</span>
 <span class="go">[[        0.          38279683.95892926]</span>
 <span class="go"> [ 38279683.95892926         0.        ]]</span>
 </pre></div>
@@ -414,7 +413,7 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <p>You can use the align=True option to align the ensembles first. This will
 align everything to the current timestep in the first ensemble. Note that
 this changes the ens1 and ens2 objects:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">[[    0.          6880.34140106]</span>
 <span class="go">[ 6880.34140106     0.        ]]</span>
 </pre></div>
@@ -424,10 +423,14 @@ you can call use an AlignTraj object manually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">[[    0.          7032.19607004]</span>
 <span class="go"> [ 7032.19607004     0.        ]]</span>
 </pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>hes doesn’t accept the <em>details</em> argument anymore, it always returns the
+details of the calculation instead, in the form of a dictionary</p>
 </div>
 </dd></dl>
 
@@ -506,8 +509,8 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 Here the simplest case of just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is illustrated:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.68070702]</span>
 <span class="go"> [ 0.68070702  0.        ]]</span>
 </pre></div>
@@ -519,10 +522,10 @@ instances of the same clustering class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                              clustering_method = [encore.DBSCAN(eps=0.45),</span>
 <span class="go">                                                   encore.DBSCAN(eps=0.50)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">eps=0.45:  [[ 0.          0.20447236]</span>
 <span class="go">[ 0.20447236  0.        ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="go">eps=0.5:  [[ 0.          0.25331629]</span>
 <span class="go">[ 0.25331629  0.        ]]&quot;</span>
 </pre></div>
@@ -612,7 +615,7 @@ illustrated:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.67996043]</span>
 <span class="go"> [ 0.67996043  0.        ]]</span>
 </pre></div>
@@ -626,7 +629,7 @@ for the same clustering method can be explored by adding different
 instances of the same method  class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                                dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.69314718]</span>
 <span class="go"> [ 0.69314718  0.        ]]</span>
 </pre></div>
@@ -711,8 +714,8 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 Here the simplest case of just two instances of <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> is illustrated:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span><span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">CES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">CES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.68070702]</span>
 <span class="go"> [ 0.68070702  0.        ]]</span>
 </pre></div>
@@ -724,10 +727,10 @@ instances of the same clustering class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">CES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                              clustering_method = [encore.DBSCAN(eps=0.45),</span>
 <span class="go">                                                   encore.DBSCAN(eps=0.50)])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.45: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">eps=0.45:  [[ 0.          0.20447236]</span>
 <span class="go">[ 0.20447236  0.        ]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eps=0.5: &quot;</span><span class="p">,</span> <span class="n">CES</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="go">eps=0.5:  [[ 0.          0.25331629]</span>
 <span class="go">[ 0.25331629  0.        ]]&quot;</span>
 </pre></div>
@@ -778,7 +781,7 @@ Here the simplest case of evaluating the convergence is illustrated by
 splitting the trajectory into a window_size of 10 frames :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ces_conv</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">ces_convergence</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">ces_conv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ces_conv</span><span class="p">)</span>
 <span class="go">[[ 0.48194205]</span>
 <span class="go">[ 0.40284672]</span>
 <span class="go">[ 0.31699026]</span>
@@ -1088,7 +1091,7 @@ illustrated:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.67996043]</span>
 <span class="go"> [ 0.67996043  0.        ]]</span>
 </pre></div>
@@ -1102,7 +1105,7 @@ for the same clustering method can be explored by adding different
 instances of the same method  class:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">DRES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span><span class="n">ens2</span><span class="p">],</span>
 <span class="go">                                dimensionality_reduction_method = encore.PrincipalComponentAnalysis(dimension=2))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">DRES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">DRES</span><span class="p">)</span>
 <span class="go">[[ 0.          0.69314718]</span>
 <span class="go"> [ 0.69314718  0.        ]]</span>
 </pre></div>
@@ -1155,7 +1158,7 @@ Here the simplest case of evaluating the convergence is illustrated by
 splitting the trajectory into a window_size of 10 frames :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">dres_conv</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">dres_convergence</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">dres_conv</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">dres_conv</span><span class="p">)</span>
 <span class="go">[[ 0.5295528 ]</span>
 <span class="go"> [ 0.40716539]</span>
 <span class="go"> [ 0.31158669]</span>
@@ -1239,7 +1242,7 @@ ensemble.</li>
 
 <dl class="function">
 <dt>
-<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>details=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a></dt>
+<code class="descclassname">MDAnalysis.analysis.encore.similarity.</code><code class="descname">hes</code><span class="sig-paren">(</span><em>ensembles</em>, <em>select='name CA'</em>, <em>cov_estimator='shrinkage'</em>, <em>weights='mass'</em>, <em>align=False</em>, <em>estimate_error=False</em>, <em>bootstrapping_samples=100</em>, <em>calc_diagonal=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/similarity.html#hes"><span class="viewcode-link">[source]</span></a></dt>
 <dd><p>Calculates the Harmonic Ensemble Similarity (HES) between ensembles using
 the symmetrized version of Kullback-Leibler divergence as described
 in <a class="reference internal" href="#tiberti2015" id="id10">[Tiberti2015]</a>.</p>
@@ -1257,8 +1260,6 @@ or Maximum Likelyhood, <cite>ml</cite>. Default is shrinkage.</li>
 Note: this changes the ensembles in-place, and will thus leave your
 ensembles in an altered state.
 (default is False)</li>
-<li><strong>details</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Save the mean and covariance matrix for each
-ensemble in a numpy array (default is False).</li>
 <li><strong>estimate_error</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether to perform error estimation (default is False).</li>
 <li><strong>bootstrapping_samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Number of times the similarity matrix will be bootstrapped (default
 is 100), only if estimate_error is True.</li>
@@ -1268,10 +1269,11 @@ If this is False (default), 0.0 will be used instead.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Harmonic similarity measurements between each pair of ensembles.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>hes, details</strong> – Harmonic similarity measurements between each pair of ensembles,
+and dict containing mean and covariance matrix for each ensemble</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array (bidimensional)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array, dictionary</p>
 </td>
 </tr>
 </tbody>
@@ -1304,7 +1306,7 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ens1</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ens2</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">HES</span><span class="p">,</span> <span class="n">details</span> <span class="o">=</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">HES</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">HES</span><span class="p">)</span>
 <span class="go">[[        0.          38279683.95892926]</span>
 <span class="go"> [ 38279683.95892926         0.        ]]</span>
 </pre></div>
@@ -1312,7 +1314,7 @@ examples see the module <a class="reference internal" href="#examples">Examples<
 <p>You can use the align=True option to align the ensembles first. This will
 align everything to the current timestep in the first ensemble. Note that
 this changes the ens1 and ens2 objects:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">],</span> <span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">[[    0.          6880.34140106]</span>
 <span class="go">[ 6880.34140106     0.        ]]</span>
 </pre></div>
@@ -1322,10 +1324,14 @@ you can call use an AlignTraj object manually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">align</span><span class="o">.</span><span class="n">AlignTraj</span><span class="p">(</span><span class="n">ens2</span><span class="p">,</span> <span class="n">ens1</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">encore</span><span class="o">.</span><span class="n">hes</span><span class="p">([</span><span class="n">ens1</span><span class="p">,</span> <span class="n">ens2</span><span class="p">])[</span><span class="mi">0</span><span class="p">])</span>
 <span class="go">[[    0.          7032.19607004]</span>
 <span class="go"> [ 7032.19607004     0.        ]]</span>
 </pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>hes doesn’t accept the <em>details</em> argument anymore, it always returns the
+details of the calculation instead, in the form of a dictionary</p>
 </div>
 </dd></dl>
 
