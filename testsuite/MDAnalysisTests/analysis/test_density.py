@@ -241,29 +241,23 @@ class Test_density_from_Universe(object):
 
     def test_density_from_Universe_userdefn_padding(self, universe):
         import MDAnalysis.analysis.density
-        wmsg = ("Box padding (currently set at 1.0) is not used in user "
-                "defined grids.")
-        with pytest.warns(UserWarning) as record:
+        regex = ("Box padding \(currently set at 1\.0\) is not used "
+                 "in user defined grids\.")
+        with pytest.warns(UserWarning, match=regex):
             D = MDAnalysis.analysis.density.density_from_Universe(
                 universe, select=self.selections['static'],
-                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=1.0,
+                delta=self.delta, xdim=100.0, ydim=100.0, zdim=100.0, padding=1.0,
                 gridcenter=self.gridcenters['static_defined'])
-        
-        assert len(record) == 3
-        assert str(record[1].message.args[0]) == wmsg
 
     def test_density_from_Universe_userdefn_selwarning(self, universe):
         import MDAnalysis.analysis.density
-        wmsg = ("Atom selection does not fit grid --- "
+        regex = ("Atom selection does not fit grid --- "
                 "you may want to define a larger box")
-        with pytest.warns(UserWarning) as record:
+        with pytest.warns(UserWarning, match=regex):
             D = MDAnalysis.analysis.density.density_from_Universe(
                 universe, select=self.selections['static'],
-                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
+                delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined'])
-
-        assert len(record) == 2
-        assert str(record[1].message.args[0]) == wmsg
 
     def test_density_from_Universe_userdefn_ValueErrors(self, universe):
         import MDAnalysis.analysis.density
@@ -285,6 +279,14 @@ class Test_density_from_Universe(object):
                 universe, select=self.selections['static'],
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined'])
+
+    def test_density_from_Universe_Deprecation_warning(self, universe):
+        import MDAnalysis.analysis.density
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, select=self.selections['static'],
+                delta=self.delta)
 
 
 class TestGridImport(object):

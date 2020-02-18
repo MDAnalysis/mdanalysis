@@ -63,23 +63,27 @@ To generate the density of water molecules around a protein (assuming that the
 trajectory is already appropriately treated for periodic boundary artifacts and
 is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::
 
-  from MDAnalysis.analysis.density import density_from_Universe
+  from MDAnalysis.analysis.density import DensityAnalysis
   u = Universe(TPR, XTC)
-  D = density_from_Universe(u, delta=1.0, select="name OW")
+  ow = u.select_atoms("name OW")
+  D = DensityAnalysis(ow, delta=1.0)
+  D.run()
   D.convert_density('TIP4P')
-  D.export("water.dx", type="double")
+  D.density.export("water.dx", type="double")
 
-The positions of all water oxygens are histogrammed on a grid with spacing
-*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With
-the :meth:`Density.convert_density` method, the units of measurement are
-changed. In the example we are now measuring the density relative to the
-literature value of the TIP4P water model at ambient conditions (see the values
-in :data:`MDAnalysis.units.water` for details). Finally, the density is written
-as an OpenDX_ compatible file that can be read in VMD_, Chimera_, or PyMOL_.
+The positions of all water oxygens (the :class:`AtomGroup` `ow`) are
+histogrammed on a grid with spacing *delta* = 1 Å. Initially the density is
+measured in :math:`\text{Å}^{-3}`. With the :meth:`Density.convert_density`
+method, the units of measurement are changed. In the example we are now
+measuring the density relative to the literature value of the TIP4P water model
+at ambient conditions (see the values in :data:`MDAnalysis.units.water` for
+details). Finally, the density is written as an OpenDX_ compatible file that
+can be read in VMD_, Chimera_, or PyMOL_.
 
-See :class:`Density` for details. In particular, the density is stored
-as a NumPy array in :attr:`Density.grid`, which can be processed in
-any manner.
+The :class:`Density` object is accessible as the
+:attr:`DensityAnalysis.density` attribute.  In particular, the data for the
+density is stored as a NumPy array in :attr:`Density.grid`, which can be
+processed in any manner.
 
 
 Creating densities
@@ -88,6 +92,7 @@ Creating densities
 The following functions take trajectory or coordinate data and generate a
 :class:`Density` object.
 
+.. autoclass:; DensityAnalysis
 .. autofunction:: density_from_Universe
 .. autofunction:: density_from_PDB
 .. autofunction:: Bfactor2RMSF
@@ -180,10 +185,12 @@ from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.util import deprecate
 
 import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.density")
+
 
 class Density(Grid):
     r"""Class representing a density on a regular cartesian grid.
@@ -272,7 +279,7 @@ class Density(Grid):
 
     See Also
     --------
-    gridData.core.Grid : the base class of :class:`Density`.
+    gridData.core.Grid is the base class of :class:`Density`.
 
     Examples
     --------
@@ -310,6 +317,7 @@ class Density(Grid):
     :class:`Density` objects can be algebraically manipulated (added,
     subtracted, multiplied, ...)  but there are *no sanity checks* in place to
     make sure that units, metadata, etc are compatible!
+
 
     .. Note::
 
@@ -551,6 +559,8 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     return umin, umax
 
 
+@deprecate(release="1.0.0", remove="2.0.0",
+           message="Use ``DensityAnalysis(u, ...).run().density`` instead.")
 def density_from_Universe(universe, delta=1.0, select='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
@@ -705,20 +715,21 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
       atom_count_histogram = physical_density * volume
 
 
-    .. versionchanged:: 0.21.0
-       Warns users that `padding` value is not used in user defined grids
-    .. versionchanged:: 0.20.0
-       ProgressMeter now iterates over the number of frames analysed.
-    .. versionchanged:: 0.19.0
-       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
-       defined boxes
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
     .. deprecated:: 0.16
        The keyword argument *quiet* is deprecated in favor of *verbose*.
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 0.19.0
+       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
+       defined boxes
+    .. versionchanged:: 0.20.0
+       ProgressMeter now iterates over the number of frames analysed.
+    .. versionchanged:: 1.0.0
        time_unit and length_unit default to ps and Angstrom now flags have
-       been removed (same as previous flag defaults)
+       been removed (same as previous flag defaults);
+       warns users that `padding` value is not used in user defined grids
+    .. deprecated:: 1.0.0
+       `density_from_Universe` will removed in 2.0.0; use `DensityAnalysis` instead
     """
     u = universe
 
