@@ -472,6 +472,8 @@ The following methods must be implemented in a Reader class.
  ``__exit__()``
      exit method of a `Context Manager`_, should call ``close()``.
 
+.. _Context Manager: http://docs.python.org/2/reference/datamodel.html#context-managers
+
 .. Note::
    a ``__del__()`` method should also be present to ensure that the
    trajectory is properly closed. However, certain types of Reader can ignore
