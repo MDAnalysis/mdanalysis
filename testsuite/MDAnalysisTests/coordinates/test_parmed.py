@@ -46,18 +46,6 @@ from MDAnalysisTests.datafiles import (
 
 pmd = pytest.importorskip('parmed')
 
-from MDAnalysis.core._get_readers import _is_parmed_object
-
-
-@pytest.mark.parametrize('thing,reference', [
-    ('foo', False),
-    ([1,2,3], False),
-    (pmd.load_file(GRO), True),
-])
-def test_is_parmed_object(thing, reference):
-    assert _is_parmed_object(thing) == reference
-
-
 
 class TestParmEdReaderGRO:
     ref_filename = GRO
