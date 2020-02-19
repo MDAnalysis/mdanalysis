@@ -417,3 +417,11 @@ class TestNotWithin(object):
                                                      not_within=True,
                                                      use_kdtree=False)()
         assert_equal(vers1, vers2)
+
+
+@pytest.mark.parametrize('B', [20, 20.0, 20.123,
+                               np.array([45.678, 67.1, 0.0, 100.2])])
+def test_Bfactor2RMSF(B):
+    values = density.Bfactor2RMSF(B)
+    ref = np.sqrt(3. * B / 8.) / np.pi  # original equation
+    assert_almost_equal(values, ref)
