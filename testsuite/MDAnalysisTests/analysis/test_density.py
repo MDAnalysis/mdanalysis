@@ -36,7 +36,7 @@ import gridData.OpenDX
 import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
-from MDAnalysisTests.datafiles import TPR, XTC, GRO
+from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
 
 
 class TestDensity(object):
@@ -282,7 +282,7 @@ class Test_density_from_Universe(DensityParameters):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_sliced(self, universe, tmpdir):
+    def test_sliced(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_sliced']['meandensity'],
@@ -291,7 +291,7 @@ class Test_density_from_Universe(DensityParameters):
             tmpdir=tmpdir
             )
 
-    def test_density_from_Universe_update_selection(self, universe, tmpdir):
+    def test_update_selection(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
@@ -300,7 +300,7 @@ class Test_density_from_Universe(DensityParameters):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_notwithin(self, universe, tmpdir):
+    def test_notwithin(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['notwithin']['meandensity'],
@@ -310,7 +310,7 @@ class Test_density_from_Universe(DensityParameters):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_userdefn_eqbox(self, universe, tmpdir):
+    def test_userdefn_eqbox(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_defined']['meandensity'],
@@ -322,7 +322,7 @@ class Test_density_from_Universe(DensityParameters):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_userdefn_neqbox(self, universe, tmpdir):
+    def test_userdefn_neqbox(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_defined_unequal']['meandensity'],
@@ -334,14 +334,14 @@ class Test_density_from_Universe(DensityParameters):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_userdefn_boxshape(self, universe):
+    def test_userdefn_boxshape(self, universe):
         D = density.density_from_Universe(
             universe, select=self.selections['static'],
             delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
             gridcenter=self.gridcenters['static_defined'])
         assert D.grid.shape == (8, 12, 17)
 
-    def test_density_from_Universe_userdefn_padding(self, universe):
+    def test_userdefn_padding(self, universe):
         regex = ("Box padding \(currently set at 1\.0\) is not used "
                  "in user defined grids\.")
         with pytest.warns(UserWarning, match=regex):
@@ -350,7 +350,7 @@ class Test_density_from_Universe(DensityParameters):
                 delta=self.delta, xdim=100.0, ydim=100.0, zdim=100.0, padding=1.0,
                 gridcenter=self.gridcenters['static_defined'])
 
-    def test_density_from_Universe_userdefn_selwarning(self, universe):
+    def test_userdefn_selwarning(self, universe):
         regex = ("Atom selection does not fit grid --- "
                 "you may want to define a larger box")
         with pytest.warns(UserWarning, match=regex):
@@ -359,7 +359,7 @@ class Test_density_from_Universe(DensityParameters):
                 delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined'])
 
-    def test_density_from_Universe_userdefn_ValueErrors(self, universe):
+    def test_userdefn_ValueErrors(self, universe):
         # Test len(gridcenter) != 3
         with pytest.raises(ValueError):
             D = density.density_from_Universe(
@@ -379,12 +379,13 @@ class Test_density_from_Universe(DensityParameters):
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined'])
 
-    def test_density_from_Universe_Deprecation_warning(self, universe):
+    def test_has_DeprecationWarning(self, universe):
         with pytest.warns(DeprecationWarning,
                           match="will be removed in release 2.0.0"):
             D = density.density_from_Universe(
                 universe, select=self.selections['static'],
                 delta=self.delta)
+
 
 class TestNotWithin(object):
     # tests notwithin_coordinates_factory
@@ -418,10 +419,42 @@ class TestNotWithin(object):
                                                      use_kdtree=False)()
         assert_equal(vers1, vers2)
 
+    def test_has_DeprecationWarning(self, u):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            density.notwithin_coordinates_factory(u, 'resname SOL',
+                                                  'protein', 2,
+                                                  not_within=False,
+                                                  use_kdtree=True)()
 
-@pytest.mark.parametrize('B', [20, 20.0, 20.123,
-                               np.array([45.678, 67.1, 0.0, 100.2])])
-def test_Bfactor2RMSF(B):
-    values = density.Bfactor2RMSF(B)
-    ref = np.sqrt(3. * B / 8.) / np.pi  # original equation
-    assert_almost_equal(values, ref)
+
+class TestBfactor2RMSF(object):
+    @pytest.mark.parametrize('B', [20, 20.0, 20.123,
+                                   np.array([45.678, 67.1, 0.0, 100.2])])
+    def test_Bfactor2RMSF(self, B):
+        values = density.Bfactor2RMSF(B)
+        ref = np.sqrt(3. * B / 8.) / np.pi  # original equation
+        assert_almost_equal(values, ref)
+
+    def test_has_DeprecationWarning(self):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            density.Bfactor2RMSF(100.0)
+
+class Test_density_from_PDB(object):
+
+    @pytest.mark.parametrize('sigma,ref_shape,ref_gridsum',
+                             [(None, (21, 26, 29), 108.710149),
+                              (1.5,  (21, 26, 29), 160.050167)])
+    def test_density_from_PDB(self, sigma, ref_shape, ref_gridsum):
+        # simple test that the code runs: use B-factors from PDB or fixed sigma
+        D = density.density_from_PDB(PDB_full, delta=2.0, sigma=sigma)
+
+        assert isinstance(D, density.Density)
+        assert_equal(D.grid.shape, ref_shape)
+        assert_almost_equal(D.grid.sum(), ref_gridsum, decimal=6)
+
+    def test_has_DeprecationWarning(self):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            density.density_from_PDB(PDB_full, delta=5.0, sigma=2)

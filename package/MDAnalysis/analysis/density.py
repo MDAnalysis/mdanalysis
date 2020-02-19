@@ -1268,6 +1268,7 @@ def Bfactor2RMSF(B):
     return np.sqrt(3. * B / 8.) / np.pi
 
 
+@deprecate(release="1.0.0", remove="2.0.0")
 def density_from_PDB(pdb, **kwargs):
     """Create a density from a single frame PDB.
 
@@ -1313,10 +1314,15 @@ def density_from_PDB(pdb, **kwargs):
     --------
     :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`
 
+
+    .. deprecated: 1.0.0
+       This function is not well tested or optimized and will be removed
+       in 2.0.0.
     """
     return BfactorDensityCreator(pdb, **kwargs).Density()
 
 
+# REMOVE in 2.0.0
 class BfactorDensityCreator(object):
     """Create a density grid from a pdb file using MDAnalysis.
 
@@ -1337,6 +1343,10 @@ class BfactorDensityCreator(object):
     .. * Using a temporary Creator class with the
     ..   :meth:`BfactorDensityCreator.Density` helper method is clumsy.
 
+
+    .. deprecated: 1.0.0
+       This function is not well tested or optimized and will be removed
+       in 2.0.0.
     """
 
     @deprecate(release="1.0.0", remove="2.0.0")
@@ -1405,11 +1415,11 @@ class BfactorDensityCreator(object):
         if sigma is None:
             # histogram individually, and smear out at the same time
             # with the appropriate B-factor
-            if np.any(group.bfactors == 0.0):
+            if np.any(group.tempfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
                 logger.warning(wmsg)
                 warnings.warn(wmsg, category=MissingDataWarning)
-            rmsf = Bfactor2RMSF(group.bfactors)
+            rmsf = Bfactor2RMSF(group.tempfactors)
             grid *= 0.0  # reset grid
             self.g = self._smear_rmsf(coord, grid, self.edges, rmsf)
         else:
@@ -1450,7 +1460,7 @@ class BfactorDensityCreator(object):
         for iwat in range(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
-            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
+            # print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
         return g
 
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
@@ -1463,7 +1473,7 @@ class BfactorDensityCreator(object):
                 continue
             g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=np.int,
                                     c=coord, sigma=rmsf[iwat])
-            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
+            # print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
         return g
 
     def _gaussian(self, i, j, k, p, sigma):
