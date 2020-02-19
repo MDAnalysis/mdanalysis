@@ -100,6 +100,7 @@ class AnalysisBase(object):
         verbose : bool, optional
            Turn on more logging and debugging, default ``False``
 
+
         .. versionchanged:: 1.0.0
            Support for setting ``start``, ``stop``, and ``step`` has been
            removed. These should now be directly passed to
