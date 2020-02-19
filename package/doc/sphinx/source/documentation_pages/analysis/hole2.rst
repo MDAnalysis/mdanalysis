@@ -24,10 +24,10 @@ Module
     :members:
 
 
-Helper Modules
---------------
+Utility functions and templates
+-------------------------------
 
-.. automodule:: MDAnalysis.analysis.hole2.helper
+.. automodule:: MDAnalysis.analysis.hole2.utils
     :members:
 
 

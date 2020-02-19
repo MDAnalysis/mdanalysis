@@ -44,7 +44,8 @@ import numpy as np
 import six
 import errno
 
-from MDAnalysis.lib import util
+from ...lib import util
+from ...exceptions import ApplicationError
 from .templates import (SIMPLE2_RAD, IGNORE_RESIDUES, hole_input,
                         hole_lines, exe_err)
 
@@ -126,16 +127,22 @@ def check_and_fix_long_filename(filename, tmpdir=os.path.curdir,
 
     if make_symlink:
         # shorten path by creating a symlink inside a safe temp dir
-        root, ext = os.path.splitext(filename)
+        _, ext = os.path.splitext(filename)
         dirname = tempfile.mkdtemp(dir=tmpdir)
         newname = os.path.join(dirname, os.path.basename(filename))
         if len(newname) > max_length:
-            fd, newname = tempfile.mkstemp(suffix='.pdb', dir=dirname)
+            fd, newname = tempfile.mkstemp(suffix=ext, dir=dirname)
             os.close(fd)
-        os.symlink(filename, newname)
-        msg = 'Using symlink: {} -> {}'
-        logger.debug(msg.format(filename, newname))
-        return newname
+            os.unlink(newname)
+        
+        if len(newname) > max_length:
+            newname = os.path.relpath(newname)
+        
+        if len(newname) <= max_length:
+            os.symlink(filename, newname)
+            msg = 'Using symlink: {} -> {}'
+            logger.debug(msg.format(filename, newname))
+            return newname
 
     msg = 'Failed to shorten filename {}'
     raise RuntimeError(msg.format(filename))
@@ -343,7 +350,10 @@ def set_up_hole_input(pdbfile,
                     "runs.".format(random_seed))
 
     if cpoint is not None:
-        infile_text += hole_lines['cpoint'].format(*cpoint)
+        if isinstance(cpoint, str):
+            infile_text += 'CPOINT ' + cpoint + '\n'
+        else:
+            infile_text += hole_lines['cpoint'].format(*cpoint)
     else:
         logger.info("HOLE will guess CPOINT")
 

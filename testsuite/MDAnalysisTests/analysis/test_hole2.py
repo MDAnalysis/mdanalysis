@@ -20,28 +20,29 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, absolute_import
+from __future__ import print_function, absolute_import, division
 
 from six.moves import range
 import pytest
 import glob
 import os
+import sys
 import textwrap
 
-import MDAnalysis as mda
-from MDAnalysis.analysis import hole2
-
+import numpy as np
+import matplotlib
+import mpl_toolkits.mplot3d
+import errno
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
 )
-import numpy as np
-import matplotlib
-import mpl_toolkits.mplot3d
 
-import errno
-
-from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE
+import MDAnalysis as mda
+from MDAnalysis.analysis import hole2
+from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename
+from MDAnalysis.exceptions import ApplicationError
+from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, PSF, DCD
 from MDAnalysisTests import executable_not_found
 
 
@@ -57,20 +58,56 @@ def rlimits_missing():
         return True
     return False
 
+class TestCheckAndFixLongFilename(object):
+
+    max_length = 70
+    filename = 'a'*(max_length-4) + '.pdb'
+
+    def test_short(self):
+        fixed = check_and_fix_long_filename(self.filename)
+        assert self.filename == fixed
+
+    def test_relative(self):
+        abspath = os.path.abspath(self.filename)
+        if len(abspath) > self.max_length:
+            fixed = check_and_fix_long_filename(abspath)
+            assert fixed == self.filename
+    
+    def test_symlink_dir(self, tmpdir):
+        dirname = 'really_'*20 +'long_name'
+        short_name = self.filename[-20:]
+        path = os.path.join(dirname, short_name)
+        with tmpdir.as_cwd():
+            os.makedirs(dirname)
+            u = mda.Universe(PDB_HOLE)
+            u.atoms.write(path)
+
+            fixed = check_and_fix_long_filename(path)
+            assert os.path.islink(fixed)
+            assert fixed.endswith(short_name)
+    
+    def test_symlink_file(self, tmpdir):
+        long_name = 'a'*10 + self.filename
+
+        with tmpdir.as_cwd():
+            fixed = check_and_fix_long_filename(long_name)
+            assert os.path.islink(fixed)
+            assert not fixed.endswith(long_name)
+
+
 @pytest.mark.skipif(executable_not_found("hole"),
                     reason="Test skipped because HOLE not found")
 class TestHole(object):
-    @staticmethod
-    @pytest.fixture()
-    def profiles(tmpdir):
-        with tmpdir.as_cwd():
-            filename = PDB_HOLE
-            return hole2.hole(filename, random_seed=31415)
+    filename = PDB_HOLE
+    random_seed = 31415
+    profile_length = 425
+    rxn_coord_mean = -1.41225
+    radius_min = 1.19707
 
     def test_correct_input(self, tmpdir):
         with tmpdir.as_cwd():
-            filename = PDB_HOLE
-            hole2.hole(filename, random_seed=31415, infile='hole.inp')
+            hole2.hole(self.filename, random_seed=self.random_seed,
+                       infile='hole.inp')
 
         infile = str(tmpdir.join('hole.inp'))
         with open(infile, 'r') as f:
@@ -89,14 +126,14 @@ class TestHole(object):
         # don't check filenames
         assert contents.endswith(hole_input)
 
-    def test_input_with_cpoint(self, tmpdir):
+    def test_input_options(self, tmpdir):
         u = mda.Universe(PDB_HOLE)
         cog = u.select_atoms('protein').center_of_geometry()
 
         with tmpdir.as_cwd():
-            filename = PDB_HOLE
-            hole2.hole(filename, random_seed=31415,
-                       infile='hole.inp', cpoint=cog)
+            hole2.hole(self.filename, random_seed=self.random_seed,
+                       infile='hole.inp', cpoint=cog,
+                       ignore_residues=[])
 
         infile = str(tmpdir.join('hole.inp'))
         with open(infile, 'r') as f:
@@ -107,7 +144,7 @@ class TestHole(object):
             SPHPDB hole.sph
             SAMPLE 0.200000
             ENDRAD 22.000000
-            IGNORE SOL WAT TIP HOH K   NA  CL 
+            IGNORE 
             SHORTO 0
             RASEED 31415
             CPOINT -0.0180961507 -0.0122730583 4.1497999943
@@ -116,25 +153,83 @@ class TestHole(object):
         # don't check filenames
         assert contents.endswith(hole_input)
 
-    def test_correct_profile_values(self, profiles):
+    def test_correct_profile_values(self, tmpdir):
+        with tmpdir.as_cwd():
+            profiles = hole2.hole(self.filename, random_seed=self.random_seed)
+
         values = list(profiles.values())
-        assert len(values) == 1, 'Should only have 1 HOLE profile'
+        assert_equal(len(values), 1,
+                     err_msg='Should only have 1 HOLE profile')
         profile = values[0]
-        assert len(profile) == 425, 'Wrong number of points in HOLE profile'
+        assert_equal(len(profile), self.profile_length,
+                     err_msg='Wrong number of points in HOLE profile')
         assert_almost_equal(profile.rxn_coord.mean(),
-                            -1.41225,
+                            self.rxn_coord_mean,
                             err_msg='Wrong mean HOLE rxn_coord')
         assert_almost_equal(profile.radius.min(),
-                            1.19707,
+                            self.radius_min,
                             err_msg='Wrong minimum HOLE radius')
+
+    # HOLE cannot read NAMD CHARMM files as is written by MDAnalysis
+    # fails with Linux HOLE?
+    # def test_dcd(self, tmpdir):
+    #     with tmpdir.as_cwd():
+    #         u = mda.Universe(PSF, DCD)
+    #         n_frames = len(u.trajectory)
+    #         keep_frames = 12
+    #         step = 3
+    #         skip = n_frames-keep_frames
+    #         filename = 'temp.pdb'
+    #         u.atoms.write(filename)
+
+    #         profiles = hole2.hole(filename, random_seed=self.random_seed, dcd=DCD,
+    #                               dcd_iniskip=skip,
+    #                               dcd_step=step, infile='hole.inp')
+    #         with open('hole.inp', 'r') as f:
+    #             contents = f.read()
+    #         assert contents.endswith('CHARMS {} {}\n'.format(skip, step-1))
+
+    #     assert_equal(len(profiles), int(keep_frames/step))
+
+    def test_application_error(self, tmpdir):
+        with tmpdir.as_cwd():
+            with pytest.raises(ApplicationError):
+                hole2.hole(self.filename, dcd=DCD)
+
+    def test_output_level(self, tmpdir):
+        with tmpdir.as_cwd():
+            with pytest.warns(UserWarning) as rec:
+                profiles = hole2.hole(self.filename, random_seed=self.random_seed,
+                                      output_level=100)
+            assert len(rec) == 1
+            assert 'needs to be < 3' in rec[0].message.args[0]
+            # no profiles
+            assert len(profiles) == 0
+
+    def test_keep_files(self, tmpdir):
+        with tmpdir.as_cwd():
+            hole2.hole(self.filename, random_seed=self.random_seed,
+                       infile='hole.inp',
+                       keep_files=False)
+            sphpdbs = tmpdir.join('*.sph')
+            assert len(glob.glob(str(sphpdbs))) == 0
+            outfiles = tmpdir.join('*.out')
+            assert len(glob.glob(str(outfiles))) == 0
+            vdwradii = tmpdir.join('simple2.rad')
+            assert len(glob.glob(str(vdwradii))) == 0
+            pdbfiles = tmpdir.join('*.pdb')
+            assert len(glob.glob(str(pdbfiles))) == 0
+            oldfiles = tmpdir.join('*.old')
+            assert len(glob.glob(str(oldfiles))) == 0
 
 
 @pytest.mark.skipif(executable_not_found("hole"),
                     reason="Test skipped because HOLE not found")
-class TestHoleAnalysis(object):
+class BaseTestHole(object):
     filename = MULTIPDB_HOLE
     start = 5
     stop = 7
+    random_seed = 31415
 
     # HOLE is so slow so we only run it once and keep it in
     # the class; note that you may not change universe.trajectory
@@ -147,12 +242,20 @@ class TestHoleAnalysis(object):
     def hole(self, universe, tmpdir):
         with tmpdir.as_cwd():
             h = hole2.HoleAnalysis(universe)
-            h.run(start=self.start, stop=self.stop, random_seed=31415)
+            h.run(start=self.start, stop=self.stop,
+                  random_seed=self.random_seed)
         return h
 
     @pytest.fixture()
     def frames(self, universe):
         return [ts.frame for ts in universe.trajectory[self.start:self.stop]]
+
+    @pytest.fixture()
+    def profiles(self, hole, frames):
+        return [hole.profiles[f] for f in frames]
+
+
+class TestHoleAnalysis(BaseTestHole):
 
     def test_correct_profile_values(self, hole, frames):
         assert_equal(sorted(hole.profiles.keys()), frames,
@@ -173,26 +276,11 @@ class TestHoleAnalysis(object):
         assert_almost_equal(hole.min_radius(), values,
                             err_msg="min_radius() array not correct")
 
-    def test_plot(self, hole):
-        ax = hole.plot(label=True)
-        err_msg = "HoleAnalysis.plot() did not produce an Axes instance"
-        assert isinstance(ax, matplotlib.axes.Axes), err_msg
-
-    def test_plot3D(self, hole):
-        ax = hole.plot3D()
-        err_msg = "HoleAnalysis.plot3D() did not produce an Axes3D instance"
-        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
-
-    def test_plot3D_rmax(self, hole):
-        ax = hole.plot3D(r_max=2.5)
-        err_msg = "HoleAnalysis.plot3D(rmax=float) did not produce an Axes3D instance"
-        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
-
     def test_context_manager(self, universe, tmpdir):
         with tmpdir.as_cwd():
             with hole2.HoleAnalysis(universe) as h:
                 h.run()
-                h.run()
+                h.run()  # run again for *.old files
                 h.create_vmd_surface(filename='hole.vmd')
 
         sphpdbs = tmpdir.join('*.sph')
@@ -208,6 +296,364 @@ class TestHoleAnalysis(object):
         vmd_file = tmpdir.join('hole.vmd')
         assert len(glob.glob(str(vmd_file))) == 1
 
+    def test_output_level(self, tmpdir, universe):
+        with tmpdir.as_cwd():
+            with pytest.warns(UserWarning) as rec:
+                h = hole2.HoleAnalysis(universe,
+                                       output_level=100)
+                h.run(start=self.start,
+                      stop=self.stop, random_seed=self.random_seed)
+            assert len(rec) == 1
+            assert 'needs to be < 3' in rec[0].message.args[0]
+            # no profiles
+            assert len(h.profiles) == 0
+
+    def test_cpoint_geometry(self, tmpdir, universe):
+        protein = universe.select_atoms('protein')
+        cogs = [protein.center_of_geometry() for ts in universe.trajectory]
+        with tmpdir.as_cwd():
+            h = hole2.HoleAnalysis(universe,
+                                   select='protein',
+                                   cpoint='center_of_geometry',
+                                   write_input_files=True)
+            h.run(start=self.start,
+                  stop=self.stop, random_seed=self.random_seed)
+
+            infiles = sorted(glob.glob(str(tmpdir.join('hole*.inp'))))
+            for file, cog in zip(infiles, cogs[self.start:self.stop]):
+                with open(file, 'r') as f:
+                    line = f.read().split('CPOINT')[1].split('\n')[0]
+                arr = np.array(list(map(float, line.split())))
+                assert_almost_equal(arr, cog)
+    
+    # plotting
+    def test_plot(self, hole, frames, profiles):
+        ax = hole.plot(label=True, frames=None, y_shift=1)
+        err_msg = "HoleAnalysis.plot() did not produce an Axes instance"
+        assert isinstance(ax, matplotlib.axes.Axes), err_msg
+        lines = ax.get_lines()[:]
+        assert len(lines) == hole.n_frames
+        for i, (line, frame, profile) in enumerate(zip(lines, frames, profiles)):
+            x, y = line.get_data()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(y, profile.radius + i)
+            assert line.get_label() == str(frame)
+    
+    def test_plot_mean_profile(self, hole, frames, profiles):
+        binned, bins = hole.bin_radii(bins=100)
+        mean = np.array(list(map(np.mean, binned)))
+        stds = np.array(list(map(np.std, binned)))
+        midpoints = 0.5 * bins[1:] + bins[:-1]
+        ylow = list(mean-(2*stds))
+        yhigh = list(mean+(2*stds))
+
+        ax = hole.plot_mean_profile(bins=100, n_std=2)
+        
+        # test fillbetween standard deviation
+        children = ax.get_children()
+        poly = []
+        for x in children:
+            if isinstance(x, matplotlib.collections.PolyCollection):
+                poly.append(x)
+        assert len(poly) == 1
+        xp, yp = poly[0].get_paths()[0].vertices.T
+        assert_almost_equal(np.unique(xp), np.unique(midpoints))
+        assert_almost_equal(np.unique(yp), np.unique(ylow+yhigh))
+
+        # test mean line
+        lines = ax.get_lines()
+        assert len(lines) == 1
+        xl, yl = lines[0].get_data()
+        assert_almost_equal(xl, midpoints)
+        assert_almost_equal(yl, mean)
+
+    @pytest.mark.skipif(sys.version_info < (3, 1), 
+                        reason="get_data_3d requires 3.1 or higher")
+    def test_plot3D(self, hole, frames, profiles):
+        ax = hole.plot3D(frames=None, r_max=None)
+        err_msg = "HoleAnalysis.plot3D() did not produce an Axes3D instance"
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
+        lines = ax.get_lines()[:]
+        assert len(lines) == hole.n_frames
+
+        for line, frame, profile in zip(lines, frames, profiles):
+            x, y, z = line.get_data_3d()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(np.unique(y), [frame])
+            assert_almost_equal(z, profile.radius)
+            assert line.get_label() == str(frame)
+        
+    @pytest.mark.skipif(sys.version_info < (3, 1), 
+                        reason="get_data_3d requires 3.1 or higher")
+    def test_plot3D_rmax(self, hole, frames, profiles):
+        ax = hole.plot3D(r_max=2.5)
+        err_msg = "HoleAnalysis.plot3D(rmax=float) did not produce an Axes3D instance"
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
+
+        lines = ax.get_lines()[:]
+
+        for line, frame, profile in zip(lines, frames, profiles):
+            x, y, z = line.get_data_3d()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(np.unique(y), [frame])
+            radius = np.where(profile.radius>2.5, np.nan, profile.radius)
+            assert_almost_equal(z, radius)
+            assert line.get_label() == str(frame)
+    
+    @pytest.mark.skipif(sys.version_info > (3, 1), 
+                        reason="get_data_3d requires 3.1 or higher")
+    def test_plot3D(self, hole, frames, profiles):
+        ax = hole.plot3D(frames=None, r_max=None)
+        err_msg = "HoleAnalysis.plot3D() did not produce an Axes3D instance"
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
+        lines = ax.get_lines()[:]
+        assert len(lines) == hole.n_frames
+
+        for line, frame, profile in zip(lines, frames, profiles):
+            x, y = line.get_data()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(np.unique(y), [frame])
+            assert line.get_label() == str(frame)
+        
+    @pytest.mark.skipif(sys.version_info > (3, 1), 
+                        reason="get_data_3d requires 3.1 or higher")
+    def test_plot3D_rmax(self, hole, frames, profiles):
+        ax = hole.plot3D(r_max=2.5)
+        err_msg = "HoleAnalysis.plot3D(rmax=float) did not produce an Axes3D instance"
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
+
+        lines = ax.get_lines()[:]
+
+        for line, frame, profile in zip(lines, frames, profiles):
+            x, y = line.get_data()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(np.unique(y), [frame])
+            assert line.get_label() == str(frame)
+
+
+class TestHoleAnalysisLong(BaseTestHole):
+
+    start = 0
+    stop = 11
+
+    rmsd = np.array([6.10501252e+00, 4.88398472e+00, 3.66303524e+00, 2.44202454e+00,
+                     1.22100521e+00, 1.67285541e-07, 1.22100162e+00, 2.44202456e+00,
+                     3.66303410e+00, 4.88398478e+00, 6.10502262e+00])
+    
+    @pytest.fixture
+    def order_parameter_keys_values(self, hole):
+        op = hole.over_order_parameters(self.rmsd, frames=None)
+        return op.keys(), op.values()
+
+    def test_gather(self, hole):
+        gd = hole.gather(flat=False)
+        for i, p in enumerate(hole.profiles.values()):
+            assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i])
+            assert_almost_equal(p.radius, gd['radius'][i])
+            assert_almost_equal(p.cen_line_D, gd['cen_line_D'][i])
+
+    def test_gather_flat(self, hole):
+        gd = hole.gather(flat=True)
+        i = 0
+        for p in hole.profiles.values():
+            j = i+len(p.rxn_coord)
+            assert_almost_equal(p.rxn_coord, gd['rxn_coord'][i:j])
+            assert_almost_equal(p.radius, gd['radius'][i:j])
+            assert_almost_equal(p.cen_line_D, gd['cen_line_D'][i:j])
+            i = j
+        assert_equal(i, len(gd['rxn_coord']))
+
+    def test_min_radius(self, hole):
+        rad = hole.min_radius()
+        for (f1, p), (f2, r) in zip(hole.profiles.items(), rad):
+            assert_equal(f1, f2)
+            assert_almost_equal(min(p.radius), r)
+
+    def test_over_order_parameters(self, hole):
+        op = self.rmsd
+        profiles = hole.over_order_parameters(op, frames=None)
+        assert len(op) == len(profiles)
+
+        for key, rmsd in zip(profiles.keys(), np.sort(op)):
+            assert key == rmsd
+
+        idx = np.argsort(op)
+        arr = np.array(list(hole.profiles.values()))
+        for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
+            assert op_prof is arr_prof
+    
+    def test_over_order_parameters_file(self, hole, tmpdir):
+        op = self.rmsd
+        with tmpdir.as_cwd():
+            np.savetxt('rmsd.dat', self.rmsd)
+            profiles = hole.over_order_parameters('rmsd.dat', frames=None)
+
+        assert len(op) == len(profiles)
+    
+        for key, rmsd in zip(profiles.keys(), np.sort(op)):
+            assert key == rmsd
+
+        idx = np.argsort(op)
+        arr = np.array(list(hole.profiles.values()))
+        for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
+            assert op_prof is arr_prof
+    
+    def test_over_order_parameters_missing_file(self, hole):
+        with pytest.raises(ValueError) as exc:
+            prof = hole.over_order_parameters('missing.dat')
+        assert 'not found' in str(exc.value)
+    
+    def test_over_order_parameters_invalid_file(self, hole):
+        with pytest.raises(ValueError) as exc:
+            prof = hole.over_order_parameters(PDB_HOLE)
+        assert 'Could not parse' in str(exc.value)
+
+    def test_over_order_parameters_frames(self, hole):
+        op = self.rmsd
+        n_frames = 7
+        profiles = hole.over_order_parameters(op, frames=np.arange(n_frames))
+        assert len(profiles) == n_frames
+        for key, rmsd in zip(profiles.keys(), np.sort(op[:n_frames])):
+            assert key == rmsd
+
+        idx = np.argsort(op[:n_frames])
+        values = list(hole.profiles.values())[:n_frames]
+        arr = np.array(values)
+        for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
+            assert op_prof is arr_prof
+
+    def test_bin_radii(self, hole):
+        radii, bins = hole.bin_radii(bins=100)
+        dct = hole.gather(flat=True)
+        coords = dct['rxn_coord']
+
+        assert len(bins) == 101
+        assert_almost_equal(bins[0], coords.min())
+        assert_almost_equal(bins[-1], coords.max())
+        assert len(radii) == (len(bins)-1)
+
+        # check first frame profile
+        first = hole.profiles[0]
+        for row in first:
+            coord = row.rxn_coord
+            rad = row.radius
+            for i, (lower, upper) in enumerate(zip(bins[:-1], bins[1:])):
+                if coord > lower and coord <= upper:
+                    assert rad in radii[i]
+                    break
+            else:
+                raise AssertionError('Radius not in binned radii')
+    
+    @pytest.mark.parametrize('midpoint', [1.5, 1.8, 2.0, 2.5])
+    def test_bin_radii_range(self, hole, midpoint):
+        radii, bins = hole.bin_radii(bins=100, 
+                                     range=(midpoint, midpoint))
+        dct = hole.gather(flat=True)
+        coords = dct['rxn_coord']
+
+        assert len(bins) == 101
+        low = midpoint - 0.5
+        high = midpoint + 0.5
+        assert_almost_equal(bins[0], low)
+        assert_almost_equal(bins[-1], high)
+        assert len(radii) == (len(bins)-1)
+
+        # check first frame profile
+        first = hole.profiles[0]
+        for row in first:
+            coord = row.rxn_coord
+            rad = row.radius
+            if coord > low and coord <= high:
+                for i, (lower, upper) in enumerate(zip(bins[:-1], bins[1:])):
+                    if coord > lower and coord <= upper:
+                        assert rad in radii[i]
+                        break
+                else:
+                    raise AssertionError('Radius not in binned radii')
+            else:
+                assert not any([rad in x for x in radii])
+    
+    def test_bin_radii_edges(self, hole):
+        brange = list(np.linspace(1.0, 2.0, num=101, endpoint=True))
+        moved = brange[30:] + brange[10:30] + brange[:10]
+        e_radii, e_bins = hole.bin_radii(bins=moved, range=(0.0, 0.0))
+        r_radii, r_bins = hole.bin_radii(bins=100, range=(1.5, 1.5))
+        assert_almost_equal(e_bins, r_bins)
+        for e, r in zip(e_radii, r_radii):
+            assert_almost_equal(e, r)
+        
+    def test_histogram_radii(self, hole):
+        means, _ = hole.histogram_radii(aggregator=np.mean,
+                                        bins=100)
+        radii, _ = hole.bin_radii(bins=100)
+        assert means.shape == (100,)
+        for r, m in zip(radii, means):
+            assert_almost_equal(r.mean(), m)
+
+    # plotting
+
+    def test_plot_select_frames(self, hole, frames, profiles):
+        ax = hole.plot(label=True, frames=[2, 3], y_shift=1)
+        err_msg = "HoleAnalysis.plot() did not produce an Axes instance"
+        assert isinstance(ax, matplotlib.axes.Axes), err_msg
+        lines = ax.get_lines()[:]
+        assert len(lines) == 2
+        for i, (line, frame, profile) in enumerate(zip(lines, frames[2:4], profiles[2:4])):
+            x, y = line.get_data()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(y, profile.radius + i)
+            assert line.get_label() == str(frame)
+    
+    @pytest.mark.parametrize('agg', [np.max, np.mean, np.std, np.min])
+    def test_plot_order_parameters(self, hole, order_parameter_keys_values,
+                                   agg):
+        opx = np.array(list(order_parameter_keys_values[0]))
+        opy = np.array([agg(p.radius) for p in order_parameter_keys_values[1]])
+        ax = hole.plot_order_parameters(self.rmsd, aggregator=agg, frames=None)
+        err_msg = ("HoleAnalysis.plot_order_parameters()"
+                   "did not produce an Axes instance")
+        assert isinstance(ax, matplotlib.axes.Axes), err_msg
+
+        lines = ax.get_lines()
+        assert len(lines) == 1
+        x, y = lines[0].get_data()
+        assert_almost_equal(x, opx)
+        assert_almost_equal(y, opy)
+
+    @pytest.mark.skipif(sys.version_info < (3, 1), 
+                        reason="get_data_3d requires 3.1 or higher")
+    def test_plot3D_order_parameters(self, hole, order_parameter_keys_values):
+        opx = np.array(list(order_parameter_keys_values[0]))
+        profiles = np.array(list(order_parameter_keys_values[1]))
+        ax = hole.plot3D_order_parameters(self.rmsd, frames=None)
+        err_msg = ("HoleAnalysis.plot3D_order_parameters() "
+                   "did not produce an Axes3D instance")
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
+
+        lines = ax.get_lines()
+        assert len(lines) == hole.n_frames
+        for line, opx_, profile in zip(lines, opx, profiles):
+            x, y, z = line.get_data_3d()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(np.unique(y), np.array([opx_]))
+            assert_almost_equal(z, profile.radius)
+    
+    @pytest.mark.skipif(sys.version_info > (3, 1), 
+                        reason="get_data_3d requires 3.1 or higher")
+    def test_plot3D_order_parameters(self, hole, order_parameter_keys_values):
+        opx = np.array(list(order_parameter_keys_values[0]))
+        profiles = np.array(list(order_parameter_keys_values[1]))
+        ax = hole.plot3D_order_parameters(self.rmsd, frames=None)
+        err_msg = ("HoleAnalysis.plot3D_order_parameters() "
+                   "did not produce an Axes3D instance")
+        assert isinstance(ax, mpl_toolkits.mplot3d.Axes3D), err_msg
+
+        lines = ax.get_lines()
+        assert len(lines) == hole.n_frames
+        for line, opx_, profile in zip(lines, opx, profiles):
+            x, y = line.get_data()
+            assert_almost_equal(x, profile.rxn_coord)
+            assert_almost_equal(np.unique(y), np.array([opx_]))
 
 @pytest.mark.skipif(executable_not_found("hole"),
                     reason="Test skipped because HOLE not found")

@@ -101,7 +101,7 @@ hole_lines = {
     'cpoint': 'CPOINT {:.10f} {:.10f} {:.10f}\n',
     'cvect': 'CVECT {:.10f} {:.10f} {:.10f}\n',
     'random_seed': 'RASEED {}\n',
-    'dcd': '\nCHARMD {dcd}\nCHARMS {iniskip} {step}\n',
+    'dcd': 'CHARMD {dcd}\nCHARMS {iniskip:d} {step:d}\n',
 }
 
 vmd_script_array = """\
