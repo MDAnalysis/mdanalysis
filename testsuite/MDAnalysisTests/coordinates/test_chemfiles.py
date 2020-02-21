@@ -37,8 +37,9 @@ from MDAnalysisTests.coordinates.test_xyz import XYZReference
 
 
 # skip entire test module if no appropriate chemfiles
-pytest.mark.skipif(check_chemfiles_version())
 chemfiles = pytest.importorskip('chemfiles')
+pytest.mark.skipif(not check_chemfiles_version(),
+                   reason="Wrong version of chemfiles")
 
 
 class TestChemFileXYZ(MultiframeReaderTest):

@@ -63,6 +63,8 @@ MAX_CHEMFILES_VERSION = LooseVersion("0.10")
 def check_chemfiles_version():
     """Check an appropriate Chemfiles is available
 
+    Returns True if a usable chemfiles version is available
+
     .. versionadded:: 1.0.0
     """
     if not HAS_CHEMFILES:
@@ -78,7 +80,7 @@ def check_chemfiles_version():
             "unsupported Chemfiles version {}, we need a version >{} and <{}"
             .format(version, MIN_CHEMFILES_VERSION, MAX_CHEMFILES_VERSION)
         )
-    return wrong
+    return not wrong
 
 
 class ChemfilesReader(base.ReaderBase):
