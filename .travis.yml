@@ -121,6 +121,10 @@ script:
   - echo $MAIN_CMD $SETUP_CMD
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
   - eval $MAIN_CMD $SETUP_CMD
+  # check benchmark suite for basic issues
+  - python -m pip install asv
+  - cd testsuite && python setup.py install
+  - cd ../benchmarks && time python -m asv check -E existing
 
 after_success:
   - |
