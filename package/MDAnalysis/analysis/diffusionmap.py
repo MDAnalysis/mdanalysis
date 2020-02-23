@@ -161,8 +161,7 @@ module in published work please cite [Theobald2005]_.
              map. J. Chem. Phys. 134, 124116 (2011).
 
 .. [Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
-             Debenedetti, P. G. Nonlinear dimensionality reduction in molecular
-             simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11
+             Debenedetti, P. G.  Chem. Phys. Lett. 509, 1−11
              (2011)
 
 """
@@ -201,6 +200,7 @@ class DistanceMatrix(AnalysisBase):
        :attr:`DistanceMatrix.dist_matrix` instead.
 
     """
+
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
         """
@@ -364,10 +364,191 @@ class DiffusionMap(object):
         time : float
             Exponent that eigenvalues are raised to for embedding, for large
             values, more dominant eigenvectors determine diffusion distance.
-        Return
-        ------
+
+
+        Returns
+        -------
         diffusion_space : array (n_frames, n_eigenvectors)
             The diffusion map embedding as defined by [Ferguson1]_.
         """
-        return (self._eigenvectors[1:n_eigenvectors+1,].T *
+        return (self._eigenvectors[1:n_eigenvectors+1, ].T *
                 (self.eigenvalues[1:n_eigenvectors+1]**time))
+
+    def plot_animated_transform(self, n_time=25, colorscale='Viridis', marker_size=3,
+                                x=1, y=2):
+        """ Plots an interactive 2D plot of chosen eigenvectors at different timescales.
+
+        Parameters
+        ----------
+        n_time: int, optional
+            number of time values for ``transform()``. Default: 25
+        colorscale: str, optional
+            Plotly colorscale for coloring. Default: 'Viridis'
+        marker_size: float, optional
+            Marker size for plot. Default: 3
+        x: int, optional
+            Eigenvector to plot on x-axis. Default: 1
+        y: int, optional
+            Eigenvector to plot on y-axis. Default: 2
+
+        Returns
+        -------
+        plotly.graph_objs._figure.Figure
+
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            import plotly.graph_objects as go
+        except ImportError:
+            raise ImportError('Plotly is required for this animated graph')
+
+        if n_time is None:
+            n_time = self._n_frames
+
+        eig = np.array([x, y]) - 1
+        n_eig = max(eig) + 1
+
+        data = np.array([self.transform(n_eig, time=i)
+                         for i in range(n_time)])
+        order = np.arange(self._n_frames)
+        n_data = len(data)
+
+        xmin, ymin = data.min(axis=(0, 1))[eig]
+        xmax, ymax = data.max(axis=(0, 1))[eig]
+        layout = go.Layout(
+            xaxis=dict(autorange=False,
+                       title='DC {}'.format(x),
+                       range=[xmin, xmax]),
+            yaxis=dict(autorange=False,
+                       title='DC {}'.format(y),
+                       range=[ymin, ymax]))
+        fig = go.Figure(layout=layout)
+        steps = []
+        for i, d in enumerate(data):
+            fig.add_trace(
+                go.Scatter(
+                    x=d.T[x-1],
+                    y=d.T[y-1],
+                    visible=False,
+                    mode='markers',
+                    marker=dict(
+                        color=order,
+                        colorscale=colorscale,
+                        colorbar=dict(
+                            title='Frame',
+                        ),
+                        showscale=True,
+                        size=marker_size,
+                    )
+                )
+            )
+
+            step = dict(method='restyle',
+                        args=['visible', [False]*n_data])
+            step['args'][1][i] = True
+            steps.append(step)
+
+        fig.data[0].visible = True
+
+        sliders = [dict(
+            active=0,
+            currentvalue={'prefix': 'Time: '},
+            pad={'t': 50},
+            steps=steps,
+        )]
+
+        fig.update_layout(sliders=sliders)
+        return fig
+
+    def plot_animated_transform3D(self, n_time=25, colorscale='Viridis', marker_size=3,
+                                  x=1, y=2, z=3):
+        """
+        Plots an interactive 3D plot of chosen eigenvectors at different timescales.
+
+        Parameters
+        ----------
+        n_time: int, optional
+            number of time values for ``transform()``. Default: 25
+        colorscale: str, optional
+            Plotly colorscale for coloring. Default: 'Viridis'
+        marker_size: float, optional
+            Marker size for plot. Default: 3
+        x: int, optional
+            Eigenvector to plot on x-axis. Default: 1
+        y: int, optional
+            Eigenvector to plot on y-axis. Default: 2
+        z: int, optional
+            Eigenvector to plot on z-axis. Default: 3
+
+        Returns
+        -------
+        plotly.graph_objs._figure.Figure
+
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            import plotly.graph_objects as go
+        except ImportError:
+            raise ImportError('Plotly is required for this animated graph')
+
+        eig = np.array([x, y, z]) - 1
+        n_eig = max(eig) + 1
+
+        if n_time is None:
+            n_time = self._n_frames
+        data = np.array([self.transform(n_eig, time=i)
+                         for i in range(n_time)])
+        order = np.arange(self._n_frames)
+        n_data = len(data)
+
+        xmin, ymin, zmin = data.min(axis=(0, 1))[eig]
+        xmax, ymax, zmax = data.max(axis=(0, 1))[eig]
+        layout = go.Layout(scene=dict(
+            xaxis={'title': 'DC {}'.format(x),
+                   'range': [xmin, xmax]},
+            yaxis={'title': 'DC {}'.format(y),
+                   'range': [ymin, ymax]},
+            zaxis={'title': 'DC {}'.format(z),
+                   'range': [zmin, zmax]},
+            aspectmode='cube',
+        ))
+        fig = go.Figure(layout=layout)
+        steps = []
+        for i, d in enumerate(data):
+            fig.add_trace(
+                go.Scatter3d(
+                    x=d.T[x-1],
+                    y=d.T[y-1],
+                    z=d.T[z-1],
+                    visible=False,
+                    mode='markers',
+                    marker=dict(
+                        color=order,
+                        colorscale=colorscale,
+                        colorbar=dict(
+                            title='Frame',
+                        ),
+                        showscale=True,
+                        size=marker_size,
+                    )
+                )
+            )
+
+            step = dict(method='restyle',
+                        args=['visible', [False]*n_data])
+            step['args'][1][i] = True
+            steps.append(step)
+
+        fig.data[0].visible = True
+
+        sliders = [dict(
+            active=0,
+            currentvalue={'prefix': 'Time: '},
+            pad={'t': 50},
+            steps=steps,
+        )]
+
+        fig.update_layout(sliders=sliders)
+        return fig
