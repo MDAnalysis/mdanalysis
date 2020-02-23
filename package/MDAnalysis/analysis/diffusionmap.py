@@ -161,7 +161,8 @@ module in published work please cite [Theobald2005]_.
              map. J. Chem. Phys. 134, 124116 (2011).
 
 .. [Ferguson1] Ferguson, A. L.; Panagiotopoulos, A. Z.; Kevrekidis, I. G.
-             Debenedetti, P. G.  Chem. Phys. Lett. 509, 1−11
+             Debenedetti, P. G. Nonlinear dimensionality reduction in molecular
+             simulation: The diffusion map approach Chem. Phys. Lett. 509, 1−11
              (2011)
 
 """
