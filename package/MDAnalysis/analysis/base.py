@@ -231,18 +231,16 @@ class AnalysisFromFunction(AnalysisBase):
         """
         if (trajectory is not None) and (not isinstance(
                 trajectory, coordinates.base.ProtoReader)):
-            args = args + (trajectory,)
+            args = (trajectory,) + args
             trajectory = None
 
         if trajectory is None:
-            for arg in args:
+            # all possible places to find trajectory
+            possible = [arg for arg in args] + [arg for arg in six.itervalues(kwargs)]
+            for arg in possible:
                 if isinstance(arg, AtomGroup):
                     trajectory = arg.universe.trajectory
-            # when we still didn't find anything
-            if trajectory is None:
-                for arg in six.itervalues(kwargs):
-                    if isinstance(arg, AtomGroup):
-                        trajectory = arg.universe.trajectory
+                    break
 
         if trajectory is None:
             raise ValueError("Couldn't find a trajectory")
