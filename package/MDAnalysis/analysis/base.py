@@ -33,6 +33,7 @@ import six
 from six.moves import range, zip
 import inspect
 import logging
+import itertools
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -236,8 +237,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         if trajectory is None:
             # all possible places to find trajectory
-            possible = [arg for arg in args] + [arg for arg in six.itervalues(kwargs)]
-            for arg in possible:
+            for arg in itertools.chain(args, six.itervalues(kwargs)):
                 if isinstance(arg, AtomGroup):
                     trajectory = arg.universe.trajectory
                     break
