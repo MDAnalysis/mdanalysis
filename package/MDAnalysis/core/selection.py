@@ -500,8 +500,7 @@ class SelgroupSelection(Selection):
 class StringSelection(Selection):
     """Selections based on text attributes
 
-    Supports the use of one wildcard at the start, 
-    end, and middle of strings
+    Supports multiple wildcards, based on fnmatch
     """
     def __init__(self, parser, tokens):
         vals = grab_not_keywords(tokens)

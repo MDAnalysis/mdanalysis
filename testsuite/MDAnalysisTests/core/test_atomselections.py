@@ -379,6 +379,16 @@ class TestSelectionsCHARMM(object):
         ag_wild = universe.select_atoms('resname AS*')
         assert ag == ag_wild
 
+    def test_wildcard_single_selection(self, universe):
+        ag = universe.select_atoms('resname TYR or resname THR')
+        ag_wild = universe.select_atoms('resname T?R')
+        assert ag == ag_wild
+
+    def test_wildcard_double_selection(self, universe):
+        ag = universe.select_atoms('resname ASN or resname ASP')
+        ag_wild = universe.select_atoms('resname *S?')
+        assert ag == ag_wild
+
 
 class TestSelectionsAMBER(object):
     @pytest.fixture()
