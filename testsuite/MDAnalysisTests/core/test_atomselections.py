@@ -927,7 +927,6 @@ class TestSelectionErrors(object):
         'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
-        'resname E*Y*Z',  # >1 wildcards
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
