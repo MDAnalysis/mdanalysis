@@ -56,7 +56,6 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
-  *Changed selection wildcards to support multiple wildcards
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
