@@ -385,7 +385,7 @@ class TestSelectionsCHARMM(object):
         assert ag == ag_wild
 
     def test_wildcard_double_selection(self, universe):
-        ag = universe.select_atoms('resname ASN or resname ASP')
+        ag = universe.select_atoms('resname ASN or resname ASP or resname HSD')
         ag_wild = universe.select_atoms('resname *S?')
         assert ag == ag_wild
 
