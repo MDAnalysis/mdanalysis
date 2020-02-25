@@ -162,12 +162,11 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
         assert_equal(results, ana.results)
 
 
-def test_AnalysisFromFunction_args_order():
+def test_AnalysisFromFunction_args_order(u):
     # Issue 2503
     def mass_xyz(atomgroup, masses):
         return atomgroup.positions * masses
     
-    u = mda.Universe(PSF, DCD)
     protein = u.select_atoms('protein')
     ans1 = base.AnalysisFromFunction(mass_xyz, u.trajectory, protein, protein.masses.reshape(-1, 1))
     ans2 = base.AnalysisFromFunction(mass_xyz, protein, protein.masses.reshape(-1, 1))
@@ -176,7 +175,7 @@ def test_AnalysisFromFunction_args_order():
     assert_equal(isinstance(ans1.args[1], np.ndarray), True)
     assert_equal(ans1.args[0], ans2.args[0])
     assert_equal(ans1.args[1], ans2.args[1])
-    #assert_equal(ans1.run().results, ans2.run().results)
+    assert_equal(ans1.run().results, ans2.run().results)
    
 
 def test_analysis_class():
