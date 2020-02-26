@@ -6,8 +6,6 @@
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder|
 
-[]!(https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.mdanalysis.org%2Fmdanalysis%2F&psig=AOvVaw1bXOgbS3syKUGTiUeo53BU&ust=1582844970053000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCPisspOr8OcCFQAAAAAdAAAAABAD)
-
 MDAnalysis_ is a useful Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
 It works with a wide range of popular simulation packages including Gromacs, Amber, NAMD, CHARMM, DL_Poly, HooMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
