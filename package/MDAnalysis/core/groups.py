@@ -2203,55 +2203,19 @@ class AtomGroup(GroupBase):
     :class:`AtomGroup` instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
-    .. rubric:: Deprecated functionality
-
-    *Instant selectors* will be removed in the 1.0 release.  See issue `#1377
-    <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more details.
-
-    :class:`Atoms<Atom>` can also be accessed in a Pythonic fashion by using the
-    :class:`Atom` name as an attribute. For instance, ::
-
-        ag.CA
-
-    will provide an :class:`AtomGroup` of all CA :class:`Atoms<Atom>` in the
-    group. These *instant selector* attributes are auto-generated for
-    each atom name encountered in the group.
-
-    Notes
-    -----
-    The name-attribute instant selector access to :class:`Atoms<Atom>` is mainly
-    meant for quick interactive work. Thus it either returns a single
-    :class:`Atom` if there is only one matching :class:`Atom`, *or* a
-    new :class:`AtomGroup` for multiple matches.  This makes it difficult to use
-    the feature consistently in scripts.
-
 
     See Also
     --------
     :class:`MDAnalysis.core.universe.Universe`
 
-
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0
-       release. See :ref:`Instant selectors <instance-selectors>` for details
-       and alternatives.
+       release.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms('name ...') to select
+       atoms by name.
     """
-    def __getitem__(self, item):
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        #
-        # u.atoms['HT1'] access, otherwise default
-        if isinstance(item, string_types):
-            try:
-                return self._get_named_atom(item)
-            except (AttributeError, selection.SelectionError):
-                pass
-        return super(AtomGroup, self).__getitem__(item)
-
     def __getattr__(self, attr):
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        #
         # is this a known attribute failure?
         # TODO: Generalise this to cover many attributes
         if attr in ('fragments', 'fragindices', 'n_fragments', 'unwrap'):
@@ -2260,12 +2224,6 @@ class AtomGroup(GroupBase):
             # raise NDE(_ATTR_ERRORS[attr])
             raise NoDataError("AtomGroup.{} not available; this requires Bonds"
                               "".format(attr))
-        elif hasattr(self.universe._topology, 'names'):
-            # Ugly hack to make multiple __getattr__s work
-            try:
-                return self._get_named_atom(attr)
-            except selection.SelectionError:
-                pass
         raise AttributeError("{cls} has no attribute {attr}".format(
             cls=self.__class__.__name__, attr=attr))
 
@@ -3256,8 +3214,8 @@ class ResidueGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors <instance-selectors>` for details and
-       alternatives.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms instead
     """
 
     @property
@@ -3419,8 +3377,8 @@ class SegmentGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors <instance-selectors>` for details and
-       alternatives.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms instead
     """
 
     @property
@@ -3841,8 +3799,11 @@ class Segment(ComponentBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`Segments<Segment>` will be removed in the
-       1.0 release. See :ref:`Instant selectors <instance-selectors>` for
-       details and alternatives.
+       1.0 release.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use either segment.residues[...] to select
+       residue by number, or segment.residues[segment.residue.resnames = ...]
+       to select by resname.
     """
     def __repr__(self):
         me = '<Segment'
@@ -3870,26 +3831,6 @@ class Segment(ComponentBase):
         rg._cache['unique'] = rg
         return rg
 
-    def __getattr__(self, attr):
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        #
-        # Segment.r1 access
-        if attr.startswith('r') and attr[1:].isdigit():
-            resnum = int(attr[1:])
-            rg = self.residues[resnum - 1]  # convert to 0 based
-            warnings.warn("Instant selectors Segment.r<N> will be removed in "
-                          "1.0. Use Segment.residues[N-1] instead.",
-                          DeprecationWarning)
-            return rg
-        # Resname accesss
-        if hasattr(self.residues, 'resnames'):
-            try:
-                return self.residues._get_named_residue(attr)
-            except selection.SelectionError:
-                pass
-        raise AttributeError("{cls} has no attribute {attr}"
-                             "".format(cls=self.__class__.__name__, attr=attr))
 
 # Accessing these attrs doesn't trigger an update. The class and instance
 # methods of UpdatingAtomGroup that are used during __init__ must all be

@@ -43,7 +43,7 @@ class SimpleRdfBench(object):
                             nbins=nbins,
                             range=range_val)
 
-    def time_interrdf(self, nbins, range_val):
+    def time_interrdf(self, nbins, range_val, natoms):
         """Benchmark a full trajectory parse
         by MDAnalysis.analysis.rdf.InterRDF
         """
