@@ -1824,7 +1824,7 @@ class PSAnalysis(object):
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         try:
-            import seaborn.apionly as sns
+            import seaborn as sns
         except ImportError:
             raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
@@ -1941,7 +1941,7 @@ class PSAnalysis(object):
         """
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
-            import seaborn.apionly as sns
+            import seaborn as sns
         except ImportError:
             raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
