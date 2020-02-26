@@ -86,6 +86,7 @@ matrix:
 #           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
+           PIP_DEPENDENCIES=""
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"

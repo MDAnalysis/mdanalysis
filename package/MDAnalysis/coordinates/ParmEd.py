@@ -162,9 +162,10 @@ class ParmEdConverter(base.ConverterBase):
         """
         try:
             import parmed as pmd
-        except ModuleNotFoundError:
-            raise ValueError('Parmed is required for ParmEdConverter but '
-                             'is not installed.')
+        except ImportError:
+            raise ImportError('ParmEd is required for ParmEdConverter but '
+                              'is not installed. Try installing it with \n'
+                              'pip install parmed')
         try:
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
