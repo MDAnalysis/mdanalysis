@@ -37,6 +37,12 @@ import matplotlib
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
 
+def has_seaborn():
+    try:
+        import seaborn.apionly as sns
+        return True
+    except ImportError:
+        return False
 
 class TestPSAnalysis(object):
     iu1 = np.triu_indices(3, k=1)
@@ -188,11 +194,13 @@ class TestPSAnalysis(object):
         err_msg = "Dendrogram dictionary object was not produced"
         assert isinstance(plot_data[1], dict), err_msg
 
+    @pytest.mark.skipif(not has_seaborn(), reason="seaborn library not found.")
     def test_dendrogram_produced_annotated(self, plot_annotated_heatmap):
         """Test whether Dendrogram dictionary object was produced"""
         err_msg = "Dendrogram dictionary object was not produced"
         assert isinstance(plot_annotated_heatmap[1], dict), err_msg
 
+    @pytest.mark.skipif(not has_seaborn(), reason="seaborn library not found.")
     def test_plot_nearest_neighbors(self, plot_nearest_neighbors):
         assert isinstance(plot_nearest_neighbors, matplotlib.axes.Axes)
 
