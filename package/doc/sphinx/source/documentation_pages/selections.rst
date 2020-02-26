@@ -46,11 +46,11 @@ selection parser. The following applies to all selections:
   necessary).
 * Selections are parsed left to right and parentheses can be used for
   grouping.
-* Currently, a single wildcard ``*`` character can be at the start, middle, or 
-  end of a string for pattern matching. For example, ``GL*`` selects
-  all strings that start with "GL" such as "GLU", "GLY", "GLX29", "GLN". 
-  ``resname *N`` selects all residue names that end in "N", such as "ASN" and 
-  "GLN".
+* Two types of wildcards are supported: ``*`` and ``?``. ``*`` matches
+  everything, while ``?`` matches a single character. For example, 
+  ``GL*`` selects all strings that start with "GL" such as "GLU", 
+  "GLY", "GLX29", "GLN". ``resname T?R`` selects residues named "TYR"
+  and "THR".
 
 
 Simple selections
