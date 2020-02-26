@@ -2,13 +2,13 @@
   MDAnalysis Repository README
 ================================
 
-|numfocus| |build| |cov| [*]_
+|numfocus| |build| |cov| |mdanalysis| [*]_
 
 |docs| |devdocs| |usergroup| |developergroup| |anaconda| |mybinder|
 
-MDAnalysis_ is a Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
+MDAnalysis_ is an object-oriented Python library for the analysis of computer simulations of many-body systems at the molecular scale, spanning use cases from interactions of drugs with proteins to novel materials. It is widely used in the scientific community and is written by scientists for scientists. 
 
-It works with a a wide range of popular simulation packages including Gromacs, Amber, NAMD, CHARMM, DL_Poly, HooMD, LAMMPS and many other — see the lists of  supported `trajectory formats`_ and `topology formats`_.
+It works with a wide range of popular simulation packages including Gromacs, Amber, NAMD, CHARMM, DL_Poly, HooMD, LAMMPS and many others — see the lists of supported `trajectory formats`_ and `topology formats`_.
 MDAnalysis also includes widely used analysis algorithms in the `MDAnalysis.analysis`_ module.
 
 .. _numfocus-fiscal-sponsor-attribution:
@@ -21,6 +21,13 @@ a `tax-deductible donation`_ to help the project pay for developer time, profess
   :target: https://numfocus.org/project/mdanalysis
   :align: center
   :alt: NumFOCUS
+
+.. image:: https://numfocus.org/wp-content/uploads/2020/02/MDAnalysis-web.png
+  :height: 60px
+  :target: https://www.mdanalysis.org/mdanalysis/
+  :align: center
+  :alt: MDAnalysis
+  
   
 This project is bound by a `Code of Conduct`_.
 
@@ -49,6 +56,34 @@ Example analysis script
  
 There are a number of tutorials_ on the MDAnalysis homepage that explain
 how to conduct RMSD calculations, Alignment and many more features of MDAnalysis.
+
+Example Trajectories-analysis script
+====================================
+
+Trajectories can also be manipulated (for instance, fit to a reference structure) and written out. The basic example demonstrates some of these features.
+A typical usage pattern is to iterate through a trajectory and analyze coordinates for every frame. 
+In the following example the end-to-end distance of a protein and the radius of gyration of the backbone atoms are calculated:
+
+.. code:: python
+
+   import MDAnalysis as mda
+   from MDAnalysis.tests.datafiles import PSF, DCD      # test trajectory
+   import numpy.linalg
+   
+   u = MDAnalysis.Universe(PSF,DCD)  # always start with a Universe
+   # can access via segid (4AKE) and atom name
+   # we take the first atom named N and the last atom named C
+   nterm = u.select_atoms('segid 4AKE and name N')[0]
+   cterm = u.select_atoms('segid 4AKE and name C')[-1]
+   
+   bb = u.select_atoms('protein and backbone')  # a selection (AtomGroup)
+
+   for ts in u.trajectory:     # iterate through all frames
+      r = cterm.position - nterm.position # end-to-end vector from atom positions
+      d = numpy.linalg.norm(r)  # end-to-end distance
+      rgyr = bb.radius_of_gyration()  # method of AtomGroup
+      print("frame = {0}: d = {1} A, Rgyr = {2} A".format(
+            ts.frame, d, rgyr))
 
 Source code
 ===========
@@ -81,7 +116,7 @@ MDAnalysis issue tracker.)
 Guide for Developers
 ====================
 
-To setup a development environment and run the testsuite you can use this
+To set-up a development environment and run the test-suite you can use this
 guide_. If you are a new developer who would like to start contributing to
 MDAnalysis as a start you can increase our code coverage, the guides explain how
 to find uncovered code.
@@ -126,6 +161,9 @@ to find uncovered code.
 .. |numfocus| image:: https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
    :alt: Powered by NumFOCUS
    :target: https://www.numfocus.org/
+
+.. |MDAnalysis| image:: https://img.shields.io/badge/-MDAnalysis-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
+   :target: https://www.mdanalysis.org/
 
 .. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
    :alt: Build Status
