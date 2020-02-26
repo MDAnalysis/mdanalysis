@@ -168,14 +168,17 @@ def test_AnalysisFromFunction_args_order(u):
         return atomgroup.positions * masses
     
     protein = u.select_atoms('protein')
-    ans1 = base.AnalysisFromFunction(mass_xyz, u.trajectory, protein, protein.masses.reshape(-1, 1))
+    sub = u.atoms[:100]
+    #ans1 = base.AnalysisFromFunction(mass_xyz, u.trajectory, protein, protein.masses.reshape(-1, 1))
+    # lack traj but can find in protein
     ans2 = base.AnalysisFromFunction(mass_xyz, protein, protein.masses.reshape(-1, 1))
+    # multiple traj input
+    ans3 = base.AnalysisFromFunction(mass_xyz, protein, sub, protein.masses.reshape(-1, 1))
     
-    assert_equal(isinstance(ans1.args[0], mda.core.groups.AtomGroup), True)
-    assert_equal(isinstance(ans1.args[1], np.ndarray), True)
-    assert_equal(ans1.args[0], ans2.args[0])
-    assert_equal(ans1.args[1], ans2.args[1])
-    assert_equal(ans1.run().results, ans2.run().results)
+    assert len(ans2.args) == 2
+    assert (ans2.args[0] == protein) and not (ans2.args[1] - protein.masses.reshape(-1, 1)).any()
+    assert ans2._trajectory == protein.universe.trajectory
+    assert ans3.args[0] == protein and ans3.args[1] == sub
    
 
 def test_analysis_class():
