@@ -32,7 +32,7 @@ from numpy.testing import assert_equal
 import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
 
 
@@ -161,25 +161,31 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
     for ana in (ana1, ana2, ana3):
         assert_equal(results, ana.results)
 
-
-def test_AnalysisFromFunction_args_order(u):
-    # Issue 2503
-    def mass_xyz(atomgroup, masses):
+        
+def mass_xyz(atomgroup, masses):
         return atomgroup.positions * masses
-    
+
+def test_AnalysisFromFunction_args_length(u):
     protein = u.select_atoms('protein')
-    sub = u.atoms[:100]
-    #ans1 = base.AnalysisFromFunction(mass_xyz, u.trajectory, protein, protein.masses.reshape(-1, 1))
-    # lack traj but can find in protein
-    ans2 = base.AnalysisFromFunction(mass_xyz, protein, protein.masses.reshape(-1, 1))
-    # multiple traj input
-    ans3 = base.AnalysisFromFunction(mass_xyz, protein, sub, protein.masses.reshape(-1, 1))
-    
-    assert len(ans2.args) == 2
-    assert (ans2.args[0] == protein) and not (ans2.args[1] - protein.masses.reshape(-1, 1)).any()
-    assert ans2._trajectory == protein.universe.trajectory
-    assert ans3.args[0] == protein and ans3.args[1] == sub
-   
+    masses = protein.masses.reshape(-1, 1)
+    ans = base.AnalysisFromFunction(mass_xyz, protein, masses)
+    assert len(ans.args) == 2
+    assert int(sum(sum(sum(ans.run().results)))) == -317054
+
+def test_AnalysisFromFunction_args_content(u):
+    protein = u.select_atoms('protein')
+    masses = protein.masses.reshape(-1, 1)
+    ans = base.AnalysisFromFunction(mass_xyz, protein, masses)
+    assert (ans.args[0] == protein) and not (ans.args[1] - masses).any()
+    assert  ans._trajectory == protein.universe.trajectory
+
+def test_AnalysisFromFunction_args_multiple_traj(u):
+    protein = u.select_atoms('protein')
+    masses = protein.masses.reshape(-1, 1)
+    another = mda.Universe(TPR, XTC).select_atoms("protein")
+    ans = base.AnalysisFromFunction(mass_xyz, another, protein, masses)
+    assert ans._trajectory == another.universe.trajectory
+ 
 
 def test_analysis_class():
     ana_class = base.analysis_class(simple_function)
