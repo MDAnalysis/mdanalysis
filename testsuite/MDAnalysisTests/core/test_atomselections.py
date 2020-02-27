@@ -364,39 +364,18 @@ class TestSelectionsCHARMM(object):
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
 
-    def test_wildcard_middle_selection(self, universe):
-        ag = universe.select_atoms('resname TYR or resname THR')
-        ag_wild = universe.select_atoms('resname T*R')
-        assert ag == ag_wild
-
-    def test_wildcard_start_selection(self, universe):
-        ag = universe.select_atoms('resname ASN GLN')
-        ag_wild = universe.select_atoms('resname *N')
-        assert ag == ag_wild
-
-    def test_wildcard_terminal_selection(self, universe):
-        ag = universe.select_atoms('resname ASN ASP')
-        ag_wild = universe.select_atoms('resname AS*')
-        assert ag == ag_wild
-
-    def test_wildcard_single_selection(self, universe):
-        ag = universe.select_atoms('resname TYR or resname THR')
-        ag_wild = universe.select_atoms('resname T?R')
-        assert ag == ag_wild
-
-    def test_wildcard_double_selection(self, universe):
-        ag = universe.select_atoms('resname ASN ASP HSD')
-        ag_wild = universe.select_atoms('resname *S?')
-        assert ag == ag_wild
-
-    def test_wildcard_double_selection(self, universe):
-        ag = universe.select_atoms('resname LEU LYS')
-        ag_wild = universe.select_atoms('resname L**')
-        assert ag == ag_wild
-
-    def test_wildcard_double_selection(self, universe):
-        ag = universe.select_atoms('resname MET')
-        ag_wild = universe.select_atoms('resname *M*')
+    @pytest.mark.parametrize('selstring, wildstring', [
+        ('resname TYR THR', 'resname T*R'),
+        ('resname ASN GLN', 'resname *N'),
+        ('resname ASN ASP', 'resname AS*'),
+        ('resname TYR THR', 'resname T?R'),
+        ('resname ASN ASP HSD', 'resname *S?'),
+        ('resname LEU LYS', 'resname L**'),
+        ('resname MET', 'resname *M*')
+    ])
+    def test_wildcard_selection(self, universe, selstring, wildstring):
+        ag = universe.select_atoms(selstring)
+        ag_wild = universe.select_atoms(wildstring)
         assert ag == ag_wild
 
 class TestSelectionsAMBER(object):

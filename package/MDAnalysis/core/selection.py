@@ -500,6 +500,7 @@ class SelgroupSelection(Selection):
 class StringSelection(Selection):
     """Selections based on text attributes
 
+    .. versionchanged:: 0.21
     Supports multiple wildcards, based on fnmatch
     """
     def __init__(self, parser, tokens):
@@ -512,7 +513,7 @@ class StringSelection(Selection):
     def apply(self, group):
         mask = np.zeros(len(group), dtype=np.bool)
         for val in self.values:
-            values = getattr(group, self.field).astype(np.str_)
+            values = getattr(group, self.field)
             mask |= [fnmatch.fnmatch(x, val) for x in values]
         return group[mask].unique
 
