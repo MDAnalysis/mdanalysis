@@ -2045,8 +2045,21 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         """
 
+        # Performs the transform
         try:
             self.transformations = transformations
+        except TypeError:
+            # Check if nested list, if yes then 'remove' one layer of [] and apply transform
+            # Else, raises error asking for correct user input type
+            if isinstance(transformations, list):
+                # Add after classes, during lunch
+                pass
+            else:
+                six.raise_from(
+                    TypeError(
+                        "It seems as though you've passed an incompable object type!"
+                    )
+                   
         except ValueError:
             six.raise_from(
                 ValueError(
