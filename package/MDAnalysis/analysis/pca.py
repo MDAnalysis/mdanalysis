@@ -237,13 +237,13 @@ class PCA(AnalysisBase):
                                                       self.step]):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
-                    mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+                    mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
                                                      self._ref_atom_positions,
                                                      self._atoms,
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
-                else:
-                    self.mean += self._atoms.positions.ravel()
+
+                self.mean += self._atoms.positions.ravel()
                 mean_pm.echo(i)
             self.mean /= self.n_frames
 
@@ -253,7 +253,7 @@ class PCA(AnalysisBase):
     def _single_frame(self):
         if self.align:
             mobile_cog = self._atoms.center_of_geometry()
-            mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+            mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
                                              self._ref_atom_positions,
                                              self._atoms,
                                              mobile_com=mobile_cog,
