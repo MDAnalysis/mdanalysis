@@ -72,6 +72,15 @@ matrix:
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
 
+    - env: NAME="asv check"
+           PYTHON_VERSION=2.7 
+           CODECOV="false"
+           MAIN_CMD=""
+           SETUP_CMD=""
+           NUMPY_VERSION=1.16
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+           ASV_CHECK="true"
+
     - os: osx
       env: PYTHON_VERSION=3.6
            NUMPY_VERSION=1.17.3
@@ -122,9 +131,15 @@ script:
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
   - eval $MAIN_CMD $SETUP_CMD
   # check benchmark suite for basic issues
-  - python -m pip install asv
-  - cd testsuite && python setup.py install
-  - cd ../benchmarks && time python -m asv check -E existing
+  - |
+    if [ "${ASV_CHECK}" == "true" ]; then
+      python -m pip install asv
+      cd testsuite
+      python setup.py install
+      cd ../benchmarks
+      time python -m asv check -E existing
+    fi
+
 
 after_success:
   - |
