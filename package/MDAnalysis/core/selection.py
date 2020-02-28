@@ -500,7 +500,7 @@ class SelgroupSelection(Selection):
 class StringSelection(Selection):
     """Selections based on text attributes
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
         Supports multiple wildcards, based on fnmatch
     """
     def __init__(self, parser, tokens):
