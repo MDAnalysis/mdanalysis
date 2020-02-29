@@ -100,8 +100,6 @@ import numbers
 import os
 import warnings
 
-from numpy.lib.utils import deprecate
-
 from .. import _ANCHOR_UNIVERSES, _CONVERTERS
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique, unique_int_1d
