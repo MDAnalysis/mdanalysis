@@ -87,7 +87,7 @@ Guide for Developers
 
 To set up a development environment and run the test suite you can use this
 guide_. If you are a new developer who would like to start contributing to
-MDAnalysis as a beginner, you can help increase our code coverage, the guides explain how
+MDAnalysis, you can help increase our code coverage, the guides explain how
 to find uncovered code.
 
 
