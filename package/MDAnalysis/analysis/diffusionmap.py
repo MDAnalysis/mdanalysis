@@ -522,15 +522,15 @@ class DiffusionMap(object):
             embeds the data at integer ``time`` scales from 0 to ``n_frame``, 
             exclusive.  If ``None``, uses the number of frames in the analysis.
         colorscale: str, optional
-            Plotly colorscale for coloring. Default: 'Viridis'
+            Plotly colorscale for coloring.
         marker_size: float, optional
-            Marker size for plot. Default: 3
+            Marker size for plot.
         x: int, optional
-            Eigenvector to plot on x-axis. Default: 1
+            Eigenvector to plot on x-axis.
         y: int, optional
-            Eigenvector to plot on y-axis. Default: 2
+            Eigenvector to plot on y-axis.
         z: int, optional
-            Eigenvector to plot on z-axis. Default: 3
+            Eigenvector to plot on z-axis.
 
         Returns
         -------
