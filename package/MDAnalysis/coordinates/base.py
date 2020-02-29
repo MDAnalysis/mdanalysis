@@ -2045,20 +2045,27 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         """
 
+        # Checks if list is passed
+        if isinstance(transformations, list):
+            six.rais_from(
+                TypeError(
+                    "You've passed a list!"
+                    "Please remove the [] and try passing it again"
+                )
+            )
+            pass
+
         # Performs the transform
         try:
             self.transformations = transformations
         except TypeError:
             # Check if nested list, if yes then 'remove' one layer of [] and apply transform
             # Else, raises error asking for correct user input type
-            if isinstance(transformations, list):
-                # Add after classes, during lunch
-                pass
-            else:
-                six.raise_from(
-                    TypeError(
-                        "It seems as though you've passed an incompable object type!"
-                    )
+            six.raise_from(
+                TypeError(
+                    "It seems as though you've passed an incompable object type!"
+                    "Please check the type being passed again"
+                )
                    
         except ValueError:
             six.raise_from(
