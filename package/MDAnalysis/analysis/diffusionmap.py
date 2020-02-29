@@ -421,15 +421,15 @@ class DiffusionMap(object):
         return (self._eigenvectors[1:n_eigenvectors+1, ].T *
                 (self.eigenvalues[1:n_eigenvectors+1]**time))
 
-    def plot_animated_transform(self, n_frame=None, colorscale='Viridis', marker_size=3,
+    def plot_animated_transform(self, n_frames=None, colorscale='Viridis', marker_size=3,
                                 x=1, y=2):
         """ Plots an interactive 2D plot of chosen eigenvectors at different timescales.
 
         Parameters
         ----------
-        n_frame: int, optional
+        n_frames: int, optional
             number of ``time`` values for ``transform()``. The animated graph 
-            embeds the data at integer ``time`` scales from 0 to ``n_frame``, 
+            embeds the data at integer ``time`` scales from 0 to ``n_frames``, 
             exclusive.  If ``None``, uses the number of frames in the analysis.
         colorscale: str, optional
             Plotly colorscale for coloring.
@@ -452,14 +452,14 @@ class DiffusionMap(object):
         except ImportError:
             raise ImportError('Plotly is required for this animated graph')
 
-        if n_frame is None:
-            n_frame = self._n_frames
+        if n_frames is None:
+            n_frames = self._n_frames
 
         eig = np.array([x, y]) - 1
         n_eig = max(eig) + 1
 
         data = np.array([self.transform(n_eig, time=i)
-                         for i in range(n_frame)])
+                         for i in range(n_frames)])
         order = np.arange(self._n_frames)
         n_data = len(data)
 
@@ -510,16 +510,16 @@ class DiffusionMap(object):
         fig.update_layout(sliders=sliders)
         return fig
 
-    def plot_animated_transform3D(self, n_frame=None, colorscale='Viridis', marker_size=3,
+    def plot_animated_transform3D(self, n_frames=None, colorscale='Viridis', marker_size=3,
                                   x=1, y=2, z=3):
         """
         Plots an interactive 3D plot of chosen eigenvectors at different timescales.
 
         Parameters
         ----------
-        n_frame: int, optional
+        n_frames: int, optional
             number of ``time`` values for ``transform()``. The animated graph 
-            embeds the data at integer ``time`` scales from 0 to ``n_frame``, 
+            embeds the data at integer ``time`` scales from 0 to ``n_frames``, 
             exclusive.  If ``None``, uses the number of frames in the analysis.
         colorscale: str, optional
             Plotly colorscale for coloring.
@@ -547,10 +547,10 @@ class DiffusionMap(object):
         eig = np.array([x, y, z]) - 1
         n_eig = max(eig) + 1
 
-        if n_frame is None:
-            n_frame = self._n_frames
+        if n_frames is None:
+            n_frames = self._n_frames
         data = np.array([self.transform(n_eig, time=i)
-                         for i in range(n_frame)])
+                         for i in range(n_frames)])
         order = np.arange(self._n_frames)
         n_data = len(data)
 

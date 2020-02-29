@@ -137,9 +137,9 @@ def not_square_array_error():
 
 def test_get_plotly_graphs(dmap):
     plotly = pytest.importorskip("plotly")
-    n_frame = 5
-    fig = dmap.plot_animated_transform(n_frame=n_frame, x=3, y=4)
+    n_frames = 5
+    fig = dmap.plot_animated_transform(n_frames=n_frames, x=3, y=4)
     assert isinstance(fig, plotly.graph_objects.Figure)
-    assert len(fig.layout['sliders'][0]['steps']) == n_frame
+    assert len(fig.layout['sliders'][0]['steps']) == n_frames
     assert fig.layout['xaxis']['title']['text'] == 'DC 3'
     assert fig.layout['yaxis']['title']['text'] == 'DC 4'
