@@ -56,6 +56,7 @@ Fixes
   * Added parmed to setup.py
 
 Enhancements
+  * Added subsetting to DiffusionMap and plotting functions (PR #2548)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
