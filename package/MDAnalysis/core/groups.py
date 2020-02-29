@@ -2222,8 +2222,8 @@ class AtomGroup(GroupBase):
             # eg:
             # if attr in _ATTR_ERRORS:
             # raise NDE(_ATTR_ERRORS[attr])
-            raise NoDataError("AtomGroup.{} not available; this requires Bonds"
-                              "".format(attr))
+            raise NoDataError("AtomGroup.{} not available; The attribute/method you are trying to access is not available because your topology doesn't contain information about {attr}"
+                              .format(attr))
         raise AttributeError("{cls} has no attribute {attr}".format(
             cls=self.__class__.__name__, attr=attr))
 
@@ -3617,9 +3617,9 @@ class Atom(ComponentBase):
     """
     def __getattr__(self, attr):
         """Try and catch known attributes and give better error message"""
-        if attr in ('fragment', 'fragindex'):
-            raise NoDataError("Atom has no {} data, this requires Bonds"
-                              "".format(attr))
+        if attr in ('fragment', 'fragindices', 'n_fragments', 'unwrap'):
+            raise NoDataError("Atom has no {} data, The attribute/method you are trying to access is not available because your topology doesn't contain information about {attr}"
+                              .format(attr))
         else:
             raise AttributeError("{cls} has no attribute {attr}".format(
                 cls=self.__class__.__name__, attr=attr))
