@@ -161,31 +161,21 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
     for ana in (ana1, ana2, ana3):
         assert_equal(results, ana.results)
 
-        
-def mass_xyz(atomgroup, masses):
-        return atomgroup.positions * masses
 
-def test_AnalysisFromFunction_args_length(u):
-    protein = u.select_atoms('protein')
-    masses = protein.masses.reshape(-1, 1)
-    ans = base.AnalysisFromFunction(mass_xyz, protein, masses)
-    assert len(ans.args) == 2
-    assert int(sum(sum(sum(ans.run().results)))) == -317054
+def mass_xyz(atomgroup1, atomgroup2, masses):
+        return atomgroup1.positions * masses
 
 def test_AnalysisFromFunction_args_content(u):
     protein = u.select_atoms('protein')
     masses = protein.masses.reshape(-1, 1)
-    ans = base.AnalysisFromFunction(mass_xyz, protein, masses)
-    assert (ans.args[0] == protein) and not (ans.args[1] - masses).any()
-    assert  ans._trajectory == protein.universe.trajectory
-
-def test_AnalysisFromFunction_args_multiple_traj(u):
-    protein = u.select_atoms('protein')
-    masses = protein.masses.reshape(-1, 1)
     another = mda.Universe(TPR, XTC).select_atoms("protein")
-    ans = base.AnalysisFromFunction(mass_xyz, another, protein, masses)
-    assert ans._trajectory == another.universe.trajectory
- 
+    ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
+    assert len(ans.args) == 3
+    result = np.sum(ans.run().results)
+    assert_almost_equal(result, -317054.67757345125, decimal=6)
+    assert (ans.args[0] is protein) and (ans.args[1] is another)
+    assert  ans._trajectory is protein.universe.trajectory
+
 
 def test_analysis_class():
     ana_class = base.analysis_class(simple_function)
