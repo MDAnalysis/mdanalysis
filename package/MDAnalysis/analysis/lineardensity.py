@@ -36,13 +36,12 @@ import numpy as np
 
 from MDAnalysis.analysis.base import AnalysisBase
 
-
 class LinearDensity(AnalysisBase):
     """Linear density profile
 
     Parameters
     ----------
-    select : AtomGroup
+    selection : AtomGroup
           any atomgroup
     grouping : str {'atoms', 'residues', 'segments', 'fragments'}
           Density profiles will be computed on the center of geometry
@@ -80,17 +79,14 @@ class LinearDensity(AnalysisBase):
        The ``save()`` method was also removed, you can use ``np.savetxt()`` or
        ``np.save()`` on the :attr:`LinearDensity.results` dictionary contents
        instead.
-
-    .. versionchanged:: 1.0.0
-       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, select, grouping='atoms', binsize=0.25, **kwargs):
-        super(LinearDensity, self).__init__(select.universe.trajectory,
+    def __init__(self, selection, grouping='atoms', binsize=0.25, **kwargs):
+        super(LinearDensity, self).__init__(selection.universe.trajectory,
                                             **kwargs)
         # allows use of run(parallel=True)
-        self._ags = [select]
-        self._universe = select.universe
+        self._ags = [selection]
+        self._universe = selection.universe
 
         self.binsize = binsize
 
@@ -109,7 +105,6 @@ class LinearDensity(AnalysisBase):
         # Here we choose a number of bins of the largest cell side so that
         # x, y and z values can use the same "coord" column in the output file
         self.nbins = bins.max()
-
         slices_vol = self.volume / bins
 
         self.keys = ['pos', 'pos_std', 'char', 'char_std']
@@ -121,28 +116,36 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim].update({key: np.zeros(self.nbins)})
 
-    def _single_frame(self):
+        # Variables later defined in _prepare() method
+        self.masses = None
+        self.charges = None
+        self.totalmass = None
+
+    def _prepare(self):
         # group must be a local variable, otherwise there will be
         # issues with parallelization
         group = getattr(self._ags[0], self.grouping)
-        self._ags[0].wrap(compound=self.grouping)
 
         # Get masses and charges for the selection
         try:  # in case it's not an atom
-            masses = np.array([elem.total_mass() for elem in group])
-            charges = np.array([elem.total_charge() for elem in group])
+            self.masses = np.array([elem.total_mass() for elem in group])
+            self.charges = np.array([elem.total_charge() for elem in group])
         except AttributeError:  # much much faster for atoms
-            masses = self._ags[0].masses
-            charges = self._ags[0].charges
+            self.masses = self._ags[0].masses
+            self.charges = self._ags[0].charges
 
-        totalmass = np.sum(masses)
+        self.totalmass = np.sum(self.masses)
+
+    def _single_frame(self):
+        self.group = getattr(self._ags[0], self.grouping)
+        self._ags[0].wrap(compound=self.grouping)
 
         # Find position of atom/group of atoms
         if self.grouping == 'atoms':
             positions = self._ags[0].positions  # faster for atoms
         else:
             # COM for res/frag/etc
-            positions = np.array([elem.centroid() for elem in group])
+            positions = np.array([elem.centroid() for elem in self.group])
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
@@ -151,7 +154,7 @@ class LinearDensity(AnalysisBase):
             key_std = 'pos_std'
             # histogram for positions weighted on masses
             hist, _ = np.histogram(positions[:, idx],
-                                   weights=masses,
+                                   weights=self.masses,
                                    bins=self.nbins,
                                    range=(0.0, max(self.dimensions)))
 
@@ -162,7 +165,7 @@ class LinearDensity(AnalysisBase):
             key_std = 'char_std'
             # histogram for positions weighted on charges
             hist, _ = np.histogram(positions[:, idx],
-                                   weights=charges,
+                                   weights=self.charges,
                                    bins=self.nbins,
                                    range=(0.0, max(self.dimensions)))
 

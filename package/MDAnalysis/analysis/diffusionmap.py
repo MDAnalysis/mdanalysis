@@ -418,8 +418,11 @@ class DiffusionMap(object):
         diffusion_space : array (n_frames, n_eigenvectors)
             The diffusion map embedding as defined by [Ferguson1]_.
         """
-        return (self._eigenvectors[1:n_eigenvectors+1, ].T *
-                (self.eigenvalues[1:n_eigenvectors+1]**time))
+        try:
+            return (self._eigenvectors[1:n_eigenvectors+1, ].T *
+                    (self.eigenvalues[1:n_eigenvectors+1]**time))
+        except AttributeError:
+            raise ValueError('Call run() on DiffusionMap before using transform')
 
     def plot_animated_transform(self, n_frames=None, colorscale='Viridis', marker_size=3,
                                 x=1, y=2):
