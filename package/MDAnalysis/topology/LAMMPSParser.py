@@ -31,6 +31,9 @@ Parses data_ or dump_ files produced by LAMMPS_.
 .. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html
 .. _dump: http://lammps.sandia.gov/doc/dump.html
 
+.. versionchanged:: 1.0.0
+   Deprecated :class:`LAMMPSDataConverter` has now been removed.
+
 
 .. _atom_style_kwarg:
 
@@ -71,9 +74,6 @@ Classes
    :members:
 
 
-
-  .. versionchanged:: 1.0.0
-     Deprecated :class:`LAMMPSDataConverter` has now been removed.
 """
 from __future__ import absolute_import, print_function
 
