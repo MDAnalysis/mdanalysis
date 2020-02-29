@@ -15,11 +15,12 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
-         Yuan-Yu, xiki-tempula
+         Yuan-Yu, xiki-tempula, HTian1997
 
   * 0.21.0
 
 Fixes
+  * Correct args order of base.AnalysisFromFunction (Issue #2503)  
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
@@ -130,6 +131,8 @@ Changes
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
+Testsuite
+  * add test for args order of base.AnalysisFromFunction (PR #2594)
 
 09/05/19 IAlibay, richardjgowers
 
