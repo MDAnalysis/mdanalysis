@@ -294,26 +294,36 @@ class DiffusionMap(object):
         """
         Parameters
         -------------
-        u : MDAnalysis Universe or DistanceMatrix object
+        u : MDAnalysis Universe or DistanceMatrix object or np.ndarray
             Can be a Universe, in which case one must supply kwargs for the
             initialization of a DistanceMatrix. Otherwise, this can be a
-            DistanceMatrix already initialized. Either way, this will be made
-            into a diffusion kernel.
-        epsilon : Float
+            DistanceMatrix already initialized, or a square Numpy array.
+            In each case, this will be made into a diffusion kernel.
+        epsilon : float
             Specifies the method used for the choice of scale parameter in the
             diffusion map. More information in [Lafon1]_, [Ferguson1]_ and
-            [Clementi1]_, Default: 1.
+            [Clementi1]_ .
         **kwargs
             Parameters to be passed for the initialization of a
             :class:`DistanceMatrix`.
+
+        
+        .. versionchanged:: ``u`` can now be a square Numpy array.
+
         """
         if isinstance(u, Universe):
             self._dist_matrix = DistanceMatrix(u, **kwargs)
         elif isinstance(u, DistanceMatrix):
             self._dist_matrix = u
+        elif isinstance(u, np.ndarray):
+            if not len(u.shape) == 2 or u.shape[0] != u.shape[1]:
+                msg = ('Distance matrices must be square. '
+                       'The passed array had shape {}')
+                raise ValueError(msg.format(u.shape))
+            self._dist_matrix = u
         else:
-            raise ValueError("U is not a Universe or DistanceMatrix and"
-                             " so the DiffusionMap has no data to work with.")
+            raise ValueError("u is not a Universe, DistanceMatrix, or numpy array. "
+                             "The DiffusionMap has no data to work with.")
         self._epsilon = epsilon
 
     def run(self, start=None, stop=None, step=None):
@@ -329,20 +339,54 @@ class DiffusionMap(object):
         step : int, optional
             number of frames to skip between each analysed frame
 
+        .. versionchanged:: 1.0.0
+           Allowed for selecting frames of the distance matrix and 
+           raises error when choosing frames outside the matrix
+
         .. versionchanged:: 0.19.0
            Added start/stop/step kwargs
         """
-        # run only if distance matrix not already calculated
-        if not self._dist_matrix._calculated:
-            self._dist_matrix.run(start=start, stop=stop, step=step)
+        if isinstance(self._dist_matrix, DistanceMatrix):
+            # run only if distance matrix not already calculated
+            if not self._dist_matrix._calculated:
+                self._dist_matrix.run(start=start, stop=stop, step=step)
+            
+            dmat = self._dist_matrix.dist_matrix
+            dstart = self._dist_matrix.start
+            dstop = self._dist_matrix.stop
+            dstep = self._dist_matrix.step
+        else:
+            dmat = self._dist_matrix
+            dstart, dstop, dstep = 0, self._dist_matrix.shape[0], 1
+
+        if any(kw is not None for kw in (start, stop, step)):
+            if start is None:
+                start = dstart
+            if stop is None:
+                stop = dstop
+            if step is None:
+                step = dstep
+            dmap_frames = np.arange(start, stop, step, dtype=int)
+            dmat_frames = np.arange(dstart, dstop, dstep, dtype=int)
+            mask = np.isin(dmap_frames, dmat_frames)
+            # allow subsetting
+            if mask.all():
+                idx = np.flatnonzero(mask)
+                dmat = dmat[np.ix_(idx, idx)]
+            # do not allow supersetting
+            else:
+                missing = dmap_frames[~mask]
+                msg = ('You have selected frames to analyse that are not '
+                       'in the distance matrix: {}'.format(missing))
+                raise ValueError(msg)
+
         # important for transform function and length of .run() method
-        self._n_frames = self._dist_matrix.n_frames
+        self._n_frames = dmat.shape[0]
         if self._n_frames > 5000:
             warnings.warn("The distance matrix is very large, and can "
                           "be very slow to compute. Consider picking a larger "
                           "step size in distance matrix initialization.")
-        self._scaled_matrix = (self._dist_matrix.dist_matrix ** 2 /
-                               self._epsilon)
+        self._scaled_matrix = (dmat ** 2 / self._epsilon)
         # take negative exponent of scaled matrix to create Isotropic kernel
         self._kernel = np.exp(-self._scaled_matrix)
         D_inv = np.diag(1 / self._kernel.sum(1))
@@ -351,7 +395,6 @@ class DiffusionMap(object):
         sort_idx = np.argsort(self._eigenvals)[::-1]
         self.eigenvalues = self._eigenvals[sort_idx]
         self._eigenvectors = self._eigenvectors[sort_idx]
-        self._calculated = True
         return self
 
     def transform(self, n_eigenvectors, time):
@@ -363,8 +406,11 @@ class DiffusionMap(object):
             The number of dominant eigenvectors to be used for
             diffusion mapping
         time : float
-            Exponent that eigenvalues are raised to for embedding, for large
-            values, more dominant eigenvectors determine diffusion distance.
+            Exponent that eigenvalues are raised to for embedding. 
+            ``time`` represents the time-scale of the embedding.
+            Larger values show the geometric arrangement of your trajectory 
+            at larger scales, as more dominant eigenvectors determine 
+            diffusion distance.
 
 
         Returns
@@ -375,22 +421,24 @@ class DiffusionMap(object):
         return (self._eigenvectors[1:n_eigenvectors+1, ].T *
                 (self.eigenvalues[1:n_eigenvectors+1]**time))
 
-    def plot_animated_transform(self, n_time=25, colorscale='Viridis', marker_size=3,
+    def plot_animated_transform(self, n_frame=None, colorscale='Viridis', marker_size=3,
                                 x=1, y=2):
         """ Plots an interactive 2D plot of chosen eigenvectors at different timescales.
 
         Parameters
         ----------
-        n_time: int, optional
-            number of time values for ``transform()``. Default: 25
+        n_frame: int, optional
+            number of ``time`` values for ``transform()``. The animated graph 
+            embeds the data at integer ``time`` scales from 0 to ``n_frame``, 
+            exclusive.  If ``None``, uses the number of frames in the analysis.
         colorscale: str, optional
-            Plotly colorscale for coloring. Default: 'Viridis'
+            Plotly colorscale for coloring.
         marker_size: float, optional
-            Marker size for plot. Default: 3
+            Marker size for plot.
         x: int, optional
-            Eigenvector to plot on x-axis. Default: 1
+            Eigenvector to plot on x-axis.
         y: int, optional
-            Eigenvector to plot on y-axis. Default: 2
+            Eigenvector to plot on y-axis.
 
         Returns
         -------
@@ -404,14 +452,14 @@ class DiffusionMap(object):
         except ImportError:
             raise ImportError('Plotly is required for this animated graph')
 
-        if n_time is None:
-            n_time = self._n_frames
+        if n_frame is None:
+            n_frame = self._n_frames
 
         eig = np.array([x, y]) - 1
         n_eig = max(eig) + 1
 
         data = np.array([self.transform(n_eig, time=i)
-                         for i in range(n_time)])
+                         for i in range(n_frame)])
         order = np.arange(self._n_frames)
         n_data = len(data)
 
@@ -462,15 +510,17 @@ class DiffusionMap(object):
         fig.update_layout(sliders=sliders)
         return fig
 
-    def plot_animated_transform3D(self, n_time=25, colorscale='Viridis', marker_size=3,
+    def plot_animated_transform3D(self, n_frame=None, colorscale='Viridis', marker_size=3,
                                   x=1, y=2, z=3):
         """
         Plots an interactive 3D plot of chosen eigenvectors at different timescales.
 
         Parameters
         ----------
-        n_time: int, optional
-            number of time values for ``transform()``. Default: 25
+        n_frame: int, optional
+            number of ``time`` values for ``transform()``. The animated graph 
+            embeds the data at integer ``time`` scales from 0 to ``n_frame``, 
+            exclusive.  If ``None``, uses the number of frames in the analysis.
         colorscale: str, optional
             Plotly colorscale for coloring. Default: 'Viridis'
         marker_size: float, optional
@@ -497,10 +547,10 @@ class DiffusionMap(object):
         eig = np.array([x, y, z]) - 1
         n_eig = max(eig) + 1
 
-        if n_time is None:
-            n_time = self._n_frames
+        if n_frame is None:
+            n_frame = self._n_frames
         data = np.array([self.transform(n_eig, time=i)
-                         for i in range(n_time)])
+                         for i in range(n_frame)])
         order = np.arange(self._n_frames)
         n_data = len(data)
 

@@ -36,6 +36,7 @@ import numpy as np
 
 from MDAnalysis.analysis.base import AnalysisBase
 
+
 class LinearDensity(AnalysisBase):
     """Linear density profile
 
@@ -108,6 +109,7 @@ class LinearDensity(AnalysisBase):
         # Here we choose a number of bins of the largest cell side so that
         # x, y and z values can use the same "coord" column in the output file
         self.nbins = bins.max()
+
         slices_vol = self.volume / bins
 
         self.keys = ['pos', 'pos_std', 'char', 'char_std']
@@ -119,36 +121,28 @@ class LinearDensity(AnalysisBase):
             for key in self.keys:
                 self.results[dim].update({key: np.zeros(self.nbins)})
 
-        # Variables later defined in _prepare() method
-        self.masses = None
-        self.charges = None
-        self.totalmass = None
-
-    def _prepare(self):
+    def _single_frame(self):
         # group must be a local variable, otherwise there will be
         # issues with parallelization
         group = getattr(self._ags[0], self.grouping)
+        self._ags[0].wrap(compound=self.grouping)
 
         # Get masses and charges for the selection
         try:  # in case it's not an atom
-            self.masses = np.array([elem.total_mass() for elem in group])
-            self.charges = np.array([elem.total_charge() for elem in group])
+            masses = np.array([elem.total_mass() for elem in group])
+            charges = np.array([elem.total_charge() for elem in group])
         except AttributeError:  # much much faster for atoms
-            self.masses = self._ags[0].masses
-            self.charges = self._ags[0].charges
+            masses = self._ags[0].masses
+            charges = self._ags[0].charges
 
-        self.totalmass = np.sum(self.masses)
-
-    def _single_frame(self):
-        self.group = getattr(self._ags[0], self.grouping)
-        self._ags[0].wrap(compound=self.grouping)
+        totalmass = np.sum(masses)
 
         # Find position of atom/group of atoms
         if self.grouping == 'atoms':
             positions = self._ags[0].positions  # faster for atoms
         else:
             # COM for res/frag/etc
-            positions = np.array([elem.centroid() for elem in self.group])
+            positions = np.array([elem.centroid() for elem in group])
 
         for dim in ['x', 'y', 'z']:
             idx = self.results[dim]['dim']
@@ -157,7 +151,7 @@ class LinearDensity(AnalysisBase):
             key_std = 'pos_std'
             # histogram for positions weighted on masses
             hist, _ = np.histogram(positions[:, idx],
-                                   weights=self.masses,
+                                   weights=masses,
                                    bins=self.nbins,
                                    range=(0.0, max(self.dimensions)))
 
@@ -168,7 +162,7 @@ class LinearDensity(AnalysisBase):
             key_std = 'char_std'
             # histogram for positions weighted on charges
             hist, _ = np.histogram(positions[:, idx],
-                                   weights=self.charges,
+                                   weights=charges,
                                    bins=self.nbins,
                                    range=(0.0, max(self.dimensions)))
 

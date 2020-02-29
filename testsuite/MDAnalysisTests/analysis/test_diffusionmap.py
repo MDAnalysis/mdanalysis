@@ -53,6 +53,12 @@ def test_eg(dist, dmap):
     assert eigvals.shape == (dist.n_frames,)
     # makes no sense to test values here, no physical meaning
 
+weighted_evals = [1, 1, 1, 1]
+
+weighted_evecs = ([[0, 0, 1, 0],
+                   [0, 0, 0, 1],
+                   [-.707, -.707, 0, 0],
+                   [.707, -.707, 0, 0]])
 
 def test_dist_weights(u):
     backbone = u.select_atoms('backbone')
@@ -61,12 +67,9 @@ def test_dist_weights(u):
     dist.run(step=3)
     dmap = diffusionmap.DiffusionMap(dist)
     dmap.run()
-    assert_array_almost_equal(dmap.eigenvalues, [1, 1, 1, 1], 4)
+    assert_array_almost_equal(dmap.eigenvalues, weighted_evals, 4)
     assert_array_almost_equal(dmap._eigenvectors,
-                              ([[0, 0, 1, 0],
-                                [0, 0, 0, 1],
-                                [-.707, -.707, 0, 0],
-                                [.707, -.707, 0, 0]]), 2)
+                              weighted_evecs, 2)
 
 
 def test_different_steps(u):
@@ -82,3 +85,61 @@ def test_transform(u, dmap):
     dmap.run()
     diffusion_space = dmap.transform(n_eigenvectors, 1)
     assert diffusion_space.shape == (eigvects.shape[0], n_eigenvectors)
+
+def test_distance_array(u):
+    backbone = u.select_atoms('backbone')
+    weights_atoms = np.ones(len(backbone.atoms))
+    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms)
+    dist.run(step=3)
+    dmap = diffusionmap.DiffusionMap(dist.dist_matrix)
+    dmap.run()
+    assert_array_almost_equal(dmap.eigenvalues, weighted_evals, 4)
+    assert_array_almost_equal(dmap._eigenvectors,
+                              weighted_evecs, 2)
+
+def test_subset_frames(u):
+    backbone = u.select_atoms('backbone')
+    weights_atoms = np.ones(len(backbone.atoms))
+    dist = diffusionmap.DistanceMatrix(u, select='backbone', weights=weights_atoms)
+    dist.run(step=3)
+    dmap = diffusionmap.DiffusionMap(dist.dist_matrix)
+    dmap.run(step=2)
+    assert_array_almost_equal(dmap.eigenvalues, weighted_evals[::2], 4)
+    assert dmap._eigenvectors.shape == (2, 2)
+
+
+@pytest.mark.parametrize(
+    'dmat_run, dmap_run, frames', [
+        ((5, 30, None), (4, 29, None), "4"),
+        ((None, None, 2), (None, None, 1), "1 3 5")
+    ])
+def test_wrong_frames_error(dist, dmat_run, dmap_run, frames):
+    dist.run(*dmat_run)
+    dmap = diffusionmap.DiffusionMap(dist)
+    with pytest.raises(ValueError) as exc:
+        dmap.run(*dmap_run)
+    assert "not in the distance matrix" in str(exc.value)
+    assert frames in str(exc.value)
+
+def test_too_many_frames_error(dist):
+    dist.run(start=4, stop=10)
+    dmap = diffusionmap.DiffusionMap(dist.dist_matrix)
+    with pytest.raises(ValueError) as exc:
+        dmap.run(stop=10)
+    assert "not in the distance matrix" in str(exc.value)
+    # run sets start=0 by default
+    assert "6 7 8 9" in str(exc.value)
+
+def not_square_array_error():
+    with pytest.raises(ValueError) as exc:
+        dmap = diffusionmap.DiffusionMap(np.zeros((3, 4)))
+    assert "square" in str(exc.value)
+
+def test_get_plotly_graphs(dmap):
+    plotly = pytest.importorskip("plotly")
+    n_frame = 5
+    fig = dmap.plot_animated_transform(n_frame=n_frame, x=3, y=4)
+    assert isinstance(fig, plotly.graph_objects.Figure)
+    assert len(fig.layout['sliders'][0]['steps']) == n_frame
+    assert fig.layout['xaxis']['title']['text'] == 'DC 3'
+    assert fig.layout['yaxis']['title']['text'] == 'DC 4'
