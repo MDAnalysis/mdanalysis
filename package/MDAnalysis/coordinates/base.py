@@ -2066,6 +2066,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
                     "It seems as though you've passed an incompable object type!"
                     "Please check the type being passed again"
                 )
+            )
                    
         except ValueError:
             six.raise_from(
