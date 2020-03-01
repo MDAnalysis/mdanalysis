@@ -52,9 +52,14 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
 
     .. versionadded:: 0.19.2
     """
-    # fixme - add checks if this is a list of sets
-    # fixme - check dimensions
-    # fixme - check parameters?
+
+    # Check types
+    assert type(list_of_sets) == list, "list_of_sets must be a one-dimensional list of sets"
+    assert type(list_of_sets[0]) == set,  "list_of_sets must be a one-dimensional list of sets"
+
+    # Check dimensions of parameters
+    assert len(list_of_sets) > tau_max > window_step, "window_step cannot be greater than tau_max, which cannot" \
+                                                       "be greater than the length of list_of_sets"
 
     tau_timeseries = list(range(1, tau_max + 1))
     timeseries_data = [[] for _ in range(tau_max)]
