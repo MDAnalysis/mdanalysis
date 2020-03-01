@@ -30,7 +30,7 @@ r"""Hydrogen Bond analysis (Deprecated) --- :mod:`MDAnalysis.analysis.hbonds.hbo
 :Copyright: GNU Public License v3
 
 ..Warning:
-    This module will be deprecated in version 1.0.
+    This module is deprecated and will be removed in version 2.0.
     Please use :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` instead.
 
 Given a :class:`~MDAnalysis.core.universe.Universe` (simulation
@@ -321,7 +321,7 @@ Classes
 """
 from __future__ import division, absolute_import
 import six
-from six.moves import range, zip, map, cPickle
+from six.moves import range, zip
 
 import warnings
 import logging
@@ -334,7 +334,6 @@ from .. import base
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
-from MDAnalysis.lib.util import deprecate
 
 from ..utils.autocorrelation import autocorrelation, correct_intermittency
 
@@ -342,10 +341,12 @@ from ..utils.autocorrelation import autocorrelation, correct_intermittency
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
 warnings.warn(
-            "This module will be deprecated in version 1.0."
+            "This module is deprecated as of MDAnalysis version 1.0."
+            "It will be removed in MDAnalysis version 2.0"
             "Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis instead.",
             category=DeprecationWarning
         )
+
 
 class HydrogenBondAnalysis(base.AnalysisBase):
     """Perform a hydrogen bond analysis
@@ -382,6 +383,10 @@ class HydrogenBondAnalysis(base.AnalysisBase):
     .. versionchanged:: 0.7.6
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
        default values for different force fields.
+
+    .. versionchanged:: 1.0.0
+       ``save_table()`` method has been removed. You can use ``np.save()`` or
+       ``cPickle.dump()`` on :attr:`HydrogenBondAnalysis.table` instead.
     """
 
     # use tuple(set()) here so that one can just copy&paste names from the
@@ -569,7 +574,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         super(HydrogenBondAnalysis, self).__init__(universe.trajectory, **kwargs)
 
         warnings.warn(
-            "This class will be deprecated in version 1.0."
+            "This class is deprecated as of MDAnalysis version 1.0 and will "
+            "be removed in version 2.0."
             "Please use MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis instead.",
             category=DeprecationWarning
         )
@@ -1122,12 +1128,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         In 0.16.1, donor and acceptor are stored as a tuple(resname,
         resid, atomid). In 0.16.0 and earlier they were stored as a string.
 
-        .. deprecated:: 1.0
-           This is a compatibility layer so that we can provide the same output
-           in timeseries as before. However, for 1.0 we should make timeseries
-           just return _timeseries, i.e., change the format of timeseries to
-           the un-ambiguous representation provided in _timeseries.
-
         """
         return (hb[:2]
                 + [atomformat.format(hb[2]), atomformat.format(hb[3])]
@@ -1172,33 +1172,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         assert cursor == num_records, "Internal Error: Not all HB records stored"
         self.table = out.view(np.recarray)
         logger.debug("HBond: Stored results as table with %(num_records)d entries.", vars())
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use ``np.save(filename, "
-               "HydrogendBondAnalysis.table)``.")
-    def save_table(self, filename="hbond_table.pickle"):
-        """Saves :attr:`~HydrogenBondAnalysis.table` to a pickled file.
-
-        If :attr:`~HydrogenBondAnalysis.table` does not exist yet,
-        :meth:`generate_table` is called first.
-
-        Parameters
-        ----------
-        filename : str (optional)
-             path to the filename
-
-        Example
-        -------
-        Load with ::
-
-           import cPickle
-           table = cPickle.load(open(filename))
-
-        """
-        if self.table is None:
-            self.generate_table()
-        with open(filename, 'w') as f:
-            cPickle.dump(self.table, f, protocol=cPickle.HIGHEST_PROTOCOL)
 
     def _has_timeseries(self):
         has_timeseries = self._timeseries is not None

@@ -143,7 +143,7 @@ Classes
 from __future__ import absolute_import
 
 from six.moves import range, zip
-from six import StringIO, BytesIO
+from six import raise_from, StringIO, BytesIO
 
 import io
 import os
@@ -155,7 +155,6 @@ import logging
 import collections
 import numpy as np
 
-from ..core import flags
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
@@ -367,7 +366,7 @@ class PDBReader(base.ReaderBase):
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
         except IndexError:  # out of range of known frames
-            raise IOError
+            raise_from(IOError, None)
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
@@ -479,6 +478,11 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
 
+    .. versionchanged:: 1.0.0
+       ChainID now comes from the last character of segid, as stated in the documentation. 
+       An indexing issue meant it previously used the first charater (Issue #2224)
+
+
     """
     fmt = {
         'ATOM': (
@@ -537,7 +541,7 @@ class PDBWriter(base.WriterBase):
 
     def __init__(self, filename, bonds="conect", n_atoms=None, start=0, step=1,
                  remarks="Created by PDBWriter",
-                 convert_units=None, multiframe=None):
+                 convert_units=True, multiframe=None):
         """Create a new PDBWriter
 
         Parameters
@@ -554,9 +558,8 @@ class PDBWriter(base.WriterBase):
            any remarks from the trajectory that serves as input are
            written to REMARK records with lines longer than :attr:`remark_max_length` (66
            characters) being wrapped.
-        convert_units: str (optional)
-           units are converted to the MDAnalysis base format; ``None`` selects
-           the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+        convert_units: bool (optional)
+           units are converted to the MDAnalysis base format; [``True``]
         bonds : {"conect", "all", None} (optional)
            If set to "conect", then only write those bonds that were already
            defined in an input PDB file as PDB CONECT_ record. If set to "all",
@@ -580,8 +583,6 @@ class PDBWriter(base.WriterBase):
         #       - additional title keyword could contain line for TITLE
 
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         # convert length and time to base units
         self.convert_units = convert_units
         self._multiframe = self.multiframe if multiframe is None else multiframe
@@ -648,6 +649,10 @@ class PDBWriter(base.WriterBase):
         coordinates and closes the file.
 
         Raises :exc:`ValueError` if the coordinates fail the check.
+
+        .. versionchanged: 1.0.0
+            Check if :attr:`filename` is `StringIO` when attempting to remove
+            a PDB file with invalid coordinates (Issue #2512)
         """
         atoms = self.obj.atoms  # make sure to use atoms (Issue 46)
         # can write from selection == Universe (Issue 49)
@@ -673,6 +678,14 @@ class PDBWriter(base.WriterBase):
             except OSError as err:
                 if err.errno == errno.ENOENT:
                     pass
+                else:
+                    raise
+            except TypeError:
+                if isinstance(self.filename, StringIO):
+                    pass
+                else:
+                    raise
+
         raise ValueError("PDB files must have coordinate values between "
                          "{0:.3f} and {1:.3f} Angstroem: file writing was "
                          "aborted.".format(self.pdb_coor_limits["min"],
@@ -836,8 +849,12 @@ class PDBWriter(base.WriterBase):
             try:
                 ts = self.ts
             except AttributeError:
-                raise NoDataError("PBDWriter: no coordinate data to write to "
-                                  "trajectory file")
+                raise_from(
+                    NoDataError(
+                        "PBDWriter: no coordinate data to write to "
+                        "trajectory file"
+                        ),
+                    None)
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 
@@ -890,6 +907,10 @@ class PDBWriter(base.WriterBase):
            underlying trajectory and only if ``len(traj) > 1`` would MODEL records
            have been written.)
 
+        .. versionchanged:: 1.0.0
+           ChainID now comes from the last character of segid, as stated in the documentation. 
+           An indexing issue meant it previously used the first charater (Issue #2224)
+
         """
         atoms = self.obj.atoms
         pos = atoms.positions
@@ -930,7 +951,7 @@ class PDBWriter(base.WriterBase):
             vals['name'] = self._deduce_PDB_atom_name(atomnames[i], resnames[i])
             vals['altLoc'] = altlocs[i][:1]
             vals['resName'] = resnames[i][:4]
-            vals['chainID'] = segids[i][:1]
+            vals['chainID'] = segids[i][-1:]
             vals['resSeq'] = util.ltruncate_int(resids[i], 4)
             vals['iCode'] = icodes[i][:1]
             vals['pos'] = pos[i]  # don't take off atom so conversion works

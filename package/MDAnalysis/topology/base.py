@@ -46,12 +46,41 @@ import itertools
 import numpy as np
 import warnings
 
-from .. import _PARSERS
+from .. import _PARSERS, _PARSER_HINTS
 from ..coordinates.base import IOBase
 from ..lib import util
 
 
 class _Topologymeta(type):
+    """Internal: Topology Parser registration voodoo
+
+    When classes which inherit from TopologyReaderBase are *defined*
+    this metaclass makes it known to MDAnalysis.  The optional `format`
+    attribute and `_format_hint` staticmethod are read:
+     - `format` defines the file extension this Parser targets.
+     - `_format_hint` defines a function which returns a boolean if the
+       Parser can process a particular object
+
+    Eg::
+
+      class ThingParser(TopologyReaderBase):
+          format = ['foo', 'bar']
+
+          @staticmethod
+          _format_hint(thing):
+              try:
+                  import WeirdPackage
+              except ImportError:
+                  return False
+              return isinstance(thing, WeirdPackage.Thing)
+
+    This way there is no strict dependency on "WeirdPackage", but if
+    a user supplies a WeirdPackage.Thing the "ThingParser' will be able
+    to step up and read it.
+
+    .. versionchanged:: 1.0.0
+       Added format_hint functionality
+    """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         try:
@@ -59,10 +88,12 @@ class _Topologymeta(type):
         except KeyError:
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _PARSERS[f] = cls
+            for fmt_name in fmt:
+                fmt_name = fmt_name.upper()
+                _PARSERS[fmt_name] = cls
 
+                if '_format_hint' in classdict:
+                    _PARSER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     """Base class for topology readers
@@ -181,3 +212,22 @@ def change_squash(criteria, to_squash):
             # Should be the same for self consistency...
 
     return residx, new_others
+
+
+def reduce_singular(values):
+    """Returns the value in an array of length 1, or
+    the tuple of an array with a longer lengh.
+
+    Parameters
+    ----------
+    values: array-like
+        Array to squash
+
+    Returns
+    -------
+    values: tuple or single value
+    """
+    if len(values) == 1:
+        return values[0]
+    else:
+        return tuple(values)

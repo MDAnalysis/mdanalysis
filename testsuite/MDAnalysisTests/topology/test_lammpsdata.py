@@ -43,7 +43,8 @@ from MDAnalysis.tests.datafiles import (
 class LammpsBase(ParserBase):
     parser = mda.topology.LAMMPSParser.DATAParser
     expected_n_segments = 1
-    expected_attrs = ['types', 'resids', 'masses', 'charges']
+    expected_attrs = ['types', 'resids', 'masses', 'charges',
+                      'bonds', 'angles', 'dihedrals', 'impropers']
 
     def test_n_atom_types(self, top):
         assert_equal(len(set(top.types.values)), self.expected_n_atom_types)

@@ -152,6 +152,14 @@ class ModelSelection(RangeSelection):
 class MMTFParser(base.TopologyReaderBase):
     format = 'MMTF'
 
+    @staticmethod
+    def _format_hint(thing):
+        """Can parser read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        return isinstance(thing, mmtf.MMTFDecoder)
+
     @due.dcite(
         Doi('10.1371/journal.pcbi.1005575'),
         description="MMTF Parser",
@@ -191,10 +199,16 @@ class MMTFParser(base.TopologyReaderBase):
         if mtop.alt_loc_list:
             attrs.append(AltLocs([val.replace('\x00', '').strip()
                                   for val in mtop.alt_loc_list]))
+        else:
+            attrs.append(AltLocs(['']*natoms))
         if len(mtop.b_factor_list):
             attrs.append(Bfactors(mtop.b_factor_list))
+        else:
+            attrs.append(Bfactors([0]*natoms))
         if len(mtop.occupancy_list):
             attrs.append(Occupancies(mtop.occupancy_list))
+        else:
+            attrs.append(Occupancies([1]*natoms))
 
         # Residue things
         # required
@@ -208,6 +222,8 @@ class MMTFParser(base.TopologyReaderBase):
         if mtop.ins_code_list:
             attrs.append(ICodes([val.replace('\x00', '').strip()
                                  for val in mtop.ins_code_list]))
+        else:
+            attrs.append(ICodes(['']*nresidues))
 
         # Segment things
         # optional
