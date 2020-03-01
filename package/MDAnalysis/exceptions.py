@@ -31,10 +31,6 @@ class SelectionError(Exception):
     """Raised when a atom selection failed."""
 
 
-class FinishTimeException(Exception):
-    """For Issue 188."""
-
-
 class NoDataError(ValueError):
     """Raised when empty input is not allowed or required data are missing."""
 

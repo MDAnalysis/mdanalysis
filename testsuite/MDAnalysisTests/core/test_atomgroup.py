@@ -52,14 +52,8 @@ from MDAnalysisTests.datafiles import (
     GRO
 )
 from MDAnalysisTests import make_Universe, no_deprecated_call
-
+from MDAnalysisTests.core.util import UnWrapUniverse
 import pytest
-
-
-class TestDeprecationWarnings(object):
-    def test_AtomGroupUniverse_usage_warning(self):
-        with pytest.deprecated_call():
-            mda.core.AtomGroup.Universe(PSF, DCD)
 
 
 class TestAtomGroupToTopology(object):
@@ -341,12 +335,6 @@ class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
-    def test_flag_convert_length(self):
-        assert mda.core.flags['convert_lengths'] is True, \
-                     "The flag convert_lengths SHOULD be True by default! "\
-                     "(If it is not then this might indicate a race condition"\
-                     " in the testing suite.)"
-
 
 class TestAtomGroupTransformations(object):
 
@@ -517,6 +505,38 @@ class TestCenter(object):
 
         with pytest.raises(ValueError):
             ag.center(weights)
+
+    @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
+    @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
+                                          'group', 'segments'))
+    @pytest.mark.parametrize('is_triclinic', (False, True))
+    def test_center_unwrap(self, level, compound, is_triclinic):
+        u = UnWrapUniverse(is_triclinic=is_triclinic)
+        # select group appropriate for compound:
+        if compound == 'group':
+            group = u.atoms[39:47] # molecule 12
+        elif compound == 'segments':
+            group = u.atoms[23:47] # molecules 10, 11, 12
+        else:
+            group = u.atoms
+        # select topology level:
+        if level == 'residues':
+            group = group.residues
+        elif level == 'segments':
+            group = group.segments
+
+        # get the expected results
+        center = group.center(weights=None, pbc=False, compound=compound, unwrap=True)
+
+        ref_center = u.center(compound=compound)
+        assert_almost_equal(ref_center, center, decimal=4)
+
+    def test_center_unwrap_pbc_true_group(self):
+        u = UnWrapUniverse(is_triclinic=False)
+        # select group appropriate for compound:
+        group = u.atoms[39:47]  # molecule 12
+        with pytest.raises(ValueError):
+            group.center(weights=None, compound="group", unwrap=True, pbc=True)
 
 
 class TestSplit(object):
@@ -802,6 +822,106 @@ class TestDihedralSelections(object):
             sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
 
 
+class TestUnwrapFlag(object):
+
+    prec = 3
+
+    @pytest.fixture()
+    def ag(self):
+        universe = mda.Universe(TRZ_psf, TRZ)
+        group = universe.residues[0:3]
+        group.wrap(inplace=True)
+        return group
+
+    @pytest.fixture()
+    def ref_noUnwrap_residues(self):
+        return {
+            'COG': np.array([[21.356, 28.52, 36.762],
+                             [32.062, 36.16, 27.679],
+                             [27.071, 29.997, 28.506]], dtype=np.float32),
+            'COM': np.array([[21.286, 28.407, 36.629],
+                             [31.931, 35.814, 27.916],
+                             [26.817, 29.41, 29.05]]),
+            'MOI': np.array([
+                [7333.79167791, -211.8997285, -721.50785456],
+                [-211.8997285, 7059.07470427, -91.32156884],
+                [-721.50785456, -91.32156884, 6509.31735029]]),
+            'Asph': 0.02060121,
+        }
+
+    @pytest.fixture()
+    def ref_Unwrap_residues(self):
+        return {
+            'COG': np.array([[21.356, 41.685, 40.501],
+                             [44.577, 43.312, 79.039],
+                             [ 2.204, 27.722, 54.023]], dtype=np.float32),
+            'COM': np.array([[20.815, 42.013, 39.802],
+                             [44.918, 43.282, 79.325],
+                             [2.045, 28.243, 54.127]], dtype=np.float32),
+            'MOI': np.array([[16747.486, -1330.489,  2938.243],
+                             [-1330.489, 19315.253,  3306.212],
+                             [ 2938.243,  3306.212,  8990.481]]),
+            'Asph': 0.2969491080,
+        }
+
+    @pytest.fixture()
+    def ref_noUnwrap(self):
+        return {
+            'COG': np.array([5.1, 7.5, 7. ], dtype=np.float32),
+            'COM': np.array([6.48785, 7.5, 7.0], dtype=np.float32),
+            'MOI': np.array([
+                [0.0, 0.0, 0.0],
+                [0.0, 98.6542, 0.0],
+                [0.0, 0.0, 98.65421327]]),
+            'Asph': 1.0,
+        }
+
+    @pytest.fixture()
+    def ref_Unwrap(self):
+        return {
+            'COG': np.array([10.1,  7.5,  7. ], dtype=np.float32),
+            'COM': np.array([6.8616, 7.5, 7.], dtype=np.float32),
+            'MOI': np.array([
+                [0.0, 0.0, 0.0],
+                [0.0, 132.673, 0.0],
+                [0.0, 0.0, 132.673]]),
+            'Asph': 1.0,
+        }
+
+    def test_default_residues(self, ag, ref_noUnwrap_residues):
+        assert_almost_equal(ag.center_of_geometry(compound='residues'), ref_noUnwrap_residues['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(compound='residues'), ref_noUnwrap_residues['COM'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(compound='residues'), ref_noUnwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.asphericity(compound='residues'), ref_noUnwrap_residues['Asph'], self.prec)
+
+    def test_UnWrapFlag_residues(self, ag, ref_Unwrap_residues):
+        assert_almost_equal(ag.center_of_geometry(unwrap=True, compound='residues'), ref_Unwrap_residues['COG'], self.prec)
+        assert_almost_equal(ag.center_of_mass(unwrap=True, compound='residues'), ref_Unwrap_residues['COM'], self.prec)
+        assert_almost_equal(ag.moment_of_inertia(unwrap=True, compound='residues'), ref_Unwrap_residues['MOI'], self.prec)
+        assert_almost_equal(ag.asphericity(unwrap=True, compound='residues'), ref_Unwrap_residues['Asph'], self.prec)
+
+    def test_default(self, ref_noUnwrap):
+        u = UnWrapUniverse(is_triclinic=False)
+        group = u.atoms[31:39]  # molecules  11
+        # Changing masses for center_of_mass
+        group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+
+        assert_almost_equal(group.center_of_geometry(), ref_noUnwrap['COG'], self.prec)
+        assert_almost_equal(group.center_of_mass(), ref_noUnwrap['COM'], self.prec)
+        assert_almost_equal(group.moment_of_inertia(), ref_noUnwrap['MOI'], self.prec)
+        assert_almost_equal(group.asphericity(), ref_noUnwrap['Asph'], self.prec)
+
+    def test_UnWrapFlag(self, ref_Unwrap):
+        u = UnWrapUniverse(is_triclinic=False)
+        group = u.atoms[31:39]  # molecules  11
+        # Changing masses for center_of_mass
+        group.masses = [100.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0]
+        assert_almost_equal(group.center_of_geometry(unwrap=True), ref_Unwrap['COG'], self.prec)
+        assert_almost_equal(group.center_of_mass(unwrap=True), ref_Unwrap['COM'], self.prec)
+        assert_almost_equal(group.moment_of_inertia(unwrap=True), ref_Unwrap['MOI'], self.prec)
+        assert_almost_equal(group.asphericity(unwrap=True), ref_Unwrap['Asph'], self.prec)
+
+
 class TestPBCFlag(object):
 
     prec = 3
@@ -879,13 +999,6 @@ class TestPBCFlag(object):
         assert_almost_equal(ag.principal_axes(pbc=True), ref_PBC['PAxes'], self.prec)
 
 
-def test_instantselection_termini():
-    """Test that instant selections work, even for residues that are also termini (Issue 70)"""
-    universe = mda.Universe(PSF, DCD)
-    assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
-    del universe
-
-
 class TestAtomGroup(object):
     """Tests of AtomGroup; selections are tested separately.
 
@@ -928,12 +1041,6 @@ class TestAtomGroup(object):
     def test_getitem_slice2(self, universe):
         assert_equal(universe.atoms[0:8:2].ix,
                      universe.atoms.ix[0:8:2])
-
-    def test_getitem_str(self, universe):
-        ag1 = universe.atoms['HT1']
-        # select_atoms always returns an AtomGroup even if single result
-        ag2 = universe.select_atoms('name HT1')[0]
-        assert_equal(ag1, ag2)
 
     def test_getitem_IE(self, universe):
         d = {'A': 1}
@@ -1312,13 +1419,6 @@ class TestAtomGroup(object):
                      "Direct selection from residue group does not match "
                      "expected I101.")
 
-    # remove in 1.0
-    def test_segments(self, universe):
-        u = universe
-        with pytest.warns(DeprecationWarning):
-            assert len(u.segments.s4AKE.atoms) == len(u.select_atoms(
-                'segid 4AKE').atoms), "Direct selection of segment 4AKE from segments failed."
-
     def test_index_integer(self, universe):
         u = universe
         a = u.atoms[100]
@@ -1471,12 +1571,6 @@ class TestAtomGroup(object):
         ag.names = names
         for a, b in zip(ag, names):
             assert_equal(a.name, b)
-
-    def test_nonexistent_instantselector_raises_AttributeError(self, universe):
-        def access_nonexistent_instantselector():
-            universe.atoms.NO_SUCH_ATOM
-        with pytest.raises(AttributeError):
-            access_nonexistent_instantselector()
 
     def test_atom_order(self, universe):
         assert_equal(universe.atoms.indices,

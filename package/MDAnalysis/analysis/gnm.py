@@ -205,7 +205,7 @@ class GNMAnalysis(object):
     ----------
     universe : Universe
           Analyze the full trajectory in the universe.
-    selection : str (optional)
+    select : str (optional)
           MDAnalysis selection string, default "protein and name CA"
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
@@ -229,23 +229,26 @@ class GNMAnalysis(object):
     .. versionchanged:: 0.16.0
        Made :meth:`generate_output` a private method :meth:`_generate_output`.
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
+
     """
 
     def __init__(self,
                  universe,
-                 selection='protein and name CA',
+                 select='protein and name CA',
                  cutoff=7.0,
                  ReportVector=None,
                  Bonus_groups=None):
         self.u = universe
-        self.selection = selection
+        self.select = select
         self.cutoff = cutoff
         self.results = []  # final result
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
         self.Bonus_groups = [self.u.select_atoms(item) for item in Bonus_groups] \
                             if Bonus_groups else []
-        self.ca = self.u.select_atoms(self.selection)
+        self.ca = self.u.select_atoms(self.select)
 
     def _generate_output(self, w, v, outputobject, time, matrix,
                          nmodes=2, ReportVector=None, counter=0):
@@ -363,7 +366,7 @@ class closeContactGNMAnalysis(GNMAnalysis):
     ----------
     universe : Universe
           Analyze the full trajectory in the universe.
-    selection : str (optional)
+    select : str (optional)
           MDAnalysis selection string, default "protein"
     cutoff : float (optional)
           Consider selected atoms within the cutoff as neighbors for the
@@ -376,15 +379,10 @@ class closeContactGNMAnalysis(GNMAnalysis):
           :math:`1/\sqrt{N_i N_j}` where :math:`N_i` and :math:`N_j` are the
           number of atoms in the residues :math:`i` and :math:`j` that contain
           the atoms that form a contact.
-    MassWeight : bool (deprecated, optional)
-          if set to ``True`` equivalent to `weights` set to "size".
 
     Notes
     -----
-    The `MassWeight` option does not perform a true mass weighting but
-    weighting by the number of atoms in each residue; the name of the parameter
-    exists for historical reasons and will be removed in 0.17.0. Until then,
-    setting `MassWeight` to anything but ``None`` will override `weights`.
+    The `MassWeight` option has now been removed.
 
     See Also
     --------
@@ -396,31 +394,29 @@ class closeContactGNMAnalysis(GNMAnalysis):
 
     .. deprecated:: 0.16.0
        Instead of ``MassWeight=True`` use ``weights="size"``.
+
+    .. versionchanged:: 0.21.0
+       MassWeight option (see above deprecation entry).
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
     def __init__(self,
                  universe,
-                 selection='protein',
+                 select='protein',
                  cutoff=4.5,
                  ReportVector=None,
-                 weights="size",
-                 MassWeight=None):
+                 weights="size"):
         self.u = universe
-        self.selection = selection
+        self.select = select
         self.cutoff = cutoff
         self.results = []  # final result
         self._timesteps = None  # time for each frame
         self.ReportVector = ReportVector
-        self.ca = self.u.select_atoms(self.selection)
+        self.ca = self.u.select_atoms(self.select)
 
         self.weights = weights
-        # remove MassWeight in 0.17.0
-        if MassWeight is not None:
-            warnings.warn(
-                "MassWeight=True|False is deprecated in favor of weights='size'|None "
-                "and will be removed in 0.17.0",
-                category=DeprecationWarning)
-            self.weights = "size" if MassWeight else None
 
     def generate_kirchoff(self):
         natoms = self.ca.n_atoms

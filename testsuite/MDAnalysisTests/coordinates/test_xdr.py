@@ -91,11 +91,6 @@ class _GromacsReader(object):
     def universe(self):
         return mda.Universe(GRO, self.filename, convert_units=True)
 
-    def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be "
-                     "True by default")
-
     def test_rewind_xdrtrj(self, universe):
         universe.trajectory.rewind()
         assert_equal(universe.coord.frame, 0, "rewinding to frame 1")

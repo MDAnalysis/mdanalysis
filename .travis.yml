@@ -12,7 +12,7 @@ os:
 
 env:
   global:
-    - secure: "f8EMSWeYC38elhpB4B/ddxlklEvQoycaxnt90Xw2tH/+ThdP1qteQ2vdgNFy1KL7Am/xnbrRhavI5K+ayfxJ93NoE2adaJ9f9aljXK+Oeu+buv5MVo2E2HhN9mX9opSSxiqGmnHIVYcdLP+1soIsDD78SGL7hB/u5nQ1aTzkbaM="
+    - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
     - GH_DOC_BRANCH=develop
     - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
     - GIT_CI_USER=TravisCI
@@ -26,22 +26,23 @@ env:
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
-    - BUILD_CMD="pip install -v package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython joblib matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn"
+    - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="duecredit"
+    - PIP_DEPENDENCIES="duecredit parmed"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
+    - CYTHON_TRACE_NOGIL=1
 
   matrix:
     # Run a coverage test for most versions
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=2.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - NUMPY_VERSION=1.10.4
+    - NUMPY_VERSION=1.13.3
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 matrix:
@@ -54,7 +55,7 @@ matrix:
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme"
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
@@ -64,13 +65,36 @@ matrix:
            CONDA_DEPENDENCIES=""
            INSTALL_HOLE="false"
 
+    - env: NAME="python 2.7"
+           PYTHON_VERSION=2.7 
+           CODECOV="true"
+           NUMPY_VERSION=1.16
+           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+
+    - env: NAME="asv check"
+           PYTHON_VERSION=2.7 
+           CODECOV="false"
+           MAIN_CMD=""
+           SETUP_CMD=""
+           NUMPY_VERSION=1.16
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+           ASV_CHECK="true"
+
     - os: osx
       env: PYTHON_VERSION=3.6
+           NUMPY_VERSION=1.17.3
 
-    - os: osx
-      env: PYTHON_VERSION=2.7
+# macOS Python 2.7 works in principle but times out on Travis CI:
+# Disabled so that the tests can pass.
+#    - os: osx
+#      env: PYTHON_VERSION=2.7
+#           NUMPY_VERSION=1.16
+#           CODECOV="true"
+#           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
+           PIP_DEPENDENCIES=""
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
@@ -104,7 +128,18 @@ script:
   - cd ${TRAVIS_BUILD_DIR}
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then ulimit -S -n 2048; fi
   - echo $MAIN_CMD $SETUP_CMD
+  - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
   - eval $MAIN_CMD $SETUP_CMD
+  # check benchmark suite for basic issues
+  - |
+    if [ "${ASV_CHECK}" == "true" ]; then
+      python -m pip install asv
+      cd testsuite
+      python setup.py install
+      cd ../benchmarks
+      time python -m asv check -E existing
+    fi
+
 
 after_success:
   - |

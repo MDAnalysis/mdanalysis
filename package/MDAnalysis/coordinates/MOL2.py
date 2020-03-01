@@ -112,11 +112,11 @@ MOL2 format notes
 
 """
 from __future__ import absolute_import
+from six import raise_from
 
 import numpy as np
 
 from . import base
-from ..core import flags
 from ..lib import util
 
 
@@ -127,6 +127,9 @@ class MOL2Reader(base.ReaderBase):
        Frames now 0-based instead of 1-based.
        MOL2 now reuses the same Timestep object for every frame,
        previously created a new instance of Timestep each frame.
+    .. versionchanged:: 0.20.0
+       Allows for comments at top of file.
+       Ignores status bit strings
     """
     format = 'MOL2'
     units = {'time': None, 'length': 'Angstrom'}
@@ -151,7 +154,8 @@ class MOL2Reader(base.ReaderBase):
                 # found new molecules
                 if "@<TRIPOS>MOLECULE" in line:
                     blocks.append({"start_line": i, "lines": []})
-                blocks[-1]["lines"].append(line)
+                if len(blocks):
+                    blocks[-1]["lines"].append(line)
         self.n_frames = len(blocks)
         self.frames = blocks
 
@@ -194,7 +198,8 @@ class MOL2Reader(base.ReaderBase):
 
         coords = np.zeros((self.n_atoms, 3), dtype=np.float32)
         for i, a in enumerate(atom_lines):
-            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()
+            aid, name, x, y, z, atom_type, resid, resname, charge = a.split()[:9]
+
             #x, y, z = float(x), float(y), float(z)
             coords[i, :] = x, y, z
 
@@ -214,8 +219,9 @@ class MOL2Reader(base.ReaderBase):
         try:
             block = self.frames[frame]
         except IndexError:
-            raise IOError("Invalid frame {0} for trajectory with length {1}"
-                          "".format(frame, len(self)))
+            raise_from(IOError("Invalid frame {0} for trajectory with length {1}"
+                          "".format(frame, len(self))),
+                       None)
 
         sections, coords = self.parse_block(block)
 
@@ -274,7 +280,7 @@ class MOL2Writer(base.WriterBase):
     multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=None):
+    def __init__(self, filename, n_atoms=None, convert_units=True):
         """Create a new MOL2Writer
 
         Parameters
@@ -282,12 +288,9 @@ class MOL2Writer(base.WriterBase):
         filename: str
             name of output file
         convert_units: bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0
@@ -309,8 +312,9 @@ class MOL2Writer(base.WriterBase):
         try:
             molecule = ts.data['molecule']
         except KeyError:
-            raise NotImplementedError(
-                "MOL2Writer cannot currently write non MOL2 data")
+            raise_from(NotImplementedError(
+                "MOL2Writer cannot currently write non MOL2 data"),
+                None)
 
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}

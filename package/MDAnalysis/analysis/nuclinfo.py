@@ -107,6 +107,7 @@ from __future__ import division, absolute_import
 
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
+from six import raise_from
 
 from MDAnalysis.lib import mdamath
 
@@ -445,13 +446,13 @@ def tors(universe, seg, i):
                               " atom {0!s} {1!s} O5\' ".format(seg, i + 1))
     c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                               " atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} N1 ".format(seg, i),
-                              " atom {0!s} {1!s} C2  ".format(seg, i))
+                              " atom {0!s} {1!s} N9 ".format(seg, i),
+                              " atom {0!s} {1!s} C4  ".format(seg, i))
     if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N9 ".format(seg, i),
-                                  " atom {0!s} {1!s} C4  ".format(seg, i))
+                                  " atom {0!s} {1!s} N1 ".format(seg, i),
+                                  " atom {0!s} {1!s} C2  ".format(seg, i))
 
     alpha = a.dihedral.value() % 360
     beta = b.dihedral.value() % 360
@@ -668,13 +669,13 @@ def tors_chi(universe, seg, i):
     """
     c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                               " atom {0!s} {1!s} C1\' ".format(seg, i),
-                              " atom {0!s} {1!s} N1 ".format(seg, i),
-                              " atom {0!s} {1!s} C2  ".format(seg, i))
+                              " atom {0!s} {1!s} N9 ".format(seg, i),
+                              " atom {0!s} {1!s} C4  ".format(seg, i))
     if len(c) < 4:
         c = universe.select_atoms(" atom {0!s} {1!s} O4\' ".format(seg, i),
                                   " atom {0!s} {1!s} C1\' ".format(seg, i),
-                                  " atom {0!s} {1!s} N9 ".format(seg, i),
-                                  " atom {0!s} {1!s} C4  ".format(seg, i))
+                                  " atom {0!s} {1!s} N1 ".format(seg, i),
+                                  " atom {0!s} {1!s} C2  ".format(seg, i))
     chi = c.dihedral.value() % 360
     return chi
 
@@ -711,8 +712,15 @@ def hydroxyl(universe, seg, i):
     try:
         hydr = h.dihedral.value() % 360
     except ValueError:
-        raise ValueError("Resid {0} does not contain atoms C1', C2', O2', H2' but atoms {1}"
-                         .format(i, str(list(h.atoms))))
+        raise_from(
+            ValueError(
+                (
+                    "Resid {0} does not contain atoms C1', C2', O2', H2' "
+                    "but atoms {1}"
+                    ).format(i, str(list(h.atoms)))
+                ),
+            None)
+
     return hydr
 
 

@@ -200,13 +200,29 @@ class TestChainReaderFormats(object):
         assert universe.trajectory.n_frames == 21
         assert_equal(universe.trajectory.filenames, [PDB, XTC, TRR])
 
+    def test_set_format_tuples_and_format(self):
+        universe = mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+                                      (TRR, 'trr')], format='gro')
+        assert universe.trajectory.n_frames == 23
+        assert_equal(universe.trajectory.filenames, [PDB, GRO, GRO, XTC, TRR])
+        
+        with pytest.raises(TypeError) as errinfo:
+            mda.Universe(GRO, [(PDB, 'pdb'), GRO, GRO, (XTC, 'xtc'), 
+                                      (TRR, 'trr')], format='pdb')
+        assert 'Unable to read' in str(errinfo.value)
+
+
     def test_set_one_format_tuple(self):
         universe = mda.Universe(PSF, [(PDB_small, 'pdb'), DCD])
         assert universe.trajectory.n_frames == 99
 
     def test_set_all_formats(self):
-        universe = mda.Universe(PSF, [PDB_small, PDB_closed], format='pdb')
-        assert universe.trajectory.n_frames == 2
+        with pytest.raises(TypeError) as errinfo:
+            mda.Universe(PDB, [PDB, GRO], format='gro')
+        assert 'Unable to read' in str(errinfo.value)
+
+        universe = mda.Universe(GRO, [PDB, PDB, PDB], format='pdb')
+        assert_equal(universe.trajectory.filenames, [PDB, PDB, PDB])
 
 
 def build_trajectories(folder, sequences, fmt='xtc'):
@@ -343,6 +359,12 @@ class TestChainReaderContinuous(object):
     def test_unsupported_filetypes(self):
         with pytest.raises(NotImplementedError):
             mda.Universe(PSF, [DCD, DCD], continuous=True)
+        # see issue 2353. The PDB reader has multiple format endings. To ensure 
+        # the not implemented error is thrown  we  do a check here. A more  
+        # careful test in the future would be a dummy reader with multiple 
+        # formats, just in case PDB will allow continuous reading in the future.
+        with pytest.raises(ValueError):
+            mda.Universe(PDB, [PDB, XTC], continuous=True)
 
 
 @pytest.mark.parametrize('l, ref', ([((0, 3), (3, 3), (4, 7)), (0, 1, 2)],

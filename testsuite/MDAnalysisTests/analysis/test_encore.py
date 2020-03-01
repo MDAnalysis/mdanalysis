@@ -139,12 +139,12 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
 
-        reference = rms.RMSD(ens1, select = "name CA")
+        reference = rms.RMSD(ens1, select="name CA")
         reference.run()
 
         for i,rmsd in enumerate(reference.rmsd):
@@ -155,7 +155,7 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
@@ -163,7 +163,7 @@ inconsistent results")
         conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights=(ens1.select_atoms('name CA').masses, ens1.select_atoms('name CA').masses),
             n_jobs=1)
@@ -182,7 +182,7 @@ inconsistent results")
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection=selection_string,
+            select=selection_string,
             pairwise_align=False,
             weights='mass',
             n_jobs=1)
@@ -285,7 +285,7 @@ inconsistent results")
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_dres(self, ens1, ens2):
-        results, details = encore.dres([ens1, ens2], selection="name CA and resnum 1-10")
+        results, details = encore.dres([ens1, ens2], select="name CA and resnum 1-10")
         result_value = results[0,1]
         upper_bound = 0.6
         assert result_value < upper_bound, "Unexpected value for Dim. " \
@@ -337,7 +337,7 @@ inconsistent results")
     def test_hes_error_estimation(self, ens1):
         expected_average = 10
         expected_stdev = 12
-        averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, selection="name CA and resnum 1-10")
+        averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -353,7 +353,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.AffinityPropagationNative(preference=-2.0),
-                                      selection="name CA and resnum 1-10")
+                                      select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -375,7 +375,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.KMeans(n_clusters=2),
-                                      selection="name CA and resnum 1-10")
+                                      select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -389,7 +389,7 @@ inconsistent results")
         stdev_upper_bound = 0.2
         averages, stdevs = encore.dres([ens1, ens1], estimate_error = True,
                                        bootstrapping_samples=10,
-                                       selection="name CA and resnum 1-10")
+                                       select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -397,7 +397,6 @@ inconsistent results")
                                                "bootstrapped samples in Dim. reduction Ensemble similarity"
         assert stdev < stdev_upper_bound, "Unexpected standard deviation for" \
                                            " bootstrapped samples in Dim. reduction Ensemble imilarity"
-
 
 class TestEncoreClustering(object):
     @pytest.fixture(scope='class')
@@ -411,6 +410,14 @@ class TestEncoreClustering(object):
         template = mda.Universe(PSF, DCD2)
         template.transfer_to_memory(step=5)
         return template
+
+    @pytest.fixture(scope='class')
+    def cc(self):
+        return encore.ClusterCollection([1, 1, 1, 3, 3, 5, 5, 5])
+
+    @pytest.fixture(scope='class')
+    def cluster(self):
+        return encore.Cluster(elem_list=np.array([0, 1, 2]), centroid=1)
 
     @pytest.fixture()
     def ens1(self, ens1_template):
@@ -432,21 +439,18 @@ class TestEncoreClustering(object):
         assert len(cluster_collection) == expected_value, "Unexpected " \
                                                           "results: {0}".format(cluster_collection)
 
-    
     def test_clustering_two_ensembles(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2])
         expected_value = 14
         assert len(cluster_collection) == expected_value, "Unexpected " \
                                                           "results: {0}".format(cluster_collection)
 
-    
     def test_clustering_three_ensembles_two_identical(self, ens1, ens2):
         cluster_collection = encore.cluster([ens1, ens2, ens1])
         expected_value = 40
         assert len(cluster_collection) == expected_value, "Unexpected result:" \
                                                           " {0}".format(cluster_collection)
 
-    
     def test_clustering_two_methods(self, ens1):
         cluster_collection = encore.cluster(
             [ens1],
@@ -455,7 +459,6 @@ class TestEncoreClustering(object):
         assert len(cluster_collection[0]) == len(cluster_collection[1]), \
                      "Unexpected result: {0}".format(cluster_collection)
 
-    
     def test_clustering_AffinityPropagationNative_direct(self, ens1):
         method = encore.AffinityPropagationNative()
         distance_matrix = encore.get_distance_matrix(ens1)
@@ -529,6 +532,33 @@ class TestEncoreClustering(object):
                               "propagation don't agree: mismatch in number of "\
                               "clusters: {0} {1}".format(len(cc1), len(cc2))
 
+    def test_ClusterCollection_init(self, cc):
+        assert np.all(cc.clusters[0].elements == [0, 1, 2]) and \
+               np.all(cc.clusters[1].elements == [3, 4   ]) and \
+               np.all(cc.clusters[2].elements == [5, 6, 7]) and \
+               cc.clusters[0].centroid == 1 and \
+               cc.clusters[1].centroid == 3 and \
+               cc.clusters[2].centroid == 5, \
+                      "ClusterCollection was not constructed correctly"
+
+    def test_Cluster_init(self, cluster):
+        assert np.all(cluster.elements == [0, 1, 2]) and \
+               cluster.centroid == 1, \
+                      "Cluster was not constructed correctly"
+
+    def test_ClusterCollection_get_ids(self, cc):
+        assert cc.get_ids() == [0, 1, 2], \
+                     "ClusterCollection ids aren't as expected"
+
+    def test_ClusterCollection_get_centroids(self, cc):
+        assert cc.get_centroids() == [1, 3, 5], \
+                     "ClusterCollection centroids aren't as expected"
+
+    def test_Cluster_add_metadata(self, cluster):
+        metadata = cluster.elements*10
+        cluster.add_metadata('test', metadata)
+        assert np.all(cluster.metadata['test'] == metadata), \
+                     "Cluster metadata isn't as expected"
 
 class TestEncoreClusteringSklearn(object):
     """The tests in this class were duplicated from the affinity propagation

@@ -143,8 +143,8 @@ rotating/changing direction very fast::
   from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
 
   u = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 6.0 protein and resid 42"
-  WOR_analysis = WOR(universe, selection, 0, 1000, 20)
+  select = "byres name OH2 and sphzone 6.0 protein and resid 42"
+  WOR_analysis = WOR(universe, select, 0, 1000, 20)
   WOR_analysis.run()
   time = 0
   #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,
@@ -253,8 +253,8 @@ water molecules, a weak rise mean slow movement of particles::
   from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD
 
   u = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
-  MSD_analysis = MSD(universe, selection, 0, 1000, 20)
+  select = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
+  MSD_analysis = MSD(universe, select, 0, 1000, 20)
   MSD_analysis.run()
   #now we print data ready to graph. The graph
   #represents MSD vs t
@@ -287,8 +287,8 @@ the zone, on the other hand, a fast decay means a short permanence time::
   import matplotlib.pyplot as plt
 
   universe = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
-  sp = SP(universe, selection, verbose=True)
+  select = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
+  sp = SP(universe, select, verbose=True)
   sp.run(start=0, stop=100, tau_max=20)
   tau_timeseries = sp.tau_timeseries
   sp_timeseries = sp.sp_timeseries
@@ -324,8 +324,8 @@ simulation is not being reloaded into memory for each lipid::
   for lipid in lipids.residues:
       print("Lipid ID: %d" % lipid.resid)
 
-      selection = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
-      sp = SP(u, selection, verbose=True)
+      select = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
+      sp = SP(u, select, verbose=True)
       sp.run(tau_max=20)
 
       # Raw SP points for each tau:
@@ -449,7 +449,7 @@ from six.moves import range, zip_longest
 import logging
 import warnings
 import numpy as np
-
+import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
 from .utils.autocorrelation import autocorrelation, correct_intermittency
 
@@ -498,18 +498,152 @@ class HydrogenBondLifetimes(object):
       frame where analysis ends
     dtmax : int
       Maximum dt size, `dtmax` < `tf` or it will crash.
-    nproc : int
-      Number of processors to use, by default is 1.
 
 
     .. versionadded:: 0.11.0
+    .. versionchanged:: 1.0.0
+       The ``nproc`` keyword was removed as it linked to a portion of code that
+       may have failed in some cases.
     """
 
-    def __init__(self, universe, selection1, selection2, t0=None, tf=None, dtmax=None, verbose=False):
-        warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
-                      "which has .autocorrelation function",
-                      category=DeprecationWarning)
-        pass
+
+    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
+                 nproc=1):
+        #warnings.warn("This class is deprecated; use analysis.hydrogen_bonds.hbond_analysis.HydrogenBondAnalysis ",
+        #              category=DeprecationWarning)
+        self.universe = universe
+        self.selection1 = selection1
+        self.selection2 = selection2
+        self.t0 = t0
+        self.tf = tf - 1
+        self.dtmax = dtmax
+        self.timeseries = None
+
+    def _getC_i(self, HBP, t0, t):
+        """
+        This function give the intermitent Hydrogen Bond Lifetime
+        C_i = <h(t0)h(t)>/<h(t0)> between t0 and t
+        """
+        C_i = 0
+        for i in range(len(HBP[t0])):
+            for j in range(len(HBP[t])):
+                if (HBP[t0][i][0] == HBP[t][j][0] and HBP[t0][i][1] == HBP[t][j][1]):
+                    C_i += 1
+                    break
+        if len(HBP[t0]) == 0:
+            return 0.0
+        else:
+            return float(C_i) / len(HBP[t0])
+
+    def _getC_c(self, HBP, t0, t):
+        """
+        This function give the continous Hydrogen Bond Lifetime
+        C_c = <h(t0)h'(t)>/<h(t0)> between t0 and t
+        """
+        C_c = 0
+        dt = 1
+        begt0 = t0
+        HBP_cp = HBP
+        HBP_t0 = HBP[t0]
+        newHBP = []
+        if t0 == t:
+            return 1.0
+        while t0 + dt <= t:
+            for i in range(len(HBP_t0)):
+                for j in range(len(HBP_cp[t0 + dt])):
+                    if (HBP_t0[i][0] == HBP_cp[t0 + dt][j][0] and
+                        HBP_t0[i][1] == HBP_cp[t0 + dt][j][1]):
+                        newHBP.append(HBP_t0[i])
+                        break
+            C_c = len(newHBP)
+            t0 += dt
+            HBP_t0 = newHBP
+            newHBP = []
+        if len(HBP[begt0]) == 0:
+            return 0
+        else:
+            return C_c / float(len(HBP[begt0]))
+
+    def _intervC_c(self, HBP, t0, tf, dt):
+        """
+        This function gets all the data for the h(t0)h(t0+dt)', where
+        t0 = 1,2,3,...,tf. This function give us one point of the final plot
+        HBL vs t
+        """
+        a = 0
+        count = 0
+        for i in range(len(HBP)):
+            if (t0 + dt <= tf):
+                if t0 == t0 + dt:
+                    b = self._getC_c(HBP, t0, t0)
+                    break
+                b = self._getC_c(HBP, t0, t0 + dt)
+                t0 += dt
+                a += b
+                count += 1
+        if count == 0:
+            return 1.0
+        return a / count
+
+    def _intervC_i(self, HBP, t0, tf, dt):
+        """
+        This function gets all the data for the h(t0)h(t0+dt), where
+        t0 = 1,2,3,...,tf. This function give us a point of the final plot
+        HBL vs t
+        """
+        a = 0
+        count = 0
+        for i in range(len(HBP)):
+            if (t0 + dt <= tf):
+                b = self._getC_i(HBP, t0, t0 + dt)
+                t0 += dt
+                a += b
+                count += 1
+        return a / count
+
+    def _finalGraphGetC_i(self, HBP, t0, tf, maxdt):
+        """
+        This function gets the final data of the C_i graph.
+        """
+        output = []
+        for dt in range(maxdt):
+            a = self._intervC_i(HBP, t0, tf, dt)
+            output.append(a)
+        return output
+
+    def _finalGraphGetC_c(self, HBP, t0, tf, maxdt):
+        """
+        This function gets the final data of the C_c graph.
+        """
+        output = []
+        for dt in range(maxdt):
+            a = self._intervC_c(HBP, t0, tf, dt)
+            output.append(a)
+        return output
+
+    def _getGraphics(self, HBP, t0, tf, maxdt):
+        """
+        Function that join all the results into a plot.
+        """
+        a = []
+        cont = self._finalGraphGetC_c(HBP, t0, tf, maxdt)
+        inte = self._finalGraphGetC_i(HBP, t0, tf, maxdt)
+        for i in range(len(cont)):
+            fix = [cont[i], inte[i]]
+            a.append(fix)
+        return a
+
+
+    def run(self, **kwargs):
+        """Analyze trajectory and produce timeseries"""
+        h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
+                                                                 self.selection1,
+                                                                 self.selection2,
+                                                                 distance=3.5,
+                                                                 angle=120.0)
+        h_list.run(**kwargs)
+        self.timeseries = self._getGraphics(h_list.timeseries, self.t0,
+                                            self.tf, self.dtmax)
 
 
 class WaterOrientationalRelaxation(object):
@@ -543,11 +677,13 @@ class WaterOrientationalRelaxation(object):
 
     .. versionadded:: 0.11.0
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.t0 = t0
         self.tf = tf
         self.dtmax = dtmax
@@ -724,7 +860,7 @@ class AngularDistribution(object):
     ----------
     universe : Universe
         Universe object
-    selection : str
+    select : str
         Selection string to evaluate its angular distribution ['byres name OH2']
     bins : int (optional)
         Number of bins to create the histogram by means of :func:`numpy.histogram`
@@ -734,11 +870,14 @@ class AngularDistribution(object):
 
 
     .. versionadded:: 0.11.0
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection_str, bins=40, nproc=1, axis="z"):
+    def __init__(self, universe, select, bins=40, nproc=1, axis="z"):
         self.universe = universe
-        self.selection_str = selection_str
+        self.selection_str = select
         self.bins = bins
         self.nproc = nproc
         self.axis = axis
@@ -876,7 +1015,7 @@ class MeanSquareDisplacement(object):
     ----------
     universe : Universe
       Universe object
-    selection : str
+    select : str
       Selection string for water [‘byres name OH2’].
     t0 : int
       frame  where analysis begins
@@ -887,11 +1026,14 @@ class MeanSquareDisplacement(object):
 
 
     .. versionadded:: 0.11.0
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.t0 = t0
         self.tf = tf
         self.dtmax = dtmax
@@ -1030,7 +1172,7 @@ class SurvivalProbability(object):
     ----------
     universe : Universe
       Universe object
-    selection : str
+    select : str
       Selection string; any selection is allowed. With this selection you
       define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
     verbose : Boolean, optional
@@ -1039,11 +1181,13 @@ class SurvivalProbability(object):
 
     .. versionadded:: 0.11.0
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
+    def __init__(self, universe, select, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.verbose = verbose
 
         # backward compatibility
@@ -1138,7 +1282,7 @@ class SurvivalProbability(object):
         frame_no = start
         while frame_no < stop:      # we have already added 1 to stop, therefore <
             if num_frames_to_skip != 0 and frame_loaded_counter == frames_per_window:
-                logger.info("Skipping the next %d frames:" % num_frames_to_skip)
+                logger.info("Skipping the next %d frames:", num_frames_to_skip)
                 frame_no += num_frames_to_skip
                 frame_loaded_counter = 0
                 # Correct the number of frames to be loaded after the first window (which starts at t=0, and
@@ -1149,7 +1293,7 @@ class SurvivalProbability(object):
             # update the frame number
             self.universe.trajectory[frame_no]
 
-            logging.info("Loading frame:", self.universe.trajectory.ts)
+            logger.info("Loading frame: %d", self.universe.trajectory.frame)
             atoms = self.universe.select_atoms(self.selection)
 
             # SP of residues or of atoms
@@ -1169,7 +1313,7 @@ class SurvivalProbability(object):
 
         # warn the user if the NaN are found
         if all(np.isnan(sp_timeseries[1:])):
-            logging.warning('NaN Error: Most likely data was not found. Check your atom selections. ')
+            logger.warning('NaN Error: Most likely data was not found. Check your atom selections. ')
 
         # user can investigate the distribution and sample size
         self.sp_timeseries_data = sp_timeseries_data

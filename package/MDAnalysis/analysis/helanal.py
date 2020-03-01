@@ -124,10 +124,10 @@ import os
 import numpy as np
 
 import MDAnalysis
-from MDAnalysis import FinishTimeException
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib import mdamath
 
+import warnings
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.helanal")
 
@@ -158,7 +158,7 @@ def mean_abs_dev(a, mean_a=None):
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
-def helanal_trajectory(universe, selection="name CA",
+def helanal_trajectory(universe, select="name CA",
                        begin=None, finish=None,
                        matrix_filename="bending_matrix.dat",
                        origin_pdbfile="origin.pdb",
@@ -175,7 +175,7 @@ def helanal_trajectory(universe, selection="name CA",
     Parameters
     ----------
     universe : Universe
-    selection : str (optional)
+    select : str (optional)
         selection string that selects Calpha atoms [``"name CA"``]
     begin : float (optional)
         start analysing for time (ps) >= *begin*; ``None`` starts from the
@@ -212,7 +212,9 @@ def helanal_trajectory(universe, selection="name CA",
 
     Raises
     ------
-    FinishTimeException
+    ValueError
+          If the specified start (begin) time occurs after the end of the
+          trajectory object.
           If the specified finish time precedes the specified start time or
           current time stamp of trajectory object.
 
@@ -229,13 +231,18 @@ def helanal_trajectory(universe, selection="name CA",
 
     .. versionchanged:: 0.16.0
        Removed the `start` and `end` keywords for selecting residues because this can
-       be accomplished more transparently with `selection`. The first and last resid
+       be accomplished more transparently with `select`. The first and last resid
        are directly obtained from the selection.
 
     .. deprecated:: 0.16.0
        The `quiet` keyword argument is deprecated in favor of the new
        `verbose` one.
 
+    .. versionchanged:: 0.20.0
+       ProgressMeter now iterates over the number of frames analysed.
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
@@ -244,17 +251,64 @@ def helanal_trajectory(universe, selection="name CA",
         # two atoms
         ref_axis = np.asarray(ref_axis)
 
-    ca = universe.select_atoms(selection)
+    ca = universe.select_atoms(select)
     start, end = ca.resids[[0, -1]]
     trajectory = universe.trajectory
 
+    # Validate user supplied begin / end times
+    traj_end_time = trajectory.ts.time + trajectory.totaltime
+
+    if begin is not None:
+        if traj_end_time < begin:
+            # Begin occurs after the end of the trajectory, throw error
+            msg = ("The input begin time ({0} ps) occurs after the end "
+                   "of the trajectory ({1} ps)".format(begin, traj_end_time))
+            raise ValueError(msg)
+        elif trajectory.ts.time > begin:
+            # Begin occurs before trajectory start, warn and reset
+            msg = ("The input begin time ({0} ps) precedes the starting "
+                   "trajectory time --- Setting starting frame to 0".format(
+                    begin))
+            warnings.warn(msg)
+            logger.warning(msg)
+            start_frame = None
+        else:
+            start_frame = int(np.ceil((begin - trajectory.ts.time)
+                                      / trajectory.ts.dt))
+    else:
+        start_frame = None
+
     if finish is not None:
-        if trajectory.ts.time > finish:
-            # you'd be starting with a finish time (in ps) that has already passed or not
-            # available
-            raise FinishTimeException(
-                'The input finish time ({finish} ps) precedes the current trajectory time of {traj_time} ps.'.format(
-                    finish=finish, traj_time=trajectory.time))
+        if (begin is not None) and (begin > finish):
+            # finish occurs before begin time
+            msg = ("The input finish time ({0} ps) precedes the input begin "
+                   "time ({1} ps)".format(finish, begin))
+            raise ValueError(msg)
+        elif trajectory.ts.time > finish:
+            # you'd be starting with a finish time(in ps) that has already
+            # passed or is not available
+            msg = ("The input finish time ({0} ps) precedes the current "
+                   "trajectory time ({1} ps)".format(finish, trajectory.time))
+            raise ValueError(msg)
+        elif traj_end_time < finish:
+            # finish time occurs after the end of trajectory, warn
+            msg = ("The input finish time ({0} ps) occurs after the end of "
+                   "the trajectory ({1} ps). Finish time will be set to the "
+                   "end of the trajectory".format(finish, traj_end_time))
+            warnings.warn(msg)
+            logger.warning(msg)
+            end_frame = None
+        else:
+            # To replicate the original behaviour of break when
+            # trajectory.time > finish, we add 1 here.
+            end_frame = int(np.floor((finish - trajectory.ts.time)
+                            // trajectory.ts.dt) + 1)
+    else:
+        end_frame = None
+
+    start_frame, end_frame, frame_step = trajectory.check_slice_indices(
+                                          start_frame, end_frame, 1)
+    n_frames = len(range(start_frame, end_frame, frame_step))
 
     if start is not None and end is not None:
         logger.info("Analysing from residue %d to %d", start, end)
@@ -292,17 +346,13 @@ def helanal_trajectory(universe, selection="name CA",
     global_fitted_tilts = []
     global_screw = []
 
-    pm = ProgressMeter(trajectory.n_frames, verbose=verbose,
-                       format="Frame %(step)10d: %(time)20.1f ps\r")
-    for ts in trajectory:
-        pm.echo(ts.frame, time=ts.time)
+    pm = ProgressMeter(n_frames, verbose=verbose,
+                       format="Frame {step:5d}/{numsteps} "
+                       "  [{percentage:5.1f}%]")
+
+    for index, ts in enumerate(trajectory[start_frame:end_frame:frame_step]):
+        pm.echo(index)
         frame = ts.frame
-        if begin is not None:
-            if trajectory.time < begin:
-                continue
-        if finish is not None:
-            if trajectory.time > finish:
-                break
 
         ca_positions = ca.positions
         twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
@@ -480,7 +530,7 @@ def stats(some_list):
     return [list_mean, list_sd, list_abdev]
 
 
-def helanal_main(pdbfile, selection="name CA", ref_axis=None):
+def helanal_main(pdbfile, select="name CA", ref_axis=None):
     """Simple HELANAL_ run on a single frame PDB/GRO.
 
     Computed data are returned as a dict and also logged at level INFO to the
@@ -491,7 +541,7 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
     ----------
     pdbfile : str
         filename of the single-frame input file
-    selection : str (optional)
+    select : str (optional)
         selection string, default is "name CA" to select all C-alpha atoms.
     ref_axis : array_like (optional)
         Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
@@ -522,7 +572,7 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
     writes output to the file ``MDAnalysis.log``::
 
        MDAnalysis.start_logging()
-       data = MDAnalysis.analysis.helanal_main("4ake_A.pdb", selection="name CA and resnum 161-187")
+       data = MDAnalysis.analysis.helanal_main("4ake_A.pdb", select="name CA and resnum 161-187")
 
 
     .. versionchanged:: 0.13.0
@@ -531,12 +581,15 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
 
     .. versionchanged:: 0.16.0
        Removed the `start` and `end` keywords for selecting residues because this can
-       be accomplished more transparently with `selection`.
+       be accomplished more transparently with `select`.
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
 
     """
 
     universe = MDAnalysis.Universe(pdbfile)
-    ca = universe.select_atoms(selection)
+    ca = universe.select_atoms(select)
 
     logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)
 

@@ -32,6 +32,7 @@ from __future__ import absolute_import
 
 import numpy as np
 import warnings
+import re
 
 from ..lib import distances
 from . import tables
@@ -65,12 +66,18 @@ def validate_atom_types(atom_types):
     Returns
     -------
     None
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     for atom_type in np.unique(atom_types):
         try:
             tables.masses[atom_type]
         except KeyError:
-            warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
+            try:
+                tables.masses[atom_type.upper()]
+            except KeyError:
+                warnings.warn("Failed to guess the mass for the following atom types: {}".format(atom_type))
 
 
 def guess_types(atom_names):
@@ -86,7 +93,6 @@ def guess_types(atom_names):
     atom_types : np.ndarray dtype object
     """
     return np.array([guess_atom_element(name) for name in atom_names], dtype=object)
-
 
 
 def guess_atom_type(atomname):
@@ -105,6 +111,9 @@ def guess_atom_type(atomname):
     """
     return guess_atom_element(atomname)
 
+
+NUMBERS = re.compile(r'[0-9]') # match numbers
+SYMBOLS = re.compile(r'[\*\+\-]')  # match *, +, -
 
 def guess_atom_element(atomname):
     """Guess the element of the atom from the name.
@@ -125,15 +134,29 @@ def guess_atom_element(atomname):
     if atomname == '':
         return ''
     try:
-        return tables.atomelements[atomname]
+        return tables.atomelements[atomname.upper()]
     except KeyError:
-        if atomname[0].isdigit():
-            # catch 1HH etc
-            try:
-                return atomname[1]
-            except IndexError:
-                pass
-        return atomname[0]
+        # strip symbols and numbers
+        no_symbols = re.sub(SYMBOLS, '', atomname)
+        name = re.sub(NUMBERS, '', no_symbols).upper()
+
+        # just in case
+        if name in tables.atomelements:
+            return tables.atomelements[name]
+
+        while name:
+            if name in tables.elements:
+                return name
+            if name[:-1] in tables.elements:
+                return name[:-1]
+            if name[1:] in tables.elements:
+                return name[1:]
+            if len(name) <= 2:
+                return name[0]
+            name = name[:-1]  # probably element is on left not right
+
+        # if it's numbers
+        return no_symbols
 
 
 def guess_bonds(atoms, coords, box=None, **kwargs):
@@ -354,12 +377,18 @@ def get_atom_mass(element):
 
     Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
 
-    .. Warning:: Unknown masses are set to 0.00
+    .. Warning:: Unknown masses are set to 0.0
+
+    .. versionchanged:: 0.20.0
+       Try uppercase atom type name as well
     """
     try:
         return tables.masses[element]
     except KeyError:
-        return 0.000
+        try:
+            return tables.masses[element.upper()]
+        except KeyError:
+            return 0.0
 
 
 def guess_atom_mass(atomname):

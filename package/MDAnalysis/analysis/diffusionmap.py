@@ -176,7 +176,6 @@ import numpy as np
 from MDAnalysis.core.universe import Universe
 from .rms import rmsd
 from .base import AnalysisBase
-from MDAnalysis.lib.util import deprecate
 
 logger = logging.getLogger("MDAnalysis.analysis.diffusionmap")
 
@@ -197,6 +196,10 @@ class DistanceMatrix(AnalysisBase):
         Array of all possible ij metric distances between frames in trajectory.
         This matrix is symmetric with zeros on the diagonal.
 
+    .. versionchanged:: 1.0.0
+       ``save()`` method has been removed. You can use ``np.save()`` on
+       :attr:`DistanceMatrix.dist_matrix` instead.
+
     """
     def __init__(self, u, select='all', metric=rmsd, cutoff=1E0-5,
                  weights=None, **kwargs):
@@ -208,7 +211,7 @@ class DistanceMatrix(AnalysisBase):
             computational cost of eigenvalue decomposition
             scales at O(N^3) where N is the number of frames.
             Cost can be reduced by increasing step interval or specifying a
-            start and stop.
+            start and stop value when calling :meth:`DistanceMatrix.run`.
         select: str, optional
             Any valid selection string for
             :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
@@ -263,20 +266,6 @@ class DistanceMatrix(AnalysisBase):
 
     def _conclude(self):
         self._calculated = True
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="Use ``np.save(filename, DistanceMatrix.dist_matrix)`` instead.")
-    def save(self, filename):
-        """save squared distance matrix
-
-        Parameters
-        ----------
-        outfile : str
-            file to save distance matrix
-
-        """
-        np.save(filename, self.dist_matrix)
-        logger.info("Wrote the distance-squared matrix to file %r", filename)
 
 
 class DiffusionMap(object):

@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.19.3-dev"
+RELEASE = "0.20.2-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -94,12 +94,14 @@ try:
               "parallelization module".format(
                Cython.__version__, required_version))
         cython_found = False
+    cython_linetrace = bool(os.environ.get('CYTHON_TRACE_NOGIL', False))
 except ImportError:
     cython_found = False
     if not is_release:
         print("*** package: Cython not found ***")
         print("MDAnalysis requires cython for development builds")
         sys.exit(1)
+    cython_linetrace = False
 
 
 class Config(object):
@@ -187,7 +189,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.10.4), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.13.3), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -320,6 +322,10 @@ def extensions(config):
     else:
         mathlib = ['m']
 
+    if cython_linetrace:
+        extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
+        cpp_extra_compile_args.append("-DCYTHON_TRACE_NOGIL")
+
     libdcd = MDAExtension('MDAnalysis.lib.formats.libdcd',
                           ['MDAnalysis/lib/formats/libdcd' + source_suffix],
                           include_dirs=include_dirs + ['MDAnalysis/lib/formats/include'],
@@ -416,7 +422,13 @@ def extensions(config):
 
     cython_generated = []
     if use_cython:
-        extensions = cythonize(pre_exts)
+        extensions = cythonize(
+            pre_exts,
+            compiler_directives={'linetrace' : cython_linetrace,
+                                 'embedsignature' : False},
+        )
+        if cython_linetrace:
+            print("Cython coverage will be enabled")
         for pre_ext, post_ext in zip(pre_exts, extensions):
             for source in post_ext.sources:
                 if source not in pre_ext.sources:
@@ -536,19 +548,21 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.10.4',
+          'numpy>=1.13.3',
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
           'six>=1.4.0',
           'mmtf-python>=1.0.0',
-          'joblib',
+          'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
+    else:
+        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -576,13 +590,13 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          requires=['numpy (>=1.10.4)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
+          requires=['numpy (>=1.13.3)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.10.4',
+              'numpy>=1.13.3',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
@@ -608,7 +622,7 @@ if __name__ == '__main__':
     )
 
     # Releases keep their cythonized stuff for shipping.
-    if not config.get('keep_cythonized', default=is_release):
+    if not config.get('keep_cythonized', default=is_release) and not cython_linetrace:
         for cythonized in cythonfiles:
             try:
                 os.unlink(cythonized)

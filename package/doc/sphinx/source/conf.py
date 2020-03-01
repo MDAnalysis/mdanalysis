@@ -14,9 +14,9 @@
 import sys
 import os
 import platform
-
-# http://alabaster.readthedocs.io/en/latest/
-import alabaster
+import datetime
+# https://sphinx-rtd-theme.readthedocs.io/en/stable/
+import sphinx_rtd_theme
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -37,7 +37,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax', 'sphinx.ext.viewcode',
               'sphinx.ext.napoleon', 'sphinx.ext.todo',
               'sphinx_sitemap',
-              'alabaster']
+              'sphinx_rtd_theme']
 
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
@@ -68,7 +68,8 @@ master_doc = 'index'
 author_list = __import__('MDAnalysis').__authors__
 authors = u', '.join(author_list[:-1]) + u', and ' + author_list[-1]
 project = u'MDAnalysis'
-copyright = u'2005-2017, ' + authors
+now = datetime.datetime.now()
+copyright = u'2005-{}, '.format(now.year) + authors
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -110,7 +111,7 @@ exclude_patterns = []
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'default'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -122,7 +123,7 @@ autoclass_content = 'both'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -141,34 +142,22 @@ color = {'orange': '#FF9200',
          'black': '#000000',}
 
 html_theme_options = {
-    'logo' : "logos/mdanalysis-logo-200x150.png",
-    'github_user': "MDAnalysis",
-    'github_repo': "mdanalysis",
-    #'travis_button': "MDAnalysis/mdanalysis",
-    'travis_button': False,
-    'github_type': 'star',
-    'github_banner': True,
-    'show_related': True,
-    'fixed_sidebar': False,
-    'sidebar_includehidden': True,
-    'sidebar_collapse': True,
-    # style
-    'link': color['orange'],
-    'link_hover': color['orange'],
-    'gray_1': color['gray'],
-    'narrow_sidebar_bg': color['gray'],
-    'narrow_sidebar_fg': color['white'],
-    # typography
-    #'font_size': 17,
-    'font_family': "'PT Sans', Helvetica, Arial, 'sans-serif'",
-    'head_font_family': "",
-    'code_font_size': "smaller",
-    'code_font_family': "Menlo, Monaco, 'Courier New', monospace",
-    'caption_font_size': "smaller",
+    'canonical_url': '',
+    'logo_only': True,
+    'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': False,
+    'style_nav_header_background': 'white',
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': True,
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = [alabaster.get_path()]
+# html_theme_path = ['_themes',]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -179,7 +168,7 @@ html_theme_path = [alabaster.get_path()]
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar. --- use theme
-##html_logo = "logos/mdanalysis-logo-200x150.png"
+html_logo = "_static/logos/mdanalysis-logo-thin.png"
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -189,8 +178,9 @@ html_favicon = "_static/logos/mdanalysis-logo.ico"
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-# For alabaster: custom.css to override theme defaults.
+# For RTD theme: custom.css to override theme defaults.
 html_static_path = ['_static']
+html_css_files = ['custom.css']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -343,4 +333,5 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://networkx.github.io/documentation/stable/': None,
                        'https://www.mdanalysis.org/GridDataFormats/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
+                       'https://parmed.github.io/ParmEd/html/': None,
                        }

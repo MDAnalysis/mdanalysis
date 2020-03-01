@@ -206,6 +206,7 @@ Classes
 """
 from __future__ import division, absolute_import
 from six.moves import zip
+from six import raise_from
 
 import numpy as np
 import scipy.optimize
@@ -214,7 +215,6 @@ import warnings
 
 from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
-from MDAnalysis.lib.util import deprecate
 from MDAnalysis.core.groups import requires
 
 from MDAnalysis.due import due, Doi
@@ -284,6 +284,11 @@ class HydrogenBondAutoCorrel(object):
         Within each run, the number of frames to analyse [50]
     pbc : bool, optional
         Whether to consider periodic boundaries in calculations [``True``]
+
+    ..versionchanged: 1.0.0
+      ``save_results()`` method was removed. You can instead use ``np.savez()``
+      on :attr:`HydrogenBondAutoCorrel.solution['time']` and
+      :attr:`HydrogenBondAutoCorrel.solution['results']` instead.
     """
 
     def __init__(self, universe,
@@ -297,16 +302,16 @@ class HydrogenBondAutoCorrel(object):
                  nsamples=50,  # number of different points to sample in a run
                  pbc=True):
 
-        warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
-                      "which has .autocorrelation function",
-                      category=DeprecationWarning)
+        #warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
+        #              "which has .autocorrelation function",
+        #              category=DeprecationWarning)
 
         self.u = universe
         # check that slicing is possible
         try:
             self.u.trajectory[0]
-        except:
-            raise ValueError("Trajectory must support slicing")
+        except Exception:
+            raise_from(ValueError("Trajectory must support slicing"), None)
 
         self.h = hydrogens
         self.a = acceptors
@@ -394,10 +399,10 @@ class HydrogenBondAutoCorrel(object):
 
         pm = ProgressMeter(self.nruns, interval=1,
                            format="Performing run %(step)5d/%(numsteps)d"
-                                  "[%(percentage)5.1f%%]\r")
+                                  "[%(percentage)5.1f%%]")
 
         for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
-            pm.echo(i + 1)
+            pm.echo(i)
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
@@ -430,7 +435,7 @@ class HydrogenBondAutoCorrel(object):
             # set to above dist crit to exclude
             exclude = np.column_stack((self.exclusions[0], self.exclusions[1]))
             pair = np.delete(pair, np.where(pair==exclude), 0)
-        
+
         hidx, aidx = np.transpose(pair)
 
 
@@ -460,11 +465,11 @@ class HydrogenBondAutoCorrel(object):
             winners = (d < self.d_crit) & (a > self.a_crit)
             results[i] = winners.sum()
 
-            if self.bond_type is 'continuous':
+            if self.bond_type == 'continuous':
                 # Remove losers for continuous definition
                 hidx = hidx[np.where(winners)]
                 aidx = aidx[np.where(winners)]
-            elif self.bond_type is 'intermittent':
+            elif self.bond_type == 'intermittent':
                 if self.time_cut:
                     # Add to counter of where losers are
                     count[~ winners] += self._skip * self.u.trajectory.dt
@@ -484,28 +489,6 @@ class HydrogenBondAutoCorrel(object):
         results /= nbonds
 
         return results
-
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``np.savez(filename, time=HydrogenBondAutoCorrel.solution['time'], "
-               "results=HydrogenBondAutoCorrel.solution['results'])``.")
-    def save_results(self, filename='hbond_autocorrel'):
-        """Saves the results to a numpy zipped array (.npz, see np.savez)
-
-        This can be loaded using np.load(filename)
-
-        Parameters
-        ----------
-        filename : str, optional
-            The desired filename [hbond_autocorrel]
-
-        """
-        if self.solution['results'] is not None:
-            np.savez(filename, time=self.solution['time'],
-                        results=self.solution['results'])
-        else:
-            raise ValueError(
-                "Results have not been generated, use the run method first")
 
     def solve(self, p_guess=None):
         """Fit results to an multi exponential decay and integrate to find
@@ -590,7 +573,7 @@ class HydrogenBondAutoCorrel(object):
             A3 = 1 - (A1 + A2)
             return A1 * np.exp(-x / tau1) + A2 * np.exp(-x / tau2) + A3 * np.exp(-x / tau3)
 
-        if self.bond_type is 'continuous':
+        if self.bond_type == 'continuous':
             self._my_solve = double
 
             if p_guess is None:

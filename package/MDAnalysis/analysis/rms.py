@@ -87,8 +87,7 @@ The trajectory is included with the test data files. The data in
               select="backbone",             # superimpose on whole backbone of the whole protein
               groupselections=["backbone and (resid 1-29 or resid 60-121 or resid 160-214)",   # CORE
                                "backbone and resid 122-159",                                   # LID
-                               "backbone and resid 30-59"],                                    # NMP
-              filename="rmsd_all_CORE_LID_NMP.dat")
+                               "backbone and resid 30-59"])                                    # NMP
    R.run()
 
    import matplotlib.pyplot as plt
@@ -136,7 +135,7 @@ Analysis classes
 from __future__ import division, absolute_import
 
 from six.moves import zip
-from six import string_types
+from six import raise_from, string_types
 
 import numpy as np
 
@@ -147,7 +146,7 @@ import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
 from MDAnalysis.lib.log import ProgressMeter
-from MDAnalysis.lib.util import asiterable, iterable, get_weights, deprecate
+from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 
 logger = logging.getLogger('MDAnalysis.analysis.rmsd')
@@ -287,16 +286,24 @@ def process_selection(select):
         try:
             select = {'mobile': select[0], 'reference': select[1]}
         except IndexError:
-            raise IndexError("select must contain two selection strings "
-                             "(reference, mobile)")
+            raise_from(IndexError(
+                "select must contain two selection strings "
+                "(reference, mobile)"),
+                None,
+                )
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
             select['mobile']
             select['reference']
         except KeyError:
-            raise KeyError("select dictionary must contain entries for keys "
-                           "'mobile' and 'reference'.")
+            raise_from(
+                KeyError(
+                    "select dictionary must contain entries for keys "
+                    "'mobile' and 'reference'."
+                    ),
+                None,
+                )
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])
@@ -323,11 +330,14 @@ class RMSD(AnalysisBase):
     Run the analysis with :meth:`RMSD.run`, which stores the results
     in the array :attr:`RMSD.rmsd`.
 
+    .. versionchanged:: 1.0.0
+       ``save()`` method was removed, use ``np.savetxt()`` on
+       :attr:`RMSD.rmsd` instead.
+
     """
     def __init__(self, atomgroup, reference=None, select='all',
-                 groupselections=None, filename="rmsd.dat",
-                 weights=None, tol_mass=0.1, ref_frame=0, **kwargs):
-        # DEPRECATION: remove filename kwarg in 1.0
+                 groupselections=None, weights=None, tol_mass=0.1,
+                 ref_frame=0, **kwargs):
         r"""Parameters
         ----------
         atomgroup : AtomGroup or Universe
@@ -371,12 +381,6 @@ class RMSD(AnalysisBase):
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
-        filename : str (optional)
-            write RMSD into file with :meth:`RMSD.save`
-
-            .. deprecated:; 0.19.0
-               `filename` will be removed together with :meth:`save` in 1.0.
-
         weights : {"mass", ``None``} or array_like (optional)
              choose weights. With ``"mass"`` uses masses as weights; with ``None``
              weigh each atom equally. If a float array of the same length as
@@ -458,8 +462,8 @@ class RMSD(AnalysisBase):
         .. versionchanged:: 0.17.0
            removed deprecated `mass_weighted` keyword; `groupselections`
            are *not* rotationally superimposed any more.
-        .. deprecated:: 0.19.0
-           `filename` will be removed in 1.0
+        .. versionchanged:: 1.0.0
+           `filename` keyword was removed.
 
         """
         super(RMSD, self).__init__(atomgroup.universe.trajectory,
@@ -473,7 +477,6 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        self.filename = filename   # DEPRECATED in 0.19.0, remove in 1.0.0
 
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
@@ -548,10 +551,6 @@ class RMSD(AnalysisBase):
                              "weights=None or weights='mass', not a weight "
                              "array.")
 
-        # initialized to note for testing the save function
-        self.rmsd = None
-
-
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
 
@@ -596,7 +595,7 @@ class RMSD(AnalysisBase):
                               3 + len(self._groupselections_atoms)))
 
         self._pm.format = ("RMSD {rmsd:5.2f} A at frame "
-                           "{step:5d}/{numsteps}  [{percentage:5.1f}%]\r")
+                           "{step:5d}/{numsteps}  [{percentage:5.1f}%]")
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
@@ -645,27 +644,6 @@ class RMSD(AnalysisBase):
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can instead use "
-               "``np.savetxt(filename, RMSD.rmsd)``.")
-    def save(self, filename=None):
-        """Save RMSD from :attr:`RMSD.rmsd` to text file *filename*.
-
-        Parameters
-        ----------
-        filename : str (optional)
-            if no filename is given the default provided to the constructor is
-            used.
-
-        """
-        filename = filename or self.filename
-        if filename is not None:
-            if self.rmsd is None:
-                raise NoDataError("rmsd has not been calculated yet")
-            np.savetxt(filename, self.rmsd)
-            logger.info("Wrote RMSD timeseries  to file %r", filename)
-        return filename
-
 
 class RMSF(AnalysisBase):
     r"""Calculate RMSF of given atoms across a trajectory.
@@ -688,14 +666,6 @@ class RMSF(AnalysisBase):
         ----------
         atomgroup : AtomGroup
             Atoms for which RMSF is calculated
-        start : int (optional)
-            starting frame, default None becomes 0.
-        stop : int (optional)
-            Frame index to stop analysis. Default: None becomes
-            n_frames. Iteration stops *before* this frame number,
-            which means that the trajectory would be read until the end.
-        step : int (optional)
-            step between frames, default None becomes 1.
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
@@ -797,6 +767,9 @@ class RMSF(AnalysisBase):
            the keyword argument `quiet` is deprecated in favor of `verbose`.
         .. versionchanged:: 0.17.0
            removed unused keyword `weights`
+        .. versionchanged:: 1.0.0
+           Support for the ``start``, ``stop``, and ``step`` keywords has been
+           removed. These should instead be passed to :meth:`RMSF.run`.
 
         """
         super(RMSF, self).__init__(atomgroup.universe.trajectory, **kwargs)

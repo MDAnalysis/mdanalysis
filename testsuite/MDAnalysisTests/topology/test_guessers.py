@@ -79,6 +79,23 @@ class TestGuessTypes(object):
     def test_guess_atom_element_1H(self):
         assert guessers.guess_atom_element('1H') == 'H'
         assert guessers.guess_atom_element('2H') == 'H'
+    
+    @pytest.mark.parametrize('name, element', (
+        ('AO5*', 'O'),
+        ('F-', 'F'),
+        ('HB1', 'H'),
+        ('OC2', 'O'),
+        ('1he2', 'H'),
+        ('3hg2', 'H'),
+        ('OH-', 'O'),
+        ('HO', 'H'),
+        ('he', 'H'), 
+        ('zn', 'ZN'),
+        ('Ca2+', 'CA'),
+        ('CA', 'C'),
+    ))
+    def test_guess_element_from_name(self, name, element):
+        assert guessers.guess_atom_element(name) == element
 
 
 def test_guess_charge():
