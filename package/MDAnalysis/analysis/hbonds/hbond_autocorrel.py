@@ -297,9 +297,9 @@ class HydrogenBondAutoCorrel(object):
                  nsamples=50,  # number of different points to sample in a run
                  pbc=True):
 
-        warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
-                      "which has .autocorrelation function",
-                      category=DeprecationWarning)
+        #warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
+        #              "which has .autocorrelation function",
+        #              category=DeprecationWarning)
 
         self.u = universe
         # check that slicing is possible
