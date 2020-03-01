@@ -458,7 +458,6 @@ logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 
 class HydrogenBondLifetimes(object):
     r"""Hydrogen bond lifetime analysis
-    fixme - deprecate it
 
     This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
     (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
@@ -505,10 +504,209 @@ class HydrogenBondLifetimes(object):
     .. versionadded:: 0.11.0
     """
 
-    def __init__(self, universe, selection1, selection2, t0=None, tf=None, dtmax=None, verbose=False):
-        warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
-                      "which has .autocorrelation function",
-                      category=DeprecationWarning)
+    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
+                 nproc=1):
+        #warnings.warn("This class is deprecated; use analysis.hydrogen_bonds.hbond_analysis.HydrogenBondAnalysis ",
+        #              category=DeprecationWarning)
+        self.universe = universe
+        self.selection1 = selection1
+        self.selection2 = selection2
+        self.t0 = t0
+        self.tf = tf - 1
+        self.dtmax = dtmax
+        self.nproc = nproc
+        self.timeseries = None
+
+    def _getC_i(self, HBP, t0, t):
+        """
+        This function give the intermitent Hydrogen Bond Lifetime
+        C_i = <h(t0)h(t)>/<h(t0)> between t0 and t
+        """
+        C_i = 0
+        for i in range(len(HBP[t0])):
+            for j in range(len(HBP[t])):
+                if (HBP[t0][i][0] == HBP[t][j][0] and HBP[t0][i][1] == HBP[t][j][1]):
+                    C_i += 1
+                    break
+        if len(HBP[t0]) == 0:
+            return 0.0
+        else:
+            return float(C_i) / len(HBP[t0])
+
+    def _getC_c(self, HBP, t0, t):
+        """
+        This function give the continous Hydrogen Bond Lifetime
+        C_c = <h(t0)h'(t)>/<h(t0)> between t0 and t
+        """
+        C_c = 0
+        dt = 1
+        begt0 = t0
+        HBP_cp = HBP
+        HBP_t0 = HBP[t0]
+        newHBP = []
+        if t0 == t:
+            return 1.0
+        while t0 + dt <= t:
+            for i in range(len(HBP_t0)):
+                for j in range(len(HBP_cp[t0 + dt])):
+                    if (HBP_t0[i][0] == HBP_cp[t0 + dt][j][0] and
+                        HBP_t0[i][1] == HBP_cp[t0 + dt][j][1]):
+                        newHBP.append(HBP_t0[i])
+                        break
+            C_c = len(newHBP)
+            t0 += dt
+            HBP_t0 = newHBP
+            newHBP = []
+        if len(HBP[begt0]) == 0:
+            return 0
+        else:
+            return C_c / float(len(HBP[begt0]))
+
+    def _intervC_c(self, HBP, t0, tf, dt):
+        """
+        This function gets all the data for the h(t0)h(t0+dt)', where
+        t0 = 1,2,3,...,tf. This function give us one point of the final plot
+        HBL vs t
+        """
+        a = 0
+        count = 0
+        for i in range(len(HBP)):
+            if (t0 + dt <= tf):
+                if t0 == t0 + dt:
+                    b = self._getC_c(HBP, t0, t0)
+                    break
+                b = self._getC_c(HBP, t0, t0 + dt)
+                t0 += dt
+                a += b
+                count += 1
+        if count == 0:
+            return 1.0
+        return a / count
+
+    def _intervC_i(self, HBP, t0, tf, dt):
+        """
+        This function gets all the data for the h(t0)h(t0+dt), where
+        t0 = 1,2,3,...,tf. This function give us a point of the final plot
+        HBL vs t
+        """
+        a = 0
+        count = 0
+        for i in range(len(HBP)):
+            if (t0 + dt <= tf):
+                b = self._getC_i(HBP, t0, t0 + dt)
+                t0 += dt
+                a += b
+                count += 1
+        return a / count
+
+    def _finalGraphGetC_i(self, HBP, t0, tf, maxdt):
+        """
+        This function gets the final data of the C_i graph.
+        """
+        output = []
+        for dt in range(maxdt):
+            a = self._intervC_i(HBP, t0, tf, dt)
+            output.append(a)
+        return output
+
+    def _finalGraphGetC_c(self, HBP, t0, tf, maxdt):
+        """
+        This function gets the final data of the C_c graph.
+        """
+        output = []
+        for dt in range(maxdt):
+            a = self._intervC_c(HBP, t0, tf, dt)
+            output.append(a)
+        return output
+
+    def _getGraphics(self, HBP, t0, tf, maxdt):
+        """
+        Function that join all the results into a plot.
+        """
+        a = []
+        cont = self._finalGraphGetC_c(HBP, t0, tf, maxdt)
+        inte = self._finalGraphGetC_i(HBP, t0, tf, maxdt)
+        for i in range(len(cont)):
+            fix = [cont[i], inte[i]]
+            a.append(fix)
+        return a
+
+    def _HBA(self, ts, conn, universe, selAtom1, selAtom2,
+             verbose=False):
+        """
+        Main function for calculate C_i and C_c in parallel.
+        """
+        finalGetResidue1 = selAtom1
+        finalGetResidue2 = selAtom2
+        frame = ts.frame
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe,
+                                                            finalGetResidue1,
+                                                            finalGetResidue2,
+                                                            distance=3.5,
+                                                            angle=120.0,
+                                                            start=frame - 1,
+                                                            stop=frame)
+        while True:
+            try:
+                h.run(verbose=verbose)
+                break
+            except:
+                print("error")
+                print("trying again")
+                sys.stdout.flush()
+        sys.stdout.flush()
+        conn.send(h.timeseries[0])
+        conn.close()
+
+    def run(self, **kwargs):
+        """Analyze trajectory and produce timeseries"""
+        h_list = []
+        i = 0
+        if (self.nproc > 1):
+            while i < len(self.universe.trajectory):
+                jobs = []
+                k = i
+                for j in range(self.nproc):
+                        # start
+                    print("ts=", i + 1)
+                    if i >= len(self.universe.trajectory):
+                        break
+                    conn_parent, conn_child = multiprocessing.Pipe(False)
+                    while True:
+                        try:
+                            # new thread
+                            jobs.append(
+                                (multiprocessing.Process(
+                                    target=self._HBA,
+                                    args=(self.universe.trajectory[i],
+                                          conn_child, self.universe,
+                                          self.selection1, self.selection2,)),
+                                 conn_parent))
+                            break
+                        except:
+                            print("error in jobs.append")
+                    jobs[j][0].start()
+                    i = i + 1
+
+                for j in range(self.nproc):
+                    if k >= len(self.universe.trajectory):
+                        break
+                    rec01 = jobs[j][1]
+                    received = rec01.recv()
+                    h_list.append(received)
+                    jobs[j][0].join()
+                    k += 1
+            self.timeseries = self._getGraphics(
+                h_list, 0, self.tf - 1, self.dtmax)
+        else:
+            h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
+                                                                     self.selection1,
+                                                                     self.selection2,
+                                                                     distance=3.5,
+                                                                     angle=120.0)
+            h_list.run(**kwargs)
+            self.timeseries = self._getGraphics(
+                h_list.timeseries, self.t0, self.tf, self.dtmax)
 
 
 class WaterOrientationalRelaxation(object):
