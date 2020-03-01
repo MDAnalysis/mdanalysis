@@ -46,11 +46,11 @@ Classes
 
 """
 from __future__ import absolute_import, division
+from six import raise_from
 
 import numpy as np
 import os
-if os.name != 'nt':
-    import gsd.hoomd
+import gsd.hoomd
 
 from . import base
 
@@ -73,9 +73,6 @@ class GSDReader(base.ReaderBase):
 
         .. versionadded:: 0.17.0
         """
-        if os.name == 'nt':
-            raise NotImplementedError("GSD format not supported on Windows")
-
         super(GSDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()
@@ -105,8 +102,8 @@ class GSDReader(base.ReaderBase):
     def _read_frame(self, frame):
         try :
             myframe = self._file[frame]
-        except IndexError :
-            raise IOError
+        except IndexError:
+            raise_from(IOError, None)
 
         # set frame number
         self._frame = frame

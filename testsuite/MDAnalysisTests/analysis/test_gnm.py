@@ -132,21 +132,3 @@ def test_closeContactGNMAnalysis_weights_None(universe):
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -43.0, -3.0])
-
-
-@pytest.mark.parametrize('MassWeight, expected_value', (
-    (False, None),
-    (True, 'size')
-))
-def test_closeContactGNMAnalysis_weight_dep(universe, MassWeight,
-                                            expected_value):
-    with pytest.deprecated_call():
-        gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe,
-                                                       MassWeight=MassWeight)
-        assert gnm.weights == expected_value
-
-
-def test_closeContactGNMAnalysis_weight_default(universe):
-    gnm = mda.analysis.gnm.closeContactGNMAnalysis(universe,
-                                                   MassWeight=None)
-    assert gnm.weights == 'size'

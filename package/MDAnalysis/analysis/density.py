@@ -65,7 +65,7 @@ is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::
 
   from MDAnalysis.analysis.density import density_from_Universe
   u = Universe(TPR, XTC)
-  D = density_from_Universe(u, delta=1.0, atomselection="name OW")
+  D = density_from_Universe(u, delta=1.0, select="name OW")
   D.convert_density('TIP4P')
   D.export("water.dx", type="double")
 
@@ -161,7 +161,7 @@ can be used in downstream processing).
 
 from __future__ import print_function, division, absolute_import
 from six.moves import range, zip
-from six import string_types
+from six import raise_from, string_types
 
 import numpy as np
 import sys
@@ -212,10 +212,6 @@ class Density(Grid):
         - *density*: unit of the density if ``isDensity=True`` or ``None``
           otherwise; the default is "Angstrom^{-3}" for densities
           (meaning :math:`\text{Å}^{-3}`).
-
-        (Actually, the default unit is the value of
-        ``MDAnalysis.core.flags['length_unit']``; in most
-        cases this is "Angstrom".)
     metadata : dict
         a user defined dictionary of arbitrary values associated with the
         density; the class does not touch :attr:`Density.metadata` but
@@ -325,7 +321,7 @@ class Density(Grid):
     """
 
     def __init__(self, *args, **kwargs):
-        length_unit = MDAnalysis.core.flags['length_unit']
+        length_unit = 'Angstrom'
 
         parameters = kwargs.pop('parameters', {})
         if len(args) > 0 and isinstance(args[0], string_types) or isinstance(kwargs.get('grid', None), string_types):
@@ -373,11 +369,14 @@ class Density(Grid):
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
                 except KeyError:
-                    raise ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.')
+                    raise_from(
+                        ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.'),
+                        None,
+                        )
         except AttributeError:
             errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
         # need at least length and density (can be None)
         if 'length' not in self.units:
             raise ValueError('"unit" must contain a unit for "length".')
@@ -486,7 +485,10 @@ class Density(Grid):
             self.grid *= units.get_conversion_factor('density',
                                                      self.units['density'], unit)
         except KeyError:
-            raise ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys()))
+            raise_from(
+                ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys())),
+                None,
+                )
         self.units['density'] = unit
 
     def __repr__(self):
@@ -527,13 +529,13 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     try:
         gridcenter = np.asarray(gridcenter, dtype=np.float32)
     except ValueError:
-        raise ValueError("Non-number values assigned to gridcenter")
+        raise_from(ValueError("Non-number values assigned to gridcenter"), None)
     if gridcenter.shape != (3,):
         raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
     except ValueError:
-        raise ValueError("xdim, ydim, and zdim must be numbers")
+        raise_from(ValueError("xdim, ydim, and zdim must be numbers"), None)
 
     # Set min/max by shifting by half the edge length of each dimension
     umin = gridcenter - xyzdim/2
@@ -549,7 +551,7 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     return umin, umax
 
 
-def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
+def density_from_Universe(universe, delta=1.0, select='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
                           use_kdtree=True, update_selection=False,
@@ -558,18 +560,20 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
                           gridcenter=None, xdim=None, ydim=None, zdim=None):
     """Create a density grid from a :class:`MDAnalysis.Universe` object.
 
-    The trajectory is read, frame by frame, and the atoms selected with `atomselection` are
-    histogrammed on a grid with spacing `delta`.
+    The trajectory is read, frame by frame, and the atoms selected with
+    `select` are histogrammed on a grid with spacing `delta`.
+    A physical density of units [Angstrom^{-3}] is returned (see
+    :class:`Density` for more details).
 
     Parameters
     ----------
     universe : MDAnalysis.Universe
             :class:`MDAnalysis.Universe` object with a trajectory
-    atomselection : str (optional)
+    select : str (optional)
             selection string (MDAnalysis syntax) for the species to be analyzed
             ["name OH2"]
     delta : float (optional)
-            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+            bin size for the density grid in Angstrom (same in x,y,z) [1.0]
     start : int (optional)
     stop : int (optional)
     step : int (optional)
@@ -580,7 +584,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             are passed through as they are.
     padding : float (optional)
             increase histogram dimensions by padding (on top of initial box size)
-            in Angstroem. Padding is ignored when setting a user defined grid. [2.0]
+            in Angstrom. Padding is ignored when setting a user defined grid. [2.0]
     soluteselection : str (optional)
             MDAnalysis selection for the solute, e.g. "protein" [``None``]
     cutoff : float (optional)
@@ -605,15 +609,15 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
             `dict` with some special parameters for :class:`Density` (see docs)
     gridcenter : numpy ndarray, float32 (optional)
             3 element numpy array detailing the x, y and z coordinates of the
-            center of a user defined grid box in Angstroem [``None``]
+            center of a user defined grid box in Angstrom [``None``]
     xdim : float (optional)
-            User defined x dimension box edge in ångström; ignored if
+            User defined x dimension box edge in Angstrom; ignored if
             gridcenter is ``None``
     ydim : float (optional)
-            User defined y dimension box edge in ångström; ignored if
+            User defined y dimension box edge in Angstrom; ignored if
             gridcenter is ``None``
     zdim : float (optional)
-            User defined z dimension box edge in ångström; ignored if
+            User defined z dimension box edge in Angstrom; ignored if
             gridcenter is ``None``
 
     Returns
@@ -626,7 +630,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     Notes
     -----
 
-    By default, the `atomselection` is static, i.e., atoms are only selected
+    By default, the `select` is static, i.e., atoms are only selected
     once at the beginning. If you want *dynamically changing selections* (such
     as "name OW and around 4.0 (protein and not name H*)", i.e., the water
     oxygen atoms that are within 4 Å of the protein heavy atoms) then set
@@ -638,14 +642,14 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     --------
     Basic use for creating a water density (just using the water oxygen atoms "OW")::
 
-      density = density_from_Universe(universe, delta=1.0, atomselection='name OW')
+      density = density_from_Universe(universe, delta=1.0, select='name OW')
 
     If you are only interested in water within a certain region, e.g., within a
     vicinity around a binding site, you can use a selection that updates every
     step by setting the `update_selection` keyword argument::
 
       site_density = density_from_Universe(universe, delta=1.0,
-                                           atomselection='name OW and around 5 (resid 156 157 305)',
+                                           select='name OW and around 5 (resid 156 157 305)',
                                            update_selection=True)
 
     A special case for an updating selection is to create the "bulk density",
@@ -653,7 +657,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     all water oxygen atoms that are *farther away* than a given cut-off (say, 4
     Å) from the solute (here, heavy atoms of the protein)::
 
-      bulk = density_from_Universe(universe, delta=1.0, atomselection='name OW',
+      bulk = density_from_Universe(universe, delta=1.0, select='name OW',
                                    solute="protein and not name H*",
                                    cutoff=4)
 
@@ -675,7 +679,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       # Generate a density of waters on a cubic grid centered on the ligand COM
       # In this case, we update the atom selection as shown above.
       water_density = density_from_Universe(universe, delta=1.0,
-                                            atomselection='name OW around 5 resname LIG',
+                                            select='name OW around 5 resname LIG',
                                             update_selection=True,
                                             gridcenter=ligand_COM,
                                             xdim=20.0, ydim=20.0, zdim=20.0)
@@ -683,6 +687,26 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
       (It should be noted that the `padding` keyword is not used when a user
       defined grid is assigned).
 
+    As detailed above, the :class:`Density` object returned contains a
+    physical density in units of Angstrom^{-3}. If you are interested in
+    recovering the underlying probability density, simply divide by the sum::
+
+      physical_density = density_from_Universe(universe, delta=1.0,
+                                               select='name OW')
+
+      probability_density = physical_density / physical_density.grid.sum()
+
+    Similarly, if you would like to recover a grid containing a histogram of
+    atom counts, simply multiply by the volume::
+
+      # Here we assume that numpy is imported as np
+      volume = np.prod(physical_density.delta)
+
+      atom_count_histogram = physical_density * volume
+
+
+    .. versionchanged:: 0.21.0
+       Warns users that `padding` value is not used in user defined grids
     .. versionchanged:: 0.20.0
        ProgressMeter now iterates over the number of frames analysed.
     .. versionchanged:: 0.19.0
@@ -690,22 +714,23 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
        defined boxes
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
-
     .. deprecated:: 0.16
        The keyword argument *quiet* is deprecated in favor of *verbose*.
-
+    .. versionchanged:: 0.21.0
+       time_unit and length_unit default to ps and Angstrom now flags have
+       been removed (same as previous flag defaults)
     """
     u = universe
 
     if cutoff > 0 and soluteselection is not None:
         # special fast selection for '<atomsel> not within <cutoff> of <solutesel>'
         notwithin_coordinates = notwithin_coordinates_factory(
-            u, atomselection, soluteselection, cutoff,
+            u, select, soluteselection, cutoff,
             use_kdtree=use_kdtree, updating_selection=update_selection)
         def current_coordinates():
             return notwithin_coordinates()
     else:
-        group = u.select_atoms(atomselection, updating=update_selection)
+        group = u.select_atoms(select, updating=update_selection)
 
         def current_coordinates():
             return group.positions
@@ -713,19 +738,26 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     coord = current_coordinates()
     logger.info(
         "Selected {0:d} atoms out of {1:d} atoms ({2!s}) from {3:d} total."
-        "".format(coord.shape[0], len(u.select_atoms(atomselection)),
-                  atomselection, len(u.atoms))
+        "".format(coord.shape[0], len(u.select_atoms(select)),
+                  select, len(u.atoms))
     )
 
     # mild warning; typically this is run on RMS-fitted trajectories and
     # so the box information is rather meaningless
     box, angles = u.trajectory.ts.dimensions[:3], u.trajectory.ts.dimensions[3:]
     if tuple(angles) != (90., 90., 90.):
-        msg = "Non-orthorhombic unit-cell --- make sure that it has been remapped properly!"
+        msg = ("Non-orthorhombic unit-cell --- "
+               "make sure that it has been remapped properly!")
         warnings.warn(msg)
         logger.warning(msg)
 
     if gridcenter is not None:
+        # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
+        if padding > 0:
+            msg = ("Box padding (currently set at {0}) "
+                   "is not used in user defined grids.".format(padding))
+            warnings.warn(msg)
+            logger.warning(msg)
         # Generate a copy of smin/smax from coords to later check if the
         # defined box might be too small for the selection
         smin = np.min(coord, axis=0)
@@ -776,11 +808,11 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     metadata = metadata if metadata is not None else {}
     metadata['psf'] = u.filename
     metadata['dcd'] = u.trajectory.filename
-    metadata['atomselection'] = atomselection
+    metadata['select'] = select
     metadata['n_frames'] = n_frames
     metadata['totaltime'] = round(u.trajectory.n_frames * u.trajectory.dt, 3)
     metadata['dt'] = u.trajectory.dt
-    metadata['time_unit'] = MDAnalysis.core.flags['time_unit']
+    metadata['time_unit'] = 'ps'
     try:
         metadata['trajectory_skip'] = u.trajectory.skip_timestep  # frames
     except AttributeError:
@@ -797,7 +829,7 @@ def density_from_Universe(universe, delta=1.0, atomselection='name OH2',
     parameters['isDensity'] = False  # must override
 
 
-    g = Density(grid=grid, edges=edges, units={'length': MDAnalysis.core.flags['length_unit']},
+    g = Density(grid=grid, edges=edges, units={'length': 'Angstrom'},
                 parameters=parameters, metadata=metadata)
     g.make_density()
     logger.info("Density completed (initial density in Angstrom**-3)")
@@ -954,11 +986,11 @@ def density_from_PDB(pdb, **kwargs):
     pdb : str
           PDB filename (should have the temperatureFactor set); ANISO
           records are currently *not* processed
-    atomselection : str
+    select : str
           selection string (MDAnalysis syntax) for the species to be analyzed
           ['resname HOH and name O']
     delta : float
-          bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+          bin size for the density grid in Angstrom (same in x,y,z) [1.0]
     metadata : dict
           dictionary of additional data to be saved with the object [``None``]
     padding : float
@@ -1007,18 +1039,18 @@ class BfactorDensityCreator(object):
 
     """
 
-    def __init__(self, pdb, delta=1.0, atomselection='resname HOH and name O',
+    def __init__(self, pdb, delta=1.0, select='resname HOH and name O',
                  metadata=None, padding=1.0, sigma=None):
-        """Construct the density from psf and pdb and the atomselection.
+        """Construct the density from psf and pdb and the select.
 
         Parameters
         ----------
         pdb : str
             PDB file or :class:`MDAnalysis.Universe`;
-        atomselection : str
+        select : str
             selection string (MDAnalysis syntax) for the species to be analyzed
         delta : float
-            bin size for the density grid in Angstroem (same in x,y,z) [1.0]
+            bin size for the density grid in Angstrom (same in x,y,z) [1.0]
         metadata : dict
             dictionary of additional data to be saved with the object
         padding : float
@@ -1034,11 +1066,14 @@ class BfactorDensityCreator(object):
         of about 0.5 A to obtain a well-defined and resolved x-ray water density
         that can be easily matched to a broader density distribution.
 
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
+
         Examples
         --------
         The following creates the density with the B-factors from the pdb file::
 
-          DC = BfactorDensityCreator(pdb, delta=1.0, atomselection="name HOH",
+          DC = BfactorDensityCreator(pdb, delta=1.0, select="name HOH",
                                      padding=2, sigma=None)
           density = DC.Density()
 
@@ -1048,9 +1083,9 @@ class BfactorDensityCreator(object):
 
         """
         u = MDAnalysis.as_Universe(pdb)
-        group = u.select_atoms(atomselection)
+        group = u.select_atoms(select)
         coord = group.positions
-        logger.info("Selected {0:d} atoms ({1!s}) out of {2:d} total.".format(coord.shape[0], atomselection, len(u.atoms)))
+        logger.info("Selected {0:d} atoms ({1!s}) out of {2:d} total.".format(coord.shape[0], select, len(u.atoms)))
         smin = np.min(coord, axis=0) - padding
         smax = np.max(coord, axis=0) + padding
 
@@ -1087,7 +1122,7 @@ class BfactorDensityCreator(object):
             metadata['pdb'] = pdb
         except TypeError:
             metadata = {'pdb': pdb}
-        metadata['atomselection'] = atomselection
+        metadata['select'] = select
         metadata['n_frames'] = n_frames
         metadata['sigma'] = sigma
         self.metadata = metadata

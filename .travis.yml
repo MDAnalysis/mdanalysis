@@ -31,7 +31,7 @@ env:
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="duecredit"
+    - PIP_DEPENDENCIES="duecredit parmed"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
@@ -39,6 +39,7 @@ env:
   matrix:
     # Run a coverage test for most versions
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.13.3
@@ -54,7 +55,7 @@ matrix:
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme"
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
@@ -69,9 +70,20 @@ matrix:
            CODECOV="true"
            NUMPY_VERSION=1.16
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+
+    - env: NAME="asv check"
+           PYTHON_VERSION=2.7 
+           CODECOV="false"
+           MAIN_CMD=""
+           SETUP_CMD=""
+           NUMPY_VERSION=1.16
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+           ASV_CHECK="true"
 
     - os: osx
       env: PYTHON_VERSION=3.6
+           NUMPY_VERSION=1.17.3
 
 # macOS Python 2.7 works in principle but times out on Travis CI:
 # Disabled so that the tests can pass.
@@ -82,6 +94,7 @@ matrix:
 #           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
+           PIP_DEPENDENCIES=""
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
@@ -117,6 +130,16 @@ script:
   - echo $MAIN_CMD $SETUP_CMD
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
   - eval $MAIN_CMD $SETUP_CMD
+  # check benchmark suite for basic issues
+  - |
+    if [ "${ASV_CHECK}" == "true" ]; then
+      python -m pip install asv
+      cd testsuite
+      python setup.py install
+      cd ../benchmarks
+      time python -m asv check -E existing
+    fi
+
 
 after_success:
   - |

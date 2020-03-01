@@ -99,7 +99,7 @@ class LeafletFinder(object):
     universe : Universe or str
         :class:`MDAnalysis.Universe` or a file name (e.g., in PDB or
         GRO format)
-    selection : AtomGroup or str
+    select : AtomGroup or str
         A AtomGroup instance or a
         :meth:`Universe.select_atoms` selection string
         for atoms that define the lipid head groups, e.g.
@@ -134,12 +134,15 @@ class LeafletFinder(object):
     instance. Similarly, all atoms in the first leaflet are then ::
 
        leaflet0.residues.atoms
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selectionstring, cutoff=15.0, pbc=False, sparse=None):
+    def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):
         universe = core.universe.as_Universe(universe)
         self.universe = universe
-        self.selectionstring = selectionstring
+        self.selectionstring = select
         if isinstance(self.selectionstring, core.groups.AtomGroup):
             self.selection = self.selectionstring
         else:
@@ -243,7 +246,7 @@ class LeafletFinder(object):
         """
         sw = selections.get_writer(filename, kwargs.pop('format', None))
         with sw(filename, mode=kwargs.pop('mode', 'w'),
-                preamble="leaflets based on selection={selectionstring!r} cutoff={cutoff:f}\n".format(
+                preamble="leaflets based on select={selectionstring!r} cutoff={cutoff:f}\n".format(
                     **vars(self)),
                 **kwargs) as writer:
             for i, ag in enumerate(self.groups_iter()):
@@ -256,7 +259,7 @@ class LeafletFinder(object):
             len(self.components))
 
 
-def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
+def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
                     max_imbalance=0.2, **kwargs):
     r"""Find cutoff that minimizes number of disconnected groups.
 
@@ -277,7 +280,7 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
     ----------
     universe : Universe
         :class:`MDAnalysis.Universe` instance
-    selection : AtomGroup or str
+    select : AtomGroup or str
         AtomGroup or selection string as used for :class:`LeafletFinder`
     dmin : float (optional)
     dmax : float (optional)
@@ -298,11 +301,13 @@ def optimize_cutoff(universe, selection, dmin=10.0, dmax=20.0, step=0.5,
               appropriate number of groups can be found; it ought  to be
               made more robust.
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
     kwargs.pop('cutoff', None)  # not used, so we filter it
     _sizes = []
     for cutoff in np.arange(dmin, dmax, step):
-        LF = LeafletFinder(universe, selection, cutoff=cutoff, **kwargs)
+        LF = LeafletFinder(universe, select, cutoff=cutoff, **kwargs)
         # heuristic:
         #  1) N > 1
         #  2) no imbalance between large groups:

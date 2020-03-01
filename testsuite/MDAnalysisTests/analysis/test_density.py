@@ -54,13 +54,14 @@ class TestDensity(object):
     def h_and_edges(self, bins):
         return np.histogramdd(
             self.Lmax * np.sin(
-                np.linspace(0, 1,self.counts *3)).reshape(self.counts, 3),
+                np.linspace(0, 1, self.counts * 3)).reshape(self.counts, 3),
             bins=bins)
 
     @pytest.fixture()
     def D(self, h_and_edges):
         h, edges = h_and_edges
-        d = density.Density(h, edges, parameters={'isDensity': False}, units={'length': 'A'})
+        d = density.Density(h, edges, parameters={'isDensity': False},
+                            units={'length': 'A'})
         d.make_density()
         return d
 
@@ -69,12 +70,14 @@ class TestDensity(object):
 
     def test_edges(self, bins, D):
         for dim, (edges, fixture) in enumerate(zip(D.edges, bins)):
-            assert_almost_equal(edges, fixture, err_msg="edges[{0}] mismatch".format(dim))
+            assert_almost_equal(edges, fixture,
+                                err_msg="edges[{0}] mismatch".format(dim))
 
     def test_midpoints(self, bins, D):
         midpoints = [0.5*(b[:-1] + b[1:]) for b in bins]
         for dim, (mp, fixture) in enumerate(zip(D.midpoints, midpoints)):
-            assert_almost_equal(mp, fixture, err_msg="midpoints[{0}] mismatch".format(dim))
+            assert_almost_equal(mp, fixture,
+                                err_msg="midpoints[{0}] mismatch".format(dim))
 
     def test_delta(self, D):
         deltas = np.array([self.Lmax])/np.array(self.nbins)
@@ -157,7 +160,7 @@ class Test_density_from_Universe(object):
 
         with tmpdir.as_cwd():
             D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=atomselection,
+                universe, select=atomselection,
                 delta=self.delta, **kwargs)
             assert_almost_equal(D.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
@@ -231,10 +234,23 @@ class Test_density_from_Universe(object):
     def test_density_from_Universe_userdefn_boxshape(self, universe):
         import MDAnalysis.analysis.density
         D = MDAnalysis.analysis.density.density_from_Universe(
-            universe, atomselection=self.selections['static'],
+            universe, select=self.selections['static'],
             delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
             gridcenter=self.gridcenters['static_defined'])
         assert D.grid.shape == (8, 12, 17)
+
+    def test_density_from_Universe_userdefn_padding(self, universe):
+        import MDAnalysis.analysis.density
+        wmsg = ("Box padding (currently set at 1.0) is not used in user "
+                "defined grids.")
+        with pytest.warns(UserWarning) as record:
+            D = MDAnalysis.analysis.density.density_from_Universe(
+                universe, select=self.selections['static'],
+                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=1.0,
+                gridcenter=self.gridcenters['static_defined'])
+        
+        assert len(record) == 3
+        assert str(record[1].message.args[0]) == wmsg
 
     def test_density_from_Universe_userdefn_selwarning(self, universe):
         import MDAnalysis.analysis.density
@@ -242,8 +258,8 @@ class Test_density_from_Universe(object):
                 "you may want to define a larger box")
         with pytest.warns(UserWarning) as record:
             D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
-                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0,
+                universe, select=self.selections['static'],
+                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined'])
 
         assert len(record) == 2
@@ -254,19 +270,19 @@ class Test_density_from_Universe(object):
         # Test len(gridcenter) != 3
         with pytest.raises(ValueError):
             D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
+                universe, select=self.selections['static'],
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error1'])
         # Test gridcenter includes non-numeric strings
         with pytest.raises(ValueError):
             D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
+                universe, select=self.selections['static'],
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error2'])
         # Test xdim != int or float
         with pytest.raises(ValueError):
             D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
+                universe, select=self.selections['static'],
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined'])
 

@@ -30,7 +30,7 @@ Common functions for auxiliary reading --- :mod:`MDAnalysis.auxiliary.core`
 """
 from __future__ import absolute_import
 
-from six import string_types
+from six import raise_from, string_types
 
 from . import _AUXREADERS
 from ..lib import util
@@ -75,13 +75,19 @@ def get_auxreader_for(auxdata=None, format=None):
         try:
             return _AUXREADERS[format]
         except KeyError:
-            raise ValueError("Unknown auxiliary data format for auxdata: "
-                             "{0}".format(auxdata))
+            raise_from(
+                ValueError(
+                    "Unknown auxiliary data format for auxdata: "
+                    "{0}".format(auxdata)),
+                None
+                )
     else:
         try:
             return _AUXREADERS[format]
         except KeyError:
-            raise ValueError("Unknown auxiliary data format {0}".format(format))
+            raise_from(
+                ValueError("Unknown auxiliary data format {0}".format(format)),
+                None)
 
 def auxreader(auxdata, format=None, **kwargs):
     """ Return an auxiliary reader instance for *auxdata*.

@@ -101,8 +101,8 @@ class TestHOLEtraj(object):
     @pytest.fixture()
     def H(self, universe, tmpdir):
         with tmpdir.as_cwd():
-            H = HOLEtraj(universe, start=self.start, stop=self.stop, raseed=31415)
-            H.run()
+            H = HOLEtraj(universe, raseed=31415)
+            H.run(start=self.start, stop=self.stop)
         return H
 
     @pytest.fixture()
