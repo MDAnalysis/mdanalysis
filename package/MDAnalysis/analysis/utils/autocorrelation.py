@@ -29,13 +29,9 @@ from copy import deepcopy
 def autocorrelation(list_of_sets, tau_max, window_step=1):
     r"""The descrete implementation of the autocorrelation function.
 
-    Here is a random equation that shows something.
-
     .. math::
        C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
 
-
-    fixme -  list_of_sets: Modifies in place!
     Parameters
     ----------
     list_of_sets : list
@@ -44,12 +40,6 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
       The last tau (inclusive) for which to carry out autocorrelation.
     window_step : int, optional
       The step for the t0 to perform autocorrelation (without the overlap). Default is 1.
-    fixme - move intermittency to the right place
-    intermittency : int, optional
-      Helps with the graps in the data. If we want to remove some of the fluctuations and focus on the patterns,
-      intermittency removes the gaps. The default intermittency=0 which means that if the datapoint is missing at any
-      frame, it is not counted. With the value of 2 the datapoint can be missing for 2 consecutive frames but it will
-      be counted as present.
 
     Returns
     --------
@@ -92,20 +82,35 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
 
     return tau_timeseries, timeseries, timeseries_data
 
-# fixme - is intermittency consitent with list of sets of sets? (hydrogen bonds)
+
 def correct_intermittency(list_of_sets, intermittency):
     """
-    Pre-process Consecutive Intermittency with a single pass over the data.
-    If an atom is absent for a number of frames equal or smaller
-    than the parameter intermittency, then correct the data and remove the absence.
-    ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence
+    Process consecutive intermittency with a single pass over the data. The returned data can be used as input to
+    the function `autocorrelation` in order to calculate the discrete autocorrelation function with a given
+    intermittency.
+
+    If an atom is absent for a number of frames equal or smaller than the parameter `intermittency`, then correct
+    the data and remove the absence. e.g 7,A,A,7 with `intermittency=2` will be replaced by 7,7,7,7, where A=absence.
+
+    # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)
 
     Parameters
     ----------
-    id_list: list of sets
-        returns a new list with the IDs with added IDs which disappeared for <= :param intermittency
-    intermittency: int
-        the max gap allowed and to be corrected
+    list_of_sets: list
+        In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
+        single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]
+    intermittency : int
+      The maximum gap allowed. The default intermittency=0 means that if the datapoint is missing at any frame, no
+      changes are made to the data. With the value of `intermittency=2`, all datapoints missing for up to two
+       consecutive frames will be instead be considered present.
+
+    Returns
+    -------
+        returns a new list with the IDs with added IDs which disappeared for <= :param intermittency.
+        e.g If [{0, 1}, {0}, {0}, {0, 1}] is a list of sets of atom ids present at each frame and `intermittency=2`,
+        both atoms will be considered present throughout and thus the returned list of sets will be
+        [{0, 1}, {0, 1}, {0, 1}, {0, 1}].
+
     """
     if intermittency == 0:
         return list_of_sets
