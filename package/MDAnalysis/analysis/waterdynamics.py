@@ -449,7 +449,9 @@ from six.moves import range, zip_longest
 import logging
 import warnings
 import numpy as np
+import multiprocessing
 
+import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
 from .utils.autocorrelation import autocorrelation, correct_intermittency
 
