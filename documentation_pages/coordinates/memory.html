@@ -668,9 +668,13 @@ weren’t originally present.</p>
 <dd><p>MemoryReader works with trajectories represented as numpy arrays.</p>
 <p>A trajectory reader interface to a numpy array of the coordinates.
 For compatibility with the timeseries interface, support is provided for
-specifying the order of columns through the format option.</p>
+specifying the order of columns through the <cite>order</cite> keyword.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the deprecated <cite>format</cite> keyword for
+<a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader.timeseries" title="MDAnalysis.coordinates.memory.MemoryReader.timeseries"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MemoryReader.timeseries()</span></code></a> has now been removed.</p>
 </div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1364,10 +1368,10 @@ time = <code class="xref py py-attr docutils literal notranslate"><span class="p
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.memory.MemoryReader.timeseries">
-<code class="descname">timeseries</code><span class="sig-paren">(</span><em>asel=None</em>, <em>start=0</em>, <em>stop=-1</em>, <em>step=1</em>, <em>order='afc'</em>, <em>format=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.timeseries" title="Permalink to this definition">¶</a></dt>
+<code class="descname">timeseries</code><span class="sig-paren">(</span><em>asel=None</em>, <em>start=0</em>, <em>stop=-1</em>, <em>step=1</em>, <em>order='afc'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/memory.html#MemoryReader.timeseries"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.memory.MemoryReader.timeseries" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a subset of coordinate data for an AtomGroup in desired
-column order/format. If no selection is given, it will return a view of
-the underlying array, while a copy is returned otherwise.</p>
+column order. If no selection is given, it will return a view of the
+underlying array, while a copy is returned otherwise.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1385,21 +1389,13 @@ to (a)tom, (f)rame, (c)oordinates all six combinations
 of ‘a’, ‘f’, ‘c’ are allowed ie “fac” - return array
 where the shape is (frame, number of atoms,
 coordinates).</li>
-<li><strong>format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – deprecated, equivalent to <cite>order</cite></li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <cite>format</cite> parameter name is used to mimic the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD.timeseries</span></code> interface. It is
-identical to the <cite>order</cite> parameter for <a class="reference internal" href="#MDAnalysis.coordinates.memory.MemoryReader" title="MDAnalysis.coordinates.memory.MemoryReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code></a>. In a
-future version, <cite>format</cite> will be renamed to <cite>order</cite>.</p>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.17.0: </span><cite>format</cite> has been deprecated in favor of the standard keyword <cite>order</cite>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Deprecated <cite>format</cite> keyword has been removed. Use <cite>order</cite> instead.</p>
 </div>
 </dd></dl>
 

@@ -421,10 +421,12 @@
 
 <span class="sd">    A trajectory reader interface to a numpy array of the coordinates.</span>
 <span class="sd">    For compatibility with the timeseries interface, support is provided for</span>
-<span class="sd">    specifying the order of columns through the format option.</span>
+<span class="sd">    specifying the order of columns through the `order` keyword.</span>
 
 <span class="sd">    .. versionadded:: 0.16.0</span>
-
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Support for the deprecated `format` keyword for</span>
+<span class="sd">       :meth:`MemoryReader.timeseries` has now been removed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;MEMORY&#39;</span>
@@ -663,10 +665,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
-<div class="viewcode-block" id="MemoryReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="MemoryReader.timeseries"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.timeseries">[docs]</a>    <span class="k">def</span> <span class="nf">timeseries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">asel</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;afc&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a subset of coordinate data for an AtomGroup in desired</span>
-<span class="sd">        column order/format. If no selection is given, it will return a view of</span>
-<span class="sd">        the underlying array, while a copy is returned otherwise.</span>
+<span class="sd">        column order. If no selection is given, it will return a view of the</span>
+<span class="sd">        underlying array, while a copy is returned otherwise.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ---------</span>
@@ -685,26 +687,11 @@
 <span class="sd">            of &#39;a&#39;, &#39;f&#39;, &#39;c&#39; are allowed ie &quot;fac&quot; - return array</span>
 <span class="sd">            where the shape is (frame, number of atoms,</span>
 <span class="sd">            coordinates).</span>
-<span class="sd">        format : str (optional)</span>
-<span class="sd">            deprecated, equivalent to `order`</span>
-
-<span class="sd">        Note</span>
-<span class="sd">        ----</span>
-<span class="sd">        The `format` parameter name is used to mimic the</span>
-<span class="sd">        :class:`MDAnalysis.coordinates.DCD.timeseries` interface. It is</span>
-<span class="sd">        identical to the `order` parameter for :class:`MemoryReader`. In a</span>
-<span class="sd">        future version, `format` will be renamed to `order`.</span>
 
 
-<span class="sd">        .. deprecated:: 0.17.0</span>
-<span class="sd">           `format` has been deprecated in favor of the standard keyword `order`.</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Deprecated `format` keyword has been removed. Use `order` instead.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                <span class="s2">&quot;&#39;format&#39; is deprecated and will be removed in 1.0. Use &#39;order&#39; instead&quot;</span><span class="p">,</span>
-                <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="nb">format</span>
-
         <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_array</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">stored_order</span><span class="p">:</span>
             <span class="k">pass</span>

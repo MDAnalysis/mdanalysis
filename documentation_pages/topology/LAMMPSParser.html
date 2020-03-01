@@ -111,7 +111,6 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">5.9. LAMMPSParser</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#atom-styles">5.9.1. Atom styles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#classes">5.9.2. Classes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deprecated-classes">5.9.3. Deprecated classes</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.10. Minimal topology parser</a></li>
@@ -214,6 +213,9 @@
   <span class="target" id="module-MDAnalysis.topology.LAMMPSParser"></span><div class="section" id="lammpsparser">
 <h1>5.9. LAMMPSParser<a class="headerlink" href="#lammpsparser" title="Permalink to this headline">¶</a></h1>
 <p>Parses <a class="reference external" href="DATAfileformat::http://lammps.sandia.gov/doc/2001/data_format.html">data</a> or <a class="reference external" href="http://lammps.sandia.gov/doc/dump.html">dump</a> files produced by <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Deprecated <code class="xref py py-class docutils literal notranslate"><span class="pre">LAMMPSDataConverter</span></code> has now been removed.</p>
+</div>
 <div class="section" id="atom-styles">
 <span id="atom-style-kwarg"></span><h2>5.9.1. Atom styles<a class="headerlink" href="#atom-styles" title="Permalink to this headline">¶</a></h2>
 <p>By default parsers and readers for Lammps data files expect either an
@@ -550,49 +552,6 @@ is avoided.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.19.0.</span></p>
 </div>
-</dd></dl>
-
-</div>
-<div class="section" id="deprecated-classes">
-<h2>5.9.3. Deprecated classes<a class="headerlink" href="#deprecated-classes" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.LAMMPSParser.</code><code class="descname">LAMMPSDataConverter</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LAMMPSDataConverter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class to parse a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> DATA file and convert it to PSF/PDB.</p>
-<p>The DATA file contains both topology and coordinate information.</p>
-<p>The <a class="reference internal" href="#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter" title="MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter"><code class="xref py py-class docutils literal notranslate"><span class="pre">LAMMPSDataConverter</span></code></a> class can extract topology information and
-coordinates from a <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a> data file. For instance, in order to
-produce a PSF file of the topology and a PDB file of the coordinates
-from a data file “lammps.data” you can use:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.topology.LAMMPSParser</span> <span class="kn">import</span> <span class="n">LAMPPSData</span>
-<span class="n">d</span> <span class="o">=</span> <span class="n">LAMMPSDataConverter</span><span class="p">(</span><span class="s2">&quot;lammps.data&quot;</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">writePSF</span><span class="p">(</span><span class="s2">&quot;lammps.psf&quot;</span><span class="p">)</span>
-<span class="n">d</span><span class="o">.</span><span class="n">writePDB</span><span class="p">(</span><span class="s2">&quot;lammps.pdb&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>You can then read a trajectory (e.g. a LAMMPS DCD, see
-<a class="reference internal" href="../coordinates/LAMMPS.html#MDAnalysis.coordinates.LAMMPS.DCDReader" title="MDAnalysis.coordinates.LAMMPS.DCDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS.DCDReader</span></code></a>) with</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Unverse</span><span class="p">(</span><span class="s2">&quot;lammps.psf&quot;</span><span class="p">,</span> <span class="s2">&quot;lammps.dcd&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;LAMMPS&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.9.0.</span></p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.9.0: </span>Renamed from <code class="docutils literal notranslate"><span class="pre">LAMMPSData</span></code> to <code class="docutils literal notranslate"><span class="pre">LAMMPSDataConverter</span></code>.</p>
-</div>
-<dl class="method">
-<dt id="MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter.writePDB">
-<code class="descname">writePDB</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LAMMPSDataConverter.writePDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter.writePDB" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export coordinates to a simple PDB file.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter.writePSF">
-<code class="descname">writePSF</code><span class="sig-paren">(</span><em>filename</em>, <em>names=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/LAMMPSParser.html#LAMMPSDataConverter.writePSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter.writePSF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export topology information to a simple PSF file.</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>

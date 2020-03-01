@@ -206,6 +206,9 @@
 <span class="sd">.. _data: DATA file format: :http://lammps.sandia.gov/doc/2001/data_format.html</span>
 <span class="sd">.. _dump: http://lammps.sandia.gov/doc/dump.html</span>
 
+<span class="sd">.. versionchanged:: 1.0.0</span>
+<span class="sd">   Deprecated :class:`LAMMPSDataConverter` has now been removed.</span>
+
 
 <span class="sd">.. _atom_style_kwarg:</span>
 
@@ -245,11 +248,6 @@
 <span class="sd">.. autoclass:: LammpsDumpParser</span>
 <span class="sd">   :members:</span>
 
-<span class="sd">Deprecated classes</span>
-<span class="sd">------------------</span>
-
-<span class="sd">.. autoclass:: LAMMPSDataConverter</span>
-<span class="sd">   :members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
@@ -848,186 +846,8 @@
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
-        <span class="k">return</span> <span class="nb">iter</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
-
-
-<div class="viewcode-block" id="LAMMPSDataConverter"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter">[docs]</a><span class="k">class</span> <span class="nc">LAMMPSDataConverter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-    <span class="sd">&quot;&quot;&quot;Class to parse a LAMMPS_ DATA file and convert it to PSF/PDB.</span>
-
-<span class="sd">    The DATA file contains both topology and coordinate information.</span>
-
-<span class="sd">    The :class:`LAMMPSDataConverter` class can extract topology information and</span>
-<span class="sd">    coordinates from a LAMMPS_ data file. For instance, in order to</span>
-<span class="sd">    produce a PSF file of the topology and a PDB file of the coordinates</span>
-<span class="sd">    from a data file &quot;lammps.data&quot; you can use::</span>
-
-<span class="sd">      from MDAnalysis.topology.LAMMPSParser import LAMPPSData</span>
-<span class="sd">      d = LAMMPSDataConverter(&quot;lammps.data&quot;)</span>
-<span class="sd">      d.writePSF(&quot;lammps.psf&quot;)</span>
-<span class="sd">      d.writePDB(&quot;lammps.pdb&quot;)</span>
-
-<span class="sd">    You can then read a trajectory (e.g. a LAMMPS DCD, see</span>
-<span class="sd">    :class:`MDAnalysis.coordinates.LAMMPS.DCDReader`) with ::</span>
-
-<span class="sd">      u = MDAnalysis.Unverse(&quot;lammps.psf&quot;, &quot;lammps.dcd&quot;, format=&quot;LAMMPS&quot;)</span>
-
-<span class="sd">    .. deprecated:: 0.9.0</span>
-
-<span class="sd">    .. versionchanged:: 0.9.0</span>
-<span class="sd">       Renamed from ``LAMMPSData`` to ``LAMMPSDataConverter``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">header_keywords</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="s2">&quot;dihedrals&quot;</span><span class="p">,</span> <span class="s2">&quot;impropers&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;atom types&quot;</span><span class="p">,</span> <span class="s2">&quot;bond types&quot;</span><span class="p">,</span> <span class="s2">&quot;angle types&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;dihedral types&quot;</span><span class="p">,</span> <span class="s2">&quot;improper types&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;xlo xhi&quot;</span><span class="p">,</span> <span class="s2">&quot;ylo yhi&quot;</span><span class="p">,</span> <span class="s2">&quot;zlo zhi&quot;</span><span class="p">]</span>
-
-    <span class="n">connections</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
-        <span class="p">[</span><span class="s2">&quot;Bonds&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;bonds&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Angles&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;angles&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Dihedrals&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;dihedrals&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Impropers&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;impropers&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]])</span>
-
-    <span class="n">coeff</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
-        <span class="p">[</span><span class="s2">&quot;Masses&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atom types&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Velocities&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atoms&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Pair Coeffs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;atom types&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Bond Coeffs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;bond types&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Angle Coeffs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;angle types&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Dihedral Coeffs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;dihedral types&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">)],</span>
-        <span class="p">[</span><span class="s2">&quot;Improper Coeffs&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;improper types&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]])</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">names</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">headers</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sections</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;LAMMPS data file&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># Open and check validity</span>
-            <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">file_iter</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">xreadlines</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                <span class="c1"># Parse headers</span>
-                <span class="n">headers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">headers</span>
-                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">file_iter</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="n">found</span> <span class="o">=</span> <span class="kc">False</span>
-                    <span class="k">for</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_keywords</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">keyword</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="n">found</span> <span class="o">=</span> <span class="kc">True</span>
-                            <span class="n">values</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                            <span class="k">if</span> <span class="n">keyword</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;xlo xhi&quot;</span><span class="p">,</span> <span class="s2">&quot;ylo yhi&quot;</span><span class="p">,</span> <span class="s2">&quot;zlo zhi&quot;</span><span class="p">):</span>
-                                <span class="n">headers</span><span class="p">[</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="n">headers</span><span class="p">[</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-                    <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-                        <span class="k">break</span>
-
-            <span class="c1"># Parse sections</span>
-            <span class="c1"># XXX This is a crappy way to do it</span>
-            <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-                <span class="n">file_iter</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">xreadlines</span><span class="p">()</span>
-                <span class="c1"># Create coordinate array</span>
-                <span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">],</span> <span class="mi">3</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
-                <span class="n">sections</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sections</span>
-                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">file_iter</span><span class="p">:</span>
-                    <span class="n">line</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">if</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="p">:</span>
-                        <span class="n">h</span><span class="p">,</span> <span class="n">numcoeff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coeff</span><span class="p">[</span><span class="n">line</span><span class="p">]</span>
-                        <span class="c1"># skip line</span>
-                        <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="n">h</span><span class="p">]):</span>
-                            <span class="n">fields</span> <span class="o">=</span> <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">conv_float</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]))</span>
-                        <span class="n">sections</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-                    <span class="k">elif</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">:</span>
-                        <span class="n">h</span><span class="p">,</span> <span class="n">numfields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connections</span><span class="p">[</span><span class="n">line</span><span class="p">]</span>
-                        <span class="c1"># skip line</span>
-                        <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="n">h</span><span class="p">]):</span>
-                            <span class="n">fields</span> <span class="o">=</span> <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
-                        <span class="n">sections</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-                    <span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;Atoms&quot;</span><span class="p">:</span>
-                        <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;atoms&quot;</span><span class="p">]):</span>
-                            <span class="n">fields</span> <span class="o">=</span> <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                            <span class="n">index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
-                            <span class="n">a</span> <span class="o">=</span> <span class="n">LAMMPSAtom</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">chain_id</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-                                           <span class="n">charge</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
-                            <span class="n">a</span><span class="o">.</span><span class="n">_positions</span> <span class="o">=</span> <span class="n">positions</span>
-                            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-                            <span class="n">positions</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="mi">6</span><span class="p">])])</span>
-                        <span class="n">sections</span><span class="p">[</span><span class="n">line</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-                    <span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s2">&quot;Masses&quot;</span><span class="p">:</span>
-                        <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-                        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;atom type&quot;</span><span class="p">]):</span>
-                            <span class="n">fields</span> <span class="o">=</span> <span class="n">file_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;help&quot;</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">positions</span>
-
-<div class="viewcode-block" id="LAMMPSDataConverter.writePSF"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter.writePSF">[docs]</a>    <span class="k">def</span> <span class="nf">writePSF</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Export topology information to a simple PSF file.&quot;&quot;&quot;</span>
-        <span class="c1"># Naveen formatted -- works with MDAnalysis verison 52</span>
-        <span class="c1">#psf_atom_format = &quot;   %5d %-4s %-4d %-4s %-4s %-4s %10.6f      %7.4f            %1d\n&quot;</span>
-        <span class="c1"># Liz formatted -- works with MDAnalysis verison 59</span>
-        <span class="c1">#psf_atom_format = &quot;%8d %4.4s %-4.4s %-4.4s %-4.4s %-4.4s %16.8e %1s %-7.4f %7.7s %s\n&quot;</span>
-        <span class="c1"># Oli formatted -- works with MDAnalysis verison 81</span>
-        <span class="n">psf_atom_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%8d</span><span class="s2"> </span><span class="si">%4s</span><span class="s2"> </span><span class="si">%-4s</span><span class="s2"> </span><span class="si">%4s</span><span class="s2"> </span><span class="si">%-4s% 4s</span><span class="s2"> </span><span class="si">%-14.6f%-14.6f%8s</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;PSF</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; !NTITLE</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s2">&quot;Atoms&quot;</span><span class="p">])),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; !NATOM</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="c1">#print self.sections[&quot;Masses&quot;]</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s2">&quot;Atoms&quot;</span><span class="p">]):</span>
-                <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">resname</span><span class="p">,</span> <span class="n">atomname</span> <span class="o">=</span> <span class="n">names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">resname</span><span class="p">,</span> <span class="n">atomname</span> <span class="o">=</span> <span class="s1">&#39;TEMP&#39;</span><span class="p">,</span> <span class="s1">&#39;XXXX&#39;</span>
-                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">liz</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s2">&quot;Masses&quot;</span><span class="p">]):</span>
-                    <span class="n">liz</span> <span class="o">=</span> <span class="n">liz</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="c1">#print j+1, atom.type, liz</span>
-                    <span class="k">if</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="p">[</span>
-                            <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TEMP&#39;</span><span class="p">,</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">chainid</span><span class="p">),</span> <span class="n">resname</span><span class="p">,</span> <span class="n">atomname</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span>
-                            <span class="nb">float</span><span class="p">(</span><span class="n">liz</span><span class="p">),</span> <span class="mf">0.</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                <span class="c1">#print line</span>
-                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">psf_atom_format</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
-
-            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">num_bonds</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s2">&quot;Bonds&quot;</span><span class="p">])</span>
-            <span class="n">bond_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s2">&quot;Bonds&quot;</span><span class="p">]</span>
-            <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">num_bonds</span><span class="p">),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; !NBOND</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_bonds</span><span class="p">,</span> <span class="mi">4</span><span class="p">):</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">bonds</span> <span class="o">=</span> <span class="n">bond_list</span><span class="p">[</span><span class="n">index</span><span class="p">:</span><span class="n">index</span> <span class="o">+</span> <span class="mi">4</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-                    <span class="n">bonds</span> <span class="o">=</span> <span class="n">bond_list</span><span class="p">[</span><span class="n">index</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">bond_line</span> <span class="o">=</span> <span class="p">[</span><span class="n">string</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">rjust</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bonds</span><span class="p">]</span>
-                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bond_line</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="LAMMPSDataConverter.writePDB"><a class="viewcode-back" href="../../../documentation_pages/topology/LAMMPSParser.html#MDAnalysis.topology.LAMMPSParser.LAMMPSDataConverter.writePDB">[docs]</a>    <span class="k">def</span> <span class="nf">writePDB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Export coordinates to a simple PDB file.&quot;&quot;&quot;</span>
-        <span class="n">atom_format</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">%6s%.5s</span><span class="s2"> </span><span class="si">%4s</span><span class="s2"> </span><span class="si">%4s</span><span class="s2"> </span><span class="si">%.4s</span><span class="s2">    </span><span class="si">%8.3f%8.3f%8.3f%6.2f%6.2f</span><span class="s2">          </span><span class="si">%2s</span><span class="s2">  </span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">positions</span>
-        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="s2">&quot;Atoms&quot;</span><span class="p">]):</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="p">[</span>
-                    <span class="s2">&quot;ATOM  &quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;XXXX&#39;</span><span class="p">,</span> <span class="s1">&#39;TEMP&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span>
-                    <span class="nb">str</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">type</span><span class="p">)]</span>
-                <span class="n">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">atom_format</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div></div>
+        <span class="k">return</span> <span class="nb">iter</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chainid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">,</span>
+                     <span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
 </pre></div>
 
            </div>
