@@ -87,15 +87,108 @@ class TestHydrogenBondAnalysisTIP3P(object):
         counts = h.count_by_type()
         assert int(counts[0, 2]) == ref_count
 
-    def test_count_by_ids(self, h):
+    def test_count_by_ids(self, h, universe):
 
         ref_counts = [1.0, 1.0, 0.5, 0.4, 0.2, 0.1]
         unique_hbonds = h.count_by_ids()
+
+        most_common_hbond_ids = [12, 14, 9]
+        assert np.allclose(unique_hbonds[0,:3], most_common_hbond_ids)
 
         # count_by_ids() returns raw counts
         # convert to fraction of time that bond was observed
         counts = unique_hbonds[:, 3] / len(h.timesteps)
 
+        assert_array_equal(counts, ref_counts)
+
+
+
+class TestHydrogenBondAnalysisMock(object):
+
+    kwargs = {
+        'donors_sel': 'name O',
+        'hydrogens_sel': 'name H1 H2',
+        'acceptors_sel': 'name O',
+        'd_h_cutoff': 1.2,
+        'd_a_cutoff': 3.0,
+        'd_h_a_angle_cutoff': 120.0
+    }
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        # create 2 atoms
+        """
+                       H4
+                        \
+            O1-H2 .... O2-H3
+           /
+          H1
+        """
+        n_residues = 2
+        u = MDAnalysis.Universe.empty(n_atoms=n_residues*3,
+                                 n_residues=n_residues,
+                                 atom_resindex=np.repeat(range(n_residues), 3),
+                                 residue_segindex=[0] * n_residues,
+                                 trajectory=True, # necessary for adding coordinates
+                                )
+                                #  in_memory=True)
+        u.add_TopologyAttr('name', ['O', 'H1', 'H2'] * n_residues)
+        u.add_TopologyAttr('type', ['O', 'H', 'H'] * n_residues)
+        u.add_TopologyAttr('resname', ['SOL'] * n_residues)
+        u.add_TopologyAttr('resid', list(range(1, n_residues + 1)))
+        print ('indices', u.atoms.indices)
+        u.add_TopologyAttr('id', list(range(1, (n_residues * 3) + 1)))
+        print ('ids', u.atoms.ids)
+        pos1 = np.array([[0, 0, 0],  # O1
+                        [-0.249, -0.968, 0],    # H1
+                        [1, 0, 0],  # H2
+                        [2.5, 0, 0],    # O2
+                        [3., 0, 0],     # H3
+                        [2.250, 0.968, 0]   # H4
+                        ])
+        pos2 = np.array([[0, 0, 0],  # O1
+                         [-0.249, -0.968, 0],  # H1
+                         [1, 0, 0],  # H2
+                         [4.5, 0, 0],  # O2
+                         [5., 0, 0],  # H3
+                         [4.250, 0.968, 0]  # H4
+                         ])
+        #u.atoms.positions = pos
+        coordinates = np.empty((3,  # number of frames
+                                u.atoms.n_atoms,
+                                3))
+        coordinates[0] = pos1
+        coordinates[1] = pos2
+        coordinates[2] = pos1
+        u.load_new(coordinates, order='fac')
+
+        return u
+
+    def test_first(self, universe):
+
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run()
+
+        assert len(h.hbonds) == 2
+
+        frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, dha_angle = h.hbonds[0]
+        assert donor_index == 0
+        assert hydrogen_index == 2
+        assert acceptor_index == 3
+        assert da_dst == 2.5
+        assert dha_angle == 180
+
+    def test_count_by_time(self, universe):
+
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run()
+
+        ref_times = np.array([0, 1, 2]) # u.trajectory.dt is 1
+        ref_counts = np.array([1, 0, 1])
+
+        counts = h.count_by_time()
+        assert_array_almost_equal(h.timesteps, ref_times)
         assert_array_equal(counts, ref_counts)
 
 

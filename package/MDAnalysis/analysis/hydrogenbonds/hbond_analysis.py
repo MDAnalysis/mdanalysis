@@ -165,7 +165,6 @@ The class and its methods
 
 .. autoclass:: HydrogenBondAnalysis
    :members:
-
 """
 from __future__ import absolute_import, division
 
@@ -408,8 +407,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # If donors_sel is not provided, use topology to find d-h pairs
         if not self.donors_sel:
-
-            if len(self.u.bonds) == 0:
+            if not (hasattr(self.u, 'bonds') and len(self.u.bonds) != 0):
                 raise Exception('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
                                 'Please either: load a topology file with bonded information; use the guess_bonds() '
                                 'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
@@ -496,9 +494,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # Store data on hydrogen bonds found at this frame
         self.hbonds[0].extend(np.full_like(hbond_donors, self._ts.frame))
-        self.hbonds[1].extend(hbond_donors.ids)
-        self.hbonds[2].extend(hbond_hydrogens.ids)
-        self.hbonds[3].extend(hbond_acceptors.ids)
+        self.hbonds[1].extend(hbond_donors.indices)
+        self.hbonds[2].extend(hbond_hydrogens.indices)
+        self.hbonds[3].extend(hbond_acceptors.indices)
         self.hbonds[4].extend(hbond_distances)
         self.hbonds[5].extend(hbond_angles)
 
