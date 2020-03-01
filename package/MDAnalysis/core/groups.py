@@ -2218,14 +2218,10 @@ class AtomGroup(GroupBase):
     def __getattr__(self, attr):
         # is this a known attribute failure?
         # TODO: Generalise this to cover many attributes
-        if attr in ('fragments', 'fragindices', 'n_fragments', 'unwrap'):
-            # eg:
-            # if attr in _ATTR_ERRORS:
-            # raise NDE(_ATTR_ERRORS[attr])
-            raise NoDataError("AtomGroup.{} not available; this requires Bonds"
-                              "".format(attr))
-        raise AttributeError("{cls} has no attribute {attr}".format(
-            cls=self.__class__.__name__, attr=attr))
+        raise NoDataError("The attribute/method you are trying to access is not available because"
+                            " your topology file doesn't contain information about {}."
+                            "".format(attr))
+
 
     def __reduce__(self):
         return (_unpickle, (self.universe.anchor_name, self.ix))
@@ -3617,12 +3613,9 @@ class Atom(ComponentBase):
     """
     def __getattr__(self, attr):
         """Try and catch known attributes and give better error message"""
-        if attr in ('fragment', 'fragindex'):
-            raise NoDataError("Atom has no {} data, this requires Bonds"
-                              "".format(attr))
-        else:
-            raise AttributeError("{cls} has no attribute {attr}".format(
-                cls=self.__class__.__name__, attr=attr))
+        raise NoDataError("The attribute/method you are trying to access is not available because"
+                            " your topology file doesn't contain information about {}."
+                            "".format(attr))
 
     def __repr__(self):
         me = '<Atom {}:'.format(self.ix + 1)
