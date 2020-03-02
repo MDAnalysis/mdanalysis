@@ -135,8 +135,6 @@ Changes
 Deprecations
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
-Testsuite
-  * add test for args order of base.AnalysisFromFunction (PR #2594)
 
 09/05/19 IAlibay, richardjgowers
 
