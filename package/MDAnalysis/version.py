@@ -54,7 +54,7 @@ extensions to the MAJOR.MINOR.PATCH format.
 
 .. _`semantic versioning`: http://semver.org/
 .. _`versioning of MDAnalysis`:
-   http://wiki.mdanalysis.org/SemanticVersioning
+   https://github.com/MDAnalysis/mdanalysis/wiki/SemanticVersioning
 
 Data
 ----
