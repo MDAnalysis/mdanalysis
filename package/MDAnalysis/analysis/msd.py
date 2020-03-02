@@ -85,7 +85,11 @@ class MeanSquaredDisplacement(AnalysisBase):
             
             self.timeseries = calculate_com(atoms) #TODO work out timeseries
         else:
+<<<<<<< HEAD
             raise ValueError('invalid position_treatment specified')
+=======
+            self.
+>>>>>>> f50622c9857d3c41105fa09856acb5e89c58a4b1
 
     def parse_msd_type(self):
 
