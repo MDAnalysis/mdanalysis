@@ -20,6 +20,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * pca(align=True) now correctly aligns the trajectory and computes the
+    correct means and covariance matrix (Issue #2561)
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
