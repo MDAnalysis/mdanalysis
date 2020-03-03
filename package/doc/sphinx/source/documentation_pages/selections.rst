@@ -102,8 +102,8 @@ moltype *molecule-type*
 Pattern matching
 ----------------
 
-The pattern matching notation described bellow is used to specify 
-patterns for matching strings:
+The pattern matching notation described below is used to specify 
+patterns for matching strings (based on :mod:`fnmatch`):
 
 ``?`` 
     Is a pattern that will match any single character. For example,
