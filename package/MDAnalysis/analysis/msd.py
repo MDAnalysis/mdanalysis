@@ -31,6 +31,7 @@ import bz2
 import functools
 
 import numpy as np
+from scipy import fft,ifft
 
 import logging
 
@@ -132,8 +133,16 @@ class MeanSquaredDisplacement(AnalysisBase):
             #TODO work out timeseries for com
         else:
             raise ValueError('invalid position_treatment specified')
-        
-    def _run(): # naieve algorithm pre vectorisation / without FFT
+    
+    def _run(self):
+        if self.fft= True:
+            self.timeseries = self._run_fft()
+        else:
+            self.timeseries = self._run_naieve()
+
+
+
+    def _run_naieve(self): # naieve algorithm pre vectorisation / without FFT
         # r is shape time, nparticles, 3
         msds_byparticle = np.zeros([self.n_frames, self.N_particles])
         lagtimes = np.arange(self.n_frames)
@@ -143,8 +152,28 @@ class MeanSquaredDisplacement(AnalysisBase):
                 sqdist = np.square(disp).sum(axis=1)
                 msds[i,n] = sqdist.mean()
         msds = msds_byparticle.mean(axis=XX)
-            
+    
+    def _run_fft(self):  #with FFT
+        N=len(r)
+        D=np.square(r).sum(axis=1) 
+        D=np.append(D,0) 
+        S2=sum([self.autocorrFFT(r[:, i]) for i in range(r.shape[1])])
+        Q=2*D.sum()
+        S1=np.zeros(N)
+        for m in range(N):
+            Q=Q-D[m-1]-D[N-m]
+            S1[m]=Q/(N-m)
+        return S1-2*S2
 
+    @classmethod   
+    def autocorrFFT(x):
+        N=len(x)
+        F = np.fft.fft(x, n=2*N)  #2*N because of zero-padding
+        PowerSpectralDensity = F * F.conjugate()
+        res = np.fft.ifft(PowerSpectralDensity)
+        res= (res[:N]).real   #now we have the autocorrelation in convention B
+        n=N*np.ones(N)-np.arange(0,N) #divide res(m) by (N-m)
+    return res/n #this is the autocorrelation in convention A
 
             
 
