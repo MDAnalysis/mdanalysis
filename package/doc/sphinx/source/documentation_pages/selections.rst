@@ -102,7 +102,8 @@ moltype *molecule-type*
 Pattern matching
 -------
 
-The pattern matching notation described bellow is used to specify patterns for matching strings:
+The pattern matching notation described bellow is used to specify 
+patterns for matching strings:
 
 ``?`` 
     Is a pattern that will match any single character. For example,
@@ -112,8 +113,12 @@ The pattern matching notation described bellow is used to specify patterns for m
     ``GL*`` selects all strings that start with "GL" such as "GLU",
     "GLY", "GLX29", "GLN".
 ``[seq]``
-    Would match any character in seq. For example, "GL[NY]" selects
-    all residues named "GLN" or "GLY" but would not select "GLU".
+    Would match any character in seq. For example, "resname GL[NY]" 
+    selects all residues named "GLN" or "GLY" but would not select
+    "GLU".
+``[!seq]``
+    Would match any character not in seq. For example, "resname GL[!NY]"
+    would match residues named "GLU" but would not match "GLN" or "GLY".
 
 Boolean
 -------
