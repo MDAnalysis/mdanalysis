@@ -371,23 +371,15 @@ class TestSelectionsCHARMM(object):
         ('resname TYR THR', 'resname T?R'),
         ('resname ASN ASP HSD', 'resname *S?'),
         ('resname LEU LYS', 'resname L**'),
-        ('resname MET', 'resname *M*')
+        ('resname MET', 'resname *M*'),
+        ('resname GLN GLY', 'resname GL[NY]'),
+        ('resname GLU', 'resname GL[!NY]'),
     ])
     def test_wildcard_selection(self, universe, selstring, wildstring):
         ag = universe.select_atoms(selstring)
         ag_wild = universe.select_atoms(wildstring)
         assert ag == ag_wild
 
-    def test_wildcard_single_selection(self, universe):
-        ag = universe.select_atoms('resname GLN GLY')
-        ag_wild = universe.select_atoms('resname GL[NY]')
-        assert ag == ag_wild
-
-    def test_wildcard_single_selection_2(self, universe):
-        ag = universe.select_atoms('resname GLU')
-        ag_wild = universe.select_atoms('resname GL[!NY]')
-        assert ag == ag_wild
-        
 class TestSelectionsAMBER(object):
     @pytest.fixture()
     def universe(self):
