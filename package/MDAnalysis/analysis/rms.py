@@ -230,7 +230,6 @@ def rmsd(a, b, weights=None, center=False, superposition=False):
     a = np.asarray(a, dtype=np.float64)
     b = np.asarray(b, dtype=np.float64)
     N = b.shape[0]
-
     if a.shape != b.shape:
         raise ValueError('a and b must have same shape')
 
@@ -381,11 +380,15 @@ class RMSD(AnalysisBase):
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
-        weights : {"mass", ``None``} or array_like (optional)
-             choose weights. With ``"mass"`` uses masses as weights; with ``None``
-             weigh each atom equally. If a float array of the same length as
+        weights : {"mass", ``None``} or array_like or list of array_like (optional)
+             choose weights. With ``"mass"`` uses masses as weights for both `select`
+             and `groupselections`; with ``None`` weigh each atom equally for both 
+             `select` and `groupselections`. If a float array of the same length as
              `atomgroup` is provided, use each element of the `array_like` as a
-             weight for the corresponding atom in `atomgroup`.
+             weight for the corresponding atom in `select`, and assume ``None`` 
+             for `groupselections`. 
+             If weights is a list or array_like or 'mass' or None of length 
+             (1 + length(`groupselections`)), apply the weights correspondingly.
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass`.
@@ -477,7 +480,10 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-
+        # save weights for select
+        self.weights_select = []
+        # save weights for each groupselection
+        self.weights_groupselection = []
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
 
@@ -535,29 +541,77 @@ class RMSD(AnalysisBase):
                         igroup, sel['reference'], sel['mobile'],
                         len(atoms['reference']), len(atoms['mobile'])))
 
-        # Explicitly check for "mass" because this option CAN
-        # be used with groupselection. (get_weights() returns the mass array
-        # for "mass")
-        if not iterable(self.weights) and self.weights == "mass":
-            pass
-        else:
-            self.weights = get_weights(self.mobile_atoms, self.weights)
 
-        # cannot use arbitrary weight array (for superposition) with
-        # groupselections because arrays will not match
-        if (len(self.groupselections) > 0 and (
-                iterable(self.weights) or self.weights not in ("mass", None))):
-            raise ValueError("groupselections can only be combined with "
-                             "weights=None or weights='mass', not a weight "
-                             "array.")
+        # check weights type
+
+        if self.weights == 'mass':
+            pass
+        elif self.weights is None:
+            pass
+        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
+            self.weights = get_weights(self.mobile_atoms, self.weights)
+        elif not iterable(self.weights):
+            self.weights = get_weights(self.mobile_atoms, self.weights)
+        elif len(self.weights) != len(self.groupselections) + 1:
+            raise ValueError("Length of array of weights is not equal to length of groupselections + 1")
+        else:
+            weights_list = self.weights
+            for weights in weights_list:
+                if weights == 'mass':
+                    pass
+                elif weights is None:
+                    pass
+                elif (np.array(weights).ndim == 1) & (np.array(weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
+                    # TODO:
+                    # check each length of weights matches the length of each group selection?
+                    pass
+
+                elif not iterable(self.weights):
+                    self.weights = get_weights(self.mobile_atoms, self.weights)
+                else:
+                    raise ValueError("Each groupselection can only be combined with "
+                                     "weight None or 'mass' or 1D float array")
+      
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
+        # apply 'mass' weights for all selections
+        if self.weights == 'mass':
+           self.weights = ['mass'] * (len(self.groupselections) + 1)
+        # apply 'None' weights for all selections
+        elif self.weights is None:
+           self.weights = [None] * (len(self.groupselections) + 1)
+        # if weight is an 1D num array, apply it to select, and  apply 'None' weights to groupselections
+        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
+           none_selection =[None] * len(self.groupselections)
+           none_selection.insert(0, self.weights)
+           self.weights = none_selection
 
-        if not iterable(self.weights) and self.weights == 'mass':
-            self.weights = self.ref_atoms.masses
-        if self.weights is not None:
-            self.weights = np.asarray(self.weights, dtype=np.float64) / np.mean(self.weights)
+        # add the array of weights to select
+        if not iterable(self.weights[0]) and self.weights[0] == 'mass':
+            self.weights_select = self.ref_atoms.masses
+        elif self.weights[0] is None:
+            self.weights_select = None
+        else:
+            self.weights_select = self.weights[0]
+        if self.weights_select is not None:
+            self.weights_select = np.asarray(self.weights_select, dtype=np.float64) / np.mean(self.weights_select)
+
+       # add a list of arrays of weights for each groupselection
+        if self._groupselections_atoms:
+            for igroup, atoms in enumerate(
+                        self._groupselections_atoms, 3):
+                if not iterable(self.weights[igroup-2]) and self.weights[igroup-2] == 'mass':
+                    self.weights_groupselection.append(atoms['mobile'].masses)
+                elif iterable(self.weights[igroup-2]):
+                    self.weights_groupselection.append(self.weights[igroup-2])
+                    self.weights_groupselection[igroup-3] = np.asarray(self.weights_groupselection[igroup-3], dtype=np.float64) / np.mean(self.weights_groupselection[igroup-3])                  
+                else:
+                    self.weights_groupselection.append(None)
+
+                if self.weights_groupselection[igroup-3] is not None:
+                    self.weights_groupselection[igroup-3] = np.asarray(self.weights_groupselection[igroup-3], dtype=np.float64) / np.mean(self.weights_groupselection[igroup-3])
+
 
         current_frame = self.reference.universe.trajectory.ts.frame
 
@@ -566,7 +620,7 @@ class RMSD(AnalysisBase):
             # (coordinates MUST be stored in case the ref traj is advanced
             # elsewhere or if ref == mobile universe)
             self.reference.universe.trajectory[self.ref_frame]
-            self._ref_com = self.ref_atoms.center(self.weights)
+            self._ref_com = self.ref_atoms.center(self.weights_select)
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
@@ -599,7 +653,7 @@ class RMSD(AnalysisBase):
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
-        mobile_com = self.mobile_atoms.center(self.weights).astype(np.float64)
+        mobile_com = self.mobile_atoms.center(self.weights_select).astype(np.float64)
         self._mobile_coordinates64[:] = self.mobile_atoms.positions
         self._mobile_coordinates64 -= mobile_com
 
@@ -614,7 +668,7 @@ class RMSD(AnalysisBase):
 
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
-                self._n_atoms, self._rot, self.weights)
+                self._n_atoms, self._rot, self.weights_select)
 
             self._R[:, :] = self._rot.reshape(3, 3)
             # Transform each atom in the trajectory (use inplace ops to
@@ -633,14 +687,14 @@ class RMSD(AnalysisBase):
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = rmsd(
                     refpos, atoms['mobile'].positions,
-                    weights=self.weights,
+                    weights=self.weights_groupselection[igroup-3],
                     center=False, superposition=False)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
             # to carry out the rotation as we already get the optimum RMSD)
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
-                self._n_atoms, None, self.weights)
+                self._n_atoms, None, self.weights_select)
 
         self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
