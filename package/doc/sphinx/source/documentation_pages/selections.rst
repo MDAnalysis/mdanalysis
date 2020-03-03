@@ -100,7 +100,7 @@ moltype *molecule-type*
     the TPR format defines the molecule type.
 
 Pattern matching
--------
+----------------
 
 The pattern matching notation described bellow is used to specify 
 patterns for matching strings:
