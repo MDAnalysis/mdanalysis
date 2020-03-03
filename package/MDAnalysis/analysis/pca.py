@@ -163,7 +163,7 @@ class PCA(AnalysisBase):
     Computation can be speed up by supplying a precalculated mean structure
     
     .. versionchanged:: 1.0.0
-       Align=True now correctly aligns the trajectory and computes the correct
+       align=True now correctly aligns the trajectory and computes the correct
        means and covariance matrix
     
     .. versionchanged:: 0.19.0

@@ -28,7 +28,7 @@ from MDAnalysis.analysis import align
 from MDAnalysis.analysis.pca import PCA, cosine_content
 
 from numpy.testing import (assert_almost_equal, assert_equal,
-                           assert_array_almost_equal, assert_raises)
+                           assert_array_almost_equal)
 
 from MDAnalysisTests.datafiles import (PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO,
                                        waterPSF, waterDCD)
@@ -49,7 +49,6 @@ def pca(u):
 
 @pytest.fixture(scope='module')
 def pca_aligned(u):
-    u.transfer_to_memory()
     return PCA(u, select=SELECTION, align=True).run()
 
 
