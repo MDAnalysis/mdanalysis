@@ -48,49 +48,48 @@ logger = logging.getLogger("MDAnalysis.analysis.contacts")
 class MeanSquaredDisplacement(AnalysisBase):
 
 
-    def __init__(self, u, selection, t0, delta_t, msd_type='xyz', position_treatment='atom', mass_weighted=False)
+    def __init__(self, u, selection, msd_type='xyz', position_treatment='atom', mass_weighted=False)
                  kwargs=None, **basekwargs):
         self.u = u
         super(MeanSquaredDisplacement, self).__init__(self.u.trajectory, **basekwargs)
 
         self.selection = selection
-        self.t0 = t0
-        self.delta_t = delta_t
         self.msd_type = msd_type
         self.position_treatment = position_treatment
         self.mass_weighted = mass_weighted
 
+        #local
         self.dim_fac = 0
+        self._dim = None
         self.atoms = None
+        self.n_frames = self.u.n_frames
+        self._position_array = None
+        self.
+
+        #result
         self.timeseries = None
 
+        self.check_input()
+
+    def check_input(self):
+        check_masses()
+        parse_msd_type()
         
     def _prepare(self):
-        parse_msd_type()
-        check_masses()
         select_reference_positions()
+        construct_arrays()
         
     def check_masses(self):
         self.atoms = u.select_atoms(self.selection)
-        if (mass_weighted or position_treatment == 'com'):
-           
-            #TODO check that all the atoms have masses
+        if (self.mass_weighted or self.position_treatment == 'com'):
+            masses = self.atoms.masses
+            if masses.any == None:
+               raise ValueError ('cannot have no mass for mass_weighted=True or position_treatment=com')
+            raise NotImplementedError
         else:
             pass
+  
         
-    def select_reference_positions(self):
-        if self.position_treatment == 'atom'
-            self.timeseries = atoms #TODO work out timeseries
-        elif self.position_treatment == 'com':
-            
-            self.timeseries = calculate_com(atoms) #TODO work out timeseries
-        else:
-<<<<<<< HEAD
-            raise ValueError('invalid position_treatment specified')
-=======
-            self.
->>>>>>> f50622c9857d3c41105fa09856acb5e89c58a4b1
-
     def parse_msd_type(self):
 
         if self.msd_type = 'xyz':
@@ -123,20 +122,34 @@ class MeanSquaredDisplacement(AnalysisBase):
 
         else:
             raise ValueError('invalid msd_type specified')
+
+    def select_reference_positions(self):
+        if self.position_treatment == 'atom'
+            self._position_array = self.u.trajectory.timeseries(self.u.select_atoms(self.selection),order='fac') 
+            self.N_particles = self._position_array.shape[0]
+        elif self.position_treatment == 'com':
+            raise NotImplementedError
+            #TODO work out timeseries for com
+        else:
+            raise ValueError('invalid position_treatment specified')
         
+    def _run(): # naieve algorithm pre vectorisation / without FFT
+        # r is shape time, nparticles, 3
+        msds_byparticle = np.zeros([self.n_frames, self.N_particles])
+        lagtimes = np.arange(self.n_frames)
+        for n in range(self.N_particles):
+            for i,lag in enumerate(lag_times): 
+                disp = r[:-lag,n,self._dim if lag else None] - r[lag:,n,self._dim] )
+                sqdist = np.square(disp).sum(axis=1)
+                msds[i,n] = sqdist.mean()
+        msds = msds_byparticle.mean(axis=XX)
+            
+
+
+            
 
     
-    def _run():
 
-    
-    def one_time_point(self,):
-        for i in self.timeseries:
-            displ_sq_sum = 0.0
-            for j in self.n_atoms:
-                displ = np.abs(r[self._dim]-r0[self._dim])
-                displ_sq = displ*displ
-                displ_sq_sum += displ_sq
-            1.0/self.n_atoms
 
 
 
