@@ -47,6 +47,11 @@ def pca(u):
     u.transfer_to_memory()
     return PCA(u, select=SELECTION).run()
 
+@pytest.fixture(scope='module')
+def pca_aligned(u):
+    u.transfer_to_memory()
+    return PCA(u, select=SELECTION, align=True).run()
+
 
 def test_cov(pca, u):
     atoms = u.select_atoms(SELECTION)
@@ -128,22 +133,23 @@ def test_cosine_content():
     content = cosine_content(dot, 0)
     assert_almost_equal(content, .99, 1)
 
-def test_mean_shape(u):
-    p = PCA(u, select=SELECTION, align=True).run()
+def test_mean_shape(pca_aligned, u):
     atoms = u.select_atoms(SELECTION)
-    assert_equal(p.mean.shape[0], atoms.n_atoms * 3)
+    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms * 3)
 
-def test_mean(u):
+def test_mean(pca_aligned, u):
     v = mda.Universe(PSF, DCD, in_memory=True)
     a = align.AlignTraj(v, v, select=SELECTION).run()
     coords = v.trajectory.timeseries(v.select_atoms(SELECTION), order='fac')
-    p = PCA(u, select=SELECTION, align=True).run()
-    assert_almost_equal(p.mean, coords.mean(axis=0).ravel(), decimal=5)
+    assert_almost_equal(pca_aligned.mean, coords.mean(axis=0).ravel(), decimal=5)
 
-def test_alignment(u):
+def test_alignment(pca_aligned, u):
     v = mda.Universe(PSF, DCD, in_memory=True)
     a = align.AlignTraj(v, v, select=SELECTION).run()
-    p1 = PCA(u, select=SELECTION, align=True).run()
-    p2 = PCA(v, select=SELECTION, align=False).run()
-    assert_almost_equal(p1.mean, p2.mean)
-    assert_almost_equal(p1.cov, p2.cov)
+    pca_pre_align = PCA(v, select=SELECTION, align=False).run()
+    assert_almost_equal(pca_aligned.mean, pca_pre_align.mean)
+    assert_almost_equal(pca_aligned.cov, pca_pre_align.cov)
+
+def test_covariance_norm(pca_aligned, u):
+    assert_almost_equal(np.linalg.norm(pca_aligned.cov), 0.96799758, decimal=5)
+
