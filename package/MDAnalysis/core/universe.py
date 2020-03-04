@@ -1501,5 +1501,4 @@ def Merge(*args):
     coords = np.vstack([a.positions for a in args])
     u = Universe(top, coords[None, :, :],
                  format=MDAnalysis.coordinates.memory.MemoryReader)
-
     return u
