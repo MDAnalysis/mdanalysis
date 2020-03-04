@@ -4,19 +4,19 @@ about: Create a report to help us improve
 
 ---
 
-**Expected behavior**
+## Expected behavior ##
 
 A clear and concise description of what you want to do and what you think should happen. (Code to reproduce the behavior can be added below).
 
 
-**Actual behavior**
+## Actual behavior ##
 
 What happened instead. Add as much detail as you can. Include (copy and paste) stack traces and any output.
 
 
-**Code to reproduce the behavior**
+## Code to reproduce the behavior ##
 
-Show us how to reproduce the failiure. If you can, use trajectory files from the test data.
+Show us how to reproduce the failure. If you can, use trajectory files from the test data.
 
 ``` python
 import MDAnalysis as mda
@@ -28,7 +28,7 @@ u = mda.Universe(PSF, DCD)
 
 ```
 
-**Currently version of MDAnalysis**
+## Current version of MDAnalysis ##
 
 - Which version are you using? (run `python -c "import MDAnalysis as mda; print(mda.__version__)"`)
 - Which version of Python (`python -V`)?
