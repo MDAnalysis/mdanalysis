@@ -20,6 +20,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * create universes under try/except clause so that when args don't have positions 
+    the coords argument to Universe() can be left out.(Issue #2470)(PR #2580)
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO

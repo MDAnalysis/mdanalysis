@@ -140,6 +140,10 @@ def u_ligand():
 def u_water():
     return MDAnalysis.Universe(merge_water)
 
+@pytest.fixture()
+def u_without_coords():
+    return MDAnalysis.Universe(PSF)
+
 
 class TestMerge(object):
     def test_merge(self, u_protein, u_ligand, u_water, tmpdir):
@@ -210,6 +214,11 @@ class TestMerge(object):
 
         with pytest.raises(ValueError):
             Merge(a, b)
+
+    def test_merge_without_coords(self, u_without_coords):
+        subset = MDAnalysis.Merge(u_without_coords.atoms[:10])
+        assert(isinstance(subset, MDAnalysis.Universe))
+        assert_equal(len(subset.atoms) , 10)
 
 
 class TestMergeTopology(object):

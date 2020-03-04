@@ -1503,6 +1503,6 @@ def Merge(*args):
         u = Universe(top, coords[None, :, :],
                  format=MDAnalysis.coordinates.memory.MemoryReader)
     except:
-        u = Universe(top, format=MDAnalysis.coordinates.memory.MemoryReader)
+        u = Universe(top)
           
     return u
