@@ -42,7 +42,7 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.4.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" href="hole.html" />
+    <link rel="next" title="4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — MDAnalysis.analysis.hole" href="hole.html" />
     <link rel="prev" title="4.3.3. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel" href="hbond_autocorrel.html" /> 
 </head>
 
@@ -836,7 +836,7 @@ of a water bridge existence.</p>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OG1', 'OD1', 'OG', 'NE2', 'OC2', 'O', 'OW', 'ND1', 'OH2', 'SG', 'OD2', 'OE1', 'SD', 'OH', 'OE2', 'OC1'), 'GLYCAM06': ('N', 'SM', 'O', 'OS', 'OW', 'NT', 'OH', 'OY', 'O2'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OD2', 'NE2', 'OG1', 'OE1', 'OW', 'OG', 'OE2', 'OH', 'OC2', 'OC1', 'ND1', 'SD', 'OD1', 'OH2', 'SG', 'O'), 'GLYCAM06': ('OW', 'O2', 'OY', 'OH', 'OS', 'SM', 'NT', 'N', 'O'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -844,7 +844,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OG1', 'N', 'NE2', 'NH2', 'OW', 'NE', 'ND1', 'OH2', 'SG', 'NZ', 'NE1', 'OG', 'OH', 'ND2', 'NH1'), 'GLYCAM06': ('N', 'N3', 'OW', 'NT', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('NE2', 'OG1', 'OW', 'NZ', 'OG', 'OH', 'NE', 'ND1', 'NH1', 'NH2', 'OH2', 'ND2', 'NE1', 'SG', 'N'), 'GLYCAM06': ('OW', 'OH', 'N3', 'NT', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.wbridge_analysis.WaterBridgeAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="hbond_analysis.html#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -1001,7 +1001,7 @@ supplying an analysis_func.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="hole.html" class="btn btn-neutral float-right" title="4.4.1. Generation and Analysis of HOLE pore profiles — MDAnalysis.analysis.hole" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="hole.html" class="btn btn-neutral float-right" title="4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — MDAnalysis.analysis.hole" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="hbond_autocorrel.html" class="btn btn-neutral float-left" title="4.3.3. Hydrogen bond autocorrelation — MDAnalysis.analysis.hbonds.hbond_autocorrel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
