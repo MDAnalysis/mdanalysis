@@ -417,4 +417,6 @@ def merge_universes(universes, select='name CA'):
     except ValueError:
         err = 'atom selection "{}" results in mismatching AtomGroups'
         raise ValueError(err.format(select))
+
+    ag = universes[0].select_atoms(select)
     return mda.Merge(ag).load_new(coords)
