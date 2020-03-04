@@ -575,20 +575,16 @@ class RMSD(AnalysisBase):
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
-        # apply 'mass' weights for all selections
-        if self.weights == 'mass':
+        if self.weights == 'mass':         # apply 'mass' weights for all selections
            self.weights = ['mass'] * (len(self.groupselections) + 1)
-        # apply 'None' weights for all selections
-        elif self.weights is None:
-           self.weights = [None] * (len(self.groupselections) + 1)
-        # if weight is an 1D num array, apply it to select, and  apply 'None' weights to groupselections
+        elif self.weights is None:         # apply 'None' weights for all selections
+           self.weights = [None] * (len(self.groupselections) + 1)  
         elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
-           none_selection =[None] * len(self.groupselections)
-           none_selection.insert(0, self.weights)
+           none_selection =[None] * len(self.groupselections)       # if weight is an 1D num array, apply it to select, 
+           none_selection.insert(0, self.weights)                   # and apply 'None' weights to groupselections
            self.weights = none_selection
 
-        # add the array of weights to select
-        if not iterable(self.weights[0]) and self.weights[0] == 'mass':
+        if not iterable(self.weights[0]) and self.weights[0] == 'mass': # add the array of weights to weights_select
             self.weights_select = self.ref_atoms.masses
         elif self.weights[0] is None:
             self.weights_select = None
@@ -597,8 +593,7 @@ class RMSD(AnalysisBase):
         if self.weights_select is not None:
             self.weights_select = np.asarray(self.weights_select, dtype=np.float64) / np.mean(self.weights_select)
 
-       # add a list of arrays of weights for each groupselection
-        if self._groupselections_atoms:
+        if self._groupselections_atoms:                             # add the array of weights to select
             for igroup, atoms in enumerate(
                         self._groupselections_atoms, 3):
                 if not iterable(self.weights[igroup-2]) and self.weights[igroup-2] == 'mass':
@@ -687,7 +682,7 @@ class RMSD(AnalysisBase):
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = rmsd(
                     refpos, atoms['mobile'].positions,
-                    weights=self.weights_groupselection[igroup-3],
+                    weights=self.weights_groupselection[igroup-3],     #apply weights to each groupselection
                     center=False, superposition=False)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
