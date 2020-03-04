@@ -386,7 +386,7 @@ def trm_indices_diag(n):
             yield (i, j)
 
 
-def merge_universes(universes):
+def merge_universes(universes, select='name CA'):
     """
     Merge list of universes into one
 
@@ -394,17 +394,27 @@ def merge_universes(universes):
     ----------
     universes : list of Universe objects
 
+    select: str
+        atoms to select
+
 
     Returns
     ----------
     Universe object
     """
+    if not universes:
+        raise ValueError('No universes passed')
 
-    for universe in universes:
-        universe.transfer_to_memory()
+    coord_list = []
+    for u in universes:
+        u.transfer_to_memory()
+        ag = u.select_atoms(select)
+        coords_ = u.trajectory.timeseries(asel=ag, order='fac')
+        coord_list.append(coords_)
 
-    return mda.Universe(
-        universes[0].filename,
-        np.concatenate(tuple([e.trajectory.timeseries(order='fac') for e in universes]),
-                       axis=0),
-        format=MemoryReader)
+    try:
+        coords = np.concatenate(coord_list, axis=0)
+    except ValueError:
+        err = 'atom selection "{}" results in mismatching AtomGroups'
+        raise ValueError(err.format(select))
+    return mda.Merge(ag).load_new(coords)

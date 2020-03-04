@@ -58,17 +58,13 @@ class TestEncore(object):
 
     @pytest.fixture()
     def ens1(self, ens1_template):
-        return mda.Universe(
-            ens1_template.filename,
-            ens1_template.trajectory.timeseries(order='fac'),
-            format=mda.coordinates.memory.MemoryReader)
+        coords = ens1_template.trajectory.timeseries(order='fac')
+        return mda.Merge(ens1_template.atoms).load_new(coords)
 
     @pytest.fixture()
     def ens2(self, ens2_template):
-        return mda.Universe(
-            ens2_template.filename,
-            ens2_template.trajectory.timeseries(order='fac'),
-            format=mda.coordinates.memory.MemoryReader)
+        coords = ens2_template.trajectory.timeseries(order='fac')
+        return mda.Merge(ens2_template.atoms).load_new(coords)
 
     def test_triangular_matrix(self):
         scalar = 2

@@ -20,6 +20,10 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Utility functions in encore now use mda.Merge to create universes
+    instead of mda.Universe (Issue #2576). 
+  * prepare_ensembles_for_convergence_increasing_window() transfers 
+    universes to memory before calling timeseries (Issue #2578)
   * Correct args order of base.AnalysisFromFunction (Issue #2503)  
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)

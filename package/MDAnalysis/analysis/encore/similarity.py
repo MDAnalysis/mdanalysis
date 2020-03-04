@@ -661,7 +661,7 @@ def write_output(matrix, base_fname=None, header="", suffix="",
     matrix.square_print(header=header, fname=fname)
 
 
-def prepare_ensembles_for_convergence_increasing_window(ensemble,
+def prepare_ensembles_for_convergence_increasing_window(universe,
                                                         window_size,
                                                         select="name CA"):
     """
@@ -672,7 +672,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     Parameters
     ----------
 
-    ensemble : :class:`~MDAnalysis.core.universe.Universe` object
+    universe : :class:`~MDAnalysis.core.universe.Universe` object
         Input ensemble
 
     window_size : int
@@ -684,7 +684,7 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
     Returns
     -------
 
-    tmp_ensembles :
+    ensembles :
         The original ensemble is divided into different ensembles, each being
         a window_size-long slice of the original ensemble. The last
         ensemble will be bigger if the length of the input ensemble
@@ -692,27 +692,22 @@ def prepare_ensembles_for_convergence_increasing_window(ensemble,
 
     """
 
-    ens_size = ensemble.trajectory.timeseries(ensemble.select_atoms(select),
-                                              order='fac').shape[0]
-
-    rest_slices = ens_size // window_size
-    residuals = ens_size % window_size
-    slices_n = [0]
-
-    tmp_ensembles = []
-
-    for rs in range(rest_slices - 1):
-        slices_n.append(slices_n[-1] + window_size)
-    slices_n.append(slices_n[-1] + residuals + window_size)
-
-    for s,sl in enumerate(slices_n[:-1]):
-        tmp_ensembles.append(mda.Universe(
-            ensemble.filename,
-            ensemble.trajectory.timeseries(order='fac')
-            [slices_n[s]:slices_n[s + 1], :, :],
-            format=MemoryReader))
-
-    return tmp_ensembles
+    n_frames = len(universe.trajectory)
+    slice_indices = list(range(0, n_frames, window_size))
+    slice_indices.append(n_frames)
+    
+    # gets transferred to memory later anyway
+    universe.transfer_to_memory()
+    ag = universe.select_atoms(select)
+    coordinates = universe.trajectory.timeseries(ag, order='fac')
+    i, j = slice_indices[:2]
+    nu = mda.Merge(ag).load_new(coordinates[i:j])
+    ensembles = [nu]
+    for i, j in zip(slice_indices[1:-1], slice_indices[2:]):
+        nu_ = nu.copy().load_new(coordinates[i:j])
+        ensembles.append(nu_)
+    
+    return ensembles
 
 
 def hes(ensembles,
@@ -1102,7 +1097,8 @@ def ces(ensembles,
 
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
-        distance_matrix = get_distance_matrix(merge_universes(ensembles),
+        merged = merge_universes(ensembles, select=select)
+        distance_matrix = get_distance_matrix(merged,
                                               select=select,
                                               ncores=ncores)
     if estimate_error:
@@ -1378,7 +1374,8 @@ def dres(ensembles,
 
     # Calculate distance matrix if not provided
     if any_method_accept_distance_matrix and not distance_matrix:
-        distance_matrix = get_distance_matrix(merge_universes(ensembles),
+        merged = merge_universes(ensembles, select=select)
+        distance_matrix = get_distance_matrix(merged,
                                               select=select,
                                               ncores=ncores)
     if estimate_error:

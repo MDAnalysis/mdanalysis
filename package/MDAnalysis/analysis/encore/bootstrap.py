@@ -144,15 +144,12 @@ def get_ensemble_bootstrap_samples(ensemble,
     """
 
     ensemble.transfer_to_memory()
+    coords = ensemble.trajectory.timeseries(order='fac')
+    n_frames = coords.shape[0]
 
     ensembles = []
     for i in range(samples):
-        indices = np.random.randint(
-            low=0,
-            high=ensemble.trajectory.timeseries().shape[1],
-            size=ensemble.trajectory.timeseries().shape[1])
-        ensembles.append(
-            mda.Universe(ensemble.filename,
-                        ensemble.trajectory.timeseries(order='fac')[indices,:,:],
-                         format=mda.coordinates.memory.MemoryReader))
+        indices = np.random.randint(low=0, high=n_frames, size=n_frames)
+        ensembles.append(ensemble.copy().load_new(coords[indices]))
+
     return ensembles
