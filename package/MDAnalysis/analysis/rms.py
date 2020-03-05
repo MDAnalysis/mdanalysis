@@ -558,9 +558,9 @@ class RMSD(AnalysisBase):
                 self.weights = get_weights(self.mobile_atoms, weights_list[0]) # check first one exclusively
             for weights, atoms, selection in zip(weights_list[1:],
                         self._groupselections_atoms,self.groupselections):
-                if weights == 'mass':
+                if str(weights) == 'mass':
                     pass
-                elif weights is None:
+                elif str(weights) == 'None':
                     pass
                 elif (np.array(weights).ndim == 1) & (np.array(weights).dtype 
 						in (np.dtype('float64'),np.dtype('int64'))):
@@ -578,9 +578,9 @@ class RMSD(AnalysisBase):
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
-        if self.weights == 'mass':         # apply 'mass' weights for all selections
+        if str(self.weights) == 'mass':         # apply 'mass' weights for all selections
            self.weights = ['mass'] * (len(self.groupselections) + 1)
-        elif self.weights is None:         # apply 'None' weights for all selections
+        elif str(self.weights) == 'None':         # apply 'None' weights for all selections
            self.weights = [None] * (len(self.groupselections) + 1)  
         elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
                                              in (np.dtype('float64'),np.dtype('int64'))):
@@ -591,9 +591,9 @@ class RMSD(AnalysisBase):
 
 
         # add the array of weights to weights_select
-        if self.weights[0] == 'mass':
+        if str(self.weights[0]) == 'mass':
             self.weights_select = self.mobile_atoms.masses
-        elif (self.weights[0] is None):
+        elif str(self.weights[0]) == 'None':
             self.weights_select = None
         else:
             self.weights_select = self.weights[0]
@@ -604,7 +604,7 @@ class RMSD(AnalysisBase):
         if self._groupselections_atoms:                            
             for igroup, atoms in enumerate(
                         self._groupselections_atoms, 3):
-                if self.weights[igroup-2] == 'mass':
+                if str(self.weights[igroup-2]) == 'mass':
                     self.weights_groupselection.append(atoms['mobile'].masses)
                 elif iterable(self.weights[igroup-2]):
                     self.weights_groupselection.append(self.weights[igroup-2])
