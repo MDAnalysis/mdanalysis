@@ -548,12 +548,14 @@ class RMSD(AnalysisBase):
             pass
         elif self.weights is None:
             pass
-        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
+        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
+						in (np.dtype('float64'),np.dtype('int64'))):
             self.weights = get_weights(self.mobile_atoms, self.weights)
         elif not iterable(self.weights):
             self.weights = get_weights(self.mobile_atoms, self.weights)
         elif len(self.weights) != len(self.groupselections) + 1:
-            raise ValueError("Length of array of weights is not equal to length of groupselections + 1")
+            raise ValueError("Length of array of weights is not equal to " 
+					"length of groupselections + 1")
         else:
             weights_list = self.weights
             for weights in weights_list:
@@ -561,7 +563,8 @@ class RMSD(AnalysisBase):
                     pass
                 elif weights is None:
                     pass
-                elif (np.array(weights).ndim == 1) & (np.array(weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
+                elif (np.array(weights).ndim == 1) & (np.array(weights).dtype 
+						in (np.dtype('float64'),np.dtype('int64'))):
                     # TODO:
                     # check each length of weights matches the length of each group selection?
                     pass
@@ -579,34 +582,45 @@ class RMSD(AnalysisBase):
            self.weights = ['mass'] * (len(self.groupselections) + 1)
         elif self.weights is None:         # apply 'None' weights for all selections
            self.weights = [None] * (len(self.groupselections) + 1)  
-        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype in (np.dtype('float64'),np.dtype('int64'))):
-           none_selection =[None] * len(self.groupselections)       # if weight is an 1D num array, apply it to select, 
-           none_selection.insert(0, self.weights)                   # and apply 'None' weights to groupselections
+        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
+                                             in (np.dtype('float64'),np.dtype('int64'))):
+           none_selection =[None] * len(self.groupselections)       # apply '1D array' weights to select
+           none_selection.insert(0, self.weights)                   # & apply 'None' weights to groupselections
            self.weights = none_selection
 
-        if not iterable(self.weights[0]) and self.weights[0] == 'mass': # add the array of weights to weights_select
-            self.weights_select = self.ref_atoms.masses
-        elif self.weights[0] is None:
+
+
+        # add the array of weights to weights_select
+        print(self.weights)
+        if self.weights[0] == 'mass':
+            self.weights_select = self.mobile_atoms.masses
+        elif (self.weights[0] is None):
             self.weights_select = None
         else:
             self.weights_select = self.weights[0]
         if self.weights_select is not None:
-            self.weights_select = np.asarray(self.weights_select, dtype=np.float64) / np.mean(self.weights_select)
-
-        if self._groupselections_atoms:                             # add the array of weights to select
+            self.weights_select = np.asarray(self.weights_select, dtype=np.float64) /  \
+                                             np.mean(self.weights_select)
+        # add the array of weights to weight_groupselection
+        if self._groupselections_atoms:                            
             for igroup, atoms in enumerate(
                         self._groupselections_atoms, 3):
-                if not iterable(self.weights[igroup-2]) and self.weights[igroup-2] == 'mass':
+                if self.weights[igroup-2] == 'mass':
                     self.weights_groupselection.append(atoms['mobile'].masses)
                 elif iterable(self.weights[igroup-2]):
                     self.weights_groupselection.append(self.weights[igroup-2])
-                    self.weights_groupselection[igroup-3] = np.asarray(self.weights_groupselection[igroup-3], dtype=np.float64) / np.mean(self.weights_groupselection[igroup-3])                  
+                    self.weights_groupselection[igroup-3] =   \
+                                       np.asarray(self.weights_groupselection[igroup-3], 
+                                                                        dtype=np.float64) / \
+                                       np.mean(self.weights_groupselection[igroup-3])                  
                 else:
                     self.weights_groupselection.append(None)
 
                 if self.weights_groupselection[igroup-3] is not None:
-                    self.weights_groupselection[igroup-3] = np.asarray(self.weights_groupselection[igroup-3], dtype=np.float64) / np.mean(self.weights_groupselection[igroup-3])
-
+                    self.weights_groupselection[igroup-3] =   \
+                                       np.asarray(self.weights_groupselection[igroup-3], 
+                                                                        dtype=np.float64) / \
+                                       np.mean(self.weights_groupselection[igroup-3])
 
         current_frame = self.reference.universe.trajectory.ts.frame
 
@@ -682,7 +696,7 @@ class RMSD(AnalysisBase):
                         self._groupselections_atoms), 3):
                 self.rmsd[self._frame_index, igroup] = rmsd(
                     refpos, atoms['mobile'].positions,
-                    weights=self.weights_groupselection[igroup-3],     #apply weights to each groupselection
+                    weights=self.weights_groupselection[igroup-3], # apply weights to each groupselection
                     center=False, superposition=False)
         else:
             # only calculate RMSD by setting the Rmatrix to None (no need
@@ -709,7 +723,7 @@ class RMSF(AnalysisBase):
     Run the analysis with :meth:`RMSF.run`, which stores the results
     in the array :attr:`RMSF.rmsf`.
 
-    """
+c    """
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
         ----------
