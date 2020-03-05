@@ -544,11 +544,7 @@ class RMSD(AnalysisBase):
 
         # check weights type
 
-        if self.weights == 'mass':
-            pass
-        elif self.weights is None:
-            pass
-        elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
+        if (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
 						in (np.dtype('float64'),np.dtype('int64'))):
             self.weights = get_weights(self.mobile_atoms, self.weights)
         elif not iterable(self.weights):
@@ -559,11 +555,7 @@ class RMSD(AnalysisBase):
         else:
             weights_list = self.weights
             for weights in weights_list:
-                if weights == 'mass':
-                    pass
-                elif weights is None:
-                    pass
-                elif (np.array(weights).ndim == 1) & (np.array(weights).dtype 
+                if (np.array(weights).ndim == 1) & (np.array(weights).dtype 
 						in (np.dtype('float64'),np.dtype('int64'))):
                     # TODO:
                     # check each length of weights matches the length of each group selection?
