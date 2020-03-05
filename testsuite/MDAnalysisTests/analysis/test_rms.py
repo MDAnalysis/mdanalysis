@@ -270,11 +270,11 @@ class TestRMSD(object):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=universe.atoms.masses[:-1])
 
-    def test_rmsd_group_selections_wrong_weights(self, universe):
+    def test_rmsd_list_of_weights_wrong_length(self, universe):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, groupselections=['backbone', 'name CA'],
-                weights=universe.atoms.masses)
+                weights=['mass',None])
 
     def test_rmsd_group_selections(self, universe, correct_values_group):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
