@@ -1499,10 +1499,12 @@ def Merge(*args):
 
     # Create and populate a universe
     try:
+        #Create universe with coordinates if they exists in args
         coords = np.vstack([a.positions for a in args])
         u = Universe(top, coords[None, :, :],
                  format=MDAnalysis.coordinates.memory.MemoryReader)
-    except:
+    except AttributeError:
+        #Create universe without coordinates if they dont exists in args
         u = Universe(top)
           
     return u
