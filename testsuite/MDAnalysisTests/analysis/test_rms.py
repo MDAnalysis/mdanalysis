@@ -269,7 +269,11 @@ class TestRMSD(object):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=universe.atoms.masses[:-1])
-
+    def test_rmsd_mismatched_weights_in_groupselection_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
+            RMSD = MDAnalysis.analysis.rms.RMSD(
+                universe, groupselections=['all'],
+                weights=[universe.atoms.masses,universe.atoms.masses[:-1]])
     def test_rmsd_list_of_weights_wrong_length(self, universe):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
