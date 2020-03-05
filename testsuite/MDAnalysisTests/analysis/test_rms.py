@@ -313,7 +313,16 @@ class TestRMSD(object):
         with pytest.raises(SelectionError):
             RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                                 reference=reference)
-
+    def test_ref_mobile_mass_mismapped(self, universe):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        universe.atoms.masses = np.zeros(len(universe.atoms.masses))
+        with pytest.raises(ZeroDivisionError):
+            RMSD = MDAnalysis.analysis.rms.RMSD(universe,
+                                                reference=reference,
+                                                select='all',
+                                                weights='mass',
+                                                tol_mass=100)
+            RMSD.run()
     def test_group_selections_unequal_len(self, universe):
         reference = MDAnalysis.Universe(PSF, DCD)
         reference.atoms[0].residue.resname='NOTMET'
