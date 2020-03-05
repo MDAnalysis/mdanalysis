@@ -480,10 +480,9 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        # save weights for select
-        self.weights_select = []
-        # save weights for each groupselection
-        self.weights_groupselection = []
+        self.weights_ref = []              # save weights for reference
+        self.weights_select = []           # save weights for select
+        self.weights_groupselection = []   # save weights for each groupselection
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
 
@@ -593,13 +592,18 @@ class RMSD(AnalysisBase):
         # add the array of weights to weights_select
         if str(self.weights[0]) == 'mass':
             self.weights_select = self.mobile_atoms.masses
+            self.weights_ref = self.ref_atoms.masses
         elif str(self.weights[0]) == 'None':
             self.weights_select = None
+            self.weights_ref = None
         else:
             self.weights_select = self.weights[0]
+            self.weights_ref = self.weights[0]
         if self.weights_select is not None:
             self.weights_select = np.asarray(self.weights_select, dtype=np.float64) /  \
                                              np.mean(self.weights_select)
+            self.weights_ref = np.asarray(self.weights_ref, dtype=np.float64) /  \
+                                             np.mean(self.weights_ref)
         # add the array of weights to weight_groupselection
         if self._groupselections_atoms:                            
             for igroup, atoms in enumerate(
@@ -628,7 +632,7 @@ class RMSD(AnalysisBase):
             # (coordinates MUST be stored in case the ref traj is advanced
             # elsewhere or if ref == mobile universe)
             self.reference.universe.trajectory[self.ref_frame]
-            self._ref_com = self.ref_atoms.center(self.weights_select)
+            self._ref_com = self.ref_atoms.center(self.weights_ref)
             # makes a copy
             self._ref_coordinates = self.ref_atoms.positions - self._ref_com
             if self._groupselections_atoms:
