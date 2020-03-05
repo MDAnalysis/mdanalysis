@@ -15,11 +15,13 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
-         Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov
+         Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope
 
   * 0.21.0
 
 Fixes
+  * PCA(align=True) now correctly aligns the trajectory and computes the
+    correct means and covariance matrix (Issue #2561)
   * Correct args order of base.AnalysisFromFunction (Issue #2503)  
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
