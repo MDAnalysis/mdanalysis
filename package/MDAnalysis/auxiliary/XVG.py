@@ -68,7 +68,6 @@ supported (the readers will stop at the first line starting '&').
 """
 from __future__ import absolute_import
 
-from six.moves import range
 from six import raise_from
 
 import numbers
@@ -76,6 +75,7 @@ import os
 import numpy as np
 from . import base
 from ..lib.util import anyopen
+
 
 def uncomment(lines):
     """ Remove comments from lines in an .xvg file
