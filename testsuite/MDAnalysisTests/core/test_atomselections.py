@@ -364,21 +364,21 @@ class TestSelectionsCHARMM(object):
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
 
-    def test_wildcard_middle_selection(self, universe):
-        ag = universe.select_atoms('resname TYR or resname THR')
-        ag_wild = universe.select_atoms('resname T*R')
+    @pytest.mark.parametrize('selstring, wildstring', [
+        ('resname TYR THR', 'resname T*R'),
+        ('resname ASN GLN', 'resname *N'),
+        ('resname ASN ASP', 'resname AS*'),
+        ('resname TYR THR', 'resname T?R'),
+        ('resname ASN ASP HSD', 'resname *S?'),
+        ('resname LEU LYS', 'resname L**'),
+        ('resname MET', 'resname *M*'),
+        ('resname GLN GLY', 'resname GL[NY]'),
+        ('resname GLU', 'resname GL[!NY]'),
+    ])
+    def test_wildcard_selection(self, universe, selstring, wildstring):
+        ag = universe.select_atoms(selstring)
+        ag_wild = universe.select_atoms(wildstring)
         assert ag == ag_wild
-
-    def test_wildcard_start_selection(self, universe):
-        ag = universe.select_atoms('resname ASN GLN')
-        ag_wild = universe.select_atoms('resname *N')
-        assert ag == ag_wild
-
-    def test_wildcard_terminal_selection(self, universe):
-        ag = universe.select_atoms('resname ASN ASP')
-        ag_wild = universe.select_atoms('resname AS*')
-        assert ag == ag_wild
-
 
 class TestSelectionsAMBER(object):
     @pytest.fixture()
@@ -927,7 +927,6 @@ class TestSelectionErrors(object):
         'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
-        'resname E*Y*Z',  # >1 wildcards
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
