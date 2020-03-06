@@ -262,7 +262,7 @@ inconsistent results")
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_to_self(self, ens1):
-        results, details = \
+        results = \
             encore.ces([ens1, ens1],
             clustering_method=encore.AffinityPropagationNative(preference = -3.0))
         result_value = results[0,1]
