@@ -87,7 +87,7 @@ class ClusteringMethod (object):
         Returns
         -------
         numpy.array
-            list of cluster indices
+            array of the centroid frame indices
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
                                   .format(self.__class__.__name__))
@@ -156,8 +156,7 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-        details = {}
-        return clusters, details
+       return clusters
 
 if sklearn:
 
@@ -226,8 +225,7 @@ if sklearn:
             clusters = self.ap.fit_predict(similarity_matrix)
             clusters = encode_centroid_info(clusters,
                                             self.ap.cluster_centers_indices_)
-            details = {}
-            return clusters, details
+            return clusters
 
 
     class DBSCAN(ClusteringMethod):
@@ -304,8 +302,7 @@ if sklearn:
             cluster_representatives = np.unique(clusters, return_index=True)[1]
             clusters = encode_centroid_info(clusters,
                                             cluster_representatives)
-            details = {}
-            return clusters, details
+            return clusters
 
     class KMeans(ClusteringMethod):
 
@@ -424,5 +421,4 @@ if sklearn:
             cluster_center_indices = np.argmin(distances, axis=0)
             clusters = encode_centroid_info(clusters,
                                              cluster_center_indices)
-            details = {}
-            return clusters, details
+            return clusters
