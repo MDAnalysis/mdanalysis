@@ -255,6 +255,27 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
+    def test_custom_groupselection_weights_applied_1D_array(self, universe, correct_values_mass):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe,
+                                            select='backbone',
+                                            groupselections=['name CA and resid 1-5','name CA and resid 1'], 
+                                            weights=[None, [1,0,0,0,0], None]).run(step=49)
+
+        assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
+                            err_msg="error: rmsd profile should match "
+                            "for applied weight array and selected resid")
+
+    def test_custom_groupselection_weights_applied_mass(self, universe, correct_values_mass):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe, 
+                                            select='backbone', 
+                                            groupselections=['all','all'], 
+                                            weights=[None, 'mass',universe.atoms.masses ]).run(step=49)
+
+        assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
+                            err_msg="error: rmsd profile should match "
+                            "between applied mass and universe.atoms.masses")
+
+
     def test_rmsd_scalar_weights_raises_TypeError(self, universe):
         with pytest.raises(TypeError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
