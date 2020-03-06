@@ -172,6 +172,7 @@ import numpy as np
 
 from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
+from MDAnalysis.exceptions import NoDataError
 
 from ...due import due, Doi
 
@@ -408,7 +409,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         # If donors_sel is not provided, use topology to find d-h pairs
         if not self.donors_sel:
             if not (hasattr(self.u, 'bonds') and len(self.u.bonds) != 0):
-                raise Exception('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
+                raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
                                 'Please either: load a topology file with bonded information; use the guess_bonds() '
                                 'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
                                 'can be used.')
