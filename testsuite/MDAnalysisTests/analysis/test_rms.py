@@ -282,7 +282,7 @@ class TestRMSD(object):
                 universe, weights=42)
 
     def test_rmsd_string_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights="Jabberwock")
 

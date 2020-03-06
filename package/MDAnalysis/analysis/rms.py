@@ -309,6 +309,20 @@ def process_selection(select):
     select['reference'] = asiterable(select['reference'])
     return select
 
+def weight_type_check(weights,atoms,selection):
+
+    if (np.array(weights).ndim == 1) & (np.array(weights).dtype 
+                            in (np.dtype('float64'),np.dtype('int64'))):
+        if len(weights) != atoms.n_atoms:
+            raise ValueError("Length of provided weights {} do not match the number of atoms "
+                "in the selection {}: {}".format(weights, selection['mobile'], atoms.n_atoms))
+        else:
+            tmp_weights = get_weights(atoms, weights) 
+    elif not iterable(weights) and str(weights) != 'mass' and str(weights) != 'None':
+        raise ValueError("Each groupselection can only be combined with "
+                               "weights: None, 'mass' or 1D float array")
+
+
 
 class RMSD(AnalysisBase):
     r"""Class to perform RMSD analysis on a trajectory.
@@ -542,38 +556,27 @@ class RMSD(AnalysisBase):
 
 
         # check weights type
-        if (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
-						in (np.dtype('float64'),np.dtype('int64'))):
-            self.weights = get_weights(self.mobile_atoms, self.weights)
-        elif not iterable(self.weights):
-            self.weights = get_weights(self.mobile_atoms, self.weights)
-        elif len(self.weights) != len(self.groupselections) + 1:
-            raise ValueError("Length of array of weights is not equal to " 
-					"length of groupselections + 1")
-        else:       # list of weights conditions
-            weights_list = self.weights
-            if (np.array(weights_list[0]).ndim == 1) & (np.array(weights_list[0]).dtype 
+        #print(self.mobile_atoms)
+        if str(self.weights) == 'None':
+            pass
+        elif (type(self.weights) == str) or \
+            (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
                                                 in (np.dtype('float64'),np.dtype('int64'))):
-                self.weights = get_weights(self.mobile_atoms, weights_list[0]) # check first one exclusively
+            weight_type_check(self.weights, self.mobile_atoms, select)
+        else:       # list of weights conditions
+            if len(self.weights) != len(self.groupselections) + 1:   #length check
+                raise ValueError("Length of array of weights is not equal to " 
+                                       "length of groupselections + 1")
+            weights_list = self.weights
+            if str(weights_list[0]) == 'None':
+                pass
+            elif type(weights_list[0]) == str or \
+                ((np.array(weights_list[0]).ndim == 1) & (np.array(weights_list[0]).dtype 
+                                                in (np.dtype('float64'),np.dtype('int64')))):
+                weight_type_check(weights_list[0], self.mobile_atoms, select)
             for weights, atoms, selection in zip(weights_list[1:],
                         self._groupselections_atoms,self.groupselections):
-                if str(weights) == 'mass':
-                    pass
-                elif str(weights) == 'None':
-                    pass
-                elif (np.array(weights).ndim == 1) & (np.array(weights).dtype 
-						in (np.dtype('float64'),np.dtype('int64'))):
-                    if len(weights) != atoms['mobile'].n_atoms:
-                        raise ValueError("Length of provided weights {} do not match the number of atoms "
-                      "in the selection {}: {}".format(weights, selection['mobile'], atoms['mobile'].n_atoms))
-                    pass
-
-                elif not iterable(self.weights):
-                    self.weights = get_weights(self.mobile_atoms, self.weights)
-                else:
-                    raise ValueError("Each groupselection can only be combined with "
-                                     "weight None or 'mass' or 1D float array")
-      
+                weight_type_check(weights, atoms['mobile'], selection)      
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
@@ -726,7 +729,7 @@ class RMSF(AnalysisBase):
     Run the analysis with :meth:`RMSF.run`, which stores the results
     in the array :attr:`RMSF.rmsf`.
 
-c    """
+    """
     def __init__(self, atomgroup, **kwargs):
         r"""Parameters
         ----------
@@ -857,3 +860,8 @@ c    """
         if not (self.rmsf >= 0).all():
             raise ValueError("Some RMSF values negative; overflow " +
                              "or underflow occurred")
+
+
+
+
+
