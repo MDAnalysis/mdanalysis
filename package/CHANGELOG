@@ -54,6 +54,9 @@ Fixes
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
+  * Fixed HydrogenBondAnalysis to return atom indices rather than atom ids (PR #2572).
+    Fixed the check for bond information in the _get_dh_pairs method (Issue #2396)
+    and added a test case for this.
 
 Enhancements
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
