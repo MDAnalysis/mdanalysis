@@ -156,7 +156,7 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-       return clusters
+        return clusters
 
 if sklearn:
 
