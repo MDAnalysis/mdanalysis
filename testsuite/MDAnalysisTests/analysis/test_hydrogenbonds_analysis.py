@@ -27,9 +27,10 @@ from __future__ import absolute_import, division
 import numpy as np
 import MDAnalysis
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis
+from MDAnalysis.exceptions import NoDataError
 
 import pytest
-from numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_allclose, assert_equal, assert_array_almost_equal, assert_array_equal
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
 
@@ -93,13 +94,13 @@ class TestHydrogenBondAnalysisTIP3P(object):
         unique_hbonds = h.count_by_ids()
 
         most_common_hbond_ids = [12, 14, 9]
-        assert np.allclose(unique_hbonds[0,:3], most_common_hbond_ids)
+        assert_equal(unique_hbonds[0,:3], most_common_hbond_ids)
 
         # count_by_ids() returns raw counts
         # convert to fraction of time that bond was observed
         counts = unique_hbonds[:, 3] / len(h.timesteps)
 
-        assert_array_equal(counts, ref_counts)
+        assert_equal(counts, ref_counts)
 
 
 
@@ -117,7 +118,7 @@ class TestHydrogenBondAnalysisMock(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe():
-        # create 2 atoms
+        # create two water molecules
         """
                        H4
                         \
@@ -126,35 +127,38 @@ class TestHydrogenBondAnalysisMock(object):
           H1
         """
         n_residues = 2
-        u = MDAnalysis.Universe.empty(n_atoms=n_residues*3,
-                                 n_residues=n_residues,
-                                 atom_resindex=np.repeat(range(n_residues), 3),
-                                 residue_segindex=[0] * n_residues,
-                                 trajectory=True, # necessary for adding coordinates
-                                )
-                                #  in_memory=True)
+        u = MDAnalysis.Universe.empty(
+            n_atoms=n_residues*3,
+            n_residues=n_residues,
+            atom_resindex=np.repeat(range(n_residues), 3),
+            residue_segindex=[0] * n_residues,
+            trajectory=True,  # necessary for adding coordinates
+            )
+
         u.add_TopologyAttr('name', ['O', 'H1', 'H2'] * n_residues)
         u.add_TopologyAttr('type', ['O', 'H', 'H'] * n_residues)
         u.add_TopologyAttr('resname', ['SOL'] * n_residues)
         u.add_TopologyAttr('resid', list(range(1, n_residues + 1)))
-        print ('indices', u.atoms.indices)
         u.add_TopologyAttr('id', list(range(1, (n_residues * 3) + 1)))
-        print ('ids', u.atoms.ids)
-        pos1 = np.array([[0, 0, 0],  # O1
+
+        # Atomic coordinates with a single hydrogen bond between O1-H2---O2
+        pos1 = np.array([[0, 0, 0],             # O1
                         [-0.249, -0.968, 0],    # H1
-                        [1, 0, 0],  # H2
-                        [2.5, 0, 0],    # O2
-                        [3., 0, 0],     # H3
-                        [2.250, 0.968, 0]   # H4
+                        [1, 0, 0],              # H2
+                        [2.5, 0, 0],            # O2
+                        [3., 0, 0],             # H3
+                        [2.250, 0.968, 0]       # H4
                         ])
-        pos2 = np.array([[0, 0, 0],  # O1
-                         [-0.249, -0.968, 0],  # H1
-                         [1, 0, 0],  # H2
-                         [4.5, 0, 0],  # O2
-                         [5., 0, 0],  # H3
-                         [4.250, 0.968, 0]  # H4
+
+        # Atomic coordinates with no hydrogen bonds
+        pos2 = np.array([[0, 0, 0],             # O1
+                         [-0.249, -0.968, 0],   # H1
+                         [1, 0, 0],             # H2
+                         [4.5, 0, 0],           # O2
+                         [5., 0, 0],            # H3
+                         [4.250, 0.968, 0]      # H4
                          ])
-        #u.atoms.positions = pos
+
         coordinates = np.empty((3,  # number of frames
                                 u.atoms.n_atoms,
                                 3))
@@ -205,7 +209,7 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_h_a_angle_cutoff': 120.0
     }
 
-
+@pytest.mark.testme
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
     """
@@ -234,6 +238,11 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
         ref_donors = "(resname TIP3 and name OH2)"
         donors = h.guess_donors(select='all', max_charge=-0.5)
         assert donors == ref_donors
+
+    def test_get_dh_pairs(self, h):
+
+        with pytest.raises(NoDataError):
+            h._get_dh_pairs()
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
