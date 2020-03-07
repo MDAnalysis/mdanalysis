@@ -48,16 +48,16 @@ using MDAnalysis.
   # so we can select the chains by using the .fragments attribute
   chains = u.atoms.fragments
   # select only the backbone atoms for each chain
-  backbones = [chain.select_atoms('not name O* H') for chain in chains]
+  backbones = [chain.select_atoms('not name O* H*') for chain in chains]
   # sort the chains, removing any non-backbone atoms
   sorted_backbones = [polymer.sort_backbone(bb) for bb in backbones]
-  lp = polymer.PersistenceLength(sorted_backbones)
+  persistence_length = polymer.PersistenceLength(sorted_backbones)
   # Run the analysis, this will average over all polymer chains
   # and all timesteps in trajectory
-  lp = lp.run()
-  print('The persistence length is: {}'.format(lp.pl))
+  persistence_length = persistence_length.run()
+  print('The persistence length is: {}'.format(persistence_length.lp))
   # always check the visualisation of this:
-  lp.plot()
+  persistence_length.plot()
 
 """
 from __future__ import division, absolute_import

@@ -15,7 +15,8 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
-         Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria
+         Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
+         ss62171
 
   * 0.21.0
 
@@ -58,6 +59,7 @@ Fixes
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
+  * Fixed example docs for polymer persistence length (#2582)
 
 Enhancements
   * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
