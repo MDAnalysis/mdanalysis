@@ -169,6 +169,21 @@ class TestHydrogenBondAnalysisMock(object):
 
         return u
 
+    def test_no_bond_info_exception(self, universe):
+
+        kwargs = {
+            'donors_sel': None,
+            'hydrogens_sel': None,
+            'acceptors_sel': None,
+            'd_h_cutoff': 1.2,
+            'd_a_cutoff': 3.0,
+            'd_h_a_angle_cutoff': 120.0
+        }
+
+        with pytest.raises(NoDataError):
+            h = HydrogenBondAnalysis(universe, **kwargs)
+            h._get_dh_pairs()
+
     def test_first(self, universe):
 
         h = HydrogenBondAnalysis(universe, **self.kwargs)
@@ -209,7 +224,6 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_h_a_angle_cutoff': 120.0
     }
 
-@pytest.mark.testme
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.
     """
@@ -238,11 +252,6 @@ class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
         ref_donors = "(resname TIP3 and name OH2)"
         donors = h.guess_donors(select='all', max_charge=-0.5)
         assert donors == ref_donors
-
-    def test_get_dh_pairs(self, h):
-
-        with pytest.raises(NoDataError):
-            h._get_dh_pairs()
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessHydrogens_NoTopology(object):
