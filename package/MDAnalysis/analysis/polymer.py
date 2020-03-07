@@ -270,7 +270,8 @@ class PersistenceLength(AnalysisBase):
         """
         import matplotlib.pyplot as plt
         if ax is None:
-            ax = plt.gca()
+            plt.figure()
+            ax = plt.axes()
         ax.plot(self.x, self.results, 'ro', label='Result')
         ax.plot(self.x, self.fit, label='Fit')
         ax.set_xlabel(r'x')
