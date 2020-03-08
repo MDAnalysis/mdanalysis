@@ -15,11 +15,16 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
-         Yuan-Yu, xiki-tempula
+         Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
+         ss62171
 
   * 0.21.0
 
 Fixes
+  * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
+  * PCA(align=True) now correctly aligns the trajectory and computes the
+    correct means and covariance matrix (Issue #2561)
+  * Correct args order of base.AnalysisFromFunction (Issue #2503)  
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
@@ -54,11 +59,16 @@ Fixes
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
+  * Fixed example docs for polymer persistence length (#2582)
   * Fixed HydrogenBondAnalysis to return atom indices rather than atom ids (PR #2572).
     Fixed the check for bond information in the _get_dh_pairs method (Issue #2396)
     and added a test case for this.
 
 Enhancements
+  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
+    for running HOLE on singular PDB files and class (HoleAnalysis) for 
+    trajectories (PR #2523)
+  * Changed selection wildcards to support multiple wildcards (#2436)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
@@ -135,6 +145,7 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
+  * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
 
