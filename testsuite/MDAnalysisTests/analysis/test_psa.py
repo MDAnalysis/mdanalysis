@@ -181,16 +181,18 @@ class TestPSAnalysis(object):
         universe_rev = mda.Universe(PSF, DCD)
 
         psa2 = PSA.PSAnalysis([universe1, universe2, universe_rev],
-                             path_select='name CA',
-                             targetdir=str(tmpdir))
+                              path_select='name CA',
+                              targetdir=str(tmpdir))
         psa2.load()
 
         assert psa2.path_names == expected_path_names
         assert len(psa2.paths) == len(expected_paths)
 
-        for ipath, (observed, expected) in enumerate(zip(psa2.paths, expected_paths)):
+        for ipath, (observed, expected) in enumerate(zip(psa2.paths,
+                                                         expected_paths)):
             assert_almost_equal(observed, expected, decimal=6,
-                                err_msg="loaded path {} does not agree with input".format(ipath))
+                                err_msg=("loaded path {} does not agree with "
+                                         "input").format(ipath))
 
     def test_dendrogram_produced(self, plot_data):
         """Test whether Dendrogram dictionary object was produced"""
