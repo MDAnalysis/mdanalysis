@@ -190,7 +190,7 @@ class ClusterCollection(object):
 
         if not len(set((type(el) for el in elements))) == 1:
             raise TypeError("all the elements must have the same type")
-        self.clusters = {}
+        self.clusters = []
         elements_array = np.array(elements)
         centroids = np.unique(elements_array)
         for i in centroids:
