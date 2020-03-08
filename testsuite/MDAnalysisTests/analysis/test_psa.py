@@ -167,19 +167,28 @@ class TestPSAnalysis(object):
         psa.run_pairs_analysis(neighbors=True)
         assert len(psa.nearest_neighbors) == 3
 
-    @pytest.mark.xfail
-    def test_load(self, psa):
+    def test_load(self, psa, tmpdir):
         """Test that the automatically saved files can be loaded"""
-        expected_path_names = psa.path_names[:]
+        # Make copies to the existing data
+        # Note: path names are set after save_paths has been called
         expected_paths = [p.copy() for p in psa.paths]
         psa.save_paths()
-        psa.load()
-        assert psa.path_names == expected_path_names
-        # manually compare paths because
-        #         assert_almost_equal(psa.paths, expected_paths, decimal=6)
-        # raises a ValueError in the assertion code itself
-        assert len(psa.paths) == len(expected_paths)
-        for ipath, (observed, expected) in enumerate(zip(psa.paths, expected_paths)):
+        expected_path_names = psa.path_names.copy()
+
+        # Load data in a new empty PSAnalysis object
+        universe1 = mda.Universe(PSF, DCD)
+        universe2 = mda.Universe(PSF, DCD2)
+        universe_rev = mda.Universe(PSF, DCD)
+
+        psa2 = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                             path_select='name CA',
+                             targetdir=str(tmpdir))
+        psa2.load()
+
+        assert psa2.path_names == expected_path_names
+        assert len(psa2.paths) == len(expected_paths)
+
+        for ipath, (observed, expected) in enumerate(zip(psa2.paths, expected_paths)):
             assert_almost_equal(observed, expected, decimal=6,
                                 err_msg="loaded path {} does not agree with input".format(ipath))
 

@@ -1404,8 +1404,8 @@ class PSAnalysis(object):
         self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
 
-    def generate_paths(self, align=False, filename='fitted', infix='', weights=None,
-                       tol_mass=False, ref_frame=None, flat=False, save=True, store=True):
+    def generate_paths(self, align=False, filename=None, infix='', weights=None,
+                       tol_mass=False, ref_frame=None, flat=False, save=True, store=False):
         """Generate paths, aligning each to reference structure if necessary.
 
         Parameters
@@ -1424,12 +1424,12 @@ class PSAnalysis(object):
              ``None`` weigh each atom equally. If a float array of the same
              length as the selected AtomGroup is provided, use each element of
              the `array_like` as a weight for the corresponding atom in the
-             AtomGroup.
+             AtomGroup [``None``]
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
-             than *tol_mass*
+             than *tol_mass* [``False``]
         ref_frame : int
-             frame index to select frame from *reference*
+             frame index to select frame from *reference* [``None``]
         flat : bool
              represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
@@ -1642,10 +1642,10 @@ class PSAnalysis(object):
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
                               "{0} does not exist.".format(self._paths_pkl))
-        self.path_names = np.load(self._paths_pkl)
+        self.path_names = np.load(self._paths_pkl, allow_pickle=True)
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
-            self.labels = np.load(self._labels_pkl)
+            self.labels = np.load(self._labels_pkl, allow_pickle=True)
         logger.info("Loaded paths from %r", self._paths_pkl)
 
 
