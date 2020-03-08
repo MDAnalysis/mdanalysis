@@ -167,22 +167,34 @@ class TestPSAnalysis(object):
         psa.run_pairs_analysis(neighbors=True)
         assert len(psa.nearest_neighbors) == 3
 
-    def test_load(self, psa, tmpdir):
+    @pytest.mark.parametrize('stored', [True, False])
+    def test_load(self, stored, tmpdir):
         """Test that the automatically saved files can be loaded"""
-        # Make copies to the existing data
-        # Note: path names are set after save_paths has been called
-        expected_paths = [p.copy() for p in psa.paths]
-        psa.save_paths()
-        expected_path_names = psa.path_names.copy()
-
-        # Load data in a new empty PSAnalysis object
+        # To allow for testing the store keyword, ignore fixture
         universe1 = mda.Universe(PSF, DCD)
         universe2 = mda.Universe(PSF, DCD2)
         universe_rev = mda.Universe(PSF, DCD)
 
+        psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                              path_select='name CA',
+                              targetdir=str(tmpdir))
+
         psa2 = PSA.PSAnalysis([universe1, universe2, universe_rev],
                               path_select='name CA',
                               targetdir=str(tmpdir))
+
+        psa.generate_paths(align=True, store=stored)
+
+        # Make copies to the existing data
+        # Note: path names are set after save_paths has been called
+        expected_paths = [p.copy() for p in psa.paths]
+
+        if not stored:
+            psa.save_paths()
+
+        expected_path_names = psa.path_names[:]
+
+        # Load data in the empty PSAnalysis object
         psa2.load()
 
         assert psa2.path_names == expected_path_names
