@@ -20,6 +20,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Fixed test for the `save_paths` and `load` methods of :class:`PSAnalysis`
+    (Issue #2593)
   * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
   * PCA(align=True) now correctly aligns the trajectory and computes the
     correct means and covariance matrix (Issue #2561)
@@ -94,6 +96,8 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Changed :meth:`PSAnalysis.generate_paths` keywords `store` and `filename`
+    defaults to `False` and `None` (Issue #2593)
   * Removed `format` keyword from :meth:`MemoryReader.timeseries` (Issue #1453,
     #2443)
   * Deprecated :class:`LAMMPSDataConverter` has now been removed (Issue #2564)
