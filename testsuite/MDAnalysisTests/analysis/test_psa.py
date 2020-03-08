@@ -36,6 +36,7 @@ import scipy.spatial
 import matplotlib
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD2
+from MDAnalysis import NoDataError
 
 
 class TestPSAnalysis(object):
@@ -205,6 +206,25 @@ class TestPSAnalysis(object):
             assert_almost_equal(observed, expected, decimal=6,
                                 err_msg=("loaded path {} does not agree with "
                                          "input").format(ipath))
+
+    def test_load_nofile(self, psa):
+        """Test case where save_paths hasn't been called before load"""
+        match_exp = "Fitted trajectories cannot be loaded"
+        with pytest.raises(NoDataError, match=match_exp):
+            psa.load()
+
+    def test_save_nopaths(self, tmpdir):
+        """Test case were save_paths is called without calcualted paths"""
+        match_exp = "Paths have not been calculated yet"
+        with pytest.raises(NoDataError, match=match_exp):
+            universe1 = mda.Universe(PSF, DCD)
+            universe2 = mda.Universe(PSF, DCD2)
+            universe_rev = mda.Universe(PSF, DCD)
+
+            psa = PSA.PSAnalysis([universe1, universe2, universe_rev],
+                                 path_select='name CA',
+                                 targetdir=str(tmpdir))
+            psa.save_paths()
 
     def test_dendrogram_produced(self, plot_data):
         """Test whether Dendrogram dictionary object was produced"""
