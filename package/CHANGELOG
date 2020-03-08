@@ -21,6 +21,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Fixes outdated :class:`TRJReader` documentation on random frame access
+    (Issue #2398)
   * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
   * PCA(align=True) now correctly aligns the trajectory and computes the
     correct means and covariance matrix (Issue #2561)
