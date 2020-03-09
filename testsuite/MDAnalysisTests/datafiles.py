@@ -186,6 +186,8 @@ __all__ = [
     "GMX_DIR", # GROMACS directory
     "GMX_TOP_BAD", # file with an #include that doesn't exist
     "ITP_no_endif", # file missing an #endif
+    "ADK_DSSP",  # DSSP of ADK, assigned by mdtraj.compute_dssp(simplified=False) (protein only)
+    "ADK_DSSP_SIMPLE", # DSSP of ADK, assigned by mdtraj.compute_dssp(simplified=True) (protein only)
 ]
 
 from pkg_resources import resource_filename
@@ -509,5 +511,9 @@ GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')
 ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
+
+ADK_DSSP = resource_filename(__name__, 'data/adk_oplsaa_dssp.npy')
+ADK_DSSP_SIMPLE = resource_filename(__name__, 'data/adk_oplsaa_dssp_simple.npy')
+
 # This should be the last line: clean up namespace
 del resource_filename
