@@ -56,12 +56,6 @@ from MDAnalysisTests.core.util import UnWrapUniverse
 import pytest
 
 
-class TestDeprecationWarnings(object):
-    def test_AtomGroupUniverse_usage_warning(self):
-        with pytest.deprecated_call():
-            mda.core.AtomGroup.Universe(PSF, DCD)
-
-
 class TestAtomGroupToTopology(object):
     """Test the conversion of AtomGroup to TopologyObjects"""
     @pytest.fixture()

@@ -227,6 +227,11 @@ class BaseAuxReaderTest(object):
         for i, val in enumerate(reader):
             assert val.time == ref.select_time_ref[i], "time for step {} does not match".format(i)
 
+    def test_time_non_constant_dt(self, reader):
+        reader.constant_dt = False
+        with pytest.raises(ValueError, match="If dt is not constant, must have a valid time selector"):
+            reader.time
+
     def test_time_selector_manual(self, ref):
         reader = ref.reader(ref.testdata,
                             time_selector = ref.time_selector)
@@ -367,7 +372,7 @@ class BaseAuxReaderTest(object):
     def test_step_to_frame_no_time_diff(self, reader, ref):
 
         ts = mda.coordinates.base.Timestep(0, dt=ref.dt)
-        
+
         for idx in range(reader.n_steps):
 
             assert reader.step_to_frame(idx, ts) == idx
@@ -384,6 +389,19 @@ class BaseAuxReaderTest(object):
 
             assert frame == idx
             np.testing.assert_almost_equal(time_diff, idx * 0.1)
+
+    def test_go_to_step_fail(self, reader):
+
+        with pytest.raises(ValueError, match="Step index [0-9]* is not valid for auxiliary"):
+            reader._go_to_step(reader.n_steps)
+
+    @pytest.mark.parametrize("constant", [True, False])
+    def test_set_constant_dt(self, reader, constant):
+
+        reader.constant_dt = constant
+
+        assert reader.constant_dt == constant
+
 
 def assert_auxstep_equal(A, B):
     if not isinstance(A, mda.auxiliary.base.AuxStep):

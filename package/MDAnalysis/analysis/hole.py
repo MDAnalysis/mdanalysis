@@ -2,7 +2,7 @@
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
-# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2020 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -21,12 +21,17 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-r"""Generation and Analysis of HOLE pore profiles --- :mod:`MDAnalysis.analysis.hole`
-=================================================================================
+r"""Generation and Analysis of HOLE pore profiles (Deprecated) --- :mod:`MDAnalysis.analysis.hole`
+==================================================================================================
 
 :Author: Lukas Stelzl, Oliver Beckstein
 :Year: 2011-2012
 :Copyright: GNU Public License v2
+
+.. warning:
+
+    This module is deprecated and will be removed in version 2.0.
+    Please use :mod:`MDAnalysis.analysis.hole2` instead.
 
 With the help of this module, the :program:`hole` program from the HOLE_ suite
 of tools [Smart1993]_ [Smart1996]_ can be run on frames in an MD trajectory or
@@ -403,7 +408,8 @@ class BaseHOLE(object):
         kw = {}
         frames = kwargs.pop('frames', None)
         if frames is None:
-            frames = np.sort(list(self.profiles.keys())[::kwargs.pop('step', 1)])
+            frames = np.sort(list(self.profiles.keys())
+                             [::kwargs.pop('step', 1)])
         else:
             frames = asiterable(frames)
         kw['frames'] = frames
@@ -811,15 +817,18 @@ class HOLE(BaseHOLE):
         self.dcd = kwargs.pop('dcd', None)
         if self.dcd:
             self.dcd = self.check_and_fix_long_filename(self.dcd)
-        self.dcd_step = kwargs.pop("step", 1) - 1  # HOLE docs description is confusing: step or skip??
+        # HOLE docs description is confusing: step or skip??
+        self.dcd_step = kwargs.pop("step", 1) - 1
         self.dcd_iniskip = 0
         self.cpoint = kwargs.pop("cpoint", None)
         self.cvect = kwargs.pop("cvect", None)
         self.sample = float(kwargs.pop("sample", 0.20))
         self.dotden = int(kwargs.pop("dotden", 15))
         self.endrad = float(kwargs.pop("endrad", 22.))
-        self.shorto = int(kwargs.pop("shorto", 0))  # look at using SHORTO 2 for minimum output
-        self.ignore_residues = kwargs.pop("ignore_residues", self.default_ignore_residues)
+        # look at using SHORTO 2 for minimum output
+        self.shorto = int(kwargs.pop("shorto", 0))
+        self.ignore_residues = kwargs.pop(
+            "ignore_residues", self.default_ignore_residues)
         self.radius = self.check_and_fix_long_filename(
             realpath(kwargs.pop('radius', None) or write_simplerad2()))
         self.raseed = kwargs.pop('raseed', None)
@@ -832,7 +841,8 @@ class HOLE(BaseHOLE):
         hole_exe_name = kwargs.pop('executable', 'hole')
         self.exe['hole'] = which(hole_exe_name)
         if self.exe['hole'] is None:
-            errmsg = "HOLE binary {hole_exe_name!r} not found.".format(**vars())
+            errmsg = "HOLE binary {hole_exe_name!r} not found.".format(
+                **vars())
             logger.fatal(errmsg)
             logger.fatal("%(hole_exe_name)r must be on the PATH or provided as keyword argument 'executable'.",
                          vars())
@@ -935,7 +945,8 @@ class HOLE(BaseHOLE):
         # try a relative path
         newname = os.path.relpath(filename)
         if len(newname) <= self.HOLE_MAX_LENGTH:
-            logger.debug("path check: Using relative path: %r --> %r", filename, newname)
+            logger.debug(
+                "path check: Using relative path: %r --> %r", filename, newname)
             return newname
 
         # shorten path by creating a symlink inside a safe temp dir
@@ -945,8 +956,10 @@ class HOLE(BaseHOLE):
         self.tempfiles.append(newname)
         self.tempdirs.append(dirname)
         if len(newname) > self.HOLE_MAX_LENGTH:
-            logger.fatal("path check: Failed to shorten filename %r --> %r", filename, newname)
-            raise RuntimeError("Failed to shorten filename %r --> %r", filename, newname)
+            logger.fatal(
+                "path check: Failed to shorten filename %r --> %r", filename, newname)
+            raise RuntimeError(
+                "Failed to shorten filename %r --> %r", filename, newname)
         os.symlink(filename, newname)
         logger.debug("path check: Using symlink: %r --> %r", filename, newname)
         return newname
@@ -959,9 +972,12 @@ class HOLE(BaseHOLE):
         # NOTE: If cvect and cpoint had been None in the constructor then they are
         #       ignored here. Arguably a bug... but then again, the keywords for run() are
         #       not even officially documented :-).
-        kwargs.setdefault("cvect_xyz", seq2str(kwargs.pop('cvect', self.cvect)))
-        kwargs.setdefault("cpoint_xyz", seq2str(kwargs.pop('cpoint', self.cpoint)))
-        kwargs.setdefault("ignore", seq2str(kwargs.pop('ignore_residues', self.ignore_residues)))
+        kwargs.setdefault("cvect_xyz", seq2str(
+            kwargs.pop('cvect', self.cvect)))
+        kwargs.setdefault("cpoint_xyz", seq2str(
+            kwargs.pop('cpoint', self.cpoint)))
+        kwargs.setdefault("ignore", seq2str(
+            kwargs.pop('ignore_residues', self.ignore_residues)))
         holeargs = vars(self).copy()
         holeargs.update(kwargs)
 
@@ -971,10 +987,13 @@ class HOLE(BaseHOLE):
                 f.write(inp)
             logger.debug("Wrote HOLE input file %r for inspection", inpname)
 
-        logger.info("Starting HOLE on %(filename)r (trajectory: %(dcd)r)", holeargs)
-        logger.debug("%s <%s >%s", self.exe['hole'], (inpname if inpname else "(input)"), outname)
+        logger.info(
+            "Starting HOLE on %(filename)r (trajectory: %(dcd)r)", holeargs)
+        logger.debug(
+            "%s <%s >%s", self.exe['hole'], (inpname if inpname else "(input)"), outname)
         with open(outname, "w") as output:
-            hole = subprocess.Popen([self.exe['hole']], stdin=subprocess.PIPE, stdout=output)
+            hole = subprocess.Popen(
+                [self.exe['hole']], stdin=subprocess.PIPE, stdout=output)
             stdout, stderr = hole.communicate(inp.encode('utf-8'))
         with open(outname, "r") as output:
             # HOLE is not very good at setting returncodes so check ourselves
@@ -983,10 +1002,12 @@ class HOLE(BaseHOLE):
                     hole.returncode = 255
                     break
         if hole.returncode != 0:
-            logger.fatal("HOLE Failure (%d). Check output %r", hole.returncode, outname)
+            logger.fatal("HOLE Failure (%d). Check output %r",
+                         hole.returncode, outname)
             if stderr is not None:
                 logger.fatal(stderr)
-            raise ApplicationError(hole.returncode, "HOLE {0!r} failed. Check output {1!r}.".format(self.exe['hole'], outname))
+            raise ApplicationError(hole.returncode, "HOLE {0!r} failed. Check output {1!r}.".format(
+                self.exe['hole'], outname))
         logger.info("HOLE finished: output file %(outname)r", vars())
 
     def create_vmd_surface(self, filename="hole.vmd", **kwargs):
@@ -1019,7 +1040,8 @@ class HOLE(BaseHOLE):
         os.close(fd)
         try:
             output = subprocess.check_output([self.exe["sph_process"], "-sos", "-dotden",
-                                              str(kwargs['dotden']), "-color", self.sphpdb,
+                                              str(kwargs['dotden']
+                                                  ), "-color", self.sphpdb,
                                               tmp_sos], stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as err:
             os.unlink(tmp_sos)
@@ -1033,13 +1055,14 @@ class HOLE(BaseHOLE):
             # Could check: os.devnull if subprocess.DEVNULL not available (>3.3)
             # Suppress stderr messages of sos_triangle
             with open(tmp_sos) as sos, open(filename, "w") as triangles, \
-                 open(os.devnull, 'w') as FNULL:
+                    open(os.devnull, 'w') as FNULL:
                 subprocess.check_call(
                     [self.exe["sos_triangle"], "-s"], stdin=sos, stdout=triangles,
                     stderr=FNULL)
         except subprocess.CalledProcessError as err:
             logger.fatal("sos_triangle failed ({0})".format(err.returncode))
-            six.raise_from(OSError(err.returncode, "sos_triangle failed"), None)
+            six.raise_from(
+                OSError(err.returncode, "sos_triangle failed"), None)
         finally:
             os.unlink(tmp_sos)
 
@@ -1071,10 +1094,10 @@ class HOLE(BaseHOLE):
 
         """
         # cenxyz.cvec      radius  cen_line_D sum{s/(area point sourc
-        #0123456789.0123456789.0123456789.0123456789.0123456789.0123456789.
+        # 0123456789.0123456789.0123456789.0123456789.0123456789.0123456789.
         #            11          22          33          44
-        #123456789.123456789.123456789.123456789.123456789.123456789.123456789.
-        #1           13
+        # 123456789.123456789.123456789.123456789.123456789.123456789.123456789.
+        # 1           13
         # 3F12
         #   -27.17082    15.77469   -73.19195     0.00013   (sampled)
         #   -27.07082    12.91103   -69.39840     0.00032 (mid-point)
@@ -1093,18 +1116,24 @@ class HOLE(BaseHOLE):
             filenames = glob.glob(self.filename)
             length = len(filenames)
             if length == 0:
-                logger.error("Glob pattern %r did not find any files.", self.filename)
-                raise ValueError("Glob pattern {0!r} did not find any files.".format(self.filename))
-            logger.info("Found %d input files based on glob pattern %s", length, self.filename)
+                logger.error(
+                    "Glob pattern %r did not find any files.", self.filename)
+                raise ValueError(
+                    "Glob pattern {0!r} did not find any files.".format(self.filename))
+            logger.info(
+                "Found %d input files based on glob pattern %s", length, self.filename)
         if self.dcd:
             u = Universe(self.filename, self.dcd)
-            length = int((u.trajectory.n_frames - self.dcd_iniskip) / (self.dcd_step + 1))
-            logger.info("Found %d input frames in DCD trajectory %r", length, self.dcd)
+            length = int((u.trajectory.n_frames -
+                          self.dcd_iniskip) / (self.dcd_step + 1))
+            logger.info(
+                "Found %d input frames in DCD trajectory %r", length, self.dcd)
 
         # one recarray for each frame, indexed by frame number
         self.profiles = OrderedDict()
 
-        logger.info("Run %s: Reading %d HOLE profiles from %r", run, length, hole_output)
+        logger.info("Run %s: Reading %d HOLE profiles from %r",
+                    run, length, hole_output)
         hole_profile_no = 0
         records = []
         with open(hole_output, "r") as hole:
@@ -1126,8 +1155,10 @@ class HOLE(BaseHOLE):
                         try:
                             rxncoord, radius, cenlineD = holeformat.read(line)
                         except:
-                            logger.critical("Run %d: Problem parsing line %r", run, line.strip())
-                            logger.exception("Check input file %r.", hole_output)
+                            logger.critical(
+                                "Run %d: Problem parsing line %r", run, line.strip())
+                            logger.exception(
+                                "Check input file %r.", hole_output)
                             raise
                         records.append((hole_profile_no, rxncoord, radius))
                         continue
@@ -1135,7 +1166,7 @@ class HOLE(BaseHOLE):
                         # end of records (empty line)
                         read_data = False
                         frame_hole_output = np.rec.fromrecords(records, formats="i4,f8,f8",
-                                                                  names="frame,rxncoord,radius")
+                                                               names="frame,rxncoord,radius")
                         # store the profile
                         self.profiles[hole_profile_no] = frame_hole_output
                         logger.debug("Collected HOLE profile for frame %d (%d datapoints)",
@@ -1146,13 +1177,16 @@ class HOLE(BaseHOLE):
                             rundir = os.path.join(outdir, "run_" + str(run))
                             if not os.path.exists(rundir):
                                 os.makedirs(rundir)
-                            frame_hole_txt = os.path.join(rundir, "radii_{0!s}_{1:04d}.dat.gz".format(run, hole_profile_no))
+                            frame_hole_txt = os.path.join(
+                                rundir, "radii_{0!s}_{1:04d}.dat.gz".format(run, hole_profile_no))
                             np.savetxt(frame_hole_txt, frame_hole_output)
-                            logger.debug("Finished with frame %d, saved as %r", hole_profile_no, frame_hole_txt)
+                            logger.debug(
+                                "Finished with frame %d, saved as %r", hole_profile_no, frame_hole_txt)
                         continue
                         # if we get here then we haven't found anything interesting
         if len(self.profiles) == length:
-            logger.info("Collected HOLE radius profiles for %d frames", len(self.profiles))
+            logger.info(
+                "Collected HOLE radius profiles for %d frames", len(self.profiles))
         else:
             logger.warning("Missing data: Found %d HOLE profiles from %d frames.",
                            len(self.profiles), length)
@@ -1234,13 +1268,15 @@ class HOLEtraj(BaseHOLE):
         self.cpoint = kwargs.pop('cpoint', None)
         if self.cpoint is True:
             self.cpoint = self.guess_cpoint(select=self.selection)
-            logger.info("Guessed CPOINT = %r from selection %r", self.cpoint, self.selection)
+            logger.info("Guessed CPOINT = %r from selection %r",
+                        self.cpoint, self.selection)
         kwargs['cpoint'] = self.cpoint
 
         self.hole_kwargs = kwargs
 
         # processing
-        self.orderparameters = self._process_orderparameters(self.orderparametersfile)
+        self.orderparameters = self._process_orderparameters(
+            self.orderparametersfile)
 
     def guess_cpoint(self, select="protein", **kwargs):
         """Guess a point inside the pore.
@@ -1317,9 +1353,11 @@ class HOLEtraj(BaseHOLE):
         #       (although the file renaming might create problems...)
         protein = self.universe.select_atoms(self.selection)
         for q, ts in zip(self.orderparameters[start:stop:step], self.universe.trajectory[start:stop:step]):
-            logger.info("HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
+            logger.info(
+                "HOLE analysis frame %4d (orderparameter %g)", ts.frame, q)
             fd, pdbfile = tempfile.mkstemp(suffix=".pdb")
-            os.close(fd)  # only need an empty file that can be overwritten, close right away (Issue 129)
+            # only need an empty file that can be overwritten, close right away (Issue 129)
+            os.close(fd)
             try:
                 protein.write(pdbfile)
                 hole_profiles = self.run_hole(pdbfile, **hole_kw)

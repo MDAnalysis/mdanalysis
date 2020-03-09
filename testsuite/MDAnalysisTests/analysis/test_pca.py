@@ -24,6 +24,7 @@ from __future__ import print_function, absolute_import
 
 import numpy as np
 import MDAnalysis as mda
+from MDAnalysis.analysis import align
 from MDAnalysis.analysis.pca import PCA, cosine_content
 
 from numpy.testing import (assert_almost_equal, assert_equal,
@@ -45,6 +46,10 @@ def u():
 def pca(u):
     u.transfer_to_memory()
     return PCA(u, select=SELECTION).run()
+
+@pytest.fixture(scope='module')
+def pca_aligned(u):
+    return PCA(u, select=SELECTION, align=True).run()
 
 
 def test_cov(pca, u):
@@ -126,3 +131,24 @@ def test_cosine_content():
     dot = pca_random.transform(rand.atoms)
     content = cosine_content(dot, 0)
     assert_almost_equal(content, .99, 1)
+
+def test_mean_shape(pca_aligned, u):
+    atoms = u.select_atoms(SELECTION)
+    assert_equal(pca_aligned.mean.shape[0], atoms.n_atoms * 3)
+
+def test_mean(pca_aligned, u):
+    v = mda.Universe(PSF, DCD, in_memory=True)
+    a = align.AlignTraj(v, v, select=SELECTION).run()
+    coords = v.trajectory.timeseries(v.select_atoms(SELECTION), order='fac')
+    assert_almost_equal(pca_aligned.mean, coords.mean(axis=0).ravel(), decimal=5)
+
+def test_alignment(pca_aligned, u):
+    v = mda.Universe(PSF, DCD, in_memory=True)
+    a = align.AlignTraj(v, v, select=SELECTION).run()
+    pca_pre_align = PCA(v, select=SELECTION, align=False).run()
+    assert_almost_equal(pca_aligned.mean, pca_pre_align.mean)
+    assert_almost_equal(pca_aligned.cov, pca_pre_align.cov)
+
+def test_covariance_norm(pca_aligned, u):
+    assert_almost_equal(np.linalg.norm(pca_aligned.cov), 0.96799758, decimal=5)
+
