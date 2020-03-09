@@ -186,14 +186,11 @@ class ClusterCollection(object):
         idn = 0
         if elements is None:
             self.clusters = None
-            self.elements = np.array([])
             return
         
-        for el in elements:
-            if not len(set(type(el))) == 1:
-                raise TypeError("all the elements must have the same type")
-        self.clusters = []
         elements_array = np.array(elements)
+        if not len(set((type(el) for el in elements_array))) == 1:
+            raise TypeError("all the elements must have the same type")
         centroids = np.unique(elements_array)
         for i in centroids:
             if elements[i] != i:
