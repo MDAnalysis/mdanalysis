@@ -295,9 +295,6 @@
 <span class="sd">* The trajectory does not contain time information so we simply set</span>
 <span class="sd">  the time step to 1 ps (or the user could provide it as kwarg *dt*)</span>
 
-<span class="sd">* **No direct access of frames is implemented, only iteration through</span>
-<span class="sd">  the trajectory.**</span>
-
 <span class="sd">* Trajectories with fewer than 4 atoms probably fail to be read (BUG).</span>
 
 <span class="sd">* If the trajectory contains exactly *one* atom then it is always</span>
@@ -378,9 +375,6 @@
 <span class="sd">    The length of a timestep is not stored in the trajectory itself but can</span>
 <span class="sd">    be set by passing the `dt` keyword argument to the constructor; it</span>
 <span class="sd">    is assumed to be in ps. The default value is 1 ps.</span>
-
-<span class="sd">    Functionality is currently limited to simple iteration over the</span>
-<span class="sd">    trajectory.</span>
 
 <span class="sd">    .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory</span>
 

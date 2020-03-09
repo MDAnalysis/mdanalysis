@@ -571,8 +571,6 @@ trajectory; the reader always assumes that these are orthorhombic
 boxes.</li>
 <li>The trajectory does not contain time information so we simply set
 the time step to 1 ps (or the user could provide it as kwarg <em>dt</em>)</li>
-<li><strong>No direct access of frames is implemented, only iteration through
-the trajectory.</strong></li>
 <li>Trajectories with fewer than 4 atoms probably fail to be read (BUG).</li>
 <li>If the trajectory contains exactly <em>one</em> atom then it is always
 assumed to be non-periodic (for technical reasons).</li>
@@ -591,8 +589,6 @@ reliably autodetected. The constructor raises a <a class="reference external" hr
 <p>The length of a timestep is not stored in the trajectory itself but can
 be set by passing the <cite>dt</cite> keyword argument to the constructor; it
 is assumed to be in ps. The default value is 1 ps.</p>
-<p>Functionality is currently limited to simple iteration over the
-trajectory.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based.
 kwarg <cite>delta</cite> renamed to <cite>dt</cite>, for uniformity with other Readers</p>
