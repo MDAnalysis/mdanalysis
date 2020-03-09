@@ -328,13 +328,24 @@ class AtomGroupAttrsBench(object):
 
 class FragmentFinding(object):
     """Test how quickly we find fragments (distinct molecules from bonds)"""
-    params = [(TPR, XTC),  # single large fragment, many small solvents
-              (PSF, DCD),  # single large fragment
-              (TRZ_psf, TRZ)]  # 20ish polymer chains
-    param_names = ['universe']
+    # if we try to parametrize over topology &
+    # trajectory formats asv will use all
+    # possible combinations, so instead handle
+    # this in setup()
+    params = ('large_fragment_small_solvents',
+              'large_fragment',
+              'polymer_chains', # 20ish polymer chains
+              )
+    param_names = ['universe_type']
 
-    def setup(self, universe):
-        self.u = MDAnalysis.Universe(*universe)
+    def setup(self, universe_type):
+        if universe_type == 'large_fragment_small_solvents':
+            univ = (TPR, XTC) 
+        elif universe_type == 'large_fragment':
+            univ = (PSF, DCD)
+        else:
+            univ = (TRZ_psf, TRZ) 
+        self.u = MDAnalysis.Universe(*univ)
 
-    def time_find_fragments(self, universe):
+    def time_find_fragments(self, universe_type):
         frags = self.u.atoms.fragments

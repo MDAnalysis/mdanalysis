@@ -23,7 +23,6 @@
 from __future__ import absolute_import
 
 import pytest
-import parmed as pmd
 import MDAnalysis as mda
 
 from numpy.testing import (assert_equal,
@@ -44,6 +43,9 @@ from MDAnalysisTests.datafiles import (
     PRM12,
     PRM_UreyBradley,
 )
+
+pmd = pytest.importorskip('parmed')
+
 
 class TestParmEdReaderGRO:
     ref_filename = GRO
@@ -67,7 +69,6 @@ class TestParmEdReaderGRO:
 
 
 class BaseTestParmEdReader(_SingleFrameReader):
-
     def setUp(self):
         self.universe = mda.Universe(pmd.load_file(self.ref_filename))
         self.ref = mda.Universe(self.ref_filename)

@@ -1498,8 +1498,13 @@ def Merge(*args):
                    residue_segindex=segidx)
 
     # Create and populate a universe
-    coords = np.vstack([a.positions for a in args])
-    u = Universe(top, coords[None, :, :],
+    try:
+        #Create universe with coordinates if they exists in args
+        coords = np.vstack([a.positions for a in args])
+        u = Universe(top, coords[None, :, :],
                  format=MDAnalysis.coordinates.memory.MemoryReader)
-
+    except AttributeError:
+        #Create universe without coordinates if they dont exists in args
+        u = Universe(top)
+          
     return u
