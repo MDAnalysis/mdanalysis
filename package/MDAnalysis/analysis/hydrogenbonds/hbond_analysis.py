@@ -408,7 +408,11 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # If donors_sel is not provided, use topology to find d-h pairs
         if not self.donors_sel:
-            if not (hasattr(self.u, 'bonds') and len(self.u.bonds) != 0):
+
+            # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
+            # This is because u.bonds also calculates properties of each bond (e.g bond length).
+            # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
+            if not (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
                 raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
                                 'Please either: load a topology file with bonded information; use the guess_bonds() '
                                 'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
