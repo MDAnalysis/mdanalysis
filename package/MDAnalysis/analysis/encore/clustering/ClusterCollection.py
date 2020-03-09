@@ -151,7 +151,7 @@ class ClusterCollection(object):
 
 """
 
-    def __init__(self, elements, metadata=None):
+    def __init__(self, elements=np.array([]), metadata=None):
         """Class constructor. If elements is None, an empty cluster collection
             will be created. Otherwise, the constructor takes as input an
             iterable of ints, for instance:
