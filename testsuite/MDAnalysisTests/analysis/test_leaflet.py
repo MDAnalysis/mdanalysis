@@ -27,6 +27,7 @@ import pytest
 from numpy.testing import assert_equal, assert_almost_equal
 import numpy as np
 from six.moves import StringIO
+import networkx as NX
 
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff
 from MDAnalysisTests.datafiles import Martini_membrane_gro
@@ -84,6 +85,14 @@ def test_pbc_on_off(universe, lipid_heads):
     lfls_pbc_on = LeafletFinder(universe, lipid_heads, pbc=True)
     lfls_pbc_off = LeafletFinder(universe, lipid_heads, pbc=False)
     assert lfls_pbc_on.graph.size() > lfls_pbc_off.graph.size()
+
+def test_pbc_on_off_difference(universe, lipid_heads):
+    lfls_pbc_on = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=True)
+    lfls_pbc_off = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=False)
+    pbc_on_graph = lfls_pbc_on.graph
+    pbc_off_graph = lfls_pbc_off.graph
+    diff_graph = NX.difference(pbc_on_graph,pbc_off_graph)
+    assert_equal(set(diff_graph.edges), {(69, 153), (73, 79), (206, 317), (313, 319)})
 
 def test_cutoff_update(universe, lipid_heads):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
