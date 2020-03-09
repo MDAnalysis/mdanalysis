@@ -492,6 +492,43 @@ class DumpReader(base.ReaderBase):
             n_atoms = int(f.readline())
         return n_atoms
 
+    @staticmethod
+    def _interpret_atom_style(traj_atom_style):
+        """Transform a string description of atom style into a dict
+
+        Required fields: id, type, x, y, z
+        Optional fields: resid, charge
+
+        eg: "id resid type charge x y z"
+        {'id': 0,
+         'resid': 1,
+         'type': 2,
+         'charge': 3,
+         'x': 4,
+         'y': 5,
+         'z': 6,
+        }
+        """
+        traj_style_dict = {}
+
+        traj_atom_style = traj_atom_style.split()
+
+        for attr in ['id', 'type', 'resid', 'charge', 'x', 'y', 'z']:
+            try:
+                location = traj_atom_style.index(attr)
+            except ValueError:
+                pass
+            else:
+                traj_style_dict[attr] = location
+
+        reqd_attrs = ['id', 'type', 'x', 'y', 'z']
+        missing_attrs = [attr for attr in reqd_attrs if attr not in traj_style_dict]
+        if missing_attrs:
+            raise ValueError("traj_atom_style string missing required field(s): {}"
+                             "".format(', '.join(missing_attrs)))
+                
+        return traj_style_dict
+
     @property
     @cached('n_frames')
     def n_frames(self):
@@ -519,7 +556,12 @@ class DumpReader(base.ReaderBase):
 
         return self._read_next_timestep()
 
-    def _read_next_timestep(self):
+    def _read_next_timestep(self, **kwargs):
+        try:
+            self.traj_style_dict = self._interpret_atom_style(kwargs['traj_atom_style'])
+        except KeyError:
+            self.traj_style_dict = None
+
         f = self._file
         ts = self.ts
         ts.frame += 1
@@ -560,12 +602,19 @@ class DumpReader(base.ReaderBase):
 
         indices = np.zeros(self.n_atoms, dtype=int)
 
-        f.readline()  # ITEM ATOMS etc
-        for i in range(self.n_atoms):
-            idx, _, xs, ys, zs = f.readline().split()
+        if self.traj_style_dict is None:
+            if len(f.readline().split()) in (8, 11): # range incremented to account for '#'
+                traj_style_dict = {'id': 0, 'x': 4, 'y': 5, 'z': 6}
+            else:
+                traj_style_dict = {'id': 0, 'x': 3, 'y': 4, 'z': 5}
+        else:
+            traj_style_dict = self.traj_style_dict
 
-            indices[i] = idx
-            ts.positions[i] = xs, ys, zs
+        for i in range(self.n_atoms):
+            line = f.readline().split()   # ITEM ATOMS etc
+            indices[i] = line[traj_style_dict['id']]
+
+            ts.positions[i] = line[traj_style_dict['x']], line[traj_style_dict['y']], line[traj_style_dict['z']]
 
         order = np.argsort(indices)
         ts.positions = ts.positions[order]
