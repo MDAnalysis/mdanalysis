@@ -79,6 +79,7 @@ import networkx as NX
 
 from .. import core
 from . import distances
+from .. import selections
 
 from ..due import due, Doi
 
