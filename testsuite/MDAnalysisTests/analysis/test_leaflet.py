@@ -74,3 +74,8 @@ def test_pdc_on_off(universe, lipid_heads):
     lfls_pbc_on = LeafletFinder(universe, lipid_heads, pbc=True)
     lfls_pbc_off = LeafletFinder(universe, lipid_heads, pbc=False)
     assert lfls_pbc_on.graph.size() > lfls_pbc_off.graph.size()
+
+def test_cutoff_update(universe, lipid_heads):
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
+    lfls_ag.update(cutoff=1.0)
+    assert_almost_equal(lfls_ag.cutoff, 1.0, decimal=4)
