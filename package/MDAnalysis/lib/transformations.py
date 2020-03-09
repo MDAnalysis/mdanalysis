@@ -760,6 +760,7 @@ def decompose_matrix(matrix):
     True
 
     """
+    # pylint: disable=unsubscriptable-object
     M = np.array(matrix, dtype=np.float64, copy=True).T
     if abs(M[3, 3]) < _EPS:
         raise ValueError("M[3, 3] is zero")

@@ -317,11 +317,11 @@ if sklearn:
         """
         def __init__(self,
                      n_clusters,
-                     max_iter = 300,
-                     n_init = 10,
-                     init = 'k-means++',
+                     max_iter=300,
+                     n_init=10,
+                     init='k-means++',
                      algorithm="auto",
-                     tol = 1e-4,
+                     tol=1e-4,
                      verbose=False,
                      random_state=None,
                      copy_x=True,
@@ -352,7 +352,7 @@ if sklearn:
                 If an ndarray is passed, it should be of shape
                 (n_clusters, n_features) and gives the initial centers.
                 If a callable is passed, it should take arguments X, k and
-                and a ranndom state and return an initialization.
+                and a random state and return an initialization.
 
             precompute_distances : {'auto', True, False}
                 Precompute distances (faster but takes more memory).
@@ -391,12 +391,12 @@ if sklearn:
                 but one are used.
 
             """
-            self.kmeans = sklearn.cluster.KMeans(n_clusters = n_clusters,
-                                                 max_iter = max_iter,
-                                                 n_init = n_init,
-                                                 init = init,
+            self.kmeans = sklearn.cluster.KMeans(n_clusters=n_clusters,
+                                                 max_iter=max_iter,
+                                                 n_init=n_init,
+                                                 init=init,
                                                  precompute_distances='auto',
-                                                 tol = tol,
+                                                 tol=tol,
                                                  verbose=verbose,
                                                  random_state=random_state,
                                                  copy_x=copy_x,

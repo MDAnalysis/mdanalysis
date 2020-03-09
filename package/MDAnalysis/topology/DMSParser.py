@@ -41,6 +41,7 @@ Classes
 
 """
 from __future__ import absolute_import
+from six import raise_from
 
 import numpy as np
 import sqlite3
@@ -141,8 +142,9 @@ class DMSParser(TopologyReaderBase):
                                 ''.format(attrname))
                     vals = cur.fetchall()
                 except sqlite3.DatabaseError:
-                    raise IOError(
-                        "Failed reading the atoms from DMS Database")
+                    raise_from(
+                        IOError("Failed reading the atoms from DMS Database"),
+                        None)
                 else:
                     attrs[attrname] = np.array(vals, dtype=dt)
 
@@ -151,7 +153,9 @@ class DMSParser(TopologyReaderBase):
                 cur.execute('SELECT * FROM bond')
                 bonds = cur.fetchall()
             except sqlite3.DatabaseError:
-                raise IOError("Failed reading the bonds from DMS Database")
+                raise_from(
+                    IOError("Failed reading the bonds from DMS Database"),
+                    None)
             else:
                 bondlist = []
                 bondorder = {}

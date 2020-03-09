@@ -43,7 +43,7 @@ from . import ClusteringMethod
 
 def cluster(ensembles,
             method = ClusteringMethod.AffinityPropagationNative(),
-            selection="name CA",
+            select="name CA",
             distance_matrix=None,
             allow_collapsed_result=True,
             ncores=1,
@@ -75,7 +75,7 @@ def cluster(ensembles,
         can be explored by adding different instances of the same clustering
         class.
 
-    selection : str, optional
+    select : str, optional
         Atom selection string in the MDAnalysis format. Default is "name CA"
 
     distance_matrix : encore.utils.TriangularMatrix or list thereof, optional
@@ -197,7 +197,7 @@ def cluster(ensembles,
             distance_matrix = []
             for merged_ensemble in merged_ensembles:
                 distance_matrix.append(get_distance_matrix(merged_ensemble,
-                                                           selection=selection,
+                                                           select=select,
                                                            **kwargs))
 
     args = []

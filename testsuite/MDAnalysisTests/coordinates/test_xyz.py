@@ -161,3 +161,18 @@ class TestXYZWriterNames(object):
 
         u2 = mda.Universe(outfile)
         assert all(u2.atoms.names == names)
+
+    @pytest.mark.parametrize("attr", ["elements", "names"])
+    def test_elements_and_names(self, outfile, attr):
+
+        u = mda.Universe.empty(n_atoms=5, trajectory=True)
+
+        u.add_TopologyAttr(attr, values=['Te', 'S', 'Ti', 'N', 'Ga'])
+
+        with mda.Writer(outfile) as w:
+            w.write(u)
+
+        with open(outfile, "r") as r:
+            names = ''.join(l.split()[0].strip() for l in r.readlines()[2:-1])
+
+        assert names[:-1].lower() == 'testing'

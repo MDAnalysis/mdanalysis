@@ -213,8 +213,9 @@ class AuxStep(object):
         try:
             select = self._select_data
         except AttributeError:
-                warnings.warn("{} does not support data selection".format(
-                                                      self.__class__.__name__))
+            warnings.warn(
+                "{} does not support data selection".format(self.__class__.__name__)
+            )
         else:
             # check *new* is valid before setting; _select_data should raise an
             # error if not
@@ -478,7 +479,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             return frame_index
         else:
             time_frame = time_frame_0 + frame_index*ts.dt
-            time_diff = abs(time_frame_0 - time_step)
+            time_diff = abs(time_frame - time_step)
             return frame_index, time_diff
 
     def move_to_ts(self, ts):
@@ -597,7 +598,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
     def _check_index(self, i):
         if not isinstance(i, numbers.Integral):
-                raise TypeError("Step indices must be integers")
+            raise TypeError("Step indices must be integers")
         if i < 0:
             i = i + self.n_steps
         if i < 0 or i >= self.n_steps:
@@ -824,7 +825,7 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
 
     @time_selector.setter
     def time_selector(self, new):
-        olf = self.auxstep._time_selector
+        old = self.auxstep._time_selector
         self.auxstep._time_selector = new
         if old != new:
             # if constant_dt is False and so we're using a _times list, this will
@@ -908,7 +909,7 @@ class AuxFileReader(AuxReader):
 
     def _reopen(self):
         """ Close and then reopen *auxfile*. """
-        if self.auxfile != None:
+        if self.auxfile is not None:
             self.auxfile.close()
         self.auxfile = open(self._auxdata)
         self.auxstep.step = -1

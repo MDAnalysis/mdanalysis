@@ -224,8 +224,8 @@ except NameError:
 try:
     from os import PathLike
 except ImportError:
-   class PathLike(object):
-       pass
+    class PathLike(object):
+        pass
 
 
 
@@ -852,7 +852,9 @@ class NamedStream(io.IOBase, PathLike):
             return self.stream.fileno()
         except AttributeError:
             # IOBase.fileno does not raise IOError as advertised so we do this here
-            raise IOError("This NamedStream does not use a file descriptor.")
+            six.raise_from(
+                IOError("This NamedStream does not use a file descriptor."),
+                None)
 
     def readline(self):
         try:
@@ -923,8 +925,10 @@ def get_ext(filename):
     ext : str
     """
     root, ext = os.path.splitext(filename)
+    
     if ext.startswith(os.extsep):
         ext = ext[1:]
+
     return root, ext.lower()
 
 
@@ -955,9 +959,11 @@ def check_compressed_format(root, ext):
     if ext.lower() in ("bz2", "gz"):
         try:
             root, ext = get_ext(root)
-        except:
-            raise TypeError("Cannot determine coordinate format for '{0}.{1}'"
-                            "".format(root, ext))
+        except Exception:
+            six.raise_from(
+                TypeError("Cannot determine coordinate format for '{0}.{1}'"
+                          "".format(root, ext)),
+                None)
 
     return ext.upper()
 
@@ -980,11 +986,12 @@ def format_from_filename_extension(filename):
     """
     try:
         root, ext = get_ext(filename)
-    except:
-        raise TypeError(
+    except Exception:
+        six.raise_from(TypeError(
             "Cannot determine file format for file '{0}'.\n"
             "           You can set the format explicitly with "
-            "'Universe(..., format=FORMAT)'.".format(filename))
+            "'Universe(..., format=FORMAT)'.".format(filename)),
+            None)
     format = check_compressed_format(root, ext)
     return format
 
@@ -1022,8 +1029,10 @@ def guess_format(filename):
             format = format_from_filename_extension(filename.name)
         except AttributeError:
             # format is None so we need to complain:
-            raise ValueError("guess_format requires an explicit format specifier "
-                             "for stream {0}".format(filename))
+            six.raise_from(
+                ValueError("guess_format requires an explicit format specifier "
+                           "for stream {0}".format(filename)),
+                None)
     else:
         # iterator, list, filename: simple extension checking... something more
         # complicated is left for the ambitious.
@@ -1110,7 +1119,11 @@ class FixedcolumnEntry(object):
         try:
             return self.convertor(line[self.start:self.stop])
         except ValueError:
-            raise ValueError("{0!r}: Failed to read&convert {1!r}".format(self, line[self.start:self.stop]))
+            six.raise_from(
+                ValueError(
+                    "{0!r}: Failed to read&convert {1!r}".format(
+                        self, line[self.start:self.stop])),
+                None)
 
     def __len__(self):
         """Length of the field in columns (stop - start)"""
@@ -1344,7 +1357,9 @@ def get_weights(atoms, weights):
         try:
             weights = atoms.masses
         except AttributeError:
-            raise TypeError("weights='mass' selected but atoms.masses is missing")
+            six.raise_from(
+                TypeError("weights='mass' selected but atoms.masses is missing"),
+                None)
 
     if iterable(weights):
         if len(np.asarray(weights).shape) != 1:
@@ -1424,7 +1439,11 @@ def convert_aa_code(x):
     try:
         return d[x.upper()]
     except KeyError:
-        raise ValueError("No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x))
+        six.raise_from(
+            ValueError(
+                "No conversion for {0} found (1 letter -> 3 letter or 3/4 letter -> 1 letter)".format(x)
+                ),
+            None)
 
 
 #: Regular expression to match and parse a residue-atom selection; will match
@@ -1674,8 +1693,8 @@ class Namespace(dict):
         try:
             return dict.__getitem__(self, key)
         except KeyError:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key))
+            six.raise_from(AttributeError('"{}" is not known in the namespace.'
+                                 .format(key)), None)
 
     def __setattr__(self, key, value):
         dict.__setitem__(self, key, value)
@@ -1684,8 +1703,10 @@ class Namespace(dict):
         try:
             dict.__delitem__(self, key)
         except KeyError:
-            raise AttributeError('"{}" is not known in the namespace.'
-                                 .format(key))
+            six.raise_from(
+                AttributeError('"{}" is not known in the namespace.'
+                                 .format(key)),
+                None)
 
     def __eq__(self, other):
         try:
@@ -1991,8 +2012,11 @@ def check_coords(*coord_names, **options):
             try:
                 coords = coords.astype(np.float32, order='C', copy=enforce_copy)
             except ValueError:
-                raise TypeError("{}(): {}.dtype must be convertible to float32,"
-                                " got {}.".format(fname, argname, coords.dtype))
+                six.raise_from(
+                    TypeError(
+                        "{}(): {}.dtype must be convertible to float32,"
+                        " got {}.".format(fname, argname, coords.dtype)),
+                    None)
             return coords, is_single
 
         @wraps(func)

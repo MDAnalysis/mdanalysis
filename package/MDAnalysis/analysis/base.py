@@ -33,7 +33,6 @@ import six
 from six.moves import range, zip
 import inspect
 import logging
-import warnings
 
 import numpy as np
 from MDAnalysis import coordinates
@@ -99,21 +98,14 @@ class AnalysisBase(object):
             A trajectory Reader
         verbose : bool, optional
            Turn on more logging and debugging, default ``False``
+
+        .. versionchanged:: 1.0.0
+           Support for setting ``start``, ``stop``, and ``step`` has been
+           removed. These should now be directly passed to
+           :meth:`AnalysisBase.run`.
         """
         self._trajectory = trajectory
         self._verbose = verbose
-        # do deprecated kwargs
-        # remove in 1.0
-        deps = []
-        for arg in ['start', 'stop', 'step']:
-            if arg in kwargs and not kwargs[arg] is None:
-                deps.append(arg)
-                setattr(self, arg, kwargs[arg])
-        if deps:
-            warnings.warn('Setting the following kwargs should be '
-                          'done in the run() method: {}'.format(
-                              ', '.join(deps)),
-                          DeprecationWarning)
 
     def _setup_frames(self, trajectory, start=None, stop=None, step=None):
         """
@@ -132,11 +124,6 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         """
         self._trajectory = trajectory
-        # TODO: Remove once start/stop/step are deprecated from init
-        # See if these have been set as class attributes, and use that
-        start = getattr(self, 'start', start)
-        stop = getattr(self, 'stop', stop)
-        step = getattr(self, 'step', step)
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
         self.start = start
         self.stop = stop
@@ -232,9 +219,14 @@ class AnalysisFromFunction(AnalysisBase):
             trajectory to iterate over. If ``None`` the first AtomGroup found in
             args and kwargs is used as a source for the trajectory.
         *args : list
-           arguments for ``function``
+            arguments for ``function``
         **kwargs : dict
-           arugments for ``function`` and ``AnalysisBase``
+            arguments for ``function`` and ``AnalysisBase``
+
+        .. versionchanged:: 1.0.0
+           Support for directly passing the ``start``, ``stop``, and ``step``
+           arguments has been removed. These should instead be passed
+           to :meth:`AnalysisFromFunction.run`.
 
         """
         if (trajectory is not None) and (not isinstance(
@@ -258,14 +250,9 @@ class AnalysisFromFunction(AnalysisBase):
         self.function = function
         self.args = args
 
-        # TODO: Remove in 1.0
-        my_kwargs = {}
-        for depped_arg in ['start', 'stop', 'step']:
-            if depped_arg in kwargs:
-                my_kwargs[depped_arg] = kwargs.pop(depped_arg)
         self.kwargs = kwargs
 
-        super(AnalysisFromFunction, self).__init__(trajectory, **my_kwargs)
+        super(AnalysisFromFunction, self).__init__(trajectory)
 
     def _prepare(self):
         self.results = []

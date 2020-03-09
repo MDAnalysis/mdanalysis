@@ -108,6 +108,13 @@ the attributes they provide.
                                 charges, bonds,   versions of the file format);
                                 masses, moltypes, :mod:`MDAnalysis.topology.TPRParser`
                                 molnums
+   
+   ITP               itp        names, types,     Gromacs include topology file;
+                                resids, resnames, :mod:`MDAnalysis.topology.ITPParser`
+                                charges, bonds,
+                                masses, segids,
+                                moltypes,
+                                chargegroups
 
    MOL2 [#a]_        mol2       ids, names,       Tripos MOL2 molecular structure format;
                                 types, resids,    :mod:`MDAnalysis.topology.MOL2Parser`
@@ -281,7 +288,7 @@ from __future__ import absolute_import
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser','GSDParser']
+           'HoomdXMLParser','GSDParser', 'ITPParser', 'ParmEdParser']
 
 from . import core
 from . import PSFParser
@@ -304,3 +311,5 @@ from . import HoomdXMLParser
 from . import MMTFParser
 from . import GSDParser
 from . import MinimalParser
+from . import ITPParser
+from . import ParmEdParser

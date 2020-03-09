@@ -275,7 +275,7 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
-            segids, chainids = chainids, None
+            segids = chainids
 
         n_atoms = len(serials)
 
@@ -290,8 +290,7 @@ class PDBParser(TopologyReaderBase):
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
-            if not vals is None:
-                attrs.append(Attr(np.array(vals, dtype=dtype)))
+            attrs.append(Attr(np.array(vals, dtype=dtype)))
         # Guessed attributes
         # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this

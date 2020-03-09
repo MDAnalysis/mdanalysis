@@ -143,8 +143,8 @@ rotating/changing direction very fast::
   from MDAnalysis.analysis.waterdynamics import WaterOrientationalRelaxation as WOR
 
   u = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 6.0 protein and resid 42"
-  WOR_analysis = WOR(universe, selection, 0, 1000, 20)
+  select = "byres name OH2 and sphzone 6.0 protein and resid 42"
+  WOR_analysis = WOR(universe, select, 0, 1000, 20)
   WOR_analysis.run()
   time = 0
   #now we print the data ready to plot. The first two columns are WOR_OH vs t plot,
@@ -253,8 +253,8 @@ water molecules, a weak rise mean slow movement of particles::
   from MDAnalysis.analysis.waterdynamics import MeanSquareDisplacement as MSD
 
   u = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
-  MSD_analysis = MSD(universe, selection, 0, 1000, 20)
+  select = "byres name OH2 and cyzone 11.0 4.0 -8.0 protein"
+  MSD_analysis = MSD(universe, select, 0, 1000, 20)
   MSD_analysis.run()
   #now we print data ready to graph. The graph
   #represents MSD vs t
@@ -287,8 +287,8 @@ the zone, on the other hand, a fast decay means a short permanence time::
   import matplotlib.pyplot as plt
 
   universe = MDAnalysis.Universe(pdb, trajectory)
-  selection = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
-  sp = SP(universe, selection, verbose=True)
+  select = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
+  sp = SP(universe, select, verbose=True)
   sp.run(start=0, stop=100, tau_max=20)
   tau_timeseries = sp.tau_timeseries
   sp_timeseries = sp.sp_timeseries
@@ -328,8 +328,8 @@ simulation is not being reloaded into memory for each lipid::
   for lipid in lipids.residues:
       print("Lipid ID: %d" % lipid.resid)
 
-      selection = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
-      sp = SP(u, selection, verbose=True)
+      select = "resname POTASSIUM and around 3.5 (resid %d and name O13 O14) " % lipid.resid
+      sp = SP(u, select, verbose=True)
       sp.run(tau_max=20)
 
       # Raw SP points for each tau:
@@ -454,8 +454,6 @@ import warnings
 from six.moves import range, zip_longest
 
 import numpy as np
-import multiprocessing
-
 import MDAnalysis.analysis.hbonds
 from MDAnalysis.lib.log import ProgressMeter
 
@@ -501,22 +499,21 @@ class HydrogenBondLifetimes(object):
       frame where analysis ends
     dtmax : int
       Maximum dt size, `dtmax` < `tf` or it will crash.
-    nproc : int
-      Number of processors to use, by default is 1.
 
 
     .. versionadded:: 0.11.0
+    .. versionchanged:: 1.0.0
+       The ``nproc`` keyword was removed as it linked to a portion of code that
+       may have failed in some cases.
     """
 
-    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
-                 nproc=1):
+    def __init__(self, universe, selection1, selection2, t0, tf, dtmax):
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
         self.t0 = t0
         self.tf = tf - 1
         self.dtmax = dtmax
-        self.nproc = nproc
         self.timeseries = None
 
     def _getC_i(self, HBP, t0, t):
@@ -633,82 +630,17 @@ class HydrogenBondLifetimes(object):
             a.append(fix)
         return a
 
-    def _HBA(self, ts, conn, universe, selAtom1, selAtom2,
-             verbose=False):
-        """
-        Main function for calculate C_i and C_c in parallel.
-        """
-        finalGetResidue1 = selAtom1
-        finalGetResidue2 = selAtom2
-        frame = ts.frame
-        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe,
-                                                            finalGetResidue1,
-                                                            finalGetResidue2,
-                                                            distance=3.5,
-                                                            angle=120.0,
-                                                            start=frame - 1,
-                                                            stop=frame)
-        while True:
-            try:
-                h.run(verbose=verbose)
-                break
-            except:
-                print("error")
-                print("trying again")
-                sys.stdout.flush()
-        sys.stdout.flush()
-        conn.send(h.timeseries[0])
-        conn.close()
 
     def run(self, **kwargs):
         """Analyze trajectory and produce timeseries"""
-        h_list = []
-        i = 0
-        if (self.nproc > 1):
-            while i < len(self.universe.trajectory):
-                jobs = []
-                k = i
-                for j in range(self.nproc):
-                        # start
-                    print("ts=", i + 1)
-                    if i >= len(self.universe.trajectory):
-                        break
-                    conn_parent, conn_child = multiprocessing.Pipe(False)
-                    while True:
-                        try:
-                            # new thread
-                            jobs.append(
-                                (multiprocessing.Process(
-                                    target=self._HBA,
-                                    args=(self.universe.trajectory[i],
-                                          conn_child, self.universe,
-                                          self.selection1, self.selection2,)),
-                                 conn_parent))
-                            break
-                        except:
-                            print("error in jobs.append")
-                    jobs[j][0].start()
-                    i = i + 1
-
-                for j in range(self.nproc):
-                    if k >= len(self.universe.trajectory):
-                        break
-                    rec01 = jobs[j][1]
-                    received = rec01.recv()
-                    h_list.append(received)
-                    jobs[j][0].join()
-                    k += 1
-            self.timeseries = self._getGraphics(
-                h_list, 0, self.tf - 1, self.dtmax)
-        else:
-            h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
-                                                                     self.selection1,
-                                                                     self.selection2,
-                                                                     distance=3.5,
-                                                                     angle=120.0)
-            h_list.run(**kwargs)
-            self.timeseries = self._getGraphics(
-                h_list.timeseries, self.t0, self.tf, self.dtmax)
+        h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
+                                                                 self.selection1,
+                                                                 self.selection2,
+                                                                 distance=3.5,
+                                                                 angle=120.0)
+        h_list.run(**kwargs)
+        self.timeseries = self._getGraphics(h_list.timeseries, self.t0,
+                                            self.tf, self.dtmax)
 
 
 class WaterOrientationalRelaxation(object):
@@ -742,11 +674,13 @@ class WaterOrientationalRelaxation(object):
 
     .. versionadded:: 0.11.0
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.t0 = t0
         self.tf = tf
         self.dtmax = dtmax
@@ -923,7 +857,7 @@ class AngularDistribution(object):
     ----------
     universe : Universe
         Universe object
-    selection : str
+    select : str
         Selection string to evaluate its angular distribution ['byres name OH2']
     bins : int (optional)
         Number of bins to create the histogram by means of :func:`numpy.histogram`
@@ -933,11 +867,14 @@ class AngularDistribution(object):
 
 
     .. versionadded:: 0.11.0
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection_str, bins=40, nproc=1, axis="z"):
+    def __init__(self, universe, select, bins=40, nproc=1, axis="z"):
         self.universe = universe
-        self.selection_str = selection_str
+        self.selection_str = select
         self.bins = bins
         self.nproc = nproc
         self.axis = axis
@@ -1075,7 +1012,7 @@ class MeanSquareDisplacement(object):
     ----------
     universe : Universe
       Universe object
-    selection : str
+    select : str
       Selection string for water [‘byres name OH2’].
     t0 : int
       frame  where analysis begins
@@ -1086,11 +1023,14 @@ class MeanSquareDisplacement(object):
 
 
     .. versionadded:: 0.11.0
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0, tf, dtmax, nproc=1):
+    def __init__(self, universe, select, t0, tf, dtmax, nproc=1):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.t0 = t0
         self.tf = tf
         self.dtmax = dtmax
@@ -1229,7 +1169,7 @@ class SurvivalProbability(object):
     ----------
     universe : Universe
       Universe object
-    selection : str
+    select : str
       Selection string; any selection is allowed. With this selection you
       define the region/zone where to analyze, e.g.: "resname SOL and around 5 (resid 10)". See `SP-examples`_.
     verbose : Boolean, optional
@@ -1238,11 +1178,13 @@ class SurvivalProbability(object):
 
     .. versionadded:: 0.11.0
 
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
 
-    def __init__(self, universe, selection, t0=None, tf=None, dtmax=None, verbose=False):
+    def __init__(self, universe, select, t0=None, tf=None, dtmax=None, verbose=False):
         self.universe = universe
-        self.selection = selection
+        self.selection = select
         self.verbose = verbose
 
         # backward compatibility

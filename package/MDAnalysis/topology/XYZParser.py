@@ -55,6 +55,7 @@ from ..core.topologyattrs import (
     Resids,
     Resnums,
     Segids,
+    Elements,
 )
 
 
@@ -69,6 +70,9 @@ class XYZParser(TopologyReaderBase):
      - Masses
 
     .. versionadded:: 0.9.1
+
+    .. versionchanged: 0.21.0
+       Store elements attribute, based on XYZ atom names
     """
     format = 'XYZ'
 
@@ -92,7 +96,7 @@ class XYZParser(TopologyReaderBase):
 
         # Guessing time
         atomtypes = guessers.guess_types(names)
-        masses = guessers.guess_masses(atomtypes)
+        masses = guessers.guess_masses(names)
 
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
@@ -101,7 +105,7 @@ class XYZParser(TopologyReaderBase):
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
                  Segids(np.array(['SYSTEM'], dtype=object)),
-                 ]
+                 Elements(names)]
 
         top = Topology(natoms, 1, 1,
                        attrs=attrs)

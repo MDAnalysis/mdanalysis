@@ -176,7 +176,7 @@ class TestContacts(object):
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
             universe,
-            selection=(self.sel_acidic, self.sel_basic),
+            select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
@@ -209,7 +209,7 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
@@ -219,7 +219,6 @@ class TestContacts(object):
 
 
     def test_villin_unfolded(self):
-
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -228,7 +227,7 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
@@ -261,6 +260,19 @@ class TestContacts(object):
         assert len(ca.timeseries) == len(expected)
         assert_array_almost_equal(ca.timeseries[:, 1], expected)
 
+    def test_radius_cut_method(self, universe):
+        acidic = universe.select_atoms(self.sel_acidic)
+        basic = universe.select_atoms(self.sel_basic)
+        r = contacts.distance_array(acidic.positions, basic.positions)
+        initial_contacts = contacts.contact_matrix(r, 6.0)
+        expected = []
+        for ts in universe.trajectory:
+            r = contacts.distance_array(acidic.positions, basic.positions)
+            expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
+
+        ca = self._run_Contacts(universe, method='radius_cut')
+        assert_array_equal(ca.timeseries[:, 1], expected)
+
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):
         return np.any(r < dist)
@@ -289,16 +301,6 @@ class TestContacts(object):
     def test_non_callable_method(self, universe):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
-
-    def test_save(self, universe):
-        with tempdir.in_tempdir():
-            ca = self._run_Contacts(universe)
-            ca.save('testfile.npy')
-            saved = np.genfromtxt('testfile.npy')
-            assert_array_almost_equal(ca.timeseries, saved)
-            # check the header was written correctly
-            with open('testfile.npy', 'r') as fin:
-                assert fin.readline().strip() == '# q1 analysis'
 
 
 def test_q1q2():

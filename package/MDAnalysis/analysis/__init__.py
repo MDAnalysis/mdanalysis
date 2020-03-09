@@ -118,6 +118,7 @@ __all__ = [
     'distances',
     'gnm',
     'hbonds',
+    'hydrogenbonds',
     'helanal',
     'hole',
     'leaflet',

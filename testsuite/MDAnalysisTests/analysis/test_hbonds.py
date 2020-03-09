@@ -20,6 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+# Note: to be removed with MDAnalysis.analysis.hbonds.hbond_analysis in 2.0
+
 from __future__ import print_function, absolute_import
 
 
@@ -78,7 +80,6 @@ class TestHydrogenBondAnalysis(object):
         kw = self.kwargs.copy()
         # kw.update(kwargs)
         h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **kw)
-        # remove in 1.0
         if kw['detect_hydrogens'] == 'heuristic':
             with pytest.warns(DeprecationWarning):
                 h.run(verbose=False)
@@ -397,3 +398,126 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # https://github.com/MDAnalysis/mdanalysis/issues/801)
         for name, ref in reference_table.items():
             assert_array_equal(h.table.field(name), ref, err_msg="resname for {0} do not match (Issue #801)")
+
+
+class TestHydrogenBondAnalysisTIP3PHeavyPBC(object):
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    kwargs = {
+        'selection1': 'all',
+        'selection2': 'all',
+        'detect_hydrogens': "distance",
+        'distance': 3.0,
+        'angle': 120.0,
+        'distance_type': 'heavy',
+        'pbc': True
+    }
+
+    @pytest.fixture(scope='class')
+    def h(self, universe):
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run(verbose=False)
+        h.generate_table()
+        return h
+
+    @pytest.fixture(scope='class')
+    def normalized_timeseries(self, h):
+        # timeseries in normalized form: (t, d_indx1, a_indx1, d_index0, a_index0, donor, acceptor, dist, angle)
+        #                   array index:  0     1        2        3         4        5      6        7      8
+        timeseries = [[t] + item
+                      for t, hframe in zip(h.timesteps, h.timeseries)
+                      for item in hframe]
+        return timeseries
+
+    def test_timeseries(self, h, normalized_timeseries):
+
+        assert len(h.timeseries) == 10
+        assert len(normalized_timeseries) == 32
+
+        reference = {
+            'distance': {'mean': 2.7627309, 'std': 0.0905052},
+            'angle': {'mean': 158.9038039, 'std': 12.0362826},
+        }
+
+        assert_allclose(np.mean([hbond[5] for hbond in normalized_timeseries]), reference['distance']['mean'])
+        assert_allclose(np.std([hbond[5] for hbond in normalized_timeseries]), reference['distance']['std'])
+        assert_allclose(np.mean([hbond[6] for hbond in normalized_timeseries]), reference['angle']['mean'])
+        assert_allclose(np.std([hbond[6] for hbond in normalized_timeseries]), reference['angle']['std'])
+
+    def test_count_by_time(self, h):
+
+        ref_times = np.arange(0.02, 0.21, 0.02)
+        ref_counts = np.array([3, 2, 4, 4, 4, 4, 3, 2, 3, 3])
+
+        times, counts = np.array([[count[0], count[1]] for count in h.count_by_time()]).T
+
+        assert_array_almost_equal(times, ref_times)
+        assert_array_equal(counts, ref_counts)
+
+    def test_count_by_type(self, h):
+
+        ref_values = [1.0, 1.0, 0.5, 0.4, 0.2, 0.1]
+
+        c = h.count_by_type()
+        assert_equal(np.sort(c.frequency)[::-1], ref_values)
+
+
+class TestHydrogenBondAnalysisTIP3PHeavyPBCStartStep(object):
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    kwargs = {
+        'selection1': 'all',
+        'selection2': 'all',
+        'detect_hydrogens': "distance",
+        'distance': 3.0,
+        'angle': 120.0,
+        'distance_type': 'heavy',
+        'pbc': True
+    }
+
+    @pytest.fixture(scope='class')
+    def h(self, universe):
+        h = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run(start=1, step=2, verbose=False)
+        h.generate_table()
+        return h
+
+    @pytest.fixture(scope='class')
+    def normalized_timeseries(self, h):
+        # timeseries in normalized form: (t, d_indx1, a_indx1, d_index0, a_index0, donor, acceptor, dist, angle)
+        #                   array index:  0     1        2        3         4        5      6        7      8
+        timeseries = [[t] + item
+                      for t, hframe in zip(h.timesteps, h.timeseries)
+                      for item in hframe]
+        return timeseries
+
+    def test_timeseries(self, h, normalized_timeseries):
+
+        assert len(h.timeseries) == 5
+        assert len(normalized_timeseries) == 15
+
+        reference = {
+            'distance': {'mean': 2.73942464, 'std': 0.05867924},
+            'angle': {'mean': 157.07768079, 'std': 9.72636682},
+        }
+
+        assert_allclose(np.mean([hbond[5] for hbond in normalized_timeseries]), reference['distance']['mean'])
+        assert_allclose(np.std([hbond[5] for hbond in normalized_timeseries]), reference['distance']['std'])
+        assert_allclose(np.mean([hbond[6] for hbond in normalized_timeseries]), reference['angle']['mean'])
+        assert_allclose(np.std([hbond[6] for hbond in normalized_timeseries]), reference['angle']['std'])
+
+    def test_count_by_time(self, h):
+
+        ref_times = np.array([0.04, 0.08, 0.12, 0.16, 0.20])
+        ref_counts = np.array([2, 4, 4, 2, 3])
+
+        times, counts = np.array([[count[0], count[1]] for count in h.count_by_time()]).T
+
+        assert_array_almost_equal(times, ref_times)
+        assert_array_equal(counts, ref_counts)

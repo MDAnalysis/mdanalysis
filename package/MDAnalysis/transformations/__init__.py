@@ -62,3 +62,4 @@ from .translate import translate, center_in_box
 from .rotate import rotateby
 from .positionaveraging import PositionAverager
 from .fit import fit_translation, fit_rot_trans
+from .wrap import wrap, unwrap

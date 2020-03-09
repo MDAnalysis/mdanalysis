@@ -132,13 +132,6 @@ class InterRDF(AnalysisBase):
     exclusion_block : tuple (optional)
           A tuple representing the tile to exclude from the distance
           array. [None]
-    start : int (optional)
-          The frame to start at (default is first)
-    stop : int (optional)
-          The frame to end at (default is last)
-    step : int (optional)
-          The step size through the trajectory in frames (default is
-          every frame)
     verbose : bool (optional)
           Show detailed progress of the calculation if set to ``True``; the
           default is ``False``.
@@ -163,6 +156,10 @@ class InterRDF(AnalysisBase):
 
 
     .. versionadded:: 0.13.0
+
+    .. versionchanged:: 1.0.0
+       Support for the ``start``, ``stop``, and ``step`` keywords has been
+       removed. These should instead be passed to :meth:`InterRDF.run`.
 
     """
     def __init__(self, g1, g2,
@@ -248,13 +245,6 @@ class InterRDF_s(AnalysisBase):
           Number of bins in the histogram [75]
     range : tuple or list (optional)
           The size of the RDF [0.0, 15.0]
-    start : int (optional)
-          The frame to start at (default is first)
-    stop : int (optional)
-          The frame to end at (default is last)
-    step : int (optional)
-          The step size through the trajectory in frames (default is
-          every frame)
 
     Example
     -------
@@ -296,6 +286,10 @@ class InterRDF_s(AnalysisBase):
 
 
     .. versionadded:: 0.19.0
+
+    .. versionchanged:: 1.0.0
+       Support for the ``start``, ``stop``, and ``step`` keywords has been
+       removed. These should instead be passed to :meth:`InterRDF_s.run`.
 
     """
     def __init__(self, u, ags,

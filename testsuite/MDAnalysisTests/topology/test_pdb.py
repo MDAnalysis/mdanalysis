@@ -68,24 +68,26 @@ hybrid36 = [
 def test_hy36decode(hybrid, integer):
     assert mda.topology.PDBParser.hy36decode(5, hybrid) == integer
 
-class TestPDBParser(ParserBase):
+class PDBBase(ParserBase):
+    expected_attrs = ['ids', 'names', 'record_types', 'resids',
+                      'resnames', 'altLocs', 'icodes', 'occupancies',
+                      'bonds', 'tempfactors', 'chainIDs']
+    guessed_attrs = ['types', 'masses']
+
+
+class TestPDBParser(PDBBase):
     """This one has neither chainids or segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB
-    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames']
-    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 47681
     expected_n_residues = 11302
     expected_n_segments = 1
 
 
-class TestPDBParserSegids(ParserBase):
+class TestPDBParserSegids(PDBBase):
     """Has segids"""
     parser = mda.topology.PDBParser.PDBParser
     ref_filename = PDB_small
-    expected_attrs = ['ids', 'names', 'record_types', 'resids', 'resnames',
-                      'segids']
-    guessed_attrs = ['types', 'masses']
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_segments = 1

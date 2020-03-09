@@ -73,7 +73,11 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
+<<<<<<< HEAD
 RELEASE = "0.20.1"
+=======
+RELEASE = "0.20.2-dev0"
+>>>>>>> 47891f51b86a9156884d2fd7bbba1814633a0847
 
 is_release = 'dev' not in RELEASE
 
@@ -554,13 +558,16 @@ if __name__ == '__main__':
           'GridDataFormats>=0.4.0',
           'six>=1.4.0',
           'mmtf-python>=1.0.0',
-          'joblib',
+          'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
+          'parmed',
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
+    else:
+        install_requires.append('gsd>=1.9.3')
 
     setup(name='MDAnalysis',
           version=RELEASE,
@@ -590,7 +597,7 @@ if __name__ == '__main__':
           ext_modules=exts,
           requires=['numpy (>=1.13.3)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
+                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'parmed'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[

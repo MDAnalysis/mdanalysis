@@ -221,20 +221,15 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_mass_weighted_and_save(self, universe, outfile, correct_values):
+    def test_mass_weighted(self, universe, correct_values):
         # mass weighting the CA should give the same answer as weighing
         # equally because all CA have the same mass
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA',
                                             weights='mass').run(step=49)
-        RMSD.save(outfile)
 
         assert_almost_equal(RMSD.rmsd, correct_values, 4,
                             err_msg="error: rmsd profile should match"
                             "test values")
-        saved = np.loadtxt(outfile)
-        assert_almost_equal(RMSD.rmsd, saved, 4,
-                            err_msg="error: rmsd profile should match "
-                            "saved test values")
 
     def test_custom_weighted(self, universe, correct_values_mass):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, weights="mass").run(step=49)
@@ -260,13 +255,34 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
+    def test_custom_groupselection_weights_applied_1D_array(self, universe, correct_values_mass):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe,
+                                            select='backbone',
+                                            groupselections=['name CA and resid 1-5','name CA and resid 1'], 
+                                            weights=[None, [1,0,0,0,0], None]).run(step=49)
+
+        assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
+                            err_msg="error: rmsd profile should match "
+                            "for applied weight array and selected resid")
+
+    def test_custom_groupselection_weights_applied_mass(self, universe, correct_values_mass):
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe, 
+                                            select='backbone', 
+                                            groupselections=['all','all'], 
+                                            weights=[None, 'mass',universe.atoms.masses ]).run(step=49)
+
+        assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
+                            err_msg="error: rmsd profile should match "
+                            "between applied mass and universe.atoms.masses")
+
+
     def test_rmsd_scalar_weights_raises_TypeError(self, universe):
         with pytest.raises(TypeError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=42)
 
     def test_rmsd_string_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights="Jabberwock")
 
@@ -274,12 +290,16 @@ class TestRMSD(object):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=universe.atoms.masses[:-1])
-
-    def test_rmsd_group_selections_wrong_weights(self, universe):
+    def test_rmsd_mismatched_weights_in_groupselection_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
+            RMSD = MDAnalysis.analysis.rms.RMSD(
+                universe, groupselections=['all'],
+                weights=[universe.atoms.masses,universe.atoms.masses[:-1]])
+    def test_rmsd_list_of_weights_wrong_length(self, universe):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, groupselections=['backbone', 'name CA'],
-                weights=universe.atoms.masses)
+                weights=['mass',None])
 
     def test_rmsd_group_selections(self, universe, correct_values_group):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
@@ -314,7 +334,16 @@ class TestRMSD(object):
         with pytest.raises(SelectionError):
             RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                                 reference=reference)
-
+    def test_ref_mobile_mass_mismapped(self, universe):
+        reference = MDAnalysis.Universe(PSF, DCD)
+        universe.atoms.masses = np.zeros(len(universe.atoms.masses))
+        with pytest.raises(ZeroDivisionError):
+            RMSD = MDAnalysis.analysis.rms.RMSD(universe,
+                                                reference=reference,
+                                                select='all',
+                                                weights='mass',
+                                                tol_mass=100)
+            RMSD.run()
     def test_group_selections_unequal_len(self, universe):
         reference = MDAnalysis.Universe(PSF, DCD)
         reference.atoms[0].residue.resname='NOTMET'
@@ -323,11 +352,6 @@ class TestRMSD(object):
                                                 reference=reference,
                                                 groupselections=
                                                 ['resname MET','type NH3'])
-
-    def test_save_before_run(self, universe):
-        with pytest.raises(NoDataError):
-            RMSD = MDAnalysis.analysis.rms.RMSD(universe)
-            RMSD.save('blah')
 
 
 class TestRMSF(object):

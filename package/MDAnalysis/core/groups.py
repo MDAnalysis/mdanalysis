@@ -90,7 +90,7 @@ that two objects are of the same level, or to access a particular class::
 """
 from __future__ import absolute_import, division
 from six.moves import zip
-from six import string_types
+from six import raise_from, string_types
 
 from collections import namedtuple
 import numpy as np
@@ -102,7 +102,7 @@ import warnings
 
 from numpy.lib.utils import deprecate
 
-from .. import _ANCHOR_UNIVERSES
+from .. import _ANCHOR_UNIVERSES, _CONVERTERS
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
@@ -110,10 +110,9 @@ from ..lib import transformations
 from ..lib import mdamath
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
-from . import flags
 from ..exceptions import NoDataError
 from . import topologyobjects
-from ._get_readers import get_writer_for
+from ._get_readers import get_writer_for, get_converter_for
 
 
 def _unpickle(uhash, ix):
@@ -122,11 +121,16 @@ def _unpickle(uhash, ix):
     except KeyError:
         # doesn't provide as nice an error message as before as only hash of universe is stored
         # maybe if we pickled the filename too we could do better...
-        raise RuntimeError(
-            "Couldn't find a suitable Universe to unpickle AtomGroup onto "
-            "with Universe hash '{}'.  Available hashes: {}"
-            "".format(uhash, ', '.join([str(k)
-                                        for k in _ANCHOR_UNIVERSES.keys()])))
+        raise_from(
+            RuntimeError(
+                "Couldn't find a suitable Universe to unpickle AtomGroup onto "
+                "with Universe hash '{}'.  Available hashes: {}"
+                "".format(
+                    uhash,
+                    ', '.join([str(k) for k in _ANCHOR_UNIVERSES.keys()])
+                    )
+                ),
+            None)
     return u.atoms[ix]
 
 def _unpickle_uag(basepickle, selections, selstrs):
@@ -319,9 +323,12 @@ class _MutableBase(object):
                         u = arg.universe
                         break
                 else:
-                    raise TypeError("No universe, or universe-containing "
-                                   "object passed to the initialization of "
-                                    "{}".format(cls.__name__))
+                    raise_from(
+                        TypeError(
+                            "No universe, or universe-containing "
+                            "object passed to the initialization of "
+                            "{}".format(cls.__name__)),
+                        None)
         try:
             return object.__new__(u._classes[cls])
         except KeyError:
@@ -331,11 +338,12 @@ class _MutableBase(object):
                                   for parent in cls.mro()
                                   if parent in u._class_bases)
             except StopIteration:
-                raise TypeError("Attempted to instantiate class '{}' but "
+                raise_from(TypeError("Attempted to instantiate class '{}' but "
                                 "none of its parents are known to the "
                                 "universe. Currently possible parent "
                                 "classes are: {}".format(cls.__name__,
-                                    str(sorted(u._class_bases.keys()))))
+                                    str(sorted(u._class_bases.keys())))),
+                           None)
             newcls = u._classes[cls] = parent_cls._mix(cls)
             return object.__new__(newcls)
 
@@ -457,11 +465,12 @@ class GroupBase(_MutableBase):
                 ix, u = args
         except (AttributeError,  # couldn't find ix/universe
                 TypeError):  # couldn't iterate the object we got
-            raise TypeError(
+            raise_from(TypeError(
                 "Can only initialise a Group from an iterable of Atom/Residue/"
                 "Segment objects eg: AtomGroup([Atom1, Atom2, Atom3]) "
                 "or an iterable of indices and a Universe reference "
-                "eg: AtomGroup([0, 5, 7, 8], u).")
+                "eg: AtomGroup([0, 5, 7, 8], u)."),
+                       None)
 
         # indices for the objects I hold
         self._ix = np.asarray(ix, dtype=np.intp)
@@ -660,7 +669,7 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center(self, weights, pbc=None, compound='group', unwrap=False):
+    def center(self, weights, pbc=False, compound='group', unwrap=False):
         """Weighted center of (compounds of) the group
 
         Computes the weighted center of :class:`Atoms<Atom>` in the group.
@@ -675,14 +684,14 @@ class GroupBase(_MutableBase):
         weights : array_like or None
             Weights to be used. Setting `weights=None` is equivalent to passing
             identical weights for all atoms of the group.
-        pbc : bool or None, optional
+        pbc : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'``, ``'residues'``, ``'molecules'``, or ``'fragments'``,
             the center of each compound will be calculated without moving any
             :class:`Atoms<Atom>` to keep the compounds intact. Instead, the
             resulting position vectors will be moved to the primary unit cell
-            after calculation.
+            after calculation. Default [``False``].
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the weighted center of all atoms in the group will
             be returned as a single position vector. Else, the weighted centers
@@ -728,21 +737,13 @@ class GroupBase(_MutableBase):
             >>> sel = u.select_atoms('name CA')
             >>> sel.center(sel.masses, compound='residues')
 
-        Notes
-        -----
-        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
-        ``True`` then the `pbc` keyword is used by default.
-
 
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
         """
-
-        if pbc is None:
-            pbc = flags['use_pbc']
-
         atoms = self.atoms
 
         # enforce calculations in double precision:
@@ -774,14 +775,14 @@ class GroupBase(_MutableBase):
             try:
                 compound_indices = atoms.molnums
             except AttributeError:
-                raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.")
+                raise_from(NoDataError("Cannot use compound='molecules': "
+                                  "No molecule information in topology."), None)
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
             except NoDataError:
-                raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.")
+                raise_from(NoDataError("Cannot use compound='fragments': "
+                                  "No bond information in topology."), None)
         else:
             raise ValueError("Unrecognized compound definition: {}\nPlease use"
                              " one of 'group', 'residues', 'segments', "
@@ -828,7 +829,7 @@ class GroupBase(_MutableBase):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center_of_geometry(self, pbc=None, compound='group', unwrap=False):
+    def center_of_geometry(self, pbc=False, compound='group', unwrap=False):
         """Center of geometry of (compounds of) the group.
 
         Computes the center of geometry (a.k.a. centroid) of
@@ -838,13 +839,13 @@ class GroupBase(_MutableBase):
 
         Parameters
         ----------
-        pbc : bool or None, optional
+        pbc : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation. If ``True`` and `compound` is
             ``'segments'`` or ``'residues'``, the center of each compound will
             be calculated without moving any :class:`Atoms<Atom>` to keep the
             compounds intact. Instead, the resulting position vectors will be
-            moved to the primary unit cell after calculation.
+            moved to the primary unit cell after calculation. Default False.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             If ``'group'``, the center of geometry of all :class:`Atoms<Atom>`
             in the group will be returned as a single position vector. Else, the
@@ -865,17 +866,13 @@ class GroupBase(_MutableBase):
             output will be a 2d array of shape ``(n, 3)`` where ``n`` is the
             number of compounds.
 
-        Notes
-        -----
-        If the :class:`MDAnalysis.core.flags` flag *use_pbc* is set to
-        ``True`` then the `pbc` keyword is used by default.
-
 
         .. versionchanged:: 0.8 Added `pbc` keyword
         .. versionchanged:: 0.19.0 Added `compound` parameter
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
         """
         return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 
@@ -984,14 +981,18 @@ class GroupBase(_MutableBase):
             try:
                 compound_indices = atoms.molnums
             except AttributeError:
-                raise NoDataError("Cannot use compound='molecules': "
-                                  "No molecule information in topology.")
+                raise_from(
+                    NoDataError("Cannot use compound='molecules': "
+                                "No molecule information in topology."),
+                    None)
         elif comp == 'fragments':
             try:
                 compound_indices = atoms.fragindices
             except NoDataError:
-                raise NoDataError("Cannot use compound='fragments': "
-                                  "No bond information in topology.")
+                raise_from(
+                    NoDataError("Cannot use compound='fragments': "
+                                "No bond information in topology."),
+                    None)
         else:
             raise ValueError("Unrecognized compound definition: '{}'. Please "
                              "use one of 'group', 'residues', 'segments', "
@@ -1022,7 +1023,7 @@ class GroupBase(_MutableBase):
             accumulation[compound_mask] = _accumulation
         return accumulation
 
-    def bbox(self, **kwargs):
+    def bbox(self, pbc=False):
         """Return the bounding box of the selection.
 
         The lengths A,B,C of the orthorhombic enclosing box are ::
@@ -1042,17 +1043,12 @@ class GroupBase(_MutableBase):
             2x3 array giving corners of bounding box as
             ``[[xmin, ymin, zmin], [xmax, ymax, zmax]]``.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
         """
         atomgroup = self.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -1061,7 +1057,7 @@ class GroupBase(_MutableBase):
 
         return np.array([x.min(axis=0), x.max(axis=0)])
 
-    def bsphere(self, **kwargs):
+    def bsphere(self, pbc=False):
         """Return the bounding sphere of the selection.
 
         The sphere is calculated relative to the
@@ -1080,17 +1076,11 @@ class GroupBase(_MutableBase):
         center : numpy.ndarray
             Coordinates of the sphere center as ``[xcen, ycen, zcen]``.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
         """
         atomgroup = self.atoms.unique
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
 
         if pbc:
             x = atomgroup.pack_into_box(inplace=False)
@@ -1479,14 +1469,16 @@ class GroupBase(_MutableBase):
                     try:
                         compound_indices = atoms.molnums
                     except AttributeError:
-                        raise NoDataError("Cannot use compound='molecules', "
-                                          "this requires molnums.")
+                        raise_from(NoDataError("Cannot use compound='molecules', "
+                                          "this requires molnums."), None)
                 else:  # comp == 'fragments'
                     try:
                         compound_indices = atoms.fragindices
                     except NoDataError:
-                        raise NoDataError("Cannot use compound='fragments', "
-                                          "this requires bonds.")
+                        raise_from(
+                            NoDataError("Cannot use compound='fragments', "
+                                        "this requires bonds."),
+                            None)
 
                 # compute required shifts:
                 if ctr == 'com':
@@ -1641,8 +1633,8 @@ class GroupBase(_MutableBase):
                 try:
                     compound_indices = unique_atoms.molnums
                 except AttributeError:
-                    raise NoDataError("Cannot use compound='molecules', this "
-                                      "requires molnums.")
+                    raise_from(NoDataError("Cannot use compound='molecules', this "
+                                      "requires molnums."), None)
             # Now process every compound:
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions
@@ -2211,55 +2203,19 @@ class AtomGroup(GroupBase):
     :class:`AtomGroup` instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
-    .. rubric:: Deprecated functionality
-
-    *Instant selectors* will be removed in the 1.0 release.  See issue `#1377
-    <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for more details.
-
-    :class:`Atoms<Atom>` can also be accessed in a Pythonic fashion by using the
-    :class:`Atom` name as an attribute. For instance, ::
-
-        ag.CA
-
-    will provide an :class:`AtomGroup` of all CA :class:`Atoms<Atom>` in the
-    group. These *instant selector* attributes are auto-generated for
-    each atom name encountered in the group.
-
-    Notes
-    -----
-    The name-attribute instant selector access to :class:`Atoms<Atom>` is mainly
-    meant for quick interactive work. Thus it either returns a single
-    :class:`Atom` if there is only one matching :class:`Atom`, *or* a
-    new :class:`AtomGroup` for multiple matches.  This makes it difficult to use
-    the feature consistently in scripts.
-
 
     See Also
     --------
     :class:`MDAnalysis.core.universe.Universe`
 
-
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0
-       release. See :ref:`Instant selectors <instance-selectors>` for details
-       and alternatives.
+       release.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms('name ...') to select
+       atoms by name.
     """
-    def __getitem__(self, item):
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        #
-        # u.atoms['HT1'] access, otherwise default
-        if isinstance(item, string_types):
-            try:
-                return self._get_named_atom(item)
-            except (AttributeError, selection.SelectionError):
-                pass
-        return super(AtomGroup, self).__getitem__(item)
-
     def __getattr__(self, attr):
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        #
         # is this a known attribute failure?
         # TODO: Generalise this to cover many attributes
         if attr in ('fragments', 'fragindices', 'n_fragments', 'unwrap'):
@@ -2268,12 +2224,6 @@ class AtomGroup(GroupBase):
             # raise NDE(_ATTR_ERRORS[attr])
             raise NoDataError("AtomGroup.{} not available; this requires Bonds"
                               "".format(attr))
-        elif hasattr(self.universe._topology, 'names'):
-            # Ugly hack to make multiple __getattr__s work
-            try:
-                return self._get_named_atom(attr)
-            except selection.SelectionError:
-                pass
         raise AttributeError("{cls} has no attribute {attr}".format(
             cls=self.__class__.__name__, attr=attr))
 
@@ -2326,11 +2276,11 @@ class AtomGroup(GroupBase):
             try:
                 r_ix = [r.resindex for r in new]
             except AttributeError:
-                raise TypeError("Can only set AtomGroup residues to Residue "
+                raise_from(TypeError("Can only set AtomGroup residues to Residue "
                                 "or ResidueGroup not {}".format(
                                     ', '.join(type(r) for r in new
                                               if not isinstance(r, Residue))
-                                ))
+                                )), None)
         if not isinstance(r_ix, itertools.cycle) and len(r_ix) != len(self):
             raise ValueError("Incorrect size: {} for AtomGroup of size: {}"
                              "".format(len(new), len(self)))
@@ -2503,7 +2453,7 @@ class AtomGroup(GroupBase):
         try:
             return np.array(ts.velocities[self.ix])
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @velocities.setter
     def velocities(self, values):
@@ -2511,7 +2461,7 @@ class AtomGroup(GroupBase):
         try:
             ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @property
     def forces(self):
@@ -2537,7 +2487,7 @@ class AtomGroup(GroupBase):
         try:
             return ts.forces[self.ix]
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces")
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
     @forces.setter
     def forces(self, values):
@@ -2545,7 +2495,7 @@ class AtomGroup(GroupBase):
         try:
             ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces")
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
     @property
     def ts(self):
@@ -2570,11 +2520,30 @@ class AtomGroup(GroupBase):
     # As with universe.select_atoms, needing to fish out specific kwargs
     # (namely, 'updating') doesn't allow a very clean signature.
     def select_atoms(self, sel, *othersel, **selgroups):
-        """Select :class:`Atoms<Atom>` using a selection string.
+        """Select atoms from within this Group using a selection string.
 
-        Returns an :class:`AtomGroup` with :class:`Atoms<Atom>` sorted according
-        to their index in the topology (this is to ensure that there are no
-        duplicates, which can happen with complicated selections).
+        Returns an :class:`AtomGroup` sorted according to their index in the
+        topology (this is to ensure that there are no duplicates, which can
+        happen with complicated selections).
+
+        Parameters
+        ----------
+        sel : str
+          string of the selection, eg "name Ca", see below for possibilities.
+        othersel : iterable of str
+          further selections to perform.  The results of these selections
+          will be appended onto the results of the first.
+        periodic : bool (optional)
+          for geometric selections, whether to account for atoms in different
+          periodic images when searching
+        updating : bool (optional)
+          force the selection to be re evaluated each time the Timestep of the
+          trajectory is changed.  See section on **Dynamic selections** below.
+          [``True``]
+        **selgroups : keyword arguments of str: AtomGroup (optional)
+          when using the "group" keyword in selections, groups are defined by
+          passing them as keyword arguments.  See section on **preexisting
+          selections** below.
 
         Raises
         ------
@@ -2692,7 +2661,6 @@ class AtomGroup(GroupBase):
             not
                 all atoms not in the selection, e.g. ``not protein`` selects
                 all atoms that aren't part of a protein
-
             and, or
                 combine two selections according to the rules of boolean
                 algebra, e.g. ``protein and not resname ALA LYS``
@@ -2771,8 +2739,8 @@ class AtomGroup(GroupBase):
 
             group `group-name`
                 selects the atoms in the :class:`AtomGroup` passed to the
-                function as an argument named `group-name`. Only the atoms
-                common to `group-name` and the instance
+                function as a keyword argument named `group-name`. Only the
+                atoms common to `group-name` and the instance
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms`
                 was called from will be considered, unless ``group`` is
                 preceded by the ``global`` keyword. `group-name` will be
@@ -2780,7 +2748,6 @@ class AtomGroup(GroupBase):
                 This means that it is up to the user to make sure the
                 `group-name` group was defined in an appropriate
                 :class:`~MDAnalysis.core.universe.Universe`.
-
             global *selection*
                 by default, when issuing
                 :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` from an
@@ -2818,8 +2785,6 @@ class AtomGroup(GroupBase):
 
         .. versionchanged:: 0.7.4 Added *resnum* selection.
         .. versionchanged:: 0.8.1 Added *group* and *fullgroup* selections.
-        .. deprecated:: 0.11 The use of *fullgroup* has been deprecated in favor
-            of the equivalent *global group* selections.
         .. versionchanged:: 0.13.0 Added *bonded* selection.
         .. versionchanged:: 0.16.0 Resid selection now takes icodes into account
             where present.
@@ -2831,6 +2796,11 @@ class AtomGroup(GroupBase):
            Added periodic kwarg (default True)
         .. versionchanged:: 0.19.2
            Empty sel string now returns an empty Atom group.
+        .. versionchanged:: 1.0.0
+           The ``fullgroup`` selection has now been removed in favor of the
+           equivalent ``global group`` selection.
+           Removed flags affecting default behaviour for periodic selections;
+           periodic are now on by default (as with default flags)
         """
 
         if not sel:
@@ -2838,8 +2808,7 @@ class AtomGroup(GroupBase):
                           UserWarning)
             return self[[]]
 
-        # once flags removed, replace with default=True
-        periodic = selgroups.pop('periodic', flags['use_periodic_selections'])
+        periodic = selgroups.pop('periodic', True)
 
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
@@ -2883,13 +2852,18 @@ class AtomGroup(GroupBase):
         try:
             levelindices = getattr(self, accessors[level])
         except AttributeError:
-            raise AttributeError('This universe does not have {} '
+            raise_from(AttributeError('This universe does not have {} '
                              'information. Maybe it is not provided in the '
-                             'topology format in use.'.format(level))
+                             'topology format in use.'.format(level)),
+                       None)
         except KeyError:
-            raise ValueError("level = '{0}' not supported, "
-                             "must be one of {1}".format(level,
-                                                         accessors.keys()))
+            raise_from(
+                ValueError(
+                    (
+                        "level = '{0}' not supported, "
+                        "must be one of {1}").format(level, accessors.keys())
+                        ),
+                None)
 
         return [self[levelindices == index] for index in
                 unique_int_1d(levelindices)]
@@ -2910,6 +2884,8 @@ class AtomGroup(GroupBase):
 
 
         .. versionadded:: 0.10.0
+        .. versionchanged:: 0.20.2
+           Now applies periodic boundary conditions when guessing bonds.
         """
         from ..topology.core import guess_bonds, guess_angles, guess_dihedrals
         from .topologyattrs import Bonds, Angles, Dihedrals
@@ -2924,17 +2900,18 @@ class AtomGroup(GroupBase):
                 return attr
 
         # indices of bonds
-        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii)
+        box = self.dimensions if self.dimensions.all() else None
+        b = guess_bonds(self.atoms, self.atoms.positions, vdwradii=vdwradii, box=box)
         bondattr = get_TopAttr(self.universe, 'bonds', Bonds)
-        bondattr.add_bonds(b, guessed=True)
+        bondattr._add_bonds(b, guessed=True)
 
         a = guess_angles(self.bonds)
         angleattr = get_TopAttr(self.universe, 'angles', Angles)
-        angleattr.add_bonds(a, guessed=True)
+        angleattr._add_bonds(a, guessed=True)
 
         d = guess_dihedrals(self.angles)
         diheattr = get_TopAttr(self.universe, 'dihedrals', Dihedrals)
-        diheattr.add_bonds(d)
+        diheattr._add_bonds(d)
 
     @property
     def bond(self):
@@ -3007,6 +2984,84 @@ class AtomGroup(GroupBase):
             raise ValueError(
                 "improper only makes sense for a group with exactly 4 atoms")
         return topologyobjects.ImproperDihedral(self.ix, self.universe)
+
+    @property
+    def ureybradley(self):
+        """This :class:`AtomGroup` represented as an
+        :class:`MDAnalysis.core.topologyobjects.UreyBradley` object
+
+        Raises
+        ------
+        ValueError
+            If the :class:`AtomGroup` is not length 2
+
+
+        .. versionadded:: 0.21.0
+        """
+        if len(self) != 2:
+            raise ValueError(
+                "urey bradley only makes sense for a group with exactly 2 atoms")
+        return topologyobjects.UreyBradley(self.ix, self.universe)
+
+    @property
+    def cmap(self):
+        """This :class:`AtomGroup` represented as an
+        :class:`MDAnalysis.core.topologyobjects.CMap` object
+
+        Raises
+        ------
+        ValueError
+            If the :class:`AtomGroup` is not length 5
+
+
+        .. versionadded:: 0.21.0
+        """
+        if len(self) != 5:
+            raise ValueError(
+                "cmap only makes sense for a group with exactly 5 atoms")
+        return topologyobjects.CMap(self.ix, self.universe)
+
+
+    def convert_to(self, package):
+        """
+        Convert :class:`AtomGroup` to a structure from another Python package.
+
+        Example
+        -------
+
+        The code below converts a Universe to a :class:`parmed.structure.Structure`.
+
+        .. code-block:: python
+
+            >>> import MDAnalysis as mda
+            >>> from MDAnalysis.tests.datafiles import GRO
+            >>> u = mda.Universe(GRO)
+            >>> parmed_structure = u.atoms.convert_to('PARMED')
+            >>> parmed_structure
+            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
+
+        
+        Parameters
+        ----------
+        package: str
+            The name of the package to convert to, e.g. ``"PARMED"``
+
+
+        Returns
+        -------
+        output:
+            An instance of the structure type from another package.
+        
+        Raises
+        ------
+        TypeError:
+            No converter was found for the required package
+
+
+        .. versionadded:: 0.21.0
+        """
+        converter = get_converter_for(package)
+        return converter().convert(self.atoms)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
@@ -3159,8 +3214,8 @@ class ResidueGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors <instance-selectors>` for details and
-       alternatives.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms instead
     """
 
     @property
@@ -3240,11 +3295,15 @@ class ResidueGroup(GroupBase):
             try:
                 s_ix = [s.segindex for s in new]
             except AttributeError:
-                raise TypeError("Can only set ResidueGroup segments to Segment "
-                                "or SegmentGroup, not {}".format(
-                                    ', '.join(type(r) for r in new
+                raise_from(
+                    TypeError(
+                        "Can only set ResidueGroup segments to Segment "
+                        "or SegmentGroup, not {}".format(
+                            ', '.join(type(r) for r in new
                                               if not isinstance(r, Segment))
-                                ))
+                                )
+                        ),
+                    None)
         if not isinstance(s_ix, itertools.cycle) and len(s_ix) != len(self):
             raise ValueError("Incorrect size: {} for ResidueGroup of size: {}"
                              "".format(len(new), len(self)))
@@ -3318,8 +3377,8 @@ class SegmentGroup(GroupBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of Segments will be removed in the 1.0 release.
-       See :ref:`Instant selectors <instance-selectors>` for details and
-       alternatives.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use select_atoms instead
     """
 
     @property
@@ -3645,7 +3704,7 @@ class Atom(ComponentBase):
         try:
             return ts.velocities[self.ix].copy()
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @velocity.setter
     def velocity(self, values):
@@ -3653,7 +3712,7 @@ class Atom(ComponentBase):
         try:
             ts.velocities[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain velocities")
+            raise_from(NoDataError("Timestep does not contain velocities"), None)
 
     @property
     def force(self):
@@ -3676,7 +3735,7 @@ class Atom(ComponentBase):
         try:
             return ts.forces[self.ix].copy()
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces")
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
     @force.setter
     def force(self, values):
@@ -3684,7 +3743,7 @@ class Atom(ComponentBase):
         try:
             ts.forces[self.ix, :] = values
         except (AttributeError, NoDataError):
-            raise NoDataError("Timestep does not contain forces")
+            raise_from(NoDataError("Timestep does not contain forces"), None)
 
 
 class Residue(ComponentBase):
@@ -3740,8 +3799,11 @@ class Segment(ComponentBase):
 
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`Segments<Segment>` will be removed in the
-       1.0 release. See :ref:`Instant selectors <instance-selectors>` for
-       details and alternatives.
+       1.0 release.
+    .. versionchanged:: 1.0.0
+       Removed instant selectors, use either segment.residues[...] to select
+       residue by number, or segment.residues[segment.residue.resnames = ...]
+       to select by resname.
     """
     def __repr__(self):
         me = '<Segment'
@@ -3769,26 +3831,6 @@ class Segment(ComponentBase):
         rg._cache['unique'] = rg
         return rg
 
-    def __getattr__(self, attr):
-        # DEPRECATED in 0.16.2
-        # REMOVE in 1.0
-        #
-        # Segment.r1 access
-        if attr.startswith('r') and attr[1:].isdigit():
-            resnum = int(attr[1:])
-            rg = self.residues[resnum - 1]  # convert to 0 based
-            warnings.warn("Instant selectors Segment.r<N> will be removed in "
-                          "1.0. Use Segment.residues[N-1] instead.",
-                          DeprecationWarning)
-            return rg
-        # Resname accesss
-        if hasattr(self.residues, 'resnames'):
-            try:
-                return self.residues._get_named_residue(attr)
-            except selection.SelectionError:
-                pass
-        raise AttributeError("{cls} has no attribute {attr}"
-                             "".format(cls=self.__class__.__name__, attr=attr))
 
 # Accessing these attrs doesn't trigger an update. The class and instance
 # methods of UpdatingAtomGroup that are used during __init__ must all be

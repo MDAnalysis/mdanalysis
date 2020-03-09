@@ -122,19 +122,20 @@ class TestLAMMPSDATAWriter(object):
         assert_almost_equal(u_ref.dimensions, u_new.dimensions,
                             err_msg="attributes different after writing",
                             decimal=6)
+    
+    def test_Writer_atoms_types(self, LAMMPSDATAWriter):
+        u_ref, u_new = LAMMPSDATAWriter
+        assert_equal(u_ref.atoms.types, u_new.atoms.types,
+                     err_msg="attributes different after writing",)
 
     @pytest.mark.parametrize('attr', [
-        'types', 'bonds', 'angles', 'dihedrals', 'impropers'
+        'bonds', 'angles', 'dihedrals', 'impropers'
     ])
     def test_Writer_atoms(self, attr, LAMMPSDATAWriter):
         u_ref, u_new = LAMMPSDATAWriter
-        if hasattr(u_ref.atoms, attr):
-            assert_equal(getattr(u_ref.atoms, attr),
-                         getattr(u_new.atoms, attr),
-                         err_msg="attributes different after writing")
-        else:
-            with pytest.raises(AttributeError):
-                getattr(u_new, attr)
+        ref = getattr(u_ref.atoms, attr)
+        new = getattr(u_new.atoms, attr)
+        assert ref == new, "attributes different after writing"
 
     @pytest.mark.parametrize('attr', [
         'masses', 'charges', 'velocities', 'positions'

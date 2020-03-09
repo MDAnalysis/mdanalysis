@@ -16,7 +16,6 @@ examples/output.txt
 .project
 .pydevproject
 .settings
-.idea
 .eggs
 # ignore Vagrant virtual machines
 .vagrant
@@ -30,11 +29,17 @@ examples/output.txt
 *.npz
 # Ignore html build
 package/doc/html/
-# Ignore vim files
-*.sw[a-z]
 # Ignore MDAnalysis log files
 MDAnalysis.log
 # Ignore the authors.py files as they are generated files
 authors.py
 # Ignore the .DS_Store file in the osx file system
 *.DS_Store
+# ignore files from tests
+.hypothesis/
+
+# editors and IDEs
+*.sw[a-z]
+*~
+.idea
+.vscode

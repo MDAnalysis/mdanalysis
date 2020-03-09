@@ -37,7 +37,6 @@ from six.moves import zip, range
 
 import Bio.Seq
 import Bio.SeqRecord
-import Bio.Alphabet
 from collections import defaultdict
 import copy
 import functools
@@ -46,9 +45,7 @@ import numbers
 import numpy as np
 import warnings
 
-from numpy.lib.utils import deprecate
 
-from . import flags
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
 from ..lib import transformations, mdamath
@@ -483,61 +480,6 @@ class Atomnames(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
-    def getattr__(atomgroup, name):
-        try:
-            return atomgroup._get_named_atom(name)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    atomgroup.__class__.__name__, name))
-
-    def _get_named_atom(group, name):
-        """Get all atoms with name *name* in the current AtomGroup.
-
-        For more than one atom it returns a list of :class:`Atom`
-        instance. A single :class:`Atom` is returned just as such. If
-        no atoms are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``AtomGroup.select_atoms('name <name>')`` instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # There can be more than one atom with the same name
-        atomlist = group.atoms.unique[group.atoms.unique.names == name]
-        if len(atomlist) == 0:
-            raise selection.SelectionError(
-                "No atoms with name '{0}'".format(name))
-        elif len(atomlist) == 1:
-            # XXX: keep this, makes more sense for names
-            atomlist = atomlist[0]
-        warnings.warn("Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use AtomGroup.select_atoms('name <name>') instead.",
-                      DeprecationWarning)
-        return atomlist
-
-    # AtomGroup already has a getattr
-#    transplants[AtomGroup].append(
-#        ('__getattr__', getattr__))
-
-    transplants[Residue].append(
-        ('__getattr__', getattr__))
-
-    # this is also getitem for a residue
-    transplants[Residue].append(
-        ('__getitem__', getattr__))
-
-    transplants[AtomGroup].append(
-        ('_get_named_atom', _get_named_atom))
-
-    transplants[Residue].append(
-        ('_get_named_atom', _get_named_atom))
-
     def phi_selection(residue):
         """AtomGroup corresponding to the phi protein backbone dihedral
         C'-N-CA-C.
@@ -771,7 +713,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center_of_mass(group, pbc=None, compound='group', unwrap=False):
+    def center_of_mass(group, pbc=False, compound='group', unwrap=False):
         """Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
@@ -817,8 +759,6 @@ class Masses(AtomAttr):
         ----
         * This method can only be accessed if the underlying topology has
           information about atomic masses.
-        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-          ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
@@ -871,7 +811,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def moment_of_inertia(group, **kwargs):
+    def moment_of_inertia(group, pbc=False, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
 
@@ -881,23 +821,17 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         unwrap = kwargs.pop('unwrap', False)
         compound = kwargs.pop('compound', 'group')
 
         com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound is not 'group':
+        if compound != 'group':
             com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
 
         if pbc:
@@ -937,7 +871,7 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
-    def radius_of_gyration(group, **kwargs):
+    def radius_of_gyration(group, pbc=False, **kwargs):
         """Radius of gyration.
 
         Parameters
@@ -946,17 +880,11 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc)
@@ -974,7 +902,7 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
-    def shape_parameter(group, **kwargs):
+    def shape_parameter(group, pbc=False, **kwargs):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -984,11 +912,6 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
-
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
 
 
         References
@@ -1005,7 +928,6 @@ class Masses(AtomAttr):
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc)
@@ -1029,7 +951,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def asphericity(group, pbc=None, unwrap=None, compound='group'):
+    def asphericity(group, pbc=False, unwrap=None, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1038,17 +960,11 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. If ``None`` use value defined in
-            MDAnalysis.core.flags['use_pbc']
+            calculation. [``False``]
         unwrap : bool, optional
             If ``True``, compounds will be unwrapped before computing their centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             Which type of component to keep together during unwrapping.
-
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
 
 
         References
@@ -1061,19 +977,16 @@ class Masses(AtomAttr):
            <https://doi.org/10.1021/jp037128y>`_
 
 
-
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
 
         """
         atomgroup = group.atoms
-        if pbc is None:
-            pbc = flags['use_pbc']
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound is not 'group':
+        if compound != 'group':
             com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
 
         if pbc:
@@ -1099,7 +1012,7 @@ class Masses(AtomAttr):
         ('asphericity', asphericity))
 
     @warn_if_not_unique
-    def principal_axes(group, pbc=None):
+    def principal_axes(group, pbc=False):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -1112,7 +1025,7 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. If ``None`` use value defined in setup flags.
+            calculation. [``False``]
 
         Returns
         -------
@@ -1120,18 +1033,11 @@ class Masses(AtomAttr):
             3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
             ``v[2]`` as third eigenvector.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
         atomgroup = group.atoms
-        if pbc is None:
-            pbc = flags['use_pbc']
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
@@ -1284,6 +1190,82 @@ class AltLocs(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
+class GBScreens(AtomAttr):
+    """Generalized Born screening factor"""
+    attrname = 'gbscreens'
+    singular = 'gbscreen'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class SolventRadii(AtomAttr):
+    """Intrinsic solvation radius"""
+    attrname = 'solventradii'
+    singular = 'solventradius'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class NonbondedIndices(AtomAttr):
+    """Nonbonded index (AMBER)"""
+    attrname = 'nbindices'
+    singular = 'nbindex'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na, dtype=np.int32)
+    
+class RMins(AtomAttr):
+    """The Rmin/2 LJ parameter"""
+    attrname = 'rmins'
+    singular = 'rmin'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class Epsilons(AtomAttr):
+    """The epsilon LJ parameter"""
+    attrname = 'epsilons'
+    singular = 'epsilon'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class RMin14s(AtomAttr):
+    """The Rmin/2 LJ parameter for 1-4 interactions"""
+    attrname = 'rmin14s'
+    singular = 'rmin14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+class Epsilon14s(AtomAttr):
+    """The epsilon LJ parameter for 1-4 interactions"""
+    attrname = 'epsilon14s'
+    singular = 'epsilon14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
 
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
@@ -1342,61 +1324,6 @@ class Resnames(ResidueAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(nr)], dtype=object)
-
-    def getattr__(residuegroup, resname):
-        try:
-            return residuegroup._get_named_residue(resname)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    residuegroup.__class__.__name__, resname))
-
-    transplants[ResidueGroup].append(('__getattr__', getattr__))
-    # This transplant is hardcoded for now to allow for multiple getattr things
-    #transplants[Segment].append(('__getattr__', getattr__))
-
-    def _get_named_residue(group, resname):
-        """Get all residues with name *resname* in the current ResidueGroup
-        or Segment.
-
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-        :class:`MDAnalysis.core.group.Residue` is returned for a single match.
-        If no residues are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``ResidueGroup[ResidueGroup.resnames == '<name>']``
-           or ``Segment.residues[Segment.residues == '<name>']``
-           instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # There can be more than one residue with the same name
-        residues = group.residues.unique[
-                group.residues.unique.resnames == resname]
-        if len(residues) == 0:
-            raise selection.SelectionError(
-                "No residues with resname '{0}'".format(resname))
-        warnings.warn("Instant selector ResidueGroup.<name> "
-                      "or Segment.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
-                      "or Segment.residues[Segment.residues == '<name>'] "
-                      "instead.",
-                      DeprecationWarning)
-        if len(residues) == 1:
-            # XXX: keep this, makes more sense for names
-            return residues[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return residues
-
-    transplants[ResidueGroup].append(
-        ('_get_named_residue', _get_named_residue))
 
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
@@ -1481,12 +1408,12 @@ class Resnames(ResidueAttr):
         try:
             sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
         except KeyError as err:
-            raise ValueError("AtomGroup contains a residue name '{0}' that "
+            six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
                              "does not have a IUPAC protein 1-letter "
-                             "character".format(err.message))
+                             "character".format(err.message)), None)
         if format == "string":
             return sequence
-        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        seq = Bio.Seq.Seq(sequence)
         if format == "Seq":
             return seq
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
@@ -1585,64 +1512,44 @@ class Segids(SegmentAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(ns)], dtype=object)
 
-    def getattr__(segmentgroup, segid):
-        try:
-            return segmentgroup._get_named_segment(segid)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    segmentgroup.__class__.__name__, segid))
 
-    transplants[SegmentGroup].append(
-        ('__getattr__', getattr__))
+def _check_connection_values(func):
+    """
+    Checks values passed to _Connection methods for:
+     - appropriate number of atom indices
+     - coerces them to tuples of ints (for hashing)
+     - ensures that first value is less than last (reversibility & hashing)
 
-    def _get_named_segment(group, segid):
-        """Get all segments with name *segid* in the current SegmentGroup.
+    .. versionadded:: 0.21.0
 
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single
-        :class:`MDAnalysis.core.group.Segment` is returned for a single match.
-        If no residues are found, a :exc:`SelectionError` is raised.
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, *args, **kwargs):
+        if not all(len(x) == self._n_atoms 
+                and all(isinstance(y, (int, np.integer)) for y in x)
+                for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                            " atom indices").format(self.attrname,
+                            self._n_atoms))
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
 
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # Undo adding 's' if segid started with digit
-        if segid.startswith('s') and len(segid) >= 2 and segid[1].isdigit():
-            segid = segid[1:]
-
-        # There can be more than one segment with the same name
-        segments = group.segments.unique[
-                group.segments.unique.segids == segid]
-        if len(segments) == 0:
-            raise selection.SelectionError(
-                "No segments with segid '{0}'".format(segid))
-        warnings.warn("Instant selector SegmentGroup.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
-                      "instead.",
-                      DeprecationWarning)
-        if len(segments) == 1:
-            # XXX: keep this, makes more sense for names
-            return segments[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return segments
-
-    transplants[SegmentGroup].append(
-        ('_get_named_segment', _get_named_segment))
-
+        return func(self, clean, *args, **kwargs)
+    return wrapper
 
 class _Connection(AtomAttr):
-    """Base class for connectivity between atoms"""
+    """Base class for connectivity between atoms
+    
+    .. versionchanged:: 0.21.0
+        Added type checking to atom index values.
+    """
+
+    @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = list(values)
+        self.values = values
         if types is None:
             types = [None] * len(values)
         self.types = types
@@ -1674,12 +1581,6 @@ class _Connection(AtomAttr):
 
         for b, t, g, o in zip(self.values, self.types,
                               self._guessed, self.order):
-            # We always want the first index
-            # to be less than the last
-            # eg (0, 1) not (1, 0)
-            # and (4, 10, 8) not (8, 10, 4)
-            if b[0] > b[-1]:
-                b = b[::-1]
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -1706,7 +1607,8 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
-    def add_bonds(self, values, types=None, guessed=True, order=None):
+    @_check_connection_values
+    def _add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
@@ -1726,7 +1628,35 @@ class _Connection(AtomAttr):
             del self._cache['bd']
         except KeyError:
             pass
+    
+    @_check_connection_values
+    def _delete_bonds(self, values):
+        """
+        .. versionadded:: 0.21.0
+        """
 
+        to_check = set(values)
+        self_values = set(self.values)
+        if not to_check.issubset(self_values):
+            missing = to_check-self_values
+            indices = ', '.join(map(str, missing))
+            raise ValueError(('Cannot delete nonexistent '
+                              '{attrname} with atom indices:'
+                              '{indices}').format(attrname=self.attrname,
+                                                  indices=indices))
+        idx = [self.values.index(v) for v in to_check]
+        for i in sorted(idx, reverse=True):
+            del self.values[i]
+
+        for attr in ('types', '_guessed', 'order'):
+            arr = np.array(getattr(self, attr), dtype='object')
+            new = np.delete(arr, idx)
+            setattr(self, attr, list(new))
+        # kill the old cache of bond Dict
+        try:
+            del self._cache['bd']
+        except KeyError:
+            pass
 
 class Bonds(_Connection):
     """Bonds between two atoms
@@ -1743,6 +1673,7 @@ class Bonds(_Connection):
     # many bonds, so still asks for "bonds" in the plural
     singular = 'bonds'
     transplants = defaultdict(list)
+    _n_atoms = 2
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
@@ -1879,6 +1810,19 @@ class Bonds(_Connection):
         ('n_fragments', property(n_fragments, None, None,
                                  n_fragments.__doc__)))
 
+class UreyBradleys(_Connection):
+    """Angles between two atoms
+
+    Initialise with a list of 2 long tuples
+
+    These indices refer to the atom indices.
+
+    .. versionadded:: 0.21.0
+    """
+    attrname = 'ureybradleys'
+    singular = 'ureybradleys'
+    transplants = defaultdict(list)
+    _n_atoms = 2
 
 class Angles(_Connection):
     """Angles between three atoms
@@ -1891,6 +1835,7 @@ class Angles(_Connection):
     attrname = 'angles'
     singular = 'angles'
     transplants = defaultdict(list)
+    _n_atoms = 3
 
 
 class Dihedrals(_Connection):
@@ -1898,6 +1843,7 @@ class Dihedrals(_Connection):
     attrname = 'dihedrals'
     singular = 'dihedrals'
     transplants = defaultdict(list)
+    _n_atoms = 4
 
 
 class Impropers(_Connection):
@@ -1905,3 +1851,14 @@ class Impropers(_Connection):
     attrname = 'impropers'
     singular = 'impropers'
     transplants = defaultdict(list)
+    _n_atoms = 4
+
+class CMaps(_Connection):
+    """
+    A connection between five atoms
+    .. versionadded:: 0.21.0
+    """
+    attrname = 'cmaps'
+    singular = 'cmaps'
+    transplants = defaultdict(list)
+    _n_atoms = 5

@@ -13,6 +13,127 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+<<<<<<< HEAD
+=======
+mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+         PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
+         Yuan-Yu, xiki-tempula
+
+  * 0.21.0
+
+Fixes
+  * encore.dres() returns dimensionality reduction details instead of a
+    reference to itself (Issue #2471)
+  * Handle exception when PDBWriter is trying to remove an invalid StringIO
+    (Issue #2512)
+  * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
+  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
+    `MDAnalysis.analysis.psa`
+  * PDBWriter now uses first character of segid as ChainID (Issue #2224)
+  * Adds a more detailed warning when attempting to read chamber-style parm7
+    files (Issue #2475)
+  * ClusterCollection.get_ids now returns correctly (Issue #2464)
+  * Removes files for stubs mainly introduced in 0.11.0 (Issue #2443)
+  * Removes support for reading AMBER NetCDF files with `cell_angle` units set
+    to `degrees` instead of the convention agreed `degree` (Issue #2327). 
+  * Removes the MassWeight option from gnm (PR #2479).
+  * AtomGroup.guess_bonds now uses periodic boundary information when available
+    (Issue #2350)
+  * Chainreader and continuous option work correctly when readers work for more
+    than one format (Issue #2353)
+  * PDBQTParser now gives icode TopologyAttrs (Issue #2361)
+  * GROReader and GROWriter now can handle boxes with box vectors >1000nm
+  * Guess atom element with uppercase name
+  * TopologyGroup no longer reshapes the type, guessed, and order properties
+    (Issue #2392)
+  * Added test to check for unexpected attributes in TopologyParsers (Issue #2387)
+  * PDB files no longer lose chainIDs when reading files without segIDs (Issue #2389)
+  * The expected frames are made available when a trajectory slice is sliced itself
+    with an incomplete slice and/or with a negative step (Issue #2413)
+  * TXYZ parser uses strings for the atom types like other parsers (Issue #2435)
+  * ITPParser now parses ITP *and* TOP files from GROMACS, reads #include files, and
+    substitutes #define variables both from the file and when passed in as a keyword
+    argument. The directives parsed into bonds, angles, impropers, and dihedrals now
+    match TPRParser. (PR #2408)
+  * Added parmed to setup.py
+
+Enhancements
+  * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
+  * Improved ClusterCollection and Cluster string representations (Issue #2464)
+  * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
+    attribute, if present (#2421).
+  * Enhanges exception message when trajectory output file has no extension assigned.
+  * Uniforms exception handling between Python 2.7 and Python 3: raised exceptions
+    do not contain previous exceptions traceback. Uses six package to handle
+    py27 and py3 compatibility (PR #2357)
+  * Expanded selection wildcards to the start and middle of strings (Issue #2370)
+  * Added type checking and conversion to Connection TopologyAttrs (Issue #2373)
+  * New analysis.hydrogenbonds.HydrogenBondAnalysis class for the analysis of
+    hydrogen bonds. Simpler interface, more extensible and better performance
+    than analysis.hbonds.HydrogenBondAnalysis (PR #2237)
+  * GSD reader is now supported on Windows (Issue #1923, PR #2384)
+  * Empty Universe with 0 atoms is possible (Issue #2383)
+  * Added ITPParser to parse GROMACS itp topology files (PR #2381)
+  * Added match_atoms keyword to analysis.align (Issue #2285, PR #2380)
+  * Added wrap/unwrap transformations (PR #2038)
+  * Read TPR files from Gromacs 2020 (Issue #2412 and #2428)
+  * Added analysis.align.AverageStructure to get the average structure of an
+    out-of-memory trajectory (Issue #2039)
+  * Added _add_TopologyObjects, _delete_TopologyObjects, and public convenience
+    methods to Universe. Added type and order checking to _Connection
+    topologyattrs. (PR #2382)
+  * Added radius_cut_q as a method to contacts.Contacts (PR #2458)
+  * Added ParmEdParser, ParmEdReader and ParmEdConverter to
+    convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
+  * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
+
+Changes
+  * encore.hes() doesn't accept the details keyword anymore, it always returns
+    the relevant details instead, consistently with ces() and dres(), in the
+    form of a dictionary (Issue #2465)
+  * Removed instant selectors on Universe and Group objects (e.g. AtomGroup.C,
+    Segment.r1, Universe.s4AKE).  Use select_atoms instead (Issue #1377)
+  * Calling Universe() now raises a TypeError advising you to use Universe.empty.
+    Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
+  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
+    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
+    (Issue #1463)
+  * Standardize `select` keyword by removing `selection`, `atomselection`
+    and `ref_select` (Issue #2461, Issue #2530)
+  * Removes support for setting `start`/`stop`/`step` trajecotry slicing
+    keywords on :class:`HOLEtraj` construction. Also removes undocumented
+    support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
+    (Issue #2513). 
+  * Removes the `nproc` keyword from
+    :class:`Waterdynamics.HydrogenBondLifetimes` as the multiprocessing functionality
+    did not work in some cases(Issues #2511).
+  * Added `min_mass` parameter to `guess_hydrogens` function in `HydrogenBondAnalysis`
+    set to 0.9 by default (Issue #2472)
+  * Removes `save()` function from contacts, diffusionmap, hole, LinearDensity,
+    and rms (Issue #1745).
+  * Removes; `save_table()` from :class:`HydrogenBondAnalysis`,
+    `save_results()` from :class:`HydrogenBondAutoCorrel`, and
+    `save_results()`/`filename`/`store` from :class:`PSAnalysis`. Also sets
+    the deprecation of `hbonds/hbond_analysis.py` to v1.0 (Issues #1745,
+    #2486, #2487, #2491, #2492).
+  * Removes the `format` and `skip` keywords from :meth:`DCDReader.timeseries`
+    (Issue #2443)
+  * `fullgroup` selection has now been removed (#268)
+  * AlignTraj `save()` method has been removed and the `filename` variable now
+    defaults to the current working directory (Issues #2099, #1745, #2443)
+  * Removed `MDAnalysis.migration` (Issue #2490, PR #2496)
+  * The fasta2select now always assumes that the gap character in a sequence
+    is "-" (Issue #2448, PR #2457)
+  * Removed core.flags.  Default behaviour (eg pbc, units) now defaults to
+    the default setting of the flag before removal.  If you were using flags
+    you will now have to supply the flag setting as keyword arguments to
+    function calls. (Issue #782)
+
+Deprecations
+  * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
+
+
+>>>>>>> 47891f51b86a9156884d2fd7bbba1814633a0847
 09/05/19 IAlibay, richardjgowers
 
   * 0.20.1
@@ -35,7 +156,7 @@ Enhancements
   * improved atom element guessing in topology.guessers to check for elements
     after the first element (#2313)
   * added the zero-based index selection keyword (Issue #1959)
-  * added position averaging transformation that makes use of the 
+  * added position averaging transformation that makes use of the
     transformations API (PR #2208)
   * added find_hydrogen_donors to analysis.bonds.hbond_autocorrel to
     automatically determine donors where possible (#2181)
@@ -69,7 +190,7 @@ Enhancements
   * added functionality to write files in compressed form(gz,bz2). (Issue #2216,
     PR #2221)
   * survival probability additions: residues, intermittency, step with performance,
-    (PR #2226)   
+    (PR #2226)
   * added unwrap keyword to center (PR #2275)
   * added unwrap keyword to center_of_geometry (PR #2279)
   * added unwrap keyword to center_of_mass (PR #2286)
@@ -90,6 +211,7 @@ Changes
   * changed the water bridge analysis output format (PR #2087)
 
 Fixes
+  * fixed ChainReader setting format with format keyword (Issue #2334)
   * fixed lack of check for scaling of NCDFReader velocities (Issue #2323)
   * fixed PDBReader and PDBWriter newlines for PDB header (Issue #2324)
   * fixes ProgressMeter issues with older Jupyter Lab versions (Issue #2078)
@@ -138,14 +260,14 @@ Fixes
   * Fixed reading multiframe GRO files, currently only the first frame will be
     read. (Issue #2276 PR #2277)
   * fixed calculation of Chi torsion in nucleic acid analysis (Issue #2248)
-
+  * Fixed parallelization failure in get_distance_matrix() (Issue #2060, PR #2301)
 
 Deprecations
   * analysis.polymer.PersistenceLength no longer requires the perform_fit()
     method to be used, this is done automatically in run()
 
 Testsuite
-  * Raised minimum pytest version to 3.3.0, warns now uses the `match` 
+  * Raised minimum pytest version to 3.3.0, warns now uses the `match`
     argument instead of `match_expr` (Issue #2329)
   * Add tests for the new water bridge analysis (PR #2087)
 
@@ -168,7 +290,7 @@ Fixes
    * Fixed reading PDB files with DOS line ending (#2128)
 
 Deprecations
-   * Default ``filename`` directory of align.AlignTraj is deprecated and 
+   * Default ``filename`` directory of align.AlignTraj is deprecated and
      will change in 1.0 to the current directory.
 
 10/09/18 tylerjereddy, richardjgowers, palnabarun, orbeckst, kain88-de, zemanj,
@@ -1742,7 +1864,7 @@ Testsuite
     MDAnalysisTestData package with a higher release number is available.
 
   Testsuite
-  
+
    * Split off test data trajectories and structures from
      MDAnalaysis/tests/data into separate package. (Issue 28)
    * Numbering matches the earliest MDAnalysis release for which the data is

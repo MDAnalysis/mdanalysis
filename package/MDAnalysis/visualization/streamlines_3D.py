@@ -199,7 +199,7 @@ def split_grid(grid, num_cores):
                 current_index += 1
                 column_z_level += 1
                 if column_z_level == num_z_values - 1:  # the loop will break but I should also increment the
-                # current_index
+                    # current_index
                     current_index += 1
         current_base_sheet += 1
     total_cubes = len(dictionary_cubes_centroids_indices)
@@ -496,7 +496,7 @@ def generate_streamlines_3d(topology_file_path, trajectory_file_path, grid_spaci
         z_index_current_column += 1
         total_cubes_current_sheet += 1
         if z_index_current_column == delta_array_shape[2]:
-        # done building current y-column so iterate y value and reset z
+            # done building current y-column so iterate y value and reset z
             z_index_current_column = 0
             y_index_current_sheet += 1
             if y_index_current_sheet == delta_array_shape[1]:  # current sheet is complete

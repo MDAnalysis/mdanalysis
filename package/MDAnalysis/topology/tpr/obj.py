@@ -41,7 +41,7 @@ TpxHeader = namedtuple(
     "TpxHeader", [
         "ver_str", "precision",
         "fver", "fgen", "file_tag", "natoms", "ngtc", "fep_state", "lamb",
-        "bIr", "bTop", "bX", "bV", "bF", "bBox"])
+        "bIr", "bTop", "bX", "bV", "bF", "bBox", "sizeOfTprBody"])
 Box = namedtuple("Box", "size rel v")
 Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
 Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")

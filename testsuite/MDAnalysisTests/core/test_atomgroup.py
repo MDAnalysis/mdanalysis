@@ -341,12 +341,6 @@ class TestWriteGRO(_WriteAtoms):
     ext = "gro"
     precision = 2
 
-    def test_flag_convert_length(self):
-        assert mda.core.flags['convert_lengths'] is True, \
-                     "The flag convert_lengths SHOULD be True by default! "\
-                     "(If it is not then this might indicate a race condition"\
-                     " in the testing suite.)"
-
 
 class TestAtomGroupTransformations(object):
 
@@ -1011,13 +1005,6 @@ class TestPBCFlag(object):
         assert_almost_equal(ag.principal_axes(pbc=True), ref_PBC['PAxes'], self.prec)
 
 
-def test_instantselection_termini():
-    """Test that instant selections work, even for residues that are also termini (Issue 70)"""
-    universe = mda.Universe(PSF, DCD)
-    assert_equal(universe.residues[20].CA.name, 'CA', "CA of MET21 is not selected correctly")
-    del universe
-
-
 class TestAtomGroup(object):
     """Tests of AtomGroup; selections are tested separately.
 
@@ -1060,12 +1047,6 @@ class TestAtomGroup(object):
     def test_getitem_slice2(self, universe):
         assert_equal(universe.atoms[0:8:2].ix,
                      universe.atoms.ix[0:8:2])
-
-    def test_getitem_str(self, universe):
-        ag1 = universe.atoms['HT1']
-        # select_atoms always returns an AtomGroup even if single result
-        ag2 = universe.select_atoms('name HT1')[0]
-        assert_equal(ag1, ag2)
 
     def test_getitem_IE(self, universe):
         d = {'A': 1}
@@ -1444,13 +1425,6 @@ class TestAtomGroup(object):
                      "Direct selection from residue group does not match "
                      "expected I101.")
 
-    # remove in 1.0
-    def test_segments(self, universe):
-        u = universe
-        with pytest.warns(DeprecationWarning):
-            assert len(u.segments.s4AKE.atoms) == len(u.select_atoms(
-                'segid 4AKE').atoms), "Direct selection of segment 4AKE from segments failed."
-
     def test_index_integer(self, universe):
         u = universe
         a = u.atoms[100]
@@ -1603,12 +1577,6 @@ class TestAtomGroup(object):
         ag.names = names
         for a, b in zip(ag, names):
             assert_equal(a.name, b)
-
-    def test_nonexistent_instantselector_raises_AttributeError(self, universe):
-        def access_nonexistent_instantselector():
-            universe.atoms.NO_SUCH_ATOM
-        with pytest.raises(AttributeError):
-            access_nonexistent_instantselector()
 
     def test_atom_order(self, universe):
         assert_equal(universe.atoms.indices,

@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function
+from __future__ import absolute_import, division, print_function
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
@@ -30,7 +30,7 @@ import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found, tempdir
-from MDAnalysisTests.datafiles import PSF, DCD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
+from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -128,6 +128,28 @@ class TestGetMatchingAtoms(object):
                 with pytest.raises(SelectionError):
                     groups = align.get_matching_atoms(ref, mobile, strict=strict)
 
+    def test_toggle_atom_mismatch_default_error(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
+        with pytest.raises(SelectionError):
+            rmsd = align.alignto(universe, reference, select=selection)
+
+    def test_toggle_atom_mismatch_kwarg_error(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
+        with pytest.raises(SelectionError):
+            rmsd = align.alignto(universe, reference, select=selection, match_atoms=True)
+
+    def test_toggle_atom_nomatch(self, universe, reference):
+        selection = ('resname ALA and name CA', 'resname ALA and name O')
+        rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
+        assert rmsd[0] > 0.01
+
+    def test_toggle_atom_nomatch_mismatch_atoms(self, universe, reference):
+        # mismatching number of atoms, but same number of residues
+        u = universe.select_atoms('resname ALA and name CA')
+        u += universe.select_atoms('resname ALA and name O')[-1]
+        ref = reference.select_atoms('resname ALA and name CA')
+        with pytest.raises(SelectionError):
+            align.alignto(u, ref, select='all', match_atoms=False)
 
 
 class TestAlign(object):
@@ -186,8 +208,6 @@ class TestAlign(object):
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
     def test_AlignTraj_outfile_default(self, universe, reference):
-        # NOTE: Remove the line os.remove() with release 1.0,
-        #       when the default behavior of AlignTraj changes.
         with tempdir.in_tempdir():
             reference.trajectory[-1]
             x = align.AlignTraj(universe, reference)
@@ -195,7 +215,6 @@ class TestAlign(object):
                 assert os.path.basename(x.filename) == 'rmsfit_adk_dims.dcd'
             finally:
                 x._writer.close()
-                os.remove(x.filename)
 
     def test_AlignTraj_outfile_default_exists(self, universe, reference, tmpdir):
         reference.trajectory[-1]
@@ -204,14 +223,16 @@ class TestAlign(object):
         fitted = mda.Universe(PSF, outfile)
 
         # ensure default file exists
-        with mda.Writer(str(tmpdir.join('rmsfit_align_test.dcd')),
+        with mda.Writer(str(tmpdir.join("rmsfit_align_test.dcd")),
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
-        align.AlignTraj(fitted, reference)
-        # we are careful now. The default does nothing
-        with pytest.raises(IOError):
-            align.AlignTraj(fitted, reference, force=False)
+        with tempdir.in_tempdir():
+            align.AlignTraj(fitted, reference)
+
+            # we are careful now. The default does nothing
+            with pytest.raises(IOError):
+                align.AlignTraj(fitted, reference, force=False)
 
     def test_AlignTraj_step_works(self, universe, reference, tmpdir):
         reference.trajectory[-1]
@@ -225,9 +246,6 @@ class TestAlign(object):
         x = align.AlignTraj(universe, reference, filename=outfile).run()
         fitted = mda.Universe(PSF, outfile)
 
-        rmsd_outfile = str(tmpdir.join('rmsd'))
-        x.save(rmsd_outfile)
-
         assert_almost_equal(x.rmsd[0], 6.9290, decimal=3)
         assert_almost_equal(x.rmsd[-1], 5.2797e-07, decimal=3)
 
@@ -236,11 +254,6 @@ class TestAlign(object):
         # VMD: 6.9378711
         self._assert_rmsd(reference, fitted, 0, 6.929083044751061)
         self._assert_rmsd(reference, fitted, -1, 0.0)
-
-        # superficially check saved file rmsd_outfile
-        rmsd = np.loadtxt(rmsd_outfile)
-        assert_array_almost_equal(rmsd, x.rmsd,
-                                  err_msg="saved RMSD not correct")
 
     def test_AlignTraj_weighted(self, universe, reference, tmpdir):
         outfile = str(tmpdir.join('align_test.dcd'))
@@ -344,6 +357,82 @@ class TestAlign(object):
         align.alignto(u_free, u_bound, select=selection)
         assert_array_almost_equal(segB_bound.positions, segB_free.positions,
                                   decimal=3)
+
+
+def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
+    u = mda.Universe(*ref_files, in_memory=True)
+    prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run()
+    ag = u.select_atoms(select)
+    reference_coordinates = u.trajectory.timeseries(asel=ag).mean(axis=1)
+    rmsd = sum(prealigner.rmsd/len(u.trajectory))
+    return reference_coordinates, rmsd
+
+class TestAverageStructure(object):
+
+    ref_files = (PSF, DCD)
+
+    @pytest.fixture
+    def universe(self):
+        return mda.Universe(*self.ref_files)
+
+    @pytest.fixture
+    def reference(self):
+        return mda.Universe(PSF, CRD)
+
+    def test_average_structure(self, universe, reference):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference)
+        avg = align.AverageStructure(universe, reference).run()
+        assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
+        assert_almost_equal(avg.rmsd, rmsd)
+
+    def test_average_structure_mass_weighted(self, universe, reference):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
+        avg = align.AverageStructure(universe, reference, weights='mass').run()
+        assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
+        assert_almost_equal(avg.rmsd, rmsd)
+
+    def test_average_structure_select(self, universe, reference):
+        select = 'protein and name CA and resid 3-5'
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
+        avg = align.AverageStructure(universe, reference, select=select).run()
+        assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
+        assert_almost_equal(avg.rmsd, rmsd)
+
+    def test_average_structure_no_ref(self, universe):
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, universe)
+        avg = align.AverageStructure(universe).run()
+        assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
+        assert_almost_equal(avg.rmsd, rmsd)
+
+    def test_average_structure_no_msf(self, universe):
+        avg = align.AverageStructure(universe).run()
+        assert not hasattr(avg, 'msf')
+
+    def test_mismatch_atoms(self, universe):
+        u = mda.Merge(universe.atoms[:10])
+        with pytest.raises(SelectionError):
+            align.AverageStructure(universe, u)
+
+    def test_average_structure_ref_frame(self, universe):
+        ref_frame = 3
+        u = mda.Merge(universe.atoms)
+
+        # change to ref_frame
+        universe.trajectory[ref_frame]
+        u.load_new(universe.atoms.positions)
+
+        # back to start
+        universe.trajectory[0]
+        ref, rmsd = _get_aligned_average_positions(self.ref_files, u)
+        avg = align.AverageStructure(universe, ref_frame=ref_frame).run()
+        assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
+        assert_almost_equal(avg.rmsd, rmsd)
+
+    def test_average_structure_in_memory(self, universe):
+        avg = align.AverageStructure(universe, in_memory=True).run()
+        reference_coordinates = universe.trajectory.timeseries().mean(axis=1)
+        assert_almost_equal(avg.universe.atoms.positions, reference_coordinates, decimal=4)
+        assert avg.filename is None
 
 
 class TestAlignmentProcessing(object):

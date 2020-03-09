@@ -34,15 +34,18 @@ from MDAnalysisTests.datafiles import (
     PRMNEGATIVE,
     PRMErr1,
     PRMErr2,
-    PRMErr3
+    PRMErr3,
+    PRM_UreyBradley
 )
 
-
+ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                     "based on their atom types")
+COORDINATE_READER_MSG = ("No coordinate reader found")
 class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
         "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
+        "bonds", "angles", "dihedrals", "impropers", "elements"
     ]
     expected_n_segments = 1
 
@@ -123,8 +126,11 @@ class TOPBase(ParserBase):
     def test_improper_atoms_bonded(self, top):
         vals = top.bonds.values
         for imp in top.impropers.values:
-            for b in ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3])):
-                assert (b in vals) or (b[::-1] in vals)
+            forward = ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3]))
+            backward = ((imp[0], imp[1]), (imp[1], imp[2]), (imp[1], imp[3]))
+            for a, b in zip(forward, backward):
+                assert ((b in vals) or (b[::-1] in vals) or 
+                        (a in vals) or (a[::-1] in vals))
 
 
 class TestPRMParser(TOPBase):
@@ -176,18 +182,13 @@ class TestPRMParser(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 1
-        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
-                "based on their atom types")
-        assert str(record[0].message.args[0]) == wmsg
+        assert len(record) == 2
+        assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
+        assert COORDINATE_READER_MSG in str(record[1].message.args[0])
 
 
 class TestPRM12Parser(TOPBase):
     ref_filename = PRM12
-    expected_attrs = [
-        "names", "types", "type_indices", "charges", "masses", "resnames",
-        "bonds", "angles", "dihedrals", "impropers"
-    ]
     expected_n_atoms = 8923
     expected_n_residues = 2861
     expected_n_bonds = 8947
@@ -293,10 +294,9 @@ class TestParm7Parser(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 1
-        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
-                "based on their atom types")
-        assert str(record[0].message.args[0]) == wmsg
+        assert len(record) == 2
+        assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
+        assert COORDINATE_READER_MSG in str(record[1].message.args[0])
 
 
 class TestPRM2(TOPBase):
@@ -341,10 +341,10 @@ class TestPRM2(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 1
-        wmsg = ("ATOMIC_NUMBER record not found, guessing atom elements "
-                "based on their atom types")
-        assert str(record[0].message.args[0]) == wmsg
+        assert len(record) == 2
+        assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
+        assert COORDINATE_READER_MSG in str(record[1].message.args[0])
+        
 
 
 class TestPRMNCRST(TOPBase):
@@ -413,25 +413,27 @@ class TestPRMNCRST_negative(TOPBase):
         with pytest.warns(UserWarning) as record:
             u = mda.Universe(filename)
 
-        assert len(record) == 2
+        assert len(record) == 3
         wmsg1 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
                  "from type: CT assigned to C")
         wmsg2 = ("Unknown ATOMIC_NUMBER value found, guessing atom element "
                  "from type: O assigned to O")
         assert str(record[0].message.args[0]) == wmsg1
         assert str(record[1].message.args[0]) == wmsg2
+        assert COORDINATE_READER_MSG in str(record[2].message.args[0])
 
 
 class TestErrors(object):
-    # Check Errors being raised
-    def test_versionline(self):
-        with pytest.raises(ValueError):
-            u = mda.Universe(PRMErr1)
 
-    def test_title(self):
-        with pytest.raises(ValueError):
-            u = mda.Universe(PRMErr2)
+    @pytest.mark.parametrize("parm,errmatch", (
+        [PRMErr1, "%VE Missing in header"],
+        [PRMErr2, "'TITLE' missing in header"],
+        [PRM_UreyBradley, "Chamber-style TOP file"]
+    ))
+    def test_value_errors(self, parm, errmatch):
+        with pytest.raises(ValueError, match=errmatch):
+            u = mda.Universe(parm)
 
-    def test_flag(self):
-        with pytest.raises(IndexError):
+    def test_flag_index_error(self):
+        with pytest.raises(IndexError, match="%FLAG section not found"):
             u = mda.Universe(PRMErr3)

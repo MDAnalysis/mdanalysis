@@ -32,6 +32,7 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 from __future__ import absolute_import
 
 from six.moves import zip, range
+from six import raise_from
 
 import itertools
 import numpy as np
@@ -80,9 +81,13 @@ class CRDReader(base.SingleFrameReaderBase):
                         coords_list.append(np.array(line[45:100].split()[0:3], dtype=float))
                     else:
                         coords_list.append(np.array(line[20:50].split()[0:3], dtype=float))
-                except:
-                    raise ValueError("Check CRD format at line {0}: {1}"
-                                     "".format(linenum, line.rstrip()))
+                except Exception:
+                    raise_from(
+                        ValueError(
+                            "Check CRD format at line {0}: {1}"
+                            "".format(linenum, line.rstrip())),
+                        None
+                        )
 
         self.n_atoms = len(coords_list)
 

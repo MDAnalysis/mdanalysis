@@ -131,6 +131,14 @@ If you use the streamline visualization in
 
 .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
 
+If you use the hydrogen bond analysis code in
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite [Smith2019]_.
+
+.. [Smith2019] P. Smith, R. M. Ziolek, E. Gazzarrini, D. M. Owen, and C. D. Lorenz.
+   On the interaction of hyaluronic acid with synovial fluid lipid membranes. *PCCP*
+   **21** (2019), 9845-9857. doi:  `10.1039/C9CP01532A`_
+
+.. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
 
 .. _citations-using-duecredit:
 

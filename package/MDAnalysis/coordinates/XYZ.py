@@ -93,7 +93,6 @@ import logging
 logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
 
 from . import base
-from ..core import flags
 from ..lib import util
 from ..lib.util import cached
 from ..exceptions import NoDataError
@@ -108,6 +107,9 @@ class XYZWriter(base.WriterBase):
 
     .. _xyzplugin:
        http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+
+    .. versionchanged: 0.21.0
+       Use elements attribute instead of names attribute, if present
     """
 
     format = 'XYZ'
@@ -115,7 +117,7 @@ class XYZWriter(base.WriterBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=None,
+    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=True,
                  remark=None, **kwargs):
         """Initialize the XYZ trajectory writer
 
@@ -139,25 +141,26 @@ class XYZWriter(base.WriterBase):
             information. If you write a :class:`AtomGroup` with
             :meth:`XYZWriter.write` then atom information is taken
             at each step and *atoms* is ignored.
+        convert_units : bool (optional)
+            convert quantities to default MDAnalysis units of Angstrom upon
+            writing  [``True``]
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version
         """
         self.filename = filename
         self.n_atoms = n_atoms
-        if convert_units is not None:
-            self.convert_units = convert_units
-        else:
-            self.convert_units = flags['convert_lengths']
-        self.atomnames = self._get_atomnames(atoms)
+        self.convert_units = convert_units
+
+        self.atomnames = self._get_atoms_elements_or_names(atoms)
         default_remark = "Written by {0} (release {1})".format(
             self.__class__.__name__, __version__)
         self.remark = default_remark if remark is None else remark
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
-    def _get_atomnames(self, atoms):
-        """Return a list of atom names"""
+    def _get_atoms_elements_or_names(self, atoms):
+        """Return a list of atom elements (if present) or fallback to atom names"""
         # Default case
         if atoms is None:
             return itertools.cycle(('X',))
@@ -170,9 +173,12 @@ class XYZWriter(base.WriterBase):
         # AtomGroup or Universe, grab the names else default
         # (AtomGroup.atoms just returns AtomGroup)
         try:
-            return atoms.atoms.names
+            return atoms.atoms.elements
         except (AttributeError, NoDataError):
-            return itertools.cycle(('X',))
+            try:
+                return atoms.atoms.names
+            except (AttributeError, NoDataError):
+                return itertools.cycle(('X',))
 
     def close(self):
         """Close the trajectory file and finalize the writing"""
@@ -184,7 +190,7 @@ class XYZWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Atom names in the output are taken from the `obj` or default
+        Atom elements (or names) in the output are taken from the `obj` or default
         to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
@@ -204,7 +210,7 @@ class XYZWriter(base.WriterBase):
             if isinstance(obj, base.Timestep):
                 ts = obj
             else:
-                raise TypeError("No Timestep found in obj argument")
+                six.raise_from(TypeError("No Timestep found in obj argument"), None)
         else:
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -218,7 +224,7 @@ class XYZWriter(base.WriterBase):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
             # update atom names
-            self.atomnames = self._get_atomnames(atoms)
+            self.atomnames = self._get_atoms_elements_or_names(atoms)
 
         self.write_next_timestep(ts)
 
@@ -376,7 +382,7 @@ class XYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            raise EOFError(err)
+            six.raise_from(EOFError(err), None)
 
     def _reopen(self):
         self.close()

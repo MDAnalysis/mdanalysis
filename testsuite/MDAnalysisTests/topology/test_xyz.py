@@ -37,9 +37,8 @@ class XYZBase(ParserBase):
     parser = mda.topology.XYZParser.XYZParser
     expected_n_residues = 1
     expected_n_segments = 1
-    expected_attrs = ['names']
+    expected_attrs = ['names', "elements"]
     guessed_attrs = ['types', 'masses']
-
 
 class TestXYZMini(XYZBase):
     ref_filename = XYZ_mini

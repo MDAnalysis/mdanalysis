@@ -62,12 +62,10 @@ from six.moves import range
 import os
 import errno
 import numpy as np
-from numpy.lib.utils import deprecate
 import struct
 import types
 import warnings
 
-from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
 from ..exceptions import NoDataError
 from . import base, core
@@ -272,9 +270,7 @@ class DCDReader(base.ReaderBase):
                    start=None,
                    stop=None,
                    step=None,
-                   skip=None,
-                   order='afc',
-                   format=None):
+                   order='afc'):
         """Return a subset of coordinate data for an AtomGroup
 
         Parameters
@@ -300,22 +296,11 @@ class DCDReader(base.ReaderBase):
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates)
-        format : str (optional)
-            deprecated, equivalent to `order`
 
 
-        .. deprecated:: 0.16.0
-           `skip` has been deprecated in favor of the standard keyword `step`.
-
-        .. deprecated:: 0.17.0
-           `format` has been deprecated in favor of the standard keyword `order`.
+        .. versionchanged:: 1.0.0
+           `skip` and `format` keywords have been removed.
         """
-        if skip is not None:
-            step = skip
-            warnings.warn(
-                "Skip is deprecated and will be removed in"
-                "in 1.0. Use step instead.",
-                category=DeprecationWarning)
 
         start, stop, step = self.check_slice_indices(start, stop, step)
 
@@ -326,12 +311,6 @@ class DCDReader(base.ReaderBase):
             atom_numbers = list(asel.indices)
         else:
             atom_numbers = list(range(self.n_atoms))
-
-        if format is not None:
-            warnings.warn(
-                "'format' is deprecated and will be removed in 1.0. Use 'order' instead",
-                category=DeprecationWarning)
-            order = format
 
         frames = self._file.readframes(
             start, stop, step, order=order, indices=atom_numbers)
