@@ -151,7 +151,7 @@ class ClusterCollection(object):
 
 """
 
-    def __init__(self, elements=None, metadata=None):
+    def __init__(self, elements, metadata=None):
         """Class constructor. If elements is None, an empty cluster collection
             will be created. Otherwise, the constructor takes as input an
             iterable of ints, for instance:
@@ -188,7 +188,7 @@ class ClusterCollection(object):
             self.clusters = None
             return
 
-        if not elements.itemsize == 1:
+        if not len(set((type(el) for el in elements))) == 1:
             raise TypeError("all the elements must have the same type")
         self.clusters = []
         elements_array = np.array(elements)
