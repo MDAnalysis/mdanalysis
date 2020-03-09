@@ -80,7 +80,7 @@ def test_optimize_cutoff(universe, lipid_heads):
     assert N == 2
     assert_almost_equal(cutoff, 10.5, decimal=4)
 
-def test_pdc_on_off(universe, lipid_heads):
+def test_pbc_on_off(universe, lipid_heads):
     lfls_pbc_on = LeafletFinder(universe, lipid_heads, pbc=True)
     lfls_pbc_off = LeafletFinder(universe, lipid_heads, pbc=False)
     assert lfls_pbc_on.graph.size() > lfls_pbc_off.graph.size()
