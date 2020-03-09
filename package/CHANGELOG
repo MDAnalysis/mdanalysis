@@ -96,6 +96,7 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removed deprecated :meth:`PersistenceLength.perform_fit` (Issue #2596)
   * Removed `format` keyword from :meth:`MemoryReader.timeseries` (Issue #1453,
     #2443)
   * Deprecated :class:`LAMMPSDataConverter` has now been removed (Issue #2564)
