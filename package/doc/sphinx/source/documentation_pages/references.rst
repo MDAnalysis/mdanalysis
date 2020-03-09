@@ -140,6 +140,38 @@ If you use the hydrogen bond analysis code in
 
 .. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
 
+If you use the DSSP code in :mod:`MDAnalysis.analysis.secondary_structure` please cite [Kabsch1983]_ and [Touw2015]_.
+
+.. [Kabsch1983] W. Kabsch and C. Sander. 
+   Dictionary of protein secondary structure: Pattern recognition of hydrogen‐bonded and geometrical features. 
+   *Biopolymers* **22** (1983), 2577-2637. doi:  `10.1002/bip.360221211`_
+
+.. _`10.1002/bip.360221211`: https://doi.org/10.1002/bip.360221211
+
+
+.. [Touw2015] Wouter G Touw, Coos Baakman, Jon Black, Tim AH te Beek, E Krieger, Robbie P Joosten, Gert Vriend.
+   A series of PDB related databases for everyday needs.
+   *Nucleic Acids Research* **43 (Database issue)** (2015), D364-D368. doi: `10.1093/nar/gku1028`_
+
+.. _`10.1093/nar/gku1028`: https://doi.org/10.1093/nar/gku1028
+
+If you use the DSSP class in :mod:`MDAnalysis.analysis.secondary_structure.dssp`, please *also* cite [McGibbon2015]_.
+
+.. [McGibbon2015] Robert T. McGibbon, Kyle A. Beauchamp, Matthew P. Harrigan, Christoph Klein, Jason M. Swails, Carlos X. Hernández, Christian R. Schwantes, Lee-Ping Wang, Thomas J. Lane, and Vijay S. Pande.
+   MDTraj: A Modern Open Library for the Analysis of Molecular Dynamics Trajectories.
+   *Biophysical Journal* **109 (8)** (2015), 1528–1532. doi: `10.1016/j.bpj.2015.08.015`_
+
+.. _`10.1016/j.bpj.2015.08.015`: https://doi.org/10.1016/j.bpj.2015.08.015
+
+If you use the STRIDE code in :mod:`MDAnalysis.analysis.secondary_structure`,
+please cite [Heinig2004]_ .
+
+.. [Heinig2004] Matthias Heinig and Dmitrij Frishman.
+   STRIDE: a web server for secondary structure assignment from known atomic coordinates of proteins.
+   *Nucleic Acids Research* **32 (Web Server issue)** (2004), W500-W502. doi: `10.1093/nar/gkh429`_
+
+.. _`10.1093/nar/gkh429`: https://doi.org/10.1093/nar/gkh429
+
 .. _citations-using-duecredit:
 
 Citations using Duecredit

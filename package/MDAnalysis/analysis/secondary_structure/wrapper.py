@@ -21,8 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Secondary structure analysis --- :mod:`MDAnalysis.analysis.secondary_structure`
-==================================================================================
+"""Secondary structure analysis --- :mod:`MDAnalysis.analysis.secondary_structure.wrapper`
+==========================================================================================
 
 :Authors: Lily Wang
 :Year: 2020
@@ -30,8 +30,8 @@
 
 .. versionadded:: 1.0.0
 
-This module contains classes for computing secondary structure. MDAnalysis provides
-a wrapper for the external DSSP_ and STRIDE_ programs to be run on an MD trajectory.
+This module contains classes for computing secondary structure using external programs. 
+MDAnalysis provides a wrapper for the  DSSP_ and STRIDE_ programs to be run on an MD trajectory.
 
 Both DSSP_ and STRIDE_ need to be installed separately.
 
@@ -42,195 +42,34 @@ Both DSSP_ and STRIDE_ need to be installed separately.
 Classes and functions
 ---------------------
 
-.. autoclass:: DSSP
-.. autoclass:: STRIDE
+.. autoclass:: DSSPWrapper
+.. autoclass:: STRIDEWrapper
 
 """
 
-import errno
-import subprocess
 import os
-import numpy as np
-import pandas as pd
+import errno
+import tempfile
+import subprocess
 
-from ..core.topologyattrs import ResidueAttr
-from ..lib import util
-from .base import AnalysisBase
+from ...due import due, Doi
+from ...lib import util
+from .base import SecondaryStructureBase
 
-class SecondaryStructure(ResidueAttr):
-    """Single letter code for secondary structure"""
-    attrname = 'secondary_structures'
-    singular = 'secondary_structure'
-    dtype = '<U1'
+due.cite(Doi("10.1002/bip.360221211"),
+         description="DSSP",
+         path="MDAnalysis.analysis.secondary_structure.wrapper",
+         cite_module=True)
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.empty(nr, dtype=dtype)
+due.cite(Doi("10.1093/nar/gku1028"),
+         description="DSSP (new)",
+         path="MDAnalysis.analysis.secondary_structure.wrapper",
+         cite_module=True)
 
-class SecondaryStructureBase(AnalysisBase):
-    """Base class for implementing secondary structure analysis.
-
-    Subclasses should implement ``_compute_dssp``. 
-
-    Parameters
-    ----------
-    universe: Universe or AtomGroup
-        The Universe or AtomGroup to apply the analysis to. As secondary 
-        structure is a residue property, the analysis is applied to every 
-        residue in your chosen atoms.
-    select: string, optional
-        The selection string for selecting atoms from ``universe``. The 
-        analysis is applied to the residues in this subset of atoms.
-    add_topology_attr: bool, optional
-        Whether to add the most common secondary structure as a topology 
-        attribute ``secondary_structure`` to your residues. 
-    verbose: bool, optional
-        Turn on more logging and debugging.
-
-
-    Attributes
-    ----------
-    residues: :class:`~MDAnalysis.core.groups.ResidueGroup`
-        The residues to which the analysis is applied.
-    ss_codes: :class:`numpy.ndarray` of shape (n_frames, n_residues)
-        Single-letter secondary structure codes
-    ss_names: :class:`numpy.ndarray` of shape (n_frames, n_residues)
-        Secondary structure names
-    ss_simple: :class:`numpy.ndarray` of shape (n_frames, n_residues)
-        Simplified secondary structure names
-    phi: :class:`numpy.ndarray` of shape (n_frames, n_residues)
-        Phi angles
-    psi: :class:`numpy.ndarray` of shape (n_frames, n_residues)
-        Psi angles
-    sasa: :class:`numpy.ndarray` of shape (n_frames, n_residues)
-        Solvent-accessible surface area
-    ss_counts: dict of {code: :class:`numpy.ndarray` of shape (n_frames,)}
-        Dictionary that counts number of residues with each secondary
-        structure code, for each frame
-    simple_counts: dict of {name: :class:`numpy.ndarray` of shape (n_frames,)}
-        Dictionary that counts number of residues with each simplified 
-        secondary structure, for each frame
-    ss_mode: :class:`numpy.ndarray` of shape (n_residues,)
-        The most common secondary structure for each residue
-    ss_codes_to_names: dict of {code: name}
-        Dictionary converting each single-letter code to the full name of
-        the secondary structure
-    ss_codes_to_simple: dict of {code: name}
-        Dictionary converting each single-letter code to simplified 
-        secondary structures
-
-    """
-
-    ss_codes_to_names = {
-        'G': 'Helix (3-10)',
-        'H': 'Helix (alpha)'
-        'I': 'Helix (pi)',
-        'E': 'Strand',
-        'B': 'Bridge',
-        'T': 'Turn',
-        'S': 'Bend',
-        'C': 'Coil',
-    }
-
-    ss_codes_to_simple = {
-        'G': 'Helix',
-        'H': 'Helix',
-        'I': 'Helix',
-        'E': 'Strand',
-        'B': 'Strand',
-        'T': 'Coil',
-        'S': 'Coil',
-        'C': 'Coil'
-    }
-
-    def __init__(self, executable, universe, select='protein', verbose=False,
-                 add_topology_attr=False):
-        super(SecondaryStructure, self).__init__(universe.universe.trajectory,
-                                                 verbose=verbose)
-        self._universe = universe.universe
-        self.residues = universe.select_atoms(select).residues
-        self._add_topology_attr = add_topology_attr
-    
-    def _prepare(self):
-        nf = self.n_frames
-        nr = len(self.residues)
-        self.ss_codes = np.empty((nf, nr), dtype='<U1')
-        self.ss_counts = dict.fromkeys(self.ss_codes_to_simple)
-        for k in self.ss_counts:
-            self.ss_counts[k] = np.zeros(nf)
-        self.phi = np.zeros((nf, nr), dtype=float)
-        self.psi = np.zeros((nf, nr), dtype=float)
-        self.sasa = np.zeros((nf, nr), dtype=float)
-
-    def _compute_dssp(self):
-        raise NotImplementedError
-
-    def _single_frame(self):
-        self._compute_dssp()
-        row = self.ss_codes[self._frame_index]
-        codes, counts = np.unique(row, return_counts=True)
-        for c, n in zip(codes, counts):
-            self.ss_counts[c][self._frame_index] = n
-    
-    def _conclude(self):
-        # convert to full names and simple codes
-        codes, idx = np.unique(self.ss_codes, return_inverse=True)
-        names = np.array([self.ss_codes_to_names[c] for c in codes])
-        self.ss_names = names[idx].reshape(self.ss_codes.shape)
-        simp = np.array([self.ss_codes_to_simple[c] for c in codes])
-        self.ss_simple = simp[idx].reshape(self.ss_codes.shape)
-
-        # count number of simple structures
-        self.simple_counts = {'Helix': np.zeros(self.n_frames),
-                              'Strand': np.zeros(self.n_frames),
-                              'Coil': np.zeros(self.n_frames),
-                              }
-        for code, counts in self.ss_counts.items():
-            simple = self.ss_codes_to_simple[code]
-            self.simple_counts[simple] += counts
-        
-        # get most common secondary structure
-        self.ss_mode = np.empty(len(self.residues), dtype='<U1')
-        for i, col in enumerate(self.ss_codes.T):
-            code, counts = np.unique(col, return_counts=True)
-            self.ss_mode[i] = code[np.argmax(counts)]
-
-        # possibly add this as attribute
-        if self._add_topology_attr:
-            attr = SecondaryStructure.attrname
-            self._universe.add_TopologyAttr(attr)
-            setattr(self.residues, attr, self.ss_mode)
-            
-
-    def plot_content(self, ax=None, simple=False):
-        """Plot the counts of secondary structures over frames.
-
-        Parameters
-        ----------
-        ax: :class: `matplotlib.axes.Axes`, optional
-            If no `ax` is supplied or set to ``None`` then the plot will
-            be created on new axes.
-        simple: bool, optional
-            If ``True``, plots the counts of the simple secondary 
-            structures. If ``False``, plots the counts of each distinct 
-            category.
-
-        Returns
-        -------
-        ax: :class: `matplotlib.axes.Axes`
-
-        """
-        if ax is None:
-            fig, ax = plt.subplots()
-        
-        if not simple:
-            data = self.ss_counts
-        else:
-            data = self.simple_counts
-        
-        df = pd.DataFrame(data)
-        ax = df.plot.bar(stacked=True)
-        return ax
+due.cite(Doi("10.1093/nar/gkh429"),
+         description="STRIDE",
+         path="MDAnalysis.analysis.secondary_structure.wrapper",
+         cite_module=True)
 
 class SecondaryStructureWrapper(SecondaryStructureBase):
     """Base class for secondary structure analysis that wraps an 
@@ -275,17 +114,25 @@ class SecondaryStructureWrapper(SecondaryStructureBase):
             except OSError:
                 pass
         return output
+
+    def _prepare(self):
+        super(SecondaryStructureWrapper, self)._prepare()
+        nf = self.n_frames
+        self.phi = np.zeros((nf, self.n_residues), dtype=float)
+        self.psi = np.zeros((nf, self.n_residues), dtype=float)
+        self.sasa = np.zeros((nf, self.n_residues), dtype=float)
     
     def _compute_dssp(self):
         output = self._execute()
         self._process_output(output)
     
 
-class DSSP(SecondaryStructureWrapper):
+class DSSPWrapper(SecondaryStructureWrapper):
     """Runs :program:`mkdssp` on a trajectory.
 
     :program:`mkdssp` implements the DSSP algorithm to determine secondary
-    structure.
+    structure. Please cite [Kabsch1983]_ and [Touw2015]_ if you use this in 
+    published work.
 
     This class creates temporary PDB files for each frame and runs ``mkdssp`` on them.
 
@@ -350,7 +197,7 @@ class DSSP(SecondaryStructureWrapper):
 
     def __init__(self, universe, select='protein', executable='mkdssp',
                  verbose=False, add_topology_attr=False):
-        super(DSSP, self).__init__(executable, universe, 
+        super(DSSPWrapper, self).__init__(executable, universe, 
                                    select=select, verbose=verbose,
                                    add_topology_attr=add_topology_attr)
         
@@ -370,11 +217,11 @@ class DSSP(SecondaryStructureWrapper):
         
 
 
-class STRIDE(SecondaryStructureWrapper):
+class STRIDEWrapper(SecondaryStructureWrapper):
     """Runs :program:`stride` on a trajectory.
 
     :program:`stride` implements the STRIDE algorithm to determine secondary
-    structure.
+    structure. Please cite [Heinig2004]_ if you use this in published work.
 
     This class creates temporary PDB files for each frame and runs ``stride`` on them.
 
@@ -432,7 +279,7 @@ class STRIDE(SecondaryStructureWrapper):
 
     def __init__(self, universe, select='protein', executable='stride',
                  verbose=False, add_topology_attr=False):
-        super(STRIDE, self).__init__(executable, universe, 
+        super(STRIDEWrapper, self).__init__(executable, universe, 
                                      select=select, verbose=verbose,
                                      add_topology_attr=add_topology_attr)
 
@@ -446,6 +293,3 @@ class STRIDE(SecondaryStructureWrapper):
             self.phi[frame][ss] = phi
             self.psi[frame][ss] = psi
             self.sasa[frame][ss] = area
-
-
-    
