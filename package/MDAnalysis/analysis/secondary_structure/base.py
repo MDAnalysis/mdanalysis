@@ -34,8 +34,6 @@
 """
 
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
 from ...core.topologyattrs import ResidueAttr
 from ..base import AnalysisBase
@@ -129,7 +127,8 @@ class SecondaryStructureBase(AnalysisBase):
         super(SecondaryStructureBase, self).__init__(universe.universe.trajectory,
                                                      verbose=verbose)
         self._universe = universe.universe
-        self.residues = universe.select_atoms(select).residues
+        self.atomgroup = universe.select_atoms(select)
+        self.residues = self.atomgroup.residues
         self.n_residues = len(self.residues)
         self._add_topology_attr = add_topology_attr
 
@@ -210,6 +209,14 @@ class SecondaryStructureBase(AnalysisBase):
         ax: :class: `matplotlib.axes.Axes`
 
         """
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError('pandas is required for this function.')
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError:
+            raise ImportError('matplotlib is required for this function.')
 
         if not simple:
             data = self.ss_counts

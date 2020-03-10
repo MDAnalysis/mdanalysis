@@ -51,6 +51,8 @@ import os
 import errno
 import tempfile
 import subprocess
+import warnings
+import numpy as np
 
 from ...due import due, Doi
 from ...lib import util
@@ -70,6 +72,7 @@ due.cite(Doi("10.1093/nar/gkh429"),
          description="STRIDE",
          path="MDAnalysis.analysis.secondary_structure.wrapper",
          cite_module=True)
+
 
 class SecondaryStructureWrapper(SecondaryStructureBase):
     """Base class for secondary structure analysis that wraps an 
@@ -97,15 +100,20 @@ class SecondaryStructureWrapper(SecondaryStructureBase):
                                                         select=select,
                                                         verbose=verbose,
                                                         add_topology_attr=add_topology_attr)
-    
+
     def _execute(self):
         """Run the wrapped program."""
+        # ignore PDB warnings
+        warnings.filterwarnings("ignore",
+                                message="Found no information for attr")
+
         fd, pdbfile = tempfile.mkstemp(suffix='.pdb')
         os.close(fd)
         try:
-            self.residues.atoms.write(pdbfile)
+            self.atomgroup.write(pdbfile)
             cmd_args = [self.exe] + self.cmd.format(pdb=pdbfile).split()
-            proc = subprocess.Popen(cmd_args, stdout=subprocess.PIPE, 
+            print(' '.join(cmd_args))
+            proc = subprocess.Popen(cmd_args, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
             stdout, stderr = proc.communicate()
         finally:
@@ -113,7 +121,7 @@ class SecondaryStructureWrapper(SecondaryStructureBase):
                 os.unlink(pdbfile)
             except OSError:
                 pass
-        return output
+        return stdout.decode('utf-8')
 
     def _prepare(self):
         super(SecondaryStructureWrapper, self)._prepare()
@@ -121,11 +129,11 @@ class SecondaryStructureWrapper(SecondaryStructureBase):
         self.phi = np.zeros((nf, self.n_residues), dtype=float)
         self.psi = np.zeros((nf, self.n_residues), dtype=float)
         self.sasa = np.zeros((nf, self.n_residues), dtype=float)
-    
+
     def _compute_dssp(self):
         output = self._execute()
         self._process_output(output)
-    
+
 
 class DSSPWrapper(SecondaryStructureWrapper):
     """Runs :program:`mkdssp` on a trajectory.
@@ -186,35 +194,40 @@ class DSSPWrapper(SecondaryStructureWrapper):
     """
 
     exe_name = 'mkdssp'
-    cmd = '-i {pdb} -o stdout'
+    cmd = '-i {pdb}'
 
     columns = {
-        'ss': 17,
+        'ss': 16,
         'sasa': (35, 39),
-        'phi': (105, 110),
+        'phi': (104, 109),
         'psi': (111, 116),
     }
 
     def __init__(self, universe, select='protein', executable='mkdssp',
                  verbose=False, add_topology_attr=False):
-        super(DSSPWrapper, self).__init__(executable, universe, 
-                                   select=select, verbose=verbose,
-                                   add_topology_attr=add_topology_attr)
-        
+        super(DSSPWrapper, self).__init__(executable, universe,
+                                          select=select, verbose=verbose,
+                                          add_topology_attr=add_topology_attr)
 
     def _process_output(self, output):
         frame = self._frame_index
         per_res = output.split('  #  RESIDUE AA STRUCTURE BP1 BP2  ACC')[1]
-        lines = per_res.split()[1:]
-        for i, line in enumerate(lines):
+        i = 0
+        for line in per_res.split('\n')[1:]:
+            try:
+                if line[13] == '!':
+                    continue
+            except IndexError:
+                continue
             ss = line[self.columns['ss']]
-            if not ss:
+
+            if ss == ' ':
                 ss = 'C'
             self.ss_codes[frame][i] = ss
             for kw in ('phi', 'psi', 'sasa'):
                 _i, _j = self.columns[kw]
                 getattr(self, kw)[frame][i] = line[_i:_j]
-        
+            i += 1
 
 
 class STRIDEWrapper(SecondaryStructureWrapper):
@@ -241,7 +254,7 @@ class STRIDEWrapper(SecondaryStructureWrapper):
         attribute ``secondary_structure`` to your residues. 
     verbose: bool, optional
         Turn on more logging and debugging.
-        
+
     Attributes
     ----------
     residues: :class:`~MDAnalysis.core.groups.ResidueGroup`
@@ -279,17 +292,18 @@ class STRIDEWrapper(SecondaryStructureWrapper):
 
     def __init__(self, universe, select='protein', executable='stride',
                  verbose=False, add_topology_attr=False):
-        super(STRIDEWrapper, self).__init__(executable, universe, 
-                                     select=select, verbose=verbose,
-                                     add_topology_attr=add_topology_attr)
+        super(STRIDEWrapper, self).__init__(executable, universe,
+                                            select=select, verbose=verbose,
+                                            add_topology_attr=add_topology_attr)
 
     def _process_output(self, output):
         lines = output.split('\nASG ')[1:]
         lines[-1] = lines[-1].split('\n')[0]
         frame = self._frame_index
         for i, line in enumerate(lines):
-            resname, chain, resid, resnum, ss, ssname, phi, psi, area = line.split()
-            self.ss_codes[frame][i] = ss
-            self.phi[frame][ss] = phi
-            self.psi[frame][ss] = psi
-            self.sasa[frame][ss] = area
+            # resname chain resid resnum ss ssname phi psi area ~~~~
+            fields = line.split()
+            self.ss_codes[frame][i] = fields[4]
+            self.phi[frame][i] = fields[6]
+            self.psi[frame][i] = fields[7]
+            self.sasa[frame][i] = fields[8]

@@ -188,6 +188,8 @@ __all__ = [
     "ITP_no_endif", # file missing an #endif
     "ADK_DSSP",  # DSSP of ADK, assigned by mdtraj.compute_dssp(simplified=False) (protein only)
     "ADK_DSSP_SIMPLE", # DSSP of ADK, assigned by mdtraj.compute_dssp(simplified=True) (protein only)
+    "ADK_MKDSSP",  # DSSP of ADK, assigned by mkdssp (protein only)
+    "ADK_STRIDE",  # DSSP of ADK, assigned by stride (protein only)
 ]
 
 from pkg_resources import resource_filename
@@ -512,8 +514,10 @@ ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 
-ADK_DSSP = resource_filename(__name__, 'data/adk_oplsaa_dssp.npy')
-ADK_DSSP_SIMPLE = resource_filename(__name__, 'data/adk_oplsaa_dssp_simple.npy')
+ADK_DSSP = resource_filename(__name__, 'data/dssp/adk_oplsaa_dssp.npy')
+ADK_DSSP_SIMPLE = resource_filename(__name__, 'data/dssp/adk_oplsaa_dssp_simple.npy')
+ADK_MKDSSP = resource_filename(__name__, 'data/dssp/adk_oplsaa_mkdssp.npy')
+ADK_STRIDE = resource_filename(__name__, 'data/dssp/adk_oplsaa_stride.npy')
 
 # This should be the last line: clean up namespace
 del resource_filename

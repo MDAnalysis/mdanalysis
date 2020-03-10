@@ -34,6 +34,8 @@ env:
     - PIP_DEPENDENCIES="duecredit parmed"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
+    - INSTALL_DSSP="true"
+    - INSTALL_STRIDE="true"
     - CYTHON_TRACE_NOGIL=1
 
   matrix:
@@ -55,6 +57,8 @@ matrix:
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
+           INSTALL_DSSP="false"
+           INSTALL_STRIDE="false"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme"
 
     - env: NAME="Lint"
@@ -64,6 +68,8 @@ matrix:
            BUILD_CMD=""
            CONDA_DEPENDENCIES=""
            INSTALL_HOLE="false"
+           INSTALL_DSSP="false"
+           INSTALL_STRIDE="false"
 
     - env: NAME="python 2.7"
            PYTHON_VERSION=2.7 
@@ -97,6 +103,8 @@ matrix:
            PIP_DEPENDENCIES=""
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
+           INSTALL_DSSP="false"
+           INSTALL_STRIDE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
   allow_failures:
@@ -119,6 +127,16 @@ install:
         bash ./maintainer/install_hole.sh $TRAVIS_OS_NAME "${HOME}"; \
         HOLE_BINDIR="${HOME}/hole2/exe"; \
         export PATH=${PATH}:${HOLE_BINDIR}; \
+    fi
+    if [[ $INSTALL_DSSP == 'true' ]]; then \
+        bash ./maintainer/install_dssp.sh $TRAVIS_OS_NAME "${HOME}"; \
+        DSSP_BINDIR="${HOME}/dssp-3.1.4"; \
+        export PATH=${PATH}:${DSSP_BINDIR}; \
+    fi
+    if [[ $INSTALL_STRIDE == 'true' ]]; then \
+        bash ./maintainer/install_stride.sh $TRAVIS_OS_NAME "${HOME}"; \
+        STRIDE_BINDIR="${HOME}/stride"; \
+        export PATH=${PATH}:${STRIDE_BINDIR}; \
     fi
   - git clone git://github.com/astropy/ci-helpers.git
   - source ci-helpers/travis/setup_conda.sh
