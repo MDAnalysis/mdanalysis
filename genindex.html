@@ -760,6 +760,10 @@
         <li><a href="documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.MemoryReader.check_slice_indices">(MDAnalysis.coordinates.memory.MemoryReader method)</a>
 </li>
       </ul></li>
+      <li><a href="documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesReader">ChemfilesReader (class in MDAnalysis.coordinates.chemfiles)</a>
+</li>
+      <li><a href="documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesWriter">ChemfilesWriter (class in MDAnalysis.coordinates.chemfiles)</a>
+</li>
       <li><a href="documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection">chi1_selection() (MDAnalysis.core.topologyattrs.Atomnames method)</a>
 </li>
       <li><a href="documentation_pages/lib/log.html#MDAnalysis.lib.log.clear_handlers">clear_handlers() (in module MDAnalysis.lib.log)</a>
@@ -3301,6 +3305,8 @@
 </li>
       <li><a href="documentation_pages/coordinates/chain.html#module-MDAnalysis.coordinates.chain">MDAnalysis.coordinates.chain (module)</a>
 </li>
+      <li><a href="documentation_pages/coordinates/chemfiles.html#module-MDAnalysis.coordinates.chemfiles">MDAnalysis.coordinates.chemfiles (module)</a>
+</li>
       <li><a href="documentation_pages/coordinates/core.html#module-MDAnalysis.coordinates.core">MDAnalysis.coordinates.core (module)</a>
 </li>
       <li><a href="documentation_pages/coordinates/CRD.html#module-MDAnalysis.coordinates.CRD">MDAnalysis.coordinates.CRD (module)</a>
@@ -3377,10 +3383,10 @@
 </li>
       <li><a href="documentation_pages/lib/distances.html#module-MDAnalysis.lib.distances">MDAnalysis.lib.distances (module)</a>
 </li>
-      <li><a href="documentation_pages/lib/formats/libdcd.html#module-MDAnalysis.lib.formats.libdcd">MDAnalysis.lib.formats.libdcd (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="documentation_pages/lib/formats/libdcd.html#module-MDAnalysis.lib.formats.libdcd">MDAnalysis.lib.formats.libdcd (module)</a>
+</li>
       <li><a href="documentation_pages/lib/formats/libmdaxdr.html#module-MDAnalysis.lib.formats.libmdaxdr">MDAnalysis.lib.formats.libmdaxdr (module)</a>
 </li>
       <li><a href="documentation_pages/lib/log.html#module-MDAnalysis.lib.log">MDAnalysis.lib.log (module)</a>
@@ -5572,7 +5578,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, and Oliver Beckstein
 
     </p>
   </div>
