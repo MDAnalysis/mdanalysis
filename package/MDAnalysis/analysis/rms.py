@@ -318,7 +318,7 @@ def weight_type_check(weights,atoms,selection):
                 "in the selection {}: {}".format(weights, selection['mobile'], atoms.n_atoms))
         else:
             tmp_weights = get_weights(atoms, weights) 
-    elif not iterable(weights) and str(weights) != 'mass' and str(weights) != 'None':
+    elif not iterable(weights) and str(weights) != 'mass' and weights is not None:
         raise ValueError("Each groupselection can only be combined with "
                                "weights: None, 'mass' or 1D float array")
 
@@ -494,9 +494,9 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        self.weights_ref = []              # save weights for reference
-        self.weights_select = []           # save weights for select
-        self.weights_groupselection = []   # save weights for each groupselection
+        self.weights_ref = []              
+        self.weights_select = []          
+        self.weights_groupselection = []   
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
 
@@ -557,7 +557,7 @@ class RMSD(AnalysisBase):
 
         # check weights type
         #print(self.mobile_atoms)
-        if str(self.weights) == 'None':
+        if self.weights is None:
             pass
         elif (type(self.weights) == str) or \
             (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
@@ -568,7 +568,7 @@ class RMSD(AnalysisBase):
                 raise ValueError("Length of array of weights is not equal to " 
                                        "length of groupselections + 1")
             weights_list = self.weights
-            if str(weights_list[0]) == 'None':
+            if weights_list[0] is None:
                 pass
             elif type(weights_list[0]) == str or \
                 ((np.array(weights_list[0]).ndim == 1) & (np.array(weights_list[0]).dtype 
@@ -582,11 +582,11 @@ class RMSD(AnalysisBase):
         self._n_atoms = self.mobile_atoms.n_atoms
         if str(self.weights) == 'mass':         # apply 'mass' weights for all selections
            self.weights = ['mass'] * (len(self.groupselections) + 1)
-        elif str(self.weights) == 'None':         # apply 'None' weights for all selections
+        elif self.weights is None:         # apply 'None' weights for all selections
            self.weights = [None] * (len(self.groupselections) + 1)  
         elif (np.array(self.weights).ndim == 1) & (np.array(self.weights).dtype 
                                              in (np.dtype('float64'),np.dtype('int64'))):
-           none_selection =[None] * len(self.groupselections)       # apply '1D array' weights to select
+           none_selection = [None] * len(self.groupselections)       # apply '1D array' weights to select
            none_selection.insert(0, self.weights)                   # & apply 'None' weights to groupselections
            self.weights = none_selection
 
@@ -596,7 +596,7 @@ class RMSD(AnalysisBase):
         if str(self.weights[0]) == 'mass':
             self.weights_select = self.mobile_atoms.masses
             self.weights_ref = self.ref_atoms.masses
-        elif str(self.weights[0]) == 'None':
+        elif self.weights[0] is None:
             self.weights_select = None
             self.weights_ref = None
         else:
