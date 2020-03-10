@@ -100,6 +100,7 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removed deprecated :meth:`PersistenceLength.perform_fit` (Issue #2596)
   * Changed :meth:`PSAnalysis.generate_paths` keywords `store` and `filename`
     defaults to `False` and `None` (Issue #2593)
   * Removed `format` keyword from :meth:`MemoryReader.timeseries` (Issue #1453,
