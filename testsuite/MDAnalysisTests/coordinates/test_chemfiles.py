@@ -38,10 +38,8 @@ from MDAnalysisTests.coordinates.test_xyz import XYZReference
 
 # skip entire test module if no appropriate chemfiles
 chemfiles = pytest.importorskip('chemfiles')
-pytest.mark.skipif(not check_chemfiles_version(),
-                   reason="Wrong version of chemfiles")
-
-
+@pytest.mark.skipif(not check_chemfiles_version(),
+                    reason="Wrong version of chemfiles")
 class TestChemFileXYZ(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture
@@ -74,6 +72,8 @@ class ChemfilesXYZReference(BaseReference):
         self.dimensions[3:] = 90.0
 
 
+@pytest.mark.skipif(not check_chemfiles_version(),
+                    reason="Wrong version of chemfiles")
 class TestChemfilesReader(MultiframeReaderTest):
     @staticmethod
     @pytest.fixture()
@@ -81,6 +81,8 @@ class TestChemfilesReader(MultiframeReaderTest):
         return ChemfilesXYZReference()
 
 
+@pytest.mark.skipif(not check_chemfiles_version(),
+                    reason="Wrong version of chemfiles")
 class TestChemfilesWriter(BaseWriterTest):
     @staticmethod
     @pytest.fixture()
@@ -97,6 +99,8 @@ class TestChemfilesWriter(BaseWriterTest):
             ref.writer('foo')
 
 
+@pytest.mark.skipif(not check_chemfiles_version(),
+                    reason="Wrong version of chemfiles")
 class TestChemfiles(object):
     def test_read_chemfiles_format(self):
         u = mda.Universe(
