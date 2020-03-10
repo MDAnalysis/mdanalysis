@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         ss62171
+         ss62171, yuxuanzhuang
 
   * 0.21.0
 
@@ -62,6 +62,7 @@ Fixes
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
   * Fixed example docs for polymer persistence length (#2582)
+  * Added missing selection module to leaflet.py 
 
 Enhancements
   * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 

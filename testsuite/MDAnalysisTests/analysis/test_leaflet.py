@@ -156,3 +156,8 @@ def test_write_selection(universe, lipid_heads, tmpdir):
 """])
 
         assert lines2one(open('leaflet.vmd').readlines()) == expected_output
+
+def test_component_index_is_not_none(universe, lipid_heads):
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
+    assert_almost_equal(len(lfls_ag.groups(component_index=0)), 180, decimal=4)
+    
