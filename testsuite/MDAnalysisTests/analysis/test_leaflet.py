@@ -90,6 +90,7 @@ def test_cutoff_update(universe, lipid_heads):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
     lfls_ag.update(cutoff=1.0)
     assert_almost_equal(lfls_ag.cutoff, 1.0, decimal=4)
+    assert_almost_equal(len(lfls_ag.groups()), 360, decimal=4)
 
 def test_write_selection(universe, lipid_heads, tmpdir):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
