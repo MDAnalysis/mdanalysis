@@ -55,4 +55,3 @@ __all__ = ['AtomGroup', 'Selection']
 
 from . import groups
 from . import selection
-from . import AtomGroup

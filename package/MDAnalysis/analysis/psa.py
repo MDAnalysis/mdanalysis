@@ -237,6 +237,7 @@ due.cite(Doi("10.1371/journal.pcbi.1004568"),
          cite_module=True)
 del Doi
 
+
 def get_path_metric_func(name):
     """Selects a path metric function by name.
 
@@ -835,7 +836,6 @@ class Path(object):
         self.path = None
         self.natoms = None
 
-
     def fit_to_reference(self, filename=None, prefix='', postfix='_fit',
                          rmsdfile=None, targetdir=os.path.curdir,
                          weights=None, tol_mass=0.1):
@@ -894,7 +894,6 @@ class Path(object):
             aligntrj.save(rmsdfile)
         return MDAnalysis.Universe(self.top_name, self.newtrj_name)
 
-
     def to_path(self, fitted=False, select=None, flat=False):
         r"""Generates a coordinate time series from the fitted universe
         trajectory.
@@ -946,7 +945,6 @@ class Path(object):
             return np.array([atoms.positions.flatten() for _ in frames])
         else:
             return np.array([atoms.positions for _ in frames])
-
 
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
             targetdir=os.path.curdir, weights=None, tol_mass=0.1,
@@ -1017,7 +1015,6 @@ class Path(object):
                                 weights=weights, tol_mass=0.1)
         self.path = self.to_path(fitted=align, flat=flat)
         return self.top_name, self.newtrj_name
-
 
     def get_num_atoms(self):
         """Return the number of atoms used to construct the :class:`Path`.
@@ -1103,7 +1100,6 @@ class PSAPair(object):
         # Set by self.getHausdorffPair
         self.hausdorff_pair = {'frames' : (None, None), 'distance' : None}
 
-
     def _dvec_idx(self, i, j):
         """Convert distance matrix indices (in the upper triangle) to the index
         of the corresponding distance vector.
@@ -1126,7 +1122,6 @@ class PSAPair(object):
              (matrix element) index in the corresponding distance vector
         """
         return (self.npaths*i) + j - (i+2)*(i+1)/2
-
 
     def compute_nearest_neighbors(self, P,Q, N=None):
         """Generates Hausdorff nearest neighbor lists of *frames* (by index) and
@@ -1155,7 +1150,6 @@ class PSAPair(object):
         self.nearest_neighbors['frames'] = hn['frames']
         self.nearest_neighbors['distances'] = hn['distances']
 
-
     def find_hausdorff_pair(self):
         r"""Find the Hausdorff pair (of frames) for *this* pair of paths.
 
@@ -1182,7 +1176,6 @@ class PSAPair(object):
             max_nn_idx_Q = np.argmax(nn_dist_Q)
             self.hausdorff_pair['frames'] = nn_idx_Q[max_nn_idx_Q], max_nn_idx_Q
             self.hausdorff_pair['distance'] = max_nn_dist_Q
-
 
     def get_nearest_neighbors(self, frames=True, distances=True):
         """Returns the nearest neighbor frame indices, distances, or both, for
@@ -1403,9 +1396,8 @@ class PSAnalysis(object):
         self._NN = None # (distance vector order) list of all nearest neighbors
         self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
-
-    def generate_paths(self, align=False, filename='fitted', infix='', weights=None,
-                       tol_mass=False, ref_frame=None, flat=False, save=True, store=True):
+    def generate_paths(self, align=False, filename=None, infix='', weights=None,
+                       tol_mass=False, ref_frame=None, flat=False, save=True, store=False):
         """Generate paths, aligning each to reference structure if necessary.
 
         Parameters
@@ -1424,12 +1416,12 @@ class PSAnalysis(object):
              ``None`` weigh each atom equally. If a float array of the same
              length as the selected AtomGroup is provided, use each element of
              the `array_like` as a weight for the corresponding atom in the
-             AtomGroup.
+             AtomGroup [``None``]
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
-             than *tol_mass*
+             than *tol_mass* [``False``]
         ref_frame : int
-             frame index to select frame from *reference*
+             frame index to select frame from *reference* [``None``]
         flat : bool
              represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
@@ -1459,6 +1451,11 @@ class PSAnalysis(object):
 
         .. versionchanged:: 0.17.0
            Deprecated keyword `mass_weighted` was removed.
+
+        .. versionchanged:: 1.0.0
+           Defaults for the `store` and `filename` keywords have been changed
+           from `True` and `fitted` to `False` and `None` respectively. These
+           now match the docstring documented defaults.
         """
         if ref_frame is None:
             ref_frame = self.ref_frame
@@ -1486,7 +1483,6 @@ class PSAnalysis(object):
                 cPickle.dump(self.fit_trj_names, output)
         if store:
             self.save_paths(filename=filename)
-
 
     def run(self, **kwargs):
         """Perform path similarity analysis on the trajectories to compute
@@ -1590,7 +1586,6 @@ class PSAnalysis(object):
                     self._HP.append(pp.get_hausdorff_pair())
         self.D = D
 
-
     def save_paths(self, filename=None):
         """Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.
 
@@ -1627,7 +1622,6 @@ class PSAnalysis(object):
             cPickle.dump(self.path_names, output)
         return filename
 
-
     def load(self):
         """Load fitted paths specified by 'psa_path-names.pkl' in
         :attr:`PSAnalysis.targetdir`.
@@ -1642,12 +1636,11 @@ class PSAnalysis(object):
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
                               "{0} does not exist.".format(self._paths_pkl))
-        self.path_names = np.load(self._paths_pkl)
+        self.path_names = np.load(self._paths_pkl, allow_pickle=True)
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
-            self.labels = np.load(self._labels_pkl)
+            self.labels = np.load(self._labels_pkl, allow_pickle=True)
         logger.info("Loaded paths from %r", self._paths_pkl)
-
 
     def plot(self, filename=None, linkage='ward', count_sort=False,
              distance_sort=False, figsize=4.5, labelsize=12):
@@ -1769,7 +1762,6 @@ class PSAnalysis(object):
 
         return Z, dgram, dist_matrix_clus
 
-
     def plot_annotated_heatmap(self, filename=None, linkage='ward',             \
                                count_sort=False, distance_sort=False,           \
                                figsize=8, annot_size=6.5):
@@ -1824,7 +1816,7 @@ class PSAnalysis(object):
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         try:
-            import seaborn.apionly as sns
+            import seaborn as sns
         except ImportError:
             raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
@@ -1893,7 +1885,6 @@ class PSAnalysis(object):
 
         return Z, dgram, dist_matrix_clus
 
-
     def plot_nearest_neighbors(self, filename=None, idx=0,                      \
                                labels=('Path 1', 'Path 2'), figsize=4.5,        \
                                multiplot=False, aspect_ratio=1.75,              \
@@ -1941,7 +1932,7 @@ class PSAnalysis(object):
         """
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
-            import seaborn.apionly as sns
+            import seaborn as sns
         except ImportError:
             raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
@@ -1998,7 +1989,6 @@ class PSAnalysis(object):
             savefig(outfile, dpi=300, bbox_inches='tight')
 
         return ax
-
 
     def cluster(self, dist_mat=None, method='ward', count_sort=False,           \
                 distance_sort=False, no_plot=False, no_labels=True,             \
@@ -2091,7 +2081,6 @@ class PSAnalysis(object):
 
         return dgram_loc, hmap_loc, cbar_loc
 
-
     def get_num_atoms(self):
         """Return the number of atoms used to construct the :class:`Path` instances in
         :class:`PSA`.
@@ -2111,7 +2100,6 @@ class PSAnalysis(object):
                 "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.natoms
 
-
     def get_num_paths(self):
         """Return the number of paths in :class:`PSA`.
 
@@ -2128,7 +2116,6 @@ class PSAnalysis(object):
             raise ValueError(
                 "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.npaths
-
 
     def get_paths(self):
         """Return the paths in :class:`PSA`.
@@ -2148,7 +2135,6 @@ class PSAnalysis(object):
             raise ValueError(
                 "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.paths
-
 
     def get_pairwise_distances(self, vectorform=False, checks=False):
         """Return the distance matrix (or vector) of pairwise path distances.
@@ -2180,7 +2166,6 @@ class PSAnalysis(object):
         else:
             return self.D
 
-
     @property
     def psa_pairs(self):
         """The list of :class:`PSAPair` instances for each pair of paths.
@@ -2209,7 +2194,6 @@ class PSAnalysis(object):
             raise ValueError("No nearest neighbors data; do"
                              " 'PSAnalysis.run_pairs_analysis()' first.")
         return self._psa_pairs
-
 
     @property
     def hausdorff_pairs(self):
