@@ -82,8 +82,11 @@ def read_numpy_offsets(filename):
         dictionary of offsets information
 
     """
-    return {k: v for k, v in six.iteritems(np.load(filename))}
-
+    try:
+        return {k: v for k, v in six.iteritems(np.load(filename))}
+    except IOError:
+        warnings.warn("Failed to load offsets file {}\n".format(filename))
+        return False
 
 class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
@@ -181,7 +184,20 @@ class XDRBaseReader(base.ReaderBase):
             self._read_offsets(store=True)
             return
 
+        # if offsets file read correctly, data will be a dictionary of offsets
+        # if not, data will be False
+        # if False, offsets should be read from the trajectory
+        # this warning can be avoided by loading Universe like:
+        # u = mda.Universe(data.TPR, data.XTC, refresh_offsets=True)
+        # refer to Issue #1893
         data = read_numpy_offsets(fname)
+        if not data:
+            warnings.warn("Reading frame offsets from trajectory\n"
+                          "Consider setting 'refresh_offsets=True' "
+                          "when loading your Universe".format(filename))
+            self._read_offsets(store=True)
+            return
+
         ctime_ok = size_ok = n_atoms_ok = False
 
         try:
