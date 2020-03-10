@@ -33,6 +33,9 @@ from MDAnalysisTests.datafiles import Martini_membrane_gro
 
 LIPID_HEAD_STRING = "name PO4"
 
+def lines2one(lines):
+    """Join lines and squash all whitespace"""
+    return " ".join(" ".join(lines).split())
 
 @pytest.fixture()
 def universe():
@@ -43,9 +46,6 @@ def universe():
 def lipid_heads(universe):
     return universe.select_atoms(LIPID_HEAD_STRING)
 
-def lines2one(lines):
-    """Join lines and squash all whitespace"""
-    return " ".join(" ".join(lines).split())
 
 def test_leaflet_finder(universe, lipid_heads):
     lfls = LeafletFinder(universe, lipid_heads, pbc=True)
@@ -86,6 +86,12 @@ def test_pbc_on_off_difference(universe, lipid_heads):
     diff_graph = NX.difference(pbc_on_graph,pbc_off_graph)
     assert_equal(set(diff_graph.edges), {(69, 153), (73, 79), (206, 317), (313, 319)})
 
+
+@pytest.mark.parametrize("sparse",[True,False,None])
+def test_sparse_on_off_none(universe, lipid_heads, sparse):
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True, sparse = sparse)
+    assert_almost_equal(len(lfls_ag.graph.edges), 1903, decimal=4)
+
 def test_cutoff_update(universe, lipid_heads):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
     lfls_ag.update(cutoff=1.0)
@@ -95,8 +101,8 @@ def test_cutoff_update(universe, lipid_heads):
 def test_write_selection(universe, lipid_heads, tmpdir):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
     with tmpdir.as_cwd():
-         filename = lfls_ag.write_selection('leaflet.vmd')
-         expected_output = lines2one([
+        filename = lfls_ag.write_selection('leaflet.vmd')
+        expected_output = lines2one([
             """# leaflets based on select=<AtomGroup with 360 atoms> cutoff=15.000000
         # MDAnalysis VMD selection
         atomselect macro leaflet_1 {index 1 13 25 37 49 61 73 85 \\
@@ -148,4 +154,5 @@ def test_write_selection(universe, lipid_heads, tmpdir):
         4633 4645 4657 4669 }
 
 """])
-         assert lines2one(open('leaflet.vmd').readlines()) == expected_output
+
+        assert lines2one(open('leaflet.vmd').readlines()) == expected_output
