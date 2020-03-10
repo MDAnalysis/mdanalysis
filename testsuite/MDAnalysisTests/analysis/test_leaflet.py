@@ -26,13 +26,10 @@ import pytest
 
 from numpy.testing import assert_equal, assert_almost_equal
 import numpy as np
-from six.moves import StringIO
 import networkx as NX
 
 from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff
 from MDAnalysisTests.datafiles import Martini_membrane_gro
-
-from MDAnalysis.lib.util import NamedStream
 
 LIPID_HEAD_STRING = "name PO4"
 
@@ -49,11 +46,6 @@ def lipid_heads(universe):
 def lines2one(lines):
     """Join lines and squash all whitespace"""
     return " ".join(" ".join(lines).split())
-
-
-
-def namedfile(filename):
-    return NamedStream(StringIO(), filename)
 
 def test_leaflet_finder(universe, lipid_heads):
     lfls = LeafletFinder(universe, lipid_heads, pbc=True)
@@ -103,7 +95,6 @@ def test_write_selection(universe, lipid_heads, tmpdir):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
     with tmpdir.as_cwd():
          filename = lfls_ag.write_selection('leaflet.vmd')
-#         assert len(open('leaflet.vmd').readlines()) == 50, "Leaflet write selection not working"
          expected_output = lines2one([
             """# leaflets based on select=<AtomGroup with 360 atoms> cutoff=15.000000
         # MDAnalysis VMD selection
