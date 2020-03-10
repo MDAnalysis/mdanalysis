@@ -164,13 +164,14 @@ If you use the DSSP class in :mod:`MDAnalysis.analysis.secondary_structure.dssp`
 .. _`10.1016/j.bpj.2015.08.015`: https://doi.org/10.1016/j.bpj.2015.08.015
 
 If you use the STRIDE code in :mod:`MDAnalysis.analysis.secondary_structure`,
-please cite [Heinig2004]_ .
+please cite [Frishman1995]_ .
 
-.. [Heinig2004] Matthias Heinig and Dmitrij Frishman.
-   STRIDE: a web server for secondary structure assignment from known atomic coordinates of proteins.
-   *Nucleic Acids Research* **32 (Web Server issue)** (2004), W500-W502. doi: `10.1093/nar/gkh429`_
+.. [Frishman1995] Dmitrij Frishman and Patrick Argos.
+   Knowledge-Based Protein Secondary Structure Assignment. 
+   *Proteins: Structure, Function, and Bioinformatics* **23 (4)** (1995), 566–579.
+   doi: `10.1002/prot.340230412`_
 
-.. _`10.1093/nar/gkh429`: https://doi.org/10.1093/nar/gkh429
+.. _`10.1002/prot.340230412`:https://doi.org/10.1002/prot.340230412
 
 .. _citations-using-duecredit:
 

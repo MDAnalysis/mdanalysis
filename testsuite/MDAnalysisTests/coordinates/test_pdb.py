@@ -46,6 +46,7 @@ from numpy.testing import (assert_equal,
 
 class TestPDBReader(_SingleFrameReader):
     __test__ = True
+
     def setUp(self):
         # can lead to race conditions when testing in parallel
         self.universe = mda.Universe(RefAdKSmall.filename)
@@ -56,7 +57,8 @@ class TestPDBReader(_SingleFrameReader):
     def test_uses_PDBReader(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
-        assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
+        assert isinstance(self.universe.trajectory,
+                          PDBReader), "failed to choose PDBReader"
 
     def test_dimensions(self):
         assert_almost_equal(
@@ -67,7 +69,8 @@ class TestPDBReader(_SingleFrameReader):
     def test_ENT(self):
         from MDAnalysis.coordinates.PDB import PDBReader
         self.universe = mda.Universe(ENT)
-        assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
+        assert isinstance(self.universe.trajectory,
+                          PDBReader), "failed to choose PDBReader"
 
 
 class TestPDBMetadata(object):
@@ -155,6 +158,7 @@ class TestPDBMetadata(object):
 
 class TestExtendedPDBReader(_SingleFrameReader):
     __test__ = True
+
     def setUp(self):
         self.universe = mda.Universe(PDB_small,
                                      topology_format="XPDB",
@@ -204,7 +208,6 @@ class TestPDBWriter(object):
     @pytest.fixture
     def u_no_names(self):
         return make_Universe(['resids', 'resnames'], trajectory=True)
-
 
     def test_writer(self, universe, outfile):
         "Test writing from a single frame PDB file to a PDB file." ""
@@ -268,7 +271,7 @@ class TestPDBWriter(object):
         MDAnalysis.Writer (Issue 105)"""
         u = universe2
         u.trajectory[50]
-        with  mda.Writer(outfile) as W:
+        with mda.Writer(outfile) as W:
             W.write(u.select_atoms('all'))
         u2 = mda.Universe(outfile)
         assert_equal(u2.trajectory.n_frames,
@@ -512,6 +515,7 @@ class TestMultiPDBReader(object):
                                               "the test reference; len(actual) is %d, len(desired) "
                                               "is %d" % (len(u._topology.bonds.values), len(desired)))
 
+
 def test_conect_bonds_all(tmpdir):
     conect = mda.Universe(CONECT, guess_bonds=True)
 
@@ -526,6 +530,7 @@ def test_conect_bonds_all(tmpdir):
     assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
+
 
 def test_write_bonds_partial(tmpdir):
     u = mda.Universe(CONECT)
@@ -778,6 +783,7 @@ class TestPDBXLSerial(object):
 
 class TestPSF_CRDReader(_SingleFrameReader):
     __test__ = True
+
     def setUp(self):
         self.universe = mda.Universe(PSF, CRD)
         self.prec = 5  # precision in CRD (at least we are writing %9.5f)
@@ -793,7 +799,8 @@ class TestPSF_PDBReader(TestPDBReader):
     def test_uses_PDBReader(self):
         from MDAnalysis.coordinates.PDB import PDBReader
 
-        assert isinstance(self.universe.trajectory, PDBReader), "failed to choose PDBReader"
+        assert isinstance(self.universe.trajectory,
+                          PDBReader), "failed to choose PDBReader"
 
 
 def test_write_occupancies(tmpdir):
@@ -830,17 +837,26 @@ class TestWriterAlignments(object):
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
-                       "  1.00  0.00      RNAA H\n")
+                       "  1.00  0.00      RNAA H  \n")
         assert_equal(writtenstuff[3], result_line)
 
 
 @pytest.mark.parametrize('atom, refname', ((mda.coordinates.PDB.Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
-                                           (mda.coordinates.PDB.Pair('GLU', 'OE1'), ' OE1'),
-                                           (mda.coordinates.PDB.Pair('MSE', 'SE'), 'SE  '),  # Selenium like in 4D3L
-                                           (mda.coordinates.PDB.Pair('CA', 'CA'), 'CA  '),  # Calcium like in 4D3L
-                                           (mda.coordinates.PDB.Pair('HDD', 'FE'), 'FE  '),  # Iron from a heme like in 1GGE
-                                           (mda.coordinates.PDB.Pair('PLC', 'P'), ' P  '),  # Lipid phosphorus (1EIN)
-))
+                                           (mda.coordinates.PDB.Pair(
+                                               'GLU', 'OE1'), ' OE1'),
+                                           # Selenium like in 4D3L
+                                           (mda.coordinates.PDB.Pair(
+                                               'MSE', 'SE'), 'SE  '),
+                                           # Calcium like in 4D3L
+                                           (mda.coordinates.PDB.Pair(
+                                               'CA', 'CA'), 'CA  '),
+                                           # Iron from a heme like in 1GGE
+                                           (mda.coordinates.PDB.Pair(
+                                               'HDD', 'FE'), 'FE  '),
+                                           # Lipid phosphorus (1EIN)
+                                           (mda.coordinates.PDB.Pair(
+                                               'PLC', 'P'), ' P  '),
+                                           ))
 def test_deduce_PDB_atom_name(atom, refname):
     # The Pair named tuple is used to mock atoms as we only need them to have a
     # ``resname`` and a ``name`` attribute.
@@ -929,7 +945,8 @@ def test_write_pdb_zero_atoms():
 
 def test_atom_not_match(tmpdir):
     # issue 1998
-    outfile = str(tmpdir.mkdir("PDBReader").join('test_atom_not_match' + ".pdb"))
+    outfile = str(tmpdir.mkdir("PDBReader").join(
+        'test_atom_not_match' + ".pdb"))
     u = mda.Universe(PSF, DCD)
     # select two groups of atoms
     protein = u.select_atoms("protein and name CA")
