@@ -120,9 +120,6 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 * The trajectory does not contain time information so we simply set
   the time step to 1 ps (or the user could provide it as kwarg *dt*)
 
-* **No direct access of frames is implemented, only iteration through
-  the trajectory.**
-
 * Trajectories with fewer than 4 atoms probably fail to be read (BUG).
 
 * If the trajectory contains exactly *one* atom then it is always
@@ -203,9 +200,6 @@ class TRJReader(base.ReaderBase):
     The length of a timestep is not stored in the trajectory itself but can
     be set by passing the `dt` keyword argument to the constructor; it
     is assumed to be in ps. The default value is 1 ps.
-
-    Functionality is currently limited to simple iteration over the
-    trajectory.
 
     .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
 
