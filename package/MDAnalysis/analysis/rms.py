@@ -317,7 +317,7 @@ def weight_type_check(weights,atoms,selection):
             raise ValueError("Length of provided weights {} do not match the number of atoms "
                 "in the selection {}: {}".format(weights, selection['mobile'], atoms.n_atoms))
         else:
-            tmp_weights = get_weights(atoms, weights) 
+            get_weights(atoms, weights) 
     elif not iterable(weights) and str(weights) != 'mass' and weights is not None:
         raise ValueError("Each groupselection can only be combined with "
                                "weights: None, 'mass' or 1D float array")
