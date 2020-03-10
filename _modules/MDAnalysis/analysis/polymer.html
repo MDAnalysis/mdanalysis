@@ -364,6 +364,8 @@
 <span class="sd">    .. versionadded:: 0.13.0</span>
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       The run method now automatically performs the exponential fit</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroups</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">PersistenceLength</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
@@ -414,10 +416,6 @@
             <span class="n">b</span> <span class="o">=</span> <span class="n">calc_bonds</span><span class="p">(</span><span class="n">pos</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
             <span class="n">bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">perform_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;perform_fit is now called automatically from run&quot;</span><span class="p">,</span>
-                      <span class="ne">DeprecationWarning</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_perform_fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Fit the results to an exponential decay&quot;&quot;&quot;</span>

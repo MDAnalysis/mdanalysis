@@ -412,6 +412,7 @@
          <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">del</span> <span class="n">Doi</span>
 
+
 <div class="viewcode-block" id="get_path_metric_func"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.get_path_metric_func">[docs]</a><span class="k">def</span> <span class="nf">get_path_metric_func</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Selects a path metric function by name.</span>
 
@@ -1010,7 +1011,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span> <span class="o">=</span> <span class="kc">None</span>
 
-
 <div class="viewcode-block" id="Path.fit_to_reference"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.fit_to_reference">[docs]</a>    <span class="k">def</span> <span class="nf">fit_to_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s1">&#39;_fit&#39;</span><span class="p">,</span>
                          <span class="n">rmsdfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">targetdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span>
                          <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
@@ -1069,7 +1069,6 @@
             <span class="n">aligntrj</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">rmsdfile</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">newtrj_name</span><span class="p">)</span></div>
 
-
 <div class="viewcode-block" id="Path.to_path"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.to_path">[docs]</a>    <span class="k">def</span> <span class="nf">to_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fitted</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generates a coordinate time series from the fitted universe</span>
 <span class="sd">        trajectory.</span>
@@ -1121,7 +1120,6 @@
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">frames</span><span class="p">])</span></div>
-
 
 <div class="viewcode-block" id="Path.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">postfix</span><span class="o">=</span><span class="s1">&#39;_fit&#39;</span><span class="p">,</span> <span class="n">rmsdfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">targetdir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">curdir</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
@@ -1192,7 +1190,6 @@
                                 <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span> <span class="n">tol_mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_path</span><span class="p">(</span><span class="n">fitted</span><span class="o">=</span><span class="n">align</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="n">flat</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">newtrj_name</span></div>
-
 
 <div class="viewcode-block" id="Path.get_num_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.Path.get_num_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the number of atoms used to construct the :class:`Path`.</span>
@@ -1278,7 +1275,6 @@
         <span class="c1"># Set by self.getHausdorffPair</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hausdorff_pair</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;frames&#39;</span> <span class="p">:</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="s1">&#39;distance&#39;</span> <span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
-
     <span class="k">def</span> <span class="nf">_dvec_idx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Convert distance matrix indices (in the upper triangle) to the index</span>
 <span class="sd">        of the corresponding distance vector.</span>
@@ -1301,7 +1297,6 @@
 <span class="sd">             (matrix element) index in the corresponding distance vector</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">npaths</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
-
 
     <span class="k">def</span> <span class="nf">compute_nearest_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span><span class="n">Q</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates Hausdorff nearest neighbor lists of *frames* (by index) and</span>
@@ -1330,7 +1325,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="p">[</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hn</span><span class="p">[</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nearest_neighbors</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hn</span><span class="p">[</span><span class="s1">&#39;distances&#39;</span><span class="p">]</span>
 
-
     <span class="k">def</span> <span class="nf">find_hausdorff_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Find the Hausdorff pair (of frames) for *this* pair of paths.</span>
 
@@ -1357,7 +1351,6 @@
             <span class="n">max_nn_idx_Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">nn_dist_Q</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hausdorff_pair</span><span class="p">[</span><span class="s1">&#39;frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn_idx_Q</span><span class="p">[</span><span class="n">max_nn_idx_Q</span><span class="p">],</span> <span class="n">max_nn_idx_Q</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">hausdorff_pair</span><span class="p">[</span><span class="s1">&#39;distance&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">max_nn_dist_Q</span>
-
 
     <span class="k">def</span> <span class="nf">get_nearest_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">distances</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Returns the nearest neighbor frame indices, distances, or both, for</span>
@@ -1578,9 +1571,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_NN</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># (distance vector order) list of all nearest neighbors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_psa_pairs</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># (distance vector order) list of all PSAPairs</span>
 
-
-<div class="viewcode-block" id="PSAnalysis.generate_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.generate_paths">[docs]</a>    <span class="k">def</span> <span class="nf">generate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;fitted&#39;</span><span class="p">,</span> <span class="n">infix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">tol_mass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="PSAnalysis.generate_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.generate_paths">[docs]</a>    <span class="k">def</span> <span class="nf">generate_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">infix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">tol_mass</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generate paths, aligning each to reference structure if necessary.</span>
 
 <span class="sd">        Parameters</span>
@@ -1599,12 +1591,12 @@
 <span class="sd">             ``None`` weigh each atom equally. If a float array of the same</span>
 <span class="sd">             length as the selected AtomGroup is provided, use each element of</span>
 <span class="sd">             the `array_like` as a weight for the corresponding atom in the</span>
-<span class="sd">             AtomGroup.</span>
+<span class="sd">             AtomGroup [``None``]</span>
 <span class="sd">        tol_mass : float</span>
 <span class="sd">             Reject match if the atomic masses for matched atoms differ by more</span>
-<span class="sd">             than *tol_mass*</span>
+<span class="sd">             than *tol_mass* [``False``]</span>
 <span class="sd">        ref_frame : int</span>
-<span class="sd">             frame index to select frame from *reference*</span>
+<span class="sd">             frame index to select frame from *reference* [``None``]</span>
 <span class="sd">        flat : bool</span>
 <span class="sd">             represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;</span>
 <span class="sd">             if ``False`` then :attr:`Path.path` is a 3D (|3D|)</span>
@@ -1634,6 +1626,11 @@
 
 <span class="sd">        .. versionchanged:: 0.17.0</span>
 <span class="sd">           Deprecated keyword `mass_weighted` was removed.</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Defaults for the `store` and `filename` keywords have been changed</span>
+<span class="sd">           from `True` and `fitted` to `False` and `None` respectively. These</span>
+<span class="sd">           now match the docstring documented defaults.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ref_frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">ref_frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_frame</span>
@@ -1661,7 +1658,6 @@
                 <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_trj_names</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">save_paths</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="PSAnalysis.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform path similarity analysis on the trajectories to compute</span>
@@ -1765,7 +1761,6 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_HP</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pp</span><span class="o">.</span><span class="n">get_hausdorff_pair</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">D</span> <span class="o">=</span> <span class="n">D</span></div>
 
-
 <div class="viewcode-block" id="PSAnalysis.save_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.save_paths">[docs]</a>    <span class="k">def</span> <span class="nf">save_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.</span>
 
@@ -1802,7 +1797,6 @@
             <span class="n">cPickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">path_names</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">filename</span></div>
 
-
 <div class="viewcode-block" id="PSAnalysis.load"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load fitted paths specified by &#39;psa_path-names.pkl&#39; in</span>
 <span class="sd">        :attr:`PSAnalysis.targetdir`.</span>
@@ -1817,12 +1811,11 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Fitted trajectories cannot be loaded; save file&quot;</span> <span class="o">+</span>
                               <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> does not exist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">path_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">pname</span><span class="p">)</span> <span class="k">for</span> <span class="n">pname</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_names</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_pkl</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_pkl</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_labels_pkl</span><span class="p">,</span> <span class="n">allow_pickle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loaded paths from </span><span class="si">%r</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_paths_pkl</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="PSAnalysis.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span> <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
              <span class="n">distance_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span> <span class="n">labelsize</span><span class="o">=</span><span class="mi">12</span><span class="p">):</span>
@@ -1943,7 +1936,6 @@
             <span class="n">savefig</span><span class="p">(</span><span class="n">outfile</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Z</span><span class="p">,</span> <span class="n">dgram</span><span class="p">,</span> <span class="n">dist_matrix_clus</span></div>
-
 
 <div class="viewcode-block" id="PSAnalysis.plot_annotated_heatmap"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.plot_annotated_heatmap">[docs]</a>    <span class="k">def</span> <span class="nf">plot_annotated_heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span>             \
                                <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">distance_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>           \
@@ -2068,7 +2060,6 @@
 
         <span class="k">return</span> <span class="n">Z</span><span class="p">,</span> <span class="n">dgram</span><span class="p">,</span> <span class="n">dist_matrix_clus</span></div>
 
-
 <div class="viewcode-block" id="PSAnalysis.plot_nearest_neighbors"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.plot_nearest_neighbors">[docs]</a>    <span class="k">def</span> <span class="nf">plot_nearest_neighbors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>                      \
                                <span class="n">labels</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Path 1&#39;</span><span class="p">,</span> <span class="s1">&#39;Path 2&#39;</span><span class="p">),</span> <span class="n">figsize</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>        \
                                <span class="n">multiplot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">aspect_ratio</span><span class="o">=</span><span class="mf">1.75</span><span class="p">,</span>              \
@@ -2174,7 +2165,6 @@
 
         <span class="k">return</span> <span class="n">ax</span></div>
 
-
 <div class="viewcode-block" id="PSAnalysis.cluster"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.cluster">[docs]</a>    <span class="k">def</span> <span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dist_mat</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">,</span> <span class="n">count_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>           \
                 <span class="n">distance_sort</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_plot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">no_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>             \
                 <span class="n">color_threshold</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
@@ -2266,7 +2256,6 @@
 
         <span class="k">return</span> <span class="n">dgram_loc</span><span class="p">,</span> <span class="n">hmap_loc</span><span class="p">,</span> <span class="n">cbar_loc</span>
 
-
 <div class="viewcode-block" id="PSAnalysis.get_num_atoms"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the number of atoms used to construct the :class:`Path` instances in</span>
 <span class="sd">        :class:`PSA`.</span>
@@ -2286,7 +2275,6 @@
                 <span class="s2">&quot;No path data; do &#39;PSAnalysis.generate_paths()&#39; first.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span></div>
 
-
 <div class="viewcode-block" id="PSAnalysis.get_num_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_num_paths">[docs]</a>    <span class="k">def</span> <span class="nf">get_num_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the number of paths in :class:`PSA`.</span>
 
@@ -2303,7 +2291,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;No path data; do &#39;PSAnalysis.generate_paths()&#39; first.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">npaths</span></div>
-
 
 <div class="viewcode-block" id="PSAnalysis.get_paths"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_paths">[docs]</a>    <span class="k">def</span> <span class="nf">get_paths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the paths in :class:`PSA`.</span>
@@ -2323,7 +2310,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;No path data; do &#39;PSAnalysis.generate_paths()&#39; first.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">paths</span></div>
-
 
 <div class="viewcode-block" id="PSAnalysis.get_pairwise_distances"><a class="viewcode-back" href="../../../documentation_pages/analysis/psa.html#MDAnalysis.analysis.psa.PSAnalysis.get_pairwise_distances">[docs]</a>    <span class="k">def</span> <span class="nf">get_pairwise_distances</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vectorform</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">checks</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the distance matrix (or vector) of pairwise path distances.</span>
@@ -2355,7 +2341,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span></div>
 
-
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">psa_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The list of :class:`PSAPair` instances for each pair of paths.</span>
@@ -2384,7 +2369,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No nearest neighbors data; do&quot;</span>
                              <span class="s2">&quot; &#39;PSAnalysis.run_pairs_analysis()&#39; first.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_psa_pairs</span>
-
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">hausdorff_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

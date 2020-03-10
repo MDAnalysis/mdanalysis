@@ -1199,7 +1199,7 @@ after clustering</li>
 
 <dl class="method">
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.generate_paths">
-<code class="descname">generate_paths</code><span class="sig-paren">(</span><em>align=False</em>, <em>filename='fitted'</em>, <em>infix=''</em>, <em>weights=None</em>, <em>tol_mass=False</em>, <em>ref_frame=None</em>, <em>flat=False</em>, <em>save=True</em>, <em>store=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis.generate_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.generate_paths" title="Permalink to this definition">¶</a></dt>
+<code class="descname">generate_paths</code><span class="sig-paren">(</span><em>align=False</em>, <em>filename=None</em>, <em>infix=''</em>, <em>weights=None</em>, <em>tol_mass=False</em>, <em>ref_frame=None</em>, <em>flat=False</em>, <em>save=True</em>, <em>store=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis.generate_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.generate_paths" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate paths, aligning each to reference structure if necessary.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1216,10 +1216,10 @@ the fitted trajectory files [‘’]</li>
 <code class="docutils literal notranslate"><span class="pre">None</span></code> weigh each atom equally. If a float array of the same
 length as the selected AtomGroup is provided, use each element of
 the <cite>array_like</cite> as a weight for the corresponding atom in the
-AtomGroup.</li>
+AtomGroup [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Reject match if the atomic masses for matched atoms differ by more
-than <em>tol_mass</em></li>
-<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame index to select frame from <em>reference</em></li>
+than <em>tol_mass</em> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame index to select frame from <em>reference</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> as a 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
 if <code class="docutils literal notranslate"><span class="pre">False</span></code> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> is a 3D (<span class="math notranslate nohighlight">\(N_p\times N\times 3\)</span>)
 <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
@@ -1247,6 +1247,11 @@ refactored to fit with AnalysisBase API</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Deprecated keyword <cite>mass_weighted</cite> was removed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Defaults for the <cite>store</cite> and <cite>filename</cite> keywords have been changed
+from <cite>True</cite> and <cite>fitted</cite> to <cite>False</cite> and <cite>None</cite> respectively. These
+now match the docstring documented defaults.</p>
 </div>
 </dd></dl>
 
