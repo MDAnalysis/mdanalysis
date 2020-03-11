@@ -25,7 +25,8 @@ from __future__ import print_function, absolute_import
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.analysis import align
-from MDAnalysis.analysis.pca import PCA, cosine_content
+from MDAnalysis.analysis.pca import (PCA, cosine_content, 
+                                     rmsip, cumulative_overlap)
 
 from numpy.testing import (assert_almost_equal, assert_equal,
                            assert_array_almost_equal)
@@ -152,3 +153,49 @@ def test_alignment(pca_aligned, u):
 def test_covariance_norm(pca_aligned, u):
     assert_almost_equal(np.linalg.norm(pca_aligned.cov), 0.96799758, decimal=5)
 
+def test_pca_rmsip_self(pca):
+    assert_almost_equal(pca.rmsip(pca), 1.0)
+
+def test_rmsip_ortho(pca):
+    value = rmsip(pca.p_components[:10], pca.p_components[10:20])
+    assert_almost_equal(value, 0.0)
+
+def test_pytest_too_many_components(pca):
+    with pytest.raises(ValueError) as exc:
+        pca.rmsip(pca, n_components=(1, 2, 3))
+    assert 'Too many values' in str(exc.value)
+
+def test_asymmetric_rmsip(pca):
+    a = pca.rmsip(pca, n_components=(10, 4))
+    b = pca.rmsip(pca, n_components=(4, 10))
+
+    assert abs(a-b) > 0.1, 'RMSIP should be asymmetric'
+    assert_almost_equal(b, 1.0)
+
+def test_pca_cumulative_overlap_self(pca):
+    value = pca.cumulative_overlap(pca, i=1)
+    assert_almost_equal(value, 1.0)
+
+def test_cumulative_overlap_ortho(pca):
+    pcs = pca.p_components
+    value = cumulative_overlap(pcs[11], pcs, n_components=10)
+    assert_almost_equal(value, 0.0)
+
+@pytest.mark.parametrize(
+    'method', ['rmsip',
+               'cumulative_overlap'])
+def test_compare_not_run(u, pca, method):
+    pca2 = PCA(u)
+    func = getattr(pca, method)
+    with pytest.raises(ValueError) as exc:
+        func(pca2)
+    assert 'Call run()' in str(exc.value)
+
+@pytest.mark.parametrize(
+    'method', ['rmsip',
+               'cumulative_overlap'])
+def test_compare_wrong_class(u, pca, method):
+    func = getattr(pca, method)
+    with pytest.raises(ValueError) as exc:
+        func(3)
+    assert 'must be another PCA class' in str(exc.value)

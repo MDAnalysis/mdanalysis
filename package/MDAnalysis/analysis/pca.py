@@ -113,6 +113,7 @@ from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
 from MDAnalysis.lib.log import ProgressBar
 
+from ..lib import util
 from .base import AnalysisBase
 
 
@@ -331,6 +332,89 @@ class PCA(AnalysisBase):
 
         return dot
 
+    def rmsip(self, other, n_components=None):
+        """Compute the root mean square inner product between subspaces.
+
+        This is only symmetric if the number of components is the same for 
+        both instances. The RMSIP effectively measures how 
+        correlated the vectors of this instance are to those of ``other``.
+
+        Parameters
+        ----------
+        other: :class:`~MDAnalysis.analysis.pca.PCA`
+            Another PCA class. This must have already been run.
+        n_components: int or tuple of ints, optional
+            number of components to compute for the inner products.
+            ``None`` computes all of them.
+
+        Returns
+        -------
+        float:
+            Root mean square inner product of the selected subspaces. 
+            0 indicates that they are mutually orthogonal, whereas 1 indicates 
+            that they are identical. 
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            a = self.p_components
+        except AttributeError:
+            raise ValueError('Call run() on the PCA before using rmsip')
+
+        try:
+            b = other.p_components
+        except AttributeError:
+            if isinstance(other, type(self)):
+                raise ValueError('Call run() on the other PCA before using rmsip')
+            else:
+                raise ValueError('other must be another PCA class')
+        
+        return rmsip(a, b, n_components=n_components)
+
+    def cumulative_overlap(self, other, i=0, n_components=None):
+        """Compute the cumulative overlap of a vector in a subspace.
+
+        This is not symmetric. The cumulative overlap measures the overlap of 
+        the chosen vector in this instance, in the ``other`` subspace.
+
+        Please cite [Yang2008]_ if you use this function.
+
+        Parameters
+        ----------
+        other: :class:`~MDAnalysis.analysis.pca.PCA`
+            Another PCA class. This must have already been run.
+        i: int, optional
+            The index of eigenvector to be analysed.
+        n_components: int, optional
+            number of components in ``other`` to compute for the cumulative overlap.
+            ``None`` computes all of them.
+
+        Returns
+        -------
+        float:
+            Cumulative overlap of the chosen vector in this instance to 
+            the ``other`` subspace. 0 indicates that they are mutually 
+            orthogonal, whereas 1 indicates that they are identical. 
+
+        .. versionadded:: 1.0.0
+
+        """
+
+        try:
+            a = self.p_components
+        except AttributeError:
+            raise ValueError('Call run() on the PCA before using cumulative_overlap')
+
+        try:
+            b = other.p_components
+        except AttributeError:
+            if isinstance(other, type(self)):
+                raise ValueError('Call run() on the other PCA before using cumulative_overlap')
+            else:
+                raise ValueError('other must be another PCA class')
+        
+        return cumulative_overlap(a, b, i=i, n_components=n_components)
+
 
 def cosine_content(pca_space, i):
     """Measure the cosine content of the PCA projection.
@@ -346,7 +430,7 @@ def cosine_content(pca_space, i):
     pca_space: array, shape (number of frames, number of components)
         The PCA space to be analyzed.
     i: int
-        The index of the pca_component projectection to be analyzed.
+        The index of the pca_component projection to be analyzed.
 
     Returns
     -------
@@ -365,3 +449,101 @@ def cosine_content(pca_space, i):
     cos = np.cos(np.pi * t * (i + 1) / T)
     return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
             scipy.integrate.simps(pca_space[:, i] ** 2))
+
+def rmsip(a, b, n_components=None):
+    """Compute the root mean square inner product between subspaces.
+
+    This is only symmetric if the number of components is the same for 
+    ``a`` and ``b``. The RMSIP effectively measures how 
+    correlated the vectors of ``a`` are to those of ``b``.
+
+    Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+
+    Parameters
+    ----------
+    a: array, shape (n_components, n_features)
+        The first subspace. Must have the same number of features as ``b``.
+    b: array, shape (n_components, n_features)
+        The second subspace. Must have the same number of features as ``a``.
+    n_components: int or tuple of ints, optional
+        number of components to compute for the inner products.
+        ``None`` computes all of them.
+
+    Returns
+    -------
+    float:
+        Root mean square inner product of the selected subspaces. 
+        0 indicates that they are mutually orthogonal, whereas 1 indicates 
+        that they are identical. 
+
+    .. versionadded:: 1.0.0
+    """
+    n_components = util.asiterable(n_components)
+    if len(n_components) == 1:
+        n_a = n_b = n_components[0]
+    elif len(n_components) == 2:
+        n_a, n_b = n_components
+    else:
+        raise ValueError('Too many values provided for n_components')
+
+    if n_a is None:
+        n_a = len(a)
+    if n_b is None:
+        n_b = len(b)
+    
+    sip = np.matmul(a[:n_a], b[:n_b].T) ** 2
+    msip = sip.sum()/n_a
+    return msip**0.5
+
+
+def cumulative_overlap(a, b, i=0, n_components=None):
+    """Compute the cumulative overlap of a vector in a subspace.
+
+    This is not symmetric. The cumulative overlap measures the overlap of 
+    the chosen vector in ``a``, in the ``b`` subspace.
+
+    Please cite [Yang2008]_ if you use this function.
+
+    Parameters
+    ----------
+    a: array, shape (n_components, n_features) or vector, length n_features
+        The first subspace containing the vector of interest. Alternatively,
+        the actual vector. Must have the same number of features as ``b``.
+    b: array, shape (n_components, n_features)
+        The second subspace. Must have the same number of features as ``a``.
+    i: int, optional
+        The index of eigenvector to be analysed.
+    n_components: int, optional
+        number of components in ``b`` to compute for the cumulative overlap.
+        ``None`` computes all of them.
+
+    Returns
+    -------
+    float:
+        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace. 
+        0 indicates that they are mutually orthogonal, whereas 1 indicates 
+        that they are identical. 
+
+    .. versionadded:: 1.0.0
+    """
+
+    if len(a.shape) < len(b.shape):
+        a = a[np.newaxis, :]
+    
+    vec = a[i][np.newaxis, :]
+    vec_norm = (vec**2).sum() ** 0.5
+    
+    if n_components is None:
+        n_components = len(b)
+    
+    b = b[:n_components]
+    b_norms = (b**2).sum(axis=1) ** 0.5
+
+    o = np.abs(np.matmul(vec, b.T)) / (b_norms*vec_norm)
+    return (o**2).sum() ** 0.5
+    
+
+
+
+
+    
