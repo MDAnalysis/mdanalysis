@@ -47,6 +47,8 @@ Classes and functions
 
 """
 
+from __future__ import absolute_import
+
 import os
 import errno
 import tempfile
@@ -68,7 +70,7 @@ due.cite(Doi("10.1093/nar/gku1028"),
          path="MDAnalysis.analysis.secondary_structure.wrapper",
          cite_module=True)
 
-due.cite(Doi("10.1093/nar/gkh429"),
+due.cite(Doi("10.1002/prot.340230412"),
          description="STRIDE",
          path="MDAnalysis.analysis.secondary_structure.wrapper",
          cite_module=True)
@@ -112,7 +114,6 @@ class SecondaryStructureWrapper(SecondaryStructureBase):
         try:
             self.atomgroup.write(pdbfile)
             cmd_args = [self.exe] + self.cmd.format(pdb=pdbfile).split()
-            print(' '.join(cmd_args))
             proc = subprocess.Popen(cmd_args, stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
             stdout, stderr = proc.communicate()

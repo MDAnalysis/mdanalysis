@@ -33,9 +33,10 @@ from MDAnalysis.analysis import secondary_structure as ss
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (TPR, XTC,
                                        ADK_DSSP, ADK_DSSP_SIMPLE,
-                                       ADK_MKDSSP,
-                                       ADK_STRIDE,
+                                       ADK_MKDSSP, MKDSSP_phi_psi_sasa,
+                                       ADK_STRIDE, STRIDE_phi_psi_sasa,
                                        )
+
 
 def mdtraj_found():
     try:
@@ -57,6 +58,11 @@ class BaseTestSecondaryStructure(object):
     def universe(self):
         return mda.Universe(TPR, XTC)
     
+    @pytest.fixture()
+    def dssp_all(self, universe):
+        return self.analysis_class(universe, select='all').run()
+
+        
     def test_correct_assignments(self, dssp, all_codes):
         assert_equal(dssp.ss_codes, all_codes)
         assert_equal(dssp.ss_mode[::3], self.modes_3)
@@ -65,10 +71,17 @@ class BaseTestSecondaryStructure(object):
             assert_almost_equal(dssp.ss_counts[k], self.code_counts[k])
         for k in dssp.simple_counts.keys():
             assert_almost_equal(dssp.simple_counts[k], self.simple_counts[k])
+    
+    def test_non_protein(self, universe, dssp_all):
+        assert np.all(dssp_all.ss_codes[:, self.n_prot:] == ''), self.other_err_msg
+        assert np.all(dssp_all.ss_simple[:, self.n_prot:]
+                      == ''), self.other_err_msg
+        assert np.all(dssp_all.ss_mode[self.n_prot:] == ''), self.other_err_msg
+        assert np.all(dssp_all.simple_mode[self.n_prot:] == ''), self.other_err_msg
 
     def test_add_topology_attr(self, universe):
         assert not hasattr(universe._topology, 'secondary_structures')
-        dssp = self.analysis_class(universe, select='backbone', 
+        dssp = self.analysis_class(universe, select='backbone',
                                    add_topology_attr=True)
         dssp.run()
         assert hasattr(universe._topology, 'secondary_structures')
@@ -78,25 +91,6 @@ class BaseTestSecondaryStructure(object):
         prot_msg = self.prot_err_msg.format(self.analysis_class.__name__)
         assert np.all(secstruct[:self.n_prot] == modes), prot_msg
         assert np.all(secstruct[self.n_prot:] == ''), self.other_err_msg
-
-    def test_non_protein(self, universe, all_codes, all_simple):
-        dssp = self.analysis_class(universe, select='all')
-        dssp.run()
-
-        assert_equal(dssp.ss_codes[:, :self.n_prot], all_codes)
-        assert_equal(dssp.ss_simple[:, :self.n_prot], all_simple)
-        assert_equal(dssp.ss_mode[:self.n_prot:3], self.modes_3)
-        assert_equal(dssp.simple_mode[:10], self.modes_simple_10)
-
-        for k in dssp.ss_counts.keys():
-            assert_almost_equal(dssp.ss_counts[k], self.code_counts[k])
-        for k in dssp.simple_counts.keys():
-            assert_almost_equal(dssp.simple_counts[k], self.simple_counts[k])
-
-        assert np.all(dssp.ss_codes[:, self.n_prot:] == ''), self.other_err_msg
-        assert np.all(dssp.ss_simple[:, self.n_prot:] == ''), self.other_err_msg
-        assert np.all(dssp.ss_mode[self.n_prot:] == ''), self.other_err_msg
-        assert np.all(dssp.simple_mode[self.n_prot:] == ''), self.other_err_msg
 
     def test_plot_all_lines(self, dssp):
         ax = dssp.plot_content(kind='line', simple=False)
@@ -175,18 +169,47 @@ class TestDSSP(BaseTestSecondaryStructure):
         return mdtraj_simple
 
     def test_correct_assignments(self, dssp, all_codes, all_simple):
-        assert_equal(dssp.ss_codes, all_codes)
+        super(TestDSSP, self).test_correct_assignments(dssp, all_codes)
         assert_equal(dssp.ss_simple, all_simple)
-        assert_equal(dssp.ss_mode[::3], self.modes_3)
-        assert_equal(dssp.simple_mode[:10], self.modes_simple_10)
-        for k in dssp.ss_counts.keys():
-            assert_almost_equal(dssp.ss_counts[k], self.code_counts[k])
-        for k in dssp.simple_counts.keys():
-            assert_almost_equal(dssp.simple_counts[k], self.simple_counts[k])
+
+    def test_non_protein(self, universe, dssp_all, all_codes, all_simple):
+        super(TestDSSP, self).test_non_protein(universe, dssp_all)
+
+        assert_equal(dssp_all.ss_codes[:, :self.n_prot], all_codes)
+        assert_equal(dssp_all.ss_simple[:, :self.n_prot], all_simple)
+        assert_equal(dssp_all.ss_mode[:self.n_prot:3], self.modes_3)
+        assert_equal(dssp_all.simple_mode[:10], self.modes_simple_10)
+
+        for k in dssp_all.ss_counts.keys():
+            assert_almost_equal(dssp_all.ss_counts[k], self.code_counts[k])
+        for k in dssp_all.simple_counts.keys():
+            assert_almost_equal(dssp_all.simple_counts[k], self.simple_counts[k])
+
+
+class BaseTestSecondaryStructureWrapper(BaseTestSecondaryStructure):
+
+    phi_psi_sasa_file = None
+
+    def test_executable_not_found(self, universe):
+        with pytest.raises(OSError) as exc:
+            dssp = self.analysis_class(universe, executable='foo')
+        assert 'executable not found' in str(exc.value)
+
+    def test_correct_assignments(self, dssp, all_codes):
+        super(BaseTestSecondaryStructureWrapper, self).test_correct_assignments(dssp, all_codes)
+        phi, psi, sasa = np.load(self.phi_psi_sasa_file)
+        print(self.phi_psi_sasa_file)
+        assert_almost_equal(dssp.phi, phi)
+        assert_almost_equal(dssp.psi, psi)
+        assert_almost_equal(dssp.sasa, sasa)
+
+    
 
 @pytest.mark.skipif(executable_not_found('mkdssp'),
                     reason="Tests skipped because mkdssp (DSSP) not found")
-class TestDSSPWrapper(BaseTestSecondaryStructure):
+class TestDSSPWrapper(BaseTestSecondaryStructureWrapper):
+
+    phi_psi_sasa_file = MKDSSP_phi_psi_sasa
 
     modes_3 = ['C', 'E', 'C', 'T', 'H', 'H', 'H', 'H', 'C', 'E', 'T', 'H', 'H',
                'H', 'C', 'H', 'H', 'H', 'H', 'C', 'H', 'H', 'H', 'H', 'T', 'G',
@@ -210,7 +233,6 @@ class TestDSSPWrapper(BaseTestSecondaryStructure):
     simple_counts = {'Helix': np.array([106, 102,  97, 100,  97, 109, 100, 102,  97,  99]),
                      'Coil': np.array([82, 79, 85, 85, 84, 74, 82, 77, 85, 82]),
                      'Strand': np.array([25, 32, 31, 28, 32, 30, 31, 34, 31, 32])}
-    
     analysis_class = ss.DSSPWrapper
 
     @pytest.fixture(scope='class')
@@ -224,10 +246,24 @@ class TestDSSPWrapper(BaseTestSecondaryStructure):
     def all_codes(self):
         return np.load(ADK_MKDSSP)
 
+    def test_non_protein(self, universe, dssp_all, all_codes):
+        super(TestDSSPWrapper, self).test_non_protein(universe, dssp_all)
+
+        assert_equal(dssp_all.ss_codes[:, :self.n_prot], all_codes)
+        assert_equal(dssp_all.ss_mode[:self.n_prot:3], self.modes_3)
+        assert_equal(dssp_all.simple_mode[:10], self.modes_simple_10)
+
+        for k in dssp_all.ss_counts.keys():
+            assert_almost_equal(dssp_all.ss_counts[k], self.code_counts[k])
+        for k in dssp_all.simple_counts.keys():
+            assert_almost_equal(dssp_all.simple_counts[k], self.simple_counts[k])
+
 
 @pytest.mark.skipif(executable_not_found('stride'),
                     reason="Tests skipped because STRIDE not found")
-class TestStrideWrapper(BaseTestSecondaryStructure):
+class TestStrideWrapper(BaseTestSecondaryStructureWrapper):
+
+    phi_psi_sasa_file = STRIDE_phi_psi_sasa
 
     modes_3 = ['C', 'E', 'C', 'T', 'H', 'H', 'H', 'H', 'C', 'E', 'C', 'H', 'H',
                'H', 'C', 'H', 'H', 'H', 'H', 'C', 'H', 'H', 'H', 'H', 'C', 'T',
@@ -251,13 +287,12 @@ class TestStrideWrapper(BaseTestSecondaryStructure):
     simple_counts = {'Helix': np.array([104, 102, 100,  96, 105, 106, 105, 108, 101, 105]),
                      'Coil': np.array([81, 79, 83, 87, 75, 75, 79, 73, 82, 77]),
                      'Strand': np.array([29, 33, 31, 31, 34, 33, 30, 33, 31, 32])}
-    
     analysis_class = ss.STRIDEWrapper
 
     @pytest.fixture(scope='class')
     def dssp(self, universe):
-        dssp = ss.DSSPWrapper(universe, executable='stride',
-                              select='backbone')
+        dssp = ss.STRIDEWrapper(universe, executable='stride',
+                                select='backbone')
         dssp.run()
         return dssp
 

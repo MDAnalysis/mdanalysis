@@ -74,6 +74,7 @@ case "$OSNAME" in
     Linux|linux)
 	OSNAME=Linux
 	OFORMAT=Linux
+	sudo apt-get -y install libboost-all-dev autoconf automake autotools-dev
 	;;
     OSX|osx|Darwin|darwin)
 	OSNAME=Darwin
