@@ -187,7 +187,6 @@ class ClusterCollection(object):
         if elements is None:
             self.clusters = None
             return
-        self.clusters = clusters
         
         elements_array = np.array(elements)
         if not len(set((type(el) for el in elements_array))) == 1:
