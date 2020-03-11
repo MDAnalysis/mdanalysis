@@ -411,7 +411,7 @@ def alignto(mobile, reference, select=None, weights=None,
        :class:`~MDAnalysis.core.groups.AtomGroup` with defined atom order as
        described under :ref:`ordered-selections-label`).
     match_atoms : bool (optional)
-        Whether to match the mobile and reference atom-by-atom. Default ``True``. 
+        Whether to match the mobile and reference atom-by-atom. Default ``True``.
     weights : {"mass", ``None``} or array_like (optional)
        choose weights. With ``"mass"`` uses masses as weights; with ``None``
        weigh each atom equally. If a float array of the same length as
@@ -569,7 +569,7 @@ class AlignTraj(AnalysisBase):
         tol_mass : float (optional)
             Tolerance given to `get_matching_atoms` to find appropriate atoms
         match_atoms : bool (optional)
-            Whether to match the mobile and reference atom-by-atom. Default ``True``. 
+            Whether to match the mobile and reference atom-by-atom. Default ``True``.
         strict : bool (optional)
             Force `get_matching_atoms` to fail if atoms can't be found using
             exact methods
@@ -701,7 +701,7 @@ class AlignTraj(AnalysisBase):
 
 
 class AverageStructure(AnalysisBase):
-    """RMS-align trajectory to a reference structure using a selection, 
+    """RMS-align trajectory to a reference structure using a selection,
     and calculate the average coordinates of the trajectory.
 
     Both the reference `reference` and the trajectory `mobile` must be
@@ -710,7 +710,7 @@ class AverageStructure(AnalysisBase):
     current frame.
 
     The output file format is determined by the file extension of
-    `filename`. 
+    `filename`.
 
     Example
     -------
@@ -753,7 +753,7 @@ class AverageStructure(AnalysisBase):
         tol_mass : float (optional)
             Tolerance given to `get_matching_atoms` to find appropriate atoms
         match_atoms : bool (optional)
-            Whether to match the mobile and reference atom-by-atom. Default ``True``. 
+            Whether to match the mobile and reference atom-by-atom. Default ``True``.
         strict : bool (optional)
             Force `get_matching_atoms` to fail if atoms can't be found using
             exact methods
@@ -768,7 +768,7 @@ class AverageStructure(AnalysisBase):
         ref_frame : int (optional)
             frame index to select frame from `reference`
         verbose : bool (optional)
-            Set logger to show more information and show detailed progress of 
+            Set logger to show more information and show detailed progress of
             the calculation if set to ``True``; the default is ``False``.
 
 
@@ -785,7 +785,7 @@ class AverageStructure(AnalysisBase):
         rmsd : float
             Average RMSD per frame
         filename : str
-            String reflecting the filename of the file where the average 
+            String reflecting the filename of the file where the average
             structure is written
 
 
@@ -882,7 +882,7 @@ class AverageStructure(AnalysisBase):
                              self.mobile,
                              mobile_com,
                              self._ref_com, self._weights)[1]
-        self.positions += self.mobile_atoms.positions            
+        self.positions += self.mobile_atoms.positions
 
     def _conclude(self):
         self.positions /= self.n_frames
@@ -1354,7 +1354,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                           "Try to improve your selections for mobile and reference.")
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
-                
+
     if match_atoms:
         # check again because the residue matching heuristic is not very
         # good and can easily be misled (e.g., when one of the selections
@@ -1368,7 +1368,9 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                         ag1.n_atoms, ag2.n_atoms)
             logger.error(errmsg)
             raise_from(SelectionError(errmsg), None)
-
+        except AttributeError:
+            errmsg=("Failed to check the mass matches")
+            raise_from(SelectionError(errmsg), None)
         if np.any(mass_mismatches):
             # Test 2 failed.
             # diagnostic output:
