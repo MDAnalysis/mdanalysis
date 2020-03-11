@@ -139,7 +139,7 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            select="name CA",
+            selection="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
@@ -155,7 +155,7 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            select="name CA",
+            selection="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
@@ -163,7 +163,7 @@ inconsistent results")
         conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            select="name CA",
+            selection="name CA",
             pairwise_align=True,
             weights=(ens1.select_atoms('name CA').masses, ens1.select_atoms('name CA').masses),
             n_jobs=1)
@@ -182,7 +182,7 @@ inconsistent results")
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            select=selection_string,
+            selection=selection_string,
             pairwise_align=False,
             weights='mass',
             n_jobs=1)
@@ -262,7 +262,7 @@ inconsistent results")
                             err_msg="Unexpected value for Harmonic Ensemble Similarity: {0:f}. Expected {1:f}.".format(result_value, expected_value))
 
     def test_ces_to_self(self, ens1):
-        results = \
+        results, details = \
             encore.ces([ens1, ens1],
             clustering_method=encore.AffinityPropagationNative(preference = -3.0))
         result_value = results[0,1]
@@ -285,7 +285,7 @@ inconsistent results")
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_dres(self, ens1, ens2):
-        results, details = encore.dres([ens1, ens2], select="name CA and resnum 1-10")
+        results, details = encore.dres([ens1, ens2], selection="name CA and resnum 1-10")
         result_value = results[0,1]
         upper_bound = 0.6
         assert result_value < upper_bound, "Unexpected value for Dim. " \
@@ -353,7 +353,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.AffinityPropagationNative(preference=-2.0),
-                                      select="name CA and resnum 1-10")
+                                      selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -375,7 +375,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.KMeans(n_clusters=2),
-                                      select="name CA and resnum 1-10")
+                                      selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -389,7 +389,7 @@ inconsistent results")
         stdev_upper_bound = 0.2
         averages, stdevs = encore.dres([ens1, ens1], estimate_error = True,
                                        bootstrapping_samples=10,
-                                       select="name CA and resnum 1-10")
+                                       selection="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -692,7 +692,7 @@ class TestEncoreDimensionalityReduction(object):
 
     def test_dimensionality_reduction_two_ensembles(self, ens1, ens2):
         dimension = 2
-        coordinates = \
+        coordinates, details = \
             encore.reduce_dimensionality([ens1, ens2])
         assert_equal(coordinates.shape[0], dimension,
                      err_msg="Unexpected result in dimensionality reduction: {0}".format(coordinates))
@@ -742,7 +742,7 @@ class TestEncoreDimensionalityReduction(object):
     def test_dimensionality_reduction_different_method(self, ens1, ens2):
         pytest.importorskip('sklearn')
         dimension = 3
-        coordinates = \
+        coordinates, details = \
             encore.reduce_dimensionality(
                 [ens1, ens2],
                 method=encore.PrincipalComponentAnalysis(dimension=dimension))
@@ -752,7 +752,7 @@ class TestEncoreDimensionalityReduction(object):
 
     def test_dimensionality_reduction_two_methods(self, ens1, ens2):
         dims = [2,3]
-        coordinates = \
+        coordinates, details = \
             encore.reduce_dimensionality(
                 [ens1, ens2],
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
@@ -762,7 +762,7 @@ class TestEncoreDimensionalityReduction(object):
     def test_dimensionality_reduction_two_different_methods(self, ens1, ens2):
         pytest.importorskip('sklearn')
         dims = [2,3]
-        coordinates = \
+        coordinates, details = \
             encore.reduce_dimensionality(
                 [ens1, ens2],
                 method=[encore.StochasticProximityEmbeddingNative(dims[0]),
