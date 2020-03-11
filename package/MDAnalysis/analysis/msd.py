@@ -31,8 +31,7 @@ import bz2
 import functools
 
 import numpy as np
-from scipy import fft, ifft
-
+from scipy import fft,ifft
 
 import logging
 
@@ -46,16 +45,16 @@ from .base import AnalysisBase
 
 class MeanSquaredDisplacement(object):
 
-    def __init__(self, u, selection, msd_type='xyz', position_treatment='atom', mass_weighted=False, kwargs=None, **basekwargs):
+    def __init__(self, u, selection, msd_type='xyz', position_treatment='atom', mass_weighted=False, fft=False, kwargs=None, **basekwargs):
         
         self.u = u
         self.selection = selection
         self.msd_type = msd_type
         self.position_treatment = position_treatment
         self.mass_weighted = mass_weighted
-
+        self.fft = fft
         #local
-        self.fft = False
+
         self.dim_fac = 0
         self._dim = None
         self.atoms = None
@@ -98,8 +97,8 @@ class MeanSquaredDisplacement(object):
             self._dim = [0,1]
             self.dim_fac = 2.0
 
-        elif self.md_type == 'xz': # xz
-            self._dime = [0,2]
+        elif self.msd_type == 'xz': # xz
+            self._dim = [0,2]
             self.dim_fac = 2.0
 
         elif self.msd_type == 'yz': # yz
@@ -134,10 +133,11 @@ class MeanSquaredDisplacement(object):
     def run(self):
         
         if self.fft == True:
-            self.timeseries = self._run_fft()
+            self.timeseries = self._run_fft_dim()
         else:
             self.timeseries = self._run_naieve()
 
+    
     def _run_naieve(self): # naieve algorithm pre vectorisation / without FFT
         # _position_array is shape time, nparticles, 3
         msds_byparticle = np.zeros([self.n_frames, self.N_particles])
@@ -153,25 +153,55 @@ class MeanSquaredDisplacement(object):
 
     def _run_fft(self):  #with FFT
         # _position_array is shape time, nparticles, 3
-        N=r.shape(0)
-        D=np.square(r).sum(axis=1) 
-        D=np.append(D,0) 
-        S2=sum([self.autocorrFFT(r[:, i]) for i in range(r.shape[1])])
-        Q=2*D.sum()
-        S1=np.zeros(N)
+        particle_msds = []
+        N=self._position_array.shape[0]
+        D=np.square(self._position_array).sum(axis=2) 
+        D=np.append(D,np.zeros(self._position_array.shape[:2]), axis=0) 
+        Q=2*D.sum(axis=0)
+        S1=np.zeros(self._position_array.shape[:2])
         for m in range(N):
-            Q=Q-D[m-1]-D[N-m]
-            S1[m]=Q/(N-m)
-        return S1-2*S2
+            Q=Q-D[m-1,:]-D[N-m,:]
+            S1[m,:]=Q/(N-m)
+        
+        corrs = []
+        for i in range(self._position_array.shape[2]):
+            corrs.append(self.autocorrFFT(self._position_array[:,:,i]))
+        S2= np.sum(corrs,axis=0)
+        particle_msds.append(S1-2*S2)
+        
+        msds = np.concatenate(particle_msds,axis=1).mean(axis=-1)
+        return msds
 
-    @classmethod   
+    def _run_fft_dim(self):  #with FFT
+        # _position_array is shape time, nparticles, 3
+        particle_msds = []
+        reshape_positions = self._position_array[:,:,self._dim]
+        N=reshape_positions.shape[0]
+        D=np.square(reshape_positions).sum(axis=2) 
+        D=np.append(D,np.zeros(reshape_positions.shape[:2]), axis=0) 
+        Q=2*D.sum(axis=0)
+        S1=np.zeros(reshape_positions.shape[:2])
+        for m in range(N):
+            Q=Q-D[m-1,:]-D[N-m,:]
+            S1[m,:]=Q/(N-m)
+        
+        corrs = []
+        for i in range(reshape_positions.shape[2]):
+            corrs.append(self.autocorrFFT(reshape_positions[:,:,i]))
+        S2= np.sum(corrs,axis=0)
+
+        particle_msds.append(S1-2*S2)
+        msds = np.concatenate(particle_msds,axis=1).mean(axis=-1)
+        return msds
+
+    @staticmethod
     def autocorrFFT(x):
-        N=len(x)
-        F = np.fft.fft(x, n=2*N)  #2*N because of zero-padding
+        N=(x.shape[0])
+        F = fft(x, n=2*N, axis=0)  #2*N because of zero-padding
         PowerSpectralDensity = F * F.conjugate()
-        res = np.fft.ifft(PowerSpectralDensity)
-        res= (res[:N]).real   #now we have the autocorrelation in convention B
-        n=N*np.ones(N)-np.arange(0,N) #divide res(m) by (N-m)
-        return res/n #this is the autocorrelation in convention A
+        res = ifft(PowerSpectralDensity,axis=0)
+        res = (res[:N]).real   #now we have the autocorrelation in convention B
+        n = np.arange(1, N+1)[::-1] #divide res(m) by (N-m)
+        return res/n[:, np.newaxis] #this is the autocorrelation in convention A
 
 
