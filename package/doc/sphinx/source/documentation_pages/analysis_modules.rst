@@ -107,7 +107,7 @@ Structure
    analysis/helanal
    analysis/rdf
    analysis/dihedrals
-
+   analysis/msd
 
 Volumetric analysis
 ===================

@@ -46,22 +46,20 @@ def u():
 
 @pytest.fixture(scope='module')
 def msd(u):
-    m = MSD(u, SELECTION, msd_type='xyz', position_treatment='atom', mass_weighted=False)
+    m = MSD(u, SELECTION, msd_type='xyz', fft=False)
     m.run()
     return m
 
 @pytest.fixture(scope='module')
 def msd_fft(u):
-    m = MSD(u, SELECTION, msd_type='xyz', position_treatment='atom', mass_weighted=False, fft=True)
+    m = MSD(u, SELECTION, msd_type='xyz', fft=True)
     m.run()
     return m
-
 
 @pytest.fixture(scope='module')
 def dimension_list():
     dimensions = ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z']
     return dimensions
-
 
 @pytest.fixture(scope='module')
 def step_traj():
@@ -72,61 +70,58 @@ def step_traj():
     u.load_new(traj_reshape)
     return u
 
-def characteristic_poly(n,d):
+def characteristic_poly(n,d): #polynomial that describes unit step trajectory MSD
     x = np.arange(1,n+1)
     y = d*((x-1)*(x-1))
     return y
     
-
-
 def test_fft_vs_simple_default(msd, msd_fft):
     timeseries_simple = msd.timeseries
-    print(timeseries_simple)
     timeseries_fft = msd_fft.timeseries
-    print(timeseries_fft)
     assert_almost_equal(timeseries_simple, timeseries_fft, decimal=5)
-
 
 def test_fft_vs_simple_all_dims(dimension_list, u):
     for dim in dimension_list:
-        print(dim)
-        m_simple = MSD(u, SELECTION, msd_type=dim, position_treatment='atom', mass_weighted=False, fft=False)
+        m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
         m_simple.run()
         timeseries_simple = m_simple.timeseries
-        print(timeseries_simple)
-        m_fft = MSD(u,SELECTION, msd_type=dim, position_treatment='atom', mass_weighted=False, fft=True)
+        m_fft = MSD(u,SELECTION, msd_type=dim, fft=True)
         m_fft.run()
         timeseries_fft = m_fft.timeseries
-        print(timeseries_fft)
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=5)
 
-def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3x^2 - 6x +3
-    m_simple = MSD(step_traj, 'all' , msd_type='xyz', position_treatment='atom', mass_weighted=False, fft=False)
+def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3(x-1)**2
+    m_simple = MSD(step_traj, 'all' , msd_type='xyz', fft=False)
     m_simple.run()
-    poly = characteristic_poly(NSTEP,3)
-    for i in range(len(poly)):
-        if poly[i] != m_simple.timeseries[i]:
-            print('MISMATCH')
-            print(i)
-            print(poly[i])
-            print(m_simple.timeseries[i])
-          # for some reason, this is much more prone to roundoff error?
-    raise Exception
+    poly3 = characteristic_poly(NSTEP,3)
+    assert_almost_equal(m_simple.timeseries, poly3)
+
+def test_simple_step_traj_2d(step_traj): # this should fit the polynomial 2(x-1)**2
+    m_simple = MSD(step_traj, 'all' , msd_type='xy',  fft=False)
+    m_simple.run()
+    poly2 = characteristic_poly(NSTEP,2)
+    assert_almost_equal(m_simple.timeseries, poly2)
+
+def test_simple_step_traj_1d(step_traj): # this should fit the polynomial (x-1)**
+    m_simple = MSD(step_traj, 'all' , msd_type='x', fft=False)
+    m_simple.run()
+    poly1 = characteristic_poly(NSTEP,1)
+    assert_almost_equal(m_simple.timeseries, poly1)  
 
 def test_fft_step_traj_3d(step_traj): # this should fit the polynomial 3(x-1)**2
-    m_fft = MSD(step_traj, 'all' , msd_type='xyz', position_treatment='atom', mass_weighted=False, fft=True)
+    m_fft = MSD(step_traj, 'all' , msd_type='xyz', fft=True)
     m_fft.run()
     poly3 = characteristic_poly(NSTEP,3)
     assert_almost_equal(m_fft.timeseries, poly3)
 
 def test_fft_step_traj_2d(step_traj): # this should fit the polynomial 2(x-1)**2
-    m_fft = MSD(step_traj, 'all' , msd_type='xy', position_treatment='atom', mass_weighted=False, fft=True)
+    m_fft = MSD(step_traj, 'all' , msd_type='xy', fft=True)
     m_fft.run()
     poly2 = characteristic_poly(NSTEP,2)
     assert_almost_equal(m_fft.timeseries, poly2)
 
 def test_fft_step_traj_1d(step_traj): # this should fit the polynomial (x-1)**2
-    m_fft = MSD(step_traj, 'all' , msd_type='x', position_treatment='atom', mass_weighted=False, fft=True)
+    m_fft = MSD(step_traj, 'all' , msd_type='x', fft=True)
     m_fft.run()
     poly1 = characteristic_poly(NSTEP,1)
     assert_almost_equal(m_fft.timeseries, poly1)

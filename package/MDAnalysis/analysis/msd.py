@@ -21,6 +21,32 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+"""
+Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
+==============================================================
+
+This module implements the calculation of Mean Squared Displacmements (MSDS).
+
+
+
+Algorithm
+---------
+
+1. build a graph of all phosphate distances < cutoff
+2. identify the largest connected subgraphs
+3. analyse first and second largest graph, which correspond to the leaflets
+
+For further details see [Michaud-Agrawal2011]_.
+
+
+Classes and Functions
+---------------------
+
+.. autoclass:: MeanSquaredDisplacement
+
+
+"""
+
 from __future__ import division, absolute_import
 from six.moves import zip
 
@@ -45,16 +71,15 @@ from .base import AnalysisBase
 
 class MeanSquaredDisplacement(object):
 
-    def __init__(self, u, selection, msd_type='xyz', position_treatment='atom', mass_weighted=False, fft=False, kwargs=None, **basekwargs):
-        
+    def __init__(self, u, selection, msd_type='xyz', fft=True, kwargs=None, **basekwargs):
+        r"blah blah blah"
+        #args
         self.u = u
         self.selection = selection
         self.msd_type = msd_type
-        self.position_treatment = position_treatment
-        self.mass_weighted = mass_weighted
         self.fft = fft
+        
         #local
-
         self.dim_fac = 0
         self._dim = None
         self.atoms = None
@@ -63,29 +88,13 @@ class MeanSquaredDisplacement(object):
 
         #result
         self.timeseries = None
-
-        self.check_input()
+        #prep
         self._prepare()
 
-    def check_input(self):
-        self.check_masses()
-        self.parse_msd_type()
-        
+            
     def _prepare(self):
+        self.parse_msd_type()
         self.select_reference_positions()
-        #self.construct_arrays()
-        
-    def check_masses(self):
-        self.atoms = self.u.select_atoms(self.selection)
-        if (self.mass_weighted or self.position_treatment == 'com'):
-            masses = self.atoms.masses
-            if masses.any == None:
-                raise ValueError ('cannot have no mass for mass_weighted=True or position_treatment=com')
-            else:
-                pass
-        else:
-            pass
-  
         
     def parse_msd_type(self):
 
@@ -121,24 +130,16 @@ class MeanSquaredDisplacement(object):
             raise ValueError('invalid msd_type specified')
 
     def select_reference_positions(self):
-        if self.position_treatment == 'atom':
-            self._position_array = self.u.trajectory.timeseries(self.u.select_atoms(self.selection),order='fac') 
-            self.N_particles = self._position_array.shape[1]
-        elif self.position_treatment == 'com':
-            raise NotImplementedError
-            #TODO work out timeseries for com
-        else:
-            raise ValueError('invalid position_treatment specified')
+        self._position_array = self.u.trajectory.timeseries(self.u.select_atoms(self.selection),order='fac') 
+        self.N_particles = self._position_array.shape[1]
     
     def run(self):
-        
         if self.fft == True:
-            self.timeseries = self._run_fft_dim()
+            self.timeseries = self._run_fft()
         else:
-            self.timeseries = self._run_naieve()
+            self.timeseries = self._run_simple()
 
-    
-    def _run_naieve(self): # naieve algorithm pre vectorisation / without FFT
+    def _run_simple(self): # naieve algorithm without FFT
         # _position_array is shape time, nparticles, 3
         msds_byparticle = np.zeros([self.n_frames, self.N_particles])
         lagtimes = np.arange(1,self.n_frames)
@@ -146,38 +147,17 @@ class MeanSquaredDisplacement(object):
         for n in range(self.N_particles):
             for lag in lagtimes:
                 disp = self._position_array[:-lag,n,self._dim if lag else None] - self._position_array[lag:,n,self._dim]
-                sqdist = np.square(disp).sum(axis=1)
-                msds_byparticle[lag,n] = sqdist.mean()
-        msds = msds_byparticle.mean(axis=1)
+                sqdist = np.square(disp, dtype=np.float64).sum(axis=1, dtype=np.float64) #accumulation in anything other than f64 is innacurate
+                msds_byparticle[lag,n] = np.mean(sqdist, dtype=np.float64)
+        msds = msds_byparticle.mean(axis=1, dtype=np.float64)
         return msds
 
     def _run_fft(self):  #with FFT
         # _position_array is shape time, nparticles, 3
         particle_msds = []
-        N=self._position_array.shape[0]
-        D=np.square(self._position_array).sum(axis=2) 
-        D=np.append(D,np.zeros(self._position_array.shape[:2]), axis=0) 
-        Q=2*D.sum(axis=0)
-        S1=np.zeros(self._position_array.shape[:2])
-        for m in range(N):
-            Q=Q-D[m-1,:]-D[N-m,:]
-            S1[m,:]=Q/(N-m)
-        
-        corrs = []
-        for i in range(self._position_array.shape[2]):
-            corrs.append(self.autocorrFFT(self._position_array[:,:,i]))
-        S2= np.sum(corrs,axis=0)
-        particle_msds.append(S1-2*S2)
-        
-        msds = np.concatenate(particle_msds,axis=1).mean(axis=-1)
-        return msds
-
-    def _run_fft_dim(self):  #with FFT
-        # _position_array is shape time, nparticles, 3
-        particle_msds = []
         reshape_positions = self._position_array[:,:,self._dim]
         N=reshape_positions.shape[0]
-        D=np.square(reshape_positions).sum(axis=2) 
+        D=np.square(reshape_positions).sum(axis=2, dtype=np.float64) 
         D=np.append(D,np.zeros(reshape_positions.shape[:2]), axis=0) 
         Q=2*D.sum(axis=0)
         S1=np.zeros(reshape_positions.shape[:2])
@@ -188,10 +168,10 @@ class MeanSquaredDisplacement(object):
         corrs = []
         for i in range(reshape_positions.shape[2]):
             corrs.append(self.autocorrFFT(reshape_positions[:,:,i]))
-        S2= np.sum(corrs,axis=0)
+        S2= np.sum(corrs,axis=0,dtype=np.float64)
 
         particle_msds.append(S1-2*S2)
-        msds = np.concatenate(particle_msds,axis=1).mean(axis=-1)
+        msds = np.concatenate(particle_msds,axis=1).mean(axis=-1, dtype=np.float64)
         return msds
 
     @staticmethod
