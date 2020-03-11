@@ -73,39 +73,46 @@ def test_optimize_cutoff(universe, lipid_heads):
     assert N == 2
     assert_almost_equal(cutoff, 10.5, decimal=4)
 
+
 def test_pbc_on_off(universe, lipid_heads):
     lfls_pbc_on = LeafletFinder(universe, lipid_heads, pbc=True)
     lfls_pbc_off = LeafletFinder(universe, lipid_heads, pbc=False)
     assert lfls_pbc_on.graph.size() > lfls_pbc_off.graph.size()
+
 
 def test_pbc_on_off_difference(universe, lipid_heads):
     lfls_pbc_on = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=True)
     lfls_pbc_off = LeafletFinder(universe, lipid_heads, cutoff=7, pbc=False)
     pbc_on_graph = lfls_pbc_on.graph
     pbc_off_graph = lfls_pbc_off.graph
-    diff_graph = NX.difference(pbc_on_graph,pbc_off_graph)
-    assert_equal(set(diff_graph.edges), {(69, 153), (73, 79), (206, 317), (313, 319)})
+    diff_graph = NX.difference(pbc_on_graph, pbc_off_graph)
+    assert_equal(set(diff_graph.edges), {(69, 153), (73, 79),
+                                        (206, 317), (313, 319)})
 
 
-@pytest.mark.parametrize("sparse",[True,False,None])
+@pytest.mark.parametrize("sparse", [True, False, None])
 def test_sparse_on_off_none(universe, lipid_heads, sparse):
-    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True, sparse = sparse)
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True,
+                                sparse=sparse)
     assert_almost_equal(len(lfls_ag.graph.edges), 1903, decimal=4)
 
+
 def test_cutoff_update(universe, lipid_heads):
-    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
     lfls_ag.update(cutoff=1.0)
     assert_almost_equal(lfls_ag.cutoff, 1.0, decimal=4)
     assert_almost_equal(len(lfls_ag.groups()), 360, decimal=4)
 
+
 def test_cutoff_update_default(universe, lipid_heads):
-    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
     lfls_ag.update()
     assert_almost_equal(lfls_ag.cutoff, 15.0, decimal=4)
     assert_almost_equal(len(lfls_ag.groups()), 2, decimal=4)
 
+
 def test_write_selection(universe, lipid_heads, tmpdir):
-    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
     with tmpdir.as_cwd():
         filename = lfls_ag.write_selection('leaflet.vmd')
         expected_output = lines2one([
@@ -163,7 +170,7 @@ def test_write_selection(universe, lipid_heads, tmpdir):
 
         assert lines2one(open('leaflet.vmd').readlines()) == expected_output
 
+
 def test_component_index_is_not_none(universe, lipid_heads):
-    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff = 15.0, pbc=True)
+    lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
     assert_almost_equal(len(lfls_ag.groups(component_index=0)), 180, decimal=4)
-    
