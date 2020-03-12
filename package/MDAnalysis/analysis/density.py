@@ -1264,6 +1264,9 @@ def Bfactor2RMSF(B):
     ----------
 
     .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975
+
+
+    .. deprecated:: 1.0.0
     """
     return np.sqrt(3. * B / 8.) / np.pi
 
