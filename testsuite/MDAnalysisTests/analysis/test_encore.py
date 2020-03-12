@@ -47,7 +47,6 @@ def function(x):
     return x**2
 
 class TestEncore(object):
-
     @pytest.fixture(scope='class')
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
