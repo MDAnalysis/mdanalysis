@@ -1368,10 +1368,10 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                         ag1.n_atoms, ag2.n_atoms)
             logger.error(errmsg)
             raise_from(SelectionError(errmsg), None)
-            pass
         except AttributeError:
             errmsg=("Failed to check the mass matches")
             warnings.warn(errmsg, category=SelectionWarning)
+            pass
         if np.any(mass_mismatches):
             # Test 2 failed.
             # diagnostic output:
