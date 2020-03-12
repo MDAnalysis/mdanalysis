@@ -398,7 +398,18 @@ class ProgressMeter(object):
              replace=self.dynamic, newline=newline)
 
 
-class ProgressBar(tqdm.tqdm):
+# detect if running from jupyter, ipython or python
+try:
+    shell = get_ipython().__class__.__name__
+except: # non-interactive shell
+    from tqdm import tqdm as _tqdm_class
+else:
+    if shell == 'ZMQInteractiveShell': # Jupyter notebook and JupyterLab
+        from tqdm.notebook import tqdm_notebook as _tqdm_class
+    else: # Ipython
+        from tqdm import tqdm as _tqdm_class
+
+class ProgressBar(_tqdm_class):
     r"""tqdm-like progress bar. Replaces the :class:`ProgressMeter` class to
     show running progress. The advantage over :class:`ProgressMeter` is that it
     includes an estimate and is more flexible to use with jupyter notebooks,
