@@ -11,7 +11,7 @@ environment:
     global:
         CONDA_CHANNELS: conda-forge
         CONDA_DEPENDENCIES: pip setuptools wheel cython mock six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov
-        PIP_DEPENDENCIES: gsd==1.9.3 duecredit parmed
+        PIP_DEPENDENCIES: gsd==1.9.3 duecredit parmed tqdm
         DEBUG: "False"
         MINGW_64: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
         APPVEYOR_SAVE_CACHE_ON_ERROR: true
