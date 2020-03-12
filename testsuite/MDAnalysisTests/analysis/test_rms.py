@@ -259,7 +259,8 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             select='backbone',
                                             groupselections=['name CA and resid 1-5','name CA and resid 1'], 
-                                            weights=[None, [1,0,0,0,0], None]).run(step=49)
+                                            weights=None,
+                                            weights_groupselections=[[1,0,0,0,0], None]).run(step=49)
 
         assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
                             err_msg="error: rmsd profile should match "
@@ -269,7 +270,8 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, 
                                             select='backbone', 
                                             groupselections=['all','all'], 
-                                            weights=[None, 'mass',universe.atoms.masses ]).run(step=49)
+                                            weights=None,
+                                            weights_groupselections=['mass',universe.atoms.masses ]).run(step=49)
 
         assert_almost_equal(RMSD.rmsd.T[3], RMSD.rmsd.T[4], 4,
                             err_msg="error: rmsd profile should match "
@@ -282,7 +284,7 @@ class TestRMSD(object):
                 universe, weights=42)
 
     def test_rmsd_string_weights_raises_TypeError(self, universe):
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights="Jabberwock")
 
@@ -299,7 +301,8 @@ class TestRMSD(object):
         with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, groupselections=['backbone', 'name CA'],
-                weights=['mass',None])
+                weights='mass',
+                weights_groupselections=[None])
 
     def test_rmsd_group_selections(self, universe, correct_values_group):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
