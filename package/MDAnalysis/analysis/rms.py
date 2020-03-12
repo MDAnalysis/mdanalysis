@@ -575,12 +575,8 @@ class RMSD(AnalysisBase):
                                                                   dtype=np.float64) /  \
                                              np.mean(self.weights_groupselections[igroup])
         # add the array of weights to weights_select
-        if str(self.weights) == 'mass':
-            self.weights_select = self.mobile_atoms.masses
-            self.weights_ref = self.ref_atoms.masses
-        else:
-            self.weights_select = self.weights
-            self.weights_ref = self.weights
+        self.weights_select = get_weights(self.mobile_atoms, self.weights)
+        self.weights_ref = get_weights(self.ref_atoms, self.weights)
         if self.weights_select is not None:
             self.weights_select = np.asarray(self.weights_select, dtype=np.float64) /  \
                                   np.mean(self.weights_select)
