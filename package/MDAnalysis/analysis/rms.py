@@ -551,12 +551,17 @@ class RMSD(AnalysisBase):
             if len(self.weights_groupselections) != len(self.groupselections):
                 raise ValueError("Length of weights_groupselections is not equal to "
                                  "length of groupselections ")
-            for weights, atoms in zip(self.weights_groupselections,
-                                      self._groupselections_atoms):
-                if not iterable(weights) and weights == "mass":
-                    pass
-                else:
-                    get_weights(atoms['mobile'], weights)
+            for weights, atoms, selection in zip(self.weights_groupselections,
+                                                 self._groupselections_atoms,
+                                                 self.groupselections):
+                try:
+                    if not iterable(weights) and weights == "mass":
+                        pass
+                    else:
+                        get_weights(atoms['mobile'], weights)
+                except Exception as e:
+                    raise type(e)(str(e) + ' happens in selection %s' % selection['mobile'])
+
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
