@@ -43,7 +43,11 @@ import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 
 
+def function(x):
+    return x**2
+
 class TestEncore(object):
+
     @pytest.fixture(scope='class')
     def ens1_template(self):
         template = mda.Universe(PSF, DCD)
@@ -120,9 +124,6 @@ inconsistent results")
                        strict=True,
                        reason="Not yet supported on Windows.")
     def test_parallel_calculation(self):
-
-        def function(x):
-            return x**2
 
         arguments = [tuple([i]) for i in np.arange(0,100)]
 
