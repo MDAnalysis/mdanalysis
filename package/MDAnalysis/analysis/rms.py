@@ -335,19 +335,6 @@ class RMSD(AnalysisBase):
        :attr:`RMSD.rmsd` instead.
 
     """
-    def __weight_type_check(self, weights, atoms, selection):
-        if (np.array(weights).ndim == 1) and (np.array(weights).dtype 
-                                in (np.dtype('float64'),np.dtype('int64'))):
-            if len(weights) != atoms.n_atoms:
-                raise ValueError("Length of provided weights {} do not match the number of atoms "
-                      "in the selection {}: {}".format(weights, selection['mobile'], atoms.n_atoms))
-            else:
-                get_weights(atoms, weights) 
-        elif not iterable(weights) and str(weights) != 'mass' and weights is not None:
-            raise ValueError("Each groupselection can only be combined with "
-                           "weights: None, 'mass' or 1D float array")
-
-
     def __init__(self, atomgroup, reference=None, select='all',
                  groupselections=None, weights=None, weights_groupselections=False,
                  tol_mass=0.1, ref_frame=0, **kwargs):
@@ -560,34 +547,35 @@ class RMSD(AnalysisBase):
         if not iterable(self.weights) and self.weights == "mass":
             pass
         else:
-            self.weights = get_weights(self.mobile_atoms, self.weights)        
+            get_weights(self.mobile_atoms, self.weights)
 
-        if not self.weights_groupselections:
-            pass
-        else:
+        if self.weights_groupselections:
             if len(self.weights_groupselections) != len(self.groupselections):   #length check
-                raise ValueError("Length of  weights_groupselections is not equal to " 
+                raise ValueError("Length of weights_groupselections is not equal to "
                                        "length of groupselections ")
-            for weights, atoms, selection in zip(weights_groupselections,
-                    self._groupselections_atoms,self.groupselections):
-                self.__weight_type_check(weights, atoms['mobile'], selection)      
+            for weights, atoms in zip(self.weights_groupselections,
+                    self._groupselections_atoms):
+                if not iterable(weights) and weights == "mass":
+                    pass
+                else:
+                    get_weights(atoms['mobile'], weights)
 
     def _prepare(self):
         self._n_atoms = self.mobile_atoms.n_atoms
         if not self.weights_groupselections:
-            if str(self.weights) == 'mass':         # apply 'mass' weights for all selections
-                self.weights_groupselections = ['mass'] * len(self.groupselections)
-            elif self.weights is None:         # apply 'None' weights for all selections
-                self.weights_groupselections = [None] * len(self.groupselections)
-            elif (np.array(self.weights).ndim == 1) and (np.array(self.weights).dtype 
-                                             in (np.dtype('float64'),np.dtype('int64'))):
+            if not iterable(self.weights):         # apply 'mass' or 'None' weights for all selections
+                self.weights_groupselections = [self.weights] * len(self.groupselections)
+            else:
                 self.weights_groupselections = [None] * len(self.groupselections)
 
-        for igroup, (weight, atoms) in enumerate(zip(self.weights_groupselections,
+        for igroup, (weights, atoms) in enumerate(zip(self.weights_groupselections,
                                         self._groupselections_atoms), 0):
-            if weight == 'mass':
+            if weights == 'mass':
                 self.weights_groupselections[igroup] = atoms['mobile'].masses
-        
+            if weights is not None:
+                self.weights_groupselections[igroup] = np.asarray(self.weights_groupselections[igroup],
+                                                              dtype=np.float64) /  \
+                                             np.mean(self.weights_groupselections[igroup])
         # add the array of weights to weights_select
         if str(self.weights) == 'mass':
             self.weights_select = self.mobile_atoms.masses
