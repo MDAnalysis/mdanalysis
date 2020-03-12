@@ -87,6 +87,8 @@ import logging
 import re
 import warnings
 
+import tqdm
+
 from .. import version
 
 
@@ -394,3 +396,23 @@ class ProgressMeter(object):
             return
         echo(self.format_handler(format, vars(self)),
              replace=self.dynamic, newline=newline)
+
+
+class ProgressBar(tqdm.tqdm):
+    r"""tqdm-like progress bar. Replaces the :class:`ProgressMeter` class to
+    show running progress. The advantage over :class:`ProgressMeter` is that it
+    includes an estimate and is more flexible to use with jupyter notebooks,
+    jupyterlab...etc.
+
+    Parameters
+    ----------
+    See tqdm.tqdm()
+
+    """
+    def __init__(self, *args, **kwargs):
+          verbose = kwargs.pop('verbose', True)
+          # disable: Whether to disable the entire progressbar wrapper [default: False].
+          # If set to None, disable on non-TTY.
+          # disable should take precedence over verbose if both are set
+          kwargs['disable'] = kwargs.pop('disable', False if verbose else None)
+          super(ProgressBar, self).__init__(*args, **kwargs)
