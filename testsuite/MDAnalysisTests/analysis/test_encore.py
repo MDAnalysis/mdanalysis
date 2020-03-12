@@ -139,7 +139,7 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
@@ -155,7 +155,7 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
@@ -163,7 +163,7 @@ inconsistent results")
         conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights=(ens1.select_atoms('name CA').masses, ens1.select_atoms('name CA').masses),
             n_jobs=1)
@@ -182,7 +182,7 @@ inconsistent results")
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection=selection_string,
+            select=selection_string,
             pairwise_align=False,
             weights='mass',
             n_jobs=1)
@@ -285,7 +285,7 @@ inconsistent results")
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_dres(self, ens1, ens2):
-        results, details = encore.dres([ens1, ens2], selection="name CA and resnum 1-10")
+        results, details = encore.dres([ens1, ens2], select="name CA and resnum 1-10")
         result_value = results[0,1]
         upper_bound = 0.6
         assert result_value < upper_bound, "Unexpected value for Dim. " \
@@ -353,7 +353,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.AffinityPropagationNative(preference=-2.0),
-                                      selection="name CA and resnum 1-10")
+                                      select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -375,7 +375,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.KMeans(n_clusters=2),
-                                      selection="name CA and resnum 1-10")
+                                      select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -389,7 +389,7 @@ inconsistent results")
         stdev_upper_bound = 0.2
         averages, stdevs = encore.dres([ens1, ens1], estimate_error = True,
                                        bootstrapping_samples=10,
-                                       selection="name CA and resnum 1-10")
+                                       select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
