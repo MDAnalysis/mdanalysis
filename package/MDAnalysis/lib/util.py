@@ -119,6 +119,7 @@ Arrays
 .. autofunction:: unique_int_1d(values)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
+.. autofunction:: group_consecutive_integers
 
 File parsing
 ------------
@@ -1675,6 +1676,29 @@ def blocks_of(a, n, m):
                    a.strides[0], a.strides[1])
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
+
+
+def group_consecutive_integers(arr):
+    """Split a sorted array of integers into a list of consecutive sequences.
+
+    Parameters
+    ----------
+    arr: :class:`numpy.ndarray`
+
+    Returns
+    -------
+    list of :class:`numpy.ndarray`
+
+    Examples
+    >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
+    >>> group_consecutive_integers(arr)
+    [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
+    """
+    mask = np.ones(len(arr)+1, dtype=bool)
+    mask[1:-1] = (arr[1:]-arr[:-1]) > 1
+    edges = np.nonzero(mask)[0]
+    return [arr[i:j] for i, j in zip(edges[:-1], edges[1:])]
+
 
 class Namespace(dict):
     """Class to allow storing attributes in new namespace. """
