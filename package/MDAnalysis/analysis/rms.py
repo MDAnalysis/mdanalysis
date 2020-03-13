@@ -391,10 +391,10 @@ class RMSD(AnalysisBase):
              corresponding atom in `select`, and assumes ``None`` for `groupselections`.
 
         weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
-             1. ``False`` will apply imposed weights from ``weights`` option
+             1. ``False`` will apply imposed weights to `groupselections` from ``weights`` option.
 
-             2. a list of {"mass", ``None`` or array_like} with the length of `groupselections`,
-             apply the weights correspondingly.
+             2. A list of {"mass", ``None`` or array_like} with the length of `groupselections`
+             will apply the weights to `groupselections` correspondingly.
 
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
