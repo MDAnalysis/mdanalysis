@@ -25,18 +25,17 @@
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 ==============================================================
 
-This module implements the calculation of Mean Squared Displacmements (MSDS).
+This module implements the calculation of Mean Squared Displacmements (MSD).
+MSDs can be used to characterise the speed at which particles move and has its roots
+in the study of Brownian motion.  For a thorough review see XXX et al. MSDs are computed from
+the following expression
+
+Where XX represents an ensemble average over 
+
+The computation of the MSD in this way can be computationally intensive due to it's N^2 scaling. 
+An algorithm to compute the MSD with Nlogn(N) scaling based on a Fast Fourier Transform is known and can be accessed by setting FFT=True.
 
 
-
-Algorithm
----------
-
-1. build a graph of all phosphate distances < cutoff
-2. identify the largest connected subgraphs
-3. analyse first and second largest graph, which correspond to the leaflets
-
-For further details see [Michaud-Agrawal2011]_.
 
 
 Classes and Functions
@@ -58,21 +57,48 @@ import functools
 
 import numpy as np
 from scipy import fft,ifft
-
 import logging
-
 import MDAnalysis
-import MDAnalysis.lib.distances
-from MDAnalysis.lib.util import openany
-from MDAnalysis.analysis.distances import distance_array
-from MDAnalysis.core.groups import AtomGroup
-from .base import AnalysisBase
+
 
 
 class MeanSquaredDisplacement(object):
+    r"""Class representing a density on a regular cartesian grid.
 
-    def __init__(self, u, selection, msd_type='xyz', fft=True, kwargs=None, **basekwargs):
-        r"blah blah blah"
+    Parameters
+    ----------∏
+    u : 
+        An MDAnalysis Universe :class:`Universe`
+    selection : 
+        An MDAnalysis selection string
+    
+    
+
+    Attributes
+    ----------
+
+
+
+
+    Notes
+    -----
+    Notes
+
+
+    See Also
+    --------
+   
+
+    Examples
+    --------
+    Typical use:
+
+    
+
+    """
+
+    def __init__(self, u, selection, msd_type='xyz', fft=True):
+
         #args
         self.u = u
         self.selection = selection
@@ -98,7 +124,7 @@ class MeanSquaredDisplacement(object):
         
     def parse_msd_type(self):
 
-        if self.msd_type == 'xyz': # full tensor
+        if self.msd_type == 'xyz': # full 3d
             self._dim = [0,1,2]
             self.dim_fac = 3.0
             
@@ -131,7 +157,7 @@ class MeanSquaredDisplacement(object):
 
     def select_reference_positions(self):
         self._position_array = self.u.trajectory.timeseries(self.u.select_atoms(self.selection),order='fac') 
-        self.N_particles = self._position_array.shape[1]
+        self.N_particles = self._position_array.shape[1] 
     
     def run(self):
         if self.fft == True:
@@ -154,7 +180,7 @@ class MeanSquaredDisplacement(object):
 
     def _run_fft(self):  #with FFT
         # _position_array is shape time, nparticles, 3
-        particle_msds = []
+        msds_byparticle = []
         reshape_positions = self._position_array[:,:,self._dim]
         N=reshape_positions.shape[0]
         D=np.square(reshape_positions).sum(axis=2, dtype=np.float64) 
@@ -165,23 +191,23 @@ class MeanSquaredDisplacement(object):
             Q=Q-D[m-1,:]-D[N-m,:]
             S1[m,:]=Q/(N-m)
         
-        corrs = []
+        S2accumulate = []
         for i in range(reshape_positions.shape[2]):
-            corrs.append(self.autocorrFFT(reshape_positions[:,:,i]))
-        S2= np.sum(corrs,axis=0,dtype=np.float64)
+            S2accumulate.append(self.autocorrFFT(reshape_positions[:,:,i]))
+        S2= np.sum(S2accumulate,axis=0,dtype=np.float64)
 
-        particle_msds.append(S1-2*S2)
-        msds = np.concatenate(particle_msds,axis=1).mean(axis=-1, dtype=np.float64)
+        msds_byparticle.append(S1-2*S2)
+        msds = np.concatenate(msds_byparticle,axis=1).mean(axis=-1, dtype=np.float64)
         return msds
 
     @staticmethod
     def autocorrFFT(x):
         N=(x.shape[0])
-        F = fft(x, n=2*N, axis=0)  #2*N because of zero-padding
+        F = fft(x, n=2*N, axis=0)  #zero pad to get non-cyclic autocorrelation
         PowerSpectralDensity = F * F.conjugate()
-        res = ifft(PowerSpectralDensity,axis=0)
-        res = (res[:N]).real   #now we have the autocorrelation in convention B
-        n = np.arange(1, N+1)[::-1] #divide res(m) by (N-m)
-        return res/n[:, np.newaxis] #this is the autocorrelation in convention A
+        inverse = ifft(PowerSpectralDensity,axis=0)
+        autocorr = (inverse[:N]).real   #autocorr convention B
+        n = np.arange(1, N+1)[::-1] 
+        return autocorr/n[:, np.newaxis] #autocorr convention A
 
 
