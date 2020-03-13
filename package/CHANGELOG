@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         Shubham Sharma
+         ss62171
 
   * 0.21.0
 
@@ -59,7 +59,6 @@ Fixes
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
-  * PersistenceLength.plot() now grab new axes if current axes not provided (Issue #2590)
 
 Enhancements
   * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
@@ -94,6 +93,7 @@ Enhancements
   * Added ParmEdParser, ParmEdReader and ParmEdConverter to
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
+  * PersistenceLength.plot() now create new axes if current axes not provided (Issue #2590)
 
 Changes
   * Removed `format` keyword from :meth:`MemoryReader.timeseries` (Issue #1453,

@@ -271,7 +271,7 @@ class PersistenceLength(AnalysisBase):
         import matplotlib.pyplot as plt
         if ax is None:
             plt.figure()
-            ax = plt.axes()
+            ax = plt.subplot()
         ax.plot(self.x, self.results, 'ro', label='Result')
         ax.plot(self.x, self.fit, label='Fit')
         ax.set_xlabel(r'x')
