@@ -21,16 +21,60 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+"""
+HELANAL --- analysis of protein helices
+=======================================
+
+:Author: Lily Wang
+:Year: 2020
+:Copyright: GNU Public License v3
+
+.. versionadded:: 1.0.0
+
+This module contains code to analyse protein helices using the 
+`HELANAL <http://nucleix.mbu.iisc.ernet.in/helanal/helanal/helanal.html>`_ algorithm
+([Bansal2000]_ , [Sugeta1967]_ ).
+
+`HELANAL <http://nucleix.mbu.iisc.ernet.in/helanal/helanal/helanal.html>`_ 
+quantifies the geometry of helices in proteins on the basis of their Cα
+atoms. It can determine local structural features such as the local helical twist and
+rise, virtual torsion angle, local helix origins and bending angles between
+successive local helix axes. 
+
+Example use
+-----------
+
+You can pass in a single selection::
+
+    import MDAnalysis as mda
+    from MDAnalysis.tests.datafiles import PSF, DCD
+    from MDAnalysis.analysis import helix_analysis as hel
+    u = mda.Universe(PSF, DCD)
+    helanal = hel.HELANAL(u, select='name CA and resnum 161-187')
+    helanal.run()
+
+    print(helanal.summary)
+
+Alternatively, you can analyse several helices at once by passing 
+in multiple selection strings::
+
+    helanal2 = hel.HELANAL(u, select=('name CA and resnum 100-160',
+                                      'name CA and resnum 200-230'))
+
+"""
+import warnings
 import numpy as np
 
+import MDAnalysis as mda
 from ..lib import util, mdamath
 from .base import AnalysisBase
+
 
 def pdot(a, b):
     """Pairwise dot product.
 
     ``a`` must be the same shape as ``b``.
-    
+
     Parameters
     ----------
     a: :class:`numpy.ndarray` of shape (N, M)
@@ -42,9 +86,10 @@ def pdot(a, b):
     """
     return np.einsum('ij,ij->i', a, b)
 
+
 def pnorm(a):
     """Euclidean norm of each vector in a matrix
-    
+
     Parameters
     ----------
     a: :class:`numpy.ndarray` of shape (N, M)
@@ -55,13 +100,14 @@ def pnorm(a):
     """
     return pdot(a, a)**0.5
 
+
 def bound(arr, min_value, max_value):
     """Restrict values in an array within a domain.
-    
+
     .. note::
-    
+
         This modifies the array in place.
-        
+
     Parameters
     ----------
     arr: :class:`numpy.ndarray`
@@ -72,13 +118,14 @@ def bound(arr, min_value, max_value):
     -------
     :class:`numpy.ndarray`
     """
-    arr[arr<min_value] = min_value
-    arr[arr>max_value] = max_value
+    arr[arr < min_value] = min_value
+    arr[arr > max_value] = max_value
     return arr
+
 
 def vector_of_best_fit(coordinates):
     """Fit vector through the centered coordinates.
-    
+
     Parameters
     ----------
     coordinates: :class:`numpy.ndarray` of shape (N, 3)
@@ -144,14 +191,15 @@ def local_screw(best_fit, ref_axis, rotation_vectors):
     screw_angles[high] = np.where(alt_angles[high] < half_pi,
                                   half_pi + alt_angles[high],
                                   3*half_pi - alt_angles[high])
-    
+
     ortho = np.cross(ref_1, rotation_vectors)
     cos_theta = np.matmul(best_fit, ortho.T)/(pnorm(ortho)*ref_norms[0])
     bound(cos_theta, -1, 1)
     angle_to_best_fit = np.arccos(cos_theta)
-    screw_angles[angle_to_best_fit<half_pi] *= -1
+    screw_angles[angle_to_best_fit < half_pi] *= -1
     return np.rad2deg(screw_angles)  # (n_vec,)
-    
+
+
 def helix_analysis(positions, ref_axis=[0, 0, 1]):
     r"""
     Calculate helix properties from atomic coordinates.
@@ -192,29 +240,27 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
             angles of each rotation vector to normal plane of global axes
     """
 
+    #          ^               ^
+    #           \             / bi
+    #            \           /
+    #         CA_i+2 <----- CA_i+1
+    #         /    \       /   ^
+    #        /    r \     /     \
+    #     V /        \ θ /       \
+    #      /          \ /       CA_i
+    #     v           origin
+    #   CA_i+3
+    #
+    # V: vectors
+    # bi: bisectors
+    # θ: local_twists
+    # origin: origins
+    # local_axes: in the plane of the screen. Orthogonal to the bisectors
 
-        #          ^               ^
-        #           \             / bi
-        #            \           /
-        #         CA_i+2 <----- CA_i+1
-        #         /    \       /   ^
-        #        /    r \     /     \
-        #     V /        \ θ /       \
-        #      /          \ /       CA_i
-        #     v           origin
-        #   CA_i+3
-        #
-        # V: vectors
-        # bi: bisectors
-        # θ: local_twists
-        # origin: origins
-        # local_axes: in the plane of the screen. Orthogonal to the bisectors
-        
-
-    vectors = positions[1:] - positions[:-1]  #  (n_res-1, 3)
-    bisectors = vectors[:-1] - vectors[1:]  #  (n_res-2, 3)
-    binorms = pnorm(bisectors)  #  (n_res-2,)
-    adjacent_mag = binorms[:-1] * binorms[1:]  #  (n_res-3,)
+    vectors = positions[1:] - positions[:-1]  # (n_res-1, 3)
+    bisectors = vectors[:-1] - vectors[1:]  # (n_res-2, 3)
+    binorms = pnorm(bisectors)  # (n_res-2,)
+    adjacent_mag = binorms[:-1] * binorms[1:]  # (n_res-3,)
 
     # find angle between bisectors for twist and n_residue/turn
     cos_theta = pdot(bisectors[:-1], bisectors[1:])/adjacent_mag
@@ -296,9 +342,6 @@ class HELANAL(AnalysisBase):
     local_axes: array or list of arrays
         The length-wise helix axis of the local window. 
         Each array has shape (n_frames, n_residues-3, 3)
-    local_bends: array or list of arrays
-        The angles between local helix angles, 3 windows apart. 
-        Each array has shape (n_frames, n_residues-6)
     local_heights: array or list of arrays
         The rise of each local helix. 
         Each array has shape (n_frames, n_residues-3)
@@ -308,6 +351,15 @@ class HELANAL(AnalysisBase):
     local_origins: array or list of arrays
         The projected origin for each helix.
         Each array has shape (n_frames, n_residues-2, 3)
+    local_screw: array or list of arrays
+        The local screw angle for each helix.
+        Each array has shape (n_frames, n_residues-2)
+    local_bends: array or list of arrays
+        The angles between local helix axes, 3 windows apart. 
+        Each array has shape (n_frames, n_residues-6)
+    all_bends: array or list of arrays
+        The angles between local helix axes.
+        Each array has shape (n_frames, n_residues-3, n_residues-3)
     global_axes: array or list of arrays
         The length-wise axis for the overall helix. 
         Each array has shape (n_frames, 3)
@@ -318,7 +370,7 @@ class HELANAL(AnalysisBase):
         Summary of stats for each property: the mean, the sample 
         standard deviation, and the mean absolute deviation.
     """
-    
+
     # shapes of properties from each frame, relative to n_residues
     attr_shapes = {
         'local_twists': (-3,),
@@ -363,8 +415,8 @@ class HELANAL(AnalysisBase):
         except AttributeError:
             raise ValueError('The SecondaryStructure instance must be run '
                              'before passing to HELANAL')
-        
-        helices = secondary_structure.residues[ss=='Helix']
+
+        helices = secondary_structure.residues[ss == 'Helix']
         continuous = util.group_consecutive_integers(helices.resindices)
 
         # must have at least 9 continuous residues for helanal
@@ -382,10 +434,9 @@ class HELANAL(AnalysisBase):
             raise ValueError('Could not find any helices with at least '
                              '9 continuous residues. Consider running '
                              'HELANAL manually')
-        
+
         return cls(universe, select=selections, ref_axis=ref_axis,
                    verbose=verbose, flatten_single_helix=flatten_single_helix)
-
 
     def __init__(self, universe, select='name CA', ref_axis=[0, 0, 1],
                  verbose=False, flatten_single_helix=True):
@@ -393,20 +444,29 @@ class HELANAL(AnalysisBase):
                                       verbose=verbose)
         selections = util.asiterable(select)
         self.atomgroups = [universe.select_atoms(s) for s in selections]
+        for s, ag in zip(selections, self.atomgroups):
+            ids, counts = np.unique(ag.resindices, return_counts=True)
+            if np.any(counts > 1):
+                dup = ', '.join(map(str, ids[counts > 1]))
+                warnings.warn('Your selection {} includes multiple atoms '
+                              'for residues with these resindices: {}.'
+                              'HELANAL is designed to work on one carbon-alpha '
+                              'per residue.'.format(s, dup))
         self.ref_axis = np.asarray(ref_axis)
         self._flatten = flatten_single_helix
 
     def _zeros_per_frame(self, n_values, *dims, n_positions=0):
         """Create zero arrays where first 2 dims are n_frames, n_values"""
         n_values += n_positions
-        return np.zeros((self.n_frames, n_values, *dims), 
-                         dtype=np.float64)
-    
+        return np.zeros((self.n_frames, n_values, *dims),
+                        dtype=np.float64)
+
     def _prepare(self):
         n_res = [len(ag) for ag in self.atomgroups]
 
         for key, dims in self.attr_shapes.items():
-            empty = [self._zeros_per_frame(*dims, n_positions=n) for n in n_res]
+            empty = [self._zeros_per_frame(
+                *dims, n_positions=n) for n in n_res]
             setattr(self, key, empty)
 
         self.global_axes = [self._zeros_per_frame(3) for n in n_res]
@@ -421,7 +481,7 @@ class HELANAL(AnalysisBase):
                 attr[i][_f] = value
 
     def _conclude(self):
-        # compute tilt of global axes 
+        # compute tilt of global axes
         self.global_tilts = []
         norm_ref = (self.ref_axis**2).sum() ** 0.5
         for axes in self.global_axes:
@@ -450,4 +510,29 @@ class HELANAL(AnalysisBase):
                 attr = getattr(self, name)
                 setattr(self, name, attr[0])
 
-        
+    def universe_from_origins(self):
+        """
+        Create MDAnalysis Universe from the local origins.
+
+        Returns
+        -------
+        Universe or list of Universes
+        """
+        try:
+            origins = self.local_origins
+        except AttributeError:
+            raise ValueError('Call run() before universe_from_origins')
+
+        if not isinstance(origins, list):
+            origins = [origins]
+
+        universe = []
+        for xyz in origins:
+            n_res = xyz.shape[1]
+            u = mda.Universe.empty(n_res, n_residues=n_res,
+                                   atom_resindex=np.arange(n_res),
+                                   trajectory=True).load_new(xyz)
+            universe.append(u)
+        if not isinstance(self.local_origins, list):
+            universe = universe[0]
+        return universe

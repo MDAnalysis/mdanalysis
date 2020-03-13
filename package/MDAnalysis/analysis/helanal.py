@@ -741,7 +741,6 @@ def main_loop(positions, ref_axis=None):
     #Record final rotation vector
     location_rotation_vectors.append(dv24)
 
-    print(origins)
     #local bending angles (eg i > i+3, i+3 > i+6)
 
     bending_angles = [0 for item in range(len(local_helix_axes) - 3)]
