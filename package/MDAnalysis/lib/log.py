@@ -87,7 +87,7 @@ import logging
 import re
 import warnings
 
-import tqdm
+from tqdm.auto import tqdm
 
 from .. import version
 
@@ -225,7 +225,11 @@ def _guess_string_format(template):
 
 
 class ProgressMeter(object):
-    r"""Simple progress meter
+    r"""Simple progress meter (Deprecated)
+
+    ..Warning:
+    This class is deprecated and will be removed in version 2.0.
+    Please use :class:`MDAnalysis.lib.log.ProgressBar` instead.
 
     The :class:`ProgressMeter` class can be used to show running progress such
     as frames processed or percentage done to give the user feedback on the
@@ -325,11 +329,20 @@ class ProgressMeter(object):
     .. deprecated:: 0.16
        Keyword argument *quiet* is deprecated in favor of *verbose*.
 
+    .. deprecated:: 1.0
+       This class is deprecated in favor of *ProgressBar*.
+
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
                  verbose=True, dynamic=True,
                  format_handling='auto'):
+        warnings.warn(
+            "This class is deprecated as of MDAnalysis version 1.0."
+            "It will be removed in MDAnalysis version 2.0"
+            "Please use MDAnalysis.lib.log.ProgressBar instead.",
+            category=DeprecationWarning
+            )
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
@@ -398,28 +411,7 @@ class ProgressMeter(object):
              replace=self.dynamic, newline=newline)
 
 
-# detect if running from jupyter, ipython or python
-try:
-    shell = get_ipython().__class__.__name__
-except: # non-interactive shell
-    from tqdm import tqdm as _tqdm_class
-else:
-    if shell == 'ZMQInteractiveShell': # Jupyter notebook and JupyterLab
-        from tqdm.notebook import tqdm_notebook as _tqdm_class
-    else: # Ipython
-        from tqdm import tqdm as _tqdm_class
-
-class ProgressBar(_tqdm_class):
-    r"""tqdm-like progress bar. Replaces the :class:`ProgressMeter` class to
-    show running progress. The advantage over :class:`ProgressMeter` is that it
-    includes an estimate and is more flexible to use with jupyter notebooks,
-    jupyterlab...etc.
-
-    Parameters
-    ----------
-    See tqdm.tqdm()
-
-    """
+class ProgressBar(tqdm):
     def __init__(self, *args, **kwargs):
           verbose = kwargs.pop('verbose', True)
           # disable: Whether to disable the entire progressbar wrapper [default: False].
