@@ -27,7 +27,7 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 
 This module implements the calculation of Mean Squared Displacmements (MSDs).
 MSDs can be used to characterise the speed at which particles move and has its roots
-in the study of Brownian motion. For a full explanation of the best practices for the computation of MSDs and the subsequent calculation of diffusion coefficents the reader is directed to [Maginn2019]_.
+in the study of Brownian motion. For a full explanation of the best practices for the computation of MSDs and the subsequent calculation of self diffusivities the reader is directed to [Maginn2019]_.
 MSDs are computed from the following expression:
 
 .. math::
@@ -37,11 +37,11 @@ MSDs are computed from the following expression:
 Where :math:`N` is the number of equivalent particles the MSD is calculated over, :math:`r` are their coordinates and :math:`d` the desired
 dimensionality of the MSD. Note that while the definition of the MSD is universal, there are many practical considerations to computing the MSD
 that vary between implementations. In this module, we compute a "windowed" MSD, where the MSD is averaged over all possible lag times :math:`t \le t_{max}`,
-where :math:`t_{max}` is the length of th trajectory.
+where :math:`t_{max}` is the length of the trajectory, thereby maximising the number of samples.
 
-The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`t_{max}` length of the trajectory. 
+The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`t_{max}`. 
 An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_.
-The python implementation was originally found here [SO2015]_.
+The python implementation was originally presented here [SO2015]_. 
 
 Computing an MSD
 ----------------
@@ -76,24 +76,29 @@ Visual inspection of the MSD is important, so lets take a look at it with a simp
     >>> plt.plot(msd, lagtimes)
     >>> plt.show()
 
-We can see that the MSD is roughly linear between the XX and XX.
-This can be confirmed with a log-log plot
+We can see that the MSD is roughly linear between a lag-time of 500 and 1000.
+This can be confirmed with a log-log plot as is often reccomended[Maginn2019]_.
 
-Computing a Diffusion Coefficent
+Computing Self Diffusivity
 --------------------------------
+Diffusion Coefficents are closely related to the MSD.
 
-    >>> import scipy.stats
+.. math::
+
+   D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
+
+From the MSD, diffusion coefficents :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
+An example of this is shown in.
+
+    >>> import scipy.stats.linregress as lr
     >>> start_time = 500
     >>> start_index = start_time/timestep
     >>> end_time = 1000
     >>> end_index = end_time/timestep
-    >>> end_index = start_time/timestep
-    >>> plt.plot(msd, lagtimes)
-    >>> plt.show()
+    >>> linear_model = lr(lagtimes[start_index:end_index], msd[start_index:end_index])
 
 
-From the MSD, diffusion coefficents :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
-An example of this is shown in.
+
 
 
 References
