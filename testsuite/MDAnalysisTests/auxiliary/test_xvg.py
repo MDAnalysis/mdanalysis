@@ -33,6 +33,7 @@ import MDAnalysis as mda
 
 from MDAnalysisTests.datafiles import AUX_XVG, XVG_BAD_NCOL, XVG_BZ2
 from MDAnalysisTests.auxiliary.base import (BaseAuxReaderTest, BaseAuxReference)
+from MDAnalysis.auxiliary.XVG import XVGStep
 
 
 class XVGReference(BaseAuxReference):
@@ -51,6 +52,29 @@ class XVGReference(BaseAuxReference):
         self.data_selector = [1,2] # select the second/third columns from auxiliary
         self.select_data_ref = [self.format_data([2*i, 2**i]) for i in range(self.n_steps)]
 
+
+class TestXVGStep():
+
+    @staticmethod
+    @pytest.fixture()
+    def step():
+        return XVGStep()
+
+    def test_select_time_none(self, step):
+
+        st = step._select_time(None)
+
+        assert st is None
+
+    def test_select_time_invalid_index(self, step):
+        with pytest.raises(ValueError, match="Time selector must be single index"):
+            step._select_time([0])
+
+    def test_select_data_none(self, step):
+
+        st = step._select_data(None)
+
+        assert st is None
 
 class TestXVGReader(BaseAuxReaderTest):
     @staticmethod

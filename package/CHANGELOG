@@ -15,11 +15,23 @@ The rules for this file:
 ------------------------------------------------------------------------------
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
-         Yuan-Yu, xiki-tempula, HTian1997
+         Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
+         ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance
 
   * 0.21.0
 
 Fixes
+  * XDR offsets now read from trajectory if offsets file read-in fails on
+    IOError (Issue #1893, PR #2611)
+  * Fixed the deprecation warning from `collections` library in `flatten_dict`
+    (Issue #2605)
+  * Fixed test for the `save_paths` and `load` methods of :class:`PSAnalysis`
+    (Issue #2593)
+  * Fixes outdated :class:`TRJReader` documentation on random frame access
+    (Issue #2398)
+  * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
+  * PCA(align=True) now correctly aligns the trajectory and computes the
+    correct means and covariance matrix (Issue #2561)
   * Correct args order of base.AnalysisFromFunction (Issue #2503)  
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
@@ -55,8 +67,15 @@ Fixes
     argument. The directives parsed into bonds, angles, impropers, and dihedrals now
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
+  * Fixed example docs for polymer persistence length (#2582)
+  * Added missing selection module to leaflet.py (Issue #2612)
 
 Enhancements
+  * Added ability to use Chemfiles as a trajectory reader backend (PR #1862)
+  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
+    for running HOLE on singular PDB files and class (HoleAnalysis) for 
+    trajectories (PR #2523)
+  * Changed selection wildcards to support multiple wildcards (#2436)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
   * Improved ClusterCollection and Cluster string representations (Issue #2464)
   * XYZ parser store elements attribute (#2420) and XYZ write uses the elements
@@ -87,6 +106,9 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Removed deprecated :meth:`PersistenceLength.perform_fit` (Issue #2596)
+  * Changed :meth:`PSAnalysis.generate_paths` keywords `store` and `filename`
+    defaults to `False` and `None` (Issue #2593)
   * Removed `format` keyword from :meth:`MemoryReader.timeseries` (Issue #1453,
     #2443)
   * Deprecated :class:`LAMMPSDataConverter` has now been removed (Issue #2564)
@@ -133,6 +155,7 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
+  * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
 
 
