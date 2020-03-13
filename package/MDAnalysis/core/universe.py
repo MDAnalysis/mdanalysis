@@ -625,8 +625,6 @@ class Universe(object):
                 *self.trajectory.check_slice_indices(start, stop, step)
             ))
             n_atoms = len(self.atoms)
-            pm = ProgressBar(total=n_frames, verbose=verbose,
-                             desc="Loading frames")
             coordinates = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
             ts = self.trajectory.ts
             has_vels = ts.has_velocities
@@ -638,7 +636,9 @@ class Universe(object):
             dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
                           if has_dims else None)
 
-            for i, ts in enumerate(self.trajectory[start:stop:step]):
+            for i, ts in ProgressBar(enumerate(self.trajectory[start:stop:step]),
+                                     total=n_frames, verbose=verbose,
+                                     desc="Loading frames"):
                 np.copyto(coordinates[i], ts.positions)
                 if has_vels:
                     np.copyto(velocities[i], ts.velocities)
@@ -646,8 +646,6 @@ class Universe(object):
                     np.copyto(forces[i], ts.forces)
                 if has_dims:
                     np.copyto(dimensions[i], ts.dimensions)
-                pm.update(i)
-            pm.close()
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates

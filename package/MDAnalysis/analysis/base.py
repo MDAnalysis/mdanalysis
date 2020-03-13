@@ -131,10 +131,6 @@ class AnalysisBase(object):
         self.step = step
         self.n_frames = len(range(start, stop, step))
 
-        verbose = getattr(self, '_verbose', False)
-        self._pm = ProgressBar(self.n_frames if self.n_frames else 1,
-                               verbose=verbose)
-
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
 
@@ -174,14 +170,16 @@ class AnalysisBase(object):
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
-        for i, ts in enumerate(
-                self._trajectory[self.start:self.stop:self.step]):
+        verbose = getattr(self, '_verbose', False)
+        n_frames = len(range(*self._trajectory.check_slice_indices(
+                       self.start, self.stop, self.step)))
+        for i, ts in ProgressBar(enumerate(
+                self._trajectory[self.start:self.stop:self.step]),
+                verbose=verbose, total=n_frames):
             self._frame_index = i
             self._ts = ts
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
-            self._pm.update(self._frame_index)
-        self._pm.close()
         logger.info("Finishing up")
         self._conclude()
         return self

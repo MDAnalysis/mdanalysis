@@ -346,12 +346,11 @@ def helanal_trajectory(universe, select="name CA",
     global_fitted_tilts = []
     global_screw = []
 
-    pm = ProgressBar(total=n_frames, verbose=verbose, desc="Frame")
+    for index, ts in ProgressBar(enumerate(
+        trajectory[start_frame:end_frame:frame_step]), verbose=verbose,
+        desc="Helix analysis", total=n_frames):
 
-    for index, ts in enumerate(trajectory[start_frame:end_frame:frame_step]):
-        pm.update(index)
         frame = ts.frame
-
         ca_positions = ca.positions
         twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
             main_loop(ca_positions, ref_axis=ref_axis)
@@ -411,7 +410,6 @@ def helanal_trajectory(universe, select="name CA",
         for store, tmp in zip(global_bending, bending_angles):
             store.append(tmp)
         #for store,tmp in zip(global_tilt,local_helix_axes): store.append(mdamath.angle(tmp,ref_axis))
-    pm.close()
 
     twist_mean, twist_sd, twist_abdev = stats(global_twist)
     height_mean, height_sd, height_abdev = stats(global_height)

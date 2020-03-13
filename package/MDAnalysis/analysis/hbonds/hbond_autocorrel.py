@@ -392,10 +392,10 @@ class HydrogenBondAutoCorrel(object):
         # for normalising later
         counter = np.zeros_like(master_results, dtype=np.float32)
 
-        pm = ProgressBar(total=self.nruns, desc="Performing run")
-
-        for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
-            pm.update(i)
+        n_frames = len(self.u.trajectory)
+        for i, (start, stop) in ProgressBar(enumerate(zip(self._starts,
+                                            self._stops)), total=n_frames,
+                                            desc="Performing run"):
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
@@ -407,7 +407,7 @@ class HydrogenBondAutoCorrel(object):
             else:
                 master_results[:nresults] += results
                 counter[:nresults] += 1.0
-        pm.close()
+
         master_results /= counter
 
         self.solution['time'] = np.arange(

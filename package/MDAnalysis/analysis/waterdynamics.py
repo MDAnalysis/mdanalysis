@@ -808,11 +808,9 @@ class WaterOrientationalRelaxation(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressBar(total=universe.trajectory.n_frames, verbose=True)
-        for ts in universe.trajectory:
+        for ts in ProgressBar(universe.trajectory, verbose=True,
+                              total=universe.trajectory.n_frames):
             selection.append(universe.select_atoms(selection_str))
-            pm.update(ts.frame)
-        pm.close()
         return selection
 
     @staticmethod
@@ -983,11 +981,9 @@ class AngularDistribution(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressBar(total=universe.trajectory.n_frames, verbose=True)
-        for ts in universe.trajectory:
+        for ts in ProgressBar(universe.trajectory, verbose=True,
+                              total=universe.trajectory.n_frames):
             selection.append(universe.select_atoms(selection_str))
-            pm.update(ts.frame)
-        pm.close()
         return selection
 
 
@@ -1125,11 +1121,9 @@ class MeanSquareDisplacement(object):
 
     def _selection_serial(self, universe, selection_str):
         selection = []
-        pm = ProgressBar(total=universe.trajectory.n_frames, verbose=True)
-        for ts in universe.trajectory:
+        for ts in ProgressBar(universe.trajectory, verbose=True,
+                              total=universe.trajectory.n_frames):
             selection.append(universe.select_atoms(selection_str))
-            pm.update(ts.frame)
-        pm.close()
         return selection
 
     def run(self, **kwargs):

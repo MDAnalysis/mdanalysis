@@ -788,19 +788,16 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
     n_frames = len(range(start, stop, step))
 
-    pm = ProgressBar(total=n_frames, verbose=verbose,
-                     desc="Histogramming")
-
-    for index, ts in enumerate(u.trajectory[start:stop:step]):
+    for index, ts in ProgressBar(enumerate(u.trajectory[start:stop:step]),
+                                 verbose=verbose, desc="Histogramming",
+                                 total=n_frames):
         coord = current_coordinates()
 
-        pm.update(index)
         if len(coord) == 0:
             continue
 
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-    pm.close()
     grid /= float(n_frames)
 
     metadata = metadata if metadata is not None else {}

@@ -230,11 +230,12 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            mean_pm = ProgressBar(total=self.n_frames if self.n_frames else 1,
-                                  verbose=self._verbose,
-                                  desc="Mean Calculation Step")
-            for i, ts in enumerate(self._u.trajectory[self.start:self.stop:
-                                                      self.step]):
+            n_frames = len(range(*self._u.trajectory.check_slice_indices(
+                           self.start, self.stop, self.step)))
+            for i, ts in ProgressBar(enumerate(self._u.trajectory[self.start:
+                                     self.stop:self.step]), total=n_frames,
+                                     verbose=self._verbose,
+                                     desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
                     mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
@@ -244,8 +245,6 @@ class PCA(AnalysisBase):
                                                      ref_com=self._ref_cog)
 
                 self.mean += self._atoms.positions.ravel()
-                mean_pm.update(i)
-            mean_pm.close()
             self.mean /= self.n_frames
 
         self.mean_atoms = self._atoms
