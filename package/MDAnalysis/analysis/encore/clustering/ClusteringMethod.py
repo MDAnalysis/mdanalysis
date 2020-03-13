@@ -156,8 +156,8 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-        details = {}
-        return clusters, details
+        
+        return clusters
 if sklearn:
 
     class AffinityPropagation(ClusteringMethod):
@@ -304,6 +304,7 @@ if sklearn:
             cluster_representatives = np.unique(clusters, return_index=True)[1]
             clusters = encode_centroid_info(clusters,
                                             cluster_representatives)
+          
             return clusters
 
     class KMeans(ClusteringMethod):

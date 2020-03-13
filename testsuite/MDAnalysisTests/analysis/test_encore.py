@@ -462,7 +462,7 @@ class TestEncoreClustering(object):
     def test_clustering_AffinityPropagationNative_direct(self, ens1):
         method = encore.AffinityPropagationNative()
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment, details = method(distance_matrix)
+        cluster_assignment = method(distance_matrix)
         expected_value = 7
         assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)
@@ -471,7 +471,7 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         method = encore.AffinityPropagation()
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment, details = method(distance_matrix)
+        cluster_assignment = method(distance_matrix)
         expected_value = 7
         assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)
