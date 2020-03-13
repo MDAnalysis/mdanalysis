@@ -574,7 +574,7 @@ class RMSD(AnalysisBase):
                 self.weights_groupselections = [None] * len(self.groupselections)
 
         for igroup, (weights, atoms) in enumerate(zip(self.weights_groupselections,
-                                                      self._groupselections_atoms), 0):
+                                                      self._groupselections_atoms)):
             if str(weights) == 'mass':
                 self.weights_groupselections[igroup] = atoms['mobile'].masses
             if weights is not None:
