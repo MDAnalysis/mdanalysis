@@ -21,28 +21,92 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""
+r"""
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 ==============================================================
 
-This module implements the calculation of Mean Squared Displacmements (MSD).
+This module implements the calculation of Mean Squared Displacmements (MSDs).
 MSDs can be used to characterise the speed at which particles move and has its roots
-in the study of Brownian motion.  For a thorough review see XXX et al. MSDs are computed from
-the following expression
+in the study of Brownian motion. For a full explanation of the best practices for the computation of MSDs and the subsequent calculation of diffusion coefficents the reader is directed to [Maginn2019]_.
+MSDs are computed from the following expression:
 
-Where XX represents an ensemble average over 
+.. math::
 
-The computation of the MSD in this way can be computationally intensive due to it's N^2 scaling. 
-An algorithm to compute the MSD with Nlogn(N) scaling based on a Fast Fourier Transform is known and can be accessed by setting FFT=True.
+   MSD(r_{d}) = \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d}  - r_{d}(t_0)|^2 \bigg{\rangle}_{t_{0}}
+
+Where :math:`N` is the number of equivalent particles the MSD is calculated over, :math:`r` are their coordinates and :math:`d` the desired
+dimensionality of the MSD. Note that while the definition of the MSD is universal, there are many practical considerations to computing the MSD
+that vary between implementations. In this module, we compute a "windowed" MSD, where the MSD is averaged over all possible lag times :math:`t \le t_{max}`,
+where :math:`t_{max}` is the length of th trajectory.
+
+The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`t_{max}` length of the trajectory. 
+An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_.
+The python implementation was originally found here [SO2015]_.
+
+Computing an MSD
+----------------
+The example computes a 2D MSD in the xy plane.
+Files provided as part of the MDAnalysis test suite are used
+(in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
+:data:`~MDAnalysis.tests.datafiles.DCD`)
+
+First load all modules and test data
+
+    >>> import MDAnalysis as mda
+    >>> import MDAnalysis.analysis.msd as msd
+    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+
+Given a universe containing trajectory data we can extract the MSD
+Analyis by using the class :class:`MeanSquaredDisplacement` 
+
+    >>> u = mda.Universe(PSF, DCD)
+    >>> MSD = msd.MeanSquaredDisplacement(u, 'backbone', msd_type='xy', fft=True)
+    >>> MSD.run()
+
+The MSD can then be accessed as
+
+    >>> msd =  MSD.timeseries
+
+Visual inspection of the MSD is important, so lets take a look at it with a simple plot.
+
+    >>> import matplotlib.pyplot as plt
+    >>> nframes = len(u.trajectory)
+    >>> timestep = 2 # this needs to be the time between frames in you trajectory
+    >>> lagtimes = np.arange(nframes)*timestep # make the lag time axis
+    >>> plt.plot(msd, lagtimes)
+    >>> plt.show()
+
+We can see that the MSD is roughly linear between the XX and XX.
+This can be confirmed with a log-log plot
+
+Computing a Diffusion Coefficent
+--------------------------------
+
+    >>> import scipy.stats
+    >>> start_time = 500
+    >>> start_index = start_time/timestep
+    >>> end_time = 1000
+    >>> end_index = end_time/timestep
+    >>> end_index = start_time/timestep
+    >>> plt.plot(msd, lagtimes)
+    >>> plt.show()
 
 
+From the MSD, diffusion coefficents :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
+An example of this is shown in.
 
+
+References
+----------
+
+.. [Maginn2019] Maginn, E. J.; Messerly, R. A.; Carlson, D. J.; Roe, D. R.; Elliott, J. R. Best Practices for Computing Transport Properties 1. Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1).
+.. [Calandri2011] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.; Kneller, G. R. NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. Collect. SFN 2011, 12, 201–232.
+.. [SO2015] https://stackoverflow.com/questions/34222272/computing-mean-square-displacement-using-python-and-fft
 
 Classes and Functions
 ---------------------
 
 .. autoclass:: MeanSquaredDisplacement
-
 
 """
 
@@ -63,38 +127,23 @@ import MDAnalysis
 
 
 class MeanSquaredDisplacement(object):
-    r"""Class representing a density on a regular cartesian grid.
+    r"""Class representing Mean Squared Displacement
 
     Parameters
-    ----------∏
-    u : 
-        An MDAnalysis Universe :class:`Universe`
-    selection : 
-        An MDAnalysis selection string
-    
-    
-
-    Attributes
     ----------
-
-
-
-
-    Notes
-    -----
-    Notes
-
-
-    See Also
-    --------
-   
-
-    Examples
-    --------
-    Typical use:
-
+    u : Universe
+        An MDAnalysis :class:`Universe`
+    selection : str
+        An MDAnalysis selection string
+    msd_type : str
+        The dimensions to use for the msd calculation
+    fft : bool
+        Use a fast FFT based algorithm for computation of the MSD
     
-
+    Returns
+    -------
+    timeseries : np.ndarray
+        the MSD as a function of lag time
     """
 
     def __init__(self, u, selection, msd_type='xyz', fft=True):
@@ -166,7 +215,6 @@ class MeanSquaredDisplacement(object):
             self.timeseries = self._run_simple()
 
     def _run_simple(self): # naieve algorithm without FFT
-        # _position_array is shape time, nparticles, 3
         msds_byparticle = np.zeros([self.n_frames, self.N_particles])
         lagtimes = np.arange(1,self.n_frames)
         msds_byparticle[0,:] = np.zeros(self.N_particles) # preset the zero lagtime so we dont have to iterate through
@@ -179,7 +227,6 @@ class MeanSquaredDisplacement(object):
         return msds
 
     def _run_fft(self):  #with FFT
-        # _position_array is shape time, nparticles, 3
         msds_byparticle = []
         reshape_positions = self._position_array[:,:,self._dim]
         N=reshape_positions.shape[0]
@@ -202,6 +249,16 @@ class MeanSquaredDisplacement(object):
 
     @staticmethod
     def autocorrFFT(x):
+        r""" Calculates an autocorrelation function via an FFT
+
+        Parameters
+        ----------
+        x : array to compute the autocorrelation for
+
+        Returns
+        autocorr : np.ndarray
+            the autocorrelation 
+        """
         N=(x.shape[0])
         F = fft(x, n=2*N, axis=0)  #zero pad to get non-cyclic autocorrelation
         PowerSpectralDensity = F * F.conjugate()
