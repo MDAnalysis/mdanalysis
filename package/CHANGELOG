@@ -21,6 +21,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Updated tests to have explicit fixtures (Issue #2618)
   * XDR offsets now read from trajectory if offsets file read-in fails on
     IOError (Issue #1893, PR #2611)
   * Fixed the deprecation warning from `collections` library in `flatten_dict`
