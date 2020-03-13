@@ -413,8 +413,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             # This is because u.bonds also calculates properties of each bond (e.g bond length).
             # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
             if not (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
-                raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
-                                'Please either: load a topology file with bonded information; use the guess_bonds() '
+                raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bond information is present. '
+                                'Please either: load a topology file with bond information; use the guess_bonds() '
                                 'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
                                 'can be used.')
 

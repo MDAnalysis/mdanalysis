@@ -30,7 +30,8 @@ from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysi
 from MDAnalysis.exceptions import NoDataError
 
 import pytest
-from numpy.testing import assert_allclose, assert_equal, assert_array_almost_equal, assert_array_equal
+from numpy.testing import assert_allclose, assert_equal, assert_array_almost_equal, assert_array_equal, \
+    assert_almost_equal
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
 
@@ -100,8 +101,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # convert to fraction of time that bond was observed
         counts = unique_hbonds[:, 3] / len(h.timesteps)
 
-        assert_equal(counts, ref_counts)
-
+        assert_allclose(counts, ref_counts)
 
 
 class TestHydrogenBondAnalysisMock(object):
@@ -180,7 +180,7 @@ class TestHydrogenBondAnalysisMock(object):
             'd_h_a_angle_cutoff': 120.0
         }
 
-        with pytest.raises(NoDataError):
+        with pytest.raises(NoDataError, match="no bond information"):
             h = HydrogenBondAnalysis(universe, **kwargs)
             h._get_dh_pairs()
 
@@ -192,11 +192,11 @@ class TestHydrogenBondAnalysisMock(object):
         assert len(h.hbonds) == 2
 
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, dha_angle = h.hbonds[0]
-        assert donor_index == 0
-        assert hydrogen_index == 2
-        assert acceptor_index == 3
-        assert da_dst == 2.5
-        assert dha_angle == 180
+        assert_equal(donor_index, 0)
+        assert_equal(hydrogen_index, 2)
+        assert_equal(acceptor_index, 3)
+        assert_almost_equal(da_dst, 2.5)
+        assert_almost_equal(dha_angle, 180)
 
     def test_count_by_time(self, universe):
 
