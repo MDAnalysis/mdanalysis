@@ -213,7 +213,7 @@ import scipy.optimize
 
 import warnings
 
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.distances import capped_distance, calc_angles, calc_bonds
 from MDAnalysis.core.groups import requires
 
@@ -392,12 +392,10 @@ class HydrogenBondAutoCorrel(object):
         # for normalising later
         counter = np.zeros_like(master_results, dtype=np.float32)
 
-        pm = ProgressMeter(self.nruns, interval=1,
-                           format="Performing run %(step)5d/%(numsteps)d"
-                                  "[%(percentage)5.1f%%]")
+        pm = ProgressBar(total=self.nruns, desc="Performing run")
 
         for i, (start, stop) in enumerate(zip(self._starts, self._stops)):
-            pm.echo(i)
+            pm.update(i)
 
             # needed else trj seek thinks a np.int64 isn't an int?
             results = self._single_run(int(start), int(stop))
@@ -409,7 +407,7 @@ class HydrogenBondAutoCorrel(object):
             else:
                 master_results[:nresults] += results
                 counter[:nresults] += 1.0
-
+        pm.close()
         master_results /= counter
 
         self.solution['time'] = np.arange(

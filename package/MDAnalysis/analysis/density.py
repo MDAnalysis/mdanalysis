@@ -179,7 +179,7 @@ from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
 import logging
 
@@ -788,21 +788,19 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
     n_frames = len(range(start, stop, step))
 
-    pm = ProgressMeter(n_frames, interval=interval,
-                       verbose=verbose,
-                       format="Histogramming %(n_atoms)6d atoms in frame "
-                       "%(step)5d/%(numsteps)d  [%(percentage)5.1f%%]")
+    pm = ProgressBar(total=n_frames, verbose=verbose,
+                     desc="Histogramming")
 
     for index, ts in enumerate(u.trajectory[start:stop:step]):
         coord = current_coordinates()
 
-        pm.echo(index, n_atoms=len(coord))
+        pm.update(index)
         if len(coord) == 0:
             continue
 
         h[:], edges[:] = np.histogramdd(coord, bins=bins, range=arange, normed=False)
         grid += h  # accumulate average histogram
-
+    pm.close()
     grid /= float(n_frames)
 
     metadata = metadata if metadata is not None else {}

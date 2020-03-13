@@ -111,7 +111,7 @@ import scipy.integrate
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
 from .base import AnalysisBase
 
@@ -161,11 +161,11 @@ class PCA(AnalysisBase):
     Notes
     -----
     Computation can be speed up by supplying a precalculated mean structure
-    
+
     .. versionchanged:: 1.0.0
        align=True now correctly aligns the trajectory and computes the correct
        means and covariance matrix
-    
+
     .. versionchanged:: 0.19.0
        The start frame is used when performing selections and calculating
        mean positions.  Previously the 0th frame was always used.
@@ -230,13 +230,9 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            interval = int(self.n_frames // 100)
-            interval = interval if interval > 0 else 1
-            format = ("Mean Calculation Step"
-                      "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]")
-            mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                    interval=interval, verbose=self._verbose,
-                                    format=format)
+            mean_pm = ProgressBar(total=self.n_frames if self.n_frames else 1,
+                                  verbose=self._verbose,
+                                  desc="Mean Calculation Step")
             for i, ts in enumerate(self._u.trajectory[self.start:self.stop:
                                                       self.step]):
                 if self.align:
@@ -248,7 +244,8 @@ class PCA(AnalysisBase):
                                                      ref_com=self._ref_cog)
 
                 self.mean += self._atoms.positions.ravel()
-                mean_pm.echo(i)
+                mean_pm.update(i)
+            mean_pm.close()
             self.mean /= self.n_frames
 
         self.mean_atoms = self._atoms

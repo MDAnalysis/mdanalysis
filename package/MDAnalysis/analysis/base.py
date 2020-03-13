@@ -38,7 +38,7 @@ import itertools
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
 logger = logging.getLogger(__name__)
 
@@ -130,13 +130,10 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.n_frames = len(range(start, stop, step))
-        interval = int(self.n_frames // 100)
-        if interval == 0:
-            interval = 1
 
         verbose = getattr(self, '_verbose', False)
-        self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                 interval=interval, verbose=verbose)
+        self._pm = ProgressBar(self.n_frames if self.n_frames else 1,
+                               verbose=verbose)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -183,7 +180,8 @@ class AnalysisBase(object):
             self._ts = ts
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
-            self._pm.echo(self._frame_index)
+            self._pm.update(self._frame_index)
+        self._pm.close()
         logger.info("Finishing up")
         self._conclude()
         return self

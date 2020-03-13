@@ -90,7 +90,7 @@ else:
 from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
-from ..lib.log import ProgressMeter
+from ..lib.log import ProgressBar
 from ..lib.util import cached, NamedStream, isstream
 from ..lib.mdamath import find_fragments
 from . import groups
@@ -172,7 +172,7 @@ def _resolve_coordinates(*args, **kwargs):
         else:
             coordinates = (filename,) + coordinates
     return coordinates
-    
+
 def _generate_from_topology(universe):
     # generate Universe version of each class
     # AG, RG, SG, A, R, S
@@ -240,16 +240,16 @@ class Universe(object):
         A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to
         define the list of atoms. If the file includes bond information,
         partial charges, atom masses, ... then these data will be available to
-        MDAnalysis. Alternatively, an existing 
-        :class:`MDAnalysis.core.topology.Topology` instance may be given, 
+        MDAnalysis. Alternatively, an existing
+        :class:`MDAnalysis.core.topology.Topology` instance may be given,
         numpy coordinates, or None for an empty universe.
     coordinates: str, stream, list of str, list of stream (optional)
-        Coordinates can be provided as files of  
-        a single frame (eg a PDB, CRD, or GRO file); a list of single 
-        frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs 
-        XTC/TRR, or generic XYZ format). The coordinates must be 
-        ordered in the same way as the list of atoms in the topology. 
-        See :ref:`Supported coordinate formats` for what can be read 
+        Coordinates can be provided as files of
+        a single frame (eg a PDB, CRD, or GRO file); a list of single
+        frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs
+        XTC/TRR, or generic XYZ format). The coordinates must be
+        ordered in the same way as the list of atoms in the topology.
+        See :ref:`Supported coordinate formats` for what can be read
         as coordinates. Alternatively, streams can be given.
     topology_format: str, ``None``, default ``None``
         Provide the file format of the topology file; ``None`` guesses it from
@@ -261,7 +261,7 @@ class Universe(object):
         guesses it from the file extension. Note that this keyword has no
         effect if a list of file names is supplied because the "chained" reader
         has to guess the file format for each individual list member.
-        Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader` 
+        Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader`
         to define a custom reader to be used on the trajectory file.
     all_coordinates: bool, default ``False``
         If set to ``True`` specifies that if more than one filename is passed
@@ -269,7 +269,7 @@ class Universe(object):
         :class:`MDAnalysis.coordinates.chain.ChainReader`). The
         default behavior is to take the first file as a topology and the
         remaining as coordinates. The first argument will always always be used
-        to infer a topology regardless of *all_coordinates*. 
+        to infer a topology regardless of *all_coordinates*.
     guess_bonds: bool, default ``False``
         Once Universe has been loaded, attempt to guess the connectivity
         between atoms.  This will populate the .bonds, .angles, and .dihedrals
@@ -289,8 +289,8 @@ class Universe(object):
         *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
         still be honored when unpickling.
     transformations: function or list, ``None``, default ``None``
-        Provide a list of transformations that you wish to apply to the 
-        trajectory upon reading. Transformations can be found in 
+        Provide a list of transformations that you wish to apply to the
+        trajectory upon reading. Transformations can be found in
         :mod:`MDAnalysis.transformations`, or can be user-created.
     in_memory: bool, default ``False``
         After reading in the trajectory, transfer it to an in-memory
@@ -367,7 +367,7 @@ class Universe(object):
 
         if not isinstance(topology, Topology) and not topology is None:
             self.filename = _check_file_like(topology)
-            topology = _topology_from_file_like(self.filename, 
+            topology = _topology_from_file_like(self.filename,
                                                 topology_format=topology_format,
                                                 **kwargs)
 
@@ -380,11 +380,11 @@ class Universe(object):
                             'your own Universe.')
 
         _generate_from_topology(self)  # make real atoms, res, segments
-        
+
         coordinates = _resolve_coordinates(self.filename, *coordinates,
                                            format=format,
                                            all_coordinates=all_coordinates)
-        
+
         if coordinates:
             self.load_new(coordinates, format=format, in_memory=in_memory,
                         in_memory_step=in_memory_step, **kwargs)
@@ -393,7 +393,7 @@ class Universe(object):
             if callable(transformations):
                 transformations = [transformations]
             self._trajectory.add_transformations(*transformations)
-        
+
         if guess_bonds:
             self.atoms.guess_bonds(vdwradii=vdwradii)
 
@@ -462,7 +462,7 @@ class Universe(object):
         if not n_atoms:
             n_residues = 0
             n_segments = 0
-            
+
         if atom_resindex is None:
             warnings.warn(
                 'Residues specified but no atom_resindex given.  '
@@ -504,7 +504,7 @@ class Universe(object):
         # It is also cleaner than a weakref.
         return self
 
-    def load_new(self, filename, format=None, in_memory=False, 
+    def load_new(self, filename, format=None, in_memory=False,
                  in_memory_step=1, **kwargs):
         """Load coordinates from `filename`.
 
@@ -625,9 +625,8 @@ class Universe(object):
                 *self.trajectory.check_slice_indices(start, stop, step)
             ))
             n_atoms = len(self.atoms)
-            pm_format = '{step}/{numsteps} frames copied to memory (frame {frame})'
-            pm = ProgressMeter(n_frames, interval=1,
-                               verbose=verbose, format=pm_format)
+            pm = ProgressBar(total=n_frames, verbose=verbose,
+                             desc="Loading frames")
             coordinates = np.zeros((n_frames, n_atoms, 3), dtype=np.float32)
             ts = self.trajectory.ts
             has_vels = ts.has_velocities
@@ -647,7 +646,8 @@ class Universe(object):
                     np.copyto(forces[i], ts.forces)
                 if has_dims:
                     np.copyto(dimensions[i], ts.dimensions)
-                pm.echo(i, frame=ts.frame)
+                pm.update(i)
+            pm.close()
 
             # Overwrite trajectory in universe with an MemoryReader
             # object, to provide fast access and allow coordinates
@@ -960,7 +960,7 @@ class Universe(object):
         self.segments = SegmentGroup(np.arange(self._topology.n_segments), self)
         # return the new segment
         return self.segments[segidx]
-    
+
     def _add_topology_objects(self, object_type, values, types=None, guessed=False,
                            order=None):
         """Add new TopologyObjects to this Universe
@@ -970,10 +970,10 @@ class Universe(object):
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
             The type of TopologyObject to add.
         values : TopologyGroup or iterable of tuples, AtomGroups, or TopologyObjects
-            An iterable of: tuples of atom indices, or AtomGroups, 
-            or TopologyObjects. If every value is a TopologyObject, all 
+            An iterable of: tuples of atom indices, or AtomGroups,
+            or TopologyObjects. If every value is a TopologyObject, all
             keywords are ignored.
-            If AtomGroups or TopologyObjects are passed, they *must* be from the same 
+            If AtomGroups or TopologyObjects are passed, they *must* be from the same
             Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
@@ -992,7 +992,7 @@ class Universe(object):
                 types = None
             guessed = [t.is_guessed for t in values]
             order = [t.order for t in values]
-        
+
         indices = []
         for x in values:
             if isinstance(x, (AtomGroup, TopologyObject)):
@@ -1009,13 +1009,13 @@ class Universe(object):
             istr = ', '.join(map(str, nonexistent))
             err_msg = 'Cannot add {} for nonexistent atom indices: {}'
             raise ValueError(err_msg.format(object_type, istr))
-        
+
         try:
             attr = getattr(self._topology, object_type)
         except AttributeError:
             self.add_TopologyAttr(object_type, [])
             attr = getattr(self._topology, object_type)
-        
+
 
         attr._add_bonds(indices, types=types, guessed=guessed, order=order)
 
@@ -1025,10 +1025,10 @@ class Universe(object):
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Bonds; or TopologyGroup
-            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms, 
-            or Bonds. If every value is a Bond, all 
-            keywords are ignored. 
-            If AtomGroups, Bonds, or a TopologyGroup are passed, 
+            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,
+            or Bonds. If every value is a Bond, all
+            keywords are ignored.
+            If AtomGroups, Bonds, or a TopologyGroup are passed,
             they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
@@ -1052,13 +1052,13 @@ class Universe(object):
             ow_mw = sol.select_atoms('name OW or name MW').split('residue')
             u.add_bonds(ow_hw1 + ow_hw2 + ow_mw)
 
-        You can only add bonds from the same Universe. If you would like to add 
-        AtomGroups, Bonds, or a TopologyGroup from a different Universe, convert 
+        You can only add bonds from the same Universe. If you would like to add
+        AtomGroups, Bonds, or a TopologyGroup from a different Universe, convert
         them to indices first. ::
 
             from MDAnalysis.tests.datafiles import PSF
             u2 = mda.Universe(PSF)
-            
+
             #  assuming you have already added bonds to u
             u2.add_bonds(u.bonds.to_indices())
 
@@ -1068,17 +1068,17 @@ class Universe(object):
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
         self._cache.pop('fragments', None)
-    
+
     def add_angles(self, values, types=None, guessed=False):
         """Add new Angles to this Universe.
 
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Angles; or TopologyGroup
-            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms, 
-            or Angles. If every value is a Angle, all 
+            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,
+            or Angles. If every value is a Angle, all
             keywords are ignored.
-            If AtomGroups, Angles, or a TopologyGroup are passed, 
+            If AtomGroups, Angles, or a TopologyGroup are passed,
             they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
@@ -1089,17 +1089,17 @@ class Universe(object):
         """
         self._add_topology_objects('angles', values, types=types,
                                  guessed=guessed)
-    
+
     def add_dihedrals(self, values, types=None, guessed=False):
         """Add new Dihedrals to this Universe.
 
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Dihedrals; or TopologyGroup
-            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
-            or Dihedrals. If every value is a Dihedral, all 
+            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
+            or Dihedrals. If every value is a Dihedral, all
             keywords are ignored.
-            If AtomGroups, Dihedrals, or a TopologyGroup are passed, 
+            If AtomGroups, Dihedrals, or a TopologyGroup are passed,
             they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
@@ -1111,17 +1111,17 @@ class Universe(object):
         """
         self._add_topology_objects('dihedrals', values, types=types,
                                  guessed=guessed)
-    
+
     def add_impropers(self, values, types=None, guessed=False):
         """Add new Impropers to this Universe.
 
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Impropers; or TopologyGroup
-            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
-            or Impropers. If every value is an Improper, all 
+            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
+            or Impropers. If every value is an Improper, all
             keywords are ignored.
-            If AtomGroups, Impropers, or a TopologyGroup are passed, 
+            If AtomGroups, Impropers, or a TopologyGroup are passed,
             they *must* be from the same Universe.
         types : iterable (optional, default None)
             None, or an iterable of hashable values with the same length as ``values``
@@ -1142,9 +1142,9 @@ class Universe(object):
         object_type : {'bonds', 'angles', 'dihedrals', 'impropers'}
             The type of TopologyObject to add.
         values : iterable of tuples, AtomGroups, or TopologyObjects; or TopologyGroup
-            An iterable of: tuples of atom indices, or AtomGroups, 
+            An iterable of: tuples of atom indices, or AtomGroups,
             or TopologyObjects.
-            If AtomGroups, TopologyObjects, or a TopologyGroup are passed, 
+            If AtomGroups, TopologyObjects, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
         .. versionadded:: 0.21.0
@@ -1163,7 +1163,7 @@ class Universe(object):
             attr = getattr(self._topology, object_type)
         except AttributeError:
             raise ValueError('There are no {} to delete'.format(object_type))
-        
+
         attr._delete_bonds(indices)
 
     def delete_bonds(self, values):
@@ -1172,9 +1172,9 @@ class Universe(object):
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Bonds; or TopologyGroup
-            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms, 
+            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,
             or Bonds.
-            If AtomGroups, Bonds, or a TopologyGroup are passed, 
+            If AtomGroups, Bonds, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
 
@@ -1186,13 +1186,13 @@ class Universe(object):
             import MDAnalysis as mda
             from MDAnalysis.tests.datafiles import PSF
             u = mda.Universe(PSF)
-            
+
             #  delete first 5 bonds
             u.delete_bonds(u.bonds[:5])
 
-        
-        If you are deleting bonds in the form of AtomGroups, Bonds, or a 
-        TopologyGroup, they must come from the same Universe. If you want to 
+
+        If you are deleting bonds in the form of AtomGroups, Bonds, or a
+        TopologyGroup, they must come from the same Universe. If you want to
         delete bonds from another Universe, convert them to indices first. ::
 
             from MDAnalysis.tests.datafiles import PDB
@@ -1205,51 +1205,51 @@ class Universe(object):
         """
         self._delete_topology_objects('bonds', values)
         self._cache.pop('fragments', None)
-    
+
     def delete_angles(self, values):
         """Delete Angles from this Universe.
 
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Angles; or TopologyGroup
-            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms, 
+            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,
             or Angles.
-            If AtomGroups, Angles, or a TopologyGroup are passed, 
+            If AtomGroups, Angles, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
-        
+
         .. versionadded:: 0.21.0
         """
         self._delete_topology_objects('angles', values)
-    
+
     def delete_dihedrals(self, values):
         """Delete Dihedrals from this Universe.
 
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Dihedrals; or TopologyGroup
-            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
+            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
             or Dihedrals.
-            If AtomGroups, Dihedrals, or a TopologyGroup are passed, 
+            If AtomGroups, Dihedrals, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
-        
+
         .. versionadded:: 0.21.0
         """
         self._delete_topology_objects('dihedrals', values)
-    
+
     def delete_impropers(self, values):
         """Delete Impropers from this Universe.
 
         Parameters
         ----------
         values : iterable of tuples, AtomGroups, or Impropers; or TopologyGroup
-            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, 
+            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,
             or Impropers.
-            If AtomGroups, Angles, or a TopologyGroup are passed, 
+            If AtomGroups, Angles, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
-        
+
         .. versionadded:: 0.21.0
         """
         self._delete_topology_objects('impropers', values)
@@ -1506,5 +1506,5 @@ def Merge(*args):
     except AttributeError:
         #Create universe without coordinates if they dont exists in args
         u = Universe(top)
-          
+
     return u

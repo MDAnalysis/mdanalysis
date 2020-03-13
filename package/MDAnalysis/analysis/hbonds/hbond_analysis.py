@@ -331,7 +331,7 @@ import numpy as np
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from .. import base
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
 
@@ -952,9 +952,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self._timeseries = []
         self.timesteps = []
 
-        pm = ProgressMeter(self.n_frames,
-                           format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
-                           verbose=kwargs.get('verbose', False))
+        pm = ProgressBar(total=self.n_frames, desc="HBonds frame",
+                         verbose=kwargs.get('verbose', False))
 
         try:
             self.u.trajectory.time
@@ -981,7 +980,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            pm.echo(progress, current_step=frame)
+            pm.update(progress)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
@@ -1041,7 +1040,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                                     dist, angle])
 
             self._timeseries.append(frame_results)
-
+        pm.close()
         logger.info("HBond analysis: complete; timeseries  %s.timeseries",
                     self.__class__.__name__)
 

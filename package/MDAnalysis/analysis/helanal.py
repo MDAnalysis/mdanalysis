@@ -124,7 +124,7 @@ import os
 import numpy as np
 
 import MDAnalysis
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib import mdamath
 
 import warnings
@@ -346,12 +346,10 @@ def helanal_trajectory(universe, select="name CA",
     global_fitted_tilts = []
     global_screw = []
 
-    pm = ProgressMeter(n_frames, verbose=verbose,
-                       format="Frame {step:5d}/{numsteps} "
-                       "  [{percentage:5.1f}%]")
+    pm = ProgressBar(total=n_frames, verbose=verbose, desc="Frame")
 
     for index, ts in enumerate(trajectory[start_frame:end_frame:frame_step]):
-        pm.echo(index)
+        pm.update(index)
         frame = ts.frame
 
         ca_positions = ca.positions
@@ -413,7 +411,7 @@ def helanal_trajectory(universe, select="name CA",
         for store, tmp in zip(global_bending, bending_angles):
             store.append(tmp)
         #for store,tmp in zip(global_tilt,local_helix_axes): store.append(mdamath.angle(tmp,ref_axis))
-
+    pm.close()
 
     twist_mean, twist_sd, twist_abdev = stats(global_twist)
     height_mean, height_sd, height_abdev = stats(global_height)
