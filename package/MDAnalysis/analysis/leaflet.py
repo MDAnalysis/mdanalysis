@@ -79,6 +79,7 @@ import networkx as NX
 
 from .. import core
 from . import distances
+from .. import selections
 
 from ..due import due, Doi
 
@@ -174,7 +175,7 @@ class LeafletFinder(object):
             # only try distance array
             try:
                 adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="numpy", box=box)
-            except ValueError:
+            except ValueError:      # pragma: no cover
                 warnings.warn('N x N matrix too big, use sparse=True or sparse=None', category=UserWarning,
                               stacklevel=2)
                 raise
@@ -186,7 +187,7 @@ class LeafletFinder(object):
             try:
                 # this works for small-ish systems and depends on system memory
                 adj = distances.contact_matrix(coord, cutoff=self.cutoff, returntype="numpy", box=box)
-            except ValueError:
+            except ValueError:       # pragma: no cover
                 # but use a sparse matrix method for larger systems for memory reasons
                 warnings.warn(
                     'N x N matrix too big - switching to sparse matrix method (works fine, but is currently rather '
