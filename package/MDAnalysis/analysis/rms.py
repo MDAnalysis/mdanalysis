@@ -380,16 +380,22 @@ class RMSD(AnalysisBase):
 
             .. Note:: Experimental feature. Only limited error checking
                       implemented.
+
         weights : {"mass", ``None``} or array_like (optional)
-             Choose weights. With ``"mass"`` uses masses as weights for both `select`
-             and `groupselections`; with ``None`` weigh each atom equally for both
-             `select` and `groupselections`. If a float array of the same length as
-             `atomgroup` is provided, use each element of the `array_like` as a
-             weight for the corresponding atom in `select`, and assume ``None``
-             for `groupselections`.
-        weights_groupselections : False or list of {"mass", ``None``} or array_like (optional)
-            Default: ``False`` will apply imposed weights from ``weights`` option
-             Or a list with length of `groupselections`, apply the weights correspondingly.
+             1. "mass" will use masses as weights for both `select` and `groupselections`.
+
+             2. ``None`` will weigh each atom equally for both `select` and `groupselections`.
+
+             3. If 1D float array of the same length as `atomgroup` is provided,
+             use each element of the `array_like` as a weight for the
+             corresponding atom in `select`, and assumes ``None`` for `groupselections`.
+
+        weights_groupselections : False or list of {"mass", ``None`` or array_like} (optional)
+             1. ``False`` will apply imposed weights from ``weights`` option
+
+             2. a list of {"mass", ``None`` or array_like} with the length of `groupselections`,
+             apply the weights correspondingly.
+
         tol_mass : float (optional)
              Reject match if the atomic masses for matched atoms differ by more
              than `tol_mass`.
@@ -404,17 +410,15 @@ class RMSD(AnalysisBase):
         SelectionError
              If the selections from `atomgroup` and `reference` do not match.
         TypeError
-             If `weights` is not of the appropriate type; see also
-             :func:`MDAnalysis.lib.util.get_weights`
+             If `weights` or `weights_groupselections` is not of the appropriate type;
+             see also :func:`MDAnalysis.lib.util.get_weights`
         ValueError
              If `weights` are not compatible with `atomgroup` (not the same
              length) or if it is not a 1D array (see
              :func:`MDAnalysis.lib.util.get_weights`).
 
-             A :exc:`ValueError` is also raised if `weights` are not compatible
-             with `groupselections`: only equal weights (``weights=None``) or
-             mass-weighted (``weights="mass"``) are supported for additional
-             `groupselections`.
+             A :exc:`ValueError` is also raised if the length of `weights_groupselections` 
+             are not compatible with `groupselections`.
 
         Notes
         -----
@@ -481,8 +485,6 @@ class RMSD(AnalysisBase):
         self.weights = weights
         self.tol_mass = tol_mass
         self.ref_frame = ref_frame
-        self.weights_ref = []
-        self.weights_select = []
         self.weights_groupselections = weights_groupselections
         self.ref_atoms = self.reference.select_atoms(*select['reference'])
         self.mobile_atoms = self.atomgroup.select_atoms(*select['mobile'])
@@ -542,9 +544,7 @@ class RMSD(AnalysisBase):
                         len(atoms['reference']), len(atoms['mobile'])))
 
         # check weights type
-        if not iterable(self.weights) and self.weights == "mass":
-            pass
-        else:
+        if iterable(weights) or weights != "mass":
             get_weights(self.mobile_atoms, self.weights)
 
         if self.weights_groupselections:
@@ -555,9 +555,7 @@ class RMSD(AnalysisBase):
                                                  self._groupselections_atoms,
                                                  self.groupselections):
                 try:
-                    if not iterable(weights) and weights == "mass":
-                        pass
-                    else:
+                    if iterable(weights) or weights != "mass":
                         get_weights(atoms['mobile'], weights)
                 except Exception as e:
                     raise type(e)(str(e) + ' happens in selection %s' % selection['mobile'])
@@ -573,7 +571,7 @@ class RMSD(AnalysisBase):
 
         for igroup, (weights, atoms) in enumerate(zip(self.weights_groupselections,
                                                       self._groupselections_atoms), 0):
-            if weights == 'mass':
+            if str(weights) == 'mass':
                 self.weights_groupselections[igroup] = atoms['mobile'].masses
             if weights is not None:
                 self.weights_groupselections[igroup] = np.asarray(self.weights_groupselections[igroup],
