@@ -72,6 +72,7 @@ from ..core.topologyattrs import (
     Bonds,
     ChainIDs,
     Atomtypes,
+    Elements,
     ICodes,
     Masses,
     Occupancies,
@@ -159,6 +160,7 @@ class PDBParser(TopologyReaderBase):
      - resids
      - resnames
      - segids
+     - elements
 
     Guesses the following Attributes:
      - masses
@@ -210,6 +212,7 @@ class PDBParser(TopologyReaderBase):
         resnames = []
 
         segids = []
+        elements = []
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
@@ -241,6 +244,8 @@ class PDBParser(TopologyReaderBase):
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
+                #Saving the elements type in a list
+                elements.append(line[76:78].strip())
 
                 # Resids are optional
                 try:
@@ -302,6 +307,22 @@ class PDBParser(TopologyReaderBase):
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
+
+        # Guessed attributes
+        # Need to pull elements from Atom names
+        # Similar to the check for atomtypes function
+        if not any(elements):
+            # Can further add a check_cg_atom(elements) function in guessers.py to check for CG atom.
+            elements = guess_atom_element(elements)
+            if elements == '':
+                warnings.warn("Element record found to be non-physical.")
+                #Nomenclature that X will denote any non-physical element.
+                elements = 'X'
+            attrs.append(Elements(elements, guessed=True))
+        else:
+            attrs.append(Elements(guessers.guess_types(elements),
+                                  guessed=True))
+
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
