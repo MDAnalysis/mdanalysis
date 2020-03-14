@@ -120,7 +120,6 @@ class TestEncore(object):
 inconsistent results")
 
     @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
                        reason="Not yet supported on Windows.")
     def test_parallel_calculation(self):
 
