@@ -147,13 +147,14 @@ def guess_atom_element(atomname):
         while name:
             if name in tables.elements:
                 return name
-            if name[:-1] in tables.elements:
+            elif name[:-1] in tables.elements:
                 return name[:-1]
-            if name[1:] in tables.elements:
+            elif name[1:] in tables.elements:
                 return name[1:]
-            if len(name) <= 2:
-                return name[0]
-            name = name[:-1]  # probably element is on left not right
+            elif len(name) <= 2:
+                name = ''
+                return name
+            name = "00"  # probably element is on left not right
 
         # if it's numbers
         return no_symbols

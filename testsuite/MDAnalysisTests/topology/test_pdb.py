@@ -25,6 +25,7 @@ from __future__ import absolute_import
 from six.moves import StringIO
 
 import pytest
+import warnings
 from numpy.testing import assert_equal
 import MDAnalysis as mda
 
@@ -39,6 +40,8 @@ from MDAnalysisTests.datafiles import (
     PDB_chainidnewres,
     PDB_sameresid_diffresname,
     PDB_metal,
+    PDB_elements,
+    PDB_wrong_ele
 )
 from MDAnalysis.topology.PDBParser import PDBParser
 
@@ -72,7 +75,7 @@ class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
                       'bonds', 'tempfactors', 'chainIDs']
-    guessed_attrs = ['types', 'masses']
+    guessed_attrs = ['types', 'masses','elements']
 
 
 class TestPDBParser(PDBBase):
@@ -233,6 +236,7 @@ def test_PDB_hex():
     assert u.atoms[3].id == 100002
     assert u.atoms[4].id == 100003
 
+@pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.filterwarnings("error")
 def test_PDB_metals():
     from MDAnalysis.topology import tables
@@ -244,3 +248,26 @@ def test_PDB_metals():
     assert u.atoms[1].mass == pytest.approx(tables.masses["FE"])
     assert u.atoms[2].mass == pytest.approx(tables.masses["CA"])
     assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
+
+
+def test_PDB_elements():
+    from MDAnalysis.topology import tables
+
+    u = mda.Universe(PDB_elements, format='PDB')
+    element_list = ['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H', 'H', 'H',
+                    'H','H','H', 'H', 'H', 'CU', 'FE', 'C', 'MG']
+    assert len(u.atoms.elements) == len(element_list)
+    assert all(i == j for i,j in zip(element_list, u.atoms.elements))
+
+
+
+def test_PDB_elements_warnings():
+    from MDAnalysis.topology import tables
+
+    u = mda.Universe(PDB_wrong_ele, format='PDB')
+    with pytest.warns(UserWarning) as record:
+        warnings.warn("Element record found to be non-physical. Guessing element from atom name: CGA", UserWarning)
+
+    assert len(record) == 1
+    assert record[0].message.args[0] == "Element record found to be non-physical. Guessing element from atom name: CGA"
+

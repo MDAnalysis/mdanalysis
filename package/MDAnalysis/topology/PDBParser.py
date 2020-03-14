@@ -61,7 +61,7 @@ import numpy as np
 import warnings
 
 from six.moves import range
-from .guessers import guess_masses, guess_types
+from .guessers import guess_masses, guess_types, guess_atom_element
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -311,17 +311,18 @@ class PDBParser(TopologyReaderBase):
         # Guessed attributes
         # Need to pull elements from Atom names
         # Similar to the check for atomtypes function
-        if not any(elements):
-            # Can further add a check_cg_atom(elements) function in guessers.py to check for CG atom.
-            elements = guess_atom_element(elements)
-            if elements == '':
-                warnings.warn("Element record found to be non-physical.")
-                #Nomenclature that X will denote any non-physical element.
-                elements = 'X'
+        if any(elements):
+            elements = guess_types(elements)
+            for i,e in enumerate(elements):
+                if e == '':
+                    elements[i] = guess_atom_element(names[i])
+                    warnings.warn("Element record found to be non-physical. Guessing element from atom name: {}".format(names[i]))
             attrs.append(Elements(elements, guessed=True))
         else:
-            attrs.append(Elements(guessers.guess_types(elements),
-                                  guessed=True))
+            # If elements are missing it guesses from atom names.
+            warnings.warn("Element information missing. Guessing elements from atom names : {}".format(names))
+            elements = guess_types(names)
+            attrs.append(Elements(elements, guessed=True))
 
 
         # Residue level stuff from here
