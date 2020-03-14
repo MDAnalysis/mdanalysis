@@ -76,19 +76,21 @@ Visual inspection of the MSD is important, so lets take a look at it with a simp
     >>> plt.plot(msd, lagtimes)
     >>> plt.show()
 
-We can see that the MSD is roughly linear between a lag-time of 500 and 1000.
-This can be confirmed with a log-log plot as is often reccomended[Maginn2019]_.
+We can see that the MSD is roughly linear between a lag-time of 500 and 1000. Linearity of a segment of the MSD is required to accurately determine self diffusivity.
+This linear segment represents the so called "middle" of the MSD plot, where ballistic trajectories at short time-lags are excluded along with poorly averaged data at long time-lags.
+This can be confirmed with a log-log plot as is often reccomended [Maginn2019]_ where the "middle" segment can be identified as having a slope of 1.
+Now that we have identified what segment of our MSD to analyse, lets compute a self diffusivity.
 
 Computing Self Diffusivity
 --------------------------------
-Diffusion Coefficents are closely related to the MSD.
+Self diffusivity is closely related to the MSD.
 
 .. math::
 
    D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
 
-From the MSD, diffusion coefficents :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
-An example of this is shown in.
+From the MSD, self diffusivities :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
+An example of this is shown below.
 
     >>> import scipy.stats.linregress as lr
     >>> start_time = 500
@@ -96,8 +98,19 @@ An example of this is shown in.
     >>> end_time = 1000
     >>> end_index = end_time/timestep
     >>> linear_model = lr(lagtimes[start_index:end_index], msd[start_index:end_index])
+    >>> slope = linear_model.slope
+    >>> error = linear_model.r-value
+    >>> D = slope * 1/(2*MSD._dim_fac) #dim_fac is 2 as we computed a 2D msd ('xy')
+
+We have now computed a self diffusivity!
 
 
+Notes
+_____
+There are several factors that must be taken into account when setting up and processing trajectories for computation of self diffusivities.
+These include specific instructions around simulation settings, using unwrapped trajectories and maintaining relativley small elapsed time between saved frames. 
+Additionally corrections for finite size effects are sometimes employed along with varied means of estimating errors.
+The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self diffusivity including from a Green-Kubo integral. At this point in time these methods are beyond the scope of this module
 
 
 
@@ -112,6 +125,7 @@ Classes and Functions
 ---------------------
 
 .. autoclass:: MeanSquaredDisplacement
+    :members:
 
 """
 
@@ -141,15 +155,28 @@ class MeanSquaredDisplacement(object):
     selection : str
         An MDAnalysis selection string
     msd_type : str
-        The dimensions to use for the msd calculation
+        The dimensions to use for the msd calculation:
+        one of ('xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z')
     fft : bool
         Use a fast FFT based algorithm for computation of the MSD
-    
+
     Returns
     -------
-    timeseries : np.ndarray
+    timeseries : :class:`np.ndarray`
         the MSD as a function of lag time
+    
     """
+    # Attributes
+    # ----------
+    # _dim_fac : int
+    #     dimensionality of the MSD
+    # _dim : arraylike
+    #     array used to slice the trajectory along the xyz axis to acheive the correct dimensionality
+    # _position_array : :class:`np.ndarray`
+    #     positions used to calculate the MSD
+    # N_particles : int
+    #     number of particles 
+
 
     def __init__(self, u, selection, msd_type='xyz', fft=True):
 
@@ -177,7 +204,7 @@ class MeanSquaredDisplacement(object):
         self.select_reference_positions()
         
     def parse_msd_type(self):
-
+        
         if self.msd_type == 'xyz': # full 3d
             self._dim = [0,1,2]
             self.dim_fac = 3.0
@@ -231,7 +258,7 @@ class MeanSquaredDisplacement(object):
         msds = msds_byparticle.mean(axis=1, dtype=np.float64)
         return msds
 
-    def _run_fft(self):  #with FFT
+    def _run_fft(self): #with FFT
         msds_byparticle = []
         reshape_positions = self._position_array[:,:,self._dim]
         N=reshape_positions.shape[0]
@@ -254,14 +281,16 @@ class MeanSquaredDisplacement(object):
 
     @staticmethod
     def autocorrFFT(x):
-        r""" Calculates an autocorrelation function via an FFT
+        r""" Calculates an autocorrelation function of the input signal via an FFT
 
         Parameters
         ----------
-        x : array to compute the autocorrelation for
+        x : :class:`np.ndarray`
+            array to compute the autocorrelation for
 
         Returns
-        autocorr : np.ndarray
+        -------
+        autocorr : :class:`np.ndarray`
             the autocorrelation 
         """
         N=(x.shape[0])
