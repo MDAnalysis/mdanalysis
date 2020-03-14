@@ -187,7 +187,7 @@ class TestRMSD(object):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, verbose=True)
         RMSD.run()
         out, err = capsys.readouterr()
-        expected = '100%|██████████| 98/98 [00:00<00:00, 583.67it/s]'
+        expected = u'100%|██████████| 98/98 [00:00<00:00, 583.67it/s]'
         actual = err.strip().split('\r')[-1]
         assert_equal(actual[:24], expected[:24])
 
