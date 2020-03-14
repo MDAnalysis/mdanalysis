@@ -31,14 +31,14 @@ from numpy.testing import (assert_array_less,
                            assert_almost_equal, assert_equal)
 import numpy as np
 
-from scipy import fft,ifft
+from numpy.fft import fft,ifft
 
 from MDAnalysisTests.datafiles import PSF, DCD, DCD
 
 import pytest
 
 SELECTION = 'backbone and name CA and resid 1-10'
-NSTEP = 1000
+NSTEP = 10000
 
 @pytest.fixture(scope='module')
 def u():
@@ -62,7 +62,7 @@ def dimension_list():
     return dimensions
 
 @pytest.fixture(scope='module')
-def step_traj():
+def step_traj(): # constant velocity
     x = np.arange(NSTEP)
     traj = np.vstack([x,x,x]).T
     traj_reshape = traj.reshape([NSTEP,1,3])
@@ -70,15 +70,25 @@ def step_traj():
     u.load_new(traj_reshape)
     return u
 
+@pytest.fixture(scope='module')
+def random_walk_3d():
+    steps = -1 + 2*np.random.randint(0, 2, size=(NSTEP, 3))
+    traj = np.cumsum(steps, axis=0)
+    traj_reshape = traj.reshape([NSTEP,1,3])
+    u = mda.Universe.empty(1)
+    u.load_new(traj_reshape)
+    return traj
+
+
 def characteristic_poly(n,d): #polynomial that describes unit step trajectory MSD
-    x = np.arange(1,n+1)
-    y = d*((x-1)*(x-1))
+    x = np.arange(0,n)
+    y = d*x*x
     return y
     
 def test_fft_vs_simple_default(msd, msd_fft):
     timeseries_simple = msd.timeseries
     timeseries_fft = msd_fft.timeseries
-    assert_almost_equal(timeseries_simple, timeseries_fft, decimal=5)
+    assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
 def test_fft_vs_simple_all_dims(dimension_list, u):
     for dim in dimension_list:
@@ -88,41 +98,44 @@ def test_fft_vs_simple_all_dims(dimension_list, u):
         m_fft = MSD(u,SELECTION, msd_type=dim, fft=True)
         m_fft.run()
         timeseries_fft = m_fft.timeseries
-        assert_almost_equal(timeseries_simple, timeseries_fft, decimal=5)
+        assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
-def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3(x-1)**2
+def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
     m_simple = MSD(step_traj, 'all' , msd_type='xyz', fft=False)
     m_simple.run()
-    poly3 = characteristic_poly(NSTEP,3)
-    assert_almost_equal(m_simple.timeseries, poly3)
 
-def test_simple_step_traj_2d(step_traj): # this should fit the polynomial 2(x-1)**2
+    print(m_simple.timeseries)
+    poly3 = characteristic_poly(NSTEP,3)
+    print(poly3)
+    assert_almost_equal(m_simple.timeseries, poly3, decimal=4)
+
+def test_simple_step_traj_2d(step_traj): # this should fit the polynomial 2x**2
     m_simple = MSD(step_traj, 'all' , msd_type='xy',  fft=False)
     m_simple.run()
     poly2 = characteristic_poly(NSTEP,2)
-    assert_almost_equal(m_simple.timeseries, poly2)
+    assert_almost_equal(m_simple.timeseries, poly2, decimal=4)
 
-def test_simple_step_traj_1d(step_traj): # this should fit the polynomial (x-1)**
+def test_simple_step_traj_1d(step_traj): # this should fit the polynomial x**
     m_simple = MSD(step_traj, 'all' , msd_type='x', fft=False)
     m_simple.run()
     poly1 = characteristic_poly(NSTEP,1)
-    assert_almost_equal(m_simple.timeseries, poly1)  
+    assert_almost_equal(m_simple.timeseries, poly1,decimal=4)  
 
-def test_fft_step_traj_3d(step_traj): # this should fit the polynomial 3(x-1)**2
+def test_fft_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xyz', fft=True)
     m_fft.run()
     poly3 = characteristic_poly(NSTEP,3)
-    assert_almost_equal(m_fft.timeseries, poly3)
+    assert_almost_equal(m_fft.timeseries, poly3, decimal=4)
 
-def test_fft_step_traj_2d(step_traj): # this should fit the polynomial 2(x-1)**2
+def test_fft_step_traj_2d(step_traj): # this should fit the polynomial 2x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xy', fft=True)
     m_fft.run()
     poly2 = characteristic_poly(NSTEP,2)
-    assert_almost_equal(m_fft.timeseries, poly2)
+    assert_almost_equal(m_fft.timeseries, poly2, decimal=4)
 
-def test_fft_step_traj_1d(step_traj): # this should fit the polynomial (x-1)**2
+def test_fft_step_traj_1d(step_traj): # this should fit the polynomial x**2
     m_fft = MSD(step_traj, 'all' , msd_type='x', fft=True)
     m_fft.run()
     poly1 = characteristic_poly(NSTEP,1)
-    assert_almost_equal(m_fft.timeseries, poly1)
+    assert_almost_equal(m_fft.timeseries, poly1, decimal=4)
 

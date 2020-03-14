@@ -45,22 +45,23 @@ The python implementation was originally presented here [SO2015]_.
 
 Computing an MSD
 ----------------
-The example computes a 2D MSD in the xy plane.
+This example computes a 2D MSD for the movement of phospholipid headgroups in the xy plane.
+This is a common starting point for computing self diffusivity of phospholipids in a bilayer.
 Files provided as part of the MDAnalysis test suite are used
-(in the variables :data:`~MDAnalysis.tests.datafiles.PSF` and
-:data:`~MDAnalysis.tests.datafiles.DCD`)
+(in the variables :data:`~MDAnalysis.tests.datafiles.GRO_MEMPROT` and
+:data:`~MDAnalysis.tests.datafiles.XTC_MEMPROT`)
 
 First load all modules and test data
 
     >>> import MDAnalysis as mda
     >>> import MDAnalysis.analysis.msd as msd
-    >>> from MDAnalysis.tests.datafiles import PSF, DCD
+    >>> from MDAnalysis.tests.datafiles import GRO_MEMPROT, XTC_MEMPROT
 
 Given a universe containing trajectory data we can extract the MSD
 Analyis by using the class :class:`MeanSquaredDisplacement` 
 
-    >>> u = mda.Universe(PSF, DCD)
-    >>> MSD = msd.MeanSquaredDisplacement(u, 'backbone', msd_type='xy', fft=True)
+    >>> u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
+    >>> MSD = msd.MeanSquaredDisplacement(u, 'name PO4', msd_type='xy', fft=True)
     >>> MSD.run()
 
 The MSD can then be accessed as
@@ -139,9 +140,10 @@ import bz2
 import functools
 
 import numpy as np
-from scipy import fft,ifft
+from numpy.fft import fft,ifft
 import logging
 import MDAnalysis
+import tidynamics
 
 
 
@@ -258,18 +260,17 @@ class MeanSquaredDisplacement(object):
         msds = msds_byparticle.mean(axis=1, dtype=np.float64)
         return msds
 
-    def _run_fft(self): #with FFT
+    def _run_fft(self): #with FFT, np.f64 bit prescision required.
         msds_byparticle = []
-        reshape_positions = self._position_array[:,:,self._dim]
+        reshape_positions = self._position_array[:,:,self._dim].astype(np.float64)
         N=reshape_positions.shape[0]
         D=np.square(reshape_positions).sum(axis=2, dtype=np.float64) 
         D=np.append(D,np.zeros(reshape_positions.shape[:2]), axis=0) 
-        Q=2*D.sum(axis=0)
-        S1=np.zeros(reshape_positions.shape[:2])
+        Q=2*D.sum(axis=0, dtype=np.float64)
+        S1=np.zeros(reshape_positions.shape[:2],dtype=np.float64)
         for m in range(N):
             Q=Q-D[m-1,:]-D[N-m,:]
             S1[m,:]=Q/(N-m)
-        
         S2accumulate = []
         for i in range(reshape_positions.shape[2]):
             S2accumulate.append(self.autocorrFFT(reshape_positions[:,:,i]))
@@ -294,7 +295,17 @@ class MeanSquaredDisplacement(object):
             the autocorrelation 
         """
         N=(x.shape[0])
-        F = fft(x, n=2*N, axis=0)  #zero pad to get non-cyclic autocorrelation
+
+        #find closest power of 2 (code adapted from tidynamics)
+        current_exp = int(np.ceil(np.log2(N+1)))
+        if N == 2**current_exp:
+            n_fft = N
+        if N < 2**current_exp:
+            n_fft = 2**current_exp
+        elif N > 2**current_exp:
+            n_fft = 2**(current_exp+1)
+
+        F = fft(x, n=2*n_fft, axis=0)  #zero pad to get non-cyclic autocorrelation
         PowerSpectralDensity = F * F.conjugate()
         inverse = ifft(PowerSpectralDensity,axis=0)
         autocorr = (inverse[:N]).real   #autocorr convention B
