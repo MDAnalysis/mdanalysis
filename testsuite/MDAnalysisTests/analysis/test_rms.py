@@ -183,13 +183,13 @@ class TestRMSD(object):
                 [49, 50, 4.6997, 1.9154, 2.7139]]
 
 
-    def test_progress_meter(self, capsys, universe):
+    def test_progress_bar(self, capsys, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, verbose=True)
         RMSD.run()
         out, err = capsys.readouterr()
-        expected = 'RMSD  6.93 A at frame    98/98  [100.0%]'
+        expected = '100%|██████████| 98/98 [00:00<00:00, 583.67it/s]'
         actual = err.strip().split('\r')[-1]
-        assert_equal(actual, expected)
+        assert_equal(actual[:24], expected[:24])
 
     def test_rmsd(self, universe, correct_values):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')

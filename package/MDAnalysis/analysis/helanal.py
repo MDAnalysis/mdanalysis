@@ -346,9 +346,8 @@ def helanal_trajectory(universe, select="name CA",
     global_fitted_tilts = []
     global_screw = []
 
-    for index, ts in ProgressBar(enumerate(
-        trajectory[start_frame:end_frame:frame_step]), verbose=verbose,
-        desc="Helix analysis", total=n_frames):
+    for ts in ProgressBar(trajectory[start_frame:end_frame:frame_step],
+                          verbose=verbose, desc="Helix analysis"):
 
         frame = ts.frame
         ca_positions = ca.positions

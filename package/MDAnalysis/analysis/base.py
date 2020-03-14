@@ -170,12 +170,9 @@ class AnalysisBase(object):
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
-        verbose = getattr(self, '_verbose', False)
-        n_frames = len(range(*self._trajectory.check_slice_indices(
-                       self.start, self.stop, self.step)))
-        for i, ts in ProgressBar(enumerate(
-                self._trajectory[self.start:self.stop:self.step]),
-                verbose=verbose, total=n_frames):
+        for i, ts in enumerate(ProgressBar(
+                self._trajectory[self.start:self.stop:self.step],
+                verbose=verbose)):
             self._frame_index = i
             self._ts = ts
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))

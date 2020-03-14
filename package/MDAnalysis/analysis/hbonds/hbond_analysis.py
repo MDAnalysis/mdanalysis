@@ -966,10 +966,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     self.start, self.stop, self.step)
 
-        n_frames = len(range(*self.u.trajectory.check_slice_indices(
-                       self.start, self.stop, self.step)))
         for ts in ProgressBar(self.u.trajectory[self.start:self.stop:self.step],
-                              desc="HBond analysis", total=n_frames,
+                              desc="HBond analysis",
                               verbose=kwargs.get('verbose', False)):
             # all bonds for this timestep
             frame_results = []

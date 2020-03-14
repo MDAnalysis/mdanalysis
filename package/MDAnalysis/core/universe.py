@@ -636,9 +636,9 @@ class Universe(object):
             dimensions = (np.zeros((n_frames, 6), dtype=np.float32)
                           if has_dims else None)
 
-            for i, ts in ProgressBar(enumerate(self.trajectory[start:stop:step]),
-                                     total=n_frames, verbose=verbose,
-                                     desc="Loading frames"):
+            for i, ts in enumerate(ProgressBar(self.trajectory[start:stop:step],
+                                               verbose=verbose,
+                                               desc="Loading frames")):
                 np.copyto(coordinates[i], ts.positions)
                 if has_vels:
                     np.copyto(velocities[i], ts.velocities)

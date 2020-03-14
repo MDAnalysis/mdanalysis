@@ -788,9 +788,8 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
     start, stop, step = u.trajectory.check_slice_indices(start, stop, step)
     n_frames = len(range(start, stop, step))
 
-    for index, ts in ProgressBar(enumerate(u.trajectory[start:stop:step]),
-                                 verbose=verbose, desc="Histogramming",
-                                 total=n_frames):
+    for ts in ProgressBar(u.trajectory[start:stop:step],
+                          verbose=verbose, desc="Histogramming"):
         coord = current_coordinates()
 
         if len(coord) == 0:
