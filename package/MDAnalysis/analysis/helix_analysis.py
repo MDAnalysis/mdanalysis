@@ -62,6 +62,8 @@ in multiple selection strings::
                                       'name CA and resnum 200-230'))
 
 """
+from __future__ import division, absolute_import
+
 import warnings
 import numpy as np
 
@@ -99,28 +101,6 @@ def pnorm(a):
     :class:`numpy.ndarray` of shape (N,)
     """
     return pdot(a, a)**0.5
-
-
-def bound(arr, min_value, max_value):
-    """Restrict values in an array within a domain.
-
-    .. note::
-
-        This modifies the array in place.
-
-    Parameters
-    ----------
-    arr: :class:`numpy.ndarray`
-    min_value: int or float
-    max_value: int or float
-
-    Returns
-    -------
-    :class:`numpy.ndarray`
-    """
-    arr[arr < min_value] = min_value
-    arr[arr > max_value] = max_value
-    return arr
 
 
 def vector_of_best_fit(coordinates):
@@ -176,8 +156,7 @@ def local_screw(best_fit, ref_axis, rotation_vectors):
 
     # angles
     cos = np.matmul(refs, rotation_vectors.T)/np.outer(ref_norms, rot_norms)
-    bound(cos, -1, 1)
-    screw_angles, alt_angles = np.arccos(cos)  # (2, n_vec)
+    screw_angles, alt_angles = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
 
     # the effect of the below is to move angles into the (pi/4, 3pi/4 domain)
     quarter_pi, half_pi = np.pi/4, np.pi/2
@@ -194,8 +173,7 @@ def local_screw(best_fit, ref_axis, rotation_vectors):
 
     ortho = np.cross(ref_1, rotation_vectors)
     cos_theta = np.matmul(best_fit, ortho.T)/(pnorm(ortho)*ref_norms[0])
-    bound(cos_theta, -1, 1)
-    angle_to_best_fit = np.arccos(cos_theta)
+    angle_to_best_fit = np.arccos(np.clip(cos_theta, -1, 1))
     screw_angles[angle_to_best_fit < half_pi] *= -1
     return np.rad2deg(screw_angles)  # (n_vec,)
 
@@ -264,7 +242,7 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
 
     # find angle between bisectors for twist and n_residue/turn
     cos_theta = pdot(bisectors[:-1], bisectors[1:])/adjacent_mag
-    bound(cos_theta, -1, 1)
+    cos_theta = np.clip(cos_theta, -1, 1)
     twists = np.arccos(cos_theta)  # (n_res-3,)
     local_twists = np.rad2deg(twists)
     residues_per_turn = 2*np.pi / twists
@@ -274,9 +252,8 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     local_axes = (cross_bi.T / pnorm(cross_bi)).T  # (n_res-3, 3)
 
     # find angles between axes for bends
-    bend_theta = np.matmul(local_axes, local_axes.T)
-    bound(bend_theta, -1, 1)
-    bend_matrix = np.rad2deg(np.arccos(bend_theta))  # (n_res-3, n_res-3)
+    bend_theta = np.matmul(local_axes, local_axes.T)  # (n_res-3, n_res-3)
+    bend_matrix = np.rad2deg(np.arccos(np.clip(bend_theta, -1, 1)))
     # local bends are between axes 3 windows apart
     local_bends = np.diagonal(bend_matrix, offset=3)  # (n_res-6,)
 
@@ -455,11 +432,11 @@ class HELANAL(AnalysisBase):
         self.ref_axis = np.asarray(ref_axis)
         self._flatten = flatten_single_helix
 
-    def _zeros_per_frame(self, n_values, *dims, n_positions=0):
+    def _zeros_per_frame(self, *dims, n_positions=0):
         """Create zero arrays where first 2 dims are n_frames, n_values"""
-        n_values += n_positions
-        return np.zeros((self.n_frames, n_values, *dims),
-                        dtype=np.float64)
+        first = dims[0]
+        return np.zeros((self.n_frames, first+n_positions, *dims[1:]),
+                         dtype=np.float64)
 
     def _prepare(self):
         n_res = [len(ag) for ag in self.atomgroups]
@@ -486,7 +463,7 @@ class HELANAL(AnalysisBase):
         norm_ref = (self.ref_axis**2).sum() ** 0.5
         for axes in self.global_axes:
             cos = np.matmul(self.ref_axis, axes.T) / (pnorm(axes)*norm_ref)
-            bound(cos, -1.0, 1.0)
+            cos = np.clip(cos, -1.0, 1.0)
             self.global_tilts.append(np.rad2deg(np.arccos(cos)))
 
         global_attrs = ['global_axes', 'global_tilts', 'all_bends']
