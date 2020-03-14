@@ -493,7 +493,7 @@ class TestEncoreClustering(object):
         distance_matrix = encore.get_distance_matrix(ens1)
         cluster_assignment, details = method(distance_matrix)
         expected_value = 2
-        assert len(set(cluster_assignment)) == expected_value \
+        assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)
 
     def test_clustering_two_different_methods(self, ens1):
