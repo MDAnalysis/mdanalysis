@@ -471,7 +471,7 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         method = encore.AffinityPropagation()
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment = method(distance_matrix)
+        cluster_assignment, details = method(distance_matrix)
         expected_value = 7
         assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)
@@ -483,7 +483,7 @@ class TestEncoreClustering(object):
         coordinates = ens1.trajectory.timeseries(order='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
-        cluster_assignment = method(coordinates)
+        cluster_assignment, details = method(coordinates)
         assert len(set(cluster_assignment)) == clusters, \
                      "Unexpected result: {0}".format(cluster_assignment)
                      
@@ -491,8 +491,9 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         method = encore.DBSCAN(eps=0.5, min_samples=2)
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment = method(distance_matrix)
-        assert len(set(cluster_assignment)) == \
+        cluster_assignment, details = method(distance_matrix)
+        expected_value = 2
+        assert len(set(cluster_assignment)) == expected_value \
                      "Unexpected result: {0}".format(cluster_assignment)
 
     def test_clustering_two_different_methods(self, ens1):
