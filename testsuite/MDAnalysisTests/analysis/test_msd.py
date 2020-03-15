@@ -131,19 +131,19 @@ def test_fft_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xyz', fft=True)
     m_fft.run()
     poly3 = characteristic_poly(NSTEP,3)
-    assert_almost_equal(m_fft.timeseries, poly3, decimal=4)
+    assert_almost_equal(m_fft.timeseries, poly3, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
 
 def test_fft_step_traj_2d(step_traj): # this should fit the polynomial 2x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xy', fft=True)
     m_fft.run()
     poly2 = characteristic_poly(NSTEP,2)
-    assert_almost_equal(m_fft.timeseries, poly2, decimal=4)
+    assert_almost_equal(m_fft.timeseries, poly2, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
 
 def test_fft_step_traj_1d(step_traj): # this should fit the polynomial x**2
     m_fft = MSD(step_traj, 'all' , msd_type='x', fft=True)
     m_fft.run()
     poly1 = characteristic_poly(NSTEP,1)
-    assert_almost_equal(m_fft.timeseries, poly1, decimal=4)
+    assert_almost_equal(m_fft.timeseries, poly1, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
 
 #test that tidynamics and our code give the same result for an arbitrary random walk
 def test_tidynamics_msd():
