@@ -78,6 +78,7 @@ Membranes and membrane proteins
    :maxdepth: 1
 
    analysis/hole
+   analysis/hole2
    analysis/leaflet
 
 Nucleic acids
