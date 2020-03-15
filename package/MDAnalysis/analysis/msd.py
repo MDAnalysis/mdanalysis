@@ -108,11 +108,11 @@ We have now computed a self diffusivity!
 
 Notes
 _____
+
 There are several factors that must be taken into account when setting up and processing trajectories for computation of self diffusivities.
 These include specific instructions around simulation settings, using unwrapped trajectories and maintaining relativley small elapsed time between saved frames. 
 Additionally corrections for finite size effects are sometimes employed along with varied means of estimating errors.
 The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self diffusivity including from a Green-Kubo integral. At this point in time these methods are beyond the scope of this module
-
 
 
 References
@@ -164,8 +164,8 @@ class MeanSquaredDisplacement(object):
 
     Returns
     -------
-    timeseries : :class:`np.ndarray`
-        the MSD as a function of lag time
+    MSD : :class:`MeanSquaredDisplacement`
+        the MSD class
     
     """
     # Attributes
@@ -206,6 +206,20 @@ class MeanSquaredDisplacement(object):
         self.select_reference_positions()
         
     def parse_msd_type(self):
+        r""" Sets up the desired dimensionality of the MSD
+        
+        Parameters
+        ----------
+        self.msd_type : str
+            the desired dimensionality fo the MSD
+        
+        Returns
+        -------
+        self._dim : list
+            array-like used to slice the positions to obtain desired dimensionality
+        self.dim_fac : float
+            dimension factor d of the MSD
+        """
         
         if self.msd_type == 'xyz': # full 3d
             self._dim = [0,1,2]
@@ -243,12 +257,26 @@ class MeanSquaredDisplacement(object):
         self.N_particles = self._position_array.shape[1] 
     
     def run(self):
+        r""" Wrapper to calculate the MSD via either the "simple" or "fft" algorithm.
+        """
         if self.fft == True:
             self.timeseries = self._run_fft()
         else:
             self.timeseries = self._run_simple()
 
     def _run_simple(self): # naieve algorithm without FFT
+        r""" Calculates the MSD via the naieve "windowed" algorithm
+        
+        Parameters
+        ----------
+        self._position_array : :class:`np.ndarray`
+            the particle positions over the course of the trajectory shape (nframes,Nparticles,3)
+
+        Returns
+        -------
+        self.timeseries : :class:`np.ndarray`
+            the MSD as a function of lagtime
+        """
         msds_byparticle = np.zeros([self.n_frames, self.N_particles])
         lagtimes = np.arange(1,self.n_frames)
         msds_byparticle[0,:] = np.zeros(self.N_particles) # preset the zero lagtime so we dont have to iterate through
@@ -261,6 +289,18 @@ class MeanSquaredDisplacement(object):
         return msds
 
     def _run_fft(self): #with FFT, np.f64 bit prescision required.
+        r""" Calculates the MSD via the FCA fast correlation algorithm
+        
+        Parameters
+        ----------
+        self._position_array : :class:`np.ndarray`
+            the particle positions over the course of the trajectory shape (nframes,Nparticles,3)
+
+        Returns
+        -------
+        self.timeseries : :class:`np.ndarray`
+            the MSD as a function of lagtime
+        """
         msds_byparticle = []
         reshape_positions = self._position_array[:,:,self._dim].astype(np.float64)
         N=reshape_positions.shape[0]
@@ -304,6 +344,7 @@ class MeanSquaredDisplacement(object):
             n_fft = 2**current_exp
         elif N > 2**current_exp:
             n_fft = 2**(current_exp+1)
+        #closest power of 2 gives the fastest FFTs 
 
         F = fft(x, n=2*n_fft, axis=0)  #zero pad to get non-cyclic autocorrelation
         PowerSpectralDensity = F * F.conjugate()
@@ -311,5 +352,3 @@ class MeanSquaredDisplacement(object):
         autocorr = (inverse[:N]).real   #autocorr convention B
         n = np.arange(1, N+1)[::-1] 
         return autocorr/n[:, np.newaxis] #autocorr convention A
-
-

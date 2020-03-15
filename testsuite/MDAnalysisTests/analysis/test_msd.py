@@ -23,7 +23,6 @@
 from __future__ import division, absolute_import, print_function
 
 
-
 import MDAnalysis as mda
 from MDAnalysis.analysis.msd import MeanSquaredDisplacement as MSD
 
@@ -33,29 +32,39 @@ import numpy as np
 
 from numpy.fft import fft,ifft
 
-from MDAnalysisTests.datafiles import PSF, DCD, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
 
 import pytest
+import tidynamics
 
 SELECTION = 'backbone and name CA and resid 1-10'
 NSTEP = 10000
 
+#universe
 @pytest.fixture(scope='module')
 def u():
     return mda.Universe(PSF, DCD)
 
+@pytest.fixture(scope='module')
+def random_walk_u():
+    #100x100
+    return mda.Universe(RANDOM_WALK_TOPO, RANDOM_WALK)
+
+#non fft msd
 @pytest.fixture(scope='module')
 def msd(u):
     m = MSD(u, SELECTION, msd_type='xyz', fft=False)
     m.run()
     return m
 
+#fft msd
 @pytest.fixture(scope='module')
 def msd_fft(u):
     m = MSD(u, SELECTION, msd_type='xyz', fft=True)
     m.run()
     return m
 
+#all possible dimensions
 @pytest.fixture(scope='module')
 def dimension_list():
     dimensions = ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z']
@@ -70,21 +79,20 @@ def step_traj(): # constant velocity
     u.load_new(traj_reshape)
     return u
 
-@pytest.fixture(scope='module')
 def random_walk_3d():
     steps = -1 + 2*np.random.randint(0, 2, size=(NSTEP, 3))
     traj = np.cumsum(steps, axis=0)
     traj_reshape = traj.reshape([NSTEP,1,3])
     u = mda.Universe.empty(1)
     u.load_new(traj_reshape)
-    return traj
-
+    return u, traj
 
 def characteristic_poly(n,d): #polynomial that describes unit step trajectory MSD
     x = np.arange(0,n)
     y = d*x*x
     return y
-    
+
+#testing on the  PSF, DCD trajectory
 def test_fft_vs_simple_default(msd, msd_fft):
     timeseries_simple = msd.timeseries
     timeseries_fft = msd_fft.timeseries
@@ -100,13 +108,11 @@ def test_fft_vs_simple_all_dims(dimension_list, u):
         timeseries_fft = m_fft.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
+#testing on step trajectory
 def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
     m_simple = MSD(step_traj, 'all' , msd_type='xyz', fft=False)
     m_simple.run()
-
-    print(m_simple.timeseries)
     poly3 = characteristic_poly(NSTEP,3)
-    print(poly3)
     assert_almost_equal(m_simple.timeseries, poly3, decimal=4)
 
 def test_simple_step_traj_2d(step_traj): # this should fit the polynomial 2x**2
@@ -139,3 +145,22 @@ def test_fft_step_traj_1d(step_traj): # this should fit the polynomial x**2
     poly1 = characteristic_poly(NSTEP,1)
     assert_almost_equal(m_fft.timeseries, poly1, decimal=4)
 
+#test that tidynamics and our code give the same result for an arbitrary random walk
+def test_tidynamics_msd():
+    u, array = random_walk_3d()
+    msd_mda = MSD(u, 'all', msd_type='xyz', fft=True)
+    msd_mda.run()
+    msd_mda_msd = msd_mda.timeseries
+    msd_tidy = tidynamics.msd(array)
+    assert_almost_equal(msd_mda_msd, msd_tidy)
+
+#regress against random_walk test data
+def test_random_walk_u(random_walk_u):
+    print(len(random_walk_u.trajectory))
+    msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
+    msd_rw.run()
+    print(msd_rw.timeseries)
+
+#regress our random walk against tidynamics
+
+    
