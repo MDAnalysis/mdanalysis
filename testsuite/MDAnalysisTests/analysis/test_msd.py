@@ -151,16 +151,35 @@ def test_tidynamics_msd():
     msd_mda = MSD(u, 'all', msd_type='xyz', fft=True)
     msd_mda.run()
     msd_mda_msd = msd_mda.timeseries
-    msd_tidy = tidynamics.msd(array)
-    assert_almost_equal(msd_mda_msd, msd_tidy)
+    msd_tidy = tidynamics.msd(array.astype(np.float64))
+    assert_almost_equal(msd_mda_msd, msd_tidy, decimal=5)
 
-#regress against random_walk test data
-def test_random_walk_u(random_walk_u):
-    print(len(random_walk_u.trajectory))
+#test that tidynamics and our code give the same result for SPECIFIC random walk
+def test_random_walk_tidynamics(random_walk_u):
     msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
     msd_rw.run()
-    print(msd_rw.timeseries)
+    array = msd_rw._position_array.astype(np.float64)
+    tidy_msds = np.zeros(msd_rw.n_frames)
+    count = 0
+    for mol in range(array.shape[1]):
+        pos = array[:,mol,:]
+        mol_msd = tidynamics.msd(pos)
+        tidy_msds += mol_msd
+        count += 1.0
+    msd_tidy = tidy_msds /count
+    assert_almost_equal(msd_tidy, msd_rw.timeseries, decimal=5)
 
-#regress our random walk against tidynamics
+#regress against random_walk test data
+def test_random_walk_u_simple(random_walk_u):
+    msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=False)
+    msd_rw.run()
+    norm = np.linalg.norm(msd_rw.timeseries)
+    val = 3932.39927487146
+    assert_almost_equal(norm, val, decimal=5)
 
-    
+def test_random_walk_u_fft(random_walk_u):
+    msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
+    msd_rw.run()
+    norm = np.linalg.norm(msd_rw.timeseries)
+    val = 3932.39927487146
+    assert_almost_equal(norm, val, decimal=5)

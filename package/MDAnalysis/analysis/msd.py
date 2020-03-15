@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+# This module written by Hugo MacDermott-Opeskin 2020
 
 r"""
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
@@ -143,9 +144,6 @@ import numpy as np
 from numpy.fft import fft,ifft
 import logging
 import MDAnalysis
-import tidynamics
-
-
 
 class MeanSquaredDisplacement(object):
     r"""Class representing Mean Squared Displacement
@@ -253,7 +251,10 @@ class MeanSquaredDisplacement(object):
             raise ValueError('invalid msd_type specified')
 
     def select_reference_positions(self):
-        self._position_array = self.u.trajectory.timeseries(self.u.select_atoms(self.selection),order='fac') 
+        #memory transfer required to access coordinate array
+        self.u.transfer_to_memory()
+        idxs = self.u.select_atoms(self.selection).indices
+        self._position_array = self.u.trajectory.coordinate_array[:,idxs, :]
         self.N_particles = self._position_array.shape[1] 
     
     def run(self):
