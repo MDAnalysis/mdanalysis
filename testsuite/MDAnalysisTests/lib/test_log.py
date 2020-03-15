@@ -59,4 +59,4 @@ class TestProgressBar(object):
         out, err = capsys.readouterr()
         expected = u'100%|██████████| 10/10 [00:00<00:00, 583.67it/s]'
         actual = err.strip().split('\r')[-1]
-        assert actual[:36] == expected[:36]
+        assert actual[:24] == expected[:24]
