@@ -86,8 +86,8 @@ class ClusteringMethod (object):
 
         Returns
         -------
-        numpy.array
-            array of the centroid frame indices
+         This method doesn't return anything, it raises a NotImplementedError
+        
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
                                   .format(self.__class__.__name__))
@@ -146,8 +146,10 @@ class AffinityPropagationNative(ClusteringMethod):
 
         Returns
         -------
-        numpy.array
-            list of cluster indices
+        numpy.array : array, shape(n_elements) 
+        centroid frames of the clusters for all of the elements
+
+        .. versionchanged:: this method no longer returns details
         """
         clusters = affinityprop.AffinityPropagation(
             s=distance_matrix * -1.,   # invert sign
@@ -213,9 +215,10 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                array of centroid frame indices
+            numpy.array : array, shape(n_elements) 
+            centroid frames of the clusters for all of the elements
 
+            .. versionchanged:: this method no longer returns details
             """
             logging.info("Starting Affinity Propagation: {0}".format
                          (self.ap.get_params()))
@@ -290,9 +293,10 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                array of centroid frame indices
+            numpy.array : array, shape(n_elements) 
+            centroid frames of the clusters for all of the elements
 
+            .. versionchanged:: this method no longer returns details
             """
             logging.info("Starting DBSCAN: {0}".format(
                 self.dbscan.get_params()))
@@ -414,8 +418,10 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                array of centroid frame indices
+            numpy.array : array, shape(n_elements) 
+            centroid frames of the clusters for all of the elements
+
+            .. versionchanged:: this method no longer returns details
             """
             logging.info("Starting Kmeans: {0}".format(
                          (self.kmeans.get_params())))
