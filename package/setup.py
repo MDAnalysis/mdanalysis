@@ -556,7 +556,7 @@ if __name__ == '__main__':
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
           'scipy>=1.0.0',
-          'matplotlib-base>=2.1.2',
+          'matplotlib>=2.1.2',
           'mock',
     ]
     if not os.name == 'nt':
