@@ -1194,8 +1194,8 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
 
 
     .. deprecated:: 1.0.0
-    :func:`notwithin_coordinates_factory` is no longer supported and will be
-    removed in 2.0.0.
+       :func:`notwithin_coordinates_factory` is no longer supported and will be
+       removed in 2.0.0.
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
     #                    cpu/s    relative   speedup       use_kdtree
@@ -1269,8 +1269,8 @@ def Bfactor2RMSF(B):
 
 
     .. deprecated:: 1.0.0
-    :func:`Bfactor2RMSF` is no longer supported and will be removed in 2.0.0.
-    as part of the removal of the :func:`density_from_PDB` function.
+       :func:`Bfactor2RMSF` is no longer supported and will be removed in 2.0.0.
+       as part of the removal of the :func:`density_from_PDB` function.
     """
     return np.sqrt(3. * B / 8.) / np.pi
 
