@@ -37,6 +37,8 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
+from unittest.mock import Mock, patch
+from MDAnalysisTests.util import block_import
 
 
 class TestDensity(object):
@@ -452,9 +454,34 @@ class Test_density_from_PDB(object):
 
         assert isinstance(D, density.Density)
         assert_equal(D.grid.shape, ref_shape)
-        assert_almost_equal(D.grid.sum(), ref_gridsum, decimal=6)
+        assert_almost_equal(D.grid.sum(), ref_gridsum, decimal=5)
 
     def test_has_DeprecationWarning(self):
         with pytest.warns(DeprecationWarning,
                           match="will be removed in release 2.0.0"):
             density.density_from_PDB(PDB_full, delta=5.0, sigma=2)
+
+class TestGridImport(object):
+
+    @block_import('gridData')
+    def test_absence_griddata(self):
+        sys.modules.pop('MDAnalysis.analysis.density', None)
+        # if gridData package is missing an ImportError should be raised
+        # at the module level of MDAnalysis.analysis.density
+        with pytest.raises(ImportError):
+            import MDAnalysis.analysis.density
+
+    def test_presence_griddata(self):
+        sys.modules.pop('MDAnalysis.analysis.density', None)
+        # no ImportError exception is raised when gridData is properly
+        # imported by MDAnalysis.analysis.density
+
+        # mock gridData in case there are testing scenarios where
+        # it is not available
+        mock = Mock()
+        with patch.dict('sys.modules', {'gridData':mock}):
+            try:
+                import MDAnalysis.analysis.density
+            except ImportError:
+                pytest.fail(msg='''MDAnalysis.analysis.density should not raise
+                             an ImportError if gridData is available.''')
