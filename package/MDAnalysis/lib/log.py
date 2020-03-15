@@ -338,8 +338,8 @@ class ProgressMeter(object):
                  verbose=True, dynamic=True,
                  format_handling='auto'):
         warnings.warn(
-            "This class is deprecated as of MDAnalysis version 1.0."
-            "It will be removed in MDAnalysis version 2.0"
+            "This class is deprecated as of MDAnalysis version 1.0. "
+            "It will be removed in MDAnalysis version 2.0. "
             "Please use MDAnalysis.lib.log.ProgressBar instead.",
             category=DeprecationWarning
             )
