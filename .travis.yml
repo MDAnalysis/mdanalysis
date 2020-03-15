@@ -28,8 +28,7 @@ env:
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    # Cap seaborn to 0.9 since 0.10 drops Python 2 support (temporarily solve #2495)
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0,<=0.9 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
@@ -67,11 +66,20 @@ matrix:
            INSTALL_HOLE="false"
 
     - env: NAME="python 2.7"
-           PYTHON_VERSION=2.7 
+           PYTHON_VERSION=2.7
            CODECOV="true"
            NUMPY_VERSION=1.16
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+
+    - env: NAME="asv check"
+           PYTHON_VERSION=2.7 
+           CODECOV="false"
+           MAIN_CMD=""
+           SETUP_CMD=""
+           NUMPY_VERSION=1.16
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+           ASV_CHECK="true"
 
     - os: osx
       env: PYTHON_VERSION=3.6
@@ -86,6 +94,7 @@ matrix:
 #           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
+           PIP_DEPENDENCIES=""
            CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
            INSTALL_HOLE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
@@ -121,6 +130,16 @@ script:
   - echo $MAIN_CMD $SETUP_CMD
   - if [[ $TRAVIS_OS_NAME == 'osx' ]]; then pip install pytest; fi
   - eval $MAIN_CMD $SETUP_CMD
+  # check benchmark suite for basic issues
+  - |
+    if [ "${ASV_CHECK}" == "true" ]; then
+      python -m pip install asv
+      cd testsuite
+      python setup.py install
+      cd ../benchmarks
+      time python -m asv check -E existing
+    fi
+
 
 after_success:
   - |

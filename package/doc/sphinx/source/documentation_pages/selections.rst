@@ -46,11 +46,6 @@ selection parser. The following applies to all selections:
   necessary).
 * Selections are parsed left to right and parentheses can be used for
   grouping.
-* Currently, a single wildcard ``*`` character can be at the start, middle, or 
-  end of a string for pattern matching. For example, ``GL*`` selects
-  all strings that start with "GL" such as "GLU", "GLY", "GLX29", "GLN". 
-  ``resname *N`` selects all residue names that end in "N", such as "ASN" and 
-  "GLN".
 
 
 Simple selections
@@ -103,6 +98,27 @@ altloc *alternative-location*
 moltype *molecule-type*
     select by molecule type, e.g. ``moltype Protein_A``. At the moment, only
     the TPR format defines the molecule type.
+
+Pattern matching
+----------------
+
+The pattern matching notation described below is used to specify 
+patterns for matching strings (based on :mod:`fnmatch`):
+
+``?`` 
+    Is a pattern that will match any single character. For example,
+    ``resname T?R`` selects residues named "TYR" and "THR".
+``*`` 
+    Is a pattern that will match multiple characters.  For example,
+    ``GL*`` selects all strings that start with "GL" such as "GLU",
+    "GLY", "GLX29", "GLN".
+``[seq]``
+    Would match any character in seq. For example, "resname GL[NY]" 
+    selects all residues named "GLN" or "GLY" but would not select
+    "GLU".
+``[!seq]``
+    Would match any character not in seq. For example, "resname GL[!NY]"
+    would match residues named "GLU" but would not match "GLN" or "GLY".
 
 Boolean
 -------

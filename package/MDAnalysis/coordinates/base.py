@@ -210,7 +210,7 @@ import weakref
 from . import core
 from .. import NoDataError
 from .. import (
-    _READERS,
+    _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
     _CONVERTERS
@@ -1362,6 +1362,11 @@ class IOBase(object):
 
 
 class _Readermeta(type):
+    """Automatic Reader registration metaclass
+
+    .. versionchanged:: 1.0.0
+       Added _format_hint functionality
+    """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -1370,9 +1375,13 @@ class _Readermeta(type):
         except KeyError:
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _READERS[f] = cls
+            for fmt_name in fmt:
+                fmt_name = fmt_name.upper()
+                _READERS[fmt_name] = cls
+
+                if '_format_hint' in classdict:
+                    # isn't bound yet, so access __func__
+                    _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 
 class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
