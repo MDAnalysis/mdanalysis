@@ -253,7 +253,7 @@ class MeanSquaredDisplacement(object):
     def select_reference_positions(self):
         #memory transfer required to access coordinate array
         self.u.transfer_to_memory()
-        idxs = self.u.select_atoms(self.selection).indices
+        idxs = self.u.select_atoms(self.selection).ix
         self._position_array = self.u.trajectory.coordinate_array[:,idxs, :]
         self.N_particles = self._position_array.shape[1] 
     
