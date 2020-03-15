@@ -93,9 +93,6 @@ class TestPersistenceLength(object):
 
         assert ax2 is ax
 
-    def test_perform_fit_warn(self, p_run):
-        with pytest.warns(DeprecationWarning):
-            p_run.perform_fit()
 
 class TestFitExponential(object):
     x = np.linspace(0, 250, 251)
