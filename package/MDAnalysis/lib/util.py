@@ -196,7 +196,6 @@ import gzip
 import re
 import io
 import warnings
-import collections
 import functools
 from functools import wraps
 import textwrap
@@ -1767,7 +1766,7 @@ def flatten_dict(d, parent_key=tuple()):
             new_key = parent_key + (k, )
         else:
             new_key = parent_key + k
-        if isinstance(v, collections.MutableMapping):
+        if isinstance(v, dict):
             items.extend(flatten_dict(v, new_key).items())
         else:
             items.append((new_key, v))
