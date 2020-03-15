@@ -391,6 +391,45 @@ def get_atom_mass(element):
             return 0.0
 
 
+def guess_elements(masses):
+    """ Guess the elements based on atomic masses
+        
+        Parameters
+        ----------
+        masses
+        Atomic mass of each atom
+        
+        Returns
+        -------
+        elements : np.ndarray dtype object
+        
+        """
+    return np.array([get_element_from_mass(atommass) for atommass
+                     in masses], dtype=object)
+
+
+def get_element_from_mass(atommass):
+    """Return the atom element from the atomic mass
+        
+        Masses are looked up in :data:`MDAnalysis.topology.tables.masses`.
+        
+        .. Warning:: Unknown elements are set to ''
+        
+        """
+    try:
+        for k,v in tables.masses.items():
+            if atommass == v:
+                return k
+    except:
+        # Approximating to the closest element atomic mass
+        for k,v in tables.masses.items():
+            if round(atommass) == round(v):
+                return k
+        non_phy = ''
+        return non_phy
+
+
+
 def guess_atom_mass(atomname):
     """Guess a mass based on the atom name.
 

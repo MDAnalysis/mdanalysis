@@ -153,11 +153,12 @@ __copyright__ = "GNU Public Licence, v2"
 import xdrlib
 
 from . import guessers
+from .guessers import guess_masses, guess_types, guess_atom_element, guess_elements, get_element_from_mass
 from ..lib.util import openany
 from .tpr import utils as tpr_utils
 from .tpr import setting as S
 from .base import TopologyReaderBase
-from ..core.topologyattrs import Resnums
+from ..core.topologyattrs import (Atomnames,Elements,Resnums)
 
 import logging
 logger = logging.getLogger("MDAnalysis.topology.TPRparser")
@@ -226,6 +227,20 @@ class TPRParser(TopologyReaderBase):
             raise IOError(msg)
 
         tpr_top.add_TopologyAttr(Resnums(tpr_top.resids.values.copy()))
+        
+        # Defining a way to obtain the elements data
+        atom_names = tpr_top.names.values.copy()
+        atom_mass  = tpr_top.masses.values.copy()
+        
+        if any(atom_names):
+            elements = guess_types(atom_names)
+        else:
+            warnings.warn("Guessing elements from atomic mass.")
+            elements = guess_types(guess_elements(masses))
+        
+        
+        tpr_top.add_TopologyAttr(Elements(elements))
+
 
         return tpr_top
 
