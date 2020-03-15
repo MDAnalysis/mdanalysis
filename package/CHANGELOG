@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         ss62171, Luthaf, yuxuanzhuang
+         ss62171, Luthaf, yuxuanzhuang, cbouy
 
   * 0.21.0
 
@@ -102,6 +102,8 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
+    the tqdm package (Issue #928, PR #2617)
   * Removed deprecated :meth:`PersistenceLength.perform_fit` (Issue #2596)
   * Changed :meth:`PSAnalysis.generate_paths` keywords `store` and `filename`
     defaults to `False` and `None` (Issue #2593)
