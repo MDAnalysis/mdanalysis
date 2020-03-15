@@ -37,32 +37,31 @@ MSDs are computed from the following expression:
 
 Where :math:`N` is the number of equivalent particles the MSD is calculated over, :math:`r` are their coordinates and :math:`d` the desired
 dimensionality of the MSD. Note that while the definition of the MSD is universal, there are many practical considerations to computing the MSD
-that vary between implementations. In this module, we compute a "windowed" MSD, where the MSD is averaged over all possible lag times :math:`t \le t_{max}`,
-where :math:`t_{max}` is the length of the trajectory, thereby maximising the number of samples.
+that vary between implementations. In this module, we compute a "windowed" MSD, where the MSD is averaged over all possible lag times :math:`\tau \le \tau_{max}`,
+where :math:`\tau_{max}` is the length of the trajectory, thereby maximising the number of samples.
 
-The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`t_{max}`. 
+The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`\tau_{max}`. 
 An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_.
 The python implementation was originally presented here [SO2015]_. 
 
 Computing an MSD
 ----------------
-This example computes a 2D MSD for the movement of phospholipid headgroups in the xy plane.
-This is a common starting point for computing self diffusivity of phospholipids in a bilayer.
+This example computes a 3D MSD for the movement of 100 particles undergoing a random walk.
 Files provided as part of the MDAnalysis test suite are used
-(in the variables :data:`~MDAnalysis.tests.datafiles.GRO_MEMPROT` and
-:data:`~MDAnalysis.tests.datafiles.XTC_MEMPROT`)
+(in the variables :data:`~MDAnalysis.tests.datafiles.RANDOM_WALK` and
+:data:`~MDAnalysis.tests.datafiles.RANDOM_WALK_TOPO`)
 
 First load all modules and test data
 
     >>> import MDAnalysis as mda
     >>> import MDAnalysis.analysis.msd as msd
-    >>> from MDAnalysis.tests.datafiles import GRO_MEMPROT, XTC_MEMPROT
+    >>> from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 
 Given a universe containing trajectory data we can extract the MSD
 Analyis by using the class :class:`MeanSquaredDisplacement` 
 
-    >>> u = mda.Universe(GRO_MEMPROT, XTC_MEMPROT)
-    >>> MSD = msd.MeanSquaredDisplacement(u, 'name PO4', msd_type='xy', fft=True)
+    >>> u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    >>> MSD = msd.MeanSquaredDisplacement(u, 'all', msd_type='xyz', fft=True)
     >>> MSD.run()
 
 The MSD can then be accessed as
@@ -73,14 +72,15 @@ Visual inspection of the MSD is important, so lets take a look at it with a simp
 
     >>> import matplotlib.pyplot as plt
     >>> nframes = len(u.trajectory)
-    >>> timestep = 2 # this needs to be the time between frames in you trajectory
+    >>> timestep = 1 # this needs to be the actual time between frames in your trajectory
     >>> lagtimes = np.arange(nframes)*timestep # make the lag time axis
     >>> plt.plot(msd, lagtimes)
     >>> plt.show()
 
-We can see that the MSD is roughly linear between a lag-time of 500 and 1000. Linearity of a segment of the MSD is required to accurately determine self diffusivity.
+We can see that the MSD is roughly linear, this is a numerical proof of a known theoretical result that the MSD of a random walk is approximately linear with respect to lagtime, where the slope is approximatley :math:`2*D`.
+Note that the majority of MSDs computed from MD trajectories will not be this well behaved. Linearity of a segment of the MSD is required to accurately determine self diffusivity.
 This linear segment represents the so called "middle" of the MSD plot, where ballistic trajectories at short time-lags are excluded along with poorly averaged data at long time-lags.
-This can be confirmed with a log-log plot as is often reccomended [Maginn2019]_ where the "middle" segment can be identified as having a slope of 1.
+We can select the "middle" of the MSD by indexing the MSD and the time-lags. Appropriately linear segments of the MSD can be confirmed with a log-log plot as is often reccomended [Maginn2019]_ where the "middle" segment can be identified as having a slope of 1.
 Now that we have identified what segment of our MSD to analyse, lets compute a self diffusivity.
 
 Computing Self Diffusivity
@@ -92,17 +92,17 @@ Self diffusivity is closely related to the MSD.
    D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
 
 From the MSD, self diffusivities :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
-An example of this is shown below.
+An example of this is shown below, using the MSD computed in the example above. The segment between :math:`\tau = 20` and :math:`\tau = 80` is used to demonstrate selection of an MSD segment.
 
-    >>> import scipy.stats.linregress as lr
-    >>> start_time = 500
+    >>> from scipy.stats import linregress as lr
+    >>> start_time = 20
     >>> start_index = start_time/timestep
-    >>> end_time = 1000
+    >>> end_time = 80
     >>> end_index = end_time/timestep
     >>> linear_model = lr(lagtimes[start_index:end_index], msd[start_index:end_index])
     >>> slope = linear_model.slope
-    >>> error = linear_model.r-value
-    >>> D = slope * 1/(2*MSD._dim_fac) #dim_fac is 2 as we computed a 2D msd ('xy')
+    >>> error = linear_model.rvalue
+    >>> D = slope * 1/(2*MSD.dim_fac) #dim_fac is 3 as we computed a 3D msd ('xyz')
 
 We have now computed a self diffusivity!
 
