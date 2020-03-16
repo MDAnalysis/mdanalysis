@@ -24,7 +24,7 @@ from __future__ import division, absolute_import, print_function
 
 
 import MDAnalysis as mda
-from MDAnalysis.analysis.msd import MeanSquaredDisplacement as MSD
+from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 
 from numpy.testing import (assert_array_less,
                            assert_almost_equal, assert_equal)
@@ -159,7 +159,7 @@ def test_random_walk_tidynamics(random_walk_u):
     msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
     msd_rw.run()
     array = msd_rw._position_array.astype(np.float64)
-    tidy_msds = np.zeros(msd_rw.n_frames)
+    tidy_msds = np.zeros(msd_rw.N_frames)
     count = 0
     for mol in range(array.shape[1]):
         pos = array[:,mol,:]

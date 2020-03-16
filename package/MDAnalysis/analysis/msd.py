@@ -26,10 +26,10 @@ r"""
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 ==============================================================
 
-This module implements the calculation of Mean Squared Displacmements (MSDs).
+This module implements the calculation of Mean Squared Displacmements (MSDs) by the Einstein relation.
 MSDs can be used to characterise the speed at which particles move and has its roots
-in the study of Brownian motion. For a full explanation of the best practices for the computation of MSDs and the subsequent calculation of self diffusivities the reader is directed to [Maginn2019]_.
-MSDs are computed from the following expression:
+in the study of Brownian motion. For a full explanation of the theory behind MSDs and the subsequent calculation of self diffusivities the reader is directed to [Maginn2019]_.
+MSDs can be computed from the following expression, known as "Einstein" formula:
 
 .. math::
 
@@ -58,10 +58,10 @@ First load all modules and test data
     >>> from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 
 Given a universe containing trajectory data we can extract the MSD
-Analyis by using the class :class:`MeanSquaredDisplacement` 
+Analyis by using the class :class:`EinsteinMSD` 
 
     >>> u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
-    >>> MSD = msd.MeanSquaredDisplacement(u, 'all', msd_type='xyz', fft=True)
+    >>> MSD = msd.EinsteinMSD(u, 'all', msd_type='xyz', fft=True)
     >>> MSD.run()
 
 The MSD can then be accessed as
@@ -71,7 +71,7 @@ The MSD can then be accessed as
 Visual inspection of the MSD is important, so lets take a look at it with a simple plot.
 
     >>> import matplotlib.pyplot as plt
-    >>> nframes = len(u.trajectory)
+    >>> nframes = MSD.N_frames
     >>> timestep = 1 # this needs to be the actual time between frames in your trajectory
     >>> lagtimes = np.arange(nframes)*timestep # make the lag time axis
     >>> plt.plot(msd, lagtimes)
@@ -81,6 +81,10 @@ We can see that the MSD is roughly linear, this is a numerical proof of a known 
 Note that the majority of MSDs computed from MD trajectories will not be this well behaved. Linearity of a segment of the MSD is required to accurately determine self diffusivity.
 This linear segment represents the so called "middle" of the MSD plot, where ballistic trajectories at short time-lags are excluded along with poorly averaged data at long time-lags.
 We can select the "middle" of the MSD by indexing the MSD and the time-lags. Appropriately linear segments of the MSD can be confirmed with a log-log plot as is often reccomended [Maginn2019]_ where the "middle" segment can be identified as having a slope of 1.
+
+    >>> plt.loglog(msd, lagtimes)
+    >>> plt.show()
+
 Now that we have identified what segment of our MSD to analyse, lets compute a self diffusivity.
 
 Computing Self Diffusivity
@@ -126,7 +130,7 @@ References
 Classes and Functions
 ---------------------
 
-.. autoclass:: MeanSquaredDisplacement
+.. autoclass:: EinsteinMSD
     :members:
 
 """
@@ -145,41 +149,37 @@ from numpy.fft import fft,ifft
 import logging
 import MDAnalysis
 
-class MeanSquaredDisplacement(object):
-    r"""Class representing Mean Squared Displacement
-
-    Parameters
-    ----------
-    u : Universe
-        An MDAnalysis :class:`Universe`
-    selection : str
-        An MDAnalysis selection string
-    msd_type : str
-        The dimensions to use for the msd calculation:
-        one of ('xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z')
-    fft : bool
-        Use a fast FFT based algorithm for computation of the MSD
-
-    Returns
-    -------
-    MSD : :class:`MeanSquaredDisplacement`
-        the MSD class
+class EinsteinMSD(object):
+    r"""Class to calculate Mean Squared Displacement by the Einstein relation.
     
+    Attributes
+    ----------
+    dim_fac : float
+        Dimensionality :math:`d` of the MSD.
+    timeseries : :class:`np.ndarray`
+        The MSD with respect to lag-time.
+    N_frames : int
+        Number of frames in trajectory.
+    N_particles : int
+        Number of particles MSD was calculated over.
+
     """
-    # Attributes
-    # ----------
-    # _dim_fac : int
-    #     dimensionality of the MSD
-    # _dim : arraylike
-    #     array used to slice the trajectory along the xyz axis to acheive the correct dimensionality
-    # _position_array : :class:`np.ndarray`
-    #     positions used to calculate the MSD
-    # N_particles : int
-    #     number of particles 
 
+    def __init__(self, u, selection=None, msd_type='xyz', fft=True):
+        r"""
+        Parameters
+        ----------
+        u : Universe
+            An MDAnalysis :class:`Universe`.
+        selection : str
+            An MDAnalysis selection string. Defaults to `None`.
+        msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
+            Desired dimensions to be included in the MSD. Defaults to 'xyz'.
+        fft : bool
+            Use a fast FFT based algorithm for computation of the MSD.
+            Otherwise, use the naieve or "simple" algorithm. Defaults to `True`
 
-    def __init__(self, u, selection, msd_type='xyz', fft=True):
-
+        """
         #args
         self.u = u
         self.selection = selection
@@ -187,75 +187,83 @@ class MeanSquaredDisplacement(object):
         self.fft = fft
         
         #local
-        self.dim_fac = 0
         self._dim = None
-        self.atoms = None
-        self.n_frames = len(self.u.trajectory)
         self._position_array = None
+        
+        #indexing
+        self.N_frames = len(self.u.trajectory)
+        self.N_particles = 0
 
         #result
+        self.dim_fac = 0
         self.timeseries = None
+
         #prep
         self._prepare()
 
             
     def _prepare(self):
-        self.parse_msd_type()
-        self.select_reference_positions()
+        self._parse_msd_type()
+        self._select_reference_positions()
         
-    def parse_msd_type(self):
-        r""" Sets up the desired dimensionality of the MSD
+    def _parse_msd_type(self):
+        r""" Sets up the desired dimensionality of the MSD.
         
         Parameters
         ----------
-        self.msd_type : str
-            the desired dimensionality fo the MSD
-        
+        self.msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
+            Dimensions to be included in the MSD.
+
         Returns
         -------
         self._dim : list
-            array-like used to slice the positions to obtain desired dimensionality
+            Array-like used to slice the positions to obtain desired dimensionality
         self.dim_fac : float
-            dimension factor d of the MSD
+            Dimension factor :math:`d` of the MSD.
+
         """
+        keys = {'x':0, 'y':1, 'z':2}
+        dim = []
+
+        self.msd_type = self.msd_type.lower()
+        print(self.msd_type)
+        try:
+            for tok in self.msd_type:
+                vals = (keys.pop(tok))
+                dim.append(vals)
+        except KeyError:
+            raise ValueError('invalid msd_type specified, please specify one of xyz, xy, xz, yz, x, y, z ')
         
-        if self.msd_type == 'xyz': # full 3d
-            self._dim = [0,1,2]
-            self.dim_fac = 3.0
-            
-        elif self.msd_type == 'xy': # xy
-            self._dim = [0,1]
-            self.dim_fac = 2.0
+        dim.sort()
+        self._dim = dim
+        self.dim_fac = float(len(dim))
 
-        elif self.msd_type == 'xz': # xz
-            self._dim = [0,2]
-            self.dim_fac = 2.0
+    def _select_reference_positions(self):
+        r""" Constructs array of positions for MSD calculation.
+        
+        Parameters
+        ----------
+        self.u : :class:`Universe`
+            MDAnalysis Universe
+        self.selection : str
+            MDAnalysis selection string
+        
+        Returns
+        -------
+        self._position_array : :class:`np.ndarray`
+            Array of particle positions with respect to time shape = (N_frames, N_particles, 3)
+        self.N_particles : float
+            Number of particles used in the MSD calculation
 
-        elif self.msd_type == 'yz': # yz
-            self._dim = [1,2]
-            self.dim_fac = 2.0
-
-        elif self.msd_type == 'x': # x
-            self._dim = [0]
-            self.dim_fac = 1.0
-
-        elif self.msd_type == 'y': # y
-            self._dim = [1]
-            self.dim_fac = 1.0
-
-        elif self.msd_type == 'z': # z
-            self._dim = [2]
-            self.dim_fac = 1.0
-
-        else:
-            raise ValueError('invalid msd_type specified')
-
-    def select_reference_positions(self):
-        #memory transfer required to access coordinate array
-        self.u.transfer_to_memory()
+        """
+        #avoid memory transfer by iterating 
         idxs = self.u.select_atoms(self.selection).ix
-        self._position_array = self.u.trajectory.coordinate_array[:,idxs, :]
-        self.N_particles = self._position_array.shape[1] 
+        position_array_dummy = np.zeros([len(self.u.trajectory), len(self.u.atoms), 3])
+        for idx,ts in enumerate(self.u.trajectory):
+           position_array_dummy[idx,:,:] = self.u.atoms.positions
+        self._position_array = position_array_dummy[:,idxs, :]
+        self.N_particles = self._position_array.shape[1]
+
     
     def run(self):
         r""" Wrapper to calculate the MSD via either the "simple" or "fft" algorithm.
@@ -266,20 +274,21 @@ class MeanSquaredDisplacement(object):
             self.timeseries = self._run_simple()
 
     def _run_simple(self): # naieve algorithm without FFT
-        r""" Calculates the MSD via the naieve "windowed" algorithm
+        r""" Calculates the MSD via the naieve "windowed" algorithm.
         
         Parameters
         ----------
         self._position_array : :class:`np.ndarray`
-            the particle positions over the course of the trajectory shape (nframes,Nparticles,3)
+            Array of particle positions with respect to time shape (N_frames, N_particles, 3).
 
         Returns
         -------
         self.timeseries : :class:`np.ndarray`
-            the MSD as a function of lagtime
+            The MSD as a function of lag-time.
+
         """
-        msds_byparticle = np.zeros([self.n_frames, self.N_particles])
-        lagtimes = np.arange(1,self.n_frames)
+        msds_byparticle = np.zeros([self.N_frames, self.N_particles])
+        lagtimes = np.arange(1,self.N_frames)
         msds_byparticle[0,:] = np.zeros(self.N_particles) # preset the zero lagtime so we dont have to iterate through
         for n in range(self.N_particles):
             for lag in lagtimes:
@@ -290,17 +299,18 @@ class MeanSquaredDisplacement(object):
         return msds
 
     def _run_fft(self): #with FFT, np.f64 bit prescision required.
-        r""" Calculates the MSD via the FCA fast correlation algorithm
+        r""" Calculates the MSD via the FCA fast correlation algorithm.
         
         Parameters
         ----------
         self._position_array : :class:`np.ndarray`
-            the particle positions over the course of the trajectory shape (nframes,Nparticles,3)
+            Array of particle positions with respect to time shape (N_frames, N_particles, 3).
 
         Returns
         -------
         self.timeseries : :class:`np.ndarray`
-            the MSD as a function of lagtime
+            The MSD as a function of lagtime.
+
         """
         msds_byparticle = []
         reshape_positions = self._position_array[:,:,self._dim].astype(np.float64)
@@ -314,7 +324,7 @@ class MeanSquaredDisplacement(object):
             S1[m,:]=Q/(N-m)
         S2accumulate = []
         for i in range(reshape_positions.shape[2]):
-            S2accumulate.append(self.autocorrFFT(reshape_positions[:,:,i]))
+            S2accumulate.append(self._autocorrFFT(reshape_positions[:,:,i]))
         S2= np.sum(S2accumulate,axis=0,dtype=np.float64)
 
         msds_byparticle.append(S1-2*S2)
@@ -322,18 +332,19 @@ class MeanSquaredDisplacement(object):
         return msds
 
     @staticmethod
-    def autocorrFFT(x):
-        r""" Calculates an autocorrelation function of the input signal via an FFT
+    def _autocorrFFT(x):
+        r""" Calculates an autocorrelation function of the input signal via an FFT.
 
         Parameters
         ----------
         x : :class:`np.ndarray`
-            array to compute the autocorrelation for
+            Array to compute the autocorrelation for.
 
         Returns
         -------
         autocorr : :class:`np.ndarray`
-            the autocorrelation 
+            The autocorrelation of the input signal.
+
         """
         N=(x.shape[0])
 
