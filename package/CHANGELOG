@@ -16,11 +16,14 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         ss62171, Luthaf, yuxuanzhuang, abhishandy
+         ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance
 
   * 0.21.0
 
 Fixes
+  * Updated tests to have explicit fixtures (Issue #2618)
+  * XDR offsets now read from trajectory if offsets file read-in fails on
+    IOError (Issue #1893, PR #2611)
   * Fixed the deprecation warning from `collections` library in `flatten_dict`
     (Issue #2605)
   * Fixed test for the `save_paths` and `load` methods of :class:`PSAnalysis`
@@ -66,6 +69,8 @@ Fixes
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
   * Fixed example docs for polymer persistence length (#2582)
+  * Fixed HydrogenBondAnalysis to return atom indices rather than atom ids (PR #2572).
+    Fixed the check for bond information in the _get_dh_pairs method (Issue #2396).
   * Added missing selection module to leaflet.py (Issue #2612)
 
 Enhancements
