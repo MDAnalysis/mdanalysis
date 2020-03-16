@@ -151,6 +151,13 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
+    def test_no_atom_masses(self, universe, reference,
+                   selection="protein and backbone"):
+        #if no masses are present #issue 2469
+        reference = reference.select_atoms(selection)
+        with pytest.warns(UserWarning):
+            align.get_matching_atoms(reference.atoms, reference.atoms)
+
 
 class TestAlign(object):
     @staticmethod
