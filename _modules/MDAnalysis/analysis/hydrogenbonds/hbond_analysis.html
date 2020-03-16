@@ -340,7 +340,6 @@
 
 <span class="sd">.. autoclass:: HydrogenBondAnalysis</span>
 <span class="sd">   :members:</span>
-
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
 
@@ -348,6 +347,7 @@
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 <span class="kn">from</span> <span class="nn">...due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
@@ -584,9 +584,12 @@
         <span class="c1"># If donors_sel is not provided, use topology to find d-h pairs</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">donors_sel</span><span class="p">:</span>
 
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">bonds</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Cannot assign donor-hydrogen pairs via topology as no bonded information is present. &#39;</span>
-                                <span class="s1">&#39;Please either: load a topology file with bonded information; use the guess_bonds() &#39;</span>
+            <span class="c1"># We&#39;re using u._topology.bonds rather than u.bonds as it is a million times faster to access.</span>
+            <span class="c1"># This is because u.bonds also calculates properties of each bond (e.g bond length).</span>
+            <span class="c1"># See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s1">&#39;Cannot assign donor-hydrogen pairs via topology as no bond information is present. &#39;</span>
+                                <span class="s1">&#39;Please either: load a topology file with bond information; use the guess_bonds() &#39;</span>
                                 <span class="s1">&#39;topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff &#39;</span>
                                 <span class="s1">&#39;can be used.&#39;</span><span class="p">)</span>
 
@@ -671,9 +674,9 @@
 
         <span class="c1"># Store data on hydrogen bonds found at this frame</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">hbond_donors</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_donors</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_hydrogens</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_acceptors</span><span class="o">.</span><span class="n">ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_donors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_hydrogens</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_acceptors</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_distances</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">hbond_angles</span><span class="p">)</span>
 
