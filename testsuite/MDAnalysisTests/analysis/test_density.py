@@ -37,7 +37,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
-from unittest.mock import Mock, patch
+from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 
 
