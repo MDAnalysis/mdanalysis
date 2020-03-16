@@ -96,12 +96,16 @@ def characteristic_poly(n,d): #polynomial that describes unit step trajectory MS
 def test_selection_works(msd):
     assert_equal(msd.N_particles, 10)
 
-
 #testing on the  PSF, DCD trajectory
 def test_fft_vs_simple_default(msd, msd_fft):
     timeseries_simple = msd.timeseries
     timeseries_fft = msd_fft.timeseries
     assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
+
+def test_fft_vs_simple_default_per_particle(msd, msd_fft):
+    per_particle_simple = msd.timeseries
+    per_particle_fft = msd_fft.timeseries
+    assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 def test_fft_vs_simple_all_dims(dimension_list, u):
     for dim in dimension_list:
@@ -112,6 +116,16 @@ def test_fft_vs_simple_all_dims(dimension_list, u):
         m_fft.run()
         timeseries_fft = m_fft.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
+
+def test_fft_vs_simple_all_dims_per_particle(dimension_list, u):
+    for dim in dimension_list:
+        m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
+        m_simple.run()
+        per_particle_simple = m_simple.timeseries
+        m_fft = MSD(u,SELECTION, msd_type=dim, fft=True)
+        m_fft.run()
+        per_particle_fft = m_fft.timeseries
+        assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 #testing on step trajectory
 def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3x**2

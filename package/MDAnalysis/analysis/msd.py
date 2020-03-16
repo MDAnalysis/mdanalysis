@@ -157,7 +157,9 @@ class EinsteinMSD(object):
     dim_fac : float
         Dimensionality :math:`d` of the MSD.
     timeseries : :class:`np.ndarray`
-        The MSD with respect to lag-time.
+        The averaged MSD with respect to lag-time.
+    msd_per_particle : :class:`np.ndarray`
+        The MSD of each individual particle with respect to lag-time.
     N_frames : int
         Number of frames in trajectory.
     N_particles : int
@@ -197,6 +199,7 @@ class EinsteinMSD(object):
         #result
         self.dim_fac = 0
         self.timeseries = None
+        self.msd_per_particle = None
 
         #prep
         self._prepare()
@@ -295,6 +298,7 @@ class EinsteinMSD(object):
                 disp = self._position_array[:-lag,n,self._dim if lag else None] - self._position_array[lag:,n,self._dim]
                 sqdist = np.square(disp, dtype=np.float64).sum(axis=1, dtype=np.float64) #accumulation in anything other than f64 is innacurate
                 msds_byparticle[lag,n] = np.mean(sqdist, dtype=np.float64)
+        self.msd_per_particle = msds_byparticle
         msds = msds_byparticle.mean(axis=1, dtype=np.float64)
         return msds
 
@@ -328,7 +332,8 @@ class EinsteinMSD(object):
         S2= np.sum(S2accumulate,axis=0,dtype=np.float64)
 
         msds_byparticle.append(S1-2*S2)
-        msds = np.concatenate(msds_byparticle,axis=1).mean(axis=-1, dtype=np.float64)
+        self.msd_per_particle = np.concatenate(msds_byparticle,axis=1)
+        msds = self.msd_per_particle.mean(axis=-1, dtype=np.float64)
         return msds
 
     @staticmethod
