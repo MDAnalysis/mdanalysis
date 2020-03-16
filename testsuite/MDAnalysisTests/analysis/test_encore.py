@@ -486,7 +486,7 @@ class TestEncoreClustering(object):
         cluster_assignment = method(coordinates)
         assert len(set(cluster_assignment)) == clusters, \
                      "Unexpected result: {0}".format(cluster_assignment)
-                     
+                 
     def test_clustering_DBSCAN_direct(self, ens1):
         pytest.importorskip('sklearn')
         method = encore.DBSCAN(eps=0.5, min_samples=2)

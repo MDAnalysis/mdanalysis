@@ -84,9 +84,10 @@ class ClusteringMethod (object):
             encore.utils.TriangularMatrix, encoding the conformational
             distance matrix
 
-        Returns
-        -------
-         This method doesn't return anything, it raises a NotImplementedError
+        Raises
+        ------
+        NotImplementedError
+               
         
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
@@ -147,9 +148,10 @@ class AffinityPropagationNative(ClusteringMethod):
         Returns
         -------
         numpy.array : array, shape(n_elements) 
-        centroid frames of the clusters for all of the elements
+            centroid frames of the clusters for all of the elements
 
-        .. versionchanged:: this method no longer returns details
+        .. versionchanged:: 1.0.0
+           This method no longer returns ``details``
         """
         clusters = affinityprop.AffinityPropagation(
             s=distance_matrix * -1.,   # invert sign
@@ -216,9 +218,10 @@ if sklearn:
             Returns
             -------
             numpy.array : array, shape(n_elements) 
-            centroid frames of the clusters for all of the elements
+                centroid frames of the clusters for all of the elements
 
-            .. versionchanged:: this method no longer returns details
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting Affinity Propagation: {0}".format
                          (self.ap.get_params()))
@@ -294,9 +297,10 @@ if sklearn:
             Returns
             -------
             numpy.array : array, shape(n_elements) 
-            centroid frames of the clusters for all of the elements
+                centroid frames of the clusters for all of the elements
 
-            .. versionchanged:: this method no longer returns details
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting DBSCAN: {0}".format(
                 self.dbscan.get_params()))
@@ -419,9 +423,10 @@ if sklearn:
             Returns
             -------
             numpy.array : array, shape(n_elements) 
-            centroid frames of the clusters for all of the elements
+                centroid frames of the clusters for all of the elements
 
-            .. versionchanged:: this method no longer returns details
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting Kmeans: {0}".format(
                          (self.kmeans.get_params())))
