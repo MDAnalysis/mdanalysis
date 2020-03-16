@@ -103,8 +103,8 @@ def test_fft_vs_simple_default(msd, msd_fft):
     assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
 def test_fft_vs_simple_default_per_particle(msd, msd_fft):
-    per_particle_simple = msd.timeseries
-    per_particle_fft = msd_fft.timeseries
+    per_particle_simple = msd.msd_per_particle
+    per_particle_fft = msd_fft.msd_per_particle
     assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 def test_fft_vs_simple_all_dims(dimension_list, u):
@@ -121,10 +121,10 @@ def test_fft_vs_simple_all_dims_per_particle(dimension_list, u):
     for dim in dimension_list:
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
         m_simple.run()
-        per_particle_simple = m_simple.timeseries
+        per_particle_simple = m_simple.msd_per_particle
         m_fft = MSD(u,SELECTION, msd_type=dim, fft=True)
         m_fft.run()
-        per_particle_fft = m_fft.timeseries
+        per_particle_fft = m_fft.msd_per_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 #testing on step trajectory
