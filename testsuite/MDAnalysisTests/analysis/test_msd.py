@@ -92,6 +92,11 @@ def characteristic_poly(n,d): #polynomial that describes unit step trajectory MS
     y = d*x*x
     return y
 
+#test some basic size and shape things
+def test_selection_works(msd):
+    assert_equal(msd.N_particles, 10)
+
+
 #testing on the  PSF, DCD trajectory
 def test_fft_vs_simple_default(msd, msd_fft):
     timeseries_simple = msd.timeseries
