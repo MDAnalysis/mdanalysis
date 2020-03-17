@@ -87,7 +87,7 @@ class ClusteringMethod (object):
         Raises
         ------
         NotImplementedError
-               
+           Method or behavior needs to be defined by a subclass    
         
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
