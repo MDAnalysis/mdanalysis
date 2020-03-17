@@ -1360,9 +1360,9 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         # good and can easily be misled (e.g., when one of the selections
         # had fewer atoms but the residues in mobile and reference have
         # each the same number)
-        if not hasattr(ag1, 'masses') and not hasattr(ag2, 'masses'):
+        if not hasattr(ag1, 'masses') or not hasattr(ag2, 'masses'):
             # # WARNING:
-            warnings.warn("Atoms could not be matched since they don't contain masses.",UserWarning)
+            warnings.warn("Atoms could not be matched since they don't contain masses."category=SelectionWarning)
         else:
             try:
                 mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
@@ -1373,26 +1373,26 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                 logger.error(errmsg)
                 raise_from(SelectionError(errmsg), None)
 
-        if np.any(mass_mismatches):
-            # Test 2 failed.
-            # diagnostic output:
-            logger.error("Atoms: reference | trajectory")
-            for ar, at in zip(ag1[mass_mismatches], ag2[mass_mismatches]):
-                logger.error(
-                    "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(
-                        ar.segid,
-                        ar.resid,
-                        ar.resname,
-                        ar.name,
-                        ar.mass,
-                        at.segid,
-                        at.resid,
-                        at.resname,
-                        at.name,
-                        at.mass))
-            errmsg = ("Inconsistent selections, masses differ by more than {0}; "
-                    "mis-matching atoms are shown above.").format(tol_mass)
-            logger.error(errmsg)
-            raise SelectionError(errmsg)
+            if np.any(mass_mismatches):
+                # Test 2 failed.
+                # diagnostic output:
+                logger.error("Atoms: reference | trajectory")
+                for ar, at in zip(ag1[mass_mismatches], ag2[mass_mismatches]):
+                    logger.error(
+                        "{0!s:>4} {1:3d} {2!s:>3} {3!s:>3} {4:6.3f}  |  {5!s:>4} {6:3d} {7!s:>3} {8!s:>3} {9:6.3f}".format(
+                            ar.segid,
+                            ar.resid,
+                            ar.resname,
+                            ar.name,
+                            ar.mass,
+                            at.segid,
+                            at.resid,
+                            at.resname,
+                            at.name,
+                            at.mass))
+                errmsg = ("Inconsistent selections, masses differ by more than {0}; "
+                        "mis-matching atoms are shown above.").format(tol_mass)
+                logger.error(errmsg)
+                raise SelectionError(errmsg)
 
     return ag1, ag2
