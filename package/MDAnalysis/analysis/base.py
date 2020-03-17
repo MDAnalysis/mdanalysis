@@ -126,14 +126,9 @@ class AnalysisBase(object):
         """
         self._trajectory = trajectory
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
-        if start is not None:
-            self._start = start
-        elif stop is not None:
-            self._stop = stop
-        elif step is not None:
-            self._step = step
-        else:
-            warnings.warn("Deprecation Warning", DeprecationWarning)
+        self.start = start
+        self.stop = stop
+        self.step = step
         self.n_frames = len(range(start, stop, step))
         interval = int(self.n_frames // 100)
         if interval == 0:
@@ -178,7 +173,7 @@ class AnalysisBase(object):
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
         verbose = getattr(self, '_verbose', False) if verbose is None else verbose
-        if verbose == True : self.verbose = verbose
+        self._verbose = verbose
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
