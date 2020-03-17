@@ -103,7 +103,7 @@ the crystallographic temperature factors (B-factor) with :func:`Bfactor2RMSF`.
    .. attribute:: density
 
       After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
-      stored in the :attr:`density` attribut as a :class:`Density` instance.
+      stored in the :attr:`density` attribute as a :class:`Density` instance.
 
 
 Density object
@@ -386,8 +386,6 @@ class DensityAnalysis(AnalysisBase):
                  metadata=None, padding=2.0,
                  gridcenter=None,
                  xdim=None, ydim=None, zdim=None):
-        """
-        """
         u = atomgroup.universe
         super(DensityAnalysis, self).__init__(u.trajectory)
         self._atomgroup = atomgroup
