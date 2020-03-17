@@ -30,7 +30,7 @@ import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found, tempdir
-from MDAnalysis.coordinates.GRO import GROReader, GROWriter
+from MDAnalysis.tests.datafiles import GRO
 from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
