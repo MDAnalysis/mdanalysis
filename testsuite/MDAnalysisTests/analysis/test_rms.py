@@ -173,6 +173,10 @@ class TestRMSD(object):
         return [[0, 1, 0], [49, 50, 4.74920]]
 
     @pytest.fixture()
+    def correct_values_mass_add_ten(self):
+        return [[0, 1, 0.0632], [49, 50, 4.7710]]
+
+    @pytest.fixture()
     def correct_values_group(self):
         return [[0, 1, 0, 0, 0],
                 [49, 50, 4.7857, 4.7048, 4.6924]]
@@ -254,7 +258,7 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match" +
                             "test values")
 
-    def test_custom_groupselection_weights_applied_1D_array(self, universe, correct_values_mass):
+    def test_custom_groupselection_weights_applied_1D_array(self, universe):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                             select='backbone',
                                             groupselections=['name CA and resid 1-5', 'name CA and resid 1'],
@@ -346,16 +350,18 @@ class TestRMSD(object):
             RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                                 reference=reference)
 
-    def test_ref_mobile_mass_mismapped(self, universe):
+    def test_ref_mobile_mass_mismapped(self, universe,correct_values_mass_add_ten):
         reference = MDAnalysis.Universe(PSF, DCD)
-        universe.atoms.masses = np.zeros(len(universe.atoms.masses))
-        with pytest.raises(ZeroDivisionError):
-            RMSD = MDAnalysis.analysis.rms.RMSD(universe,
+        universe.atoms.masses = universe.atoms.masses + 10
+        RMSD = MDAnalysis.analysis.rms.RMSD(universe,
                                                 reference=reference,
                                                 select='all',
                                                 weights='mass',
                                                 tol_mass=100)
-            RMSD.run()
+        RMSD.run(step=49)
+        assert_almost_equal(RMSD.rmsd, correct_values_mass_add_ten, 4,
+                            err_msg="error: rmsd profile should match "
+                            "between true values and calculated values")
 
     def test_group_selections_unequal_len(self, universe):
         reference = MDAnalysis.Universe(PSF, DCD)
