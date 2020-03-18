@@ -30,7 +30,6 @@ import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found, tempdir
-from MDAnalysis.tests.datafiles import GRO
 from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
@@ -152,15 +151,12 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
-    def test_no_atom_masses(self, universe, reference,
-                   selection="gro",weights=None):
+    def test_no_atom_masses(self, universe, reference):
         #if no masses are present #issue 2469
-        u = mda.Universe(selection)
-        protein = u.select_atoms('bynum 1-518')
-        traj = mda.Universe(xtc, xtc)
+        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
         #AlignTraj(traj, protein, select='bynum 1-518', in_memory=True)
         with pytest.warns(SelectionWarning):
-            align.get_matching_atoms(reference.atoms, reference.atoms)
+            align.get_matching_atoms(u.atoms, u.atoms)
 
 
 class TestAlign(object):

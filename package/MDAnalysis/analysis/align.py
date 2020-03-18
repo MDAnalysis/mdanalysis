@@ -1360,7 +1360,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         # good and can easily be misled (e.g., when one of the selections
         # had fewer atoms but the residues in mobile and reference have
         # each the same number)
-        if not hasattr(ag1, 'masses') or not hasattr(ag2, 'masses'):
+        if (not hasattr(ag1, 'masses') or not hasattr(ag2, 'masses')):
             # # WARNING:
             msg="Atoms could not be matched since they don't contain masses."
             logger.info(msg)
