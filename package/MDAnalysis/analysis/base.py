@@ -123,6 +123,9 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+            
+        .. versionchanged:: 1.0.0
+        added verbose argument 
         """
         self._trajectory = trajectory
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
@@ -168,6 +171,10 @@ class AnalysisBase(object):
             number of frames to skip between each analysed frame
         verbose : bool, optional
             Turn on verbosity
+            
+        .. versionchanged:: 1.0.0
+        verbose explicitly passed to _setup_frames as argument for temporary 
+        overriding of __init__ set verbose
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
