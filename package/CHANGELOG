@@ -16,7 +16,7 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         ss62171, Luthaf
+         ss62171, Luthaf, Purva-Chaudhari
 
   * 0.21.0
 
@@ -101,6 +101,8 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
 
 Changes
+  * Overriding verbose in run() by passing it explicitly to _setup_frames 
+    (Issue #2504)(PR #2631)
   * Removed deprecated :meth:`PersistenceLength.perform_fit` (Issue #2596)
   * Changed :meth:`PSAnalysis.generate_paths` keywords `store` and `filename`
     defaults to `False` and `None` (Issue #2593)
