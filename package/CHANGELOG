@@ -16,7 +16,8 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz
+         ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
+         wvandertoorn
 
   * 0.21.0
 
@@ -39,7 +40,7 @@ Fixes
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
     (Issue #2512)
   * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
-  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
+  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in
     `MDAnalysis.analysis.psa`
   * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
@@ -47,7 +48,7 @@ Fixes
   * ClusterCollection.get_ids now returns correctly (Issue #2464)
   * Removes files for stubs mainly introduced in 0.11.0 (Issue #2443)
   * Removes support for reading AMBER NetCDF files with `cell_angle` units set
-    to `degrees` instead of the convention agreed `degree` (Issue #2327). 
+    to `degrees` instead of the convention agreed `degree` (Issue #2327).
   * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
@@ -74,6 +75,7 @@ Fixes
   * Added missing selection module to leaflet.py (Issue #2612)
 
 Enhancements
+  * Added new density.DensityAnalysis (Issue #2502)
   * Added ability to use Chemfiles as a trajectory reader backend (PR #1862)
   * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
     for running HOLE on singular PDB files and class (HoleAnalysis) for 
@@ -124,15 +126,15 @@ Changes
     Segment.r1, Universe.s4AKE).  Use select_atoms instead (Issue #1377)
   * Calling Universe() now raises a TypeError advising you to use Universe.empty.
     Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
-  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
-    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
+  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__`
+    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run`
     (Issue #1463)
   * Standardize `select` keyword by removing `selection`, `atomselection`
     and `ref_select` (Issue #2461, Issue #2530)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
-    (Issue #2513). 
+    (Issue #2513).
   * Removes the `nproc` keyword from
     :class:`Waterdynamics.HydrogenBondLifetimes` as the multiprocessing functionality
     did not work in some cases(Issues #2511).
@@ -161,6 +163,9 @@ Changes
 Deprecations
   * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
+  * analysis.density.density_from_Universe() (remove in 2.0)
+  * analysis.density.notwithin_coordinates_factory() (remove in 2.0)
+  * analysis.density.density_from_PDB and BfactorDensityCreator (remove in 2.0)
 
 
 09/05/19 IAlibay, richardjgowers
