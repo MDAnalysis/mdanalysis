@@ -110,7 +110,8 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">4.8.1. Generating densities from trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#generating-a-density-from-a-md-trajectory">4.8.1.1. Generating a density from a MD trajectory</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#creating-densities">4.8.1.2. Creating densities</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#supporting-classes-and-functions">4.8.1.3. Supporting classes and functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#density-object">4.8.1.3. Density object</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deprecated-functionality">4.8.1.4. Deprecated functionality</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="lineardensity.html">4.8.2. Linear Density — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
@@ -242,259 +243,229 @@ it <a class="footnote-reference" href="#fit" id="id3">[2]</a>.</li>
 <p>To generate the density of water molecules around a protein (assuming that the
 trajectory is already appropriately treated for periodic boundary artifacts and
 is suitably superimposed to provide a fixed reference frame) <a class="footnote-reference" href="#testraj" id="id4">[3]</a></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.density</span> <span class="kn">import</span> <span class="n">density_from_Universe</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis.density</span> <span class="kn">import</span> <span class="n">DensityAnalysis</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
-<span class="n">D</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
-<span class="n">D</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
-<span class="n">D</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
+<span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ow</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The positions of all water oxygens are histogrammed on a grid with spacing
-<em>delta</em> = 1 Å. Initially the density is measured in <span class="math notranslate nohighlight">\(\text{Å}^{-3}\)</span>. With
-the <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_density" title="MDAnalysis.analysis.density.Density.convert_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.convert_density()</span></code></a> method, the units of measurement are
-changed. In the example we are now measuring the density relative to the
-literature value of the TIP4P water model at ambient conditions (see the values
-in <a class="reference internal" href="../units.html#MDAnalysis.units.water" title="MDAnalysis.units.water"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.units.water</span></code></a> for details). Finally, the density is written
-as an <a class="reference external" href="http://www.opendx.org/">OpenDX</a> compatible file that can be read in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, <a class="reference external" href="https://www.cgl.ucsf.edu/chimera/">Chimera</a>, or <a class="reference external" href="http://www.pymol.org/">PyMOL</a>.</p>
-<p>See <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> for details. In particular, the density is stored
-as a NumPy array in <a class="reference internal" href="#MDAnalysis.analysis.density.Density.grid" title="MDAnalysis.analysis.density.Density.grid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.grid</span></code></a>, which can be processed in
-any manner.</p>
+<p>The positions of all water oxygens (the <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> <cite>ow</cite>) are
+histogrammed on a grid with spacing <em>delta</em> = 1 Å. Initially the density is
+measured in <span class="math notranslate nohighlight">\(\text{Å}^{-3}\)</span>. With the <a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_density" title="MDAnalysis.analysis.density.Density.convert_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.convert_density()</span></code></a>
+method, the units of measurement are changed. In the example we are now
+measuring the density relative to the literature value of the TIP4P water model
+at ambient conditions (see the values in <a class="reference internal" href="../units.html#MDAnalysis.units.water" title="MDAnalysis.units.water"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.units.water</span></code></a> for
+details). Finally, the density is written as an <a class="reference external" href="http://www.opendx.org/">OpenDX</a> compatible file that
+can be read in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, <a class="reference external" href="https://www.cgl.ucsf.edu/chimera/">Chimera</a>, or <a class="reference external" href="http://www.pymol.org/">PyMOL</a>.</p>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object is accessible as the
+<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="MDAnalysis.analysis.density.DensityAnalysis.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DensityAnalysis.density</span></code></a> attribute.  In particular, the data for the
+density is stored as a NumPy array in <a class="reference internal" href="#MDAnalysis.analysis.density.Density.grid" title="MDAnalysis.analysis.density.Density.grid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.grid</span></code></a>, which can be
+processed in any manner.</p>
 </div>
 <div class="section" id="creating-densities">
 <h2>4.8.1.2. Creating densities<a class="headerlink" href="#creating-densities" title="Permalink to this headline">¶</a></h2>
-<p>The following functions take trajectory or coordinate data and generate a
-<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object.</p>
-<dl class="function">
-<dt id="MDAnalysis.analysis.density.density_from_Universe">
-<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>universe</em>, <em>delta=1.0</em>, <em>select='name OH2'</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>cutoff=0</em>, <em>soluteselection=None</em>, <em>use_kdtree=True</em>, <em>update_selection=False</em>, <em>verbose=False</em>, <em>interval=1</em>, <em>quiet=None</em>, <em>parameters=None</em>, <em>gridcenter=None</em>, <em>xdim=None</em>, <em>ydim=None</em>, <em>zdim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a density grid from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object.</p>
-<p>The trajectory is read, frame by frame, and the atoms selected with
-<cite>select</cite> are histogrammed on a grid with spacing <cite>delta</cite>.
-A physical density of units [Angstrom^{-3}] is returned (see
-<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> for more details).</p>
+<p>The <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> class generates a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> from an
+atomgroup. Its function equivalent <a class="reference internal" href="#MDAnalysis.analysis.density.density_from_Universe" title="MDAnalysis.analysis.density.density_from_Universe"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_from_Universe()</span></code></a> is deprecated.</p>
+<p><a class="reference internal" href="#MDAnalysis.analysis.density.density_from_PDB" title="MDAnalysis.analysis.density.density_from_PDB"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_from_PDB()</span></code></a> generates a pseudo-density from a PDB file by
+replacing each atom with a Gaussian density with a width that is computed from
+the crystallographic temperature factors (B-factor) with <a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code></a>.</p>
+<dl class="class">
+<dt id="MDAnalysis.analysis.density.DensityAnalysis">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">DensityAnalysis</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>delta=1.0</em>, <em>metadata=None</em>, <em>padding=2.0</em>, <em>gridcenter=None</em>, <em>xdim=None</em>, <em>ydim=None</em>, <em>zdim=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#DensityAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Volumetric density analysis.</p>
+<p>The trajectory is read, frame by frame, and the atoms in <cite>atomgroup</cite> are
+histogrammed on a 3D grid with spacing <cite>delta</cite>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object with a trajectory</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string (MDAnalysis syntax) for the species to be analyzed
-[“name OH2”]</li>
-<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Slice the trajectory as <code class="docutils literal notranslate"><span class="pre">trajectory[start:stop:step]</span></code>; default
-is to read the whole trajectory.</li>
-<li><strong>metadata</strong> (<em>dict. optional</em>) – <cite>dict</cite> of additional data to be saved with the object; the meta data
-are passed through as they are.</li>
-<li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – increase histogram dimensions by padding (on top of initial box size)
-in Angstrom. Padding is ignored when setting a user defined grid. [2.0]</li>
-<li><strong>soluteselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection for the solute, e.g. “protein” [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – With <cite>cutoff</cite>, select “&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;”
-(Special routines that are faster than the standard <code class="docutils literal notranslate"><span class="pre">AROUND</span></code> selection);
-any value that evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code> (such as the default 0) disables this
-special selection.</li>
-<li><strong>update_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Should the selection of atoms be updated for every step? [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
-<ul>
-<li><code class="docutils literal notranslate"><span class="pre">True</span></code>: atom selection is updated for each frame, can be slow</li>
-<li><code class="docutils literal notranslate"><span class="pre">False</span></code>: atoms are only selected at the beginning</li>
-</ul>
-</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Print status update to the screen for every <em>interval</em> frame? [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p>
-<ul>
-<li><code class="docutils literal notranslate"><span class="pre">False</span></code>: no status updates when a new frame is processed</li>
-<li><code class="docutils literal notranslate"><span class="pre">True</span></code>: status update every frame (including number of atoms
-processed, which is interesting with <code class="docutils literal notranslate"><span class="pre">update_selection=True</span></code>)</li>
-</ul>
-</li>
-<li><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Show status update every <cite>interval</cite> frame [1]</li>
-<li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – <cite>dict</cite> with some special parameters for <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> (see docs)</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><em>UpdatingAtomGroup</em></a>) – Group of atoms (such as all the water oxygen atoms) being analyzed.
+This can be an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> for
+selections that change every time step.</li>
+<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Bin size for the density grid in ångström (same in x,y,z).</li>
+<li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Increase histogram dimensions by padding (on top of initial box
+size) in ångström. Padding is ignored when setting a user defined
+grid.</li>
 <li><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em><em> (</em><em>optional</em><em>)</em>) – 3 element numpy array detailing the x, y and z coordinates of the
-center of a user defined grid box in Angstrom [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in Angstrom; ignored if
-gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in Angstrom; ignored if
-gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
-<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in Angstrom; ignored if
-gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+center of a user defined grid box in ångström.</li>
+<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in ångström; ignored if
+gridcenter is “None”.</li>
+<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in ångström; ignored if
+gridcenter is “None”.</li>
+<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in ångström; ignored if
+gridcenter is “None”.</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance with the histogrammed data together
-with associated metadata.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
 </td>
 </tr>
 </tbody>
 </table>
-<p class="rubric">Notes</p>
-<p>By default, the <cite>select</cite> is static, i.e., atoms are only selected
-once at the beginning. If you want <em>dynamically changing selections</em> (such
-as “name OW and around 4.0 (protein and not name H*)”, i.e., the water
-oxygen atoms that are within 4 Å of the protein heavy atoms) then set
-<code class="docutils literal notranslate"><span class="pre">update_selection=True</span></code>. For the special case of calculating a density of
-the “bulk” solvent away from a solute use the optimized selections with
-keywords <em>cutoff</em> and <em>soluteselection</em> (see Examples below).</p>
-<p class="rubric">Examples</p>
-<p>Basic use for creating a water density (just using the water oxygen atoms “OW”):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>If you are only interested in water within a certain region, e.g., within a
-vicinity around a binding site, you can use a selection that updates every
-step by setting the <cite>update_selection</cite> keyword argument:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">site_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                                     <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW and around 5 (resid 156 157 305)&#39;</span><span class="p">,</span>
-                                     <span class="n">update_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>A special case for an updating selection is to create the “bulk density”,
-i.e., the water outside the immediate solvation shell of a protein: Select
-all water oxygen atoms that are <em>farther away</em> than a given cut-off (say, 4
-Å) from the solute (here, heavy atoms of the protein):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bulk</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">,</span>
-                             <span class="n">solute</span><span class="o">=</span><span class="s2">&quot;protein and not name H*&quot;</span><span class="p">,</span>
-                             <span class="n">cutoff</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>(Using the special case for the bulk with <cite>soluteselection</cite> and <cite>cutoff</cite>
-improves performance over the simple <cite>update_selection</cite> approach.)</p>
-<p>If you are interested in explicitly setting a grid box of a given edge size
-and origin, you can use the gridcenter and x/y/zdim arguments. For example
-to plot the density of waters within 5 Å of a ligand (in this case the
-ligand has been assigned the residue name “LIG”) in a cubic grid with 20 Å
-edges which is centered on the centre of mass (COM) of the ligand:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Create a selection based on the ligand
-ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)
-
-# Extract the COM of the ligand
-ligand_COM = ligand_selection.center_of_mass()
-
-# Generate a density of waters on a cubic grid centered on the ligand COM
-# In this case, we update the atom selection as shown above.
-water_density = density_from_Universe(universe, delta=1.0,
-                                      select=&#39;name OW around 5 resname LIG&#39;,
-                                      update_selection=True,
-                                      gridcenter=ligand_COM,
-                                      xdim=20.0, ydim=20.0, zdim=20.0)
-
-(It should be noted that the `padding` keyword is not used when a user
-defined grid is assigned).
-</pre></div>
-</div>
-<p>As detailed above, the <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object returned contains a
-physical density in units of Angstrom^{-3}. If you are interested in
-recovering the underlying probability density, simply divide by the sum:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">physical_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-                                         <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
-
-<span class="n">probability_density</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">/</span> <span class="n">physical_density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>Similarly, if you would like to recover a grid containing a histogram of
-atom counts, simply multiply by the volume:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here we assume that numpy is imported as np</span>
-<span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">physical_density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
-
-<span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">*</span> <span class="n">volume</span>
-</pre></div>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.21.0: </span>Warns users that <cite>padding</cite> value is not used in user defined grids</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.20.0: </span>ProgressMeter now iterates over the number of frames analysed.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.19.0: </span><em>gridcenter</em>, <em>xdim</em>, <em>ydim</em> and <em>zdim</em> keywords added to allow for user
-defined boxes</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.13.0: </span><em>update_selection</em> and <em>quiet</em> keywords added</p>
-</div>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 0.16: </span>The keyword argument <em>quiet</em> is deprecated in favor of <em>verbose</em>.</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.21.0: </span>time_unit and length_unit default to ps and Angstrom now flags have
-been removed (same as previous flag defaults)</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.analysis.density.density_from_PDB">
-<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_PDB</code><span class="sig-paren">(</span><em>pdb</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#density_from_PDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_PDB" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a density from a single frame PDB.</p>
-<p>Typical use is to make a density from the crystal water
-molecules. The density is created from isotropic gaussians
-centered at each selected atoms. If B-factors are present in the
-file then they are used to calculate the width of the gaussian.</p>
-<p>Using the <em>sigma</em> keyword, one can override this choice and
-prescribe a gaussian width for all atoms (in Angstrom), which is
-calculated as described for <a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code></a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>pdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – PDB filename (should have the temperatureFactor set); ANISO
-records are currently <em>not</em> processed</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed
-[‘resname HOH and name O’]</li>
-<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
-<li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of additional data to be saved with the object [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – increase histogram dimensions by padding (on top of initial box size) [1.0]</li>
-<li><strong>sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – width (in Angstrom) of the gaussians that are used to build up the
-density; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then uses B-factors from <em>pdb</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">object with a density measured relative to the water density at
-standard conditions</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>The current implementation is <em>painfully</em> slow.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code></a></p>
+<p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">pmda.density.DensityAnalysis</span></code></p>
 </div>
+<p class="rubric">Notes</p>
+<p>Normal <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> instances represent a static selection of
+atoms. If you want <em>dynamically changing selections</em> (such as “name OW and
+around 4.0 (protein and not name H*)”, i.e., the water oxygen atoms that
+are within 4 Å of the protein heavy atoms) then create an
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> (see Examples).</p>
+<p class="rubric">Examples</p>
+<p>A common use case is to analyze the solvent density around a protein of
+interest. The density is calculated with <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> in the
+fixed coordinate system of the simulation unit cell. It is therefore
+necessary to orient and fix the protein with respect to the box coordinate
+system. In practice this means centering and superimposing the protein,
+frame by frame, on a reference structure and translating and rotating all
+other components of the simulation with the protein. In this way, the
+solvent will appear in the reference frame of the protein.</p>
+<p>An input trajectory must</p>
+<ol class="arabic simple">
+<li>have been centered on the protein of interest;</li>
+<li>have all molecules made whole that have been broken across periodic
+boundaries <a class="footnote-reference" href="#pbc" id="id5">[1]</a>;</li>
+<li>have the solvent molecules remapped so that they are closest to the
+solute (this is important when using triclinic unit cells such as
+a dodecahedron or a truncated octahedron) <a class="footnote-reference" href="#pbc" id="id6">[1]</a>;</li>
+<li>have a fixed frame of reference; for instance, by superimposing a
+protein on a reference structure so that one can study the solvent
+density around it <a class="footnote-reference" href="#fit" id="id7">[2]</a>.</li>
+</ol>
+<p class="rubric">Generate the density</p>
+<p>To generate the density of water molecules around a protein (assuming that
+the trajectory is already appropriately treated for periodic boundary
+artifacts and is suitably superimposed to provide a fixed reference frame)
+<a class="footnote-reference" href="#testraj" id="id8">[3]</a>, first  create the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> object by
+supplying an AtomGroup, then use  the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="MDAnalysis.analysis.density.DensityAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">density</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+<span class="n">ow</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;name OW&quot;</span><span class="p">)</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">density</span><span class="o">.</span><span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ow</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">D</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;TIP4P&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The positions of all water oxygens are histogrammed on a grid with spacing
+<em>delta</em> = 1 Å and stored as a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object in the attribute
+<a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="MDAnalysis.analysis.density.DensityAnalysis.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">DensityAnalysis.density</span></code></a>.</p>
+<p class="rubric">Working with a density</p>
+<p>A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> contains a large number of methods and attributes that
+are listed in the documentation. Here we use the
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density.convert_density" title="MDAnalysis.analysis.density.Density.convert_density"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.convert_density()</span></code></a> to convert the density from inverse cubic
+ångström to a density relative to the bulk density of TIP4P water at
+standard conditions. (MDAnalysis stores a number of literature values in
+<a class="reference internal" href="../units.html#MDAnalysis.units.water" title="MDAnalysis.units.water"><code class="xref py py-data docutils literal notranslate"><span class="pre">MDAnalysis.units.water</span></code></a>.)</p>
+<p>One can directly access the density as a 3D NumPy array through
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density.grid" title="MDAnalysis.analysis.density.Density.grid"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Density.grid</span></code></a>.</p>
+<p>By default, the <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object returned contains a physical
+density in units of Å<sup>-3</sup>. If you are interested in recovering the
+underlying <strong>probability density</strong>, simply divide by the sum:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">probability_density</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">/</span> <span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Similarly, if you would like to recover a grid containing a <strong>histogram of
+atom counts</strong>, simply multiply by the volume <cite>dV</cite> of each bin (or voxel);
+in this case you need to ensure that the physical density is measured in
+Å<sup>-3</sup> by converting it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># ensure that the density is A^{-3}</span>
+<span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s2">&quot;A^{-3}&quot;</span><span class="p">)</span>
+
+<span class="n">dV</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+<span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">grid</span> <span class="o">*</span> <span class="n">dV</span>
+</pre></div>
+</div>
+<p class="rubric">Writing the density to a file</p>
+<p>A density can be <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/formats.html">exported to different formats</a> with
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density.export" title="MDAnalysis.analysis.density.Density.export"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Density.export()</span></code></a> (thanks to the fact that <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is a
+subclass <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>, which provides the functionality).
+For example, to <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data">write a DX file</a>
+<code class="docutils literal notranslate"><span class="pre">water.dx</span></code> that can be read with VMD, PyMOL, or Chimera:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="o">.</span><span class="n">density</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;water.dx&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;double&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Example: Water density in the whole simulation</p>
+<p>Basic use for creating a water density (just using the water oxygen
+atoms “OW”):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="rubric">Example: Water in a binding site (updating selection)</p>
+<p>If you are only interested in water within a certain region, e.g., within
+a vicinity around a binding site, you can use a selection that updates
+every step by using an <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="MDAnalysis.core.groups.UpdatingAtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">near_waters</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW and around 5 (resid 156 157 305)&#39;</span><span class="p">,</span>
+              <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">D_site</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">near_waters</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p class="rubric">Example: Small region around a ligand (manual box selection)</p>
+<p>If you are interested in explicitly setting a grid box of a given edge size
+and origin, you can use the <cite>gridcenter</cite> and <cite>xdim</cite>/<cite>ydim</cite>/<cite>zdim</cite>
+arguments.  For example to plot the density of waters within 5 Å of a
+ligand (in this case the ligand has been assigned the residue name “LIG”)
+in a cubic grid with 20 Å edges which is centered on the center of mass
+(COM) of the ligand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a selection based on the ligand</span>
+<span class="n">ligand_selection</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resname LIG&quot;</span><span class="p">)</span>
+
+<span class="c1"># Extract the COM of the ligand</span>
+<span class="n">ligand_COM</span> <span class="o">=</span> <span class="n">ligand_selection</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">()</span>
+
+<span class="c1"># Create a density of waters on a cubic grid centered on the ligand COM</span>
+<span class="c1"># In this case, we update the atom selection as shown above.</span>
+<span class="n">ligand_waters</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name OW and around 5 resname LIG&#39;</span><span class="p">,</span>
+                                      <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">D_water</span> <span class="o">=</span> <span class="n">DensityAnalysis</span><span class="p">(</span><span class="n">ligand_waters</span><span class="p">,</span>
+                          <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                          <span class="n">gridcenter</span><span class="o">=</span><span class="n">ligand_COM</span><span class="p">,</span>
+                          <span class="n">xdim</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">zdim</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(It should be noted that the <cite>padding</cite> keyword is not used when a user
+defined grid is assigned).</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.density.DensityAnalysis.density">
+<code class="descname">density</code><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="Permalink to this definition">¶</a></dt>
+<dd><p>After the analysis (see the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="MDAnalysis.analysis.density.DensityAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> method), the resulting density is
+stored in the <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis.density" title="MDAnalysis.analysis.density.DensityAnalysis.density"><code class="xref py py-attr docutils literal notranslate"><span class="pre">density</span></code></a> attribute as a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="MDAnalysis.analysis.density.Bfactor2RMSF">
-<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">Bfactor2RMSF</code><span class="sig-paren">(</span><em>B</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Bfactor2RMSF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor</p>
-<p>RMSF and B-factor are related by <a class="reference internal" href="#willis1975" id="id5">[Willis1975]</a></p>
-<div class="math notranslate nohighlight">
-\[B = \frac{8\pi^2}{3} \rm{RMSF}^2\]</div>
-<p>and this function returns</p>
-<div class="math notranslate nohighlight">
-\[\rm{RMSF} = \sqrt{\frac{3 B}{8\pi^2}}\]</div>
-<p class="rubric">References</p>
-<table class="docutils citation" frame="void" id="willis1975" rules="none">
-<colgroup><col class="label" /><col /></colgroup>
+<dl class="method">
+<dt id="MDAnalysis.analysis.density.DensityAnalysis.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.DensityAnalysis.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform the calculation</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id5">[Willis1975]</a></td><td>BTM Willis and AW Pryor. <em>Thermal vibrations in crystallography</em>. Cambridge Univ. Press, 1975</td></tr>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – start frame of analysis</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – stop frame of analysis</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – number of frames to skip between each analysed frame</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Turn on verbosity</li>
+</ul>
+</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
 
+</dd></dl>
+
 </div>
-<div class="section" id="supporting-classes-and-functions">
-<h2>4.8.1.3. Supporting classes and functions<a class="headerlink" href="#supporting-classes-and-functions" title="Permalink to this headline">¶</a></h2>
-<p>The main output of the density creation functions is a
-<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance, which is derived from a
-<a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially, a 3D
-array with origin and lengths together with associated metadata (which
-can be used in downstream processing).</p>
+<div class="section" id="density-object">
+<h2>4.8.1.3. Density object<a class="headerlink" href="#density-object" title="Permalink to this headline">¶</a></h2>
+<p>The main output of the density creation functions is a <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a>
+instance, which is derived from a <a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a>. A
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> is essentially a 3D array with origin and lengths.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.Density">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">Density</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#Density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.Density" title="Permalink to this definition">¶</a></dt>
@@ -636,10 +607,7 @@ read from a file and the user has not set <code class="docutils literal notransl
 that the data are in fact a density.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></dt>
-<dd>the base class of <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a>.</dd>
-</dl>
+<p class="last"><a class="reference external" href="https://www.mdanalysis.org/GridDataFormats/gridData/core.html#gridData.core.Grid" title="(in GridDataFormats v0.5)"><code class="xref py py-class docutils literal notranslate"><span class="pre">gridData.core.Grid</span></code></a></p>
 </div>
 <p class="rubric">Examples</p>
 <p>Typical use:</p>
@@ -673,7 +641,7 @@ at ambient conditions:</p>
 </pre></div>
 </div>
 <p>After the final step, <code class="docutils literal notranslate"><span class="pre">D</span></code> will contain a density on a grid measured in
-Ångstrom, with the density values itself measured relative to the
+ångström, with the density values itself measured relative to the
 density of water.</p>
 </li>
 </ol>
@@ -991,9 +959,258 @@ is a better alternative for portability.</p>
 
 </dd></dl>
 
+</div>
+<div class="section" id="deprecated-functionality">
+<h2>4.8.1.4. Deprecated functionality<a class="headerlink" href="#deprecated-functionality" title="Permalink to this headline">¶</a></h2>
+<p>Use <a class="reference internal" href="#MDAnalysis.analysis.density.DensityAnalysis" title="MDAnalysis.analysis.density.DensityAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">DensityAnalysis</span></code></a> instead of <a class="reference internal" href="#MDAnalysis.analysis.density.density_from_Universe" title="MDAnalysis.analysis.density.density_from_Universe"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_from_Universe()</span></code></a>. The
+<a class="reference internal" href="#MDAnalysis.analysis.density.density_from_PDB" title="MDAnalysis.analysis.density.density_from_PDB"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_from_PDB()</span></code></a> function is no longer supported and will also be
+removed in 2.0.0.</p>
+<dl class="function">
+<dt id="MDAnalysis.analysis.density.density_from_Universe">
+<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_Universe</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_Universe" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>density_from_Universe</cite> is deprecated!</p>
+<p>Create a density grid from a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object.</p>
+<p>The trajectory is read, frame by frame, and the atoms selected with
+<cite>select</cite> are histogrammed on a grid with spacing <cite>delta</cite>.
+A physical density of units [Angstrom^{-3}] is returned (see
+<a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> for more details).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>universe</strong> (<em>MDAnalysis.Universe</em>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object with a trajectory</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – selection string (MDAnalysis syntax) for the species to be analyzed
+[“name OH2”]</li>
+<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – </li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Slice the trajectory as <code class="docutils literal notranslate"><span class="pre">trajectory[start:stop:step]</span></code>; default
+is to read the whole trajectory.</li>
+<li><strong>metadata</strong> (<em>dict. optional</em>) – <cite>dict</cite> of additional data to be saved with the object; the meta data
+are passed through as they are.</li>
+<li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – increase histogram dimensions by padding (on top of initial box size)
+in Angstrom. Padding is ignored when setting a user defined grid. [2.0]</li>
+<li><strong>soluteselection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – MDAnalysis selection for the solute, e.g. “protein” [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – With <cite>cutoff</cite>, select “&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;”
+(Special routines that are faster than the standard <code class="docutils literal notranslate"><span class="pre">AROUND</span></code> selection);
+any value that evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code> (such as the default 0) disables this
+special selection.</li>
+<li><strong>update_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Should the selection of atoms be updated for every step? [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</p>
+<ul>
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code>: atom selection is updated for each frame, can be slow</li>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code>: atoms are only selected at the beginning</li>
+</ul>
+</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p>Print status update to the screen for every <em>interval</em> frame? [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</p>
+<ul>
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code>: no status updates when a new frame is processed</li>
+<li><code class="docutils literal notranslate"><span class="pre">True</span></code>: status update every frame (including number of atoms
+processed, which is interesting with <code class="docutils literal notranslate"><span class="pre">update_selection=True</span></code>)</li>
+</ul>
+</li>
+<li><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Show status update every <cite>interval</cite> frame [1]</li>
+<li><strong>parameters</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – <cite>dict</cite> with some special parameters for <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> (see docs)</li>
+<li><strong>gridcenter</strong> (<em>numpy ndarray</em><em>, </em><em>float32</em><em> (</em><em>optional</em><em>)</em>) – 3 element numpy array detailing the x, y and z coordinates of the
+center of a user defined grid box in Angstrom [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>xdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined x dimension box edge in Angstrom; ignored if
+gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>ydim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined y dimension box edge in Angstrom; ignored if
+gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+<li><strong>zdim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – User defined z dimension box edge in Angstrom; ignored if
+gridcenter is <code class="docutils literal notranslate"><span class="pre">None</span></code></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> instance with the histogrammed data together
+with associated metadata.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>By default, the <cite>select</cite> is static, i.e., atoms are only selected
+once at the beginning. If you want <em>dynamically changing selections</em> (such
+as “name OW and around 4.0 (protein and not name H*)”, i.e., the water
+oxygen atoms that are within 4 Å of the protein heavy atoms) then set
+<code class="docutils literal notranslate"><span class="pre">update_selection=True</span></code>. For the special case of calculating a density of
+the “bulk” solvent away from a solute use the optimized selections with
+keywords <em>cutoff</em> and <em>soluteselection</em> (see Examples below).</p>
+<p class="rubric">Examples</p>
+<p>Basic use for creating a water density (just using the water oxygen atoms “OW”):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you are only interested in water within a certain region, e.g., within a
+vicinity around a binding site, you can use a selection that updates every
+step by setting the <cite>update_selection</cite> keyword argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">site_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                     <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW and around 5 (resid 156 157 305)&#39;</span><span class="p">,</span>
+                                     <span class="n">update_selection</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A special case for an updating selection is to create the “bulk density”,
+i.e., the water outside the immediate solvation shell of a protein: Select
+all water oxygen atoms that are <em>farther away</em> than a given cut-off (say, 4
+Å) from the solute (here, heavy atoms of the protein):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bulk</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">,</span>
+                             <span class="n">solute</span><span class="o">=</span><span class="s2">&quot;protein and not name H*&quot;</span><span class="p">,</span>
+                             <span class="n">cutoff</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(Using the special case for the bulk with <cite>soluteselection</cite> and <cite>cutoff</cite>
+improves performance over the simple <cite>update_selection</cite> approach.)</p>
+<p>If you are interested in explicitly setting a grid box of a given edge size
+and origin, you can use the gridcenter and x/y/zdim arguments. For example
+to plot the density of waters within 5 Å of a ligand (in this case the
+ligand has been assigned the residue name “LIG”) in a cubic grid with 20 Å
+edges which is centered on the centre of mass (COM) of the ligand:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Create a selection based on the ligand
+ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)
+
+# Extract the COM of the ligand
+ligand_COM = ligand_selection.center_of_mass()
+
+# Generate a density of waters on a cubic grid centered on the ligand COM
+# In this case, we update the atom selection as shown above.
+water_density = density_from_Universe(universe, delta=1.0,
+                                      select=&#39;name OW around 5 resname LIG&#39;,
+                                      update_selection=True,
+                                      gridcenter=ligand_COM,
+                                      xdim=20.0, ydim=20.0, zdim=20.0)
+
+(It should be noted that the `padding` keyword is not used when a user
+defined grid is assigned).
+</pre></div>
+</div>
+<p>As detailed above, the <a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a> object returned contains a
+physical density in units of Angstrom^{-3}. If you are interested in
+recovering the underlying probability density, simply divide by the sum:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">physical_density</span> <span class="o">=</span> <span class="n">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                                         <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OW&#39;</span><span class="p">)</span>
+
+<span class="n">probability_density</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">/</span> <span class="n">physical_density</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Similarly, if you would like to recover a grid containing a histogram of
+atom counts, simply multiply by the volume:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Here we assume that numpy is imported as np</span>
+<span class="n">volume</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">physical_density</span><span class="o">.</span><span class="n">delta</span><span class="p">)</span>
+
+<span class="n">atom_count_histogram</span> <span class="o">=</span> <span class="n">physical_density</span> <span class="o">*</span> <span class="n">volume</span>
+</pre></div>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.13.0: </span><em>update_selection</em> and <em>quiet</em> keywords added</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 0.16: </span>The keyword argument <em>quiet</em> is deprecated in favor of <em>verbose</em>.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.19.0: </span><em>gridcenter</em>, <em>xdim</em>, <em>ydim</em> and <em>zdim</em> keywords added to allow for user
+defined boxes</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.20.0: </span>ProgressMeter now iterates over the number of frames analysed.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>time_unit and length_unit default to ps and Angstrom now flags have
+been removed (same as previous flag defaults);
+warns users that <cite>padding</cite> value is not used in user defined grids</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><cite>density_from_Universe</cite> will removed in 2.0.0; use <cite>DensityAnalysis</cite> instead</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Use <code class="docutils literal notranslate"><span class="pre">DensityAnalysis(u,</span> <span class="pre">...).run().density</span></code> instead.
+<cite>density_from_Universe</cite> will be removed in release 2.0.0.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.density.density_from_PDB">
+<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">density_from_PDB</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.density_from_PDB" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>density_from_PDB</cite> is deprecated!</p>
+<p>Create a density from a single frame PDB.</p>
+<p>Typical use is to make a density from the crystal water
+molecules. The density is created from isotropic gaussians
+centered at each selected atoms. If B-factors are present in the
+file then they are used to calculate the width of the gaussian.</p>
+<p>Using the <em>sigma</em> keyword, one can override this choice and
+prescribe a gaussian width for all atoms (in Angstrom), which is
+calculated as described for <a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pdb</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – PDB filename (should have the temperatureFactor set); ANISO
+records are currently <em>not</em> processed</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – selection string (MDAnalysis syntax) for the species to be analyzed
+[‘resname HOH and name O’]</li>
+<li><strong>delta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – bin size for the density grid in Angstrom (same in x,y,z) [1.0]</li>
+<li><strong>metadata</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – dictionary of additional data to be saved with the object [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>padding</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – increase histogram dimensions by padding (on top of initial box size) [1.0]</li>
+<li><strong>sigma</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – width (in Angstrom) of the gaussians that are used to build up the
+density; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then uses B-factors from <em>pdb</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">object with a density measured relative to the water density at
+standard conditions</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#MDAnalysis.analysis.density.Density" title="MDAnalysis.analysis.density.Density"><code class="xref py py-class docutils literal notranslate"><span class="pre">Density</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The current implementation is <em>painfully</em> slow.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code></a></p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><cite>density_from_PDB</cite> is deprecated!
+<cite>density_from_PDB</cite> will be removed in release 2.0.0.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.density.Bfactor2RMSF">
+<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">Bfactor2RMSF</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>Bfactor2RMSF</cite> is deprecated!</p>
+<p>Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor</p>
+<p>RMSF and B-factor are related by <a class="reference internal" href="#willis1975" id="id9">[Willis1975]</a></p>
+<div class="math notranslate nohighlight">
+\[B = \frac{8\pi^2}{3} \rm{RMSF}^2\]</div>
+<p>and this function returns</p>
+<div class="math notranslate nohighlight">
+\[\rm{RMSF} = \sqrt{\frac{3 B}{8\pi^2}}\]</div>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="willis1975" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id9">[Willis1975]</a></td><td>BTM Willis and AW Pryor. <em>Thermal vibrations in crystallography</em>. Cambridge Univ. Press, 1975</td></tr>
+</tbody>
+</table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.density.Bfactor2RMSF" title="MDAnalysis.analysis.density.Bfactor2RMSF"><code class="xref py py-func docutils literal notranslate"><span class="pre">Bfactor2RMSF()</span></code></a> is no longer supported and will be removed in 2.0.0.
+as part of the removal of the <a class="reference internal" href="#MDAnalysis.analysis.density.density_from_PDB" title="MDAnalysis.analysis.density.density_from_PDB"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_from_PDB()</span></code></a> function.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><cite>Bfactor2RMSF</cite> is deprecated!
+<cite>Bfactor2RMSF</cite> will be removed in release 2.0.0.</p>
+</div>
+</dd></dl>
+
 <dl class="class">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">BfactorDensityCreator</code><span class="sig-paren">(</span><em>pdb</em>, <em>delta=1.0</em>, <em>select='resname HOH and name O'</em>, <em>metadata=None</em>, <em>padding=1.0</em>, <em>sigma=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">BfactorDensityCreator</code><span class="sig-paren">(</span><em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a density grid from a pdb file using MDAnalysis.</p>
 <p>The main purpose of this function is to convert crystal waters in
 an X-ray structure into a density so that one can compare the
@@ -1003,6 +1220,7 @@ estimated by placing Gaussians of width sigma at the position of
 all selected atoms.</p>
 <p>Sigma can be fixed or taken from the B-factor field, in which case
 sigma is taken as sqrt(3.*B/8.)/pi (see <code class="xref py py-func docutils literal notranslate"><span class="pre">BFactor2RMSF()</span></code>).</p>
+<p><cite>__init__</cite> is deprecated!</p>
 <p>Construct the density from psf and pdb and the select.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1039,6 +1257,10 @@ that can be easily matched to a broader density distribution.</p>
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="#MDAnalysis.analysis.density.density_from_PDB" title="MDAnalysis.analysis.density.density_from_PDB"><code class="xref py py-func docutils literal notranslate"><span class="pre">density_from_PDB()</span></code></a></p>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><cite>__init__</cite> is deprecated!
+<cite>__init__</cite> will be removed in release 2.0.0.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.density.BfactorDensityCreator.Density">
 <code class="descname">Density</code><span class="sig-paren">(</span><em>threshold=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#BfactorDensityCreator.Density"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.BfactorDensityCreator.Density" title="Permalink to this definition">¶</a></dt>
@@ -1049,8 +1271,9 @@ that can be easily matched to a broader density distribution.</p>
 
 <dl class="function">
 <dt id="MDAnalysis.analysis.density.notwithin_coordinates_factory">
-<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">notwithin_coordinates_factory</code><span class="sig-paren">(</span><em>universe</em>, <em>sel1</em>, <em>sel2</em>, <em>cutoff</em>, <em>not_within=True</em>, <em>use_kdtree=True</em>, <em>updating_selection=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/density.html#notwithin_coordinates_factory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.density.notwithin_coordinates_factory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate optimized selection for ‘<em>sel1</em> not within <em>cutoff</em> of <em>sel2</em>’</p>
+<code class="descclassname">MDAnalysis.analysis.density.</code><code class="descname">notwithin_coordinates_factory</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.density.notwithin_coordinates_factory" title="Permalink to this definition">¶</a></dt>
+<dd><p><cite>notwithin_coordinates_factory</cite> is deprecated!</p>
+<p>Generate optimized selection for ‘<em>sel1</em> not within <em>cutoff</em> of <em>sel2</em>’</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1111,47 +1334,42 @@ a different cut-off:</p>
 </div>
 <p>(Readability is enhanced by properly naming the generated function
 <code class="docutils literal notranslate"><span class="pre">within_coordinates()</span></code>.)</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><a class="reference internal" href="#MDAnalysis.analysis.density.notwithin_coordinates_factory" title="MDAnalysis.analysis.density.notwithin_coordinates_factory"><code class="xref py py-func docutils literal notranslate"><span class="pre">notwithin_coordinates_factory()</span></code></a> is no longer supported and will be
+removed in 2.0.0.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><cite>notwithin_coordinates_factory</cite> is deprecated!
+<cite>notwithin_coordinates_factory</cite> will be removed in release 2.0.0.</p>
+</div>
 </dd></dl>
 
 <p class="rubric">Footnotes</p>
 <table class="docutils footnote" frame="void" id="pbc" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id6">3</a>)</em> <p>Making molecules whole can be accomplished with the
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id5">3</a>, <a class="fn-backref" href="#id6">4</a>)</em> Making molecules whole can be accomplished with the
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.wrap" title="MDAnalysis.core.groups.AtomGroup.wrap"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.wrap()</span></code></a> of
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms</span></code> (use <code class="docutils literal notranslate"><span class="pre">compound=&quot;fragments&quot;</span></code>).</p>
-<p>When using, for instance, the <a class="reference external" href="http://www.gromacs.org">Gromacs</a> command <a class="reference external" href="http://manual.gromacs.org/programs/gmx-trjconv.html">gmx trjconv</a></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gmx trjconv -pbc mol -center -ur compact
-</pre></div>
-</div>
-<p class="last">one can make the molecules whole <code class="docutils literal notranslate"><span class="pre">-pbc</span> <span class="pre">whole</span></code>, center it on a group
-(<code class="docutils literal notranslate"><span class="pre">-center</span></code>), and also pack all molecules in a compact unitcell
-representation, which can be useful for density generation.</p>
-</td></tr>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">Universe.atoms</span></code> (use <code class="docutils literal notranslate"><span class="pre">compound=&quot;fragments&quot;</span></code>).  or the
+PBC-wrapping transformations in
+<a class="reference internal" href="../transformations/wrap.html#module-MDAnalysis.transformations.wrap" title="MDAnalysis.transformations.wrap"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.wrap</span></code></a>.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="fit" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id3">[2]</a></td><td><p class="first">Superposition can be performed with
-<a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a>.</p>
-<p>The <a class="reference external" href="http://www.gromacs.org">Gromacs</a> command <a class="reference external" href="http://manual.gromacs.org/programs/gmx-trjconv.html">gmx trjconv</a></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>gmx trjconv -fit rot+trans
-</pre></div>
-</div>
-<p class="last">will also accomplish such a superposition. Note that the fitting has
-to be done in a <em>separate</em> step from the treatment of the periodic
-boundaries <a class="footnote-reference" href="#pbc" id="id6">[1]</a>.</p>
-</td></tr>
+<tr><td class="label">[2]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id7">2</a>)</em> Superposition can be performed with
+<a class="reference internal" href="align.html#MDAnalysis.analysis.align.AlignTraj" title="MDAnalysis.analysis.align.AlignTraj"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align.AlignTraj</span></code></a> or the fitting
+transformations in <a class="reference internal" href="../transformations/fit.html#module-MDAnalysis.transformations.fit" title="MDAnalysis.transformations.fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a>.</td></tr>
 </tbody>
 </table>
 <table class="docutils footnote" frame="void" id="testraj" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label"><a class="fn-backref" href="#id4">[3]</a></td><td>Note that the trajectory in the example (<cite>XTC</cite>) is <em>not</em> properly
-made whole and fitted to a reference structure; these steps were
-omitted to clearly show the steps necessary for the actual density
-calculation.</td></tr>
+<tr><td class="label">[3]</td><td><em>(<a class="fn-backref" href="#id4">1</a>, <a class="fn-backref" href="#id8">2</a>)</em> Note that the trajectory in the example (<cite>XTC</cite>) is <em>not</em>
+properly made whole and fitted to a reference structure;
+these steps were omitted to clearly show the steps necessary
+for the actual density calculation.</td></tr>
 </tbody>
 </table>
 </div>
@@ -1177,7 +1395,7 @@ calculation.</td></tr>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>

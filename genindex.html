@@ -1854,11 +1854,15 @@
       </ul></li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density">Density (class in MDAnalysis.analysis.density)</a>
 </li>
+      <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis.density">density (MDAnalysis.analysis.density.DensityAnalysis attribute)</a>
+</li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.BfactorDensityCreator.Density">Density() (MDAnalysis.analysis.density.BfactorDensityCreator method)</a>
 </li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_PDB">density_from_PDB() (in module MDAnalysis.analysis.density)</a>
 </li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.density_from_Universe">density_from_Universe() (in module MDAnalysis.analysis.density)</a>
+</li>
+      <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis">DensityAnalysis (class in MDAnalysis.analysis.density)</a>
 </li>
       <li><a href="documentation_pages/units.html#MDAnalysis.units.densityUnit_factor">densityUnit_factor (in module MDAnalysis.units)</a>
 </li>
@@ -1950,10 +1954,10 @@
 </li>
       <li><a href="documentation_pages/topology/DMSParser.html#MDAnalysis.topology.DMSParser.DMSParser">DMSParser (class in MDAnalysis.topology.DMSParser)</a>
 </li>
-      <li><a href="documentation_pages/coordinates/DMS.html#MDAnalysis.coordinates.DMS.DMSReader">DMSReader (class in MDAnalysis.coordinates.DMS)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="documentation_pages/coordinates/DMS.html#MDAnalysis.coordinates.DMS.DMSReader">DMSReader (class in MDAnalysis.coordinates.DMS)</a>
+</li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atom">do_atom() (in module MDAnalysis.topology.tpr.utils)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.utils.do_atoms">do_atoms() (in module MDAnalysis.topology.tpr.utils)</a>
@@ -4474,6 +4478,8 @@
       <li><a href="documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase.run">run() (MDAnalysis.analysis.base.AnalysisBase method)</a>
 
       <ul>
+        <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis.run">(MDAnalysis.analysis.density.DensityAnalysis method)</a>
+</li>
         <li><a href="documentation_pages/analysis/diffusionmap.html#MDAnalysis.analysis.diffusionmap.DiffusionMap.run">(MDAnalysis.analysis.diffusionmap.DiffusionMap method)</a>
 </li>
         <li><a href="documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Dihedral.run">(MDAnalysis.analysis.dihedrals.Dihedral method)</a>
@@ -5578,7 +5584,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>
