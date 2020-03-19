@@ -108,7 +108,7 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         self._verbose = verbose
 
-    def _setup_frames(self, trajectory, start=None, stop=None, step=None):
+    def _setup_frames(self, trajectory, start=None, stop=None, step=None, verbose = None):
         """
         Pass a Reader object and define the desired iteration pattern
         through the trajectory
@@ -134,7 +134,7 @@ class AnalysisBase(object):
         if interval == 0:
             interval = 1
 
-        verbose = getattr(self, '_verbose', False)
+        
         self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
                                  interval=interval, verbose=verbose)
 
@@ -173,8 +173,7 @@ class AnalysisBase(object):
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
         verbose = getattr(self, '_verbose', False) if verbose is None else verbose
-        self._verbose = verbose
-        self._setup_frames(self._trajectory, start, stop, step)
+        self._setup_frames(self._trajectory, start, stop, step, verbose)
         logger.info("Starting preparation")
         self._prepare()
         for i, ts in enumerate(
