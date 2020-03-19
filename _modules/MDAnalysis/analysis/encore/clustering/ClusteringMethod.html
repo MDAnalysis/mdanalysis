@@ -259,10 +259,11 @@
 <span class="sd">            encore.utils.TriangularMatrix, encoding the conformational</span>
 <span class="sd">            distance matrix</span>
 
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        numpy.array</span>
-<span class="sd">            list of cluster indices</span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">           Method or behavior needs to be defined by a subclass    </span>
+<span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Class </span><span class="si">{0}</span><span class="s2"> doesn&#39;t implement __call__()&quot;</span>
                                   <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
@@ -321,8 +322,11 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        numpy.array</span>
-<span class="sd">            list of cluster indices</span>
+<span class="sd">        numpy.array : array, shape(n_elements) </span>
+<span class="sd">            centroid frames of the clusters for all of the elements</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           This method no longer returns ``details``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">clusters</span> <span class="o">=</span> <span class="n">affinityprop</span><span class="o">.</span><span class="n">AffinityPropagation</span><span class="p">(</span>
             <span class="n">s</span><span class="o">=</span><span class="n">distance_matrix</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span>   <span class="c1"># invert sign</span>
@@ -331,9 +335,8 @@
             <span class="n">max_iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
             <span class="n">convergence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convergence_iter</span><span class="p">,</span>
             <span class="n">noise</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_noise</span><span class="p">))</span>
-        <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">return</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">details</span></div>
-
+        
+        <span class="k">return</span> <span class="n">clusters</span></div>
 <span class="k">if</span> <span class="n">sklearn</span><span class="p">:</span>
 
 <div class="viewcode-block" id="AffinityPropagation"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagation">[docs]</a>    <span class="k">class</span> <span class="nc">AffinityPropagation</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
@@ -389,9 +392,11 @@
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array</span>
-<span class="sd">                list of cluster indices</span>
+<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">                centroid frames of the clusters for all of the elements</span>
 
+<span class="sd">            .. versionchanged:: 1.0.0</span>
+<span class="sd">               This method no longer returns ``details``</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Affinity Propagation: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span>
                          <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
@@ -401,8 +406,9 @@
             <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">similarity_matrix</span><span class="p">)</span>
             <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">cluster_centers_indices_</span><span class="p">)</span>
-            <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">return</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">details</span></div>
+            
+            <span class="k">return</span> <span class="n">clusters</span></div>
+
 
 
 <div class="viewcode-block" id="DBSCAN"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.DBSCAN">[docs]</a>    <span class="k">class</span> <span class="nc">DBSCAN</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
@@ -465,9 +471,11 @@
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array</span>
-<span class="sd">                list of cluster indices</span>
+<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">                centroid frames of the clusters for all of the elements</span>
 
+<span class="sd">            .. versionchanged:: 1.0.0</span>
+<span class="sd">               This method no longer returns ``details``</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting DBSCAN: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
@@ -479,8 +487,8 @@
             <span class="n">cluster_representatives</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
             <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
                                             <span class="n">cluster_representatives</span><span class="p">)</span>
-            <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">return</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">details</span></div>
+          
+            <span class="k">return</span> <span class="n">clusters</span></div>
 
 <div class="viewcode-block" id="KMeans"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans">[docs]</a>    <span class="k">class</span> <span class="nc">KMeans</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
 
@@ -589,8 +597,11 @@
 
 <span class="sd">            Returns</span>
 <span class="sd">            -------</span>
-<span class="sd">            numpy.array</span>
-<span class="sd">                list of cluster indices</span>
+<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">                centroid frames of the clusters for all of the elements</span>
+
+<span class="sd">            .. versionchanged:: 1.0.0</span>
+<span class="sd">               This method no longer returns ``details``</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Kmeans: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                          <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">get_params</span><span class="p">())))</span>
@@ -599,8 +610,8 @@
             <span class="n">cluster_center_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
                                              <span class="n">cluster_center_indices</span><span class="p">)</span>
-            <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">return</span> <span class="n">clusters</span><span class="p">,</span> <span class="n">details</span></div>
+            
+            <span class="k">return</span> <span class="n">clusters</span></div>
 </pre></div>
 
            </div>
@@ -613,7 +624,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>
