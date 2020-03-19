@@ -134,7 +134,6 @@ class AnalysisBase(object):
         if interval == 0:
             interval = 1
 
-        
         self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
                                  interval=interval, verbose=verbose)
 
