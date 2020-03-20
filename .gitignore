@@ -1,5 +1,5 @@
 # Ignore python bytecoded files
-*.py[c|o]
+*.py[cod]
 *.[oa]
 *~
 *.bak

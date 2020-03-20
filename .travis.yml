@@ -28,7 +28,7 @@ env:
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
@@ -66,7 +66,7 @@ matrix:
            INSTALL_HOLE="false"
 
     - env: NAME="python 2.7"
-           PYTHON_VERSION=2.7 
+           PYTHON_VERSION=2.7
            CODECOV="true"
            NUMPY_VERSION=1.16
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"

@@ -63,49 +63,77 @@ To generate the density of water molecules around a protein (assuming that the
 trajectory is already appropriately treated for periodic boundary artifacts and
 is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::
 
-  from MDAnalysis.analysis.density import density_from_Universe
+  from MDAnalysis.analysis.density import DensityAnalysis
   u = Universe(TPR, XTC)
-  D = density_from_Universe(u, delta=1.0, select="name OW")
-  D.convert_density('TIP4P')
-  D.export("water.dx", type="double")
+  ow = u.select_atoms("name OW")
+  D = DensityAnalysis(ow, delta=1.0)
+  D.run()
+  D.density.convert_density('TIP4P')
+  D.density.export("water.dx", type="double")
 
-The positions of all water oxygens are histogrammed on a grid with spacing
-*delta* = 1 Å. Initially the density is measured in :math:`\text{Å}^{-3}`. With
-the :meth:`Density.convert_density` method, the units of measurement are
-changed. In the example we are now measuring the density relative to the
-literature value of the TIP4P water model at ambient conditions (see the values
-in :data:`MDAnalysis.units.water` for details). Finally, the density is written
-as an OpenDX_ compatible file that can be read in VMD_, Chimera_, or PyMOL_.
+The positions of all water oxygens (the :class:`AtomGroup` `ow`) are
+histogrammed on a grid with spacing *delta* = 1 Å. Initially the density is
+measured in :math:`\text{Å}^{-3}`. With the :meth:`Density.convert_density`
+method, the units of measurement are changed. In the example we are now
+measuring the density relative to the literature value of the TIP4P water model
+at ambient conditions (see the values in :data:`MDAnalysis.units.water` for
+details). Finally, the density is written as an OpenDX_ compatible file that
+can be read in VMD_, Chimera_, or PyMOL_.
 
-See :class:`Density` for details. In particular, the density is stored
-as a NumPy array in :attr:`Density.grid`, which can be processed in
-any manner.
+The :class:`Density` object is accessible as the
+:attr:`DensityAnalysis.density` attribute.  In particular, the data for the
+density is stored as a NumPy array in :attr:`Density.grid`, which can be
+processed in any manner.
 
 
 Creating densities
 ------------------
 
-The following functions take trajectory or coordinate data and generate a
-:class:`Density` object.
+The :class:`DensityAnalysis` class generates a :class:`Density` from an
+atomgroup. Its function equivalent :func:`density_from_Universe` is deprecated.
 
-.. autofunction:: density_from_Universe
-.. autofunction:: density_from_PDB
-.. autofunction:: Bfactor2RMSF
+:func:`density_from_PDB` generates a pseudo-density from a PDB file by
+replacing each atom with a Gaussian density with a width that is computed from
+the crystallographic temperature factors (B-factor) with :func:`Bfactor2RMSF`.
+
+.. autoclass:: DensityAnalysis
+   :members:
+   :inherited-members: run
+
+   .. attribute:: density
+
+      After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
+      stored in the :attr:`density` attribute as a :class:`Density` instance.
 
 
-Supporting classes and functions
---------------------------------
+Density object
+--------------
 
-The main output of the density creation functions is a
-:class:`Density` instance, which is derived from a
-:class:`gridData.core.Grid`. A :class:`Density` is essentially, a 3D
-array with origin and lengths together with associated metadata (which
-can be used in downstream processing).
+The main output of the density creation functions is a :class:`Density`
+instance, which is derived from a :class:`gridData.core.Grid`. A
+:class:`Density` is essentially a 3D array with origin and lengths.
+
+.. See Also:: :mod:`gridData`
+
 
 .. autoclass:: Density
    :members:
    :inherited-members:
    :show-inheritance:
+
+
+Deprecated functionality
+------------------------
+
+Use :class:`DensityAnalysis` instead of :func:`density_from_Universe`. The
+:func:`density_from_PDB` function is no longer supported and will also be
+removed in 2.0.0.
+
+.. autofunction:: density_from_Universe
+
+.. autofunction:: density_from_PDB
+
+.. autofunction:: Bfactor2RMSF
 
 .. autoclass:: BfactorDensityCreator
    :members:
@@ -113,39 +141,23 @@ can be used in downstream processing).
 .. autofunction:: notwithin_coordinates_factory
 
 
+
 .. rubric:: Footnotes
 
 .. [#pbc] Making molecules whole can be accomplished with the
           :meth:`MDAnalysis.core.groups.AtomGroup.wrap` of
-          :attr:`Universe.atoms` (use ``compound="fragments"``).
-
-          When using, for instance, the Gromacs_ command `gmx trjconv`_
-
-          .. code-block:: bash
-
-             gmx trjconv -pbc mol -center -ur compact
-
-          one can make the molecules whole ``-pbc whole``, center it on a group
-          (``-center``), and also pack all molecules in a compact unitcell
-          representation, which can be useful for density generation.
+          :attr:`Universe.atoms` (use ``compound="fragments"``).  or the
+          PBC-wrapping transformations in
+          :mod:`MDAnalysis.transformations.wrap`.
 
 .. [#fit] Superposition can be performed with
-          :class:`MDAnalysis.analysis.align.AlignTraj`.
+          :class:`MDAnalysis.analysis.align.AlignTraj` or the fitting
+          transformations in :mod:`MDAnalysis.transformations.fit`.
 
-          The Gromacs_ command `gmx trjconv`_
-
-          .. code-block:: bash
-
-             gmx trjconv -fit rot+trans
-
-          will also accomplish such a superposition. Note that the fitting has
-          to be done in a *separate* step from the treatment of the periodic
-          boundaries [#pbc]_.
-
-.. [#testraj] Note that the trajectory in the example (`XTC`) is *not* properly
-          made whole and fitted to a reference structure; these steps were
-          omitted to clearly show the steps necessary for the actual density
-          calculation.
+.. [#testraj] Note that the trajectory in the example (`XTC`) is *not*
+              properly made whole and fitted to a reference structure;
+              these steps were omitted to clearly show the steps necessary
+              for the actual density calculation.
 
 .. Links
 .. -----
@@ -180,10 +192,284 @@ from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
 from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.util import deprecate
+
+from .base import AnalysisBase
 
 import logging
 
 logger = logging.getLogger("MDAnalysis.analysis.density")
+
+class DensityAnalysis(AnalysisBase):
+    r"""Volumetric density analysis.
+
+    The trajectory is read, frame by frame, and the atoms in `atomgroup` are
+    histogrammed on a 3D grid with spacing `delta`.
+
+    Parameters
+    ----------
+    atomgroup : AtomGroup or UpdatingAtomGroup
+            Group of atoms (such as all the water oxygen atoms) being analyzed.
+            This can be an :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` for
+            selections that change every time step.
+    delta : float (optional)
+            Bin size for the density grid in ångström (same in x,y,z).
+    padding : float (optional)
+            Increase histogram dimensions by padding (on top of initial box
+            size) in ångström. Padding is ignored when setting a user defined
+            grid.
+    gridcenter : numpy ndarray, float32 (optional)
+            3 element numpy array detailing the x, y and z coordinates of the
+            center of a user defined grid box in ångström.
+    xdim : float (optional)
+            User defined x dimension box edge in ångström; ignored if
+            gridcenter is "None".
+    ydim : float (optional)
+            User defined y dimension box edge in ångström; ignored if
+            gridcenter is "None".
+    zdim : float (optional)
+            User defined z dimension box edge in ångström; ignored if
+            gridcenter is "None".
+
+    See Also
+    --------
+    pmda.density.DensityAnalysis for a parallel version
+
+    Notes
+    -----
+    Normal :class:`AtomGroup` instances represent a static selection of
+    atoms. If you want *dynamically changing selections* (such as "name OW and
+    around 4.0 (protein and not name H*)", i.e., the water oxygen atoms that
+    are within 4 Å of the protein heavy atoms) then create an
+    :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).
+
+
+    Examples
+    --------
+    A common use case is to analyze the solvent density around a protein of
+    interest. The density is calculated with :class:`DensityAnalysis` in the
+    fixed coordinate system of the simulation unit cell. It is therefore
+    necessary to orient and fix the protein with respect to the box coordinate
+    system. In practice this means centering and superimposing the protein,
+    frame by frame, on a reference structure and translating and rotating all
+    other components of the simulation with the protein. In this way, the
+    solvent will appear in the reference frame of the protein.
+
+    An input trajectory must
+
+    1. have been centered on the protein of interest;
+    2. have all molecules made whole that have been broken across periodic
+       boundaries [#pbc]_;
+    3. have the solvent molecules remapped so that they are closest to the
+       solute (this is important when using triclinic unit cells such as
+       a dodecahedron or a truncated octahedron) [#pbc]_;
+    4. have a fixed frame of reference; for instance, by superimposing a
+       protein on a reference structure so that one can study the solvent
+       density around it [#fit]_.
+
+    .. rubric:: Generate the density
+
+    To generate the density of water molecules around a protein (assuming that
+    the trajectory is already appropriately treated for periodic boundary
+    artifacts and is suitably superimposed to provide a fixed reference frame)
+    [#testraj]_, first  create the :class:`DensityAnalysis` object by
+    supplying an AtomGroup, then use  the :meth:`run` method::
+
+        from MDAnalysis.analysis import density
+        u = Universe(TPR, XTC)
+        ow = u.select_atoms("name OW")
+        D = density.DensityAnalysis(ow, delta=1.0)
+        D.run()
+        D.density.convert_density('TIP4P')
+
+    The positions of all water oxygens are histogrammed on a grid with spacing
+    *delta* = 1 Å and stored as a :class:`Density` object in the attribute
+    :attr:`DensityAnalysis.density`.
+
+    .. rubric:: Working with a density
+
+    A :class:`Density` contains a large number of methods and attributes that
+    are listed in the documentation. Here we use the
+    :meth:`Density.convert_density` to convert the density from inverse cubic
+    ångström to a density relative to the bulk density of TIP4P water at
+    standard conditions. (MDAnalysis stores a number of literature values in
+    :data:`MDAnalysis.units.water`.)
+
+    One can directly access the density as a 3D NumPy array through
+    :attr:`Density.grid`.
+
+    By default, the :class:`Density` object returned contains a physical
+    density in units of Å\ :sup:`-3`. If you are interested in recovering the
+    underlying **probability density**, simply divide by the sum::
+
+      probability_density = D.density.grid / D.density.grid.sum()
+
+    Similarly, if you would like to recover a grid containing a **histogram of
+    atom counts**, simply multiply by the volume `dV` of each bin (or voxel);
+    in this case you need to ensure that the physical density is measured in
+    Å\ :sup:`-3` by converting it::
+
+      import numpy as np
+
+      # ensure that the density is A^{-3}
+      D.density.convert_density("A^{-3}")
+
+      dV = np.prod(D.density.delta)
+      atom_count_histogram = D.density.grid * dV
+
+
+    .. rubric:: Writing the density to a file
+
+    A density can be `exported to different formats
+    <https://www.mdanalysis.org/GridDataFormats/gridData/formats.html>`_ with
+    :meth:`Density.export` (thanks to the fact that :class:`Density` is a
+    subclass :class:`gridData.core.Grid`, which provides the functionality).
+    For example, to `write a DX file
+    <https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data>`_
+    ``water.dx`` that can be read with VMD, PyMOL, or Chimera::
+
+      D.density.export("water.dx", type="double")
+
+
+    .. rubric:: Example: Water density in the whole simulation
+
+    Basic use for creating a water density (just using the water oxygen
+    atoms "OW")::
+
+      D = DensityAnalysis(universe.select_atoms('name OW')).run()
+
+
+    .. rubric:: Example: Water in a binding site (updating selection)
+
+    If you are only interested in water within a certain region, e.g., within
+    a vicinity around a binding site, you can use a selection that updates
+    every step by using an :class:`~MDAnalysis.core.groups.UpdatingAtomGroup`::
+
+      near_waters = universe.select_atoms('name OW and around 5 (resid 156 157 305)',
+                    updating=True)
+      D_site = DensityAnalysis(near_waters).run()
+
+
+    .. rubric:: Example: Small region around a ligand (manual box selection)
+
+    If you are interested in explicitly setting a grid box of a given edge size
+    and origin, you can use the `gridcenter` and `xdim`/`ydim`/`zdim`
+    arguments.  For example to plot the density of waters within 5 Å of a
+    ligand (in this case the ligand has been assigned the residue name "LIG")
+    in a cubic grid with 20 Å edges which is centered on the center of mass
+    (COM) of the ligand::
+
+      # Create a selection based on the ligand
+      ligand_selection = universe.select_atoms("resname LIG")
+
+      # Extract the COM of the ligand
+      ligand_COM = ligand_selection.center_of_mass()
+
+      # Create a density of waters on a cubic grid centered on the ligand COM
+      # In this case, we update the atom selection as shown above.
+      ligand_waters = universe.select_atoms('name OW and around 5 resname LIG',
+                                            updating=True)
+      D_water = DensityAnalysis(ligand_waters,
+                                delta=1.0,
+                                gridcenter=ligand_COM,
+                                xdim=20, ydim=20, zdim=20)
+
+    (It should be noted that the `padding` keyword is not used when a user
+    defined grid is assigned).
+
+
+
+    .. versionadded:: 1.0.0
+
+    """
+    def __init__(self, atomgroup, delta=1.0,
+                 metadata=None, padding=2.0,
+                 gridcenter=None,
+                 xdim=None, ydim=None, zdim=None):
+        u = atomgroup.universe
+        super(DensityAnalysis, self).__init__(u.trajectory)
+        self._atomgroup = atomgroup
+        self._delta = delta
+        self._padding = padding
+        self._gridcenter = gridcenter
+        self._xdim = xdim
+        self._ydim = ydim
+        self._zdim = zdim
+
+    def _prepare(self):
+        coord = self._atomgroup.positions
+        if self._gridcenter is not None:
+            # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
+            if self._padding > 0:
+                msg = ("Box padding (currently set at {0}) "
+                       "is not used in user defined grids.".format(self._padding))
+                warnings.warn(msg)
+                logger.warning(msg)
+            # Generate a copy of smin/smax from coords to later check if the
+            # defined box might be too small for the selection
+            smin = np.min(coord, axis=0)
+            smax = np.max(coord, axis=0)
+            # Overwrite smin/smax with user defined values
+            smin, smax = _set_user_grid(self._gridcenter, self._xdim,
+                                        self._ydim, self._zdim, smin, smax)
+        else:
+            # Make the box bigger to avoid as much as possible 'outlier'. This
+            # is important if the sites are defined at a high density: in this
+            # case the bulk regions don't have to be close to 1 * n0 but can
+            # be less. It's much more difficult to deal with outliers.  The
+            # ideal solution would use images: implement 'looking across the
+            # periodic boundaries' but that gets complicated when the box
+            # rotates due to RMS fitting.
+            smin = np.min(coord, axis=0) - self._padding
+            smax = np.max(coord, axis=0) + self._padding
+        BINS = fixedwidth_bins(self._delta, smin, smax)
+        arange = np.transpose(np.vstack((BINS['min'], BINS['max'])))
+        bins = BINS['Nbins']
+        # create empty grid with the right dimensions (and get the edges)
+        grid, edges = np.histogramdd(np.zeros((1, 3)), bins=bins,
+                                     range=arange, normed=False)
+        grid *= 0.0
+        self._grid = grid
+        self._edges = edges
+        self._arange = arange
+        self._bins = bins
+        self.density = None
+
+    def _single_frame(self):
+        h, _ = np.histogramdd(self._atomgroup.positions,
+                              bins=self._bins, range=self._arange,
+                              normed=False)
+        # reduce (proposed change #2542 to match the parallel version in pmda.density)
+        # return self._reduce(self._grid, h)
+        #
+        # serial code can simply do
+        self._grid += h
+
+    def _conclude(self):
+        # average:
+        self._grid /= float(self.n_frames)
+        density = Density(grid=self._grid, edges=self._edges,
+                          units={'length': "Angstrom"},
+                          parameters={'isDensity': False})
+        density.make_density()
+        self.density = density
+
+    # _reduce is not strictly necessary for the serial version but is necessary for
+    # pmda-style parallelism (see #2542)
+    # @staticmethod
+    # def _reduce(res, result_single_frame):
+    #     """'accumulate' action for a time series
+    #
+    #     If `res` is a numpy array, the `result_single_frame` is added to it
+    #     element-wise. If `res` and `result_single_frame` are lists then
+    #     `result_single_frame` is appended to `res`.
+    #     """
+    #     if isinstance(res, list) and len(res) == 0:
+    #         res = result_single_frame
+    #     else:
+    #         res += result_single_frame
+    #     return res
+
 
 class Density(Grid):
     r"""Class representing a density on a regular cartesian grid.
@@ -272,7 +558,7 @@ class Density(Grid):
 
     See Also
     --------
-    gridData.core.Grid : the base class of :class:`Density`.
+    gridData.core.Grid is the base class of :class:`Density`.
 
     Examples
     --------
@@ -304,12 +590,13 @@ class Density(Grid):
          D.convert_density('water')
 
        After the final step, ``D`` will contain a density on a grid measured in
-       Ångstrom, with the density values itself measured relative to the
+       ångström, with the density values itself measured relative to the
        density of water.
 
     :class:`Density` objects can be algebraically manipulated (added,
     subtracted, multiplied, ...)  but there are *no sanity checks* in place to
     make sure that units, metadata, etc are compatible!
+
 
     .. Note::
 
@@ -551,6 +838,8 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     return umin, umax
 
 
+@deprecate(release="1.0.0", remove="2.0.0",
+           message="Use ``DensityAnalysis(u, ...).run().density`` instead.")
 def density_from_Universe(universe, delta=1.0, select='name OH2',
                           start=None, stop=None, step=None,
                           metadata=None, padding=2.0, cutoff=0, soluteselection=None,
@@ -705,20 +994,21 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
       atom_count_histogram = physical_density * volume
 
 
-    .. versionchanged:: 0.21.0
-       Warns users that `padding` value is not used in user defined grids
-    .. versionchanged:: 0.20.0
-       ProgressMeter now iterates over the number of frames analysed.
-    .. versionchanged:: 0.19.0
-       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
-       defined boxes
     .. versionchanged:: 0.13.0
        *update_selection* and *quiet* keywords added
     .. deprecated:: 0.16
        The keyword argument *quiet* is deprecated in favor of *verbose*.
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 0.19.0
+       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user
+       defined boxes
+    .. versionchanged:: 0.20.0
+       ProgressMeter now iterates over the number of frames analysed.
+    .. versionchanged:: 1.0.0
        time_unit and length_unit default to ps and Angstrom now flags have
-       been removed (same as previous flag defaults)
+       been removed (same as previous flag defaults);
+       warns users that `padding` value is not used in user defined grids
+    .. deprecated:: 1.0.0
+       `density_from_Universe` will removed in 2.0.0; use `DensityAnalysis` instead
     """
     u = universe
 
@@ -837,6 +1127,7 @@ def density_from_Universe(universe, delta=1.0, select='name OH2',
     return g
 
 
+@deprecate(release="1.0.0", remove="2.0.0")
 def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
                                   not_within=True, use_kdtree=True, updating_selection=False):
     """Generate optimized selection for '*sel1* not within *cutoff* of *sel2*'
@@ -898,6 +1189,11 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
 
     (Readability is enhanced by properly naming the generated function
     ``within_coordinates()``.)
+
+
+    .. deprecated:: 1.0.0
+       :func:`notwithin_coordinates_factory` is no longer supported and will be
+       removed in 2.0.0.
     """
     # Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames
     #                    cpu/s    relative   speedup       use_kdtree
@@ -946,6 +1242,9 @@ def notwithin_coordinates_factory(universe, sel1, sel2, cutoff,
     return notwithin_coordinates
 
 
+# This is useful in principle but it is not needed here anymore. Maybe move
+# to the rms module??
+@deprecate(release="1.0.0", remove="2.0.0")
 def Bfactor2RMSF(B):
     r"""Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor
 
@@ -961,13 +1260,20 @@ def Bfactor2RMSF(B):
 
         \rm{RMSF} = \sqrt{\frac{3 B}{8\pi^2}}
 
-    .. rubric:: References
+    References
+    ----------
 
     .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975
+
+
+    .. deprecated:: 1.0.0
+       :func:`Bfactor2RMSF` is no longer supported and will be removed in 2.0.0.
+       as part of the removal of the :func:`density_from_PDB` function.
     """
     return np.sqrt(3. * B / 8.) / np.pi
 
 
+@deprecate(release="1.0.0", remove="2.0.0")
 def density_from_PDB(pdb, **kwargs):
     """Create a density from a single frame PDB.
 
@@ -1013,10 +1319,15 @@ def density_from_PDB(pdb, **kwargs):
     --------
     :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`
 
+
+    .. deprecated: 1.0.0
+       This function is not well tested or optimized and will be removed
+       in 2.0.0.
     """
     return BfactorDensityCreator(pdb, **kwargs).Density()
 
 
+# REMOVE in 2.0.0
 class BfactorDensityCreator(object):
     """Create a density grid from a pdb file using MDAnalysis.
 
@@ -1037,8 +1348,13 @@ class BfactorDensityCreator(object):
     .. * Using a temporary Creator class with the
     ..   :meth:`BfactorDensityCreator.Density` helper method is clumsy.
 
+
+    .. deprecated: 1.0.0
+       This function is not well tested or optimized and will be removed
+       in 2.0.0.
     """
 
+    @deprecate(release="1.0.0", remove="2.0.0")
     def __init__(self, pdb, delta=1.0, select='resname HOH and name O',
                  metadata=None, padding=1.0, sigma=None):
         """Construct the density from psf and pdb and the select.
@@ -1104,11 +1420,11 @@ class BfactorDensityCreator(object):
         if sigma is None:
             # histogram individually, and smear out at the same time
             # with the appropriate B-factor
-            if np.any(group.bfactors == 0.0):
+            if np.any(group.tempfactors == 0.0):
                 wmsg = "Some B-factors are Zero (will be skipped)."
                 logger.warning(wmsg)
                 warnings.warn(wmsg, category=MissingDataWarning)
-            rmsf = Bfactor2RMSF(group.bfactors)
+            rmsf = Bfactor2RMSF(group.tempfactors)
             grid *= 0.0  # reset grid
             self.g = self._smear_rmsf(coord, grid, self.edges, rmsf)
         else:
@@ -1149,7 +1465,7 @@ class BfactorDensityCreator(object):
         for iwat in range(len(pos[0])):  # super-ugly loop
             p = tuple([wp[iwat] for wp in pos])
             g += grid[p] * np.fromfunction(self._gaussian, grid.shape, dtype=np.int, p=p, sigma=sigma)
-            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
+            # print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, len(pos[0]), sigma),)
         return g
 
     def _smear_rmsf(self, coordinates, grid, edges, rmsf):
@@ -1162,7 +1478,7 @@ class BfactorDensityCreator(object):
                 continue
             g += np.fromfunction(self._gaussian_cartesian, grid.shape, dtype=np.int,
                                     c=coord, sigma=rmsf[iwat])
-            print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
+            # print("Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r".format(iwat + 1, N, rmsf[iwat]),)
         return g
 
     def _gaussian(self, i, j, k, p, sigma):
