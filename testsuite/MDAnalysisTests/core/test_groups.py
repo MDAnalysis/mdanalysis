@@ -35,6 +35,7 @@ import operator
 import six
 
 import MDAnalysis as mda
+from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
@@ -1312,6 +1313,21 @@ class TestAttributeSetting(object):
         with pytest.raises(AttributeError):
             setattr(comp, attr, 24)
 
+
+class TestAttributeGetting(object):
+
+    @pytest.fixture()
+    def empty(self):
+        return make_Universe()
+
+    def test_get_missing_attr(self, empty):
+        with pytest.raises(NoDataError) as exc:
+            empty.atoms.fragments
+        assert 'bonds' in str(exc.value).lower()
+
+    def test_has_missing_attr(self, empty):
+        assert not hasattr(empty, 'fragments')
+        assert not hasattr(empty.atoms, 'fragments')
 
 
 class TestInitGroup(object):
