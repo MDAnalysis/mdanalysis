@@ -231,7 +231,7 @@ def cluster(ensembles,
 
     # Create clusters collections from clustering results,
     # one for each cluster. None if clustering didn't work.
-    ccs = [ClusterCollection(clusters[1][0],
+    ccs = [ClusterCollection(clusters[1],
                              metadata=metadata) for clusters in results]
 
     if allow_collapsed_result and len(ccs) == 1:
