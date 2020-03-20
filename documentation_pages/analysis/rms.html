@@ -363,7 +363,7 @@ the number of coordinates.</p>
 <h2>4.2.4.3. Analysis classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.rms.RMSD">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">RMSD</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>weights=None</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rms.</code><code class="descname">RMSD</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>reference=None</em>, <em>select='all'</em>, <em>groupselections=None</em>, <em>weights=None</em>, <em>weights_groupselections=False</em>, <em>tol_mass=0.1</em>, <em>ref_frame=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rms.html#RMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rms.RMSD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to perform RMSD analysis on a trajectory.</p>
 <p>The RMSD will be computed for two groups of atoms and all frames in the
 trajectory belonging to <cite>atomgroup</cite>. The groups of atoms are obtained by
@@ -425,10 +425,20 @@ selection.</p>
 implemented.</p>
 </div>
 </li>
-<li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
-weigh each atom equally. If a float array of the same length as
-<cite>atomgroup</cite> is provided, use each element of the <cite>array_like</cite> as a
-weight for the corresponding atom in <cite>atomgroup</cite>.</li>
+<li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – <ol class="arabic">
+<li>“mass” will use masses as weights for both <cite>select</cite> and <cite>groupselections</cite>.</li>
+<li><code class="docutils literal notranslate"><span class="pre">None</span></code> will weigh each atom equally for both <cite>select</cite> and <cite>groupselections</cite>.</li>
+</ol>
+<p>3. If 1D float array of the same length as <cite>atomgroup</cite> is provided,
+use each element of the <cite>array_like</cite> as a weight for the
+corresponding atom in <cite>select</cite>, and assumes <code class="docutils literal notranslate"><span class="pre">None</span></code> for <cite>groupselections</cite>.</p>
+</li>
+<li><strong>weights_groupselections</strong> (False or list of {“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code> or array_like} (optional)) – <ol class="arabic">
+<li><code class="docutils literal notranslate"><span class="pre">False</span></code> will apply imposed weights to <cite>groupselections</cite> from <code class="docutils literal notranslate"><span class="pre">weights</span></code> option.</li>
+</ol>
+<p>2. A list of {“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code> or array_like} with the length of <cite>groupselections</cite>
+will apply the weights to <cite>groupselections</cite> correspondingly.</p>
+</li>
 <li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more
 than <cite>tol_mass</cite>.</li>
 <li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
@@ -440,16 +450,14 @@ default is <code class="docutils literal notranslate"><span class="pre">False</s
 <tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last">
 <li><p class="first"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> – If the selections from <cite>atomgroup</cite> and <cite>reference</cite> do not match.</p>
 </li>
-<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> is not of the appropriate type; see also
-<a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a></p>
+<li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#TypeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code></a> – If <cite>weights</cite> or <cite>weights_groupselections</cite> is not of the appropriate type;
+see also <a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a></p>
 </li>
 <li><p class="first"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <cite>weights</cite> are not compatible with <cite>atomgroup</cite> (not the same
 length) or if it is not a 1D array (see
 <a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.get_weights" title="MDAnalysis.lib.util.get_weights"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.get_weights()</span></code></a>).</p>
-<p>A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is also raised if <cite>weights</cite> are not compatible
-with <cite>groupselections</cite>: only equal weights (<code class="docutils literal notranslate"><span class="pre">weights=None</span></code>) or
-mass-weighted (<code class="docutils literal notranslate"><span class="pre">weights=&quot;mass&quot;</span></code>) are supported for additional
-<cite>groupselections</cite>.</p>
+<p>A <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is also raised if the length of <cite>weights_groupselections</cite>
+are not compatible with <cite>groupselections</cite>.</p>
 </li>
 </ul>
 </td>
