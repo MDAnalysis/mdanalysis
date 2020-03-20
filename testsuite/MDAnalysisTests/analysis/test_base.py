@@ -95,10 +95,14 @@ def test_verbose(u):
     assert a._verbose
 
 
-def test_verbose_run(u):
-    a = FrameAnalysis(u.trajectory, verbose=False).run(verbose = True)
-    assert not a._verbose
-    assert a._pm.verbose
+@pytest.mark.parametrize('verbose, verbose_r', [
+        (True,True), (True,False), 
+        (False,True), (False,False)
+    ])
+def test_verbose_run(u,verbose, verbose_r):
+    a = FrameAnalysis(u.trajectory, verbose=verbose).run(verbose=verbose_r)
+    assert_equal(a._verbose, verbose)
+    assert_equal(a._pm.verbose, verbose_r)
     
 
 def test_incomplete_defined_analysis(u):
