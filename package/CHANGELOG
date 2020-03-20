@@ -109,6 +109,8 @@ Enhancements
   * Added ParmEdParser, ParmEdReader and ParmEdConverter to
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
+  * Added weights_groupselections option in RMSD for mapping custom weights 
+    to groupselections (PR #2610, Issue #2429)
 
 Changes
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
