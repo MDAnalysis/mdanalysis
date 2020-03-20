@@ -54,7 +54,7 @@ def test_fit_translation_bad_ag(fit_universe, universe):
     test_u = fit_universe[0]
     ref_u  = fit_universe[1]
     # what happens if something other than an AtomGroup or Universe is given?
-    with pytest.raises(AttributeError): 
+    with pytest.raises(AttributeError):
         fit_translation(universe, ref_u)(ts)
 
 
@@ -72,7 +72,7 @@ def test_fit_translation_bad_weights(fit_universe, weights):
     test_u = fit_universe[0]
     ref_u  = fit_universe[1]
     # what happens if a bad string for center is given?
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         fit_translation(test_u, ref_u, weights=weights)(ts)
 
 
@@ -89,7 +89,7 @@ def test_fit_translation_bad_plane(fit_universe, plane):
     test_u = fit_universe[0]
     ref_u  = fit_universe[1]
     # what happens if a bad string for center is given?
-    with pytest.raises(ValueError): 
+    with pytest.raises(ValueError):
         fit_translation(test_u, ref_u, plane=plane)(ts)
 
 
@@ -99,7 +99,7 @@ def test_fit_translation_no_masses(fit_universe):
     # create a universe without masses
     ref_u  = make_Universe()
     # what happens Universe without masses is given?
-    with pytest.raises(AttributeError): 
+    with pytest.raises(ValueError): 
         fit_translation(test_u, ref_u, weights="mass")(ts)
 
 
@@ -139,7 +139,7 @@ def test_fit_translation_plane(fit_universe, plane):
     # the reference is 10 angstrom in all coordinates above the test universe
     shiftz = np.asanyarray([0, 0, 0], np.float32)
     shiftz[idx] = -10
-    ref_coordinates = ref_u.trajectory.ts.positions + shiftz 
+    ref_coordinates = ref_u.trajectory.ts.positions + shiftz
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, decimal=6)
 
 
@@ -150,7 +150,7 @@ def test_fit_translation_all_options(fit_universe):
     fit_translation(test_u, ref_u, plane="xy", weights="mass")(test_u.trajectory.ts)
     # the reference is 10 angstrom in the z coordinate above the test universe
     shiftz = np.asanyarray([0, 0, -10], np.float32)
-    ref_coordinates = ref_u.trajectory.ts.positions + shiftz 
+    ref_coordinates = ref_u.trajectory.ts.positions + shiftz
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_coordinates, decimal=6)
 
 
