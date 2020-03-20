@@ -47,16 +47,14 @@ supersede these two citations.)
    and O. Beckstein. `MDAnalysis: A Python package for the rapid analysis of
    molecular dynamics simulations`_. In S. Benthall and S. Rostrup, editors,
    *Proceedings of the 15th Python in Science Conference*, pages 98-105,
-   Austin, TX, 2016. SciPy. doi:`10.25080/Majora-629e541a-00e`_
+   Austin, TX, 2016. SciPy.
 
 .. _`10.1002/jcc.21787`: http://dx.doi.org/10.1002/jcc.21787
-.. _`10.25080/Majora-629e541a-00e`:
-   https://doi.org/10.25080/Majora-629e541a-00e
 
 .. _`MDAnalysis: A Python package for the rapid analysis of molecular
    dynamics simulations`:
    http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html
-   
+
 
 .. _references-components:
 
@@ -140,6 +138,7 @@ If you use the hydrogen bond analysis code in
 
 .. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
 
+<<<<<<< HEAD
 If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or 
 :func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and 
 [Leo-Macias2004]_ .
@@ -204,6 +203,15 @@ please cite [Dima2004b]_.
    6564-6570. doi:`10.1021/jp037128y
    <https://doi.org/10.1021/jp037128y>`_
 
+=======
+If you use the dielectric analysis module please cite [Neumann1983b]_.
+
+.. [Neumann1983b] Neumann, M.
+    Dipole Moment Fluctuation Formulas in Computer Simulations of Polar Systems.
+    *Molecular Physics* **50**, no. 4 (1983), 841–858. doi: `10.1080/00268978300102721`_
+
+.. _`10.1080/00268978300102721`: http://doi.org/10.1080/00268978300102721
+>>>>>>> f62f7feda (Added option for make_whole + better docu)
 
 .. _citations-using-duecredit:
 
@@ -241,8 +249,8 @@ export them to different formats. For example, one can display them in
 BibTeX format, using:
 
 .. code-block:: bash
- 
-   duecredit summary --format=bibtex 
+
+   duecredit summary --format=bibtex
 
 
 **Please cite your use of MDAnalysis and the packages and algorithms
@@ -250,4 +258,3 @@ that it uses. Thanks!**
 
 
 .. _duecredit: https://github.com/duecredit/duecredit
-
