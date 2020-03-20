@@ -37,13 +37,7 @@ the static dielectric constant
    \varepsilon = 1 + \frac{\langle M^2 \rangle - \langle M \rangle^2}
                             {3 \varepsilon_ 0 V k_B T}
 
-for a system simulated in tin foil boundary conditions. For a distance
-
-References
-----------
-Neumann, Martin.
-Dipole Moment Fluctuation Formulas in Computer Simulations of Polar Systems. 
-Molecular Physics 50, no. 4 (November 1983), 841–858, doi:10.1080/00268978300102721
+for a system simulated in tin foil boundary conditions.
 """
 
 from __future__ import division
@@ -55,12 +49,20 @@ from MDAnalysis.units import constants, convert
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.lib.mdamath import make_whole
 from MDAnalysis.due import due, Doi
+<<<<<<< HEAD
 from MDAnalysis.exceptions import NoDataError
 
 due.cite(Doi("10.1080/00268978300102721"),
          description="Dielectric analysis",
          path="MDAnalysis.analysis.dielectric",
          cite_module=True)
+=======
+
+due.cite(Doi("10.1080/00268978300102721"),
+description="Dielectric analysis",
+path="MDAnalysis.analysis.dielectric",
+cite_module=True)
+>>>>>>> 84176f7a2... Added option for make_whole + better docu
 del Doi
 
 class DielectricConstant(AnalysisBase):
@@ -96,7 +98,7 @@ class DielectricConstant(AnalysisBase):
     -------
     Create a DielectricConstant object by supplying a selection,
     then use the :meth:`run` method::
-    
+
       diel = DielectricConstant(selection)
       diel.run()
 
@@ -125,6 +127,10 @@ class DielectricConstant(AnalysisBase):
                                       "systems with free charges are not available!")
 
         self.volume = 0
+<<<<<<< HEAD
+=======
+
+>>>>>>> 84176f7a2... Added option for make_whole + better docu
         # Dictionary containing results
         self.results = {"M":  np.zeros(3),
                         "M2": np.zeros(3),
@@ -135,14 +141,15 @@ class DielectricConstant(AnalysisBase):
     def _prepare(self):
         error = "ERROR: Total charge of the selection is not zero."
         assert_almost_equal(0, np.sum(self.charges), err_msg=error)
-        
+
     def _single_frame(self):
         # Make molecules whole
-        for frag in self.selection.fragments:
-            make_whole(frag)
-        
+        if make_whole:
+            for frag in self.selection.fragments:
+                make_whole(frag)
+
         self.volume += self.selection.universe.trajectory.ts.volume
-        
+
         M = np.dot(self.charges, self.selection.positions)
         self.results["M"] += M
         self.results["M2"] += M * M
