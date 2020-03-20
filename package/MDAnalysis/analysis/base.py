@@ -109,7 +109,7 @@ class AnalysisBase(object):
         self._trajectory = trajectory
         self._verbose = verbose
 
-    def _setup_frames(self, trajectory, start=None, stop=None, step=None, verbose = None):
+    def _setup_frames(self, trajectory, start=None, stop=None, step=None, verbose=None):
         """
         Pass a Reader object and define the desired iteration pattern
         through the trajectory
