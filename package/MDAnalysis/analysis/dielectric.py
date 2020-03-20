@@ -37,10 +37,16 @@ the static dielectric constant
    \varepsilon = 1 + \frac{\langle M^2 \rangle - \langle M \rangle^2}
                             {3 \varepsilon_ 0 V k_B T}
 
-for a system simulated in tin foil boundary conditions.
+for a system simulated in tin foil boundary conditions. For a distance
+
+References
+----------
+Neumann, Martin.
+Dipole Moment Fluctuation Formulas in Computer Simulations of Polar Systems. 
+Molecular Physics 50, no. 4 (November 1983), 841–858, doi:10.1080/00268978300102721
 """
 
-from __future__ import absolute_import, division
+from __future__ import division
 
 import numpy as np
 from numpy.testing import assert_almost_equal
@@ -90,7 +96,7 @@ class DielectricConstant(AnalysisBase):
     -------
     Create a DielectricConstant object by supplying a selection,
     then use the :meth:`run` method::
-
+    
       diel = DielectricConstant(selection)
       diel.run()
 
@@ -125,13 +131,18 @@ class DielectricConstant(AnalysisBase):
                         "fluct": np.zeros(3),
                         "eps": np.zeros(3),
                         "eps_mean": 0}
-                
+
+    def _prepare(self):
+        error = "ERROR: Total charge of the selection is not zero."
+        assert_almost_equal(0, np.sum(self.charges), err_msg=error)
+        
     def _single_frame(self):
-        if self.make_whole:
-            self.selection.unwrap()
-
+        # Make molecules whole
+        for frag in self.selection.fragments:
+            make_whole(frag)
+        
         self.volume += self.selection.universe.trajectory.ts.volume
-
+        
         M = np.dot(self.charges, self.selection.positions)
         self.results["M"] += M
         self.results["M2"] += M * M
