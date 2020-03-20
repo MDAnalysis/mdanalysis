@@ -98,7 +98,7 @@ class DielectricConstant(AnalysisBase):
     within the `results` variable of the object.
 
 
-    .. versionadded:: 0.20.0
+    .. versionadded:: 0.21.0
 
     """
     def __init__(self, selection, temperature=300, make_whole=True, **kwargs):
