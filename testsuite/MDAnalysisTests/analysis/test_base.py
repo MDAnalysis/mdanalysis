@@ -95,6 +95,12 @@ def test_verbose(u):
     assert a._verbose
 
 
+def test_verbose_run(u):
+    a = FrameAnalysis(u.trajectory, verbose=False).run(verbose = True)
+    assert not a._verbose
+    assert a._pm.verbose
+    
+
 def test_incomplete_defined_analysis(u):
     with pytest.raises(NotImplementedError):
         IncompleteAnalysis(u.trajectory).run()
