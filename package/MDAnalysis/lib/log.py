@@ -413,9 +413,11 @@ class ProgressMeter(object):
 
 class ProgressBar(tqdm):
     def __init__(self, *args, **kwargs):
-          verbose = kwargs.pop('verbose', True)
-          # disable: Whether to disable the entire progressbar wrapper [default: False].
-          # If set to None, disable on non-TTY.
-          # disable should take precedence over verbose if both are set
-          kwargs['disable'] = kwargs.pop('disable', False if verbose else None)
-          super(ProgressBar, self).__init__(*args, **kwargs)
+        verbose = kwargs.pop('verbose', True)
+        # disable: Whether to disable the entire progressbar wrapper [default: False].
+        # If set to None, disable on non-TTY.
+        # disable should be the opposite of verbose unless it's None
+        disable = verbose if verbose is None else not verbose
+        # disable should take precedence over verbose if both are set
+        kwargs['disable'] = kwargs.pop('disable', disable)
+        super(ProgressBar, self).__init__(*args, **kwargs)

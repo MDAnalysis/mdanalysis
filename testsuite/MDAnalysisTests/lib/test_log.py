@@ -60,3 +60,19 @@ class TestProgressBar(object):
         expected = u'100%|██████████| 10/10 [00:00<00:00, 583.67it/s]'
         actual = err.strip().split('\r')[-1]
         assert actual[:24] == expected[:24]
+
+    def test_disable(self, capsys):
+        for i in ProgressBar(list(range(10)), disable=True):
+            pass
+        out, err = capsys.readouterr()
+        expected = ''
+        actual = err.strip().split('\r')[-1]
+        assert actual == expected
+
+    def test_verbose_disable(self, capsys):
+        for i in ProgressBar(list(range(10)), verbose=False):
+            pass
+        out, err = capsys.readouterr()
+        expected = ''
+        actual = err.strip().split('\r')[-1]
+        assert actual == expected
