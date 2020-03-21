@@ -22,6 +22,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
   * Updated tests to have explicit fixtures (Issue #2618)
   * XDR offsets now read from trajectory if offsets file read-in fails on
     IOError (Issue #1893, PR #2611)
@@ -188,7 +189,6 @@ Fixes
   * 0.20.0
 
 Enhancements
-  * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
   * improved metal atom guess (Issue #2323)
   * improved atom element guessing in topology.guessers to check for elements
     after the first element (#2313)
