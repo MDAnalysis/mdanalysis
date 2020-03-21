@@ -34,7 +34,7 @@ Fixes
   * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
   * PCA(align=True) now correctly aligns the trajectory and computes the
     correct means and covariance matrix (Issue #2561)
-  * Correct args order of base.AnalysisFromFunction (Issue #2503)  
+  * Correct args order of base.AnalysisFromFunction (Issue #2503)
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
@@ -188,6 +188,7 @@ Fixes
   * 0.20.0
 
 Enhancements
+  * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
   * improved metal atom guess (Issue #2323)
   * improved atom element guessing in topology.guessers to check for elements
     after the first element (#2313)
