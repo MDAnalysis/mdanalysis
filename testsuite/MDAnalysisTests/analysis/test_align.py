@@ -158,7 +158,7 @@ class TestGetMatchingAtoms(object):
             align.get_matching_atoms(u.atoms, u.atoms)
     def test_one_atom_has_masses(self, universe, reference,selection="protein and backbone"):
         #if only atom has _has_masses
-        u=mad.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        u=mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
         ref = reference.select_atoms(selection).atoms[1:]
         with pytest.warns(SelectionWarning):
             align.get_matching_atoms(u.atoms, ref.atoms)
