@@ -311,19 +311,26 @@ class PDBParser(TopologyReaderBase):
         # Guessed attributes
         # Need to pull elements from Atom names
         # Similar to the check for atomtypes function
-        if any(elements):
-            elements = guess_types(elements)
-            for i,e in enumerate(elements):
-                if e == '':
-                    elements[i] = guess_atom_element(names[i])
-                    warnings.warn("Element record found to be non-physical. Guessing element from atom name: {}".format(names[i]))
-            attrs.append(Elements(elements, guessed=True))
-        else:
-            # If elements are missing it guesses from atom names.
+        if not any(elements):
             warnings.warn("Element information missing. Guessing elements from atom names : {}".format(names))
             elements = guess_types(names)
             attrs.append(Elements(elements, guessed=True))
+        else:
+            elements = guess_types(elements)
+            uni_elements, indices = np.unique(elements, return_inverse=True)
 
+            if any(np.isin(uni_elements, '')):
+                indexlist = [ j for j in range(len(indices)) if indices[j] == 0 ]
+                # This would be 0 always as guess_types would return a set
+                # of alphabets and empty string, and empty string will be
+                # sorted to be a index 0.
+                warnings.warn("Element record found to be non-physical. Guessing element from atom name: {}".format([names[i] for i in indexlist if len(indexlist) != 0 ]))
+    
+                elements = [ guess_atom_element(names[k]) if k in indexlist else elements[k] for k in range(len(elements)) ]
+                attrs.append(Elements(elements, guessed=True))
+            else:
+                   attrs.append(Elements(elements, guessed=True))
+           
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)

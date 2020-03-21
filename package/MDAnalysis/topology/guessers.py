@@ -154,9 +154,12 @@ def guess_atom_element(atomname):
             elif len(name) <= 2:
                 name = ''
                 return name
-            name = "00"  # probably element is on left not right
 
-        # if it's numbers
+            name = name[:-1]
+        # probably element is on left not right
+
+        # if it's numbers (strips of characters and numbers
+        # and returns empty string)
         return no_symbols
 
 

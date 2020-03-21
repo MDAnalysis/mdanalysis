@@ -28,6 +28,7 @@ import pytest
 import warnings
 from numpy.testing import assert_equal
 import MDAnalysis as mda
+import numpy as np
 
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
@@ -40,8 +41,6 @@ from MDAnalysisTests.datafiles import (
     PDB_chainidnewres,
     PDB_sameresid_diffresname,
     PDB_metal,
-    PDB_elements,
-    PDB_wrong_ele
 )
 from MDAnalysis.topology.PDBParser import PDBParser
 
@@ -249,25 +248,101 @@ def test_PDB_metals():
     assert u.atoms[2].mass == pytest.approx(tables.masses["CA"])
     assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
 
+# An example of ideal PDB file used to test elements attribute.
+PDB_elements = """\
+ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
+ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
+ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
+ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
+ATOM      5  CB  ASN A   1      -9.437   3.396  -2.889  1.00  0.00           C
+ATOM      6  CG  ASN A   1     -10.915   3.130  -2.611  1.00  0.00           C
+ATOM      7  OD1 ASN A   1     -11.269   2.700  -1.524  1.00  0.00           O
+ATOM      8  ND2 ASN A   1     -11.806   3.406  -3.543  1.00  0.00           N
+ATOM      9  H1  ASN A   1      -8.330   3.957   0.261  1.00  0.00           H
+ATOM     10  H2  ASN A   1      -8.740   5.068  -0.889  1.00  0.00           H
+ATOM     11  H3  ASN A   1      -9.877   4.041  -0.293  1.00  0.00           H
+ATOM     12  HA  ASN A   1      -8.930   2.162  -1.239  1.00  0.00           H
+ATOM     13  HB2 ASN A   1      -9.310   4.417  -3.193  1.00  0.00           H
+ATOM     14  HB3 ASN A   1      -9.108   2.719  -3.679  1.00  0.00           H
+ATOM     15 HD21 ASN A   1     -11.572   3.791  -4.444  1.00  0.00           H
+ATOM     16 HD22 ASN A   1     -12.757   3.183  -3.294  1.00  0.00           H
+TER      17
+HETATM   18 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          Cu
+HETATM   19 FE    FE A   3      00.000  03.000  00.000  1.00 00.00          Fe
+HETATM   20 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          Mg
+TER      21
+HETATM 1609  S   DMS A 101      19.762  39.489  18.350  1.00 25.99           S
+HETATM 1610  O   DMS A 101      19.279  37.904  18.777  1.00 23.69           O
+HETATM 1611  C1  DMS A 101      21.344  39.260  17.532  1.00 24.07           C
+HETATM 1612  C2  DMS A 101      18.750  40.066  17.029  1.00 20.50           C
+HETATM 1613  S   DMS A 102      22.157  39.211  12.217  1.00 27.26           S
+HETATM 1614  O   DMS A 102      20.622  38.811  11.702  1.00 25.51           O
+HETATM 1615  C1  DMS A 102      22.715  40.764  11.522  1.00 26.00           C
+HETATM 1616  C2  DMS A 102      22.343  39.515  13.971  1.00 25.46           C
+TER    1617
+"""
 
 def test_PDB_elements():
-    from MDAnalysis.topology import tables
+    """
+    The elements attribute is equipped to obtain the element symbols,
+    if the PDB file contains the element symbol
+    """
+    u = mda.Universe(StringIO(PDB_elements), format='PDB')
+    element_list = np.array(['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'CU', 'FE', 'MG', 'S', 'O', 'C', 'C', 'S', 'O', 'C', 'C'], dtype=object)
+    assert np.all(u.atoms.elements == element_list)
 
-    u = mda.Universe(PDB_elements, format='PDB')
-    element_list = ['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H', 'H', 'H',
-                    'H','H','H', 'H', 'H', 'CU', 'FE', 'C', 'MG']
-    assert len(u.atoms.elements) == len(element_list)
-    assert all(i == j for i,j in zip(element_list, u.atoms.elements))
 
+PDB_missing_ele = """\
+ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00
+ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
+ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00
+ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00
+TER       5
+HETATM    6 CU    CU A   2      03.000  00.000  00.000  1.00 00.00
+HETATM    7 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
+HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00
+TER       9
+"""
 
+PDB_wrong_ele = """\
+ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
+ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
+ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
+ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
+ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00
+TER       5
+HETATM    6 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          CU
+HETATM    7 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
+HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
+TER       9
+"""
 
-def test_PDB_elements_warnings():
-    from MDAnalysis.topology import tables
+def test_missing_elements_warnings():
+    """
+    The test checks whether it asserts the appropriate warning on
+    encountering missing elements column.
+    """
 
-    u = mda.Universe(PDB_wrong_ele, format='PDB')
     with pytest.warns(UserWarning) as record:
-        warnings.warn("Element record found to be non-physical. Guessing element from atom name: CGA", UserWarning)
+        u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
 
     assert len(record) == 1
-    assert record[0].message.args[0] == "Element record found to be non-physical. Guessing element from atom name: CGA"
+    assert record[0].message.args[0] == "Element information missing. Guessing elements from atom names : ['N', 'CA', 'C', 'O', 'CU', 'FE', 'Mg']"
 
+
+def test_wrong_elements_warnings():
+    """
+    The test checks whether it fills in the wrong elements appropriately
+    with the atom names where element symbols are missing.
+    """
+    with pytest.warns(UserWarning) as record:
+        u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
+    
+    assert len(record) == 2
+    assert record[1].message.args[0] == "Element record found to be non-physical. Guessing element from atom name: ['X', 'FE']"
+
+    # Checking if missing atoms are filled with an empty string.
+
+    element_list = np.array(['N', 'C', 'C', 'O', '', 'CU', 'FE', 'MG'], dtype=object)
+    assert np.all(u.atoms.elements == element_list)
+    

@@ -173,8 +173,6 @@ __all__ = [
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
     "PDB_metal", # PDB with metal atoms
-    "PDB_elements", # PDB with appropriate element ids
-    "PDB_wrong_ele", # PDB with wrong element notation
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
     "GRO_huge_box", # for testing gro parser with hige box sizes
@@ -253,8 +251,6 @@ PSF_cmap = resource_filename(__name__, 'data/parmed_ala3.psf')
 PDB_small = resource_filename(__name__, 'data/adk_open.pdb')
 PDB_closed = resource_filename(__name__, 'data/adk_closed.pdb')
 PDB_metal = resource_filename(__name__, 'data/metals.pdb')
-PDB_elements = resource_filename(__name__, 'data/elements.pdb')
-PDB_wrong_ele = resource_filename(__name__, 'data/wrong_ele.pdb')
 
 ALIGN = resource_filename(__name__, 'data/align.pdb')
 RNA_PSF = resource_filename(__name__, 'data/analysis/1k5i_c36.psf.gz')
