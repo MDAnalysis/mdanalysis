@@ -221,8 +221,8 @@ class TestGeometryFunctions(object):
         assert_equal(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
-    @pytest.mark.parametrize('a', np.array([0.1, 0, 0.2]))
     def test_angle(self, a):
+      a = np.array([0.1, 0, 0.2])
     	assert_equal(mdamath.angle(a, -a), mdamath.angle(a**0.5, -(a**0.5)))
             
     def test_stp(self):
