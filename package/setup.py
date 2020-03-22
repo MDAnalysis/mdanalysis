@@ -73,7 +73,11 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
+<<<<<<< HEAD
 RELEASE = "0.20.2-dev0"
+=======
+RELEASE = "0.20.1"
+>>>>>>> ee4759293e1a4a5109c6b66e133acb1af7d24b0d
 
 is_release = 'dev' not in RELEASE
 

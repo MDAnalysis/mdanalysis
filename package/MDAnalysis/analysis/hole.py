@@ -279,6 +279,10 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+
 from MDAnalysis import Universe
 from MDAnalysis.exceptions import ApplicationError
 from MDAnalysis.lib.util import (which, realpath, asiterable,

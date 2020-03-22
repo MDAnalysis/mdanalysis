@@ -98,8 +98,12 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
+<<<<<<< HEAD
 __version__ = "0.20.2-dev0"
 
+=======
+__version__ = "0.20.1"
+>>>>>>> ee4759293e1a4a5109c6b66e133acb1af7d24b0d
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
 # If MDAnalysis is imported here coverage accounting might fail because all the import

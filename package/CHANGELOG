@@ -13,6 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+<<<<<<< HEAD
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
@@ -170,6 +171,8 @@ Deprecations
   * analysis.density.density_from_PDB and BfactorDensityCreator (remove in 2.0)
 
 
+=======
+>>>>>>> ee4759293e1a4a5109c6b66e133acb1af7d24b0d
 09/05/19 IAlibay, richardjgowers
 
   * 0.20.1
@@ -542,7 +545,6 @@ Testsuite
   * Unit tests for unwanted side effects when importing MDAnalysis
   * MDAnalysis.visualization is now tested
 
-
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
          jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler, rcortini,
          xiki-tempula, manuel.nuno.melo
@@ -651,6 +653,9 @@ Fixes
   * fixed GROWriter truncating long resids from the wrong end (Issue #1395)
   * Fixed dtype of numpy arrays to accomodate 32 bit architectures (Issue #1362)
   * Groups are hashable on python 3 (Issue #1397)
+
+Changes
+  * scipy and matplotlib are now required dependencies (Issue #1159)
 
 
 Changes
