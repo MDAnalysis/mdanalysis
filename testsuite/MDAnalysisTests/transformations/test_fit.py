@@ -103,7 +103,7 @@ def test_fit_translation_no_masses(fit_universe):
         fit_translation(test_u, ref_u, weights="mass")(ts)
     with pytest.raises(TypeError) as exc:
         fit_translation(test_u, ref_u, weights="mass")(ts)
-        assert 'atoms.masses is missing' in str(exc.value)
+    assert 'atoms.masses is missing' in str(exc.value)
 
 
 def test_fit_translation_no_options(fit_universe):
