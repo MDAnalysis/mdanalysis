@@ -101,10 +101,7 @@ def angle(a, b):
     """
     x = np.dot(a, b) / (norm(a) * norm(b))
     # catch roundoffs that lead to nan otherwise
-    if x > 1.0:
-        return 0.0
-    elif x < -1.0:
-        return -np.pi
+    x=np.clip(x,-1,1)
     return np.arccos(x)
 
 
