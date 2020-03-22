@@ -265,7 +265,7 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_PARSERS</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
-<span class="kn">from</span> <span class="nn">..lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>
+<span class="kn">from</span> <span class="nn">..lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">,</span> <span class="n">isstream</span>
 <span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">find_fragments</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">groups</span>
@@ -347,7 +347,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="p">(</span><span class="n">filename</span><span class="p">,)</span> <span class="o">+</span> <span class="n">coordinates</span>
     <span class="k">return</span> <span class="n">coordinates</span>
-    
+
 <span class="k">def</span> <span class="nf">_generate_from_topology</span><span class="p">(</span><span class="n">universe</span><span class="p">):</span>
     <span class="c1"># generate Universe version of each class</span>
     <span class="c1"># AG, RG, SG, A, R, S</span>
@@ -415,16 +415,16 @@
 <span class="sd">        A CHARMM/XPLOR PSF topology file, PDB file or Gromacs GRO file; used to</span>
 <span class="sd">        define the list of atoms. If the file includes bond information,</span>
 <span class="sd">        partial charges, atom masses, ... then these data will be available to</span>
-<span class="sd">        MDAnalysis. Alternatively, an existing </span>
-<span class="sd">        :class:`MDAnalysis.core.topology.Topology` instance may be given, </span>
+<span class="sd">        MDAnalysis. Alternatively, an existing</span>
+<span class="sd">        :class:`MDAnalysis.core.topology.Topology` instance may be given,</span>
 <span class="sd">        numpy coordinates, or None for an empty universe.</span>
 <span class="sd">    coordinates: str, stream, list of str, list of stream (optional)</span>
-<span class="sd">        Coordinates can be provided as files of  </span>
-<span class="sd">        a single frame (eg a PDB, CRD, or GRO file); a list of single </span>
-<span class="sd">        frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs </span>
-<span class="sd">        XTC/TRR, or generic XYZ format). The coordinates must be </span>
-<span class="sd">        ordered in the same way as the list of atoms in the topology. </span>
-<span class="sd">        See :ref:`Supported coordinate formats` for what can be read </span>
+<span class="sd">        Coordinates can be provided as files of</span>
+<span class="sd">        a single frame (eg a PDB, CRD, or GRO file); a list of single</span>
+<span class="sd">        frames; or a trajectory file (in CHARMM/NAMD/LAMMPS DCD, Gromacs</span>
+<span class="sd">        XTC/TRR, or generic XYZ format). The coordinates must be</span>
+<span class="sd">        ordered in the same way as the list of atoms in the topology.</span>
+<span class="sd">        See :ref:`Supported coordinate formats` for what can be read</span>
 <span class="sd">        as coordinates. Alternatively, streams can be given.</span>
 <span class="sd">    topology_format: str, ``None``, default ``None``</span>
 <span class="sd">        Provide the file format of the topology file; ``None`` guesses it from</span>
@@ -436,7 +436,7 @@
 <span class="sd">        guesses it from the file extension. Note that this keyword has no</span>
 <span class="sd">        effect if a list of file names is supplied because the &quot;chained&quot; reader</span>
 <span class="sd">        has to guess the file format for each individual list member.</span>
-<span class="sd">        Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader` </span>
+<span class="sd">        Can also pass a subclass of :class:`MDAnalysis.coordinates.base.ProtoReader`</span>
 <span class="sd">        to define a custom reader to be used on the trajectory file.</span>
 <span class="sd">    all_coordinates: bool, default ``False``</span>
 <span class="sd">        If set to ``True`` specifies that if more than one filename is passed</span>
@@ -444,7 +444,7 @@
 <span class="sd">        :class:`MDAnalysis.coordinates.chain.ChainReader`). The</span>
 <span class="sd">        default behavior is to take the first file as a topology and the</span>
 <span class="sd">        remaining as coordinates. The first argument will always always be used</span>
-<span class="sd">        to infer a topology regardless of *all_coordinates*. </span>
+<span class="sd">        to infer a topology regardless of *all_coordinates*.</span>
 <span class="sd">    guess_bonds: bool, default ``False``</span>
 <span class="sd">        Once Universe has been loaded, attempt to guess the connectivity</span>
 <span class="sd">        between atoms.  This will populate the .bonds, .angles, and .dihedrals</span>
@@ -464,8 +464,8 @@
 <span class="sd">        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will</span>
 <span class="sd">        still be honored when unpickling.</span>
 <span class="sd">    transformations: function or list, ``None``, default ``None``</span>
-<span class="sd">        Provide a list of transformations that you wish to apply to the </span>
-<span class="sd">        trajectory upon reading. Transformations can be found in </span>
+<span class="sd">        Provide a list of transformations that you wish to apply to the</span>
+<span class="sd">        trajectory upon reading. Transformations can be found in</span>
 <span class="sd">        :mod:`MDAnalysis.transformations`, or can be user-created.</span>
 <span class="sd">    in_memory: bool, default ``False``</span>
 <span class="sd">        After reading in the trajectory, transfer it to an in-memory</span>
@@ -542,7 +542,7 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topology</span><span class="p">,</span> <span class="n">Topology</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">topology</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">_check_file_like</span><span class="p">(</span><span class="n">topology</span><span class="p">)</span>
-            <span class="n">topology</span> <span class="o">=</span> <span class="n">_topology_from_file_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> 
+            <span class="n">topology</span> <span class="o">=</span> <span class="n">_topology_from_file_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
                                                 <span class="n">topology_format</span><span class="o">=</span><span class="n">topology_format</span><span class="p">,</span>
                                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -555,11 +555,11 @@
                             <span class="s1">&#39;your own Universe.&#39;</span><span class="p">)</span>
 
         <span class="n">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>  <span class="c1"># make real atoms, res, segments</span>
-        
+
         <span class="n">coordinates</span> <span class="o">=</span> <span class="n">_resolve_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span>
                                            <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span>
                                            <span class="n">all_coordinates</span><span class="o">=</span><span class="n">all_coordinates</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">coordinates</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">load_new</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="n">in_memory</span><span class="p">,</span>
                         <span class="n">in_memory_step</span><span class="o">=</span><span class="n">in_memory_step</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -568,7 +568,7 @@
             <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">transformations</span><span class="p">):</span>
                 <span class="n">transformations</span> <span class="o">=</span> <span class="p">[</span><span class="n">transformations</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transformations</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">guess_bonds</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">guess_bonds</span><span class="p">(</span><span class="n">vdwradii</span><span class="o">=</span><span class="n">vdwradii</span><span class="p">)</span>
 
@@ -637,7 +637,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">n_atoms</span><span class="p">:</span>
             <span class="n">n_residues</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">0</span>
-            
+
         <span class="k">if</span> <span class="n">atom_resindex</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s1">&#39;Residues specified but no atom_resindex given.  &#39;</span>
@@ -679,7 +679,7 @@
         <span class="c1"># It is also cleaner than a weakref.</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-<div class="viewcode-block" id="Universe.load_new"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.load_new">[docs]</a>    <span class="k">def</span> <span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+<div class="viewcode-block" id="Universe.load_new"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.load_new">[docs]</a>    <span class="k">def</span> <span class="nf">load_new</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                  <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Load coordinates from `filename`.</span>
 
@@ -800,9 +800,6 @@
                 <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
             <span class="p">))</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
-            <span class="n">pm_format</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{step}</span><span class="s1">/</span><span class="si">{numsteps}</span><span class="s1"> frames copied to memory (frame </span><span class="si">{frame}</span><span class="s1">)&#39;</span>
-            <span class="n">pm</span> <span class="o">=</span> <span class="n">ProgressMeter</span><span class="p">(</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-                               <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">pm_format</span><span class="p">)</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
             <span class="n">has_vels</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span>
@@ -814,7 +811,9 @@
             <span class="n">dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_frames</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
                           <span class="k">if</span> <span class="n">has_dims</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
 
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ProgressBar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span>
+                                               <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                               <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Loading frames&quot;</span><span class="p">)):</span>
                 <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">coordinates</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">has_vels</span><span class="p">:</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">velocities</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span><span class="p">)</span>
@@ -822,7 +821,6 @@
                     <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">forces</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">forces</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">has_dims</span><span class="p">:</span>
                     <span class="n">np</span><span class="o">.</span><span class="n">copyto</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
-                <span class="n">pm</span><span class="o">.</span><span class="n">echo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
 
             <span class="c1"># Overwrite trajectory in universe with an MemoryReader</span>
             <span class="c1"># object, to provide fast access and allow coordinates</span>
@@ -1135,7 +1133,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">SegmentGroup</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">n_segments</span><span class="p">),</span> <span class="bp">self</span><span class="p">)</span>
         <span class="c1"># return the new segment</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">segments</span><span class="p">[</span><span class="n">segidx</span><span class="p">]</span></div>
-    
+
     <span class="k">def</span> <span class="nf">_add_topology_objects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">object_type</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new TopologyObjects to this Universe</span>
@@ -1145,10 +1143,10 @@
 <span class="sd">        object_type : {&#39;bonds&#39;, &#39;angles&#39;, &#39;dihedrals&#39;, &#39;impropers&#39;}</span>
 <span class="sd">            The type of TopologyObject to add.</span>
 <span class="sd">        values : TopologyGroup or iterable of tuples, AtomGroups, or TopologyObjects</span>
-<span class="sd">            An iterable of: tuples of atom indices, or AtomGroups, </span>
-<span class="sd">            or TopologyObjects. If every value is a TopologyObject, all </span>
+<span class="sd">            An iterable of: tuples of atom indices, or AtomGroups,</span>
+<span class="sd">            or TopologyObjects. If every value is a TopologyObject, all</span>
 <span class="sd">            keywords are ignored.</span>
-<span class="sd">            If AtomGroups or TopologyObjects are passed, they *must* be from the same </span>
+<span class="sd">            If AtomGroups or TopologyObjects are passed, they *must* be from the same</span>
 <span class="sd">            Universe.</span>
 <span class="sd">        types : iterable (optional, default None)</span>
 <span class="sd">            None, or an iterable of hashable values with the same length as ``values``</span>
@@ -1167,7 +1165,7 @@
                 <span class="n">types</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">guessed</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">is_guessed</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
             <span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span><span class="o">.</span><span class="n">order</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
-        
+
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">TopologyObject</span><span class="p">)):</span>
@@ -1184,13 +1182,13 @@
             <span class="n">istr</span> <span class="o">=</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">nonexistent</span><span class="p">))</span>
             <span class="n">err_msg</span> <span class="o">=</span> <span class="s1">&#39;Cannot add </span><span class="si">{}</span><span class="s1"> for nonexistent atom indices: </span><span class="si">{}</span><span class="s1">&#39;</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err_msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">,</span> <span class="n">istr</span><span class="p">))</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">object_type</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">object_type</span><span class="p">,</span> <span class="p">[])</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">object_type</span><span class="p">)</span>
-        
+
 
         <span class="n">attr</span><span class="o">.</span><span class="n">_add_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
 
@@ -1200,10 +1198,10 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Bonds; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms, </span>
-<span class="sd">            or Bonds. If every value is a Bond, all </span>
-<span class="sd">            keywords are ignored. </span>
-<span class="sd">            If AtomGroups, Bonds, or a TopologyGroup are passed, </span>
+<span class="sd">            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,</span>
+<span class="sd">            or Bonds. If every value is a Bond, all</span>
+<span class="sd">            keywords are ignored.</span>
+<span class="sd">            If AtomGroups, Bonds, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 <span class="sd">        types : iterable (optional, default None)</span>
 <span class="sd">            None, or an iterable of hashable values with the same length as ``values``</span>
@@ -1227,13 +1225,13 @@
 <span class="sd">            ow_mw = sol.select_atoms(&#39;name OW or name MW&#39;).split(&#39;residue&#39;)</span>
 <span class="sd">            u.add_bonds(ow_hw1 + ow_hw2 + ow_mw)</span>
 
-<span class="sd">        You can only add bonds from the same Universe. If you would like to add </span>
-<span class="sd">        AtomGroups, Bonds, or a TopologyGroup from a different Universe, convert </span>
+<span class="sd">        You can only add bonds from the same Universe. If you would like to add</span>
+<span class="sd">        AtomGroups, Bonds, or a TopologyGroup from a different Universe, convert</span>
 <span class="sd">        them to indices first. ::</span>
 
 <span class="sd">            from MDAnalysis.tests.datafiles import PSF</span>
 <span class="sd">            u2 = mda.Universe(PSF)</span>
-<span class="sd">            </span>
+
 <span class="sd">            #  assuming you have already added bonds to u</span>
 <span class="sd">            u2.add_bonds(u.bonds.to_indices())</span>
 
@@ -1243,17 +1241,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="Universe.add_angles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_angles">[docs]</a>    <span class="k">def</span> <span class="nf">add_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new Angles to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Angles; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms, </span>
-<span class="sd">            or Angles. If every value is a Angle, all </span>
+<span class="sd">            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,</span>
+<span class="sd">            or Angles. If every value is a Angle, all</span>
 <span class="sd">            keywords are ignored.</span>
-<span class="sd">            If AtomGroups, Angles, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Angles, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 <span class="sd">        types : iterable (optional, default None)</span>
 <span class="sd">            None, or an iterable of hashable values with the same length as ``values``</span>
@@ -1264,17 +1262,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="Universe.add_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">add_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new Dihedrals to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Dihedrals; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, </span>
-<span class="sd">            or Dihedrals. If every value is a Dihedral, all </span>
+<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,</span>
+<span class="sd">            or Dihedrals. If every value is a Dihedral, all</span>
 <span class="sd">            keywords are ignored.</span>
-<span class="sd">            If AtomGroups, Dihedrals, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Dihedrals, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 <span class="sd">        types : iterable (optional, default None)</span>
 <span class="sd">            None, or an iterable of hashable values with the same length as ``values``</span>
@@ -1286,17 +1284,17 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="Universe.add_impropers"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_impropers">[docs]</a>    <span class="k">def</span> <span class="nf">add_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Add new Impropers to this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Impropers; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, </span>
-<span class="sd">            or Impropers. If every value is an Improper, all </span>
+<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,</span>
+<span class="sd">            or Impropers. If every value is an Improper, all</span>
 <span class="sd">            keywords are ignored.</span>
-<span class="sd">            If AtomGroups, Impropers, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Impropers, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 <span class="sd">        types : iterable (optional, default None)</span>
 <span class="sd">            None, or an iterable of hashable values with the same length as ``values``</span>
@@ -1317,9 +1315,9 @@
 <span class="sd">        object_type : {&#39;bonds&#39;, &#39;angles&#39;, &#39;dihedrals&#39;, &#39;impropers&#39;}</span>
 <span class="sd">            The type of TopologyObject to add.</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or TopologyObjects; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of atom indices, or AtomGroups, </span>
+<span class="sd">            An iterable of: tuples of atom indices, or AtomGroups,</span>
 <span class="sd">            or TopologyObjects.</span>
-<span class="sd">            If AtomGroups, TopologyObjects, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, TopologyObjects, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 
 <span class="sd">        .. versionadded:: 0.21.0</span>
@@ -1338,7 +1336,7 @@
             <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="n">object_type</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;There are no </span><span class="si">{}</span><span class="s1"> to delete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">object_type</span><span class="p">))</span>
-        
+
         <span class="n">attr</span><span class="o">.</span><span class="n">_delete_bonds</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Universe.delete_bonds"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -1347,9 +1345,9 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Bonds; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms, </span>
+<span class="sd">            An iterable of: tuples of 2 atom indices, or AtomGroups with 2 atoms,</span>
 <span class="sd">            or Bonds.</span>
-<span class="sd">            If AtomGroups, Bonds, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Bonds, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 
 
@@ -1361,13 +1359,13 @@
 <span class="sd">            import MDAnalysis as mda</span>
 <span class="sd">            from MDAnalysis.tests.datafiles import PSF</span>
 <span class="sd">            u = mda.Universe(PSF)</span>
-<span class="sd">            </span>
+
 <span class="sd">            #  delete first 5 bonds</span>
 <span class="sd">            u.delete_bonds(u.bonds[:5])</span>
 
-<span class="sd">        </span>
-<span class="sd">        If you are deleting bonds in the form of AtomGroups, Bonds, or a </span>
-<span class="sd">        TopologyGroup, they must come from the same Universe. If you want to </span>
+
+<span class="sd">        If you are deleting bonds in the form of AtomGroups, Bonds, or a</span>
+<span class="sd">        TopologyGroup, they must come from the same Universe. If you want to</span>
 <span class="sd">        delete bonds from another Universe, convert them to indices first. ::</span>
 
 <span class="sd">            from MDAnalysis.tests.datafiles import PDB</span>
@@ -1380,51 +1378,51 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="Universe.delete_angles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_angles">[docs]</a>    <span class="k">def</span> <span class="nf">delete_angles</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete Angles from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Angles; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms, </span>
+<span class="sd">            An iterable of: tuples of 3 atom indices, or AtomGroups with 3 atoms,</span>
 <span class="sd">            or Angles.</span>
-<span class="sd">            If AtomGroups, Angles, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Angles, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 0.21.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="Universe.delete_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">delete_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete Dihedrals from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Dihedrals; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, </span>
+<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,</span>
 <span class="sd">            or Dihedrals.</span>
-<span class="sd">            If AtomGroups, Dihedrals, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Dihedrals, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 0.21.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="Universe.delete_impropers"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.delete_impropers">[docs]</a>    <span class="k">def</span> <span class="nf">delete_impropers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Delete Impropers from this Universe.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        values : iterable of tuples, AtomGroups, or Impropers; or TopologyGroup</span>
-<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms, </span>
+<span class="sd">            An iterable of: tuples of 4 atom indices, or AtomGroups with 4 atoms,</span>
 <span class="sd">            or Impropers.</span>
-<span class="sd">            If AtomGroups, Angles, or a TopologyGroup are passed, </span>
+<span class="sd">            If AtomGroups, Angles, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 
-<span class="sd">        </span>
+
 <span class="sd">        .. versionadded:: 0.21.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
@@ -1681,7 +1679,7 @@
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="c1">#Create universe without coordinates if they dont exists in args</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
-          
+
     <span class="k">return</span> <span class="n">u</span></div>
 </pre></div>
 
@@ -1695,7 +1693,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>
