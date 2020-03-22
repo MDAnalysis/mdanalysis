@@ -95,6 +95,22 @@ def test_verbose(u):
     assert a._verbose
 
 
+def test_verbose_progressbar(u, capsys):
+    an = FrameAnalysis(u.trajectory).run()
+    out, err = capsys.readouterr()
+    expected = ''
+    actual = err.strip().split('\r')[-1]
+    assert actual == expected
+
+
+def test_verbose_progressbar_run(u, capsys):
+    an = FrameAnalysis(u.trajectory).run(verbose=True)
+    out, err = capsys.readouterr()
+    expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    actual = err.strip().split('\r')[-1]
+    assert actual[:24] == expected[:24]
+
+
 def test_incomplete_defined_analysis(u):
     with pytest.raises(NotImplementedError):
         IncompleteAnalysis(u.trajectory).run()

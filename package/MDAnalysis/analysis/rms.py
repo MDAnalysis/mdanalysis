@@ -145,7 +145,6 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 
@@ -625,8 +624,6 @@ class RMSD(AnalysisBase):
         self.rmsd = np.zeros((self.n_frames,
                               3 + len(self._groupselections_atoms)))
 
-        self._pm.format = ("RMSD {rmsd:5.2f} A at frame "
-                           "{step:5d}/{numsteps}  [{percentage:5.1f}%]")
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
@@ -672,8 +669,6 @@ class RMSD(AnalysisBase):
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, None, self.weights_select)
-
-        self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
 
 class RMSF(AnalysisBase):
