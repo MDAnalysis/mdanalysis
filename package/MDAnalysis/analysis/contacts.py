@@ -438,8 +438,6 @@ class Contacts(AnalysisBase):
                 self.r0.append(distance_array(refA.positions, refB.positions))
                 self.initial_contacts.append(contact_matrix(self.r0[-1],
                                                             radius))
-        # Number of initial contacts present
-        self.n_initial_contacts=self.initial_contacts[0].sum()
 
     def _prepare(self):
         self.timeseries = np.empty((self.n_frames, len(self.r0)+1))
