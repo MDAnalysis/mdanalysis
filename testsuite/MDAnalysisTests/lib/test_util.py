@@ -223,7 +223,7 @@ class TestGeometryFunctions(object):
 
     @pytest.fixture()
     def test_angle(self, a, b):
-      a = np.array([0.1, 0, 0.2])
+      a = np.array([0.1, 0, 0.2] ** 0.5)
       b = -a
       assert x < -1.0
       assert mdamath.angle(a, b) == np.pi
