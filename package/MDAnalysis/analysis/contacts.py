@@ -368,11 +368,18 @@ class Contacts(AnalysisBase):
     Attributes
     ----------
     timeseries : list
-        list containing *Q* for all refgroup pairs and analyzed frames
-
+        list containing *Q* for all refgroup pairs and analyzed frames 
+    r0 : list
+        list containing the initial distance array in the reference structure
+    initial_contacts : list
+        list containing the contact_matrix based on the radius cutoff 
+    n_initial_contacts : Stores the total number of initial contacts
+        sum of the initial contacts
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. Use ``np.savetxt()`` on
        :attr:`Contacts.timeseries` instead.
+    .. versionchanged:: 0.21.0
+        'n_initial_contacts' attribute was added.
 
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
@@ -440,6 +447,7 @@ class Contacts(AnalysisBase):
                                                             radius))
         # Number of initial contacts present
         self.n_initial_contacts=self.initial_contacts[0].sum()
+
 
     def _prepare(self):
         self.timeseries = np.empty((self.n_frames, len(self.r0)+1))
