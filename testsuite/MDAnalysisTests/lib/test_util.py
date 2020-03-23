@@ -222,9 +222,11 @@ class TestGeometryFunctions(object):
         # add more non-trivial tests
 
     @pytest.fixture()
-    def test_angle(self, a):
+    def test_angle(self, a, b):
       a = np.array([0.1, 0, 0.2])
-      assert mdamath.angle(a, -a) == mdamath.angle(a**0.5, -(a**0.5))
+      b = -a
+      assert x < -1.0
+      assert mdamath.angle(a, b) == np.pi
             
     def test_stp(self):
         assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
