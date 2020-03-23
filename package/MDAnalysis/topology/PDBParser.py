@@ -312,24 +312,22 @@ class PDBParser(TopologyReaderBase):
         # Need to pull elements from Atom names
         # Similar to the check for atomtypes function
         if not any(elements):
-            warnings.warn("Element information missing. Guessing elements from atom names : {}".format(names))
-            elements = guess_types(names)
+            warnings.warn("Element information absent.")
             attrs.append(Elements(elements, guessed=True))
         else:
             elements = guess_types(elements)
+            
+            missing = np.isin(elements,'')
             uni_elements, indices = np.unique(elements, return_inverse=True)
-
-            if any(np.isin(uni_elements, '')):
-                indexlist = [ j for j in range(len(indices)) if indices[j] == 0 ]
-                # This would be 0 always as guess_types would return a set
-                # of alphabets and empty string, and empty string will be
-                # sorted to be a index 0.
-                warnings.warn("Element record found to be non-physical. Guessing element from atom name: {}".format([names[i] for i in indexlist if len(indexlist) != 0 ]))
-    
-                elements = [ guess_atom_element(names[k]) if k in indexlist else elements[k] for k in range(len(elements)) ]
-                attrs.append(Elements(elements, guessed=True))
-            else:
-                   attrs.append(Elements(elements, guessed=True))
+            # indexlist contains the index of those elements
+            # whose atom record is missing from the column or is
+            # non-physical.
+            # This can be further used in guessing from atomnames
+            # if needed.
+            indexlist = [ j for j in range(len(indices)) if missing[j] == True]
+            warnings.warn("Element record found to be either non-physical or missing for some elements.")
+            attrs.append(Elements(elements, guessed=True))
+            
            
 
         # Residue level stuff from here

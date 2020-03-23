@@ -288,8 +288,12 @@ def test_PDB_elements():
     if the PDB file contains the element symbol
     """
     u = mda.Universe(StringIO(PDB_elements), format='PDB')
-    element_list = np.array(['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'CU', 'FE', 'MG', 'S', 'O', 'C', 'C', 'S', 'O', 'C', 'C'], dtype=object)
-    assert np.all(u.atoms.elements == element_list)
+    element_list = np.array([
+        'N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
+        'H', 'H', 'H', 'H', 'H', 'H', 'H', 'CU', 'FE',
+        'MG', 'S', 'O', 'C', 'C', 'S', 'O', 'C', 'C'
+    ], dtype=object)
+    assert_equal(u.atoms.elements, element_list)
 
 
 PDB_missing_ele = """\
@@ -310,11 +314,11 @@ ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
 ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
 ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00
-TER       5
-HETATM    6 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          CU
-HETATM    7 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
-HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
-TER       9
+TER       6
+HETATM    7 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          CU
+HETATM    8 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
+HETATM    9 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
+TER       10
 """
 
 def test_missing_elements_warnings():
@@ -327,7 +331,7 @@ def test_missing_elements_warnings():
         u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
 
     assert len(record) == 1
-    assert record[0].message.args[0] == "Element information missing. Guessing elements from atom names : ['N', 'CA', 'C', 'O', 'CU', 'FE', 'Mg']"
+    assert record[0].message.args[0] == "Element information absent."
 
 
 def test_wrong_elements_warnings():
@@ -337,12 +341,14 @@ def test_wrong_elements_warnings():
     """
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
-    
+
     assert len(record) == 2
-    assert record[1].message.args[0] == "Element record found to be non-physical. Guessing element from atom name: ['X', 'FE']"
+    assert record[1].message.args[0] == "Element record found to "\
+        "be either non-physical or missing for some elements."
 
     # Checking if missing atoms are filled with an empty string.
 
-    element_list = np.array(['N', 'C', 'C', 'O', '', 'CU', 'FE', 'MG'], dtype=object)
-    assert np.all(u.atoms.elements == element_list)
-    
+    element_list = np.array(['N', 'C', 'C', 'O', '', 'CU', '', 'MG'
+        ], dtype=object)
+    assert_equal(u.atoms.elements, element_list)
+
