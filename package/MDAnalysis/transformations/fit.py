@@ -181,7 +181,7 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
     try:
         weights = align.get_weights(ref.atoms, weights=weights)
-    except (ValueError, TypeError):
+    except ValueError:
         raise_from(ValueError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup."), None)
     ref_com = ref.center(weights)
