@@ -37,6 +37,8 @@ import numpy as np
 from MDAnalysisTests.datafiles import (
     PSF,
     DCD,
+    TPR,
+    XTC,
     contacts_villin_folded,
     contacts_villin_unfolded,
     contacts_file
@@ -301,6 +303,29 @@ class TestContacts(object):
     def test_non_callable_method(self, universe):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
+
+    def test_distance_box(self):
+        u = mda.Universe(TPR, XTC)
+        sel1 = "(resname ARG LYS) and (name NH* NZ)"
+        sel2 = "(resname ASP GLU) and (name OE* OD*)"
+        acidic = u.select_atoms(sel2)
+        basic = u.select_atoms(sel1)
+
+        q = contacts.Contacts(u,
+                              select=(sel1, sel2),
+                              refgroup=(acidic, basic),
+                              method="hard_cut", 
+                              kwargs={'is_box': True})
+
+        r = contacts.Contacts(u,
+                              select=(sel1, sel2),
+                              refgroup=(acidic, basic),
+                              method="hard_cut")
+
+        q.r0 = np.array(q.r0).squeeze()
+        r.r0 = np.array(r.r0).squeeze()
+        assert_array_equal(q.r0,r.r0)
+                              
 
 
 def test_q1q2():
