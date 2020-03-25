@@ -424,18 +424,28 @@ class Contacts(AnalysisBase):
         self.select = select
         self.grA = u.select_atoms(select[0])
         self.grB = u.select_atoms(select[1])
-
+        self.is_box = self.fraction_kwargs.get('is_box')
+        
         # contacts formed in reference
         self.r0 = []
         self.initial_contacts = []
 
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
-            self.r0.append(distance_array(refA.positions, refB.positions))
+            if(self.is_box):
+                self.r0.append(distance_array(refA.positions, refB.positions,
+                                                box=refA.universe.dimensions))
+            else:
+                self.r0.append(distance_array(refA.positions, refB.positions))
             self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
         else:
             for refA, refB in refgroup:
-                self.r0.append(distance_array(refA.positions, refB.positions))
+                if(self.is_box):
+                    self.r0.append(distance_array(refA.positions, refB.positions,
+                                                    box=refA.universe.dimensions))
+                else:
+                    self.r0.append(distance_array(refA.positions, refB.positions))
+
                 self.initial_contacts.append(contact_matrix(self.r0[-1],
                                                             radius))
 
@@ -444,9 +454,13 @@ class Contacts(AnalysisBase):
 
     def _single_frame(self):
         self.timeseries[self._frame_index][0] = self._ts.frame
-
+    
         # compute distance array for a frame
-        d = distance_array(self.grA.positions, self.grB.positions)
+        if(self.is_box):
+            d = distance_array(self.grA.positions, self.grB.positions,
+                                                    self._ts.dimensions)
+        else:
+            d = distance_array(self.grA.positions, self.grB.positions)
 
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
