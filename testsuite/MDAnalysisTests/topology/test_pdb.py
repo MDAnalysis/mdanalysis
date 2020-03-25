@@ -73,8 +73,8 @@ def test_hy36decode(hybrid, integer):
 class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
-                      'bonds', 'tempfactors', 'chainIDs']
-    guessed_attrs = ['types', 'masses','elements']
+                      'bonds', 'tempfactors', 'chainIDs', 'elements']
+    guessed_attrs = ['types', 'masses']
 
 
 class TestPDBParser(PDBBase):
@@ -270,7 +270,8 @@ TER      17
 HETATM   18 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          Cu
 HETATM   19 FE    FE A   3      00.000  03.000  00.000  1.00 00.00          Fe
 HETATM   20 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          Mg
-TER      21
+HETATM   21 Ca    Ca A   4      00.000  00.000  03.000  1.00 00.00          CA
+TER      22
 HETATM 1609  S   DMS A 101      19.762  39.489  18.350  1.00 25.99           S
 HETATM 1610  O   DMS A 101      19.279  37.904  18.777  1.00 23.69           O
 HETATM 1611  C1  DMS A 101      21.344  39.260  17.532  1.00 24.07           C
@@ -290,9 +291,9 @@ def test_PDB_elements():
     u = mda.Universe(StringIO(PDB_elements), format='PDB')
     element_list = np.array([
         'N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
-        'H', 'H', 'H', 'H', 'H', 'H', 'H', 'CU', 'FE',
-        'MG', 'S', 'O', 'C', 'C', 'S', 'O', 'C', 'C'
-    ], dtype=object)
+        'H', 'H', 'H', 'H', 'H', 'H', 'H', 'Cu', 'Fe',
+        'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S','O', 'C',
+        'C'], dtype=object)
     assert_equal(u.atoms.elements, element_list)
 
 
@@ -331,7 +332,8 @@ def test_missing_elements_warnings():
         u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
 
     assert len(record) == 1
-    assert record[0].message.args[0] == "Element information absent."
+    assert record[0].message.args[0] == "Element information absent "\
+        "or inadequate."
 
 
 def test_wrong_elements_warnings():
@@ -343,12 +345,12 @@ def test_wrong_elements_warnings():
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
 
     assert len(record) == 2
-    assert record[1].message.args[0] == "Element record found to "\
-        "be either non-physical or missing for some elements."
+    assert record[1].message.args[0] == "Element information absent "\
+        "or inadequate."
 
     # Checking if missing atoms are filled with an empty string.
 
-    element_list = np.array(['N', 'C', 'C', 'O', '', 'CU', '', 'MG'
+    element_list = np.array(['', '', '', '', '', '', '', ''
         ], dtype=object)
     assert_equal(u.atoms.elements, element_list)
 

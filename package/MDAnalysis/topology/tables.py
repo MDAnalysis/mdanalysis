@@ -89,39 +89,59 @@ TABLE_ATOMELEMENTS = """
 # atomname   element
 # --------- ------------------
 
+# Aluminium
+AL           Al
+
+# Beryllium
+BE           Be
+
+# Boron
+B            B
+
 # Bromide
-BR           BR
+BR           Br
 
 # Calcium
-CAL          CA
-C0           CA
-CA2+         CA
+CAL          Ca
+C0           Ca
+CA2+         Ca
+CA           Ca
+
+# Carbon
+C            C
 
 # Cesium
-CES          CS
+CES          Cs
 
 # Chloride
-CLA          CL
-CLAL         CL
-CL           CL
-CL-          CL
+CLA          Cl
+CLAL         Cl
+CL           Cl
+CL-          Cl
+
+# Hydrogen
+H            H
+
+# Fluorine
+F            F
 
 # Iodide
 IOD          I
+I            I
 
 # Iron
-FE           FE
-FE2          FE
+FE           Fe
+FE2          Fe
 
 # Lithium
-LIT          LI
-LI           LI
-LI+          LI
-QL           LI
+LIT          Li
+LI           Li
+LI+          Li
+QL           Li
 
 # Magnesium
-MG           MG
-MG2+         MG
+MG           Mg
+MG2+         Mg
 
 # Noble gases
 ## XXX collides with NE, HE in Arg  XXX
@@ -129,35 +149,50 @@ MG2+         MG
 ##HE           HE
 ##NE           NE
 
+# Nitrogen
+N            N
+
+# Oxygen
+O            O
+
+# Phosphorous
+P            P
+
 # Potassium
 K            K
 POT          K
 K+           K
 QK           K
 
-# Sodium
-SOD          NA
-NA           NA
-NA+          NA
-QN           NA
+# Silicon
+SI           Si
 
-# Zink
-ZN           ZN
+# Sodium
+SOD          Na
+NA           Na
+NA+          Na
+QN           Na
+
+# Sulfur/Sulphur
+S            S
+
+# Zinc
+ZN           Zn
 
 # Copper
-CU           CU
+CU           Cu
 
 # Cesium
-CS           CS
-CS+          CS
-CES          CS
+CS           Cs
+CS+          Cs
+CES          Cs
 
 # Cerium??
-QC           CE
+QC           Ce
 
 # Rubidium
-RB           RB
-QR           RB
+RB           Rb
+QR           Rb
 
 # special carbons (Amber?)
 BC           C
@@ -177,7 +212,8 @@ atomelements = kv2dict(TABLE_ATOMELEMENTS)
 elements = ['H',
             'LI', 'BE', 'B', 'C', 'N', 'O', 'F',
             'NA', 'MG', 'AL', 'P', 'SI', 'S', 'CL',
-            'K']
+            'K', 'CA', 'FE', 'CU', 'ZN', 'BR',
+            'RB', 'I', 'CS']
 
 #: Plain-text table with atomic masses in u.
 TABLE_MASSES = """

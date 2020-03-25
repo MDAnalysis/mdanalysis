@@ -310,23 +310,16 @@ class PDBParser(TopologyReaderBase):
 
         # Guessed attributes
         # Need to pull elements from Atom names
-        # Similar to the check for atomtypes function
-        if not any(elements):
-            warnings.warn("Element information absent.")
-            attrs.append(Elements(elements, guessed=True))
-        else:
+        # Need to update dependent on the treatment of non-physical
+        # elements (such as the CG atoms) or missing elements as
+        # per consensus in the community
+        if all(elements):
             elements = guess_types(elements)
-            
-            missing = np.isin(elements,'')
-            uni_elements, indices = np.unique(elements, return_inverse=True)
-            # indexlist contains the index of those elements
-            # whose atom record is missing from the column or is
-            # non-physical.
-            # This can be further used in guessing from atomnames
-            # if needed.
-            indexlist = [ j for j in range(len(indices)) if missing[j] == True]
-            warnings.warn("Element record found to be either non-physical or missing for some elements.")
-            attrs.append(Elements(elements, guessed=True))
+            attrs.append(Elements(elements))
+        else:
+            warnings.warn("Element information absent or inadequate.")
+            miss_elements = [ '' for i in range(len(elements))]
+            attrs.append(Elements(miss_elements))
             
            
 
