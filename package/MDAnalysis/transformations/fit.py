@@ -179,14 +179,7 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     except AttributeError:
         raise_from(AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference)), None)
     ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
-    try:
-        weights = align.get_weights(ref.atoms, weights=weights)
-    except ValueError:
-        raise_from(ValueError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup."), None)
-    ref_com = ref.center(weights)
-    ref_coordinates = ref.atoms.positions - ref_com
-
+    
     def wrapped(ts):
         mobile_com = mobile.atoms.center(weights)
         mobile_coordinates = mobile.atoms.positions - mobile_com
