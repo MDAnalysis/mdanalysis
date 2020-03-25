@@ -398,6 +398,8 @@ class PDBReader(base.ReaderBase):
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
+                if (self.ts._unitcell[:3] == np.array([1,1,1],dtype=float)).all():
+                    warnings.warn("1 A^3 CRYST1 record, possibly an EM structure file",stacklevel=2)
 
         # check if atom number changed
         if pos != self.n_atoms:
