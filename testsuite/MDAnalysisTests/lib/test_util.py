@@ -1818,7 +1818,7 @@ class TestCheckCoords(object):
         def func():
             pass
 
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             func()
 
         # usage without arguments:
