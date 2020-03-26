@@ -100,13 +100,9 @@ def fit_translation(ag, reference, plane=None, weights=None):
             AttributeError("{} or {} is not valid Universe/AtomGroup".format(ag,reference)),
             None)
     ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
-    try:
-        weights = align.get_weights(ref.atoms, weights=weights)
-    except (ValueError, TypeError):
-        raise_from(ValueError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup."), None)
-
-    ref_com = np.asarray(ref.center(weights), np.float32)
+    weights = align.get_weights(ref.atoms, weights=weights)
+    ref_com = ref.center(weights)
+    ref_coordinates = ref.atoms.positions - ref_com
 
     def wrapped(ts):
         mobile_com = np.asarray(mobile.atoms.center(weights), np.float32)
