@@ -221,9 +221,8 @@ class TestGeometryFunctions(object):
         assert_equal(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
-    @pytest.fixture()
-    def test_angle(self, a, b):
-      a = np.array([0.1, 0, 0.2] ** 0.5)
+    def test_angle_lower_clip(self, a, b, x):
+      a = np.array([0.1, 0, 0.2]) ** 0.5
       b = -a
       assert x < -1.0
       assert mdamath.angle(a, b) == np.pi
