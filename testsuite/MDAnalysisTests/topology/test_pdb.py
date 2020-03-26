@@ -73,7 +73,7 @@ def test_hy36decode(hybrid, integer):
 class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
-                      'bonds', 'tempfactors', 'chainIDs', 'elements']
+                      'bonds', 'tempfactors', 'chainIDs']
     guessed_attrs = ['types', 'masses']
 
 
@@ -270,13 +270,13 @@ TER      17
 HETATM   18 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          Cu
 HETATM   19 FE    FE A   3      00.000  03.000  00.000  1.00 00.00          Fe
 HETATM   20 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          Mg
-HETATM   21 Ca    Ca A   4      00.000  00.000  03.000  1.00 00.00          CA
+HETATM   21 Ca    Ca A   5      00.000  00.000  03.000  1.00 00.00          CA
 TER      22
 HETATM 1609  S   DMS A 101      19.762  39.489  18.350  1.00 25.99           S
-HETATM 1610  O   DMS A 101      19.279  37.904  18.777  1.00 23.69           O
-HETATM 1611  C1  DMS A 101      21.344  39.260  17.532  1.00 24.07           C
+HETATM 1610  O   DMS A 101      19.279  37.904  18.777  1.00 23.69           Ox
+HETATM 1611  C1  DMS A 101      21.344  39.260  17.532  1.00 24.07           C+
 HETATM 1612  C2  DMS A 101      18.750  40.066  17.029  1.00 20.50           C
-HETATM 1613  S   DMS A 102      22.157  39.211  12.217  1.00 27.26           S
+HETATM 1613  S   DMS A 102      22.157  39.211  12.217  1.00 27.26           S1
 HETATM 1614  O   DMS A 102      20.622  38.811  11.702  1.00 25.51           O
 HETATM 1615  C1  DMS A 102      22.715  40.764  11.522  1.00 26.00           C
 HETATM 1616  C2  DMS A 102      22.343  39.515  13.971  1.00 25.46           C
@@ -314,10 +314,10 @@ ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
 ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
 ATOM      4  O   ASN A   1      -6.634   1.849  -1.758  1.00  0.00           O
-ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00
+ATOM      5  X   ASN A   1      -9.437   3.396  -2.889  1.00  0.00          XX
 TER       6
 HETATM    7 CU    CU A   2      03.000  00.000  00.000  1.00 00.00          CU
-HETATM    8 FE    FE A   3      00.000  03.000  00.000  1.00 00.00
+HETATM    8 FE    FE A   3      00.000  03.000  00.000  1.00 00.00         FeX
 HETATM    9 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
 TER       10
 """
@@ -344,13 +344,6 @@ def test_wrong_elements_warnings():
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
 
-    assert len(record) == 2
-    assert record[1].message.args[0] == "Element information absent "\
-        "or inadequate."
-
-    # Checking if missing atoms are filled with an empty string.
-
-    element_list = np.array(['', '', '', '', '', '', '', ''
-        ], dtype=object)
-    assert_equal(u.atoms.elements, element_list)
+    assert len(record) == 3
+    assert record[2].message.args[0] == "Element information invalid."
 

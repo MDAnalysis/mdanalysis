@@ -36,6 +36,7 @@ import re
 
 from ..lib import distances
 from . import tables
+from .tables import Z2SYMB
 
 
 def guess_masses(atom_types):
@@ -131,6 +132,7 @@ def guess_atom_element(atomname):
     :func:`guess_atom_type`
     :mod:`MDAnalysis.topology.tables`
     """
+    
     if atomname == '':
         return ''
     try:
@@ -146,14 +148,14 @@ def guess_atom_element(atomname):
 
         while name:
             if name in tables.elements:
-                return tables.atomelements[name]
+                return name
             elif name[:-1] in tables.elements:
-                return tables.atomelements[name[:-1]]
+                return name
             elif name[1:] in tables.elements:
-                return tables.atomelements[name[1:]]
+                return name
             elif len(name) <= 2:
                 name = ''
-                return tables.atomelements[name]
+                return name
             # probably element is on left not right
             name = name[:-1]
 

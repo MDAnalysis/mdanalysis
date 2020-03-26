@@ -35,6 +35,10 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+TODO:
+    Add attributes to guess elements for non-physical or missing elements
+
+
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
@@ -62,6 +66,8 @@ import warnings
 
 from six.moves import range
 from .guessers import guess_masses, guess_types, guess_atom_element
+from . import tables
+from .tables import Z2SYMB
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -244,7 +250,6 @@ class PDBParser(TopologyReaderBase):
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
-                #Saving the elements type in a list
                 elements.append(line[76:78].strip())
 
                 # Resids are optional
@@ -308,18 +313,21 @@ class PDBParser(TopologyReaderBase):
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
 
-        # Guessed attributes
+
         # Need to pull elements from Atom names
-        # Need to update dependent on the treatment of non-physical
-        # elements (such as the CG atoms) or missing elements as
-        # per consensus in the community
+        substitute_elements = {v.upper():v for k,v in Z2SYMB.items()}
         if all(elements):
             elements = guess_types(elements)
-            attrs.append(Elements(elements))
+            missing = np.isin(elements,'')
+            if any(missing):
+                warnings.warn("Element information invalid.")
+            else:
+                # Changing guess_atom_element format results 
+                elements = [substitute_elements[i] for i in elements]
+                attrs.append(Elements(elements))
         else:
             warnings.warn("Element information absent or inadequate.")
-            miss_elements = [ '' for i in range(len(elements))]
-            attrs.append(Elements(miss_elements))
+
             
            
 
