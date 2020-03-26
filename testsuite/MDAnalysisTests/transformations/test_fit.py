@@ -99,9 +99,13 @@ def test_fit_translation_no_masses(fit_universe):
     # create a universe without masses
     ref_u  = make_Universe()
     # what happens Universe without masses is given?
-    with pytest.raises(ValueError) as exc:
-        fit_translation(test_u, ref_u, weights="mass")(ts)
-    assert 'atoms.masses is missing' in str(exc.value)
+    if not iterable(weights) and weights == "mass":
+     try:
+         weights = atoms.masses
+     except AttributeError:
+         six.raise_from(
+             TypeError("weights='mass' selected but atoms.masses is missing"),
+             None) 
 
 
 def test_fit_translation_no_options(fit_universe):
