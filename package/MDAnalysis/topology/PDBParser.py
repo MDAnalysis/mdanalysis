@@ -35,6 +35,9 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+TODO:
+    Add attributes to guess elements for non-physical or missing elements
+
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
@@ -62,6 +65,9 @@ import warnings
 
 from six.moves import range
 from .guessers import guess_masses, guess_types
+from .guessers import guess_masses, guess_types, guess_atom_element
+from . import tables
+from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -72,6 +78,7 @@ from ..core.topologyattrs import (
     Bonds,
     ChainIDs,
     Atomtypes,
+    Elements,
     ICodes,
     Masses,
     Occupancies,
@@ -159,6 +166,7 @@ class PDBParser(TopologyReaderBase):
      - resids
      - resnames
      - segids
+     - elements
 
     Guesses the following Attributes:
      - masses
@@ -210,6 +218,7 @@ class PDBParser(TopologyReaderBase):
         resnames = []
 
         segids = []
+        elements = []
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
@@ -241,6 +250,7 @@ class PDBParser(TopologyReaderBase):
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
+                elements.append(line[76:78].strip())
 
                 # Resids are optional
                 try:
@@ -302,6 +312,21 @@ class PDBParser(TopologyReaderBase):
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
+
+        # Need to pull elements from Atom names
+        periodic_table = [k for k,v in SYMB2Z.items()]
+        if all(elements):
+
+            elements = [i.capitalize() for i in elements]
+
+            if all( element in periodic_table for element in elements):
+                attrs.append(Elements(elements))
+            else:
+                warnings.warn("Element information invalid.")
+    
+        else:
+            warnings.warn("Element information absent or inadequate.")
+
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
