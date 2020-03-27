@@ -394,18 +394,17 @@ class PDBReader(base.ReaderBase):
                     cell_dims = [line[6:15], line[15:24],
                                   line[24:33], line[33:40],
                                   line[40:47], line[47:54]]
-                    if (np.array(cell_dims,dtype=float) == 
-                        np.array([1,1,1,90,90,90],dtype=float)).all():
+                    if (np.array(cell_dims, dtype=float) == 
+                        np.array([1, 1, 1, 90, 90, 90], dtype=float)).all():
                         warnings.warn("1 A^3 CRYST1 record," 
-                                      "possibly an EM structure file, setting box-size to 0",stacklevel=2)
-                        self.ts._unitcell=np.array([0,0,0,90,90,90],dtype=float)    
+                                      " possibly an EM structure file, setting box-size to 0",stacklevel=2)
+                        cell_dims = np.array([0, 0, 0, 90, 90, 90],dtype=float)    
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
-                    if not (self.ts._unitcell==np.array([0,0,0,90,90,90])).all():
-                        self.ts._unitcell[:] = cell_dims
+                    self.ts._unitcell[:] = cell_dims
                         
         # check if atom number changed
         if pos != self.n_atoms:

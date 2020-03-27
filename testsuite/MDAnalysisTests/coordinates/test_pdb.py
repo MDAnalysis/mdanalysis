@@ -38,7 +38,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
-                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2, CRYST1_BOX)
+                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2, PDB_CRYOEM_BOX)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -962,9 +962,10 @@ def test_partially_missing_cryst():
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
 
-def test_CRYST1_Warning():
+def test_cryst_em_warning():
     #issue 2599  
     with pytest.warns(UserWarning) as record:
-        u = mda.Universe(CRYST1_BOX)
+        u = mda.Universe(PDB_CRYOEM_BOX)
         cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)') 
     assert record[0].message.args[0] == "1 A^3 CRYST1 record,possibly an EM structure file, setting box-size to 0"
+    assert len(cur_sele) == 0

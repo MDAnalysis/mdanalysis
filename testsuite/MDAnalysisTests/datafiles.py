@@ -186,7 +186,7 @@ __all__ = [
     "GMX_DIR", # GROMACS directory
     "GMX_TOP_BAD", # file with an #include that doesn't exist
     "ITP_no_endif", # file missing an #endif
-    "CRYST1_BOX" #Issue 2599
+    "PDB_CRYOEM_BOX" #Issue 2599
 ]
 
 from pkg_resources import resource_filename
@@ -272,6 +272,7 @@ PDB_conect = resource_filename(__name__, 'data/conect_parsing.pdb')
 PDB_conect2TER = resource_filename(__name__, 'data/CONECT2TER.pdb')
 PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 PDB_icodes = resource_filename(__name__, 'data/1osm.pdb.gz')
+PDB_CRYOEM_BOX = resource_filename(__name__, 'data/5a7u.pdb')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
@@ -511,6 +512,5 @@ ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 
-CRYST1_BOX = resource_filename(__name__, 'data/6cvm.pdb')
 # This should be the last line: clean up namespace
 del resource_filename
