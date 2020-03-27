@@ -1351,7 +1351,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
             # stop if we created empty selections (by removing ALL residues...)
             if ag1.n_atoms == 0 or ag2.n_atoms == 0:
                 errmsg = ("Failed to automatically find matching atoms: created empty selections. "
-                           "Try to improve your selections for mobile and reference.")
+                          "Try to improve your selections for mobile and reference.")
                 logger.error(errmsg)
                 raise SelectionError(errmsg)
 
@@ -1370,7 +1370,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                 mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
             except ValueError:
                 errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} "
-                           "Try to improve your selections for mobile and reference.").format(
+                          "Try to improve your selections for mobile and reference.").format(
                             ag1.n_atoms, ag2.n_atoms)
                 logger.error(errmsg)
                 raise_from(SelectionError(errmsg), None)
