@@ -1364,7 +1364,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
             # # WARNING:
             msg = "Atoms could not be matched since they don't contain masses."
             logger.info(msg)
-            warnings.warn(msg,category=SelectionWarning)
+            warnings.warn(msg, category=SelectionWarning)
         else:
             try:
                 mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
