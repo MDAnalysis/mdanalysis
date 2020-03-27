@@ -1361,7 +1361,6 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         # had fewer atoms but the residues in mobile and reference have
         # each the same number)
         if (not hasattr(ag1, 'masses') or not hasattr(ag2, 'masses')):
-            # # WARNING:
             msg = "Atoms could not be matched since they don't contain masses."
             logger.info(msg)
             warnings.warn(msg, category=SelectionWarning)
@@ -1369,7 +1368,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
             try:
                 mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
             except ValueError:
-                errmsg = ("Failed to find matching atoms: len(reference) = {0}, len(mobile) = {1} "
+                errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} "
                           "Try to improve your selections for mobile and reference.").format(
                             ag1.n_atoms, ag2.n_atoms)
                 logger.error(errmsg)

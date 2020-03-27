@@ -546,7 +546,7 @@ class RMSD(AnalysisBase):
         # check weights type
         if iterable(self.weights) and (np.array(weights).dtype
                                 not in (np.dtype('float64'),np.dtype('int64'))):
-            raise ValueError("weight should only be be 'mass', None or 1D float array."
+            raise TypeError("weights should only be 'mass', None or 1D float array."
                                  "For weights on groupselections, use **weight_groupselections** ")
         if iterable(self.weights) or self.weights != "mass":
             get_weights(self.mobile_atoms, self.weights)

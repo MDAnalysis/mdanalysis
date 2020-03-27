@@ -296,8 +296,8 @@ class TestRMSD(object):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=universe.atoms.masses[:-1])
 
-    def test_rmsd_misuse_weights_for_groupselection_raises_ValueError(self, universe):
-        with pytest.raises(ValueError):
+    def test_rmsd_misuse_weights_for_groupselection_raises_TypeError(self, universe):
+        with pytest.raises(TypeError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, groupselections=['all'],
                 weights=[universe.atoms.masses, universe.atoms.masses[:-1]])

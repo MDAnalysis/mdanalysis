@@ -158,7 +158,6 @@ class TestGetMatchingAtoms(object):
             align.get_matching_atoms(u.atoms, u.atoms)
 
     def test_one_universe_has_masses(self, universe):
-        #if only atom has _has_masses
         u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
         ref = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
         ref.add_TopologyAttr('masses')
