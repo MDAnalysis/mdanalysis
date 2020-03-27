@@ -67,7 +67,7 @@ import warnings
 from six.moves import range
 from .guessers import guess_masses, guess_types, guess_atom_element
 from . import tables
-from .tables import Z2SYMB
+from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -314,20 +314,19 @@ class PDBParser(TopologyReaderBase):
         attrs.append(Masses(masses, guessed=True))
 
 
-        # Need to pull elements from Atom names
-        substitute_elements = {v.upper():v for k,v in Z2SYMB.items()}
+        # Getting element information from element column.
+        periodic_table = [k for k,v in SYMB2Z.items()]
         if all(elements):
-            elements = guess_types(elements)
-            missing = np.isin(elements,'')
-            if any(missing):
-                warnings.warn("Element information invalid.")
-            else:
-                # Changing guess_atom_element format results 
-                elements = [substitute_elements[i] for i in elements]
+            
+            elements = [i.capitalize() for i in elements]
+            
+            if all( element in periodic_table for element in elements):
                 attrs.append(Elements(elements))
+            else:
+                warnings.warn("Element information invalid.")
+        
         else:
             warnings.warn("Element information absent or inadequate.")
-
             
            
 
