@@ -22,6 +22,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
   * Updated tests to have explicit fixtures (Issue #2618)
   * XDR offsets now read from trajectory if offsets file read-in fails on
     IOError (Issue #1893, PR #2611)
@@ -34,7 +35,7 @@ Fixes
   * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
   * PCA(align=True) now correctly aligns the trajectory and computes the
     correct means and covariance matrix (Issue #2561)
-  * Correct args order of base.AnalysisFromFunction (Issue #2503)  
+  * Correct args order of base.AnalysisFromFunction (Issue #2503)
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
