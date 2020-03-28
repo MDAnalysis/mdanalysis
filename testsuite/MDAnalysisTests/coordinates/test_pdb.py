@@ -967,5 +967,5 @@ def test_cryst_em_warning():
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(PDB_CRYOEM_BOX)
         cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)') 
-    assert record[0].message.args[0] == "1 A^3 CRYST1 record,possibly an EM structure file, setting box-size to 0"
+    assert record[0].message.args[0] == "1 A^3 CRYST1 record, possibly an EM structure file"
     assert len(cur_sele) == 0
