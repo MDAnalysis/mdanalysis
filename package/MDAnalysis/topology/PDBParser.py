@@ -42,7 +42,8 @@ TODO:
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set.
+   if unknown. Partial charges are not set. Elements are parsed if they are
+   valid.
 
 See Also
 --------
@@ -178,6 +179,9 @@ class PDBParser(TopologyReaderBase):
     .. versionadded:: 0.8
     .. versionchanged:: 0.18.0
        Added parsing of Record types
+       
+    .. versionchanged:: 1.0.0
+       Added parsing of valid Elements
     """
     format = ['PDB', 'ENT']
 
@@ -315,7 +319,7 @@ class PDBParser(TopologyReaderBase):
 
 
         # Getting element information from element column.
-        periodic_table = [k for k,v in SYMB2Z.items()]
+        periodic_table = set(SYMB2Z)
         if all(elements):
             
             elements = [i.capitalize() for i in elements]
@@ -323,12 +327,13 @@ class PDBParser(TopologyReaderBase):
             if all( element in periodic_table for element in elements):
                 attrs.append(Elements(elements))
             else:
-                warnings.warn("Element information invalid.")
+                warnings.warn("Invalid elements found in the PDB file, "\
+                              "elements attributes will not be populated.")
         
         else:
-            warnings.warn("Element information absent or inadequate.")
-            
-           
+            warnings.warn("Element information is absent or missing for a few "\
+                          "residues. Elements attributes will not be populated.")
+        
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)

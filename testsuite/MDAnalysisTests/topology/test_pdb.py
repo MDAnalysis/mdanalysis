@@ -249,8 +249,9 @@ def test_PDB_metals():
     assert u.atoms[3].mass == pytest.approx(tables.masses["MG"])
 
 
-# An example of ideal PDB file used to test elements attribute.
 PDB_elements = """\
+REMARK For testing reading of elements
+REMARK This model represents an ideal PDB file with valid elements
 ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
 ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
@@ -285,20 +286,19 @@ TER    1617
 """
 
 def test_PDB_elements():
+    """The elements attribute is equipped to obtain the element symbols,
+        if the PDB file contains a valid element symbol
     """
-        The elements attribute is equipped to obtain the element symbols,
-        if the PDB file contains the element symbol
-        """
     u = mda.Universe(StringIO(PDB_elements), format='PDB')
-    element_list = np.array([
-                             'N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
+    element_list = np.array(['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
                              'H', 'H', 'H', 'H', 'H', 'H', 'H', 'Cu', 'Fe',
-                             'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S','O', 'C',
+                             'Mg', 'Ca', 'S', 'O', 'C', 'C', 'S', 'O', 'C',
                              'C'], dtype=object)
     assert_equal(u.atoms.elements, element_list)
 
 
 PDB_missing_ele = """\
+REMARK For testing warnings in case of absent element information
 ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00
 ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00
@@ -310,7 +310,21 @@ HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00
 TER       9
 """
 
+def test_missing_elements_warnings():
+    """The test checks whether it asserts the appropriate warning on
+        encountering missing elements.
+    """
+    with pytest.warns(UserWarning) as record:
+        u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
+    
+    assert len(record) == 1
+    assert record[0].message.args[0] == "Element information is absent or "\
+        "missing for a few residues. Elements attributes will not be populated."
+
+
 PDB_wrong_ele = """\
+REMARK For testing warnings of wrong elements
+REMARK This file represent invalid elements in the elements column
 ATOM      1  N   ASN A   1      -8.901   4.127  -0.555  1.00  0.00           N
 ATOM      2  CA  ASN A   1      -8.608   3.135  -1.618  1.00  0.00           C
 ATOM      3  C   ASN A   1      -7.117   2.964  -1.897  1.00  0.00           C
@@ -323,28 +337,14 @@ HETATM    9 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
 TER       10
 """
 
-def test_missing_elements_warnings():
-    """
-        The test checks whether it asserts the appropriate warning on
-        encountering missing elements column.
-        """
-    
-    with pytest.warns(UserWarning) as record:
-        u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
-    
-    assert len(record) == 1
-    assert record[0].message.args[0] == "Element information absent "\
-        "or inadequate."
-
-
 def test_wrong_elements_warnings():
-    """
-        The test checks whether it fills in the wrong elements appropriately
+    """The test checks whether it fills in the wrong elements appropriately
         with the atom names where element symbols are missing.
-        """
+    """
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
     
     assert len(record) == 2
-    assert record[1].message.args[0] == "Element information invalid."
+    assert record[1].message.args[0] == "Invalid elements found in the PDB "\
+        "file, elements attributes will not be populated."
 
