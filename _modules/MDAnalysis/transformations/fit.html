@@ -220,47 +220,47 @@
 
 <div class="viewcode-block" id="fit_translation"><a class="viewcode-back" href="../../../documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_translation">[docs]</a><span class="k">def</span> <span class="nf">fit_translation</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
-    <span class="sd">&quot;&quot;&quot;Translates a given AtomGroup so that its center of geometry/mass matches </span>
+    <span class="sd">&quot;&quot;&quot;Translates a given AtomGroup so that its center of geometry/mass matches</span>
 <span class="sd">    the respective center of the given reference. A plane can be given by the</span>
 <span class="sd">    user using the option `plane`, and will result in the removal of</span>
 <span class="sd">    the translation motions of the AtomGroup over that particular plane.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    Removing the translations of a given AtomGroup `ag` on the XY plane by fitting </span>
+<span class="sd">    Removing the translations of a given AtomGroup `ag` on the XY plane by fitting</span>
 <span class="sd">    its center of mass to the center of mass of a reference `ref`:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">    </span>
+
 <span class="sd">        ag = u.select_atoms(&quot;protein&quot;)</span>
 <span class="sd">        ref = mda.Universe(&quot;reference.pdb&quot;)</span>
 <span class="sd">        transform = mda.transformations.fit_translation(ag, ref, plane=&quot;xy&quot;,</span>
 <span class="sd">                                                        weights=&quot;mass&quot;)</span>
 <span class="sd">        u.trajectory.add_transformations(transform)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ag : Universe or AtomGroup</span>
 <span class="sd">       structure to translate, a</span>
-<span class="sd">       :class:`~MDAnalysis.core.groups.AtomGroup` or a whole </span>
+<span class="sd">       :class:`~MDAnalysis.core.groups.AtomGroup` or a whole</span>
 <span class="sd">       :class:`~MDAnalysis.core.universe.Universe`</span>
 <span class="sd">    reference : Universe or AtomGroup</span>
-<span class="sd">       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole </span>
+<span class="sd">       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole</span>
 <span class="sd">       :class:`~MDAnalysis.core.universe.Universe`</span>
 <span class="sd">    plane: str, optional</span>
-<span class="sd">        used to define the plane on which the translations will be removed. Defined as a </span>
+<span class="sd">        used to define the plane on which the translations will be removed. Defined as a</span>
 <span class="sd">        string of the plane. Suported planes are yz, xz and xy planes.</span>
 <span class="sd">    weights : {&quot;mass&quot;, ``None``} or array_like, optional</span>
 <span class="sd">       choose weights. With ``&quot;mass&quot;`` uses masses as weights; with ``None``</span>
 <span class="sd">       weigh each atom equally. If a float array of the same length as</span>
 <span class="sd">       `ag` is provided, use each element of the `array_like` as a</span>
 <span class="sd">       weight for the corresponding atom in `ag`.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    MDAnalysis.coordinates.base.Timestep</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">if</span> <span class="n">plane</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;yz&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;xz&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;xy&#39;</span> <span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
         <span class="k">try</span><span class="p">:</span>
@@ -275,13 +275,9 @@
             <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2"> is not valid Universe/AtomGroup&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span><span class="n">reference</span><span class="p">)),</span>
             <span class="kc">None</span><span class="p">)</span>
     <span class="n">ref</span><span class="p">,</span> <span class="n">mobile</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_matching_atoms</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must be {&#39;mass&#39;, None} or an iterable of the &quot;</span>
-                        <span class="s2">&quot;same size as the atomgroup.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-    
-    <span class="n">ref_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">ref_com</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">ref_coordinates</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">ref_com</span>
 
     <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
@@ -289,9 +285,9 @@
         <span class="k">if</span> <span class="n">plane</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">vector</span><span class="p">[</span><span class="n">plane</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">vector</span>
-        
+
         <span class="k">return</span> <span class="n">ts</span>
-    
+
     <span class="k">return</span> <span class="n">wrapped</span></div>
 
 
@@ -300,44 +296,44 @@
 
 <span class="sd">    Spatially align the group of atoms `ag` to `reference` by doing a RMSD</span>
 <span class="sd">    fit.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This fit works as a way to remove translations and rotations of a given</span>
 <span class="sd">    AtomGroup in a trajectory. A plane can be given using the flag `plane`</span>
 <span class="sd">    so that only translations and rotations in that particular plane are</span>
 <span class="sd">    removed. This is useful for protein-membrane systems to where the membrane</span>
 <span class="sd">    must remain in the same orientation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
 <span class="sd">    Removing the translations and rotations of a given AtomGroup `ag` on the XY plane</span>
 <span class="sd">    by fitting it to a reference `ref`, using the masses as weights for the RMSD fit:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">    </span>
+
 <span class="sd">        ag = u.select_atoms(&quot;protein&quot;)</span>
 <span class="sd">        ref = mda.Universe(&quot;reference.pdb&quot;)</span>
-<span class="sd">        transform = mda.transformations.fit_rot_trans(ag, ref, plane=&quot;xy&quot;, </span>
+<span class="sd">        transform = mda.transformations.fit_rot_trans(ag, ref, plane=&quot;xy&quot;,</span>
 <span class="sd">                                                      weights=&quot;mass&quot;)</span>
 <span class="sd">        u.trajectory.add_transformations(transform)</span>
-<span class="sd"> </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ag : Universe or AtomGroup</span>
 <span class="sd">       structure to translate and rotate, a</span>
-<span class="sd">       :class:`~MDAnalysis.core.groups.AtomGroup` or a whole </span>
+<span class="sd">       :class:`~MDAnalysis.core.groups.AtomGroup` or a whole</span>
 <span class="sd">       :class:`~MDAnalysis.core.universe.Universe`</span>
 <span class="sd">    reference : Universe or AtomGroup</span>
-<span class="sd">       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole </span>
+<span class="sd">       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole</span>
 <span class="sd">       :class:`~MDAnalysis.core.universe.Universe`</span>
 <span class="sd">    plane: str, optional</span>
-<span class="sd">        used to define the plane on which the rotations and translations will be removed. </span>
+<span class="sd">        used to define the plane on which the rotations and translations will be removed.</span>
 <span class="sd">        Defined as a string of the plane. Supported planes are &quot;yz&quot;, &quot;xz&quot; and &quot;xy&quot; planes.</span>
 <span class="sd">    weights : {&quot;mass&quot;, ``None``} or array_like, optional</span>
 <span class="sd">       choose weights. With ``&quot;mass&quot;`` uses masses as weights; with ``None``</span>
 <span class="sd">       weigh each atom equally. If a float array of the same length as</span>
 <span class="sd">       `ag` is provided, use each element of the `array_like` as a</span>
 <span class="sd">       weight for the corresponding atom in `ag`.</span>
-<span class="sd">       </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    MDAnalysis.coordinates.base.Timestep</span>
@@ -354,14 +350,10 @@
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
         <span class="n">raise_from</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> or </span><span class="si">{}</span><span class="s2"> is not valid Universe/AtomGroup&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span><span class="n">reference</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
     <span class="n">ref</span><span class="p">,</span> <span class="n">mobile</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_matching_atoms</span><span class="p">(</span><span class="n">reference</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">weights</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
-    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must be {&#39;mass&#39;, None} or an iterable of the &quot;</span>
-                        <span class="s2">&quot;same size as the atomgroup.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">get_weights</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">)</span>
     <span class="n">ref_com</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
     <span class="n">ref_coordinates</span> <span class="o">=</span> <span class="n">ref</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">ref_com</span>
-    
+
     <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
         <span class="n">mobile_com</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
         <span class="n">mobile_coordinates</span> <span class="o">=</span> <span class="n">mobile</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
@@ -378,9 +370,9 @@
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">mobile_com</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">rotation</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+</span> <span class="n">vector</span>
-        
+
         <span class="k">return</span> <span class="n">ts</span>
-    
+
     <span class="k">return</span> <span class="n">wrapped</span></div>
 </pre></div>
 
@@ -394,7 +386,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>
