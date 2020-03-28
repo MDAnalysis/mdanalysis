@@ -235,7 +235,7 @@ def test_PDB_hex():
     assert u.atoms[3].id == 100002
     assert u.atoms[4].id == 100003
 
-@pytest.mark.filterwarnings("ignore::UserWarning")
+
 @pytest.mark.filterwarnings("error")
 def test_PDB_metals():
     from MDAnalysis.topology import tables
@@ -285,9 +285,10 @@ HETATM 1616  C2  DMS A 102      22.343  39.515  13.971  1.00 25.46           C
 TER    1617
 """
 
+
 def test_PDB_elements():
-    """The elements attribute is equipped to obtain the element symbols,
-        if the PDB file contains a valid element symbol
+    """The test checks whether elements attribute are assigned
+    properly given a PDB file with valid elements record.
     """
     u = mda.Universe(StringIO(PDB_elements), format='PDB')
     element_list = np.array(['N', 'C', 'C', 'O', 'C', 'C', 'O', 'N', 'H',
@@ -310,9 +311,10 @@ HETATM    8 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00
 TER       9
 """
 
+
 def test_missing_elements_warnings():
-    """The test checks whether it asserts the appropriate warning on
-        encountering missing elements.
+    """The test checks whether it returns the appropriate warning on
+    encountering missing elements.
     """
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(StringIO(PDB_missing_ele), format='PDB')
@@ -337,9 +339,10 @@ HETATM    9 Mg    Mg A   4      03.000  03.000  03.000  1.00 00.00          MG
 TER       10
 """
 
+
 def test_wrong_elements_warnings():
-    """The test checks whether it fills in the wrong elements appropriately
-        with the atom names where element symbols are missing.
+    """The test checks whether there are invalid elements in the elements
+    column which have been parsed and returns an appropriate warning.
     """
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(StringIO(PDB_wrong_ele), format='PDB')
@@ -347,4 +350,3 @@ def test_wrong_elements_warnings():
     assert len(record) == 2
     assert record[1].message.args[0] == "Invalid elements found in the PDB "\
         "file, elements attributes will not be populated."
-

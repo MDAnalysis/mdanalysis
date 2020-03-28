@@ -66,8 +66,7 @@ import numpy as np
 import warnings
 
 from six.moves import range
-from .guessers import guess_masses, guess_types, guess_atom_element
-from . import tables
+from .guessers import guess_masses, guess_types
 from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
@@ -179,7 +178,6 @@ class PDBParser(TopologyReaderBase):
     .. versionadded:: 0.8
     .. versionchanged:: 0.18.0
        Added parsing of Record types
-       
     .. versionchanged:: 1.0.0
        Added parsing of valid Elements
     """
@@ -317,24 +315,20 @@ class PDBParser(TopologyReaderBase):
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
 
-
         # Getting element information from element column.
         periodic_table = set(SYMB2Z)
         if all(elements):
             
             elements = [i.capitalize() for i in elements]
-            
             if all( element in periodic_table for element in elements):
                 attrs.append(Elements(elements))
             else:
                 warnings.warn("Invalid elements found in the PDB file, "\
                               "elements attributes will not be populated.")
-        
         else:
             warnings.warn("Element information is absent or missing for a few "\
                           "residues. Elements attributes will not be populated.")
         
-
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
