@@ -391,9 +391,10 @@ class PDBReader(base.ReaderBase):
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
                 try:
-                    cell_dims = [line[6:15], line[15:24],
+                    cell_dims = np.array([line[6:15], line[15:24],
                                   line[24:33], line[33:40],
-                                  line[40:47], line[47:54]]  
+                                  line[40:47], line[47:54]], 
+                                  dtype=np.float32)  
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
@@ -402,7 +403,9 @@ class PDBReader(base.ReaderBase):
                     if (np.array(cell_dims, dtype=float) == 
                         np.array([1, 1, 1, 90, 90, 90], dtype=float)).all():
                         warnings.warn("1 A^3 CRYST1 record," 
-                                      " possibly an EM structure file",stacklevel=2)
+                                      " its usually a placeholder for"
+                                      " cryo-em structures. Unit cell"
+                                      " dimensions will not be set.")
                     else:
                         self.ts._unitcell[:] = cell_dims
                         
