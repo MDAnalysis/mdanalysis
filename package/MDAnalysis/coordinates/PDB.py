@@ -400,8 +400,8 @@ class PDBReader(base.ReaderBase):
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
-                    if (np.array(cell_dims, dtype=float) == 
-                        np.array([1, 1, 1, 90, 90, 90], dtype=float)).all():
+                    if (np.array(cell_dims, dtype=np.float32) == 
+                        np.array([1, 1, 1, 90, 90, 90], dtype=np.float32)).all():
                         warnings.warn("1 A^3 CRYST1 record," 
                                       " its usually a placeholder for"
                                       " cryo-em structures. Unit cell"
