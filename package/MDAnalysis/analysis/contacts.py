@@ -392,6 +392,9 @@ class Contacts(AnalysisBase):
         method : string | callable (optional)
             Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
             with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
+        pbc : bool (optional)
+            Uses periodic boundary conditions to calculate distances if set to ``True``; the
+             default is ``False``.
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
@@ -476,7 +479,8 @@ def _new_selections(u_orig, selections, frame):
     """create stand alone AGs from selections at frame"""
     u = MDAnalysis.Universe(u_orig.filename, u_orig.trajectory.filename)
     u.trajectory[frame]
-    return [u.select_atoms(s) for s in selections]
+    temp_u = u.copy()
+    return [temp_u.select_atoms(s) for s in selections]
 
 
 def q1q2(u, select='all', radius=4.5):
