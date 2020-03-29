@@ -222,11 +222,11 @@ class TestGeometryFunctions(object):
         # add more non-trivial tests
 
     def test_angle_lower_clip(self):
-    	a = np.array([0.1, 0, 0.2])
-    	x = np.dot(a**0.5,-(a**0.5)) / (mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5)))
-    	assert x < -1.0
-    	assert mdamath.angle(a, -(a)) == np.pi
-    	assert mdamath.angle(a**0.5, -(a**0.5)) == np.pi
+        a = np.array([0.1, 0, 0.2])
+        x = np.dot(a**0.5,-(a**0.5)) / (mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5)))
+        assert x < -1.0
+        assert mdamath.angle(a, -(a)) == np.pi
+        assert mdamath.angle(a**0.5, -(a**0.5)) == -np.pi
 
     def test_stp(self):
         assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
