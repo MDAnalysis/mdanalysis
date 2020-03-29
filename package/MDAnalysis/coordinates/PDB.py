@@ -230,6 +230,8 @@ class PDBReader(base.ReaderBase):
        Can now read PDB files with DOS line endings
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
+    .. versionchanged:: 1.0.0
+       User warning for CRYST1 cryo-em structures
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
