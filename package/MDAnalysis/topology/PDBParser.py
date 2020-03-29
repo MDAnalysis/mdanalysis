@@ -316,11 +316,9 @@ class PDBParser(TopologyReaderBase):
         attrs.append(Masses(masses, guessed=True))
 
         # Getting element information from element column.
-        periodic_table = set(SYMB2Z)
         if all(elements):
-            
             elements = [i.capitalize() for i in elements]
-            if all( element in periodic_table for element in elements):
+            if all( element in SYMB2Z for element in elements):
                 attrs.append(Elements(elements))
             else:
                 warnings.warn("Invalid elements found in the PDB file, "\
