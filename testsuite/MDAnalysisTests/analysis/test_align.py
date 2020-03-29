@@ -151,6 +151,19 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
+    def test_subselection_alignto(self, universe, reference):
+        sub_string = 'resname ALA and name CA'
+        rmsd = align.alignto(universe, reference, subselection=sub_string)
+        assert_almost_equal(rmsd[1], 5.27e-7, decimal=9)
+
+        sub_ag = universe.select_atoms('resname ALA and name CA')
+        rmsd = align.alignto(universe, reference, subselection=sub_ag)
+        assert_almost_equal(rmsd[1], 5.27e-7, decimal=9)
+
+        with pytest.raises(TypeError):
+            random_no = 9821
+            align.alignto(universe, reference, subselection=random_no)
+
 
 class TestAlign(object):
     @staticmethod
@@ -447,6 +460,14 @@ class TestAlignmentProcessing(object):
         assert len(
             sel['mobile']) == 30623, "selection string has unexpected length"
 
+    def test_fasta2select_file(self, tmpdir):
+        sel = align.fasta2select(self.seq, is_aligned=False,
+                                 alnfilename=None, treefilename=None)
+        assert len(
+            sel['reference']) == 23080, "selection string has unexpected length"
+        assert len(
+            sel['mobile']) == 23090, "selection string has unexpected length"
+
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
@@ -462,7 +483,6 @@ class TestAlignmentProcessing(object):
             sel['reference']) == 23080, "selection string has unexpected length"
         assert len(
             sel['mobile']) == 23090, "selection string has unexpected length"
-
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)
