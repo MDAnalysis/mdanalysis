@@ -219,7 +219,6 @@ class TestContacts(object):
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.timeseries[:, 1], results[:, 1])
 
-
     def test_villin_unfolded(self):
         # both folded
         f = mda.Universe(contacts_villin_folded)
@@ -306,27 +305,24 @@ class TestContacts(object):
 
     def test_distance_box(self):
         u = mda.Universe(TPR, XTC)
-        sel1 = "(resname ARG LYS) and (name NH* NZ)"
-        sel2 = "(resname ASP GLU) and (name OE* OD*)"
-        acidic = u.select_atoms(sel2)
-        basic = u.select_atoms(sel1)
-
-        q = contacts.Contacts(u,
-                              select=(sel1, sel2),
-                              refgroup=(acidic, basic),
-                              method="hard_cut", 
-                              kwargs={'is_box': True})
+        sel = "(resname ASP GLU)"
+        acidic = u.select_atoms(sel)
 
         r = contacts.Contacts(u,
-                              select=(sel1, sel2),
-                              refgroup=(acidic, basic),
-                              method="hard_cut")
+                              select=(sel, sel),
+                              refgroup=(acidic, acidic), pbc=False)
 
-        q.r0 = np.array(q.r0).squeeze()
-        r.r0 = np.array(r.r0).squeeze()
-        assert_array_equal(q.r0,r.r0)
-                              
+        q = contacts.Contacts(u,
+                              select=(sel, sel),
+                              refgroup=(acidic, acidic),
+                              pbc=True)
 
+        r.run()
+        q.run()
+        average_contacts_r = np.mean(r.timeseries[:, 1])
+        average_contacts_q = np.mean(q.timeseries[:, 1])
+
+        assert not average_contacts_q == average_contacts_r
 
 def test_q1q2():
     u = mda.Universe(PSF, DCD)

@@ -376,7 +376,7 @@ class Contacts(AnalysisBase):
 
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
-                 kwargs=None, **basekwargs):
+                 pbc=False, kwargs=None, **basekwargs):
         """
         Parameters
         ----------
@@ -424,7 +424,7 @@ class Contacts(AnalysisBase):
         self.select = select
         self.grA = u.select_atoms(select[0])
         self.grB = u.select_atoms(select[1])
-        self.is_box = self.fraction_kwargs.get('is_box')
+        self.pbc = pbc
         
         # contacts formed in reference
         self.r0 = []
@@ -432,15 +432,16 @@ class Contacts(AnalysisBase):
 
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
-            if(self.is_box):
+            if(self.pbc):
                 self.r0.append(distance_array(refA.positions, refB.positions,
                                                 box=refA.universe.dimensions))
             else:
                 self.r0.append(distance_array(refA.positions, refB.positions))
+            
             self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
         else:
             for refA, refB in refgroup:
-                if(self.is_box):
+                if(self.pbc):
                     self.r0.append(distance_array(refA.positions, refB.positions,
                                                     box=refA.universe.dimensions))
                 else:
@@ -456,9 +457,9 @@ class Contacts(AnalysisBase):
         self.timeseries[self._frame_index][0] = self._ts.frame
     
         # compute distance array for a frame
-        if(self.is_box):
+        if(self.pbc):
             d = distance_array(self.grA.positions, self.grB.positions,
-                                                    self._ts.dimensions)
+                                                    box=self._ts.dimensions)
         else:
             d = distance_array(self.grA.positions, self.grB.positions)
 
