@@ -99,7 +99,8 @@ def angle(a, b):
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
     .. versionchanged:: 1.0.0
-       Added np.clip() to fix the rounding-off error
+       Changed rounding-off code to use `np.clip()`. Values lower than
+       -1.0 now return `np.pi` instead of `-np.pi`
     """
     x = np.dot(a, b) / (norm(a) * norm(b))
     # catch roundoffs that lead to nan otherwise

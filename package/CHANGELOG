@@ -22,6 +22,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * mdamath.angles now returns np.pi instead of -np.pi in cases of
+    lower bound roundoff errors. (Issue #2632, PR #2634)
   * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
   * Updated tests to have explicit fixtures (Issue #2618)
   * XDR offsets now read from trajectory if offsets file read-in fails on
@@ -115,8 +117,6 @@ Enhancements
   * PersistenceLength.plot() now create new axes if current axes not provided (Issue #2590)
 
 Changes
-  * Use `np.clip()` to counter the rounding off error in `mdamath.angles` and 
-    added `test_angle_lower_clip` in `test_util.py` (Issue #2632, PR #2634)
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
     the tqdm package (Issue #928, PR #2617). Also fixes issue #2504.
   * Removed `details` from `ClusteringMethod`s (Issue #2575, PR #2620)
