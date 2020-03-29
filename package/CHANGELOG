@@ -22,6 +22,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * mdamath.angles now returns np.pi instead of -np.pi in cases of
+    lower bound roundoff errors. (Issue #2632, PR #2634)
   * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
   * Updated tests to have explicit fixtures (Issue #2618)
   * XDR offsets now read from trajectory if offsets file read-in fails on
