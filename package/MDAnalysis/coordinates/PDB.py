@@ -392,19 +392,18 @@ class PDBReader(base.ReaderBase):
                 # does an implicit str -> float conversion
                 try:
                     cell_dims = np.array([line[6:15], line[15:24],
-                                  line[24:33], line[33:40],
-                                  line[40:47], line[47:54]], 
-                                  dtype=np.float32)  
+                                         line[24:33], line[33:40],
+                                         line[40:47], line[47:54]], 
+                                         dtype=np.float32)  
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
-                    if (np.array(cell_dims, dtype=np.float32) == 
-                        np.array([1, 1, 1, 90, 90, 90], 
+                    if (cell_dims == np.array([1, 1, 1, 90, 90, 90], 
                         dtype=np.float32)).all():
                         warnings.warn("1 A^3 CRYST1 record," 
-                                      " its usually a placeholder for"
+                                      " this is usually a placeholder in"
                                       " cryo-em structures. Unit cell"
                                       " dimensions will not be set.")
                     else:

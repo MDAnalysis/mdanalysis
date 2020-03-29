@@ -963,17 +963,19 @@ def test_partially_missing_cryst():
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
 
+
 def test_cryst_em_warning():
     #issue 2599  
     with pytest.warns(UserWarning) as record:
         u = mda.Universe(PDB_CRYOEM_BOX)
     assert record[0].message.args[0] == "1 A^3 CRYST1 record," \
-                                      " its usually a placeholder for" \
-                                      " cryo-em structures. Unit cell" \
-                                      " dimensions will not be set."
+                                        " this is usually a placeholder in" \
+                                        " cryo-em structures. Unit cell" \
+                                        " dimensions will not be set."
                                     
+
 def test_cryst_em_select():
     #issue 2599
-    u=mda.Universe(PDB_CRYOEM_BOX)
+    u = mda.Universe(PDB_CRYOEM_BOX)
     cur_sele=u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
-    assert len(cur_sele) == 0
+    assert cur_sele.n_atoms == 0
