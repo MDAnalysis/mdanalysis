@@ -98,13 +98,6 @@ class TestUniverseCreation(object):
         u = mda.Universe(StringIO(CHOL_GRO), StringIO(CHOL_GRO),  format='GRO', topology_format='GRO')
         assert_equal(len(u.atoms), 8, "Loading universe from StringIO failed somehow")
 
-    def test_make_universe_no_args(self):
-        # universe creation without args should work
-        u = mda.Universe()
-
-        assert isinstance(u, mda.Universe)
-        assert u.atoms is None
-
     def test_make_universe_stringio_no_format(self):
         # Loading from StringIO without format arg should raise TypeError
         with pytest.raises(TypeError):
@@ -187,7 +180,7 @@ class TestUniverseCreation(object):
             temp_dir.dissolve()
 
     def test_load_new_VE(self):
-        u = mda.Universe()
+        u = mda.Universe.empty(0)
 
         with pytest.raises(TypeError):
             u.load_new('thisfile', format = 'soup')
@@ -297,22 +290,6 @@ class TestUniverse(object):
         assert_allclose(u.dimensions, box)
         assert u.dimensions.dtype == np.float32
 
-
-# remove for 1.0
-def test_chainid_quick_select():
-    # check that chainIDs get grouped together when making the quick selectors
-    # this pdb file has 2 segments with chainID A
-    u = mda.Universe(PDB_chainidrepeat)
-
-    with pytest.warns(DeprecationWarning):
-        for sg in (u.A, u.B):
-            assert isinstance(sg, mda.core.groups.SegmentGroup)
-        for seg in (u.C, u.D):
-            assert isinstance(seg, mda.core.groups.Segment)
-        assert len(u.A.atoms) == 10
-        assert len(u.B.atoms) == 10
-        assert len(u.C.atoms) == 5
-        assert len(u.D.atoms) == 7
 
 class TestTransformations(object):
     """Tests the transformations keyword
@@ -1154,3 +1131,8 @@ class TestEmpty(object):
         assert len(u.atoms) == 0
         assert len(u.residues) == 0
         assert len(u.segments) == 0
+
+    def test_empty_creation_raises_error(self):
+        with pytest.raises(TypeError) as exc:
+            u = mda.Universe()
+        assert 'Universe.empty' in str(exc.value)

@@ -169,9 +169,11 @@ except ImportError:
 # Registry of Readers, Parsers and Writers known to MDAnalysis
 # Metaclass magic fills these as classes are declared.
 _READERS = {}
+_READER_HINTS = {}
 _SINGLEFRAME_WRITERS = {}
 _MULTIFRAME_WRITERS = {}
 _PARSERS = {}
+_PARSER_HINTS = {}
 _SELECTION_WRITERS = {}
 _CONVERTERS = {}
 # Registry of TopologyAttributes

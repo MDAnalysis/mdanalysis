@@ -50,7 +50,7 @@ class TestPQRReader(_SingleFrameReader):
             "Total charge (in CHARMM) does not match expected value.")
 
     def test_hydrogenCharges(self):
-        assert_almost_equal(self.universe.atoms.H.charges,
+        assert_almost_equal(self.universe.select_atoms('name H').charges,
                             self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 

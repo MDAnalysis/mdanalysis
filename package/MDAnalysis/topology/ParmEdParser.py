@@ -138,6 +138,19 @@ class ParmEdParser(TopologyReaderBase):
     """
     format = 'PARMED'
 
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Parser read object *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            import parmed as pmd
+        except ImportError:  # if no parmed, probably not parmed
+            return False
+        else:
+            return isinstance(thing, pmd.Structure)
+
     def parse(self, **kwargs):
         """Parse PARMED into Topology
 

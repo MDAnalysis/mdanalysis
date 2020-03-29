@@ -55,11 +55,6 @@ class TestGROReaderOld(RefAdK):
     def universe(self):
         return mda.Universe(GRO)
 
-    def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be True "
-                     "by default")
-
     def test_load_gro(self, universe):
         U = universe
         assert_equal(len(U.atoms), self.ref_n_atoms,
@@ -78,8 +73,8 @@ class TestGROReaderOld(RefAdK):
         # NOTe that the prec is only 1 decimal: subtracting two low precision
         #      coordinates low prec: 9.3455122920041109; high prec (from pdb):
         #      9.3513174
-        NTERM = universe.atoms.N[0]
-        CTERM = universe.atoms.C[-1]
+        NTERM = universe.select_atoms('name N')[0]
+        CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec - 1,
                             err_msg="distance between M1:N and G214:C")
@@ -121,8 +116,8 @@ class TestGROReaderNoConversionOld(RefAdK):
         #  Arrays are not almost equal distance between M1:N and G214:C
         #    ACTUAL: 0.93455122920041123
         #    DESIRED: 0.93513173999999988
-        NTERM = universe.atoms.N[0]
-        CTERM = universe.atoms.C[-1]
+        NTERM = universe.select_atoms('name N')[0]
+        CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         # coordinates in nm
         assert_almost_equal(d, RefAdK.ref_distances['endtoend'] / 10.0,
@@ -178,11 +173,6 @@ class TestGROReader(BaseReaderTest):
     @pytest.fixture(scope='class')
     def ref():
         return GROReference()
-
-    def test_flag_convert_lengths(self):
-        assert_equal(mda.core.flags['convert_lengths'], True,
-                     "MDAnalysis.core.flags['convert_lengths'] should be True "
-                     "by default")
 
     def test_time(self, ref, reader):
         u = mda.Universe(ref.topology, ref.trajectory)

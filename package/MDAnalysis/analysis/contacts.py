@@ -77,7 +77,7 @@ in MDAnalysis. ::
     basic = u.select_atoms(sel_basic)
     # set up analysis of native contacts ("salt bridges"); salt bridges have a
     # distance <6 A
-    ca1 = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+    ca1 = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                             refgroup=(acidic, basic), radius=6.0)
     # iterate through trajectory and perform analysis of "native contacts" Q
     ca1.run()
@@ -168,7 +168,7 @@ Next we are creating an instance of the :class:`Contacts` class and use the
     acidic = u.select_atoms(sel_acidic)
     basic = u.select_atoms(sel_basic)
 
-    nc = contacts.Contacts(u, selection=(sel_acidic, sel_basic),
+    nc = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                            method=is_any_closer,
                            refgroup=(acidic, basic), kwargs={'dist': 2.5})
     nc.run()
@@ -375,14 +375,14 @@ class Contacts(AnalysisBase):
        :attr:`Contacts.timeseries` instead.
 
     """
-    def __init__(self, u, selection, refgroup, method="hard_cut", radius=4.5,
+    def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
                  kwargs=None, **basekwargs):
         """
         Parameters
         ----------
         u : Universe
             trajectory
-        selection : tuple(string, string)
+        select : tuple(string, string)
             two contacting groups that change over time
         refgroup : tuple(AtomGroup, AtomGroup)
             two contacting atomgroups in their reference conformation. This
@@ -398,6 +398,12 @@ class Contacts(AnalysisBase):
         verbose : bool (optional)
              Show detailed progress of the calculation if set to ``True``; the
              default is ``False``.
+
+        Notes
+        -----
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
         self.u = u
         super(Contacts, self).__init__(self.u.trajectory, **basekwargs)
@@ -415,9 +421,9 @@ class Contacts(AnalysisBase):
                 raise ValueError("method has to be callable")
             self.fraction_contacts = method
 
-        self.selection = selection
-        self.grA = u.select_atoms(selection[0])
-        self.grB = u.select_atoms(selection[1])
+        self.select = select
+        self.grA = u.select_atoms(select[0])
+        self.grB = u.select_atoms(select[1])
 
         # contacts formed in reference
         self.r0 = []
@@ -458,8 +464,7 @@ def _new_selections(u_orig, selections, frame):
     return [u.select_atoms(s) for s in selections]
 
 
-def q1q2(u, selection='all', radius=4.5,
-         start=None, stop=None, step=None):
+def q1q2(u, select='all', radius=4.5):
     """Perform a q1-q2 analysis.
 
     Compares native contacts between the starting structure and final structure
@@ -469,27 +474,25 @@ def q1q2(u, selection='all', radius=4.5,
     ----------
     u : Universe
         Universe with a trajectory
-    selection : string, optional
+    select : string, optional
         atoms to do analysis on
     radius : float, optional
         distance at which contact is formed
-    start : int, optional
-        First frame of trajectory to analyse, Default: 0
-    stop : int, optional
-        Last frame of trajectory to analyse, Default: -1
-    step : int, optional
-        Step between frames to analyse, Default: 1
 
     Returns
     -------
     contacts : :class:`Contacts`
         Contact Analysis that is set up for a q1-q2 analysis
 
+    
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
+       Support for setting ``start``, ``stop``, and ``step`` has been removed.
+       These should now be directly passed to :meth:`Contacts.run`.
     """
-    selection = (selection, selection)
+    selection = (select, select)
     first_frame_refs = _new_selections(u, selection, 0)
     last_frame_refs = _new_selections(u, selection, -1)
     return Contacts(u, selection,
                     (first_frame_refs, last_frame_refs),
-                    radius=radius, method='radius_cut',
-                    start=start, stop=stop, step=step)
+                    radius=radius, method='radius_cut')

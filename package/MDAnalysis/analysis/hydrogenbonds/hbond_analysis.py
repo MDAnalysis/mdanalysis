@@ -165,14 +165,14 @@ The class and its methods
 
 .. autoclass:: HydrogenBondAnalysis
    :members:
-
 """
 from __future__ import absolute_import, division
 
-import numpy as  np
+import numpy as np
 
 from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
+from MDAnalysis.exceptions import NoDataError
 
 from ...due import due, Doi
 
@@ -234,12 +234,17 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.d_h_a_angle = d_h_a_angle_cutoff
         self.update_selections = update_selections
 
-    def guess_hydrogens(self, selection='all', max_mass=1.1, min_charge=0.3):
+    def guess_hydrogens(self,
+                        select='all',
+                        max_mass=1.1,
+                        min_charge=0.3,
+                        min_mass=0.9
+                        ):
         """Guesses which hydrogen atoms should be used in the analysis.
 
         Parameters
         ----------
-        selection: str (optional)
+        select: str (optional)
             Selection string for atom group from which hydrogens will be identified.
         max_mass: float (optional)
             Maximum allowed mass of a hydrogen atom.
@@ -263,14 +268,24 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential hydrogen atoms involved
         in hydrogen bonding. This str may then be modified before being used to set the attribute
         :attr:`hydrogens_sel`.
+
+        .. versionchanged: 1.0.0
+            Added `min_mass` parameter to specify minimum mass (Issue #2472)
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
-        ag = self.u.select_atoms(selection)
+        if min_mass > max_mass:
+            raise ValueError("min_mass is higher than (or equal to) max_mass")
+
+        ag = self.u.select_atoms(select)
         hydrogens_ag = ag[
-            np.logical_and(
+            np.logical_and.reduce((
                 ag.masses < max_mass,
-                ag.charges > min_charge
-            )
+                ag.charges > min_charge,
+                ag.masses > min_mass,
+            ))
         ]
 
         hydrogens_list = np.unique(
@@ -281,13 +296,13 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         return " or ".join(hydrogens_list)
 
-    def guess_donors(self, selection='all', max_charge=-0.5):
+    def guess_donors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered donors in the analysis. Only use if the universe topology does not
         contain bonding information, otherwise donor-hydrogen pairs may be incorrectly assigned.
 
         Parameters
         ----------
-        selection: str (optional)
+        select: str (optional)
             Selection string for atom group from which donors will be identified.
         max_charge: float (optional)
             Maximum allowed charge of a donor atom.
@@ -311,6 +326,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`donors_sel`.
 
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
         # We need to know `hydrogens_sel` before we can find donors
@@ -323,7 +340,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         ag = hydrogens_ag.residues.atoms.select_atoms(
             "({donors_sel}) and around {d_h_cutoff} {hydrogens_sel}".format(
-                donors_sel=selection,
+                donors_sel=select,
                 d_h_cutoff=self.d_h_cutoff,
                 hydrogens_sel=hydrogens_sel
             )
@@ -337,12 +354,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         return " or ".join(donors_list)
 
-    def guess_acceptors(self, selection='all', max_charge=-0.5):
+    def guess_acceptors(self, select='all', max_charge=-0.5):
         """Guesses which atoms could be considered acceptors in the analysis.
 
         Parameters
         ----------
-        selection: str (optional)
+        select: str (optional)
             Selection string for atom group from which acceptors will be identified.
         max_charge: float (optional)
             Maximum allowed charge of an acceptor atom.
@@ -364,9 +381,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential acceptor atoms involved
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`acceptors_sel`.
+
+        .. versionchanged:: 1.0.0
+           Changed `selection` keyword to `select`
         """
 
-        ag = self.u.select_atoms(selection)
+        ag = self.u.select_atoms(select)
         acceptors_ag = ag[ag.charges < max_charge]
         acceptors_list = np.unique(
             [
@@ -389,9 +409,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         # If donors_sel is not provided, use topology to find d-h pairs
         if not self.donors_sel:
 
-            if len(self.u.bonds) == 0:
-                raise Exception('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
-                                'Please either: load a topology file with bonded information; use the guess_bonds() '
+            # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
+            # This is because u.bonds also calculates properties of each bond (e.g bond length).
+            # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
+            if not (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
+                raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bond information is present. '
+                                'Please either: load a topology file with bond information; use the guess_bonds() '
                                 'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
                                 'can be used.')
 
@@ -476,9 +499,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # Store data on hydrogen bonds found at this frame
         self.hbonds[0].extend(np.full_like(hbond_donors, self._ts.frame))
-        self.hbonds[1].extend(hbond_donors.ids)
-        self.hbonds[2].extend(hbond_hydrogens.ids)
-        self.hbonds[3].extend(hbond_acceptors.ids)
+        self.hbonds[1].extend(hbond_donors.indices)
+        self.hbonds[2].extend(hbond_hydrogens.indices)
+        self.hbonds[3].extend(hbond_acceptors.indices)
         self.hbonds[4].extend(hbond_distances)
         self.hbonds[5].extend(hbond_angles)
 

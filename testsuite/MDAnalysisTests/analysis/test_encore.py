@@ -43,6 +43,9 @@ import MDAnalysis.analysis.align as align
 import MDAnalysis.analysis.encore.confdistmatrix as confdistmatrix
 
 
+def function(x):
+    return x**2
+
 class TestEncore(object):
     @pytest.fixture(scope='class')
     def ens1_template(self):
@@ -117,12 +120,8 @@ class TestEncore(object):
 inconsistent results")
 
     @pytest.mark.xfail(os.name == 'nt',
-                       strict=True,
                        reason="Not yet supported on Windows.")
     def test_parallel_calculation(self):
-
-        def function(x):
-            return x**2
 
         arguments = [tuple([i]) for i in np.arange(0,100)]
 
@@ -139,12 +138,12 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
 
-        reference = rms.RMSD(ens1, select = "name CA")
+        reference = rms.RMSD(ens1, select="name CA")
         reference.run()
 
         for i,rmsd in enumerate(reference.rmsd):
@@ -155,7 +154,7 @@ inconsistent results")
         conf_dist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights='mass',
             n_jobs=1)
@@ -163,7 +162,7 @@ inconsistent results")
         conf_dist_matrix_custom = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection="name CA",
+            select="name CA",
             pairwise_align=True,
             weights=(ens1.select_atoms('name CA').masses, ens1.select_atoms('name CA').masses),
             n_jobs=1)
@@ -182,7 +181,7 @@ inconsistent results")
         confdist_matrix = encore.confdistmatrix.conformational_distance_matrix(
             ens1,
             encore.confdistmatrix.set_rmsd_matrix_elements,
-            selection=selection_string,
+            select=selection_string,
             pairwise_align=False,
             weights='mass',
             n_jobs=1)
@@ -285,7 +284,7 @@ inconsistent results")
                             err_msg="Dim. Reduction Ensemble Similarity to itself not zero: {0:f}".format(result_value))
 
     def test_dres(self, ens1, ens2):
-        results, details = encore.dres([ens1, ens2], selection="name CA and resnum 1-10")
+        results, details = encore.dres([ens1, ens2], select="name CA and resnum 1-10")
         result_value = results[0,1]
         upper_bound = 0.6
         assert result_value < upper_bound, "Unexpected value for Dim. " \
@@ -337,7 +336,7 @@ inconsistent results")
     def test_hes_error_estimation(self, ens1):
         expected_average = 10
         expected_stdev = 12
-        averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, selection="name CA and resnum 1-10")
+        averages, stdevs = encore.hes([ens1, ens1], estimate_error = True, bootstrapping_samples=10, select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -353,7 +352,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.AffinityPropagationNative(preference=-2.0),
-                                      selection="name CA and resnum 1-10")
+                                      select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -375,7 +374,7 @@ inconsistent results")
                                       estimate_error = True,
                                       bootstrapping_samples=10,
                                       clustering_method=encore.KMeans(n_clusters=2),
-                                      selection="name CA and resnum 1-10")
+                                      select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -389,7 +388,7 @@ inconsistent results")
         stdev_upper_bound = 0.2
         averages, stdevs = encore.dres([ens1, ens1], estimate_error = True,
                                        bootstrapping_samples=10,
-                                       selection="name CA and resnum 1-10")
+                                       select="name CA and resnum 1-10")
         average = averages[0,1]
         stdev = stdevs[0,1]
 
@@ -462,7 +461,7 @@ class TestEncoreClustering(object):
     def test_clustering_AffinityPropagationNative_direct(self, ens1):
         method = encore.AffinityPropagationNative()
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment, details = method(distance_matrix)
+        cluster_assignment = method(distance_matrix)
         expected_value = 7
         assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)
@@ -471,7 +470,7 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         method = encore.AffinityPropagation()
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment, details = method(distance_matrix)
+        cluster_assignment = method(distance_matrix)
         expected_value = 7
         assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)
@@ -483,7 +482,7 @@ class TestEncoreClustering(object):
         coordinates = ens1.trajectory.timeseries(order='fac')
         coordinates = np.reshape(coordinates,
                                  (coordinates.shape[0], -1))
-        cluster_assignment, details = method(coordinates)
+        cluster_assignment = method(coordinates)
         assert len(set(cluster_assignment)) == clusters, \
                      "Unexpected result: {0}".format(cluster_assignment)
 
@@ -491,7 +490,7 @@ class TestEncoreClustering(object):
         pytest.importorskip('sklearn')
         method = encore.DBSCAN(eps=0.5, min_samples=2)
         distance_matrix = encore.get_distance_matrix(ens1)
-        cluster_assignment, details = method(distance_matrix)
+        cluster_assignment = method(distance_matrix)
         expected_value = 2
         assert len(set(cluster_assignment)) == expected_value, \
                      "Unexpected result: {0}".format(cluster_assignment)

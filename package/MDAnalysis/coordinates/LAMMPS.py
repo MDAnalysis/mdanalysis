@@ -128,7 +128,6 @@ from six import raise_from
 import os
 import numpy as np
 
-from ..core import flags
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
 from ..lib.util import cached
@@ -254,18 +253,18 @@ class DATAWriter(base.WriterBase):
     """
     format = 'DATA'
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         """Set up a DATAWriter
 
         Parameters
         ----------
         filename : str
             output filename
+        convert_units : bool, optional
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = util.filename(filename, ext='data')
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.units = {'time': 'fs', 'length': 'Angstrom'}

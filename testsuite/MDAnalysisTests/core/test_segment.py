@@ -64,20 +64,3 @@ class TestSegment(object):
     def test_atom_order(self, universe):
         assert_equal(universe.segments[0].atoms.indices,
                      sorted(universe.segments[0].atoms.indices))
-
-
-# remove in 1.0
-def test_generated_residueselection():
-    """Test that a generated residue group always returns a ResidueGroup (Issue 47)
-    unless there is a single residue (Issue 363 change)"""
-    universe = mda.Universe(PSF, DCD)
-    with pytest.warns(DeprecationWarning):
-        # only a single Cys in AdK
-        cys = universe.s4AKE.CYS
-        assert isinstance(cys, mda.core.groups.Residue), \
-            "Single Cys77 is NOT returned as a single Residue (Issue 47)"
-
-        # multiple Met
-        met = universe.s4AKE.MET
-        assert isinstance(met, mda.core.groups.ResidueGroup), \
-            "Met selection does not return a ResidueGroup"

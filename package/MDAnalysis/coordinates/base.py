@@ -210,7 +210,7 @@ import weakref
 from . import core
 from .. import NoDataError
 from .. import (
-    _READERS,
+    _READERS, _READER_HINTS,
     _SINGLEFRAME_WRITERS,
     _MULTIFRAME_WRITERS,
     _CONVERTERS
@@ -218,7 +218,6 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..core import flags
 from ..lib.util import asiterable, Namespace
 
 
@@ -1128,8 +1127,8 @@ class IOBase(object):
            returned.
 
         """
-        f = units.get_conversion_factor(
-            'length', self.units['length'], flags['length_unit'])
+        f = units.get_conversion_factor('length',
+                                        self.units['length'], 'Angstrom')
         if f == 1.:
             return x
         if not inplace:
@@ -1157,7 +1156,7 @@ class IOBase(object):
         .. versionadded:: 0.7.5
         """
         f = units.get_conversion_factor(
-            'speed', self.units['velocity'], flags['speed_unit'])
+            'speed', self.units['velocity'], 'Angstrom/ps')
         if f == 1.:
             return v
         if not inplace:
@@ -1184,7 +1183,7 @@ class IOBase(object):
         .. versionadded:: 0.7.7
         """
         f = units.get_conversion_factor(
-            'force', self.units['force'], flags['force_unit'])
+            'force', self.units['force'], 'kJ/(mol*Angstrom)')
         if f == 1.:
             return force
         if not inplace:
@@ -1219,7 +1218,7 @@ class IOBase(object):
 
         """
         f = units.get_conversion_factor(
-            'time', self.units['time'], flags['time_unit'])
+            'time', self.units['time'], 'ps')
         if f == 1.:
             return t
         if not inplace:
@@ -1252,7 +1251,7 @@ class IOBase(object):
 
         """
         f = units.get_conversion_factor(
-            'length', flags['length_unit'], self.units['length'])
+            'length', 'Angstrom', self.units['length'])
         if f == 1.:
             return x
         if not inplace:
@@ -1280,7 +1279,7 @@ class IOBase(object):
         .. versionadded:: 0.7.5
         """
         f = units.get_conversion_factor(
-            'speed', flags['speed_unit'], self.units['velocity'])
+            'speed', 'Angstrom/ps', self.units['velocity'])
         if f == 1.:
             return v
         if not inplace:
@@ -1308,7 +1307,7 @@ class IOBase(object):
         .. versionadded:: 0.7.7
         """
         f = units.get_conversion_factor(
-            'force', flags['force_unit'], self.units['force'])
+            'force', 'kJ/(mol*Angstrom)', self.units['force'])
         if f == 1.:
             return force
         if not inplace:
@@ -1341,7 +1340,7 @@ class IOBase(object):
 
         """
         f = units.get_conversion_factor(
-            'time', flags['time_unit'], self.units['time'])
+            'time', 'ps', self.units['time'])
         if f == 1.:
             return t
         if not inplace:
@@ -1363,6 +1362,11 @@ class IOBase(object):
 
 
 class _Readermeta(type):
+    """Automatic Reader registration metaclass
+
+    .. versionchanged:: 1.0.0
+       Added _format_hint functionality
+    """
     # Auto register upon class creation
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -1371,9 +1375,13 @@ class _Readermeta(type):
         except KeyError:
             pass
         else:
-            for f in fmt:
-                f = f.upper()
-                _READERS[f] = cls
+            for fmt_name in fmt:
+                fmt_name = fmt_name.upper()
+                _READERS[fmt_name] = cls
+
+                if '_format_hint' in classdict:
+                    # isn't bound yet, so access __func__
+                    _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 
 class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
@@ -2087,16 +2095,14 @@ class ReaderBase(ProtoReader):
        functionality, all ReaderBase subclasses must now :func:`super` through this
        class.  Added attribute :attr:`_ts_kwargs`, which is created in init.
        Provides kwargs to be passed to :class:`Timestep`
-
+    .. versionchanged:: 1.0
+       Removed deprecated flags functionality, use convert_units kwarg instead
     """
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         super(ReaderBase, self).__init__()
 
         self.filename = filename
-
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         ts_kwargs = {}
@@ -2260,12 +2266,10 @@ class SingleFrameReaderBase(ProtoReader):
     """
     _err = "{0} only contains a single frame"
 
-    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         super(SingleFrameReaderBase, self).__init__()
 
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.n_frames = 1

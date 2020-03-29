@@ -117,7 +117,6 @@ from six import raise_from
 import numpy as np
 
 from . import base
-from ..core import flags
 from ..lib import util
 
 
@@ -281,7 +280,7 @@ class MOL2Writer(base.WriterBase):
     multiframe = True
     units = {'time': None, 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, convert_units=None):
+    def __init__(self, filename, n_atoms=None, convert_units=True):
         """Create a new MOL2Writer
 
         Parameters
@@ -289,12 +288,9 @@ class MOL2Writer(base.WriterBase):
         filename: str
             name of output file
         convert_units: bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
         self.frames_written = 0

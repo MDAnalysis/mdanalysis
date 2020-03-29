@@ -1,8 +1,8 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 fileencoding=utf-8
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
-# Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
+# Copyright (c) 2006-2020 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
 # Released under the GNU Public Licence, v2 or any higher version
@@ -20,19 +20,22 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, division
 
-import pytest
+from __future__ import absolute_import
+from ...due import due, Doi
+from .hole import hole, HoleAnalysis
+from .utils import create_vmd_surface
 
-import MDAnalysis as mda
-
-
-@pytest.mark.parametrize('flag', ['use_pbc', 'use_periodic_selections',
-                                  'use_KDTree_routines', 'convert_lengths',
-                                  'length_unit', 'speed_unit', 'force_unit',
-                                  'charge_unit', 'time_unit'])
-def test_flag_deprecation(flag):
-    curr = mda.core.flags[flag]
-
-    with pytest.warns(DeprecationWarning):
-        mda.core.flags[flag] = curr
+due.cite(Doi("10.1016/S0006-3495(93)81293-1"),
+         description="HOLE program",
+         path="MDAnalysis.analysis.hole",
+         cite_module=True)
+due.cite(Doi("10.1016/S0263-7855(97)00009-X"),
+         description="HOLE program",
+         path="MDAnalysis.analysis.hole",
+         cite_module=True)
+due.cite(Doi("10.1016/j.jmb.2013.10.024"),
+         description="HOLE trajectory analysis with orderparameters",
+         path="MDAnalysis.analysis.hole",
+         cite_module=True)
+del Doi

@@ -127,22 +127,22 @@ class TestGetMatchingAtoms(object):
             with pytest.warns(SelectionWarning):
                 with pytest.raises(SelectionError):
                     groups = align.get_matching_atoms(ref, mobile, strict=strict)
-    
+
     def test_toggle_atom_mismatch_default_error(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
         with pytest.raises(SelectionError):
             rmsd = align.alignto(universe, reference, select=selection)
-    
+
     def test_toggle_atom_mismatch_kwarg_error(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
         with pytest.raises(SelectionError):
             rmsd = align.alignto(universe, reference, select=selection, match_atoms=True)
-    
+
     def test_toggle_atom_nomatch(self, universe, reference):
         selection = ('resname ALA and name CA', 'resname ALA and name O')
         rmsd = align.alignto(universe, reference, select=selection, match_atoms=False)
         assert rmsd[0] > 0.01
-    
+
     def test_toggle_atom_nomatch_mismatch_atoms(self, universe, reference):
         # mismatching number of atoms, but same number of residues
         u = universe.select_atoms('resname ALA and name CA')
@@ -151,8 +151,18 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
-        
+    def test_no_atom_masses(self, universe):
+        #if no masses are present
+        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        with pytest.warns(SelectionWarning):
+            align.get_matching_atoms(u.atoms, u.atoms)
 
+    def test_one_universe_has_masses(self, universe):
+        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        ref = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        ref.add_TopologyAttr('masses')
+        with pytest.warns(SelectionWarning):
+            align.get_matching_atoms(u.atoms, ref.atoms)
 
 
 class TestAlign(object):
@@ -226,14 +236,16 @@ class TestAlign(object):
         fitted = mda.Universe(PSF, outfile)
 
         # ensure default file exists
-        with mda.Writer(str(tmpdir.join('rmsfit_align_test.dcd')),
+        with mda.Writer(str(tmpdir.join("rmsfit_align_test.dcd")),
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
-        align.AlignTraj(fitted, reference)
-        # we are careful now. The default does nothing
-        with pytest.raises(IOError):
-            align.AlignTraj(fitted, reference, force=False)
+        with tempdir.in_tempdir():
+            align.AlignTraj(fitted, reference)
+
+            # we are careful now. The default does nothing
+            with pytest.raises(IOError):
+                align.AlignTraj(fitted, reference, force=False)
 
     def test_AlignTraj_step_works(self, universe, reference, tmpdir):
         reference.trajectory[-1]
@@ -359,6 +371,7 @@ class TestAlign(object):
         assert_array_almost_equal(segB_bound.positions, segB_free.positions,
                                   decimal=3)
 
+
 def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
     u = mda.Universe(*ref_files, in_memory=True)
     prealigner = align.AlignTraj(u, ref, select=select, **kwargs).run()
@@ -370,7 +383,7 @@ def _get_aligned_average_positions(ref_files, ref, select="all", **kwargs):
 class TestAverageStructure(object):
 
     ref_files = (PSF, DCD)
-    
+
     @pytest.fixture
     def universe(self):
         return mda.Universe(*self.ref_files)
@@ -384,13 +397,13 @@ class TestAverageStructure(object):
         avg = align.AverageStructure(universe, reference).run()
         assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
         assert_almost_equal(avg.rmsd, rmsd)
-    
+
     def test_average_structure_mass_weighted(self, universe, reference):
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, weights='mass')
         avg = align.AverageStructure(universe, reference, weights='mass').run()
         assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
         assert_almost_equal(avg.rmsd, rmsd)
-    
+
     def test_average_structure_select(self, universe, reference):
         select = 'protein and name CA and resid 3-5'
         ref, rmsd = _get_aligned_average_positions(self.ref_files, reference, select=select)
@@ -403,7 +416,7 @@ class TestAverageStructure(object):
         avg = align.AverageStructure(universe).run()
         assert_almost_equal(avg.universe.atoms.positions, ref, decimal=4)
         assert_almost_equal(avg.rmsd, rmsd)
-    
+
     def test_average_structure_no_msf(self, universe):
         avg = align.AverageStructure(universe).run()
         assert not hasattr(avg, 'msf')
@@ -412,7 +425,7 @@ class TestAverageStructure(object):
         u = mda.Merge(universe.atoms[:10])
         with pytest.raises(SelectionError):
             align.AverageStructure(universe, u)
-    
+
     def test_average_structure_ref_frame(self, universe):
         ref_frame = 3
         u = mda.Merge(universe.atoms)
@@ -434,7 +447,6 @@ class TestAverageStructure(object):
         assert_almost_equal(avg.universe.atoms.positions, reference_coordinates, decimal=4)
         assert avg.filename is None
 
-    
 
 class TestAlignmentProcessing(object):
     seq = FASTA

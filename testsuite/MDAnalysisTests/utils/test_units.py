@@ -28,22 +28,6 @@ import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis import units
-from MDAnalysis.core import flags
-
-
-class TestDefaultUnits(object):
-    def test_length(self):
-        assert_equal(flags['length_unit'], 'Angstrom',
-                     u"The default length unit should be Angstrom (in core.flags)")
-
-    def test_time(self):
-        assert_equal(flags['time_unit'], 'ps',
-                     u"The default length unit should be pico seconds (in core.flags)")
-
-    def test_convert_gromacs_trajectories(self):
-        assert_equal(flags['convert_lengths'], True,
-                     u"The default behaviour should be to auto-convert Gromacs trajectories")
-
 
 
 class TestUnitEncoding(object):

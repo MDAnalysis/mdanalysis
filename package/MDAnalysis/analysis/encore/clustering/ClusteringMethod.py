@@ -84,10 +84,11 @@ class ClusteringMethod (object):
             encore.utils.TriangularMatrix, encoding the conformational
             distance matrix
 
-        Returns
-        -------
-        numpy.array
-            list of cluster indices
+        Raises
+        ------
+        NotImplementedError
+           Method or behavior needs to be defined by a subclass    
+        
         """
         raise NotImplementedError("Class {0} doesn't implement __call__()"
                                   .format(self.__class__.__name__))
@@ -146,8 +147,11 @@ class AffinityPropagationNative(ClusteringMethod):
 
         Returns
         -------
-        numpy.array
-            list of cluster indices
+        numpy.array : array, shape(n_elements) 
+            centroid frames of the clusters for all of the elements
+
+        .. versionchanged:: 1.0.0
+           This method no longer returns ``details``
         """
         clusters = affinityprop.AffinityPropagation(
             s=distance_matrix * -1.,   # invert sign
@@ -156,9 +160,8 @@ class AffinityPropagationNative(ClusteringMethod):
             max_iterations = self.max_iter,
             convergence = self.convergence_iter,
             noise=int(self.add_noise))
-        details = {}
-        return clusters, details
-
+        
+        return clusters
 if sklearn:
 
     class AffinityPropagation(ClusteringMethod):
@@ -214,9 +217,11 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                list of cluster indices
+            numpy.array : array, shape(n_elements) 
+                centroid frames of the clusters for all of the elements
 
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting Affinity Propagation: {0}".format
                          (self.ap.get_params()))
@@ -226,8 +231,9 @@ if sklearn:
             clusters = self.ap.fit_predict(similarity_matrix)
             clusters = encode_centroid_info(clusters,
                                             self.ap.cluster_centers_indices_)
-            details = {}
-            return clusters, details
+            
+            return clusters
+
 
 
     class DBSCAN(ClusteringMethod):
@@ -290,9 +296,11 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                list of cluster indices
+            numpy.array : array, shape(n_elements) 
+                centroid frames of the clusters for all of the elements
 
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting DBSCAN: {0}".format(
                 self.dbscan.get_params()))
@@ -304,8 +312,8 @@ if sklearn:
             cluster_representatives = np.unique(clusters, return_index=True)[1]
             clusters = encode_centroid_info(clusters,
                                             cluster_representatives)
-            details = {}
-            return clusters, details
+          
+            return clusters
 
     class KMeans(ClusteringMethod):
 
@@ -317,11 +325,11 @@ if sklearn:
         """
         def __init__(self,
                      n_clusters,
-                     max_iter = 300,
-                     n_init = 10,
-                     init = 'k-means++',
+                     max_iter=300,
+                     n_init=10,
+                     init='k-means++',
                      algorithm="auto",
-                     tol = 1e-4,
+                     tol=1e-4,
                      verbose=False,
                      random_state=None,
                      copy_x=True,
@@ -352,7 +360,7 @@ if sklearn:
                 If an ndarray is passed, it should be of shape
                 (n_clusters, n_features) and gives the initial centers.
                 If a callable is passed, it should take arguments X, k and
-                and a ranndom state and return an initialization.
+                and a random state and return an initialization.
 
             precompute_distances : {'auto', True, False}
                 Precompute distances (faster but takes more memory).
@@ -391,12 +399,12 @@ if sklearn:
                 but one are used.
 
             """
-            self.kmeans = sklearn.cluster.KMeans(n_clusters = n_clusters,
-                                                 max_iter = max_iter,
-                                                 n_init = n_init,
-                                                 init = init,
+            self.kmeans = sklearn.cluster.KMeans(n_clusters=n_clusters,
+                                                 max_iter=max_iter,
+                                                 n_init=n_init,
+                                                 init=init,
                                                  precompute_distances='auto',
-                                                 tol = tol,
+                                                 tol=tol,
                                                  verbose=verbose,
                                                  random_state=random_state,
                                                  copy_x=copy_x,
@@ -414,8 +422,11 @@ if sklearn:
 
             Returns
             -------
-            numpy.array
-                list of cluster indices
+            numpy.array : array, shape(n_elements) 
+                centroid frames of the clusters for all of the elements
+
+            .. versionchanged:: 1.0.0
+               This method no longer returns ``details``
             """
             logging.info("Starting Kmeans: {0}".format(
                          (self.kmeans.get_params())))
@@ -424,5 +435,5 @@ if sklearn:
             cluster_center_indices = np.argmin(distances, axis=0)
             clusters = encode_centroid_info(clusters,
                                              cluster_center_indices)
-            details = {}
-            return clusters, details
+            
+            return clusters

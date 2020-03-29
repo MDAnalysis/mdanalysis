@@ -77,9 +77,7 @@ import functools
 
 from . import base
 from ..topology.tables import SYMB2Z
-from ..core import flags
 from ..core.universe import Universe
-
 
 
 class ParmEdReader(base.SingleFrameReaderBase):
@@ -88,6 +86,20 @@ class ParmEdReader(base.SingleFrameReaderBase):
 
     # Structure.coordinates always in Angstrom
     units = {'time': None, 'length': 'Angstrom'}
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this reader read *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            import parmed as pmd
+        except ImportError:
+            # if we can't import parmed, it's probably not parmed
+            return False
+        else:
+            return isinstance(thing, pmd.Structure)
 
     def _read_first_frame(self):
         self.n_atoms = len(self.filename.atoms)
@@ -150,9 +162,10 @@ class ParmEdConverter(base.ConverterBase):
         """
         try:
             import parmed as pmd
-        except ModuleNotFoundError:
-            raise ValueError('Parmed is required for ParmEdConverter but '
-                             'is not installed.')
+        except ImportError:
+            raise ImportError('ParmEd is required for ParmEdConverter but '
+                              'is not installed. Try installing it with \n'
+                              'pip install parmed')
         try:
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms

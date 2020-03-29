@@ -120,9 +120,6 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 * The trajectory does not contain time information so we simply set
   the time step to 1 ps (or the user could provide it as kwarg *dt*)
 
-* **No direct access of frames is implemented, only iteration through
-  the trajectory.**
-
 * Trajectories with fewer than 4 atoms probably fail to be read (BUG).
 
 * If the trajectory contains exactly *one* atom then it is always
@@ -163,7 +160,6 @@ import errno
 import logging
 
 import MDAnalysis
-from ..core import flags
 from . import base
 from ..lib import util
 
@@ -204,9 +200,6 @@ class TRJReader(base.ReaderBase):
     The length of a timestep is not stored in the trajectory itself but can
     be set by passing the `dt` keyword argument to the constructor; it
     is assumed to be in ps. The default value is 1 ps.
-
-    Functionality is currently limited to simple iteration over the
-    trajectory.
 
     .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
 
@@ -776,9 +769,7 @@ class NCDFWriter(base.WriterBase):
     dt : float (optional)
         timestep
     convert_units : bool (optional)
-        ``True``: units are converted to the AMBER base format; ``None``
-        selects the value of :data:`MDAnalysis.core.flags`
-        ['convert_lengths'] (see :ref:`flags-label`).
+        ``True``: units are converted to the AMBER base format; [``True``]
     velocities : bool (optional)
         Write velocities into the trajectory [``False``]
     forces : bool (optional)
@@ -864,14 +855,12 @@ class NCDFWriter(base.WriterBase):
                  step=1,
                  dt=1.0,
                  remarks=None,
-                 convert_units=None,
+                 convert_units=True,
                  **kwargs):
         self.filename = filename
         if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
         self.n_atoms = n_atoms
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         # convert length and time to base units on the fly?
         self.convert_units = convert_units
 

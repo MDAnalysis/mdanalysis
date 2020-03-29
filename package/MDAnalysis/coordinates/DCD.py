@@ -66,7 +66,6 @@ import struct
 import types
 import warnings
 
-from ..core import flags
 from .. import units as mdaunits  # use mdaunits instead of units to avoid a clash
 from ..exceptions import NoDataError
 from . import base, core

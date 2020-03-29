@@ -36,7 +36,7 @@ import gridData.OpenDX
 import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
-from MDAnalysisTests.datafiles import TPR, XTC, GRO
+from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
 from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 
@@ -120,8 +120,7 @@ class TestDensity(object):
             data = dx.components['data']
         assert data.type == dxtype
 
-
-class Test_density_from_Universe(object):
+class DensityParameters(object):
     topology = TPR
     trajectory = XTC
     delta = 2.0
@@ -154,20 +153,126 @@ class Test_density_from_Universe(object):
     def universe(self):
         return mda.Universe(self.topology, self.trajectory)
 
+class TestDensityAnalysis(DensityParameters):
+    def check_DensityAnalysis(self, ag, ref_meandensity,
+                                    tmpdir, runargs=None, **kwargs):
+        runargs = runargs if runargs else {}
+        with tmpdir.as_cwd():
+            D = density.DensityAnalysis(ag, delta=self.delta, **kwargs).run(**runargs)
+            assert_almost_equal(D.density.grid.mean(), ref_meandensity,
+                                err_msg="mean density does not match")
+            D.density.export(self.outfile)
+
+            D2 = density.Density(self.outfile)
+            assert_almost_equal(D.density.grid, D2.grid, decimal=self.precision,
+                                err_msg="DX export failed: different grid sizes")
+
+    @pytest.mark.parametrize("mode", ("static", "dynamic"))
+    def test_run(self, mode, universe, tmpdir):
+        updating = (mode == "dynamic")
+        self.check_DensityAnalysis(
+            universe.select_atoms(self.selections[mode], updating=updating),
+            self.references[mode]['meandensity'],
+            tmpdir=tmpdir
+        )
+
+    def test_sliced(self, universe, tmpdir):
+        self.check_DensityAnalysis(
+            universe.select_atoms(self.selections['static']),
+            self.references['static_sliced']['meandensity'],
+            tmpdir=tmpdir,
+            runargs=dict(start=1, stop=-1, step=2),
+        )
+
+    def test_userdefn_eqbox(self, universe, tmpdir):
+        with warnings.catch_warnings():
+            # Do not need to see UserWarning that box is too small
+            warnings.simplefilter("ignore")
+            self.check_DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                self.references['static_defined']['meandensity'],
+                tmpdir=tmpdir,
+                gridcenter=self.gridcenters['static_defined'],
+                xdim=10.0,
+                ydim=10.0,
+                zdim=10.0,
+            )
+
+    def test_userdefn_neqbox(self, universe, tmpdir):
+        self.check_DensityAnalysis(
+            universe.select_atoms(self.selections['static']),
+            self.references['static_defined_unequal']['meandensity'],
+            tmpdir=tmpdir,
+            gridcenter=self.gridcenters['static_defined'],
+            xdim=10.0,
+            ydim=15.0,
+            zdim=20.0,
+        )
+
+    def test_userdefn_boxshape(self, universe):
+        D = density.DensityAnalysis(
+            universe.select_atoms(self.selections['static']),
+            delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
+            gridcenter=self.gridcenters['static_defined']).run()
+        assert D.density.grid.shape == (8, 12, 17)
+
+    def test_warn_userdefn_padding(self, universe):
+        regex = ("Box padding \(currently set at 1\.0\) is not used "
+                 "in user defined grids\.")
+        with pytest.warns(UserWarning, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=100.0, ydim=100.0, zdim=100.0, padding=1.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_warn_userdefn_smallgrid(self, universe):
+        regex = ("Atom selection does not fit grid --- "
+                 "you may want to define a larger box")
+        with pytest.warns(UserWarning, match=regex):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+    def test_ValueError_userdefn_gridcenter_shape(self, universe):
+        # Test len(gridcenter) != 3
+        with pytest.raises(ValueError, match="gridcenter must be a 3D coordinate"):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['error1']).run(step=5)
+
+    def test_ValueError_userdefn_gridcenter_type(self, universe):
+        # Test gridcenter includes non-numeric strings
+        with pytest.raises(ValueError, match="Non-number values assigned to gridcenter"):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['error2']).run(step=5)
+
+    def test_ValueError_userdefn_xdim_type(self, universe):
+        # Test xdim != int or float
+        with pytest.raises(ValueError, match="xdim, ydim, and zdim must be numbers"):
+            D = density.DensityAnalysis(
+                universe.select_atoms(self.selections['static']),
+                delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
+                gridcenter=self.gridcenters['static_defined']).run(step=5)
+
+
+# remove in 2.0.0
+class Test_density_from_Universe(DensityParameters):
     def check_density_from_Universe(self, atomselection, ref_meandensity,
                                     universe, tmpdir, **kwargs):
-        import MDAnalysis.analysis.density
-
         with tmpdir.as_cwd():
-            D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=atomselection,
+            D = density.density_from_Universe(
+                universe, select=atomselection,
                 delta=self.delta, **kwargs)
             assert_almost_equal(D.grid.mean(), ref_meandensity,
                                 err_msg="mean density does not match")
 
             D.export(self.outfile)
 
-            D2 = MDAnalysis.analysis.density.Density(self.outfile)
+            D2 = density.Density(self.outfile)
             assert_almost_equal(D.grid, D2.grid, decimal=self.precision,
                                 err_msg="DX export failed: different grid sizes")
 
@@ -179,7 +284,7 @@ class Test_density_from_Universe(object):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_sliced(self, universe, tmpdir):
+    def test_sliced(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_sliced']['meandensity'],
@@ -188,7 +293,7 @@ class Test_density_from_Universe(object):
             tmpdir=tmpdir
             )
 
-    def test_density_from_Universe_update_selection(self, universe, tmpdir):
+    def test_update_selection(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['dynamic'],
             self.references['dynamic']['meandensity'],
@@ -197,7 +302,7 @@ class Test_density_from_Universe(object):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_notwithin(self, universe, tmpdir):
+    def test_notwithin(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['notwithin']['meandensity'],
@@ -207,7 +312,7 @@ class Test_density_from_Universe(object):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_userdefn_eqbox(self, universe, tmpdir):
+    def test_userdefn_eqbox(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_defined']['meandensity'],
@@ -219,7 +324,7 @@ class Test_density_from_Universe(object):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_userdefn_neqbox(self, universe, tmpdir):
+    def test_userdefn_neqbox(self, universe, tmpdir):
         self.check_density_from_Universe(
             self.selections['static'],
             self.references['static_defined_unequal']['meandensity'],
@@ -231,61 +336,130 @@ class Test_density_from_Universe(object):
             tmpdir=tmpdir
         )
 
-    def test_density_from_Universe_userdefn_boxshape(self, universe):
-        import MDAnalysis.analysis.density
-        D = MDAnalysis.analysis.density.density_from_Universe(
-            universe, atomselection=self.selections['static'],
+    def test_userdefn_boxshape(self, universe):
+        D = density.density_from_Universe(
+            universe, select=self.selections['static'],
             delta=1.0, xdim=8.0, ydim=12.0, zdim=17.0,
             gridcenter=self.gridcenters['static_defined'])
         assert D.grid.shape == (8, 12, 17)
 
-    def test_density_from_Universe_userdefn_padding(self, universe):
-        import MDAnalysis.analysis.density
-        wmsg = ("Box padding (currently set at 1.0) is not used in user "
-                "defined grids.")
-        with pytest.warns(UserWarning) as record:
-            D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
-                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=1.0,
+    def test_userdefn_padding(self, universe):
+        regex = ("Box padding \(currently set at 1\.0\) is not used "
+                 "in user defined grids\.")
+        with pytest.warns(UserWarning, match=regex):
+            D = density.density_from_Universe(
+                universe, select=self.selections['static'],
+                delta=self.delta, xdim=100.0, ydim=100.0, zdim=100.0, padding=1.0,
                 gridcenter=self.gridcenters['static_defined'])
-        
-        assert len(record) == 3
-        assert str(record[1].message.args[0]) == wmsg
 
-    def test_density_from_Universe_userdefn_selwarning(self, universe):
-        import MDAnalysis.analysis.density
-        wmsg = ("Atom selection does not fit grid --- "
+    def test_userdefn_selwarning(self, universe):
+        regex = ("Atom selection does not fit grid --- "
                 "you may want to define a larger box")
-        with pytest.warns(UserWarning) as record:
-            D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
-                delta=1.0, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
+        with pytest.warns(UserWarning, match=regex):
+            D = density.density_from_Universe(
+                universe, select=self.selections['static'],
+                delta=self.delta, xdim=1.0, ydim=2.0, zdim=2.0, padding=0.0,
                 gridcenter=self.gridcenters['static_defined'])
 
-        assert len(record) == 2
-        assert str(record[1].message.args[0]) == wmsg
-
-    def test_density_from_Universe_userdefn_ValueErrors(self, universe):
-        import MDAnalysis.analysis.density
+    def test_userdefn_ValueErrors(self, universe):
         # Test len(gridcenter) != 3
         with pytest.raises(ValueError):
-            D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
+            D = density.density_from_Universe(
+                universe, select=self.selections['static'],
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error1'])
         # Test gridcenter includes non-numeric strings
         with pytest.raises(ValueError):
-            D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
+            D = density.density_from_Universe(
+                universe, select=self.selections['static'],
                 delta=self.delta, xdim=10.0, ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['error2'])
         # Test xdim != int or float
         with pytest.raises(ValueError):
-            D = MDAnalysis.analysis.density.density_from_Universe(
-                universe, atomselection=self.selections['static'],
+            D = density.density_from_Universe(
+                universe, select=self.selections['static'],
                 delta=self.delta, xdim="MDAnalysis", ydim=10.0, zdim=10.0,
                 gridcenter=self.gridcenters['static_defined'])
 
+    def test_has_DeprecationWarning(self, universe):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            D = density.density_from_Universe(
+                universe, select=self.selections['static'],
+                delta=self.delta)
+
+
+class TestNotWithin(object):
+    # tests notwithin_coordinates_factory
+    # only checks that KDTree and distance_array give same results
+
+    @staticmethod
+    @pytest.fixture()
+    def u():
+        return mda.Universe(GRO)
+
+    def test_within(self, u):
+        vers1 = density.notwithin_coordinates_factory(u, 'resname SOL',
+                                                      'protein', 2,
+                                                      not_within=False,
+                                                      use_kdtree=True)()
+        vers2 = density.notwithin_coordinates_factory(u, 'resname SOL',
+                                                      'protein', 2,
+                                                      not_within=False,
+                                                      use_kdtree=False)()
+
+        assert_equal(vers1, vers2)
+
+    def test_not_within(self, u):
+        vers1 = density.notwithin_coordinates_factory(u, 'resname SOL',
+                                                     'protein', 2,
+                                                     not_within=True,
+                                                     use_kdtree=True)()
+        vers2 = density.notwithin_coordinates_factory(u, 'resname SOL',
+                                                     'protein', 2,
+                                                     not_within=True,
+                                                     use_kdtree=False)()
+        assert_equal(vers1, vers2)
+
+    def test_has_DeprecationWarning(self, u):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            density.notwithin_coordinates_factory(u, 'resname SOL',
+                                                  'protein', 2,
+                                                  not_within=False,
+                                                  use_kdtree=True)()
+
+
+class TestBfactor2RMSF(object):
+    @pytest.mark.parametrize('B', [20, 20.0, 20.123,
+                                   np.array([45.678, 67.1, 0.0, 100.2])])
+    def test_Bfactor2RMSF(self, B):
+        values = density.Bfactor2RMSF(B)
+        ref = np.sqrt(3. * B / 8.) / np.pi  # original equation
+        assert_almost_equal(values, ref)
+
+    def test_has_DeprecationWarning(self):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            density.Bfactor2RMSF(100.0)
+
+class Test_density_from_PDB(object):
+
+    @pytest.mark.parametrize('sigma,ref_shape,ref_gridsum',
+                             [(None, (21, 26, 29), 108.710149),
+                              (1.5,  (21, 26, 29), 160.050167)])
+    def test_density_from_PDB(self, sigma, ref_shape, ref_gridsum):
+        # simple test that the code runs: use B-factors from PDB or fixed sigma
+        D = density.density_from_PDB(PDB_full, delta=2.0, sigma=sigma)
+
+        assert isinstance(D, density.Density)
+        assert_equal(D.grid.shape, ref_shape)
+        assert_almost_equal(D.grid.sum(), ref_gridsum, decimal=5)
+
+    def test_has_DeprecationWarning(self):
+        with pytest.warns(DeprecationWarning,
+                          match="will be removed in release 2.0.0"):
+            density.density_from_PDB(PDB_full, delta=5.0, sigma=2)
 
 class TestGridImport(object):
 
@@ -311,29 +485,3 @@ class TestGridImport(object):
             except ImportError:
                 pytest.fail(msg='''MDAnalysis.analysis.density should not raise
                              an ImportError if gridData is available.''')
-
-
-class TestNotWithin(object):
-    # tests notwithin_coordinates_factory
-    # only checks that KDTree and distance_array give same results
-
-    @staticmethod
-    @pytest.fixture()
-    def u():
-        return mda.Universe(GRO)
-
-    def test_within(self, u):
-        from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
-
-        vers1 = ncf(u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=True)()
-        vers2 = ncf(u, 'resname SOL', 'protein', 2, not_within=False, use_kdtree=False)()
-
-        assert_equal(vers1, vers2)
-
-    def test_not_within(self, u):
-        from MDAnalysis.analysis.density import notwithin_coordinates_factory as ncf
-
-        vers1 = ncf(u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=True)()
-        vers2 = ncf(u, 'resname SOL', 'protein', 2, not_within=True, use_kdtree=False)()
-
-        assert_equal(vers1, vers2)

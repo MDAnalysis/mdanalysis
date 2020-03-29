@@ -95,7 +95,6 @@ import os
 import errno
 
 from . import base
-from ..core import flags
 from ..lib import util
 from ..lib.util import cached
 from .core import triclinic_box, triclinic_vectors
@@ -447,7 +446,7 @@ class TRZWriter(base.WriterBase):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, filename, n_atoms, title='TRZ', convert_units=None):
+    def __init__(self, filename, n_atoms, title='TRZ', convert_units=True):
         """Create a TRZWriter
 
         Parameters
@@ -460,9 +459,7 @@ class TRZWriter(base.WriterBase):
             title of the trajectory; the title must be 80 characters or
             shorter, a longer title raises a ValueError exception.
         convert_units : bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-            (see :ref:`flags-label`)
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
         if n_atoms is None:
@@ -474,8 +471,6 @@ class TRZWriter(base.WriterBase):
         if len(title) > 80:
             raise ValueError("TRZWriter: 'title' must be 80 characters of shorter")
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.trzfile = util.anyopen(self.filename, 'wb')

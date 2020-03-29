@@ -101,8 +101,8 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
                             err_msg="wrong coordinates for A10:CA")
 
     def test_distances(self):
-        NTERM = self.universe.atoms.N[0]
-        CTERM = self.universe.atoms.C[-1]
+        NTERM = self.universe.select_atoms('name N')[0]
+        CTERM = self.universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d,
                             self.ref_distances['endtoend'],
@@ -236,14 +236,14 @@ class BaseReaderTest(object):
 
     def test_get_writer_1(self, ref, reader):
         with tempdir.in_tempdir():
-            outfile = 'test-writer' + ref.ext
+            outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, reader.n_atoms)
 
     def test_get_writer_2(self, ref, reader):
         with tempdir.in_tempdir():
-            outfile = 'test-writer' + ref.ext
+            outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile, n_atoms=100) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, 100)

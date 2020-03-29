@@ -115,10 +115,6 @@ class TestMemoryReader(MultiframeReaderTest):
     def test_extract_array_afc(self,reader):
         assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 
-    def test_timeseries_deprecation(self, reader):
-        with pytest.warns(DeprecationWarning):
-            reader.timeseries(format='fac')
-
     def test_extract_array_afc(self, reader):
         assert_equal(reader.timeseries(order='afc').shape, (3341, 98, 3))
 

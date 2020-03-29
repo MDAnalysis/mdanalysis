@@ -124,7 +124,7 @@ import os
 import numpy as np
 
 import MDAnalysis
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib import mdamath
 
 import warnings
@@ -158,7 +158,7 @@ def mean_abs_dev(a, mean_a=None):
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
-def helanal_trajectory(universe, selection="name CA",
+def helanal_trajectory(universe, select="name CA",
                        begin=None, finish=None,
                        matrix_filename="bending_matrix.dat",
                        origin_pdbfile="origin.pdb",
@@ -175,7 +175,7 @@ def helanal_trajectory(universe, selection="name CA",
     Parameters
     ----------
     universe : Universe
-    selection : str (optional)
+    select : str (optional)
         selection string that selects Calpha atoms [``"name CA"``]
     begin : float (optional)
         start analysing for time (ps) >= *begin*; ``None`` starts from the
@@ -231,7 +231,7 @@ def helanal_trajectory(universe, selection="name CA",
 
     .. versionchanged:: 0.16.0
        Removed the `start` and `end` keywords for selecting residues because this can
-       be accomplished more transparently with `selection`. The first and last resid
+       be accomplished more transparently with `select`. The first and last resid
        are directly obtained from the selection.
 
     .. deprecated:: 0.16.0
@@ -240,6 +240,9 @@ def helanal_trajectory(universe, selection="name CA",
 
     .. versionchanged:: 0.20.0
        ProgressMeter now iterates over the number of frames analysed.
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
     """
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
@@ -248,7 +251,7 @@ def helanal_trajectory(universe, selection="name CA",
         # two atoms
         ref_axis = np.asarray(ref_axis)
 
-    ca = universe.select_atoms(selection)
+    ca = universe.select_atoms(select)
     start, end = ca.resids[[0, -1]]
     trajectory = universe.trajectory
 
@@ -343,14 +346,10 @@ def helanal_trajectory(universe, selection="name CA",
     global_fitted_tilts = []
     global_screw = []
 
-    pm = ProgressMeter(n_frames, verbose=verbose,
-                       format="Frame {step:5d}/{numsteps} "
-                       "  [{percentage:5.1f}%]")
+    for ts in ProgressBar(trajectory[start_frame:end_frame:frame_step],
+                          verbose=verbose, desc="Helix analysis"):
 
-    for index, ts in enumerate(trajectory[start_frame:end_frame:frame_step]):
-        pm.echo(index)
         frame = ts.frame
-
         ca_positions = ca.positions
         twist, bending_angles, height, rnou, origins, local_helix_axes, local_screw_angles = \
             main_loop(ca_positions, ref_axis=ref_axis)
@@ -410,7 +409,6 @@ def helanal_trajectory(universe, selection="name CA",
         for store, tmp in zip(global_bending, bending_angles):
             store.append(tmp)
         #for store,tmp in zip(global_tilt,local_helix_axes): store.append(mdamath.angle(tmp,ref_axis))
-
 
     twist_mean, twist_sd, twist_abdev = stats(global_twist)
     height_mean, height_sd, height_abdev = stats(global_height)
@@ -527,7 +525,7 @@ def stats(some_list):
     return [list_mean, list_sd, list_abdev]
 
 
-def helanal_main(pdbfile, selection="name CA", ref_axis=None):
+def helanal_main(pdbfile, select="name CA", ref_axis=None):
     """Simple HELANAL_ run on a single frame PDB/GRO.
 
     Computed data are returned as a dict and also logged at level INFO to the
@@ -538,7 +536,7 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
     ----------
     pdbfile : str
         filename of the single-frame input file
-    selection : str (optional)
+    select : str (optional)
         selection string, default is "name CA" to select all C-alpha atoms.
     ref_axis : array_like (optional)
         Calculate tilt angle relative to the axis; if ``None`` then ``[0,0,1]``
@@ -569,7 +567,7 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
     writes output to the file ``MDAnalysis.log``::
 
        MDAnalysis.start_logging()
-       data = MDAnalysis.analysis.helanal_main("4ake_A.pdb", selection="name CA and resnum 161-187")
+       data = MDAnalysis.analysis.helanal_main("4ake_A.pdb", select="name CA and resnum 161-187")
 
 
     .. versionchanged:: 0.13.0
@@ -578,12 +576,15 @@ def helanal_main(pdbfile, selection="name CA", ref_axis=None):
 
     .. versionchanged:: 0.16.0
        Removed the `start` and `end` keywords for selecting residues because this can
-       be accomplished more transparently with `selection`.
+       be accomplished more transparently with `select`.
+
+    .. versionchanged:: 1.0.0
+       Changed `selection` keyword to `select`
 
     """
 
     universe = MDAnalysis.Universe(pdbfile)
-    ca = universe.select_atoms(selection)
+    ca = universe.select_atoms(select)
 
     logger.info("Analysing %d/%d residues", ca.n_atoms, universe.atoms.n_residues)
 
