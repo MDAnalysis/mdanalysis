@@ -318,14 +318,15 @@ class PDBParser(TopologyReaderBase):
         # Getting element information from element column.
         if all(elements):
             element_set = set(i.capitalize() for i in set(elements))
-            if all( element in SYMB2Z for element in element_set):
-                attrs.append(Elements(np.array([i.capitalize() for i in elements],
-                                               dtype=object)))
+            if all(element in SYMB2Z for element in element_set):
+                attrs.append(Elements(np.array(
+                             [i.capitalize() for i in elements],
+                             dtype=object)))
             else:
-                warnings.warn("Invalid elements found in the PDB file, "\
+                warnings.warn("Invalid elements found in the PDB file, "
                               "elements attributes will not be populated.")
         else:
-            warnings.warn("Element information is absent or missing for a few "\
+            warnings.warn("Element information is absent or missing for a few "
                           "residues. Elements attributes will not be populated.")
         
         # Residue level stuff from here
