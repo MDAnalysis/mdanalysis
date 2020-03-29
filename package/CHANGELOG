@@ -133,15 +133,15 @@ Changes
     Segment.r1, Universe.s4AKE).  Use select_atoms instead (Issue #1377)
   * Calling Universe() now raises a TypeError advising you to use Universe.empty.
     Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
-  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
-    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
+  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__`
+    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run`
     (Issue #1463)
   * Standardize `select` keyword by removing `selection`, `atomselection`
     and `ref_select` (Issue #2461, Issue #2530)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
-    (Issue #2513). 
+    (Issue #2513).
   * Removes the `nproc` keyword from
     :class:`Waterdynamics.HydrogenBondLifetimes` as the multiprocessing functionality
     did not work in some cases(Issues #2511).
