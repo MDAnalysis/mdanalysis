@@ -317,9 +317,10 @@ class PDBParser(TopologyReaderBase):
 
         # Getting element information from element column.
         if all(elements):
-            elements = [i.capitalize() for i in elements]
-            if all( element in SYMB2Z for element in elements):
-                attrs.append(Elements(elements))
+            element_set = set(i.capitalize() for i in set(elements))
+            if all( element in SYMB2Z for element in element_set):
+                attrs.append(Elements(np.array([i.capitalize() for i in elements],
+                                               dtype=object)))
             else:
                 warnings.warn("Invalid elements found in the PDB file, "\
                               "elements attributes will not be populated.")
