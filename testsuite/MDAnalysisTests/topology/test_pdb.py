@@ -321,7 +321,7 @@ def test_missing_elements_warnings():
     
     assert len(record) == 1
     assert record[0].message.args[0] == "Element information is absent or "\
-        "missing for a few residues. Elements attributes will not be populated."
+        "missing for a few atoms. Elements attributes will not be populated."
 
 
 PDB_wrong_ele = """\
