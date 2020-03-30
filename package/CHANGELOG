@@ -17,7 +17,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
-         wvandertoorn, cbouy
+         wvandertoorn, cbouy, AmeyaHarmalkar
 
   * 0.21.0
 
@@ -78,10 +78,11 @@ Fixes
   * Added missing selection module to leaflet.py (Issue #2612)
 
 Enhancements
+  * Added elements attribute to PDBParser (Issue #2553, #2647)
   * Added new density.DensityAnalysis (Issue #2502)
   * Added ability to use Chemfiles as a trajectory reader backend (PR #1862)
-  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
-    for running HOLE on singular PDB files and class (HoleAnalysis) for 
+  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole)
+    for running HOLE on singular PDB files and class (HoleAnalysis) for
     trajectories (PR #2523)
   * Changed selection wildcards to support multiple wildcards (#2436)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
@@ -112,7 +113,7 @@ Enhancements
   * Added ParmEdParser, ParmEdReader and ParmEdConverter to
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
-  * Added weights_groupselections option in RMSD for mapping custom weights 
+  * Added weights_groupselections option in RMSD for mapping custom weights
     to groupselections (PR #2610, Issue #2429)
   * PersistenceLength.plot() now create new axes if current axes not provided (Issue #2590)
 
