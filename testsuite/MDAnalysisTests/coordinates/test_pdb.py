@@ -977,5 +977,5 @@ def test_cryst_em_warning():
 def test_cryst_em_select():
     #issue 2599
     u = mda.Universe(PDB_CRYOEM_BOX)
-    cur_sele=u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
+    cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
     assert cur_sele.n_atoms == 0
