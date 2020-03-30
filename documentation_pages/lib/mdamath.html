@@ -240,6 +240,10 @@ linalg.norm does.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed rounding-off code to use <cite>np.clip()</cite>. Values lower than
+-1.0 now return <cite>np.pi</cite> instead of <cite>-np.pi</cite></p>
+</div>
 </dd></dl>
 
 <dl class="function">
@@ -567,6 +571,10 @@ atom indices not in <cite>atoms</cite> will be ignored.</li>
 <dd><p>Returns the angle between two vectors in radians</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Moved into lib.mdamath</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed rounding-off code to use <cite>np.clip()</cite>. Values lower than
+-1.0 now return <cite>np.pi</cite> instead of <cite>-np.pi</cite></p>
 </div>
 </dd></dl>
 
