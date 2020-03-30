@@ -222,7 +222,8 @@ numbers up to 99,999.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The parser processes atoms and their names. Masses are guessed and set to 0
-if unknown. Partial charges are not set.</p>
+if unknown. Partial charges are not set. Elements are parsed if they are
+valid.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -249,6 +250,7 @@ if unknown. Partial charges are not set.</p>
 <li>resids</li>
 <li>resnames</li>
 <li>segids</li>
+<li>elements</li>
 </ul>
 </dd>
 <dt>Guesses the following Attributes:</dt>
@@ -263,6 +265,8 @@ if unknown. Partial charges are not set.</p>
 <dl class="last docutils">
 <dt><code class="xref py py-class docutils literal notranslate"></code></dt>
 <dd>Added parsing of Record types</dd>
+<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
+<dd>Added parsing of valid Elements</dd>
 </dl>
 </div>
 <dl class="method">
@@ -543,7 +547,7 @@ is avoided.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>
