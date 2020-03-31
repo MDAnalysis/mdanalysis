@@ -376,7 +376,7 @@ class Contacts(AnalysisBase):
 
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
-                 pbc=False, kwargs=None, **basekwargs):
+                 pbc=True, kwargs=None, **basekwargs):
         """
         Parameters
         ----------
@@ -394,7 +394,7 @@ class Contacts(AnalysisBase):
             with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
         pbc : bool (optional)
             Uses periodic boundary conditions to calculate distances if set to ``True``; the
-             default is ``False``.
+            default is ``True``.
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
@@ -428,6 +428,7 @@ class Contacts(AnalysisBase):
         self.grA = u.select_atoms(select[0])
         self.grB = u.select_atoms(select[1])
         self.pbc = pbc
+        self.box_dim = None
         
         # contacts formed in reference
         self.r0 = []
@@ -436,22 +437,18 @@ class Contacts(AnalysisBase):
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
             if(self.pbc):
-                self.r0.append(distance_array(refA.positions, refB.positions,
-                                                box=refA.universe.dimensions))
-            else:
-                self.r0.append(distance_array(refA.positions, refB.positions))
-            
+                self.box_dim = refA.universe.dimensions
+
+            self.r0.append(distance_array(refA.positions, refB.positions, box=self.box_dim))
             self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
         else:
             for refA, refB in refgroup:
                 if(self.pbc):
-                    self.r0.append(distance_array(refA.positions, refB.positions,
-                                                    box=refA.universe.dimensions))
-                else:
-                    self.r0.append(distance_array(refA.positions, refB.positions))
+                    self.box_dim = refA.universe.dimensions
 
-                self.initial_contacts.append(contact_matrix(self.r0[-1],
-                                                            radius))
+                self.r0.append(distance_array(refA.positions, refB.positions, box=self.box_dim))
+                self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
     def _prepare(self):
         self.timeseries = np.empty((self.n_frames, len(self.r0)+1))
@@ -460,12 +457,8 @@ class Contacts(AnalysisBase):
         self.timeseries[self._frame_index][0] = self._ts.frame
     
         # compute distance array for a frame
-        if(self.pbc):
-            d = distance_array(self.grA.positions, self.grB.positions,
-                                                    box=self._ts.dimensions)
-        else:
-            d = distance_array(self.grA.positions, self.grB.positions)
-
+        d = distance_array(self.grA.positions, self.grB.positions, box=self.box_dim)
+        
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
             # select only the contacts that were formed in the reference state
@@ -479,8 +472,7 @@ def _new_selections(u_orig, selections, frame):
     """create stand alone AGs from selections at frame"""
     u = MDAnalysis.Universe(u_orig.filename, u_orig.trajectory.filename)
     u.trajectory[frame]
-    temp_u = u.copy()
-    return [temp_u.select_atoms(s) for s in selections]
+    return [u.select_atoms(s) for s in selections]
 
 
 def q1q2(u, select='all', radius=4.5):

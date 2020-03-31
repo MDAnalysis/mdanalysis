@@ -303,26 +303,26 @@ class TestContacts(object):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
 
-    def test_distance_box(self):
+    @pytest.mark.parametrize("pbc", (True, False))
+    def test_distance_box(self, pbc):
         u = mda.Universe(TPR, XTC)
-        sel = "(resname ASP GLU)"
-        acidic = u.select_atoms(sel)
-
-        r = contacts.Contacts(u,
-                              select=(sel, sel),
-                              refgroup=(acidic, acidic), pbc=False)
-
-        q = contacts.Contacts(u,
-                              select=(sel, sel),
-                              refgroup=(acidic, acidic),
-                              pbc=True)
-
+        sel_basic = "(resname ARG LYS)"
+        sel_acidic = "(resname ASP GLU)"
+        acidic = u.select_atoms(sel_acidic)
+        basic = u.select_atoms(sel_basic)
+        
+        r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
+                        refgroup=(acidic, basic), radius=6.0, pbc=pbc)
         r.run()
-        q.run()
-        average_contacts_r = np.mean(r.timeseries[:, 1])
-        average_contacts_q = np.mean(q.timeseries[:, 1])
+        if pbc:
+            expected = [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
+                        0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]
+            
+        else:
+            expected = [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
+                        0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822]
 
-        assert not average_contacts_q == average_contacts_r
+        assert_array_almost_equal(r.timeseries[:, 1], expected)
 
 def test_q1q2():
     u = mda.Universe(PSF, DCD)
