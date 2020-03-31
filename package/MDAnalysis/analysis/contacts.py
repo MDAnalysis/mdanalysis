@@ -428,26 +428,27 @@ class Contacts(AnalysisBase):
         self.grA = u.select_atoms(select[0])
         self.grB = u.select_atoms(select[1])
         self.pbc = pbc
-        self.box_dim = None
         
         # contacts formed in reference
         self.r0 = []
         self.initial_contacts = []
 
+        #get dimension of box if pbc set to True
+        if self.pbc:
+            self._get_box = lambda ts: ts.dimensions
+        else:
+            self._get_box = lambda ts: None
+
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
-            if(self.pbc):
-                self.box_dim = refA.universe.dimensions
-
-            self.r0.append(distance_array(refA.positions, refB.positions, box=self.box_dim))
+            self.r0.append(distance_array(refA.positions, refB.positions,
+                                            box=self._get_box(refA.universe)))
             self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
         else:
             for refA, refB in refgroup:
-                if(self.pbc):
-                    self.box_dim = refA.universe.dimensions
-
-                self.r0.append(distance_array(refA.positions, refB.positions, box=self.box_dim))
+                self.r0.append(distance_array(refA.positions, refB.positions,
+                                                box=self._get_box(refA.universe)))
                 self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
     def _prepare(self):
@@ -455,9 +456,10 @@ class Contacts(AnalysisBase):
 
     def _single_frame(self):
         self.timeseries[self._frame_index][0] = self._ts.frame
-    
+        
         # compute distance array for a frame
-        d = distance_array(self.grA.positions, self.grB.positions, box=self.box_dim)
+        d = distance_array(self.grA.positions, self.grB.positions,
+                            box=self._get_box(self._ts))
         
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
