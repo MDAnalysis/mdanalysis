@@ -454,11 +454,11 @@ from MDAnalysis.lib.log import ProgressMeter
 from .utils.autocorrelation import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
+from MDAnalysis.lib.log import ProgressBar
 
 
 class HydrogenBondLifetimes(object):
     r"""Hydrogen bond lifetime analysis
-    fixme - deprecate it
 
     This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
     (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can

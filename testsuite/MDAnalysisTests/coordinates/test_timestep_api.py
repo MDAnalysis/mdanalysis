@@ -43,6 +43,8 @@ from MDAnalysisTests.coordinates.base import BaseTimestepTest, assert_timestep_e
 import pytest
 
 # Can add in custom tests for a given Timestep here!
+
+
 class TestBaseTimestep(BaseTimestepTest):
     @pytest.mark.parametrize('otherTS', [
         mda.coordinates.TRJ.Timestep,
@@ -63,27 +65,6 @@ class TestBaseTimestep(BaseTimestepTest):
 # These tests are all included in BaseReaderTest
 # Once Readers use that TestClass, delete this one
 
-@pytest.mark.parametrize("topology, trajectory, trajectory_format, topology_format", (
-    (XYZ_five, INPCRD, None, None),
-    (PSF, DCD, None, None),
-    (DLP_CONFIG, None, 'CONFIG', None),
-    (DLP_HISTORY, None,'HISTORY', None),
-    (DMS, None, None, None),
-    (GRO, None, None, None),
-    (XYZ_five, INPCRD, None, None),
-    (LAMMPSdata, None, None, None),
-    (mol2_molecules, None, None, None),
-    (PDB_small, None, None, None),
-    (PQR, None, None, None),
-    (PDBQT_input, None, None, None),
-    (PRM, TRJ, None, None),
-    (GRO, XTC, None, None),
-    (TRZ_psf, TRZ, None, None),
-    (GRO, TRR, None, None),
-    (GMS_ASYMOPT, GMS_ASYMOPT, 'GMS', 'GMS'),
-    (LAMMPSdata2, LAMMPSdcd2,'LAMMPS','DATA'),
-    (PRMncdf, NCDF, None, None),
-))
 class TestBaseTimestepInterface(object):
     """Test the Timesteps created by Readers
 
@@ -94,8 +75,29 @@ class TestBaseTimestepInterface(object):
 
     See Issue #250 for discussion
     """
-    @pytest.fixture()
-    def universe(self, topology, trajectory, trajectory_format, topology_format):
+    @pytest.fixture(params=(
+        (XYZ_five, INPCRD, None, None),
+        (PSF, DCD, None, None),
+        (DLP_CONFIG, None, 'CONFIG', None),
+        (DLP_HISTORY, None, 'HISTORY', None),
+        (DMS, None, None, None),
+        (GRO, None, None, None),
+        (XYZ_five, INPCRD, None, None),
+        (LAMMPSdata, None, None, None),
+        (mol2_molecules, None, None, None),
+        (PDB_small, None, None, None),
+        (PQR, None, None, None),
+        (PDBQT_input, None, None, None),
+        (PRM, TRJ, None, None),
+        (GRO, XTC, None, None),
+        (TRZ_psf, TRZ, None, None),
+        (GRO, TRR, None, None),
+        (GMS_ASYMOPT, GMS_ASYMOPT, 'GMS', 'GMS'),
+        (LAMMPSdata2, LAMMPSdcd2, 'LAMMPS', 'DATA'),
+        (PRMncdf, NCDF, None, None),
+    ))
+    def universe(self, request):
+        topology, trajectory, trajectory_format, topology_format = request.param
         if trajectory_format is not None and topology_format is not None:
             return mda.Universe(topology, trajectory, format=trajectory_format,
                                 topology_format=topology_format)

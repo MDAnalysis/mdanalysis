@@ -33,11 +33,12 @@ import six
 from six.moves import range, zip
 import inspect
 import logging
+import itertools
 
 import numpy as np
 from MDAnalysis import coordinates
 from MDAnalysis.core.groups import AtomGroup
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
 logger = logging.getLogger(__name__)
 
@@ -99,6 +100,7 @@ class AnalysisBase(object):
         verbose : bool, optional
            Turn on more logging and debugging, default ``False``
 
+
         .. versionchanged:: 1.0.0
            Support for setting ``start``, ``stop``, and ``step`` has been
            removed. These should now be directly passed to
@@ -129,13 +131,6 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.n_frames = len(range(start, stop, step))
-        interval = int(self.n_frames // 100)
-        if interval == 0:
-            interval = 1
-
-        verbose = getattr(self, '_verbose', False)
-        self._pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                 interval=interval, verbose=verbose)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -176,13 +171,13 @@ class AnalysisBase(object):
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
         self._prepare()
-        for i, ts in enumerate(
-                self._trajectory[self.start:self.stop:self.step]):
+        for i, ts in enumerate(ProgressBar(
+                self._trajectory[self.start:self.stop:self.step],
+                verbose=verbose)):
             self._frame_index = i
             self._ts = ts
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
-            self._pm.echo(self._frame_index)
         logger.info("Finishing up")
         self._conclude()
         return self
@@ -231,18 +226,15 @@ class AnalysisFromFunction(AnalysisBase):
         """
         if (trajectory is not None) and (not isinstance(
                 trajectory, coordinates.base.ProtoReader)):
-            args = args + (trajectory,)
+            args = (trajectory,) + args
             trajectory = None
 
         if trajectory is None:
-            for arg in args:
+            # all possible places to find trajectory
+            for arg in itertools.chain(args, six.itervalues(kwargs)):
                 if isinstance(arg, AtomGroup):
                     trajectory = arg.universe.trajectory
-            # when we still didn't find anything
-            if trajectory is None:
-                for arg in six.itervalues(kwargs):
-                    if isinstance(arg, AtomGroup):
-                        trajectory = arg.universe.trajectory
+                    break
 
         if trajectory is None:
             raise ValueError("Couldn't find a trajectory")

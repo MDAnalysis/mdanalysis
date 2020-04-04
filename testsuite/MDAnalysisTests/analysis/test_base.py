@@ -27,12 +27,12 @@ from six.moves import range
 
 import numpy as np
 
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import base
 
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, TPR, XTC
 from MDAnalysisTests.util import no_deprecated_call
 
 
@@ -93,6 +93,22 @@ def test_step(u):
 def test_verbose(u):
     a = FrameAnalysis(u.trajectory, verbose=True)
     assert a._verbose
+
+
+def test_verbose_progressbar(u, capsys):
+    an = FrameAnalysis(u.trajectory).run()
+    out, err = capsys.readouterr()
+    expected = ''
+    actual = err.strip().split('\r')[-1]
+    assert actual == expected
+
+
+def test_verbose_progressbar_run(u, capsys):
+    an = FrameAnalysis(u.trajectory).run(verbose=True)
+    out, err = capsys.readouterr()
+    expected = u'100%|██████████| 98/98 [00:00<00:00, 8799.49it/s]'
+    actual = err.strip().split('\r')[-1]
+    assert actual[:24] == expected[:24]
 
 
 def test_incomplete_defined_analysis(u):
@@ -160,6 +176,21 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
 
     for ana in (ana1, ana2, ana3):
         assert_equal(results, ana.results)
+
+
+def mass_xyz(atomgroup1, atomgroup2, masses):
+        return atomgroup1.positions * masses
+
+def test_AnalysisFromFunction_args_content(u):
+    protein = u.select_atoms('protein')
+    masses = protein.masses.reshape(-1, 1)
+    another = mda.Universe(TPR, XTC).select_atoms("protein")
+    ans = base.AnalysisFromFunction(mass_xyz, protein, another, masses)
+    assert len(ans.args) == 3
+    result = np.sum(ans.run().results)
+    assert_almost_equal(result, -317054.67757345125, decimal=6)
+    assert (ans.args[0] is protein) and (ans.args[1] is another)
+    assert  ans._trajectory is protein.universe.trajectory
 
 
 def test_analysis_class():

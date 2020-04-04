@@ -111,7 +111,7 @@ import scipy.integrate
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
 from .base import AnalysisBase
 
@@ -161,6 +161,10 @@ class PCA(AnalysisBase):
     Notes
     -----
     Computation can be speed up by supplying a precalculated mean structure
+
+    .. versionchanged:: 1.0.0
+       align=True now correctly aligns the trajectory and computes the correct
+       means and covariance matrix
 
     .. versionchanged:: 0.19.0
        The start frame is used when performing selections and calculating
@@ -226,25 +230,17 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            interval = int(self.n_frames // 100)
-            interval = interval if interval > 0 else 1
-            format = ("Mean Calculation Step"
-                      "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]")
-            mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                    interval=interval, verbose=self._verbose,
-                                    format=format)
-            for i, ts in enumerate(self._u.trajectory[self.start:self.stop:
-                                                      self.step]):
+            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+                                  verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
-                    mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+                    mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
                                                      self._ref_atom_positions,
                                                      self._atoms,
                                                      mobile_com=mobile_cog,
                                                      ref_com=self._ref_cog)
-                else:
-                    self.mean += self._atoms.positions.ravel()
-                mean_pm.echo(i)
+
+                self.mean += self._atoms.positions.ravel()
             self.mean /= self.n_frames
 
         self.mean_atoms = self._atoms
@@ -253,7 +249,7 @@ class PCA(AnalysisBase):
     def _single_frame(self):
         if self.align:
             mobile_cog = self._atoms.center_of_geometry()
-            mobile_atoms, old_rmsd = _fit_to(self._atoms.positions,
+            mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
                                              self._ref_atom_positions,
                                              self._atoms,
                                              mobile_com=mobile_cog,
