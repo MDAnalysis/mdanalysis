@@ -271,6 +271,9 @@ def rotation_matrix(a, b, weights=None):
     if a.shape != b.shape:
         raise ValueError("'a' and 'b' must have same shape")
 
+    if np.allclose(a, b) and weights is None:
+        return np.eye(3, dtype=np.float64), 0.0
+
     N = b.shape[0]
 
     if weights is not None:

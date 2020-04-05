@@ -154,11 +154,11 @@ class TestGetMatchingAtoms(object):
     def test_subselection_alignto(self, universe, reference):
         sub_string = 'resname ALA and name CA'
         rmsd = align.alignto(universe, reference, subselection=sub_string)
-        assert_almost_equal(rmsd[1], 5.27e-7, decimal=9)
+        assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
         sub_ag = universe.select_atoms('resname ALA and name CA')
         rmsd = align.alignto(universe, reference, subselection=sub_ag)
-        assert_almost_equal(rmsd[1], 5.27e-7, decimal=9)
+        assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
         with pytest.raises(TypeError):
             random_no = 9821
