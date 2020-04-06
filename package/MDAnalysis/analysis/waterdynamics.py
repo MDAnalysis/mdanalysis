@@ -450,7 +450,6 @@ import logging
 import warnings
 import numpy as np
 import MDAnalysis.analysis.hbonds
-from MDAnalysis.lib.log import ProgressMeter
 from .utils.autocorrelation import autocorrelation, correct_intermittency
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')

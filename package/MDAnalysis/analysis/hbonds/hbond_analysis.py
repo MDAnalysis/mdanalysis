@@ -337,8 +337,6 @@ from MDAnalysis.lib import distances
 
 from ..utils.autocorrelation import autocorrelation, correct_intermittency
 
-from ..utils.autocorrelation import autocorrelation, correct_intermittency
-
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
 
