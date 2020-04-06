@@ -35,7 +35,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     Parameters
     ----------
     list_of_sets : list
-      List of sets,
+      List of sets
     tau_max : int
       The last tau (inclusive) for which to carry out autocorrelation.
     window_step : int, optional
