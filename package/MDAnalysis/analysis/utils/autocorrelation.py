@@ -27,7 +27,7 @@ from copy import deepcopy
 
 
 def autocorrelation(list_of_sets, tau_max, window_step=1):
-    r"""The descrete implementation of the autocorrelation function.
+    r"""The discrete implementation of the autocorrelation function.
 
     .. math::
        C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
