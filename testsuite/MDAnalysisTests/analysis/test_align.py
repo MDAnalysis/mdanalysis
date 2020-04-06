@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, division, print_function
+from contextlib import nullcontext as does_not_raise
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
@@ -151,15 +152,14 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
-    @pytest.mark.parametrize('sub_string',('resname ALA and name CA', 1234,
-    mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA')))
-    def test_subselection_alignto(self, universe, reference, sub_string):
-        
-        if isinstance(sub_string, int):
-            with pytest.raises(TypeError):
-                align.alignto(universe, reference, subselection=sub_string)
+    @pytest.mark.parametrize('sub_string, expectation', [
+        ('resname ALA and name CA', does_not_raise()),
+        (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'), does_not_raise()),
+        (1234, pytest.raises(TypeError)),
+    ])
+    def test_subselection_alignto(self, universe, reference, sub_string, expectation):
 
-        else:
+        with expectation:
             rmsd = align.alignto(universe, reference, subselection=sub_string)
             assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
