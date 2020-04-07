@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, division, print_function
-from contextlib import ExitStack as does_not_raise
+from contextlib import contextmanager
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
@@ -39,6 +39,10 @@ from numpy.testing import (
     assert_array_almost_equal,
 )
 
+#Function for Parametrizing conditional raising
+@contextmanager
+def does_not_raise():
+    yield
 
 class TestRotationMatrix(object):
     a = np.array([[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]])
@@ -152,15 +156,15 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
-    @pytest.mark.parametrize('sub_string, expectation', [
+    @pytest.mark.parametrize('subselection, expectation', [
         ('resname ALA and name CA', does_not_raise()),
         (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'), does_not_raise()),
         (1234, pytest.raises(TypeError)),
     ])
-    def test_subselection_alignto(self, universe, reference, sub_string, expectation):
+    def test_subselection_alignto(self, universe, reference, subselection, expectation):
 
         with expectation:
-            rmsd = align.alignto(universe, reference, subselection=sub_string)
+            rmsd = align.alignto(universe, reference, subselection=subselection)
             assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
 class TestAlign(object):
