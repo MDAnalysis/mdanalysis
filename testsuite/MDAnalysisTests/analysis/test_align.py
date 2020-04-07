@@ -167,6 +167,19 @@ class TestGetMatchingAtoms(object):
             rmsd = align.alignto(universe, reference, subselection=subselection)
             assert_almost_equal(rmsd[1], 0.0, decimal=9)
 
+    def test_no_atom_masses(self, universe):
+        #if no masses are present
+        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        with pytest.warns(SelectionWarning):
+            align.get_matching_atoms(u.atoms, u.atoms)
+
+    def test_one_universe_has_masses(self, universe):
+        u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        ref = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
+        ref.add_TopologyAttr('masses')
+        with pytest.warns(SelectionWarning):
+            align.get_matching_atoms(u.atoms, ref.atoms)
+
 class TestAlign(object):
     @staticmethod
     @pytest.fixture()

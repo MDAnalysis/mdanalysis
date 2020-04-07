@@ -924,7 +924,7 @@ def get_ext(filename):
     ext : str
     """
     root, ext = os.path.splitext(filename)
-    
+
     if ext.startswith(os.extsep):
         ext = ext[1:]
 
@@ -1369,7 +1369,7 @@ def get_weights(atoms, weights):
                             "the atoms ({1})".format(
                                 len(weights), len(atoms)))
     elif weights is not None:
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
+        raise ValueError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup.")
 
     return weights
@@ -1581,7 +1581,7 @@ def unique_rows(arr, return_index=False):
     Examples
     --------
     Remove dupicate rows from an array:
-    
+
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b

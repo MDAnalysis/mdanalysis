@@ -273,13 +273,13 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match "
                             "between applied mass and universe.atoms.masses")
 
-    def test_rmsd_scalar_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+    def test_rmsd_scalar_weights_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=42)
 
-    def test_rmsd_string_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+    def test_rmsd_string_weights_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights="Jabberwock")
 

@@ -221,6 +221,13 @@ class TestGeometryFunctions(object):
         assert_equal(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
 
+    def test_angle_lower_clip(self):
+        a = np.array([0.1, 0, 0.2])
+        x = np.dot(a**0.5,-(a**0.5)) / (mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5)))
+        assert x < -1.0
+        assert mdamath.angle(a, -(a)) == np.pi
+        assert mdamath.angle(a**0.5, -(a**0.5)) == np.pi
+
     def test_stp(self):
         assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0
         # add more non-trivial tests
@@ -857,8 +864,8 @@ def test_check_weights_ok(atoms, weights, result):
                            "geometry",
                            np.array(1.0),
                           ])
-def test_check_weights_raises_TypeError(atoms, weights):
-    with pytest.raises(TypeError):
+def test_check_weights_raises_ValueError(atoms, weights):
+    with pytest.raises(ValueError):
         util.get_weights(atoms, weights)
 
 @pytest.mark.parametrize('weights',
@@ -931,7 +938,7 @@ class TestGuessFormat(object):
 
         assert a == 'file'
         assert b == extention.lower()
-    
+
     @pytest.mark.parametrize('extention',
                              [format_tuple[0].upper() for format_tuple in
                               formats] +
@@ -1109,7 +1116,7 @@ class TestGetWriterFor(object):
     def test_extension_empty_string(self):
         """
         Test format=''.
-        
+
         Raises TypeError because format can be only None or
         valid formats.
         """
@@ -1127,7 +1134,7 @@ class TestGetWriterFor(object):
         with pytest.raises(TypeError):
             mda.coordinates.core.get_writer_for(filename="fail_me",
                                                 format='UNK')
-    
+
     def test_compressed_extension(self):
         for ext in ('.gz', '.bz2'):
             fn = 'test.gro' + ext
