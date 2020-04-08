@@ -303,8 +303,13 @@ class TestContacts(object):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
 
-    @pytest.mark.parametrize("pbc", (True, False))
-    def test_distance_box(self, pbc):
+    @pytest.mark.parametrize("pbc,expected", [
+    (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
+            0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]),
+    (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
+             0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
+    ])
+    def test_distance_box(self, pbc, expected):
         u = mda.Universe(TPR, XTC)
         sel_basic = "(resname ARG LYS)"
         sel_acidic = "(resname ASP GLU)"
@@ -314,14 +319,6 @@ class TestContacts(object):
         r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
                         refgroup=(acidic, basic), radius=6.0, pbc=pbc)
         r.run()
-        if pbc:
-            expected = [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
-                        0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]
-            
-        else:
-            expected = [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
-                        0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822]
-
         assert_array_almost_equal(r.timeseries[:, 1], expected)
 
 def test_q1q2():

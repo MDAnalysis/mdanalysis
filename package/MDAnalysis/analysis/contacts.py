@@ -373,6 +373,8 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. Use ``np.savetxt()`` on
        :attr:`Contacts.timeseries` instead.
+    .. versionchanged:: 2.0.0
+        added ``pbc`` attribute to calculate distances using PBC.
 
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
