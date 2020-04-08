@@ -260,6 +260,10 @@ class AroundSelection(DistanceSelection):
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
+        # all "around" selections with a zero
+        # distance will produce an empty atomgroup
+        if self.cutoff == 0.0:
+            return sys[0:0]
 
         if not sys or not sel:
             return sys[[]]

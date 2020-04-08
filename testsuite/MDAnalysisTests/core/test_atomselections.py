@@ -178,13 +178,14 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms('not backbone')
         assert_equal(len(sel), 2486)
 
-    @pytest.mark.parametrize('selstr', [
-        'around 4.0 bynum 1943', 
-        'around 4.0 index 1942'
+    @pytest.mark.parametrize('selstr, size', [
+        ('around 4.0 bynum 1943', 32),
+        ('around 4.0 index 1942', 32),
+        ('around 0.0 resid 1', 0),  # gh-2656
     ])
-    def test_around(self, universe, selstr):
+    def test_around(self, universe, selstr, size):
         sel = universe.select_atoms(selstr)
-        assert_equal(len(sel), 32)
+        assert_equal(len(sel), size)
 
     @pytest.mark.parametrize('selstr', [
         'sphlayer 4.0 6.0 bynum 1281',
