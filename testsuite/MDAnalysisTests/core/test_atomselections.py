@@ -187,6 +187,30 @@ class TestSelectionsCHARMM(object):
         sel = universe.select_atoms(selstr)
         assert_equal(len(sel), size)
 
+    @pytest.mark.parametrize('selstr, n_dup, size', [
+        # no duplicate atom positions means no matches
+        ('around 0.0 bynum 1', 0, 0),
+        # 1 duplicate atom position means 1 match
+        ('around 0.0 bynum 1', 1, 1),
+        # 5 duplicate atom positions means 5 matches
+        ('around 0.0 bynum 1', 5, 5),
+        # the first residue will encompass the duplications
+        # so no non-self entities are selected
+        ('around 0.0 resid 1', 5, 0),
+    ])
+    def test_around_degenerate(self, universe, selstr, n_dup, size):
+        # for cases with duplicate (spatially identical)
+        # atoms separated by 0.0 distance
+        new_ag = universe.atoms
+        reference_pos = new_ag[0].position
+        # produce atoms with unique ids but
+        # the same position
+        for i in range(n_dup):
+            new_ag[i + 1].position = reference_pos
+
+        sel = new_ag.select_atoms(selstr)
+        assert_equal(len(sel), size)
+
     @pytest.mark.parametrize('selstr', [
         'sphlayer 4.0 6.0 bynum 1281',
         'sphlayer 4.0 6.0 index 1280'

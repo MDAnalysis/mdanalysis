@@ -49,6 +49,9 @@ import functools
 import warnings
 
 import numpy as np
+import scipy
+import scipy.spatial
+from scipy.spatial.distance import cdist
 
 
 from ..lib.util import unique_int_1d
@@ -260,10 +263,15 @@ class AroundSelection(DistanceSelection):
         sel = self.sel.apply(group)
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
-        # all "around" selections with a zero
-        # distance will produce an empty atomgroup
+
         if self.cutoff == 0.0:
-            return sys[0:0]
+            # check for entries with the same position
+            result = cdist(sel.positions, sys.positions)
+            indices = np.where(result == 0)[1]
+            if result.size > 0:
+                return sys[np.asarray(indices, dtype=np.int64)].unique
+            else:
+                return sys[0:0]
 
         if not sys or not sel:
             return sys[[]]
