@@ -87,6 +87,8 @@ import logging
 import re
 import warnings
 
+from tqdm.auto import tqdm
+
 from .. import version
 
 
@@ -223,7 +225,11 @@ def _guess_string_format(template):
 
 
 class ProgressMeter(object):
-    r"""Simple progress meter
+    r"""Simple progress meter (Deprecated)
+
+    ..Warning:
+    This class is deprecated and will be removed in version 2.0.
+    Please use :class:`MDAnalysis.lib.log.ProgressBar` instead.
 
     The :class:`ProgressMeter` class can be used to show running progress such
     as frames processed or percentage done to give the user feedback on the
@@ -323,11 +329,20 @@ class ProgressMeter(object):
     .. deprecated:: 0.16
        Keyword argument *quiet* is deprecated in favor of *verbose*.
 
+    .. deprecated:: 1.0
+       This class is deprecated in favor of *ProgressBar*.
+
     """
 
     def __init__(self, numsteps, format=None, interval=10, offset=1,
                  verbose=True, dynamic=True,
                  format_handling='auto'):
+        warnings.warn(
+            "This class is deprecated as of MDAnalysis version 1.0. "
+            "It will be removed in MDAnalysis version 2.0. "
+            "Please use MDAnalysis.lib.log.ProgressBar instead.",
+            category=DeprecationWarning
+            )
         self.numsteps = numsteps
         self.interval = int(interval)
         self.offset = int(offset)
@@ -394,3 +409,15 @@ class ProgressMeter(object):
             return
         echo(self.format_handler(format, vars(self)),
              replace=self.dynamic, newline=newline)
+
+
+class ProgressBar(tqdm):
+    def __init__(self, *args, **kwargs):
+        verbose = kwargs.pop('verbose', True)
+        # disable: Whether to disable the entire progressbar wrapper [default: False].
+        # If set to None, disable on non-TTY.
+        # disable should be the opposite of verbose unless it's None
+        disable = verbose if verbose is None else not verbose
+        # disable should take precedence over verbose if both are set
+        kwargs['disable'] = kwargs.pop('disable', disable)
+        super(ProgressBar, self).__init__(*args, **kwargs)
