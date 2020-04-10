@@ -1471,32 +1471,6 @@
         <span class="n">rsize_mismatches</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">rsize1</span> <span class="o">-</span> <span class="n">rsize2</span><span class="p">)</span>
         <span class="n">mismatch_mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">rsize_mismatches</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">strict</span><span class="p">:</span>
-                <span class="c1"># diagnostics</span>
-                <span class="n">mismatch_resindex</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ag1</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)[</span><span class="n">mismatch_mask</span><span class="p">]</span>
-
-                <span class="k">def</span> <span class="nf">log_mismatch</span><span class="p">(</span>
-                        <span class="n">number</span><span class="p">,</span>
-                        <span class="n">ag</span><span class="p">,</span>
-                        <span class="n">rsize</span><span class="p">,</span>
-                        <span class="n">mismatch_resindex</span><span class="o">=</span><span class="n">mismatch_resindex</span><span class="p">):</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Offending residues: group </span><span class="si">{0}</span><span class="s2">: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">number</span><span class="p">,</span>
-                        <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">{0[0]}{0[1]}</span><span class="s2"> (</span><span class="si">{0[2]}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span>
-                                   <span class="nb">zip</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">resnames</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">],</span>
-                                       <span class="n">ag</span><span class="o">.</span><span class="n">resids</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">],</span>
-                                       <span class="n">rsize</span><span class="p">[</span><span class="n">mismatch_resindex</span><span class="p">]</span>
-                                       <span class="p">)])))</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Found </span><span class="si">{0}</span><span class="s2"> residues with non-matching numbers of atoms (#)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">mismatch_mask</span><span class="o">.</span><span class="n">sum</span><span class="p">()))</span>
-                <span class="n">log_mismatch</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ag1</span><span class="p">,</span> <span class="n">rsize1</span><span class="p">)</span>
-                <span class="n">log_mismatch</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">ag2</span><span class="p">,</span> <span class="n">rsize2</span><span class="p">)</span>
-
-                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Different number of atoms in some residues. &quot;</span>
-                          <span class="s2">&quot;(Use strict=False to attempt using matching atoms only.)&quot;</span><span class="p">)</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-                <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
-
             <span class="k">def</span> <span class="nf">get_atoms_byres</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">match_mask</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mismatch_mask</span><span class="p">)):</span>
                 <span class="c1"># not pretty... but need to do things on a per-atom basis in</span>
                 <span class="c1"># order to preserve original selection</span>
