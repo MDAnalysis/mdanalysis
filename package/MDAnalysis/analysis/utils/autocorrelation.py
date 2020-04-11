@@ -27,28 +27,62 @@ from copy import deepcopy
 
 
 def autocorrelation(list_of_sets, tau_max, window_step=1):
-    r"""The discrete implementation of the autocorrelation function.
+    r"""Implementation of a discrete autocorrelation function.
+
+    The autocorrelation of a property $x$ from a time $t=t_0$ to $t=t_0 + \tau$
+    is given by:
+    .. math::
+        C(\tau) = \langle \frac{ x(t_0)x(t_0 +\tau) }{ x(t_0)x(t_0) } \rangle
+
+    where $x$ may represent any property of a particle, such as velocity or
+    potential energy.
+
+    The survival probability, $S(\tau)$, is a special case of the time
+    autocorrelation function in which the property under consideration can
+    be encoded with indicator variables, $0$ and $1$, to represent the binary
+    state of said property. For instance, in calculating the survival probability
+    of water molecules within $5 \rm \AA$, each water molecule will either be
+    within this cutoff range ($1$) or not ($0$). The total number of water
+    molecules within the cutoff at time $t_0$ will be given by $N(t_0)$.
+
+    The survival probability of a property of a set of particles is
+    given by:
 
     .. math::
-       C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
+        S(\tau) =  \langle \frac{ N(t_0, t_0 + \tau )} { N(t_0) }\rangle
+
+    where $N(t0)$ is the number of particles at time $t_0$ for which the feature
+    is observed, and $N(t0, t_0 + \tau)$ is the number of particles for which
+    this feature is present at every frame from $t_0$ to $N(t0, t_0 + \tau)$.
+    The angular brackets represent an average over all time origins, $t_0$.
+
+    See Araya-Secchi et al., 2014, (https://doi.org/10.1016/j.bpj.2014.05.037)
+    for a description survival probability.
 
     Parameters
     ----------
     list_of_sets : list
-      List of sets
+      List of sets. Each set corresponds to data from a single frame. Each element in a set
+      may be, for example, an atom id or a tuple of atoms ids. In the case of calculating the
+      survival probability of water around a protein, these atom ids in a given set will be
+      those of the atoms which are within a cutoff distance of the protein at a given frame.
     tau_max : int
-      The last tau (inclusive) for which to carry out autocorrelation.
+      The last tau (inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,
+      the survival probability will be calculated over 20 frames.
     window_step : int, optional
-      The step for the t0 to perform autocorrelation (without the overlap). Default is 1.
+      The step size for t0 to perform autocorrelation. Ideally, window_step will be larger than
+       tau_max to ensure independence of each window for which the calculation is performed.
+       Default is 1.
 
     Returns
     --------
     tau_timeseries : list of int
-        the tau for which the autocorrelation was calculated
+        the values of tau for which the autocorrelation was calculated
     timeseries : list of int
         the autocorelation values for each of the tau values
     timeseries_data : list of list of int
-        the raw data from which the autocorrelation is computed. The time dependant evolution can be investigated.
+        the raw data from which the autocorrelation is computed, i.e $S(\tau)$ at each window.
+        This allows the time dependant evolution of $S(\tau)$ to be investigated.
 
     .. versionadded:: 0.19.2
     """
@@ -88,13 +122,18 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
 
 
 def correct_intermittency(list_of_sets, intermittency):
-    """
+    """Preprocess data to allow intermittent behaviour prior to calling `autocorrelation`.
+
     Process consecutive intermittency with a single pass over the data. The returned data can be used as input to
-    the function `autocorrelation` in order to calculate the discrete autocorrelation function with a given
+    the function `autocorrelation` in order to calculate the survival probability with a given
     intermittency.
 
-    If an atom is absent for a number of frames equal or smaller than the parameter `intermittency`, then correct
-    the data and remove the absence. e.g 7,A,A,7 with `intermittency=2` will be replaced by 7,7,7,7, where A=absence.
+    For example, if an atom is absent for a number of frames equal or smaller than the parameter `intermittency`,
+    then correct the data and remove the absence.
+    e.g 7,A,A,7 with `intermittency=2` will be replaced by 7,7,7,7, where A=absence.
+
+    See Gowers and Carbonne, 2015, (DOI:10.1063.1.4922445) for a description of
+    intermittency in the calculation of hydrogen bond lifetimes.
 
     # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)
 
