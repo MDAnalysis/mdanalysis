@@ -134,9 +134,11 @@ class PCA(AnalysisBase):
 
     Attributes
     ----------
-    p_components: array, (n_components, n_atoms * 3)
+    p_components: array, (n_atoms * 3, n_components)
         The principal components of the feature space,
         representing the directions of maximum variance in the data.
+        The column vector p_components[:, i] is the eigenvector
+        corresponding to the variance[i].
     variance : array (n_components, )
         The raw variance explained by each eigenvector of the covariance
         matrix.
@@ -164,6 +166,7 @@ class PCA(AnalysisBase):
     Computation can be speed up by supplying a precalculated mean structure
 
     .. versionchanged:: 1.0.0
+       n_components now limits the correct axis of p_components
        align=True now correctly aligns the trajectory and computes the correct
        means and covariance matrix
 
@@ -202,7 +205,7 @@ class PCA(AnalysisBase):
         self.align = align
 
         self._calculated = False
-        self.n_components = n_components
+        self._n_components = n_components
         self._select = select
         self._mean = mean
 
@@ -266,12 +269,23 @@ class PCA(AnalysisBase):
         self.cov /= self.n_frames - 1
         e_vals, e_vects = np.linalg.eig(self.cov)
         sort_idx = np.argsort(e_vals)[::-1]
-        self.variance = e_vals[sort_idx]
-        self.variance = self.variance[:self.n_components]
-        self.p_components = e_vects[:self.n_components, sort_idx]
-        self.cumulated_variance = (np.cumsum(self.variance) /
-                                   np.sum(self.variance))
+        self._variance = e_vals[sort_idx]
+        self._p_components = e_vects[:, sort_idx]
         self._calculated = True
+        self.n_components = self._n_components
+
+    @property
+    def n_components(self):
+        return self._n_components
+
+    @n_components.setter
+    def n_components(self, n):
+        if self._calculated:
+            self.variance = self._variance[:n]
+            self.cumulated_variance = (np.cumsum(self._variance) /
+                                       np.sum(self._variance))[:n]
+            self.p_components = self._p_components[:, :n]
+        self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
                   step=None):
@@ -297,7 +311,7 @@ class PCA(AnalysisBase):
 
         Returns
         -------
-        pca_space : array, shape (number of frames, number of components)
+        pca_space : array, shape (n_frames, n_components)
 
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
@@ -328,7 +342,7 @@ class PCA(AnalysisBase):
 
         for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel() - self.mean
-            dot[i] = np.dot(xyz, self.p_components[:, :n_components])
+            dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
         return dot
 
@@ -369,7 +383,7 @@ class PCA(AnalysisBase):
             else:
                 raise ValueError('other must be another PCA class')
         
-        return rmsip(a, b, n_components=n_components)
+        return rmsip(a.T, b.T, n_components=n_components)
 
     def cumulative_overlap(self, other, i=0, n_components=None):
         """Compute the cumulative overlap of a vector in a subspace.
@@ -413,7 +427,7 @@ class PCA(AnalysisBase):
             else:
                 raise ValueError('other must be another PCA class')
         
-        return cumulative_overlap(a, b, i=i, n_components=n_components)
+        return cumulative_overlap(a.T, b.T, i=i, n_components=n_components)
 
 
 def cosine_content(pca_space, i):

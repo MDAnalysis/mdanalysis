@@ -22,6 +22,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * n_components correctly selects PCA components (Issue #2623)
   * Checks for cryo-em 1 A^3 default CRYST1 record, 
     disabling setting of box dimensions if found (Issue #2599)
   * mdamath.angles now returns np.pi instead of -np.pi in cases of
