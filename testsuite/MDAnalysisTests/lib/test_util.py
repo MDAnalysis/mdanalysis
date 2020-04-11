@@ -29,6 +29,8 @@ import os
 import warnings
 import re
 import textwrap
+from mock import Mock, patch
+import sys
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -48,6 +50,19 @@ from MDAnalysisTests.datafiles import (
     Make_Whole, TPR, GRO, fullerene, two_water_gro,
 )
 
+def test_absence_cutil():
+    with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':None}):
+        with pytest.raises(ImportError):
+            import MDAnalysis.lib._cutil
+
+def test_presence_cutil():
+    mock = Mock()
+    with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':mock}):
+        try:
+            import MDAnalysis.lib._cutil
+        except ImportError:
+            pytest.fail(msg='''MDAnalysis.lib._cutil should not raise
+                         an ImportError if cutil is available.''')
 
 def convert_aa_code_long_data():
     aa = [
