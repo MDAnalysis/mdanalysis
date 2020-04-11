@@ -281,6 +281,8 @@ class PCA(AnalysisBase):
     @n_components.setter
     def n_components(self, n):
         if self._calculated:
+            if n is None:
+                n = len(self._variance)
             self.variance = self._variance[:n]
             self.cumulated_variance = (np.cumsum(self._variance) /
                                        np.sum(self._variance))[:n]
@@ -379,10 +381,11 @@ class PCA(AnalysisBase):
             b = other.p_components
         except AttributeError:
             if isinstance(other, type(self)):
-                raise ValueError('Call run() on the other PCA before using rmsip')
+                raise ValueError(
+                    'Call run() on the other PCA before using rmsip')
             else:
                 raise ValueError('other must be another PCA class')
-        
+
         return rmsip(a.T, b.T, n_components=n_components)
 
     def cumulative_overlap(self, other, i=0, n_components=None):
@@ -417,16 +420,18 @@ class PCA(AnalysisBase):
         try:
             a = self.p_components
         except AttributeError:
-            raise ValueError('Call run() on the PCA before using cumulative_overlap')
+            raise ValueError(
+                'Call run() on the PCA before using cumulative_overlap')
 
         try:
             b = other.p_components
         except AttributeError:
             if isinstance(other, type(self)):
-                raise ValueError('Call run() on the other PCA before using cumulative_overlap')
+                raise ValueError(
+                    'Call run() on the other PCA before using cumulative_overlap')
             else:
                 raise ValueError('other must be another PCA class')
-        
+
         return cumulative_overlap(a.T, b.T, i=i, n_components=n_components)
 
 
@@ -463,6 +468,7 @@ def cosine_content(pca_space, i):
     cos = np.cos(np.pi * t * (i + 1) / T)
     return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
             scipy.integrate.simps(pca_space[:, i] ** 2))
+
 
 def rmsip(a, b, n_components=None):
     """Compute the root mean square inner product between subspaces.
@@ -504,7 +510,7 @@ def rmsip(a, b, n_components=None):
         n_a = len(a)
     if n_b is None:
         n_b = len(b)
-    
+
     sip = np.matmul(a[:n_a], b[:n_b].T) ** 2
     msip = sip.sum()/n_a
     return msip**0.5
@@ -543,21 +549,15 @@ def cumulative_overlap(a, b, i=0, n_components=None):
 
     if len(a.shape) < len(b.shape):
         a = a[np.newaxis, :]
-    
+
     vec = a[i][np.newaxis, :]
     vec_norm = (vec**2).sum() ** 0.5
-    
+
     if n_components is None:
         n_components = len(b)
-    
+
     b = b[:n_components]
     b_norms = (b**2).sum(axis=1) ** 0.5
 
     o = np.abs(np.matmul(vec, b.T)) / (b_norms*vec_norm)
     return (o**2).sum() ** 0.5
-    
-
-
-
-
-    
