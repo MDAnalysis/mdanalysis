@@ -350,6 +350,7 @@ class _MutableBase(object):
 
     def __getattr__(self, attr):
         selfcls = type(self).__name__
+
         if attr in _TOPOLOGY_TRANSPLANTS:
             topattr, meth, clstype = _TOPOLOGY_TRANSPLANTS[attr]
             if isinstance(meth, property):
@@ -363,8 +364,12 @@ class _MutableBase(object):
             if not isinstance(self, clstype):
                 mname = 'property' if isinstance(meth, property) else 'method'
                 err = '{attr} is a {method} of {clstype}, not {selfcls}'
-                raise AttributeError(err.format(attr=attr, method=attrtype,
-                                                clstype=clstype.__name__,
+                clsname = clstype.__name__
+                if clsname == 'GroupBase':
+                    clsname = selfcls + 'Group'
+                raise AttributeError(err.format(attr=attrname,
+                                                method=attrtype,
+                                                clstype=clsname,
                                                 selfcls=selfcls))
             # missing required topologyattr
             else:
@@ -376,14 +381,12 @@ class _MutableBase(object):
         
         else:
             clean = attr.lower().replace('_', '')
+            err = '{selfcls} has no attribute {attr}. '.format(selfcls=selfcls,
+                                                               attr=attr)
             if clean in _TOPOLOGY_ATTRNAMES:
                 match = _TOPOLOGY_ATTRNAMES[clean]
-                err = ('{selfcls} has no attribute {attr}. '
-                       'Did you mean {match}?')
-                raise AttributeError(err.format(selfcls=selfcls, attr=attr,
-                                                match=match))
-            else:
-                return super(GroupBase, self).__getattr__(attr)
+                err += 'Did you mean {match}?'.format(match=match)
+            raise AttributeError(err)
 
 
 class _ImmutableBase(object):
@@ -549,11 +552,11 @@ class GroupBase(_MutableBase):
         selfcls = type(self).__name__
         if attr in _TOPOLOGY_ATTRS:
             cls = _TOPOLOGY_ATTRS[attr]
-            if attr == cls.singular:
+            if attr == cls.singular and attr != cls.attrname:
                 err = ('{selfcls} has no attribute {attr}. '
                        'Do you mean {plural}?')
                 raise AttributeError(err.format(selfcls=selfcls, attr=attr,
-                                                singular=cls.attrname))
+                                                plural=cls.attrname))
             else:
                 err = 'This Universe does not contain {singular} information'
                 raise NoDataError(err.format(singular=cls.singular))
@@ -2277,6 +2280,14 @@ class AtomGroup(GroupBase):
     def __reduce__(self):
         return (_unpickle, (self.universe.anchor_name, self.ix))
 
+    def __getattr__(self, attr):
+        # special-case timestep info
+        if attr in ('velocities', 'forces'):
+            raise NoDataError('This Timestep has no ' + attr)
+        elif attr == 'positions':
+            raise NoDataError('This Universe has no coordinates')
+        return super(AtomGroup, self).__getattr__(attr)
+
     @property
     def atoms(self):
         """The :class:`AtomGroup` itself.
@@ -2497,20 +2508,12 @@ class AtomGroup(GroupBase):
             :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
-        try:
-            return np.array(ts.velocities[self.ix])
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError(
-                "Timestep does not contain velocities"), None)
+        return np.array(ts.velocities[self.ix])
 
     @velocities.setter
     def velocities(self, values):
         ts = self.universe.trajectory.ts
-        try:
-            ts.velocities[self.ix, :] = values
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError(
-                "Timestep does not contain velocities"), None)
+        ts.velocities[self.ix, :] = values
 
     @property
     def forces(self):
@@ -2533,18 +2536,12 @@ class AtomGroup(GroupBase):
             contain :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
-        try:
-            return ts.forces[self.ix]
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError("Timestep does not contain forces"), None)
+        return ts.forces[self.ix]
 
     @forces.setter
     def forces(self, values):
         ts = self.universe.trajectory.ts
-        try:
-            ts.forces[self.ix, :] = values
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError("Timestep does not contain forces"), None)
+        ts.forces[self.ix, :] = values
 
     @property
     def ts(self):
@@ -3576,7 +3573,7 @@ class ComponentBase(_MutableBase):
         selfcls = type(self).__name__
         if attr in _TOPOLOGY_ATTRS:
             cls = _TOPOLOGY_ATTRS[attr]
-            if attr == cls.attrname:
+            if attr == cls.attrname and attr != cls.singular:
                 err = ('{selfcls} has no attribute {attr}. '
                        'Do you mean {singular}?')
                 raise AttributeError(err.format(selfcls=selfcls, attr=attr,
@@ -3698,6 +3695,15 @@ class Atom(ComponentBase):
             me += ' and altLoc {}'.format(self.altLoc)
         return me + '>'
 
+    def __getattr__(self, attr):
+        # special-case timestep info
+        ts = {'velocity': 'velocities', 'force': 'forces'}
+        if attr in ts:
+            raise NoDataError('This Timestep has no ' + ts[attr])
+        elif attr == 'position':
+            raise NoDataError('This Universe has no coordinates')
+        return super(Atom, self).__getattr__(attr)
+
     @property
     def residue(self):
         return self.universe.residues[self.universe._topology.resindices[self]]
@@ -3759,20 +3765,12 @@ class Atom(ComponentBase):
             :attr:`~MDAnalysis.coordinates.base.Timestep.velocities`.
         """
         ts = self.universe.trajectory.ts
-        try:
-            return ts.velocities[self.ix].copy()
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError(
-                "Timestep does not contain velocities"), None)
+        return ts.velocities[self.ix].copy()
 
     @velocity.setter
     def velocity(self, values):
         ts = self.universe.trajectory.ts
-        try:
-            ts.velocities[self.ix, :] = values
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError(
-                "Timestep does not contain velocities"), None)
+        ts.velocities[self.ix, :] = values
 
     @property
     def force(self):
@@ -3792,18 +3790,12 @@ class Atom(ComponentBase):
             :attr:`~MDAnalysis.coordinates.base.Timestep.forces`.
         """
         ts = self.universe.trajectory.ts
-        try:
-            return ts.forces[self.ix].copy()
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError("Timestep does not contain forces"), None)
+        return ts.forces[self.ix].copy()
 
     @force.setter
     def force(self, values):
         ts = self.universe.trajectory.ts
-        try:
-            ts.forces[self.ix, :] = values
-        except (AttributeError, NoDataError):
-            raise_from(NoDataError("Timestep does not contain forces"), None)
+        ts.forces[self.ix, :] = values
 
 
 class Residue(ComponentBase):

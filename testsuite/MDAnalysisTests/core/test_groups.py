@@ -1318,21 +1318,21 @@ class TestAttributeGetting(object):
     @staticmethod
     @pytest.fixture()
     def universe():
-        return make_Universe(extras=('masses', 'charges', 'altLocs'))
+        return make_Universe(extras=('masses', 'altLocs'))
 
-    @pytest.mark.parametrize('attr', ['masses', 'charges', 'altLocs'])
+    @pytest.mark.parametrize('attr', ['masses', 'altLocs'])
     def test_get_present_topattr_group(self, universe, attr):
         values = getattr(universe.atoms, attr)
         assert values is not None
     
-    @pytest.mark.parametrize('attr', ['mass', 'charge', 'altLoc'])
+    @pytest.mark.parametrize('attr', ['mass', 'altLoc'])
     def test_get_present_topattr_component(self, universe, attr):
         value = getattr(universe.atoms[0], attr)
         assert value is not None
 
     @pytest.mark.parametrize('attr,singular', [
         ('masses', 'mass'), 
-        ('charges', 'charge')])
+        ('altLocs', 'altLoc')])
     def test_get_plural_topattr_from_component(self, universe, attr, singular):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms[0], attr)
@@ -1340,7 +1340,7 @@ class TestAttributeGetting(object):
     
     @pytest.mark.parametrize('attr,singular', [
         ('masses', 'mass'), 
-        ('charges', 'charge')])
+        ('altLocs', 'altLoc')])
     def test_get_sing_topattr_from_group(self, universe, attr, singular):
         with pytest.raises(AttributeError) as exc:
             getattr(universe.atoms, singular)
@@ -1348,7 +1348,8 @@ class TestAttributeGetting(object):
     
     @pytest.mark.parametrize('attr,singular', [
         ('elements', 'element'), 
-        ('tempfactors', 'tempfactor')])
+        ('tempfactors', 'tempfactor'),
+        ('bonds', 'bonds')])
     def test_get_absent_topattr_group(self, universe, attr, singular):
         with pytest.raises(NoDataError) as exc:
             getattr(universe.atoms, attr)
@@ -1357,13 +1358,20 @@ class TestAttributeGetting(object):
     def test_get_non_topattr(self, universe):
         with pytest.raises(AttributeError) as exc:
             universe.atoms.jabberwocky
-        assert 'has not attribute' in str(exc.value)
+        assert 'has no attribute' in str(exc.value)
 
-    def test_get_absent_attrmethod(self, universe):
+    def test_unwrap_without_bonds(self, universe):
         with pytest.raises(NoDataError) as exc:
             universe.atoms.unwrap()
         err = ('AtomGroup.unwrap() not available; '
-               'this requires bonds')
+               'this requires Bonds')
+        assert str(exc.value) == err
+
+    def test_get_absent_attr_method(self, universe):
+        with pytest.raises(NoDataError) as exc:
+            universe.atoms.total_charge()
+        err = ('AtomGroup.total_charge() not available; '
+               'this requires charges')
         assert str(exc.value) == err
 
     def test_get_absent_attrprop(self, universe):
@@ -1374,7 +1382,7 @@ class TestAttributeGetting(object):
         assert str(exc.value) == err
 
     def test_attrprop_wrong_group(self, universe):
-        with pytest.raises(NoDataError) as exc:
+        with pytest.raises(AttributeError) as exc:
             universe.atoms[0].fragindices
         err = ('fragindices is a property of AtomGroup, not Atom')
         assert str(exc.value) == err
@@ -1392,22 +1400,6 @@ class TestAttributeGetting(object):
         err = ('AtomGroup has no attribute {}. '
                'Did you mean altLocs?').format(attr)
         assert str(exc.value) == err
-
-
-class TestAttributeGetting(object):
-
-    @pytest.fixture()
-    def empty(self):
-        return make_Universe()
-
-    def test_get_missing_attr(self, empty):
-        with pytest.raises(NoDataError) as exc:
-            empty.atoms.fragments
-        assert 'bonds' in str(exc.value).lower()
-
-    def test_has_missing_attr(self, empty):
-        assert not hasattr(empty, 'fragments')
-        assert not hasattr(empty.atoms, 'fragments')
 
 
 class TestInitGroup(object):

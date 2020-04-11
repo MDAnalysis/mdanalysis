@@ -23,6 +23,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Added more informative error messages about topology attributes
+    (Issue #2565)
   * Made NoDataError a subclass of ValueError *and* AttributeError
     (Issue #2635)
   * Fixed select_atoms("around 0.0 ...") selections and capped_distance 
