@@ -268,6 +268,7 @@ class AroundSelection(DistanceSelection):
             # check for entries with the same position
             result = cdist(sel.positions, sys.positions)
             indices = np.where(result == 0)[1]
+            warnings.warn("No support for 'around 0.0' with wrapping")
             if result.size > 0:
                 return sys[np.asarray(indices, dtype=np.int64)].unique
             else:

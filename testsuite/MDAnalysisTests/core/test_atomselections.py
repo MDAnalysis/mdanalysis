@@ -39,7 +39,7 @@ from MDAnalysis.core.selection import Parser
 from MDAnalysis import SelectionError
 
 from MDAnalysis.tests.datafiles import (
-    PSF, DCD,
+    PSF, DCD, PDB,
     PRMpbc, TRJpbc_bz2,
     PSF_NAMD, PDB_NAMD,
     GRO, RNA_PSF, NUCLsel, TPR, XTC,
@@ -184,7 +184,11 @@ class TestSelectionsCHARMM(object):
         ('around 0.0 resid 1', 0),  # gh-2656
     ])
     def test_around(self, universe, selstr, size):
-        sel = universe.select_atoms(selstr)
+        if 'around 0.0' in selstr: 
+            with pytest.warns(UserWarning):
+                sel = universe.select_atoms(selstr)
+        else:
+            sel = universe.select_atoms(selstr)
         assert_equal(len(sel), size)
 
     @pytest.mark.parametrize('selstr, n_dup, size', [
@@ -208,8 +212,18 @@ class TestSelectionsCHARMM(object):
         for i in range(n_dup):
             new_ag[i + 1].position = reference_pos
 
-        sel = new_ag.select_atoms(selstr)
+        with pytest.warns(UserWarning):
+            sel = new_ag.select_atoms(selstr)
         assert_equal(len(sel), size)
+
+    @pytest.mark.xfail(reason="see gh-2657")
+    def test_around_superposed_atoms(self):
+        # around 0.0 with wrapping
+        u = mda.Universe(PDB)
+        u.dimensions = [1e-2, 1e-2, 1e-2, 90, 90, 90]
+        with pytest.warns(UserWarning):
+            ag = u.select_atoms('around 0.0 resid 1')
+        assert len(ag) == len(u.atoms) - len(u.residues[0].atoms)
 
     @pytest.mark.parametrize('selstr', [
         'sphlayer 4.0 6.0 bynum 1281',
