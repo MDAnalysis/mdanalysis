@@ -64,6 +64,12 @@ class TestSelectionsCHARMM(object):
     def universe_copy(self, universe):
         return MDAnalysis.Universe(PSF, DCD)
 
+    @pytest.fixture()
+    def u_pbc_triclinic(self):
+        u = mda.Universe(PDB)
+        u.dimensions = [1e-3, 1e-3, 1e-3, 60, 60, 60]
+        return u
+
     def test_segid(self, universe):
         sel = universe.select_atoms('segid 4AKE')
         assert_equal(sel.n_atoms, 3341, "failed to select segment 4AKE")
@@ -142,7 +148,8 @@ class TestSelectionsCHARMM(object):
         assert_equal(sel.n_residues, 16,
                      "Failed to find all 'resname LEU' residues.")
         assert_equal(sorted(sel.indices),
-                     sorted(universe.select_atoms('segid 4AKE and resname LEU').indices),
+                     sorted(universe.select_atoms(
+                         'segid 4AKE and resname LEU').indices),
                      "selected 'resname LEU' atoms are not the same as auto-generated s4AKE.LEU")
 
     def test_name(self, universe):
@@ -184,12 +191,44 @@ class TestSelectionsCHARMM(object):
         ('around 0.0 resid 1', 0),  # gh-2656
     ])
     def test_around(self, universe, selstr, size):
-        if 'around 0.0' in selstr: 
+        if 'around 0.0' in selstr:
             with pytest.warns(UserWarning):
                 sel = universe.select_atoms(selstr)
         else:
             sel = universe.select_atoms(selstr)
         assert_equal(len(sel), size)
+
+    @pytest.mark.xfail(reason="passes in develop, fails in gh-2657, len(res)==7")
+    def test_around_superposed_small_res(self, u_pbc_triclinic):
+        ag = u_pbc_triclinic.select_atoms('around 0.0 resid 10')
+        assert len(ag) == 1
+
+    @pytest.mark.xfail(reason="segfaults in develop, fails in gh-2657, len(res)==19")
+    def test_around_superposed_large_res(self, u_pbc_triclinic):
+        ag = u_pbc_triclinic.select_atoms('around 0.0 resid 3')
+        assert len(ag) == 1
+
+    @pytest.mark.xfail(reason="nsgrid broken, see gh-2345, finds 14486 atoms")
+    # https://github.com/MDAnalysis/mdanalysis/issues/2345#issuecomment-529888097
+    def test_around_triclinic_nsgrid(self, u_pbc_triclinic,
+                                     cutoff=1.5e-4):
+        r1 = u_pbc_triclinic.residues[0].atoms
+        notr1 = u_pbc_triclinic.residues[1:].atoms
+        dist_arr = distance_array(r1.positions, notr1.positions,
+                                  box=u_pbc_triclinic.dimensions)
+        n_in_cutoff = np.count_nonzero(np.any(dist_arr <= cutoff, axis=0))
+        ag = u_pbc_triclinic.select_atoms('around {} resid 1'.format(cutoff))
+        assert len(ag) == n_in_cutoff == 28838
+
+    def test_around_triclinic_bruteforce(self, u_pbc_triclinic,
+                                         cutoff=1.500001e-4):
+        r1 = u_pbc_triclinic.residues[0].atoms
+        notr1 = u_pbc_triclinic.residues[1:].atoms
+        dist_arr = distance_array(r1.positions, notr1.positions,
+                                  box=u_pbc_triclinic.dimensions)
+        n_in_cutoff = np.count_nonzero(np.any(dist_arr <= cutoff, axis=0))
+        ag = u_pbc_triclinic.select_atoms('around {} resid 1'.format(cutoff))
+        assert len(ag) == n_in_cutoff == 28838
 
     @pytest.mark.parametrize('selstr, n_dup, size', [
         # no duplicate atom positions means no matches
@@ -419,6 +458,7 @@ class TestSelectionsCHARMM(object):
         ag_wild = universe.select_atoms(wildstring)
         assert ag == ag_wild
 
+
 class TestSelectionsAMBER(object):
     @pytest.fixture()
     def universe(self):
@@ -493,7 +533,7 @@ class TestSelectionsGRO(object):
         sel = universe.select_atoms(selstr)
         errmsg = ("Found a wrong number of atoms with same "
                   "x as ids 1 or 10")
-        assert_equal(len(sel), 12, errmsg) 
+        assert_equal(len(sel), 12, errmsg)
         target_ids = np.array([0, 8, 9, 224, 643, 3515, 11210, 14121,
                                18430, 25418, 35811, 43618])
         assert_equal(sel.indices, target_ids,
@@ -524,7 +564,7 @@ class TestSelectionsTPR(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def universe():
-        return MDAnalysis.Universe(TPR,XTC)
+        return MDAnalysis.Universe(TPR, XTC)
 
     @pytest.mark.parametrize('selstr', [
         'same fragment as bynum 1',
@@ -567,7 +607,6 @@ class TestSelectionsNucleicAcids(object):
     @pytest.fixture(scope='class')
     def universe2(self):
         return MDAnalysis.Universe(NUCLsel)
-
 
     def test_nucleic(self, universe):
         rna = universe.select_atoms("nucleic")
