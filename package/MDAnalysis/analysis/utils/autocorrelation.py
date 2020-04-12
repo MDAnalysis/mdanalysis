@@ -125,13 +125,24 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
 def correct_intermittency(list_of_sets, intermittency):
     """Preprocess data to allow intermittent behaviour prior to calling `autocorrelation`.
 
-    Process consecutive intermittency with a single pass over the data. The returned data can be used as input to
-    the function `autocorrelation` in order to calculate the survival probability with a given
-    intermittency.
+    Survival probabilty may be calculated either with a strict continuous requirement or
+    a less strict intermittency. If calculating the survival probability water around a
+    protein for example, in the former case the water must be within a cutoff distance
+    of the protein a every frame from $t_0$ to $t_0 + \tau$ in order for it to be considered
+    present at $t_0 + \tau$. In the intermittent case, the water molecule is allowed to
+    leave the region of interest for up to a specified consecutive number of frames.
 
-    For example, if an atom is absent for a number of frames equal or smaller than the parameter `intermittency`,
-    then correct the data and remove the absence.
+    This function pre-processes data, such as the atom ids of water molecules within a cutoff
+    distance of a protein at each frame, in order to allow for intermittent behaviour, with a
+    single pass over the data.
+
+    For example, if an atom is absent for a number of frames equal or smaller than the parameter
+    `intermittency`, then this absence will be removed and thus the atom is considered to have
+    not left.
     e.g 7,A,A,7 with `intermittency=2` will be replaced by 7,7,7,7, where A=absence.
+
+    The returned data can be used as input to the function `autocorrelation` in order to calculate
+    the survival probability with a given intermittency.
 
     See Gowers and Carbonne, 2015, (DOI:10.1063.1.4922445) for a description of
     intermittency in the calculation of hydrogen bond lifetimes.
