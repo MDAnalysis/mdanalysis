@@ -67,7 +67,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
       survival probability of water around a protein, these atom ids in a given set will be
       those of the atoms which are within a cutoff distance of the protein at a given frame.
     tau_max : int
-      The last tau (inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,
+      The last tau (lag time, inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,
       the survival probability will be calculated over 20 frames.
     window_step : int, optional
       The step size for t0 to perform autocorrelation. Ideally, window_step will be larger than
@@ -87,12 +87,13 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     .. versionadded:: 0.19.2
     """
 
-    # Check types
-    assert type(list_of_sets) == list, "list_of_sets must be a one-dimensional list of sets"
-    assert type(list_of_sets[0]) == set,  "list_of_sets must be a one-dimensional list of sets"
+    # check types
+    if (type(list_of_sets) != list and len(list_of_sets) != 0) or type(list_of_sets[0]) != set:
+        raise TypeError("list_of_sets must be a one-dimensional list of sets")
 
     # Check dimensions of parameters
-    assert len(list_of_sets) > tau_max, "tau_max cannot be greater than the length of list_of_sets"
+    if len(list_of_sets) < tau_max:
+        raise ValueError("tau_max cannot be greater than the length of list_of_sets")
 
     tau_timeseries = list(range(1, tau_max + 1))
     timeseries_data = [[] for _ in range(tau_max)]

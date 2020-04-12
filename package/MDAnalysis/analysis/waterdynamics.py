@@ -508,8 +508,6 @@ class HydrogenBondLifetimes(object):
 
     def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
                  nproc=1):
-        #warnings.warn("This class is deprecated; use analysis.hydrogen_bonds.hbond_analysis.HydrogenBondAnalysis ",
-        #              category=DeprecationWarning)
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
