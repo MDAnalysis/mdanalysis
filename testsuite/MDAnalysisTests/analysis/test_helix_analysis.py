@@ -20,7 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 import re
 
 import numpy as np
@@ -49,15 +49,16 @@ HELANAL_SINGLE_DATA = {
                   35.05921936,  21.78928566,   9.8632431,   8.80066967,
                   5.5344553,   6.14356709,  10.15450764,  11.07686138,
                   9.23541832], dtype=np.float32),
-    'residues_per_turn summary': np.array([3.64864163,  0.152694,  0.1131402]),
-    'local_screw':
-        np.array([87.80540079, -171.86019984,  -75.2341296,   24.61695962,
-                  121.77104796, -134.94786976,  -35.07857424,   58.9621866,
-                  159.40210233, -104.83368122,   -7.54816243,   87.40202629,
-                  -176.13071955,  -89.13196878,   17.17321345,  105.26627814,
-                  -147.00075298,  -49.36850775,   54.24557615,  156.06486532,
-                  -110.82698327,   -5.72138626,   85.36050546, -167.28218858,
-                  -68.23076936]),
+    'local_nres_per_turn summary': np.array([3.64864163,  0.152694,  0.1131402]),
+    # changed this implementation
+    # 'local_screw_angles':
+    #     np.array([87.80540079, -171.86019984,  -75.2341296,   24.61695962,
+    #               121.77104796, -134.94786976,  -35.07857424,   58.9621866,
+    #               159.40210233, -104.83368122,   -7.54816243,   87.40202629,
+    #               -176.13071955,  -89.13196878,   17.17321345,  105.26627814,
+    #               -147.00075298,  -49.36850775,   54.24557615,  156.06486532,
+    #               -110.82698327,   -5.72138626,   85.36050546, -167.28218858,
+    #               -68.23076936]),
     'local_twists summary': np.array([98.83011627,   4.08171701,   3.07253003],
                                      dtype=np.float32),
     'local_twists':
@@ -112,6 +113,106 @@ def read_bending_matrix(fn):
     return data
 
 
+def test_helix_analysis_zigzag():
+    #      x    x    x    x    x
+    #     / \  / \  / \  / \  /
+    #   x    x    x    x    x
+
+    n_atoms = 100
+    u = mda.Universe.empty(100, trajectory=True)
+    xyz = np.array(list(zip([1, -1]*(n_atoms//2),  # x \in {0, 1}
+                            [0]*n_atoms,  # y == 0
+                            range(n_atoms))))  # z rises continuously
+    u.load_new(xyz)
+    properties = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
+    assert_almost_equal(properties['local_twists'], 180, decimal=4)
+    assert_almost_equal(properties['local_nres_per_turn'], 2, decimal=4)
+    assert_almost_equal(properties['global_axis'],
+                        [0, 0, -1], decimal=4)
+    # all 0 vectors
+    assert_almost_equal(properties['local_axes'], 0, decimal=4)
+    assert_almost_equal(properties['local_bends'], 0, decimal=4)
+    assert_almost_equal(properties['all_bends'], 0, decimal=4)
+    assert_almost_equal(properties['local_heights'], 0, decimal=4)
+    assert_almost_equal(properties['local_helix_directions'][0::2] - [-1, 0, 0],
+                        0, decimal=4)
+    assert_almost_equal(properties['local_helix_directions'][1::2] - [1, 0, 0],
+                        0, decimal=4)
+    origins = xyz[1:-1]
+    origins[:, 0] = 0
+    assert_almost_equal(properties['local_origins'], origins, decimal=4)
+    assert_almost_equal(properties['local_screw_angles'], [
+                        180, 0]*49, decimal=4)
+
+
+def test_helix_analysis_square_oct():
+    # square-octagon-square-octagon
+    n_rep = 10
+    sq2 = 0.5 ** 0.5
+    square = [(1, 0), (0, 1), (-1, 0), (0, -1)]
+    octagon = [(1, 0), (sq2, sq2), (0, 1), (-sq2, sq2),
+               (-1, 0), (-sq2, -sq2), (0, -1), (sq2, -sq2)]
+    shapes = (square+octagon)*n_rep
+    xyz = np.array(list(zip(np.arange(len(shapes)),
+                            *zip(*shapes))))
+    n_atoms = xyz.shape[0]
+    u = mda.Universe.empty(n_atoms, trajectory=True)
+    u.load_new(xyz)
+
+    properties = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
+    twist_trans = [102.76438, 32.235607]
+    twists = ([90]*2 + twist_trans + [45]*6 + twist_trans[::-1]) * n_rep
+    assert_almost_equal(properties['local_twists'], twists[:n_atoms-3],
+                        decimal=4)
+    res_trans = [3.503159, 11.167775]
+    res = ([4]*2 + res_trans + [8]*6 + res_trans[::-1]) * n_rep
+    assert_almost_equal(properties['local_nres_per_turn'], res[:n_atoms-3],
+                        decimal=4)
+    assert_almost_equal(properties['global_axis'],
+                        [-1, 0, 0], decimal=3)
+    assert_almost_equal(properties['local_axes']-[1, 0, 0], 0, decimal=4)
+    assert_almost_equal(properties['local_bends'], 0, decimal=4)
+    assert_almost_equal(properties['all_bends'], 0, decimal=4)
+    assert_almost_equal(properties['local_heights'], 1, decimal=4)
+
+    loc_rot = [[0.,  0.,  1.],
+               [0., -1.,  0.],
+               [0.,  0., -1.],
+               [0.,  0.97528684,  0.2209424],
+               [0.,  0.70710677,  0.70710677],  # 0.5 ** 0.5
+               [0.,  0.,  1.],
+               [0., -0.70710677,  0.70710677],
+               [0., -1.,  0.],
+               [0., -0.70710677, -0.70710677],
+               [0.,  0., -1.],
+               [0.,  0.70710677, -0.70710677],
+               [0.,  0.97528684, -0.2209424]] * n_rep
+    assert_almost_equal(properties['local_helix_directions'],
+                        loc_rot[:n_atoms-2], decimal=4)
+
+    origins = xyz[1:-1]
+    origins[:, 1:] = ([[0.,   0.],  # square
+                       [0.,   0.],
+                       [0.,  -0.33318555],  # square -> octagon
+                       [-1.7878988,  -0.6315732],  # square -> octagon
+                       [0.,   0.],  # octagon
+                       [0.,   0.],
+                       [0.,   0.],
+                       [0.,   0.],
+                       [0.,   0.],
+                       [0.,   0.],
+                       [-1.3141878,   1.3141878],  # octagon -> square
+                       [0.34966463,   0.14732757]]*n_rep)[:len(origins)]
+    assert_almost_equal(properties['local_origins'], origins,
+                        decimal=4)
+
+    # a bit off-90
+    screw = [0, 89.99, 180, 77.2356, 45, 0,
+             45, 89.99, 135, 180, 135, 102.7644] * n_rep
+    assert_almost_equal(properties['local_screw_angles'], screw[:-2],
+                        decimal=2)
+
+
 class TestHELANAL(object):
 
     @pytest.fixture()
@@ -124,7 +225,7 @@ class TestHELANAL(object):
                          flatten_single_helix=True)
         return ha.run(start=10, stop=80)
 
-    def test_summary(self, helanal):
+    def test_regression_summary(self, helanal):
         bends = helanal.summary['all_bends']
         old_helanal = read_bending_matrix(HELANAL_BENDING_MATRIX_SUBSET)
         assert_almost_equal(np.triu(bends['mean'], 1), old_helanal['Mean'],
@@ -134,7 +235,7 @@ class TestHELANAL(object):
         assert_almost_equal(np.triu(bends['abs_dev'], 1), old_helanal['ABDEV'],
                             decimal=1)
 
-    def test_correct_values(self):
+    def test_regression_values(self):
         u = mda.Universe(PDB_small)
         ha = hel.HELANAL(u, select='name CA and resnum 161-187',
                          flatten_single_helix=True)
@@ -176,20 +277,6 @@ class TestHELANAL(object):
             ha = hel.HELANAL(u, select='name H')
         assert len(rec) == 1
         assert 'multiple atoms' in rec[0].message.args[0]
-
-
-def test_pdot():
-    arr = np.random.rand(4, 3)
-    matrix_dot = hel.pdot(arr, arr)
-    list_dot = [np.dot(a, a) for a in arr]
-    assert_almost_equal(matrix_dot, list_dot)
-
-
-def test_pnorm():
-    arr = np.random.rand(4, 3)
-    matrix_norm = hel.pnorm(arr)
-    list_norm = [np.linalg.norm(a) for a in arr]
-    assert_almost_equal(matrix_norm, list_norm)
 
 
 def test_vector_of_best_fit():

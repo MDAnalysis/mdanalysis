@@ -72,39 +72,9 @@ from ..lib import util, mdamath
 from .base import AnalysisBase
 
 
-def pdot(a, b):
-    """Pairwise dot product.
-
-    ``a`` must be the same shape as ``b``.
-
-    Parameters
-    ----------
-    a: :class:`numpy.ndarray` of shape (N, M)
-    b: :class:`numpy.ndarray` of shape (N, M)
-
-    Returns
-    -------
-    :class:`numpy.ndarray` of shape (N,)
-    """
-    return np.einsum('ij,ij->i', a, b)
-
-
-def pnorm(a):
-    """Euclidean norm of each vector in a matrix
-
-    Parameters
-    ----------
-    a: :class:`numpy.ndarray` of shape (N, M)
-
-    Returns
-    -------
-    :class:`numpy.ndarray` of shape (N,)
-    """
-    return pdot(a, a)**0.5
-
-
 def vector_of_best_fit(coordinates):
-    """Fit vector through the centered coordinates.
+    """Fit vector through the centered coordinates, 
+    pointing to the first coordinate (i.e. upside-down).
 
     Parameters
     ----------
@@ -120,62 +90,60 @@ def vector_of_best_fit(coordinates):
     u, s, vh = np.linalg.linalg.svd(Mt_M)
     vector = vh[0]
 
-    # does vector face first residue?
-    angle = mdamath.angle(coordinates[0], vector)
-    if angle > np.pi/2 or angle < -np.pi/2:
+    # does vector face first local helix origin?
+    angle = mdamath.angle(centered[0], vector)
+    if angle > np.pi/2:
         vector *= -1
     return vector
 
 
-def local_screw(best_fit, ref_axis, rotation_vectors):
+def local_screw_angles(global_axis, ref_axis, helix_directions):
     """
-    Get local screw angles.
+    Cylindrical azimuth angles between the local direction vectors
+    to the plane of global_axis and ref_axis.
 
     Parameters
     ----------
-    best_fit: :class:`numpy.ndarray` of shape (3,)
-        Vector of best fit. Tilts are calculated perpendicular to 
+    global_axis: :class:`numpy.ndarray` of shape (3,)
+        Vector of best fit. Screw angles are calculated perpendicular to 
         this axis.
     ref_axis: :class:`numpy.ndarray` of shape (3,)
         Reference length-wise axis. One of the reference vectors is 
         orthogonal to this axis.
-    rotation_vectors: :class:`numpy.ndarray` of shape (N, 3)
-        array of vectors representating the local rotation of each helix.
+    helix_directions: :class:`numpy.ndarray` of shape (N, 3)
+        array of vectors representing the local direction of each
+        helix window.
 
     Returns
     -------
     :class:`numpy.ndarray` of shape (N,)
         Array of screw angles.
     """
-    ref_2 = np.cross(ref_axis, best_fit)
-    ref_1 = np.cross(-ref_2, best_fit)  # orthogonal to best_fit and ref_2
-    refs = np.array([ref_1, ref_2])  # (2, 3)
+    # normal to the plane of `ref_axis` & `global_axis`
+    plane = np.cross(ref_axis, global_axis)
+    if not np.any(plane):  # zero when ref_axis, global_axis parallel
+        # use random orthogonal vector
+        new_ref = [[1, 0, 0], [0, 0, 1]]
 
-    ref_norms = pnorm(refs)
-    rot_norms = pnorm(rotation_vectors)
+        while not np.any(plane) and new_ref:
+            plane = np.cross(new_ref.pop(), global_axis)
 
-    # angles
-    cos = np.matmul(refs, rotation_vectors.T)/np.outer(ref_norms, rot_norms)
-    screw_angles, alt_angles = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
+    # normal to the plane of -`plane` and `global_axis`
+    # needed to determine angle quadrants
+    ortho_plane = np.cross(-plane, global_axis)
 
-    # the effect of the below is to move angles into the (pi/4, 3pi/4 domain)
-    quarter_pi, half_pi = np.pi/4, np.pi/2
-    # replace low angles
-    low = screw_angles < quarter_pi
-    screw_angles[low] = np.where(alt_angles[low] < half_pi,
-                                 half_pi - alt_angles[low],
-                                 alt_angles[low] - half_pi)
-    # replace high angles
-    high = screw_angles > 3*quarter_pi
-    screw_angles[high] = np.where(alt_angles[high] < half_pi,
-                                  half_pi + alt_angles[high],
-                                  3*half_pi - alt_angles[high])
+    # angles to plane normal
+    refs = np.array([plane, ortho_plane])  # (2, 3)
+    norms = np.outer(mdamath.pnorm(refs), mdamath.pnorm(helix_directions))
+    cos = np.matmul(refs, helix_directions.T)/norms
+    cos[0] = np.abs(cos[0])  # acute angles to `plane` only
+    to_plane, to_normal = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
 
-    ortho = np.cross(ref_1, rotation_vectors)
-    cos_theta = np.matmul(best_fit, ortho.T)/(pnorm(ortho)*ref_norms[0])
-    angle_to_best_fit = np.arccos(np.clip(cos_theta, -1, 1))
-    screw_angles[angle_to_best_fit < half_pi] *= -1
-    return np.rad2deg(screw_angles)  # (n_vec,)
+    # angles to plane
+    to_plane[to_normal <= np.pi/2] *= -1
+    to_plane += (np.pi/2)
+
+    return np.rad2deg(to_plane)
 
 
 def helix_analysis(positions, ref_axis=[0, 0, 1]):
@@ -183,7 +151,8 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     Calculate helix properties from atomic coordinates.
 
     Each property is calculated from a sliding window of 4 atoms, 
-    from i to i+3.
+    from i to i+3. Any property whose name begins with 'local' is a 
+    property of a sliding window.
 
     Parameters
     ----------
@@ -198,7 +167,7 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     dict with the following keys:
         local_twists: array, shape (N-3,)
             local twist angle from atom i+1 to i+2
-        residues_per_turn: array, shape (N-3,)
+        local_nres_per_turn: array, shape (N-3,)
             number of residues per turn, based on local_twist
         local_axes:  array, shape (N-3, 3)
             the length-wise helix axis of the local window
@@ -206,16 +175,16 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
             the angles between local helix angles, 3 windows apart
         local_heights: array, shape (N-3,)
             the rise of each local helix
-        local_rotation_vectors: array, shape (N-2, 3)
+        local_helix_directions: array, shape (N-2, 3)
             the unit vector from each local origin to atom i+1
         local_origins: array, shape (N-2, 3)
             the projected origin for each helix
         all_bends: array, shape (N-3, N-3)
             angles between each local axis
-        global_axes: array, shape (3,)
-            vector of best fit through origins
-        local_screw: array, shape (N-2,)
-            angles of each rotation vector to normal plane of global axes
+        global_axis: array, shape (3,)
+            vector of best fit through origins, pointing at the first origin.
+        local_screw_angles: array, shape (N-2,)
+            cylindrical azimuth angle to plane of global_axis and ref_axis
     """
 
     #          ^               ^
@@ -230,60 +199,68 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     #   CA_i+3
     #
     # V: vectors
-    # bi: bisectors
+    # bi: bisectors. Note: not real bisectors are the vectors aren't normalised
     # θ: local_twists
     # origin: origins
-    # local_axes: in the plane of the screen. Orthogonal to the bisectors
+    # local_axes: in the plane of the screen. Orthogonal to the "bisectors"
 
     vectors = positions[1:] - positions[:-1]  # (n_res-1, 3)
     bisectors = vectors[:-1] - vectors[1:]  # (n_res-2, 3)
-    binorms = pnorm(bisectors)  # (n_res-2,)
-    adjacent_mag = binorms[:-1] * binorms[1:]  # (n_res-3,)
+    bimags = mdamath.pnorm(bisectors)  # (n_res-2,)
+    adjacent_mag = bimags[:-1] * bimags[1:]  # (n_res-3,)
 
     # find angle between bisectors for twist and n_residue/turn
-    cos_theta = pdot(bisectors[:-1], bisectors[1:])/adjacent_mag
+    cos_theta = mdamath.pdot(bisectors[:-1], bisectors[1:])/adjacent_mag
     cos_theta = np.clip(cos_theta, -1, 1)
     twists = np.arccos(cos_theta)  # (n_res-3,)
     local_twists = np.rad2deg(twists)
-    residues_per_turn = 2*np.pi / twists
+    local_nres_per_turn = 2*np.pi / twists
 
     # find normal to bisectors for local axes
     cross_bi = np.cross(bisectors[:-1], bisectors[1:])  # (n_res-3, 3)
-    local_axes = (cross_bi.T / pnorm(cross_bi)).T  # (n_res-3, 3)
+    local_axes = (cross_bi.T / mdamath.pnorm(cross_bi)).T  # (n_res-3, 3)
+    local_axes = np.nan_to_num(local_axes)
 
+    zero_vectors = np.tile(np.any(local_axes, axis=1), (len(local_axes), 1)).T
     # find angles between axes for bends
     bend_theta = np.matmul(local_axes, local_axes.T)  # (n_res-3, n_res-3)
+    # set angles to 0 between zero-vectors
+    bend_theta = np.where(zero_vectors+zero_vectors.T,  # (n_res-3, n_res-3)
+                          bend_theta, 1)
     bend_matrix = np.rad2deg(np.arccos(np.clip(bend_theta, -1, 1)))
     # local bends are between axes 3 windows apart
     local_bends = np.diagonal(bend_matrix, offset=3)  # (n_res-6,)
 
     # radius of local cylinder
     radii = (adjacent_mag**0.5) / (2*(1.0-cos_theta))  # (n_res-3,)
+    # special case: angle b/w bisectors is 0 (should virtually never happen)
+    # guesstimate radius = half bisector magnitude
+    radii = np.where(cos_theta != 1, radii, (adjacent_mag**0.5)/2)
     # height of local cylinder
-    heights = pdot(vectors[1:-1], local_axes)  # (n_res-3,)
+    heights = np.abs(mdamath.pdot(vectors[1:-1], local_axes))  # (n_res-3,)
 
-    local_rotation_vectors = (bisectors.T/binorms).T  # (n_res-2, 3)
+    local_helix_directions = (bisectors.T/bimags).T  # (n_res-2, 3)
 
     # get origins by subtracting radius from atom i+1
     origins = positions[1:-1][:]  # (n_res-2, 3)
-    origins[:-1] -= (radii*local_rotation_vectors[:-1].T).T
+    origins[:-1] -= (radii*local_helix_directions[:-1].T).T
     # subtract radius from atom i+2 in last one
-    origins[-1] -= radii[-1]*local_rotation_vectors[-1]
+    origins[-1] -= radii[-1]*local_helix_directions[-1]
 
     helix_axes = vector_of_best_fit(origins)
-    screw = local_screw(helix_axes, np.asarray(ref_axis),
-                        local_rotation_vectors)
+    screw = local_screw_angles(helix_axes, np.asarray(ref_axis),
+                               local_helix_directions)
 
     results = {'local_twists': local_twists,
-               'residues_per_turn': residues_per_turn,
+               'local_nres_per_turn': local_nres_per_turn,
                'local_axes': local_axes,
                'local_bends': local_bends,
                'local_heights': heights,
-               'local_rotation_vectors': local_rotation_vectors,
+               'local_helix_directions': local_helix_directions,
                'local_origins': origins,
                'all_bends': bend_matrix,
-               'global_axes': helix_axes,
-               'local_screw': screw}
+               'global_axis': helix_axes,
+               'local_screw_angles': screw}
     return results
 
 
@@ -313,7 +290,7 @@ class HELANAL(AnalysisBase):
     local_twists: array or list of arrays
         The local twist angle from atom i+1 to i+2. 
         Each array has shape (n_frames, n_residues-3)
-    residues_per_turn: array or list of arrays
+    local_nres_per_turn: array or list of arrays
         Number of residues per turn, based on local_twist. 
         Each array has shape (n_frames, n_residues-3)
     local_axes: array or list of arrays
@@ -322,13 +299,13 @@ class HELANAL(AnalysisBase):
     local_heights: array or list of arrays
         The rise of each local helix. 
         Each array has shape (n_frames, n_residues-3)
-    local_rotation_vectors: array or list of arrays
+    local_helix_directions: array or list of arrays
         The unit vector from each local origin to atom i+1.
         Each array has shape (n_frames, n_residues-2, 3)
     local_origins: array or list of arrays
         The projected origin for each helix.
         Each array has shape (n_frames, n_residues-2, 3)
-    local_screw: array or list of arrays
+    local_screw_angles: array or list of arrays
         The local screw angle for each helix.
         Each array has shape (n_frames, n_residues-2)
     local_bends: array or list of arrays
@@ -337,8 +314,10 @@ class HELANAL(AnalysisBase):
     all_bends: array or list of arrays
         The angles between local helix axes.
         Each array has shape (n_frames, n_residues-3, n_residues-3)
-    global_axes: array or list of arrays
-        The length-wise axis for the overall helix. 
+    global_axis: array or list of arrays
+        The length-wise axis for the overall helix. This points at 
+        the first helix window in the helix, so it runs opposite to 
+        the direction of the residue numbers.
         Each array has shape (n_frames, 3)
     global_tilts: array or list of arrays
         The angle between the global axis and the reference axis.
@@ -353,11 +332,11 @@ class HELANAL(AnalysisBase):
         'local_twists': (-3,),
         'local_bends': (-6,),
         'local_heights': (-3,),
-        'residues_per_turn': (-3,),
+        'local_nres_per_turn': (-3,),
         'local_origins': (-2, 3),
         'local_axes': (-3, 3),
-        'local_rotation_vectors': (-2, 3),
-        'local_screw': (-2,),
+        'local_helix_directions': (-2, 3),
+        'local_screw_angles': (-2,),
     }
 
     @classmethod
@@ -401,7 +380,7 @@ class HELANAL(AnalysisBase):
         universe = secondary_structure._universe
         all_res = universe.residues
         for resindices in continuous:
-            if len(hel) >= 9:
+            if len(resindices) >= 9:
                 res = all_res[resindices]
                 sel = 'resid {}:{} and {}'.format(res[0].resid,
                                                   res[-1].resid,
@@ -432,22 +411,22 @@ class HELANAL(AnalysisBase):
         self.ref_axis = np.asarray(ref_axis)
         self._flatten = flatten_single_helix
 
-    def _zeros_per_frame(self, *dims, n_positions=0):
+    def _zeros_per_frame(self, dims, n_positions=0):
         """Create zero arrays where first 2 dims are n_frames, n_values"""
-        first = dims[0]
-        return np.zeros((self.n_frames, first+n_positions, *dims[1:]),
-                         dtype=np.float64)
+        first = dims[0] + n_positions
+        npdims = (self.n_frames, first,) + dims[1:]  # py27 workaround
+        return np.zeros(npdims, dtype=np.float64)
 
     def _prepare(self):
         n_res = [len(ag) for ag in self.atomgroups]
 
         for key, dims in self.attr_shapes.items():
             empty = [self._zeros_per_frame(
-                *dims, n_positions=n) for n in n_res]
+                dims, n_positions=n) for n in n_res]
             setattr(self, key, empty)
 
-        self.global_axes = [self._zeros_per_frame(3) for n in n_res]
-        self.all_bends = [self._zeros_per_frame(n-3, n-3) for n in n_res]
+        self.global_axis = [self._zeros_per_frame((3,)) for n in n_res]
+        self.all_bends = [self._zeros_per_frame((n-3, n-3)) for n in n_res]
 
     def _single_frame(self):
         _f = self._frame_index
@@ -461,12 +440,13 @@ class HELANAL(AnalysisBase):
         # compute tilt of global axes
         self.global_tilts = []
         norm_ref = (self.ref_axis**2).sum() ** 0.5
-        for axes in self.global_axes:
-            cos = np.matmul(self.ref_axis, axes.T) / (pnorm(axes)*norm_ref)
+        for axes in self.global_axis:
+            cos = np.matmul(self.ref_axis, axes.T) / \
+                (mdamath.pnorm(axes)*norm_ref)
             cos = np.clip(cos, -1.0, 1.0)
             self.global_tilts.append(np.rad2deg(np.arccos(cos)))
 
-        global_attrs = ['global_axes', 'global_tilts', 'all_bends']
+        global_attrs = ['global_axis', 'global_tilts', 'all_bends']
         attrnames = list(self.attr_shapes.keys()) + global_attrs
         # summarise
         self.summary = []

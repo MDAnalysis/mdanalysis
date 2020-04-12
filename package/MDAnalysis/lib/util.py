@@ -1679,7 +1679,7 @@ def blocks_of(a, n, m):
 
 
 def group_consecutive_integers(arr):
-    """Split a sorted array of integers into a list of consecutive sequences.
+    """Split an array of integers into a list of consecutive sequences.
 
     Parameters
     ----------
@@ -1694,11 +1694,7 @@ def group_consecutive_integers(arr):
     >>> group_consecutive_integers(arr)
     [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
     """
-    mask = np.ones(len(arr)+1, dtype=bool)
-    mask[1:-1] = (arr[1:]-arr[:-1]) > 1
-    edges = np.nonzero(mask)[0]
-    return [arr[i:j] for i, j in zip(edges[:-1], edges[1:])]
-
+    return np.split(arr, np.where(np.ediff1d(arr)-1)[0]+1)
 
 class Namespace(dict):
     """Class to allow storing attributes in new namespace. """
