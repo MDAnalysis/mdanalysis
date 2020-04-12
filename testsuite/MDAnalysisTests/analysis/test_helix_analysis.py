@@ -155,7 +155,7 @@ def test_helix_analysis_square_oct():
     shapes = (square+octagon)*n_rep
     xyz = np.array(list(zip(np.arange(len(shapes)),
                             *zip(*shapes))))
-    n_atoms = xyz.shape[0]
+    n_atoms = len(xyz)
     u = mda.Universe.empty(n_atoms, trajectory=True)
     u.load_new(xyz)
 
