@@ -89,11 +89,11 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
 
     # check types
     if (type(list_of_sets) != list and len(list_of_sets) != 0) or type(list_of_sets[0]) != set:
-        raise TypeError("list_of_sets must be a one-dimensional list of sets")
+        raise TypeError("list_of_sets must be a one-dimensional list of sets")  # pragma: no cover
 
     # Check dimensions of parameters
     if len(list_of_sets) < tau_max:
-        raise ValueError("tau_max cannot be greater than the length of list_of_sets")
+        raise ValueError("tau_max cannot be greater than the length of list_of_sets") # pragma: no cover
 
     tau_timeseries = list(range(1, tau_max + 1))
     timeseries_data = [[] for _ in range(tau_max)]
