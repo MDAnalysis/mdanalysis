@@ -52,8 +52,14 @@ from MDAnalysisTests.datafiles import (
 
 def test_absence_cutil():
     with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':None}):
-        with pytest.raises(ImportError):
-            import MDAnalysis.lib._cutil
+        if sys.version_info[:2] <= (3, 3):
+            import imp
+            with pytest.raises(ModuleNotFoundError):
+                imp.reload(sys.modules['MDAnalysis.lib.util'])
+        else:
+            import importlib
+            with pytest.raises(ModuleNotFoundError):
+                importlib.reload(sys.modules['MDAnalysis.lib.util'])
 
 def test_presence_cutil():
     mock = Mock()

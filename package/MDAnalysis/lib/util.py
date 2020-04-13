@@ -207,11 +207,7 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-try:
-    from ._cutil import unique_int_1d
-except ImportError:
-    print('MDAnalysis not installed properly')
-    sys.exit(-1)
+from ._cutil import unique_int_1d
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:
