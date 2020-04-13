@@ -152,6 +152,6 @@ Utils
 =====
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   analysis/utils
+   analysis/autocorrelation

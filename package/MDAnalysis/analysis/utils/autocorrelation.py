@@ -21,6 +21,43 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+"""Autocorrelation utilities --- :mod:`MDAnalysis.analysis.utils.autocorrelation`
+=================================================================================
+
+
+:Authors: Paul Smith & Mateusz Bieniek
+:Year: 2020
+:Copyright: GNU Public License v2
+
+.. versionadded:: 0.21.0
+
+This module is primarily for internal use by other analysis modules. It
+provides functionality for calculating the time autocorrelation function
+of a binary variable (i.e one that is either true or false at each
+frame for a given atom/molecule/set of molecules). This module includes
+functions for calculating both the time continuous autocorrelation and
+the intermittent autocorrelation. The function :func:`autocorrelation`
+calculates the continuous autocorrelation only. The data may be
+pre-processed using the function :func:`intermittency` in order to
+acount for intermittency before passing the results to
+:func:`autocorrelation`.
+
+See Gowers and Carbonne, 2015, (DOI:10.1063.1.4922445) for a further
+discussion on the time continuous and intermittent autocorrelation of
+hydrogen bond lifetimes.
+
+**Analysis tools that make use of modules**
+
+* :class:`MDAnalysis.analysis.waterdynamics.SurvivalProbability`
+    Calculates the continuous or intermittent survival probability
+    of an atom group in a region of interest.
+
+* :class:`MDAnalysis.analysis.hbonds.hbond_analysis`
+    Calculates the continuous of intermittent hydrogen bond
+    lifetime.
+
+"""
+
 from __future__ import absolute_import, division
 import numpy as np
 from copy import deepcopy
@@ -29,21 +66,25 @@ from copy import deepcopy
 def autocorrelation(list_of_sets, tau_max, window_step=1):
     r"""Implementation of a discrete autocorrelation function.
 
-    The autocorrelation of a property $x$ from a time $t=t_0$ to $t=t_0 + \tau$
+    The autocorrelation of a property :math:`x` from a time :math:`t=t_0` to :math:`t=t_0 + \tau`
     is given by:
+
     .. math::
         C(\tau) = \langle \frac{ x(t_0)x(t_0 +\tau) }{ x(t_0)x(t_0) } \rangle
 
-    where $x$ may represent any property of a particle, such as velocity or
+    where :math:`x` may represent any property of a particle, such as velocity or
     potential energy.
 
-    The survival probability, $S(\tau)$, is a special case of the time
+    This function is an implementation of a special case of the time
     autocorrelation function in which the property under consideration can
-    be encoded with indicator variables, $0$ and $1$, to represent the binary
-    state of said property. For instance, in calculating the survival probability
-    of water molecules within $5 \rm \AA$, each water molecule will either be
-    within this cutoff range ($1$) or not ($0$). The total number of water
-    molecules within the cutoff at time $t_0$ will be given by $N(t_0)$.
+    be encoded with indicator variables, :math:`0` and :math:`1`, to represent the binary
+    state of said property. This special case is often referred to as the
+    survival probability (:math:`S(\tau)`). As an example, in calculating the survival
+    probability of water molecules within :math:`5 \unicode{x212B}` of a protein, each water
+    molecule will either be within this cutoff range (:math:`1`) or not (:math:`0`). The
+    total number of water molecules within the cutoff at time :math:`t_0` will be
+    given by :math:`N(t_0)`. Other cases include the Hydrogen Bond Lifetime as
+    well as the translocation rate of cholesterol across a bilayer.
 
     The survival probability of a property of a set of particles is
     given by:
@@ -51,10 +92,10 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     .. math::
         S(\tau) =  \langle \frac{ N(t_0, t_0 + \tau )} { N(t_0) }\rangle
 
-    where $N(t0)$ is the number of particles at time $t_0$ for which the feature
-    is observed, and $N(t0, t_0 + \tau)$ is the number of particles for which
-    this feature is present at every frame from $t_0$ to $N(t0, t_0 + \tau)$.
-    The angular brackets represent an average over all time origins, $t_0$.
+    where :math:`N(t0)` is the number of particles at time :math:`t_0` for which the feature
+    is observed, and :math:`N(t0, t_0 + \tau)` is the number of particles for which
+    this feature is present at every frame from :math:`t_0` to :math:`N(t0, t_0 + \tau)`.
+    The angular brackets represent an average over all time origins, :math:`t_0`.
 
     See Araya-Secchi et al., 2014, (https://doi.org/10.1016/j.bpj.2014.05.037)
     for a description survival probability.
@@ -81,8 +122,8 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     timeseries : list of int
         the autocorelation values for each of the tau values
     timeseries_data : list of list of int
-        the raw data from which the autocorrelation is computed, i.e $S(\tau)$ at each window.
-        This allows the time dependant evolution of $S(\tau)$ to be investigated.
+        the raw data from which the autocorrelation is computed, i.e :math:`S(\tau)` at each window.
+        This allows the time dependant evolution of :math:`S(\tau)` to be investigated.
 
     .. versionadded:: 0.19.2
     """
@@ -123,26 +164,27 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
 
 
 def correct_intermittency(list_of_sets, intermittency):
-    """Preprocess data to allow intermittent behaviour prior to calling `autocorrelation`.
+    r"""Preprocess data to allow intermittent behaviour prior to calling :func:`autocorrelation`.
 
     Survival probabilty may be calculated either with a strict continuous requirement or
     a less strict intermittency. If calculating the survival probability water around a
     protein for example, in the former case the water must be within a cutoff distance
-    of the protein a every frame from $t_0$ to $t_0 + \tau$ in order for it to be considered
-    present at $t_0 + \tau$. In the intermittent case, the water molecule is allowed to
-    leave the region of interest for up to a specified consecutive number of frames.
+    of the protein at every frame from :math:`t_0` to :math:`t_0 + \tau` in order for it to be considered
+    present at :math:`t_0 + \tau`. In the intermittent case, the water molecule is allowed to
+    leave the region of interest for up to a specified consecutive number of frames whilst still
+    being considered present at :math:`t_0 + \tau`.
 
     This function pre-processes data, such as the atom ids of water molecules within a cutoff
     distance of a protein at each frame, in order to allow for intermittent behaviour, with a
     single pass over the data.
 
     For example, if an atom is absent for a number of frames equal or smaller than the parameter
-    `intermittency`, then this absence will be removed and thus the atom is considered to have
+    :attr:`intermittency`, then this absence will be removed and thus the atom is considered to have
     not left.
     e.g 7,A,A,7 with `intermittency=2` will be replaced by 7,7,7,7, where A=absence.
 
-    The returned data can be used as input to the function `autocorrelation` in order to calculate
-    the survival probability with a given intermittency.
+    The returned data can be used as input to the function :func:`autocorrelation` in order
+    to calculate the survival probability with a given intermittency.
 
     See Gowers and Carbonne, 2015, (DOI:10.1063.1.4922445) for a description of
     intermittency in the calculation of hydrogen bond lifetimes.
@@ -155,13 +197,14 @@ def correct_intermittency(list_of_sets, intermittency):
         In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
         single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]
     intermittency : int
-      The maximum gap allowed. The default intermittency=0 means that if the datapoint is missing at any frame, no
+      The maximum gap allowed. The default `intermittency=0` means that if the datapoint is missing at any frame, no
       changes are made to the data. With the value of `intermittency=2`, all datapoints missing for up to two
        consecutive frames will be instead be considered present.
 
     Returns
     -------
-        returns a new list with the IDs with added IDs which disappeared for <= :param intermittency.
+    list_of_sets: list
+        returns a new list with the IDs with added IDs which disappeared for <= :attr:`intermittency`.
         e.g If [{0, 1}, {0}, {0}, {0, 1}] is a list of sets of atom ids present at each frame and `intermittency=2`,
         both atoms will be considered present throughout and thus the returned list of sets will be
         [{0, 1}, {0, 1}, {0, 1}, {0, 1}].
