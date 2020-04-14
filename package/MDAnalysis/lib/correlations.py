@@ -42,27 +42,37 @@ pre-processed using the function :func:`intermittency` in order to
 acount for intermittency before passing the results to
 :func:`autocorrelation`.
 
-See [Gowers2015]_ for a further discussion on the time continuous and
-intermittent autocorrelation of hydrogen bond lifetimes.
+This module is inspired by seemingly disparate analyses that rely on the same
+underlying calculation, including the survival probability of water around
+proteins [Araya-Secchi2014]_, hydrogen bond lifetimes [Gowers2015]_, [Araya-Secchi2014]_,
+and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
 
-.. seeAlso:: Analysis tools that make use of modules
+.. seeAlso::
 
-* :class:`MDAnalysis.analysis.waterdynamics.SurvivalProbability`
-    Calculates the continuous or intermittent survival probability
-    of an atom group in a region of interest.
+    Analysis tools that make use of modules:
 
-* :class:`MDAnalysis.analysis.hbonds.hbond_analysis`
-    Calculates the continuous of intermittent hydrogen bond
-    lifetime.
+        * :class:`MDAnalysis.analysis.waterdynamics.SurvivalProbability`
+            Calculates the continuous or intermittent survival probability
+            of an atom group in a region of interest.
+
+        * :class:`MDAnalysis.analysis.hbonds.hbond_analysis`
+            Calculates the continuous or intermittent hydrogen bond
+            lifetime.
 
 .. rubric:: References
 
-.. [Gowers2015] Gowers, R. J., & Carbone, P. (2015). A multiscale approach to model hydrogen bonding:
-            The case of polyamide. The Journal of Chemical Physics, 142(22), 224907.
+.. [Gowers2015] Gowers, R. J., & Carbone, P. (2015).
+            A multiscale approach to model hydrogen bonding: The case of polyamide.
+            The Journal of Chemical Physics, 142(22), 224907.
             https://doi.org/10.1063/1.4922445
-.. [Araya-Secchi2014] Araya-Secchi, R., Perez-Acle, T., Kang, S., Huynh, T., Bernardin, A., Escalona, Y., Garate, J.-A., Martínez, A. D., García, I. E., Sáez, J. C., & Zhou, R. (2014).
+.. [Araya-Secchi2014] Araya-Secchi, R., Perez-Acle, T., Kang, S., Huynh, T., Bernardin, A., Escalona, Y., Garate, J.-A., Martínez, A. D., García, I. E., Sáez, J. C., & Zhou, R. (2014)
             Characterization of a Novel Water Pocket Inside the Human Cx26 Hemichannel Structure.
-            Biophysical Journal, 107(3), 599–612. https://doi.org/10.1016/J.BPJ.2014.05.037
+            Biophysical Journal. 107(3), 599–612.
+            https://doi.org/10.1016/J.BPJ.2014.05.037
+.. [Gu2019] Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)
+            Cholesterol Flip-Flop in Heterogeneous Membranes.
+            J. Chem. Theory Comput. 15 (3), 2064–2070.
+            https://doi.org/10.1021/acs.jctc.8b00933.
 
 """
 
