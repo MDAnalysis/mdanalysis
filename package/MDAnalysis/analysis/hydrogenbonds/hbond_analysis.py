@@ -442,9 +442,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
     def _prepare(self):
 
         self.hbonds = [[], [], [], [], [], []]
-        self.frames = np.arange(self.start, self.stop, self.step)
-        self.timesteps = (self.frames * self.u.trajectory.dt) + self.u.trajectory[0].time
-
+        self.timesteps = self.times
+        
         # Set atom selections if they have not been provided
         if not self.acceptors_sel:
             self.acceptors_sel = self.guess_acceptors()

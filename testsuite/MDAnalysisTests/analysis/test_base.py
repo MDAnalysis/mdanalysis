@@ -41,10 +41,10 @@ class FrameAnalysis(base.AnalysisBase):
     def __init__(self, reader, **kwargs):
         super(FrameAnalysis, self).__init__(reader, **kwargs)
         self.traj = reader
-        self.frames = []
+        self.found_frames = []
 
     def _single_frame(self):
-        self.frames.append(self._ts.frame)
+        self.found_frames.append(self._ts.frame)
 
 
 class IncompleteAnalysis(base.AnalysisBase):
@@ -65,29 +65,41 @@ class OldAPIAnalysis(base.AnalysisBase):
 def u():
     return mda.Universe(PSF, DCD)
 
+@pytest.fixture()
+def n_frames(u):
+    return len(u.trajectory)
 
-def test_default(u):
+
+def test_default(u, n_frames):
     an = FrameAnalysis(u.trajectory).run()
-    assert an.n_frames == len(u.trajectory)
-    assert_equal(an.frames, list(range(len(u.trajectory))))
+    assert an.n_frames == n_frames
+    assert_equal(an.found_frames, np.arange(n_frames))
+    assert_equal(an.frames, np.arange(n_frames))
+    times = (an.frames+1)/u.trajectory.dt  # DCD starts at 1
+    assert_almost_equal(an.times, times, decimal=4)
 
 
-def test_start(u):
+def test_start(u, n_frames):
     an = FrameAnalysis(u.trajectory).run(start=20)
-    assert an.n_frames == len(u.trajectory) - 20
-    assert_equal(an.frames, list(range(20, len(u.trajectory))))
+    assert an.n_frames == n_frames - 20
+    assert_equal(an.found_frames, np.arange(20, n_frames))
+    assert_equal(an.frames, np.arange(20, n_frames))
 
 
 def test_stop(u):
     an = FrameAnalysis(u.trajectory).run(stop=20)
     assert an.n_frames == 20
-    assert_equal(an.frames, list(range(20)))
+    assert_equal(an.found_frames, np.arange(20))
+    assert_equal(an.frames, np.arange(20))
 
 
-def test_step(u):
+def test_step(u, n_frames):
     an = FrameAnalysis(u.trajectory).run(step=20)
     assert an.n_frames == 5
-    assert_equal(an.frames, list(range(98))[::20])
+    assert_equal(an.found_frames, np.arange(n_frames)[::20])
+    assert_equal(an.frames, np.arange(n_frames)[::20])
+    times = (an.frames+1)/u.trajectory.dt  # DCD starts at 1
+    assert_almost_equal(an.times, times, decimal=4)
 
 
 def test_verbose(u):
