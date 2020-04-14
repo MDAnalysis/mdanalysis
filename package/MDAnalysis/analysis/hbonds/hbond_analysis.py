@@ -334,8 +334,7 @@ from .. import base
 from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
-
-from ..utils.autocorrelation import autocorrelation, correct_intermittency
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')

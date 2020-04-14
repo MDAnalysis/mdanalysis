@@ -445,12 +445,13 @@ Classes
 """
 from __future__ import print_function, division, absolute_import
 
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
+import MDAnalysis.analysis.hbonds
 from six.moves import range, zip_longest
 import logging
 import warnings
 import numpy as np
-import MDAnalysis.analysis.hbonds
-from .utils.autocorrelation import autocorrelation, correct_intermittency
+
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 from MDAnalysis.lib.log import ProgressBar

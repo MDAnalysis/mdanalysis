@@ -147,11 +147,3 @@ Data
    :maxdepth: 1
 
    analysis/data
-
-Utils
-=====
-
-.. toctree::
-   :maxdepth: 2
-
-   analysis/autocorrelation

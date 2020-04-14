@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""Autocorrelation utilities --- :mod:`MDAnalysis.analysis.utils.autocorrelation`
+"""Correlations utilities --- :mod:`MDAnalysis.lib.correlations`
 =================================================================================
 
 
@@ -42,11 +42,10 @@ pre-processed using the function :func:`intermittency` in order to
 acount for intermittency before passing the results to
 :func:`autocorrelation`.
 
-See Gowers and Carbonne, 2015, (DOI:10.1063.1.4922445) for a further
-discussion on the time continuous and intermittent autocorrelation of
-hydrogen bond lifetimes.
+See [Gowers2015]_ for a further discussion on the time continuous and
+intermittent autocorrelation of hydrogen bond lifetimes.
 
-**Analysis tools that make use of modules**
+.. seeAlso:: Analysis tools that make use of modules
 
 * :class:`MDAnalysis.analysis.waterdynamics.SurvivalProbability`
     Calculates the continuous or intermittent survival probability
@@ -55,6 +54,15 @@ hydrogen bond lifetimes.
 * :class:`MDAnalysis.analysis.hbonds.hbond_analysis`
     Calculates the continuous of intermittent hydrogen bond
     lifetime.
+
+.. rubric:: References
+
+.. [Gowers2015] Gowers, R. J., & Carbone, P. (2015). A multiscale approach to model hydrogen bonding:
+            The case of polyamide. The Journal of Chemical Physics, 142(22), 224907.
+            https://doi.org/10.1063/1.4922445
+.. [Araya-Secchi2014] Araya-Secchi, R., Perez-Acle, T., Kang, S., Huynh, T., Bernardin, A., Escalona, Y., Garate, J.-A., Martínez, A. D., García, I. E., Sáez, J. C., & Zhou, R. (2014).
+            Characterization of a Novel Water Pocket Inside the Human Cx26 Hemichannel Structure.
+            Biophysical Journal, 107(3), 599–612. https://doi.org/10.1016/J.BPJ.2014.05.037
 
 """
 
@@ -80,7 +88,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     be encoded with indicator variables, :math:`0` and :math:`1`, to represent the binary
     state of said property. This special case is often referred to as the
     survival probability (:math:`S(\tau)`). As an example, in calculating the survival
-    probability of water molecules within :math:`5 \unicode{x212B}` of a protein, each water
+    probability of water molecules within 5 Å of a protein, each water
     molecule will either be within this cutoff range (:math:`1`) or not (:math:`0`). The
     total number of water molecules within the cutoff at time :math:`t_0` will be
     given by :math:`N(t_0)`. Other cases include the Hydrogen Bond Lifetime as
@@ -97,8 +105,7 @@ def autocorrelation(list_of_sets, tau_max, window_step=1):
     this feature is present at every frame from :math:`t_0` to :math:`N(t0, t_0 + \tau)`.
     The angular brackets represent an average over all time origins, :math:`t_0`.
 
-    See Araya-Secchi et al., 2014, (https://doi.org/10.1016/j.bpj.2014.05.037)
-    for a description survival probability.
+    See [Araya-Secchi2014]_ for a description survival probability.
 
     Parameters
     ----------
@@ -186,7 +193,7 @@ def correct_intermittency(list_of_sets, intermittency):
     The returned data can be used as input to the function :func:`autocorrelation` in order
     to calculate the survival probability with a given intermittency.
 
-    See Gowers and Carbonne, 2015, (DOI:10.1063.1.4922445) for a description of
+    See [Gowers2015]_ for a description of
     intermittency in the calculation of hydrogen bond lifetimes.
 
     # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)
@@ -247,3 +254,4 @@ def correct_intermittency(list_of_sets, intermittency):
 
                 seen_frames_ago[atomid] = 0
     return list_of_sets
+

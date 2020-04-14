@@ -23,7 +23,7 @@
 from __future__ import print_function, absolute_import
 import MDAnalysis
 from MDAnalysis.analysis import waterdynamics
-from MDAnalysis.analysis.utils.autocorrelation import autocorrelation, correct_intermittency
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
