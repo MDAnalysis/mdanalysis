@@ -111,6 +111,7 @@ Enhancements
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
   * Added weights_groupselections option in RMSD for mapping custom weights 
     to groupselections (PR #2610, Issue #2429)
+  * Added user warning for CRYST1 cryo-em structures (PR #2645, Issue #2599)
 
 Changes
   * Removed `details` from `ClusteringMethod`s (Issue #2575, PR #2620)
