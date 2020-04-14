@@ -188,14 +188,10 @@ class TestSelectionsCHARMM(object):
     @pytest.mark.parametrize('selstr, size', [
         ('around 4.0 bynum 1943', 32),
         ('around 4.0 index 1942', 32),
-        # ('around 0.0 resid 1', 0),  # gh-2656
+        ('around 0.0 resid 1', 0),  # gh-2656
     ])
     def test_around(self, universe, selstr, size):
-        if 'around 0.0' in selstr:
-            with pytest.warns(UserWarning):
-                sel = universe.select_atoms(selstr)
-        else:
-            sel = universe.select_atoms(selstr)
+        sel = universe.select_atoms(selstr)
         assert_equal(len(sel), size)
 
     @pytest.mark.xfail(reason="passes in develop, fails in gh-2657, len(res)==7")
@@ -210,8 +206,6 @@ class TestSelectionsCHARMM(object):
             'around 0.0 resid 3')
         assert len(ag) == 1
 
-    @pytest.mark.xfail(reason="nsgrid broken, see gh-2345, finds 10 atoms")
-    # https://github.com/MDAnalysis/mdanalysis/issues/2345#issuecomment-529888097
     def test_around_triclinic_nsgrid(self, u_pbc_triclinic,
                                      cutoff=1.5e-4):
         u_small = u_pbc_triclinic.atoms[:50]
@@ -249,8 +243,7 @@ class TestSelectionsCHARMM(object):
         for i in range(n_dup):
             new_ag[i + 1].position = reference_pos
 
-        with pytest.warns(UserWarning):
-            sel = new_ag.select_atoms(selstr)
+        sel = new_ag.select_atoms(selstr)
         assert_equal(len(sel), size)
 
     @pytest.mark.xfail(reason="see gh-2657")
@@ -258,8 +251,7 @@ class TestSelectionsCHARMM(object):
         # around 0.0 with wrapping
         u = mda.Universe(PDB)
         u.dimensions = [1e-2, 1e-2, 1e-2, 90, 90, 90]
-        with pytest.warns(UserWarning):
-            ag = u.select_atoms('around 0.0 resid 1')
+        ag = u.select_atoms('around 0.0 resid 1')
         assert len(ag) == len(u.atoms) - len(u.residues[0].atoms)
 
     @pytest.mark.parametrize('selstr', [

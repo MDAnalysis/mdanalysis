@@ -49,13 +49,10 @@ import functools
 import warnings
 
 import numpy as np
-import scipy
-import scipy.spatial
-from scipy.spatial.distance import cdist
 
 
 from ..lib.util import unique_int_1d
-from ..lib import distances
+from ..lib import distances, pkdtree
 from ..exceptions import SelectionError, NoDataError
 
 
@@ -264,23 +261,21 @@ class AroundSelection(DistanceSelection):
         # All atoms in group that aren't in sel
         sys = group[~np.in1d(group.indices, sel.indices)]
 
-        if self.cutoff == 0.0:
-            # check for entries with the same position
-            result = cdist(sel.positions, sys.positions)
-            indices = np.where(result == 0)[1]
-            warnings.warn("No support for 'around 0.0' with wrapping")
-            if result.size > 0:
-                return sys[np.asarray(indices, dtype=np.int64)].unique
-            else:
-                return sys[0:0]
-
         if not sys or not sel:
             return sys[[]]
 
         box = self.validate_dimensions(group.dimensions)
-        pairs = distances.capped_distance(sel.positions, sys.positions,
-                                          self.cutoff, box=box,
-                                          return_distances=False)
+        pkdt = pkdtree.PeriodicKDTree(box=box)
+
+        if box is not None:
+            pkdt.set_coords(coords=sys.positions,
+                            cutoff=self.cutoff)
+        else:
+            pkdt.set_coords(coords=sys.positions,
+                            cutoff=None)
+
+        pairs = pkdt.search_tree(centers=sel.positions,
+                                 radius=self.cutoff)
         if pairs.size > 0:
             indices = np.sort(pairs[:, 1])
 
