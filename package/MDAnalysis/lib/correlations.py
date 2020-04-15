@@ -61,10 +61,6 @@ and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
 
 .. rubric:: References
 
-.. [Araya-Secchi2014] Araya-Secchi, R., Perez-Acle, T., Kang, S., Huynh, T., Bernardin, A., Escalona, Y., Garate, J.-A., Martínez, A. D., García, I. E., Sáez, J. C., & Zhou, R. (2014)
-            Characterization of a Novel Water Pocket Inside the Human Cx26 Hemichannel Structure.
-            Biophysical Journal. 107(3), 599–612.
-            https://doi.org/10.1016/J.BPJ.2014.05.037
 .. [Gu2019] Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)
             Cholesterol Flip-Flop in Heterogeneous Membranes.
             J. Chem. Theory Comput. 15 (3), 2064–2070.
