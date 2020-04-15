@@ -61,10 +61,6 @@ and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
 
 .. rubric:: References
 
-.. [Gowers2015] Gowers, R. J., & Carbone, P. (2015).
-            A multiscale approach to model hydrogen bonding: The case of polyamide.
-            The Journal of Chemical Physics, 142(22), 224907.
-            https://doi.org/10.1063/1.4922445
 .. [Araya-Secchi2014] Araya-Secchi, R., Perez-Acle, T., Kang, S., Huynh, T., Bernardin, A., Escalona, Y., Garate, J.-A., Martínez, A. D., García, I. E., Sáez, J. C., & Zhou, R. (2014)
             Characterization of a Novel Water Pocket Inside the Human Cx26 Hemichannel Structure.
             Biophysical Journal. 107(3), 599–612.
