@@ -214,9 +214,9 @@ def correct_intermittency(list_of_sets, intermittency):
         In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
         single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]
     intermittency : int
-      The maximum gap allowed. The default `intermittency=0` means that if the datapoint is missing at any frame, no
-      changes are made to the data. With the value of `intermittency=2`, all datapoints missing for up to two
-       consecutive frames will be instead be considered present.
+        The maximum gap allowed. The default `intermittency=0` means that if the datapoint is missing at any frame, no
+        changes are made to the data. With the value of `intermittency=2`, all datapoints missing for up to two
+        consecutive frames will be instead be considered present.
 
     Returns
     -------
