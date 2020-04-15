@@ -145,7 +145,6 @@ import warnings
 import MDAnalysis.lib.qcprot as qcp
 from MDAnalysis.analysis.base import AnalysisBase
 from MDAnalysis.exceptions import SelectionError, NoDataError
-from MDAnalysis.lib.log import ProgressMeter
 from MDAnalysis.lib.util import asiterable, iterable, get_weights
 
 
@@ -417,7 +416,7 @@ class RMSD(AnalysisBase):
              length) or if it is not a 1D array (see
              :func:`MDAnalysis.lib.util.get_weights`).
 
-             A :exc:`ValueError` is also raised if the length of `weights_groupselections` 
+             A :exc:`ValueError` is also raised if the length of `weights_groupselections`
              are not compatible with `groupselections`.
 
         Notes
@@ -546,7 +545,7 @@ class RMSD(AnalysisBase):
         # check weights type
         if iterable(self.weights) and (np.array(weights).dtype
                                 not in (np.dtype('float64'),np.dtype('int64'))):
-            raise TypeError("weight should only be be 'mass', None or 1D float array."
+            raise TypeError("weights should only be 'mass', None or 1D float array."
                                  "For weights on groupselections, use **weight_groupselections** ")
         if iterable(self.weights) or self.weights != "mass":
             get_weights(self.mobile_atoms, self.weights)
@@ -625,8 +624,6 @@ class RMSD(AnalysisBase):
         self.rmsd = np.zeros((self.n_frames,
                               3 + len(self._groupselections_atoms)))
 
-        self._pm.format = ("RMSD {rmsd:5.2f} A at frame "
-                           "{step:5d}/{numsteps}  [{percentage:5.1f}%]")
         self._mobile_coordinates64 = self.mobile_atoms.positions.copy().astype(np.float64)
 
     def _single_frame(self):
@@ -672,8 +669,6 @@ class RMSD(AnalysisBase):
             self.rmsd[self._frame_index, 2] = qcp.CalcRMSDRotationalMatrix(
                 self._ref_coordinates64, self._mobile_coordinates64,
                 self._n_atoms, None, self.weights_select)
-
-        self._pm.rmsd = self.rmsd[self._frame_index, 2]
 
 
 class RMSF(AnalysisBase):

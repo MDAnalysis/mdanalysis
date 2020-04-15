@@ -186,14 +186,6 @@ class TestRMSD(object):
         return [[0, 1, 0, 0, 0],
                 [49, 50, 4.6997, 1.9154, 2.7139]]
 
-    def test_progress_meter(self, capsys, universe):
-        RMSD = MDAnalysis.analysis.rms.RMSD(universe, verbose=True)
-        RMSD.run()
-        out, err = capsys.readouterr()
-        expected = 'RMSD  6.93 A at frame    98/98  [100.0%]'
-        actual = err.strip().split('\r')[-1]
-        assert_equal(actual, expected)
-
     def test_rmsd(self, universe, correct_values):
         RMSD = MDAnalysis.analysis.rms.RMSD(universe, select='name CA')
         RMSD.run(step=49)
@@ -281,13 +273,13 @@ class TestRMSD(object):
                             err_msg="error: rmsd profile should match "
                             "between applied mass and universe.atoms.masses")
 
-    def test_rmsd_scalar_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+    def test_rmsd_scalar_weights_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights=42)
 
-    def test_rmsd_string_weights_raises_TypeError(self, universe):
-        with pytest.raises(TypeError):
+    def test_rmsd_string_weights_raises_ValueError(self, universe):
+        with pytest.raises(ValueError):
             RMSD = MDAnalysis.analysis.rms.RMSD(
                 universe, weights="Jabberwock")
 
