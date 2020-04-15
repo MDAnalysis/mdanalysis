@@ -38,6 +38,7 @@ from MDAnalysisTests.util import no_deprecated_call
 
 class FrameAnalysis(base.AnalysisBase):
     """Just grabs frame numbers of frames it goes over"""
+
     def __init__(self, reader, **kwargs):
         super(FrameAnalysis, self).__init__(reader, **kwargs)
         self.traj = reader
@@ -54,6 +55,7 @@ class IncompleteAnalysis(base.AnalysisBase):
 
 class OldAPIAnalysis(base.AnalysisBase):
     """for version 0.15.0"""
+
     def __init__(self, reader, **kwargs):
         self._setup_frames(reader, **kwargs)
 
@@ -61,45 +63,37 @@ class OldAPIAnalysis(base.AnalysisBase):
         pass
 
 
-@pytest.fixture()
+@pytest.fixture(scope='module')
 def u():
     return mda.Universe(PSF, DCD)
 
-@pytest.fixture()
-def n_frames(u):
-    return len(u.trajectory)
+
+FRAMES_ERR = 'AnalysisBase.frames is incorrect'
+TIMES_ERR = 'AnalysisBase.times is incorrect'
 
 
-def test_default(u, n_frames):
-    an = FrameAnalysis(u.trajectory).run()
-    assert an.n_frames == n_frames
-    assert_equal(an.found_frames, np.arange(n_frames))
-    assert_equal(an.frames, np.arange(n_frames))
-    times = (an.frames+1)/u.trajectory.dt  # DCD starts at 1
-    assert_almost_equal(an.times, times, decimal=4)
+@pytest.mark.parametrize('run_kwargs,frames', [
+    ({}, np.arange(98)),
+    ({'start': 20}, np.arange(20, 98)),
+    ({'stop': 30}, np.arange(30)),
+    ({'step': 10}, np.arange(0, 98, 10))
+])
+def test_start_stop_step(u, run_kwargs, frames):
+    an = FrameAnalysis(u.trajectory).run(**run_kwargs)
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+    assert_almost_equal(an.times, frames+1, decimal=4, err_msg=TIMES_ERR)
 
 
-def test_start(u, n_frames):
-    an = FrameAnalysis(u.trajectory).run(start=20)
-    assert an.n_frames == n_frames - 20
-    assert_equal(an.found_frames, np.arange(20, n_frames))
-    assert_equal(an.frames, np.arange(20, n_frames))
-
-
-def test_stop(u):
-    an = FrameAnalysis(u.trajectory).run(stop=20)
-    assert an.n_frames == 20
-    assert_equal(an.found_frames, np.arange(20))
-    assert_equal(an.frames, np.arange(20))
-
-
-def test_step(u, n_frames):
-    an = FrameAnalysis(u.trajectory).run(step=20)
-    assert an.n_frames == 5
-    assert_equal(an.found_frames, np.arange(n_frames)[::20])
-    assert_equal(an.frames, np.arange(n_frames)[::20])
-    times = (an.frames+1)/u.trajectory.dt  # DCD starts at 1
-    assert_almost_equal(an.times, times, decimal=4)
+def test_frames_times():
+    u = mda.Universe(TPR, XTC)  # dt = 100
+    an = FrameAnalysis(u.trajectory).run(start=1, stop=8, step=2)
+    frames = np.array([1, 3, 5, 7])
+    assert an.n_frames == len(frames)
+    assert_equal(an.found_frames, frames)
+    assert_equal(an.frames, frames, err_msg=FRAMES_ERR)
+    assert_almost_equal(an.times, frames*100, decimal=4, err_msg=TIMES_ERR)
 
 
 def test_verbose(u):
@@ -162,11 +156,11 @@ def simple_function(mobile):
 
 
 @pytest.mark.parametrize('start, stop, step, nframes', [
-        (None, None, 2, 49),
-        (None, 50, 2, 25),
-        (20, 50, 2, 15),
-        (20, 50, None, 30)
-    ])
+    (None, None, 2, 49),
+    (None, 50, 2, 25),
+    (20, 50, 2, 15),
+    (20, 50, None, 30)
+])
 def test_AnalysisFromFunction(u, start, stop, step, nframes):
     ana1 = base.AnalysisFromFunction(simple_function, mobile=u.atoms)
     ana1.run(start=start, stop=stop, step=step)
@@ -191,7 +185,8 @@ def test_AnalysisFromFunction(u, start, stop, step, nframes):
 
 
 def mass_xyz(atomgroup1, atomgroup2, masses):
-        return atomgroup1.positions * masses
+    return atomgroup1.positions * masses
+
 
 def test_AnalysisFromFunction_args_content(u):
     protein = u.select_atoms('protein')
@@ -202,7 +197,7 @@ def test_AnalysisFromFunction_args_content(u):
     result = np.sum(ans.run().results)
     assert_almost_equal(result, -317054.67757345125, decimal=6)
     assert (ans.args[0] is protein) and (ans.args[1] is another)
-    assert  ans._trajectory is protein.universe.trajectory
+    assert ans._trajectory is protein.universe.trajectory
 
 
 def test_analysis_class():

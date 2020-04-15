@@ -89,6 +89,13 @@ class AnalysisBase(object):
        na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
        print(na.result)
 
+    Attributes
+    ----------
+    times: np.ndarray
+        array of Timestep times. Only exists after calling run()
+    frames: np.ndarray
+        array of Timestep frame indices. Only exists after calling run()
+
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
@@ -124,6 +131,11 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+
+
+        .. versionchanged:: 1.0.0
+            Added .frames and .times arrays as attributes
+
         """
         self._trajectory = trajectory
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
@@ -143,14 +155,14 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """Set things up before the analysis loop begins"""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def _conclude(self):
         """Finalise the results you've gathered.
 
         Called at the end of the run() method to finish everything up.
         """
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, verbose=None):
         """Perform the calculation
@@ -168,7 +180,8 @@ class AnalysisBase(object):
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose', False) if verbose is None else verbose
+        verbose = getattr(self, '_verbose',
+                          False) if verbose is None else verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
@@ -176,7 +189,7 @@ class AnalysisBase(object):
         for i, ts in enumerate(ProgressBar(
                 self._trajectory[self.start:self.stop:self.step],
                 verbose=verbose)):
-            self._frame_index =  i
+            self._frame_index = i
             self._ts = ts
             self.frames[i] = ts.frame
             self.times[i] = ts.time
