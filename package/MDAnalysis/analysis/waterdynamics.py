@@ -1172,7 +1172,8 @@ class SurvivalProbability(object):
 
 
     .. versionadded:: 0.11.0
-
+    .. versionchanged:: 0.21.0
+        Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
     """
@@ -1259,7 +1260,8 @@ class SurvivalProbability(object):
         # fixme - to parallise: the section should be rewritten so that this loop only creates a list of indices,
         # on which the parallel _single_frame can be applied.
 
-        # skip frames that will not be used
+        # skip frames that will not be used in order to improve performance
+        # because AtomGroup.select_atoms is the most expensive part of this calculation
         # Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip
         # Intermittency means that we have to load the extra frames to know if the atom is actually missing.
         # Say step=5 and tau=1, intermittency=0: LLSSS LLSSS
