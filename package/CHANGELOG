@@ -17,11 +17,13 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
-         wvandertoorn, cbouy, AmeyaHarmalkar
+         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix
 
   * 0.21.0
 
 Fixes
+  * Checks for cryo-em 1 A^3 default CRYST1 record, 
+    disabling setting of box dimensions if found (Issue #2599)
   * mdamath.angles now returns np.pi instead of -np.pi in cases of
     lower bound roundoff errors. (Issue #2632, PR #2634)
   * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
