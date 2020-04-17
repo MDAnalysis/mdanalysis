@@ -54,11 +54,11 @@ def test_absence_cutil():
     with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':None}):
         if sys.version_info[:2] <= (3, 3):
             import imp
-            with pytest.raises(ModuleNotFoundError):
+            with pytest.raises(ImportError):
                 imp.reload(sys.modules['MDAnalysis.lib.util'])
         else:
             import importlib
-            with pytest.raises(ModuleNotFoundError):
+            with pytest.raises(ImportError):
                 importlib.reload(sys.modules['MDAnalysis.lib.util'])
 
 def test_presence_cutil():
