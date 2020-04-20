@@ -223,7 +223,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         It is highly recommended that a universe topology with bonding information is used, as this is the only way
         that guarantees the correct identification of donor-hydrogen pairs.
-
         """
 
         self.u = universe
