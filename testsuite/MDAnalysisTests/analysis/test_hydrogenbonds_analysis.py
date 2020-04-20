@@ -362,10 +362,3 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
         counts = h.count_by_type()
         assert int(counts[0, 2]) == ref_count
-
-    def test_timesteps_raises_DeprecationWarning(self, h):
-        with pytest.warns(DeprecationWarning) as exc:
-            h.timesteps
-        assert len(exc) == 1
-        err = 'Please use HydrogenBondAnalysis.times instead.'
-        assert err in exc[0].message.args[0]

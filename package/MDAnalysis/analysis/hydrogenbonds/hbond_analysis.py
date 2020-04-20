@@ -224,9 +224,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         It is highly recommended that a universe topology with bonding information is used, as this is the only way
         that guarantees the correct identification of donor-hydrogen pairs.
 
-        .. versionchanged:: 1.0.0
-            The `timesteps` attribute has been deprecated and replaced by the `times` attribute.
-
         """
 
         self.u = universe
@@ -273,12 +270,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential hydrogen atoms involved
         in hydrogen bonding. This str may then be modified before being used to set the attribute
         :attr:`hydrogens_sel`.
-
-        .. versionchanged: 1.0.0
-            Added `min_mass` parameter to specify minimum mass (Issue #2472)
-
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
         """
 
         if min_mass > max_mass:
@@ -331,8 +322,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`donors_sel`.
 
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
         """
 
         # We need to know `hydrogens_sel` before we can find donors
@@ -387,8 +376,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`acceptors_sel`.
 
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
         """
 
         ag = self.u.select_atoms(select)
@@ -443,14 +430,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             hydrogens = hydrogens[hydrogen_indices]
 
         return donors, hydrogens
-
-    @property
-    def timesteps(self):
-        warnings.warn("This property is deprecated as of MDAnalysis version 1.0 "
-                      "and will be removed in version 2.0. "
-                      "Please use HydrogenBondAnalysis.times instead.",
-                      category=DeprecationWarning)
-        return self.times
 
     def _prepare(self):
         self.hbonds = [[], [], [], [], [], []]
