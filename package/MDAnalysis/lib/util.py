@@ -211,7 +211,7 @@ try:
     from ._cutil import unique_int_1d
 except ImportError:
     print("MDAnalysis not installed properly.")
-    raise
+    raise ImportError
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:

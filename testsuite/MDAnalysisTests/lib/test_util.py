@@ -52,7 +52,8 @@ from MDAnalysisTests.datafiles import (
 
 def test_absence_cutil():
     with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':None}):
-        if sys.version_info[:2] <= (3, 3):
+        #http://docs.python.org/library/sys.html#sys.hexversion
+        if sys.hexversion <= 0x03030000:
             import imp
             with pytest.raises(ImportError):
                 imp.reload(sys.modules['MDAnalysis.lib.util'])
