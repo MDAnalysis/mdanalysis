@@ -204,6 +204,7 @@ from . import units
 # Bring some often used objects into the current namespace
 from .core.universe import Universe, Merge
 from .core.groups import AtomGroup, ResidueGroup, SegmentGroup
+from .core.ensemble import Ensemble
 from .coordinates.core import writer as Writer
 
 # After Universe import
