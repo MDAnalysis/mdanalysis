@@ -231,3 +231,14 @@ def test_nsgrid_probe_close_to_box_boundary():
     expected_dists = np.array([2.3689647], dtype=np.float64)
     assert_equal(results.get_pairs(), expected_pairs)
     assert_allclose(results.get_pair_distances(), expected_dists, rtol=1.e-6)
+
+
+def test_zero_max_dist():
+    # see issue #2656
+    # searching with max_dist = 0.0 shouldn't cause segfault (and infinite subboxes)
+    ref = np.array([1.0, 1.0, 1.0], dtype=np.float32)
+    conf = np.array([2.0, 1.0, 1.0], dtype=np.float32)
+
+    box = np.array([10., 10., 10., 90., 90., 90.], dtype=np.float32)
+
+    res = mda.lib.distances._nsgrid_capped(ref, conf, box=box, max_cutoff=0.0)
