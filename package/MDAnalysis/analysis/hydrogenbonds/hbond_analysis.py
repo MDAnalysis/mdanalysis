@@ -223,6 +223,10 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         It is highly recommended that a universe topology with bonding information is used, as this is the only way
         that guarantees the correct identification of donor-hydrogen pairs.
+
+        .. versionchanged:: 1.0.0
+            The `timesteps` attribute has been deprecated and replaced by the `times` attribute.
+
         """
 
         self.u = universe

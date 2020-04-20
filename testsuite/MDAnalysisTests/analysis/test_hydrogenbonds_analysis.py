@@ -78,7 +78,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         ref_counts = np.array([3, 2, 4, 4, 4, 4, 3, 2, 3, 3])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.timesteps, ref_times)
+        assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
@@ -99,7 +99,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
         # count_by_ids() returns raw counts
         # convert to fraction of time that bond was observed
-        counts = unique_hbonds[:, 3] / len(h.timesteps)
+        counts = unique_hbonds[:, 3] / len(h.times)
 
         assert_allclose(counts, ref_counts)
 
@@ -207,7 +207,7 @@ class TestHydrogenBondAnalysisMock(object):
         ref_counts = np.array([1, 0, 1])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.timesteps, ref_times)
+        assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
 
@@ -352,7 +352,7 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
         ref_counts = np.array([2, 4, 4, 2, 3])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.timesteps, ref_times)
+        assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
@@ -362,3 +362,10 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
 
         counts = h.count_by_type()
         assert int(counts[0, 2]) == ref_count
+
+    def test_timesteps_raises_DeprecationWarning(self, h):
+        with pytest.warns(DeprecationWarning) as exc:
+            h.timesteps
+        assert len(exc) == 1
+        err = 'Please use HydrogenBondAnalysis.times instead.'
+        assert err in exc[0].message.args[0]
