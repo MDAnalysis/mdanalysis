@@ -575,7 +575,7 @@ cdef class _NSGrid(object):
         self.ncoords = ncoords
 
         if not force:
-            # Calculate best cutoff, with 0.5A minimum
+            # Calculate best cutoff, with 0.01A minimum
             cutoff = max(cutoff, 0.01)
             original_cutoff = cutoff
             # First, we add a small margin to the cell size so that we can safely
