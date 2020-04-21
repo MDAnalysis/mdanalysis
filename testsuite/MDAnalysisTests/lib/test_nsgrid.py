@@ -29,7 +29,7 @@ from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import GRO, Martini_membrane_gro
+from MDAnalysisTests.datafiles import GRO, Martini_membrane_gro, PDB
 from MDAnalysis.lib import nsgrid
 
 
@@ -242,3 +242,20 @@ def test_zero_max_dist():
     box = np.array([10., 10., 10., 90., 90., 90.], dtype=np.float32)
 
     res = mda.lib.distances._nsgrid_capped(ref, conf, box=box, max_cutoff=0.0)
+
+
+@pytest.fixture()
+def u_pbc_triclinic():
+    u = mda.Universe(PDB)
+    u.dimensions = [10, 10, 10, 60, 60, 60]
+    return u
+
+
+def test_around_superposed_small_res(u_pbc_triclinic):
+    ag = u_pbc_triclinic.select_atoms('around 0.0 resid 10')
+    assert len(ag) == 0
+
+
+def test_around_superposed_large_res(u_pbc_triclinic):
+    ag = u_pbc_triclinic.select_atoms('around 0.0 resid 3')
+    assert len(ag) == 0
