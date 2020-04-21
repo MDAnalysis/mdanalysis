@@ -210,8 +210,9 @@ from ..exceptions import StreamWarning, DuplicateWarning
 try:
     from ._cutil import unique_int_1d
 except ImportError:
-    print("MDAnalysis not installed properly.")
-    raise ImportError
+    raise ImportError("MDAnalysis not installed properly. "
+                      "This can happen if your C extensions "
+                      "have not been built.")
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:
