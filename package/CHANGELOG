@@ -78,6 +78,7 @@ Fixes
   * Fixed HydrogenBondAnalysis to return atom indices rather than atom ids (PR #2572).
     Fixed the check for bond information in the _get_dh_pairs method (Issue #2396).
   * Added missing selection module to leaflet.py (Issue #2612)
+  * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
   * Added elements attribute to PDBParser (Issue #2553, #2647)
