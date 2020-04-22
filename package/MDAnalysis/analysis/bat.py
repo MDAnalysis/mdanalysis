@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v21 or any higher version
+# Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -23,11 +23,11 @@
 r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 ===========================================================================
 
-:Author: David Minh
+:Author: Soohaeng Yoo Willow and David Minh
 :Year: 2020
-:Copyright: GNU Public License v21
+:Copyright: GNU Public License, v2 or any higher version
 
-.. versionadded:: N/A
+.. versionadded:: 2.0.0
 
 This module contains classes for interconverting between Cartesian and an
 internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,
@@ -35,7 +35,7 @@ for a given set of atoms or residues. This coordinate system is designed
 to be complete, non-redundant, and minimize correlations between degrees
 of freedom. Complete and non-redundant means that for N atoms there will
 be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions [Hikiri2016]_.
+minimized by using improper torsions, as described in [Hikiri2016]_.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -50,11 +50,11 @@ the correlation between the torsion angles.
 
 Each molecule also has six external coordinates that define its translation and
 rotation in space. The three Cartesian coordinates of the first atom are the
-molecule's translational degrees of freedom. Rotational degreres of freedom are
+molecule's translational degrees of freedom. Rotational degrees of freedom are
 specified by the axis-angle convention. The rotation axis is a normalized vector
-pointing from the first to second atom. It is described by the polar angle, phi,
-and azimuthal angle, theta. omega is a third angle that describes the rotation
-of the third atom about the axis.
+pointing from the first to second atom. It is described by the polar angle,
+:math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
+that describes the rotation of the third atom about the axis.
 
 This module was adapted from AlGDock [Minh2020]_.
 
@@ -72,9 +72,10 @@ Example applications
 
 The :class:`~MDAnalysis.analysis.bat.BAT` class defines bond-angle-torsion
 coordinates based on the topology of an atom group and interconverts between
-Cartesian and BAT coordinate systems. For example, we can determine internal
-coordinates for residues 5-10 of adenylate kinase (AdK). The trajectory is
-included within the test data files::
+Cartesian and BAT coordinate systems.
+
+For example, we can determine internal coordinates for residues 5-10
+of adenylate kinase (AdK). The trajectory is included within the test data files::
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import PSF, DCD
@@ -91,15 +92,65 @@ included within the test data files::
    # Calculate BAT coordinates for a trajectory
    R.run()
 
+After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
+:attr:`R.bat<BAT.bat>`. The following code snippets assume that the previous
+snippet has been executed.
+
+Reconstruct Cartesian coordinates for the first frame::
+
    # Reconstruct Cartesian coordinates from BAT coordinates
-   bat = R.bat[0]
-   XYZ = R.Cartesian(bat)
+   # of the first frame
+   XYZ = R.Cartesian(R.bat[0,:])
 
    # The difference between the original and reconstructed coordinates
    # should be zero.
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
-After R.run(), the coordinates can be accessed with :attr:`R.bat`.
+Change a single torsion angle by :math:`\pi`::
+
+   bat = R.bat[0,:]
+   bat[bat.shape[0]-12] += np.pi
+   XYZ = R.Cartesian(bat)
+
+   # A good number of Cartesian coordinates should have been modified
+   np.sum((XYZ - selected_residues.positions)>1E-5)
+
+Store data to the disk and load it again::
+
+   # BAT coordinates can be saved to disk in the numpy binary format
+   R.save('test.npy')
+
+   # The BAT coordinates in a new BAT instance can be loaded from disk
+   # instead of using the run() method.
+   Rnew = BAT(selected_residues, filename = 'test.npy')
+
+   # The difference between the BAT coordinates before disk I/O
+   # should be zero
+   print(np.sum(np.abs(Rnew.bat - R.bat)>1E-6))
+
+
+Analysis classes
+----------------
+ .. autoclass:: BAT
+    :members:
+    :inherited-members:
+
+    .. attribute:: bat
+
+        Contains the time series of the Bond-Angle-Torsion coordinates as a
+        (nframes, 3N) :class:`numpy.ndarray` array. Each row corresponds to
+        a frame in the trajectory. In each column, the first six elements
+        describe external degrees of freedom. The first three are the center
+        of mass of the initial atom. The next three specify the  external angles
+        according to the axis-angle convention: :math:`\phi`, the polar angle,
+        :math:`\theta`, the azimuthal angle, and :math:`\omega`, a third angle
+        that describes the rotation of the third atom about the axis. The next
+        three degrees of freedom are internal degrees of freedom for the root
+        atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
+        :math:`r_{12}`, the distance between atoms 1 and 2,
+        and :math:`a_{012}`, the angle between the three atoms.
+        The rest of the array consists of all the other bond distances,
+        all the other bond angles, and then all the other torsion angles.
 
 
 References
@@ -122,78 +173,106 @@ References
    doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
 
 """
-from __future__ import absolute_import, division
-# from six.moves import zip, range
+import logging
+import warnings
 
 import numpy as np
 
-import warnings
-
 import MDAnalysis as mda
-from MDAnalysis.analysis.base import AnalysisBase
+from .base import AnalysisBase
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
+from MDAnalysis.lib.mdamath import make_whole
+
+from ..due import due, Doi
+
+logger = logging.getLogger(__name__)
 
 
 def _sort_atoms_by_mass(atoms, reverse=False):
-    r""" Sorts a list of atoms by name and then by mass
+    r"""Sorts a list of atoms by name and then by index
+
+    The atom index is used as a tiebreaker so that the ordering is reproducible.
 
     Parameters
     ----------
     ag_o : list of Atoms
-      List to sort
+        List to sort
     reverse : bool
-      Atoms will be in descending order of mass
+        Atoms will be in descending order
 
     Returns
     -------
     ag_n : list of Atoms
-      Sorted list
+        Sorted list
     """
-    return sorted(sorted(atoms, key = lambda atom:atom.name), \
-        key = lambda atom:atom.mass, reverse = reverse)
+    return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
 
 
-def _find_torsion(selected_atoms, allowed_atoms):
-    """ Finds a torsion angle adjacent to the selected atoms
-
-    The torsion angle includes an atom that is allowed_atoms and is not in
-    selected_atoms.
+def _find_torsions(root, atoms):
+    """Constructs a list of torsion angles
 
     Parameters
     ----------
-    selected_atoms : AtomGroup
-      Atoms that have already been selected
-    allowed_atoms : AtomGroup
-      Atoms that are allowed to be part of the torsion angle
+    root : AtomGroup
+        First three atoms in the coordinate system
+    atoms : AtomGroup
+        Atoms that are allowed to be part of the torsion angle
 
     Returns
     -------
-    new_torsion : AtomGroup
-      an AtomGroup that defines the torsion angle
+    torsions : list of AtomGroup
+        list of AtomGroup objects that define torsion angles
     """
-    for a1 in selected_atoms:
-        # Loop over new atoms connected to the selected atom
-        for a0 in _sort_atoms_by_mass([a for a in a1.bonded_atoms \
-            if (a in allowed_atoms) and (not a in selected_atoms)]):
-            # Find the third atom
-            for a2 in _sort_atoms_by_mass([a for a in a1.bonded_atoms \
-                if (a in allowed_atoms) and (a in selected_atoms) and (a!=a0)]):
-                # Find the fourth atom
-                for a3 in _sort_atoms_by_mass([a for a in a2.bonded_atoms \
-                    if (a in allowed_atoms) and (a in selected_atoms) and (a!=a1)]):
-                    return mda.AtomGroup([a0, a1, a2, a3])
-    raise Exception('No new torsion angle found!')
+    torsions = []
+    selected_atoms = list(root)
+    while len(selected_atoms) < len(atoms):
+        torsionAdded = False
+        for a1 in selected_atoms:
+            # Find a0, which is a new atom connected to the selected atom
+            a0_list = _sort_atoms_by_mass(a for a in a1.bonded_atoms \
+                if (a in atoms) and (a not in selected_atoms))
+            for a0 in a0_list:
+                # Find a2, which is connected to a1, is not a terminal atom,
+                # and has been selected
+                a2_list = _sort_atoms_by_mass(a for a in a1.bonded_atoms \
+                    if (a!=a0) and len(a.bonded_atoms)>1 and \
+                        (a in atoms) and (a in selected_atoms))
+                for a2 in a2_list:
+                    # Find a3, which is
+                    # connected to a2, has been selected, and is not a1
+                    a3_list = _sort_atoms_by_mass(a for a in a2.bonded_atoms \
+                        if (a!=a1) and \
+                            (a in atoms) and (a in selected_atoms))
+                    for a3 in a3_list:
+                        # Add the torsion to the list of torsions
+                        torsions.append(mda.AtomGroup([a0, a1, a2, a3]))
+                        # Add the new atom to selected_atoms
+                        # which extends the loop
+                        selected_atoms.append(a0)
+                        torsionAdded = True
+                        break  # out of the a3 loop
+                    break  # out of the a2 loop
+        if torsionAdded is False:
+            print('Selected atoms:')
+            print([a.index + 1 for a in selected_atoms])
+            print('Torsions found:')
+            print([list(t.indices + 1) for t in torsions])
+            raise ValueError('Additional torsions not found.')
+    return torsions
 
 
 class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
-    BAT coordinates will be computed for the group of atoms and all frames
-    in the trajectory belonging to `ag'.`
+    Bond-Angle-Torsions (BAT) internal coordinates will be computed for
+    the group of atoms and all frame in the trajectory belonging to `ag`.
 
     """
-    def __init__(self, ag, initial_atom=None, **kwargs):
+    @due.dcite(Doi("10.1002/jcc.26036"),
+               description="Bond-Angle-Torsions Coordinate Transformation",
+               path="MDAnalysis.analysis.bat.BAT")
+    def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
         ----------
         ag : AtomGroup or Universe
@@ -204,82 +283,101 @@ class BAT(AnalysisBase):
             ag must only include one molecule.
             If a trajectory is associated with the atoms then the computation
             iterates over the trajectory.
-        initial_atom : Atom
+        initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
             The atom whose Cartesian coordinates define the translation
             of the molecule. If not specified, the heaviest terminal atom
             will be selected.
+        filename : str
+            Name of a numpy binary file containing a saved bat array.
+            If filename is not None, the data will be loaded from this file
+            instead of being recalculated using the run() method.
 
         Raises
         ------
         AttributeError
-            If ag does not contain a bonds attribute
+            If `ag` does not contain a bonds attribute
         ValueError
-            If ag contains more than one molecule
+            If `ag` contains more than one molecule
 
         """
         super(BAT, self).__init__(ag.universe.trajectory, **kwargs)
         self._ag = ag
 
         # Check that the ag contains bonds
-        if not hasattr(ag, 'bonds'):
+        if not hasattr(self._ag, 'bonds'):
             raise AttributeError('AtomGroup has no attribute bonds')
+        if len(self._ag.fragments) > 1:
+            raise ValueError('AtomGroup has more than one molecule')
 
         # Determine the root
         # The initial atom must be a terminal atom
         terminal_atoms = _sort_atoms_by_mass(\
-          [a for a in self._ag.atoms if len(a.bonds)==1])
+            [a for a in self._ag.atoms if len(a.bonds)==1], reverse=True)
         if (initial_atom is None):
             # Select the heaviest root atoms from the heaviest terminal atom
-            initial_atom = terminal_atoms[-1]
+            initial_atom = terminal_atoms[0]
         elif (not initial_atom in terminal_atoms):
-            raise Exception('Initial atom is not a terminal atom')
+            raise ValueError('Initial atom is not a terminal atom')
         # The next atom in the root is bonded to the initial atom
+        # Since the initial atom is a terminal atom, there is only
+        # one bonded atom
         second_atom = initial_atom.bonded_atoms[0]
         # The last atom in the root is the heaviest atom
         # bonded to the second atom
-        third_atom = [a for a in second_atom.bonded_atoms \
-          if (a in self._ag) and (a!=initial_atom)][-1]
+        # If there are more than three atoms,
+        # then the last atom cannot be a terminal atom.
+        if self._ag.n_atoms != 3:
+            third_atom = _sort_atoms_by_mass(\
+                [a for a in second_atom.bonded_atoms \
+                if (a in self._ag) and (a!=initial_atom) \
+                and (a not in terminal_atoms)], \
+                reverse=True)[0]
+        else:
+            third_atom = _sort_atoms_by_mass(\
+                [a for a in second_atom.bonded_atoms \
+                if (a in self._ag) and (a!=initial_atom)], \
+                reverse=True)[0]
         self._root = mda.AtomGroup([initial_atom, second_atom, third_atom])
 
         # Construct a list of torsion angles
-        self._torsions = []
-        selected_atoms = mda.AtomGroup(self._root)
-        while len(selected_atoms) < self._ag.n_atoms:
-            try:
-                torsion = _find_torsion(selected_atoms, self._ag)
-            except:
-                raise ValueError('AtomGroup is more than one molecule')
-
-            self._torsions.append(torsion)
-            selected_atoms += torsion[0]
+        self._torsions = _find_torsions(self._root, self._ag)
 
         # Get indices of the root and torsion atoms
         # in a Cartesian positions array that matches the AtomGroup
-        ag_top_inds = list(self._ag.indices)
-        self._root_XYZ_inds = [ag_top_inds.index(a.index) for a in self._root]
-        self._torsion_XYZ_inds = [[ag_top_inds.index(a.index) for a in t] \
-          for t in self._torsions]
+        self._root_XYZ_inds = [(self._ag.indices==a.index).nonzero()[0][0] \
+            for a in self._root]
+        self._torsion_XYZ_inds = [[(self._ag.indices==a.index).nonzero()[0][0] \
+            for a in t] for t in self._torsions]
 
         # The primary torsion is the first torsion on the list
         # with the same central atoms
         prior_atoms = [sorted([a1, a2]) for (a0, a1, a2, a3) in self._torsions]
         self._primary_torsion_indices = [prior_atoms.index(prior_atoms[n]) \
-          for n in range(len(prior_atoms))]
+            for n in range(len(prior_atoms))]
+        self._unique_primary_torsion_indices = \
+            list(set(self._primary_torsion_indices))
 
         self._ag1 = mda.AtomGroup([ag[0] for ag in self._torsions])
         self._ag2 = mda.AtomGroup([ag[1] for ag in self._torsions])
         self._ag3 = mda.AtomGroup([ag[2] for ag in self._torsions])
         self._ag4 = mda.AtomGroup([ag[3] for ag in self._torsions])
 
+        if filename is not None:
+            self.load(filename)
+
     def _prepare(self):
-        self.bat = []
+        self.bat = np.zeros((self.n_frames, 3*self._ag.n_atoms), \
+            dtype=np.float64)
 
     def _single_frame(self):
         # Calculate coordinates based on the root atoms
         # The rotation axis is a normalized vector pointing from atom 0 to 1
         # It is described in two degrees of freedom
         # by the polar angle and azimuth
-        (p0, p1, p2) = self._root.positions
+        if (self._root.dimensions[:3] == 0).any():
+            (p0, p1, p2) = self._root.positions
+        else:
+            (p0, p1, p2) = make_whole(self._root, inplace=False)
         v01 = p1 - p0
         v21 = p1 - p2
         # Internal coordinates
@@ -287,9 +385,10 @@ class BAT(AnalysisBase):
                              v01))  # Distance between first two root atoms
         r12 = np.sqrt(np.sum(v21 *
                              v21))  # Distance between second two root atoms
+        # Angle between root atoms
         a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
-          np.sqrt(np.sum(v01*v01)*np.sum(v21*v21))))) # Angle between root atoms
-        # Exernal coordinates
+                             np.sqrt(np.sum(v01*v01)*np.sum(v21*v21)))))
+        # External coordinates
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
         theta = np.arccos(e[2])  # Azimuthal angle
@@ -319,31 +418,84 @@ class BAT(AnalysisBase):
                                   self._ag4.positions,
                                   box=self._ag1.dimensions)
         # When appropriate, calculate improper torsions
-        torsions = np.array([\
-          torsions[n] - torsions[self._primary_torsion_indices[n]] \
-            if self._primary_torsion_indices[n]!=n else torsions[n] \
-              for n in range(len(torsions))])
+        shift = torsions[self._primary_torsion_indices]
+        shift[self._unique_primary_torsion_indices] = 0.
+        torsions -= shift
         # Wrap torsions to between -np.pi and np.pi
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
-        self.bat.append(np.concatenate((root_based, bonds, angles, torsions)))
+        self.bat[self._frame_index,:] = \
+            np.concatenate((root_based, bonds, angles, torsions))
 
-    def Cartesian(self, bat):
-        """Conversion from BAT to Cartesian coordinates
+    def load(self, filename, start=None, stop=None, step=None):
+        """Loads the bat trajectory from a file in numpy binary format
 
         Parameters
         ----------
-        bat : np.array
-          an array with dimensions (3N,) array with external then internal
-          degrees of freedom based on the root atoms, followed by the bond,
-          angle, and (proper and improper) torsion coordinates.
+        filename : str
+            name of numpy binary file
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+
+        See Also
+        --------
+        save: Saves the bat trajectory in a file in numpy binary format
+        """
+        logger.info("Choosing frames")
+        self._setup_frames(self._trajectory, start, stop, step)
+
+        logger.info("Loading file")
+        self.bat = np.load(filename)
+
+        # Check array dimensions
+        if self.bat.shape!=(self.n_frames, 3*self._ag.n_atoms):
+          raise ValueError('Dimensions of array in loaded file, ' + \
+              f'({self.bat.shape[0]},{self.bat.shape[1]}), differ from ' + \
+              f'required dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
+        # Check position of initial atom
+        for i, ts in enumerate(self._trajectory[self.start:self.stop:self.step]):
+            self._frame_index = i
+            self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
+            if (self.bat[i,:3] != self._root[0].position).any():
+                raise ValueError('Position of initial atom in file ' + \
+                    'inconsistent with current trajectory.')
+        return self
+
+    def save(self, filename):
+        """Saves the bat trajectory in a file in numpy binary format
+
+        See Also
+        --------
+        load: Loads the bat trajectory from a file in numpy binary format
+        """
+        np.save(filename, self.bat)
+
+    def Cartesian(self, bat):
+        """Conversion of a single frame from BAT to Cartesian coordinates
+
+        One application of this function is to determine the new
+        Cartesian coordinates after modifying a specific torsion angle.
+
+        Parameters
+        ----------
+        bat : numpy.ndarray
+            an array with dimensions (3N,) with external then internal
+            degrees of freedom based on the root atoms, followed by the bond,
+            angle, and (proper and improper) torsion coordinates.
 
         Returns
         -------
-        xyz : np.array
-          an array with dimensions (N,3) with Cartesian coordinates. The first
-          dimension has the same ordering as the AtomGroup used to initialize
-          the class.
+        XYZ : numpy.ndarray
+            an array with dimensions (N,3) with Cartesian coordinates. The first
+            dimension has the same ordering as the AtomGroup used to initialize
+            the class. The molecule will be whole opposed to wrapped around a
+            periodic boundary.
         """
         # Split the bat vector into more convenient variables
         origin = bat[:3]
@@ -354,10 +506,9 @@ class BAT(AnalysisBase):
         angles = bat[n_torsions + 9:2 * n_torsions + 9]
         torsions = bat[2 * n_torsions + 9:]
         # When appropriate, convert improper to proper torsions
-        torsions = np.array([\
-          torsions[n] + torsions[self._primary_torsion_indices[n]] \
-            if self._primary_torsion_indices[n]!=n else torsions[n] \
-              for n in range(len(torsions))])
+        shift = torsions[self._primary_torsion_indices]
+        shift[self._unique_primary_torsion_indices] = 0.
+        torsions += shift
         # Wrap torsions to between -np.pi and np.pi
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
@@ -369,6 +520,7 @@ class BAT(AnalysisBase):
         # Rotate the third atom by the appropriate value
         co = np.cos(omega)
         so = np.sin(omega)
+        # $R_Z(\omega)$
         Romega = np.array([[co, -so, 0], [so, co, 0], [0, 0, 1]])
         p2 = Romega.dot(p2)
         # Rotate the second two atoms to point in the right direction
@@ -376,6 +528,7 @@ class BAT(AnalysisBase):
         sp = np.sin(phi)
         ct = np.cos(theta)
         st = np.sin(theta)
+        # $R_Z(\phi) R_Y(\theta)$
         Re = np.array([[cp * ct, -sp, cp * st], [ct * sp, cp, sp * st],
                        [-st, 0, ct]])
         p1 = Re.dot(p1)
@@ -410,13 +563,16 @@ class BAT(AnalysisBase):
 
             vp = np.cross(v32, v21)
             cs = np.sum(v21 * v32)
-            if abs(cs) > 1:
-                print('cos ', cs)
 
-            sn = np.sqrt(max(1.0 - cs * cs, 0.0000000001))
+            sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
             vp = vp / sn
             vu = np.cross(vp, v21)
 
             XYZ[a0] = p1 + \
               r01*(vu*sn_ang*cs_tor + vp*sn_ang*sn_tor - v21*cs_ang)
         return XYZ
+
+    @property
+    def atoms(self):
+        """The atomgroup for which BAT are computed (read-only property)"""
+        return self._ag
