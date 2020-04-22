@@ -30,12 +30,12 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 .. versionadded:: N/A
 
 This module contains classes for interconverting between Cartesian and an
-internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003],
+internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,
 for a given set of atoms or residues. This coordinate system is designed
 to be complete, non-redundant, and minimize correlations between degrees
 of freedom. Complete and non-redundant means that for N atoms there will
 be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions [Hikiri2016].
+minimized by using improper torsions [Hikiri2016]_.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -56,7 +56,7 @@ pointing from the first to second atom. It is described by the polar angle, phi,
 and azimuthal angle, theta. omega is a third angle that describes the rotation
 of the third atom about the axis.
 
-This module was adapted from AlGDock [Minh2020].
+This module was adapted from AlGDock [Minh2020]_.
 
 
 See Also
@@ -78,19 +78,28 @@ included within the test data files::
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import PSF, DCD
+   import numpy as np
+
    u = mda.Universe(PSF, DCD)
 
    # selection of atomgroups
    selected_residues = u.select_atoms("resid 5-10")
 
    from MDAnalysis.analysis.bat import BAT
-
    R = BAT(selected_residues)
 
-   # Calculates BAT coordinates for a trajectory
+   # Calculate BAT coordinates for a trajectory
    R.run()
 
-The coordinates can then be accessed with :attr:`R.bat`
+   # Reconstruct Cartesian coordinates from BAT coordinates
+   bat = R.bat[0]
+   XYZ = R.Cartesian(bat)
+
+   # The difference between the original and reconstructed coordinates
+   # should be zero.
+   print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
+
+After R.run(), the coordinates can be accessed with :attr:`R.bat`.
 
 
 References
