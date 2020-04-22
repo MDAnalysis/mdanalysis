@@ -518,7 +518,7 @@ These should now be directly passed to <code class="xref py py-meth docutils lit
 <h2>4.2.2.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.contacts.Contacts">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">Contacts</code><span class="sig-paren">(</span><em>u</em>, <em>select</em>, <em>refgroup</em>, <em>method='hard_cut'</em>, <em>radius=4.5</em>, <em>kwargs=None</em>, <em>**basekwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.contacts.</code><code class="descname">Contacts</code><span class="sig-paren">(</span><em>u</em>, <em>select</em>, <em>refgroup</em>, <em>method='hard_cut'</em>, <em>radius=4.5</em>, <em>pbc=True</em>, <em>kwargs=None</em>, <em>**basekwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/contacts.html#Contacts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.contacts.Contacts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate contacts based observables.</p>
 <p>The standard methods used in this class calculate the fraction of native
 contacts <em>Q</em> from a trajectory.</p>
@@ -549,6 +549,12 @@ argument <cite>method</cite>.</p>
 <a class="reference internal" href="#MDAnalysis.analysis.contacts.Contacts.timeseries" title="MDAnalysis.analysis.contacts.Contacts.timeseries"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Contacts.timeseries</span></code></a> instead.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt>
+<code class="descname">.. versionchanged:: 1.0.0</code></dt>
+<dd><p>added <code class="docutils literal notranslate"><span class="pre">pbc</span></code> attribute to calculate distances using PBC.</p>
+</dd></dl>
+
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -561,6 +567,8 @@ can also be a list of tuples containing different atom groups</li>
 <li><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em><em> (</em><em>4.5 Angstroms</em><em>)</em>) – radius within which contacts exist in refgroup</li>
 <li><strong>method</strong> (<em>string | callable</em><em> (</em><em>optional</em><em>)</em>) – Can either be one of <code class="docutils literal notranslate"><span class="pre">['hard_cut'</span> <span class="pre">,</span> <span class="pre">'soft_cut',</span> <span class="pre">'radius_cut']</span></code> or a callable
 with call signature <code class="docutils literal notranslate"><span class="pre">func(r,</span> <span class="pre">r0,</span> <span class="pre">**kwargs)</span></code> (the “Contacts API”).</li>
+<li><strong>pbc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Uses periodic boundary conditions to calculate distances if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
+default is <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
 <li><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of additional kwargs passed to <cite>method</cite>. Check
 respective functions for reasonable values.</li>
 <li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Show detailed progress of the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the
