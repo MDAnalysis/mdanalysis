@@ -382,8 +382,12 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">StreamWarning</span><span class="p">,</span> <span class="n">DuplicateWarning</span>
-<span class="kn">from</span> <span class="nn">._cutil</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
-
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">._cutil</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;MDAnalysis not installed properly. &quot;</span>
+                      <span class="s2">&quot;This can happen if your C extensions &quot;</span>
+                      <span class="s2">&quot;have not been built.&quot;</span><span class="p">)</span>
 
 <span class="c1"># Python 3.0, 3.1 do not have the builtin callable()</span>
 <span class="k">try</span><span class="p">:</span>
