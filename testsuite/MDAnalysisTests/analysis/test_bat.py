@@ -28,7 +28,7 @@ import matplotlib
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import (mol2_comments_header, BATArray)
 from MDAnalysis.analysis.bat import BAT
 
 
@@ -36,21 +36,40 @@ class TestBAT(object):
 
     @pytest.fixture()
     def selected_residues(self):
-        u = mda.Universe(PSF, DCD)
-        ag = u.select_atoms("resid 5-10")
+        u = mda.Universe(mol2_comments_header)
+        ag = u.select_atoms("all")
         return ag
 
-
-    def test_bat(self, selected_residues):
+    @pytest.fixture()
+    def bat(self, selected_residues):
         R = BAT(selected_residues)
         R.run()
+        return R.bat
 
-        assert_equal(len(R.bat), 98,
-                     err_msg="error: list is not length of trajectory")
+    def test_root(self, selected_residues):
+        R = BAT(selected_residues)
+        assert_equal(R._root.indices, [8, 2, 1],
+            err_msg="error: incorrect root atoms selected")
 
-        bat = R.bat[0]
-        XYZ = R.Cartesian(bat)
+    def test_number_of_frames(self, bat):
+        assert_equal(len(bat), 2,
+            err_msg="error: list is not length of trajectory")
+
+    def test_bat_coordinates(self, bat):
+        test_bat = np.load(BATArray)
+        assert_almost_equal(bat, test_bat, 5,
+            err_msg="error: BAT coordinates should match test values")
+
+    def test_bat_coordinates_single_frame(self, selected_residues):
+        bat = BAT(selected_residues).run(start=1,stop=2).bat
+        test_bat = [np.load(BATArray)[1]]
+        assert_almost_equal(bat, test_bat, 5,
+            err_msg="error: BAT coordinates should match test values")
+
+    def test_reconstruction(self, selected_residues, bat):
+        R = BAT(selected_residues)
+        XYZ = R.Cartesian(bat[0])
 
         assert_almost_equal(XYZ, selected_residues.positions, 5,
-          err_msg="error: Reconstructed Cartesian coordinates " + \
-                  "don't match original")
+            err_msg="error: Reconstructed Cartesian coordinates " + \
+                    "don't match original")
