@@ -230,6 +230,8 @@ class PDBReader(base.ReaderBase):
        Can now read PDB files with DOS line endings
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
+    .. versionchanged:: 1.0.0
+       User warning for CRYST1 cryo-em structures
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -391,14 +393,24 @@ class PDBReader(base.ReaderBase):
             elif line[:6] == 'CRYST1':
                 # does an implicit str -> float conversion
                 try:
-                    self.ts._unitcell[:] = [line[6:15], line[15:24],
-                                            line[24:33], line[33:40],
-                                            line[40:47], line[47:54]]
+                    cell_dims = np.array([line[6:15], line[15:24],
+                                         line[24:33], line[33:40],
+                                         line[40:47], line[47:54]], 
+                                         dtype=np.float32)  
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
-
+                else:
+                    if (cell_dims == np.array([1, 1, 1, 90, 90, 90], 
+                        dtype=np.float32)).all():
+                        warnings.warn("1 A^3 CRYST1 record," 
+                                      " this is usually a placeholder in"
+                                      " cryo-em structures. Unit cell"
+                                      " dimensions will not be set.")
+                    else:
+                        self.ts._unitcell[:] = cell_dims
+                        
         # check if atom number changed
         if pos != self.n_atoms:
             raise ValueError("Inconsistency in file '{}': The number of atoms "
