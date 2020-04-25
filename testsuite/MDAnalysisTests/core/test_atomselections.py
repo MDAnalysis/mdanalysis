@@ -1109,7 +1109,7 @@ class TestICodeSelection(object):
         ("same residue as ", 11),
         # Selection using resids
         # Residues with different insertion codes have the same resid
-        # See Issues #2308 and #2672 for a discussion
+        # See Issues #2308 for a discussion
         ("same resid as", 72),
         # Selection using resindices
         # For PDBs: residues with different insertion codes have different resindices

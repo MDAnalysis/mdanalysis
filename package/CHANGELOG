@@ -22,6 +22,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Use internal residue indices instead of resids for similarity and connectivity
+    selections (Issues #2669 and #2672, PR #2673)
   * Checks for cryo-em 1 A^3 default CRYST1 record, 
     disabling setting of box dimensions if found (Issue #2599)
   * mdamath.angles now returns np.pi instead of -np.pi in cases of
