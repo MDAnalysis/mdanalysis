@@ -214,6 +214,13 @@ class GlobalSelection(UnarySelection):
 
 
 class ByResSelection(UnarySelection):
+    """
+    Selects all atoms that are in the same segment and residue as selection
+
+    .. versionchanged:: 1.0.0
+       Use :code:`"resindices"` instead of :code:`"resids"` (see #2669 and #2672)
+    """
+
     token = 'byres'
     precedence = 1
 
@@ -1007,6 +1014,14 @@ class PropertySelection(Selection):
 
 
 class SameSelection(Selection):
+    """
+    Selects all atoms that have the same subkeyword value as any atom in selection
+
+    .. versionchanged:: 1.0.0
+       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to 
+       :code:`"segindices"` (see #2669 and #2672)
+    """
+
     token = 'same'
     precedence = 1
 
