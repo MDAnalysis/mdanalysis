@@ -1100,6 +1100,13 @@ class TestICodeSelection(object):
         with pytest.raises(ValueError):
             u.select_atoms('resid 10A-12')
 
+def test_same_icode():
+    u = mda.Universe(PDB_icodes)
+
+    # Select residues 162, 163 and 163A
+    sel = u.select_atoms("same residue as (around 2.0 resid 163)")
+
+    assert len(sel.atoms) == 17
 
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
