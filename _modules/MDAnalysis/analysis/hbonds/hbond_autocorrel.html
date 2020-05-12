@@ -476,6 +476,11 @@
                  <span class="n">nruns</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># number of times to iterate through the trajectory</span>
                  <span class="n">nsamples</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>  <span class="c1"># number of different points to sample in a run</span>
                  <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+
+        <span class="c1">#warnings.warn(&quot;This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis &quot;</span>
+        <span class="c1">#              &quot;which has .autocorrelation function&quot;,</span>
+        <span class="c1">#              category=DeprecationWarning)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="c1"># check that slicing is possible</span>
         <span class="k">try</span><span class="p">:</span>

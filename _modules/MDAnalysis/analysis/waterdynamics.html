@@ -472,10 +472,6 @@
 <span class="sd">  for tau, sp in zip(tau_timeseries, sp_timeseries):</span>
 <span class="sd">        print(&quot;{time} {sp}&quot;.format(time=tau, sp=sp))</span>
 
-<span class="sd">  # SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:</span>
-<span class="sd">  tau_timeseries.insert(0, 0)</span>
-<span class="sd">  sp_timeseries.insert(1, 0)</span>
-
 <span class="sd">  # plot</span>
 <span class="sd">  plt.xlabel(&#39;Time&#39;)</span>
 <span class="sd">  plt.ylabel(&#39;SP&#39;)</span>
@@ -624,12 +620,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">zip_longest</span>
-
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">import</span> <span class="nn">MDAnalysis.analysis.hbonds</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="n">zip_longest</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.waterdynamics&#39;</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 
 
@@ -682,7 +681,9 @@
 <span class="sd">       may have failed in some cases.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span>
+                 <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span> <span class="o">=</span> <span class="n">selection1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span> <span class="o">=</span> <span class="n">selection2</span>
@@ -1346,7 +1347,8 @@
 
 
 <span class="sd">    .. versionadded:: 0.11.0</span>
-
+<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">        Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1369,62 +1371,6 @@
         <span class="k">if</span> <span class="n">dtmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="o">=</span> <span class="n">dtmax</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;dtmax is deprecated, use run(tau_max=dtmax) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">print</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_correct_intermittency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intermittency</span><span class="p">,</span> <span class="n">selected_ids</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Pre-process Consecutive Intermittency with a single pass over the data.</span>
-<span class="sd">        If an atom is absent for a number of frames equal or smaller</span>
-<span class="sd">        than the `intermittency`, then correct the data and remove the absence.</span>
-<span class="sd">        ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence</span>
-
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        intermittency : int</span>
-<span class="sd">            the max gap allowed and to be corrected</span>
-<span class="sd">        selected_ids: list of ids</span>
-<span class="sd">            modifies the selecteded IDs in place by adding atoms which left for &lt;= `intermittency`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="s1">&#39;Correcting the selected IDs for intermittancy (gaps). &#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">intermittency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span>
-
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ids</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">):</span>
-            <span class="c1"># initially update each frame as seen 0 ago (now)</span>
-            <span class="n">seen_frames_ago</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">}</span>
-            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">atomid</span> <span class="ow">in</span> <span class="n">seen_frames_ago</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                    <span class="c1"># no more frames</span>
-                    <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected_ids</span><span class="p">):</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># if the atom is absent now</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">atomid</span> <span class="ow">in</span> <span class="n">selected_ids</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]:</span>
-                        <span class="c1"># increase its absence counter</span>
-                        <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># the atom is found</span>
-                    <span class="k">if</span> <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="c1"># the atom was present in the last frame</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># it was absent more times than allowed</span>
-                    <span class="k">if</span> <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">intermittency</span><span class="p">:</span>
-                        <span class="k">continue</span>
-
-                    <span class="c1"># the atom was absent but returned (within &lt;= intermittency)</span>
-                    <span class="c1"># add it to the frames where it was absent.</span>
-                    <span class="c1"># Introduce the corrections.</span>
-                    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-                        <span class="n">selected_ids</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atomid</span><span class="p">)</span>
-
-                    <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
 
 
 <div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1461,6 +1407,9 @@
 <span class="sd">            tau from 1 to `tau_max`. Saved in the field tau_timeseries.</span>
 <span class="sd">        sp_timeseries : list</span>
 <span class="sd">            survival probability for each value of `tau`. Saved in the field sp_timeseries.</span>
+<span class="sd">        sp_timeseries_data: list</span>
+<span class="sd">            raw datapoints from which the average is taken (sp_timeseries).</span>
+<span class="sd">            Time dependancy and distribution can be extracted.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># backward compatibility (and priority)</span>
@@ -1481,9 +1430,13 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too few frames selected for given tau_max.&quot;</span><span class="p">)</span>
 
         <span class="c1"># preload the frames (atom IDs) to a list of sets</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ids</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="c1"># skip frames that will not be used</span>
+        <span class="c1"># fixme - to parallise: the section should be rewritten so that this loop only creates a list of indices,</span>
+        <span class="c1"># on which the parallel _single_frame can be applied.</span>
+
+        <span class="c1"># skip frames that will not be used in order to improve performance</span>
+        <span class="c1"># because AtomGroup.select_atoms is the most expensive part of this calculation</span>
         <span class="c1"># Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip</span>
         <span class="c1"># Intermittency means that we have to load the extra frames to know if the atom is actually missing.</span>
         <span class="c1"># Say step=5 and tau=1, intermittency=0: LLSSS LLSSS</span>
@@ -1498,7 +1451,7 @@
         <span class="n">frame_no</span> <span class="o">=</span> <span class="n">start</span>
         <span class="k">while</span> <span class="n">frame_no</span> <span class="o">&lt;</span> <span class="n">stop</span><span class="p">:</span>      <span class="c1"># we have already added 1 to stop, therefore &lt;</span>
             <span class="k">if</span> <span class="n">num_frames_to_skip</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">frame_loaded_counter</span> <span class="o">==</span> <span class="n">frames_per_window</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Skipping the next </span><span class="si">%d</span><span class="s2"> frames:&quot;</span> <span class="o">%</span> <span class="n">num_frames_to_skip</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Skipping the next </span><span class="si">%d</span><span class="s2"> frames:&quot;</span><span class="p">,</span> <span class="n">num_frames_to_skip</span><span class="p">)</span>
                 <span class="n">frame_no</span> <span class="o">+=</span> <span class="n">num_frames_to_skip</span>
                 <span class="n">frame_loaded_counter</span> <span class="o">=</span> <span class="mi">0</span>
                 <span class="c1"># Correct the number of frames to be loaded after the first window (which starts at t=0, and</span>
@@ -1509,48 +1462,33 @@
             <span class="c1"># update the frame number</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame_no</span><span class="p">]</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span> <span class="s2">&quot;Loading frame:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Loading frame: </span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
             <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selection</span><span class="p">)</span>
 
             <span class="c1"># SP of residues or of atoms</span>
             <span class="n">ids</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resids</span> <span class="k">if</span> <span class="n">residues</span> <span class="k">else</span> <span class="n">atoms</span><span class="o">.</span><span class="n">ids</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_selected_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ids</span><span class="p">))</span>
 
             <span class="n">frame_no</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">frame_loaded_counter</span> <span class="o">+=</span> <span class="mi">1</span>
-
-        <span class="c1"># correct the dataset for gaps (intermittency)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_correct_intermittency</span><span class="p">(</span><span class="n">intermittency</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">)</span>
-
-        <span class="c1"># calculate Survival Probability</span>
-        <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tau_max</span><span class="p">)]</span>
 
         <span class="c1"># adjust for the frames that were not loaded (step&gt;tau_max + 1),</span>
         <span class="c1"># and for extra frames that were loaded (intermittency)</span>
         <span class="n">window_jump</span> <span class="o">=</span> <span class="n">step</span> <span class="o">-</span> <span class="n">num_frames_to_skip</span>
 
-        <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">),</span> <span class="n">window_jump</span><span class="p">):</span>
-            <span class="n">Nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_intermittent_selected_ids</span> <span class="o">=</span> <span class="n">correct_intermittency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_selected_ids</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="n">intermittency</span><span class="p">)</span>
+        <span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="n">autocorrelation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_intermittent_selected_ids</span><span class="p">,</span>
+                                                                            <span class="n">tau_max</span><span class="p">,</span> <span class="n">window_jump</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">Nt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">verbose</span><span class="p">,</span>
-                           <span class="s2">&quot;At frame </span><span class="si">{}</span><span class="s2"> the selection did not find any molecule. Moving on to the next frame&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
-                <span class="k">continue</span>
-
-            <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">tau_timeseries</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">):</span>
-                    <span class="k">break</span>
-
-                <span class="c1"># continuous: IDs that survive from t to t + tau and at every frame in between</span>
-                <span class="n">Ntau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_ids</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
-                <span class="n">sp_timeseries_data</span><span class="p">[</span><span class="n">tau</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ntau</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">Nt</span><span class="p">))</span>
+        <span class="c1"># warn the user if the NaN are found</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">sp_timeseries</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NaN Error: Most likely data was not found. Check your atom selections. &#39;</span><span class="p">)</span>
 
         <span class="c1"># user can investigate the distribution and sample size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries_data</span> <span class="o">=</span> <span class="n">sp_timeseries_data</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">tau_timeseries</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span> <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">sp_timeseries_data</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sp_timeseries</span> <span class="o">=</span> <span class="n">sp_timeseries</span>
         <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
 

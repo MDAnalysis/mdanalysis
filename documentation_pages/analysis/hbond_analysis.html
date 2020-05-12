@@ -579,6 +579,9 @@ GLU OE1/OE2, HIS ND1/NE2, MET SD, SER OG, THR OG1, TYR OH</dd>
 default values for different force fields.</p>
 </div>
 <div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime</p>
+</div>
+<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span><code class="docutils literal notranslate"><span class="pre">save_table()</span></code> method has been removed. You can use <code class="docutils literal notranslate"><span class="pre">np.save()</span></code> or
 <code class="docutils literal notranslate"><span class="pre">cPickle.dump()</span></code> on <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.table"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.table</span></code></a> instead.</p>
 </div>
@@ -866,7 +869,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OW', 'ND1', 'OC1', 'OC2', 'OH', 'OG', 'OD2', 'O', 'OE1', 'SG', 'OE2', 'NE2', 'SD', 'OG1', 'OH2', 'OD1'), 'GLYCAM06': ('OW', 'OS', 'SM', 'OH', 'NT', 'O2', 'O', 'N', 'OY'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OC1', 'OH', 'SG', 'OG1', 'OH2', 'NE2', 'SD', 'OD2', 'OW', 'OD1', 'ND1', 'OC2', 'OE1', 'O', 'OG', 'OE2'), 'GLYCAM06': ('NT', 'N', 'O', 'OS', 'OW', 'O2', 'OY', 'SM', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -874,10 +877,43 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OW', 'ND1', 'OH', 'OG', 'N', 'NH1', 'ND2', 'SG', 'NE2', 'NE1', 'NE', 'OG1', 'NH2', 'OH2', 'NZ'), 'GLYCAM06': ('OW', 'OH', 'NT', 'N3', 'N'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('SG', 'NZ', 'NH2', 'ND2', 'N', 'OG1', 'NH1', 'OH2', 'NE2', 'OW', 'NE1', 'ND1', 'NE', 'OH', 'OG'), 'GLYCAM06': ('N3', 'NT', 'N', 'OW', 'OH'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.autocorrelation">
+<code class="descname">autocorrelation</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>window_step=1</em>, <em>intermittency=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hbonds/hbond_analysis.html#HydrogenBondAnalysis.autocorrelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.autocorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and returns the autocorrelation (HydrogenBondLifetimes ) on the computed hydrogen bonds.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of the taus used.
+Note that <cite>step</cite> and <cite>tau_max</cite> work consistently with intermittency.</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range 1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite></li>
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which a bond can disappear but be counted as present if it
+returns at the next frame. An intermittency of <cite>0</cite> is equivalent to a continuous autocorrelation, which does
+not allow for the hydrogen bond disappearance. For example, for <cite>intermittency=2</cite>, any given hbond may
+disappear for up to two consecutive frames yet be treated as being present at all frames.
+The default is continuous (0).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to <cite>tau_max</cite>. Saved in the field tau_timeseries.</li>
+<li><strong>timeseries</strong> (<em>list</em>) – autcorrelation value for each value of <cite>tau</cite>. Saved in the field timeseries.</li>
+<li><strong>timeseries_data</strong> (<em>list</em>) – raw datapoints from which the average is taken (timeseries).
+Time dependancy and distribution can be extracted.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

@@ -509,6 +509,7 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.NeighborSearch</span> <span class="kn">import</span> <span class="n">AtomNeighborSearch</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.hbonds&#39;</span><span class="p">)</span>
@@ -556,6 +557,9 @@
 <span class="sd">    .. versionchanged:: 0.7.6</span>
 <span class="sd">       DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between</span>
 <span class="sd">       default values for different force fields.</span>
+
+<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       ``save_table()`` method has been removed. You can use ``np.save()`` or</span>
@@ -1583,7 +1587,60 @@
         <span class="n">h2donor</span> <span class="o">=</span> <span class="n">_make_dict</span><span class="p">(</span><span class="n">s2d</span><span class="p">,</span> <span class="n">s2h</span><span class="p">)</span>  <span class="c1"># 2 is typically the larger group</span>
         <span class="n">h2donor</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_make_dict</span><span class="p">(</span><span class="n">s1d</span><span class="p">,</span> <span class="n">s1h</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">h2donor</span></div>
+        <span class="k">return</span> <span class="n">h2donor</span>
+
+
+<div class="viewcode-block" id="HydrogenBondAnalysis.autocorrelation"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.autocorrelation">[docs]</a>    <span class="k">def</span> <span class="nf">autocorrelation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes and returns the autocorrelation (HydrogenBondLifetimes ) on the computed hydrogen bonds.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        window_step : int, optional</span>
+<span class="sd">            Jump every `step`-th frame. This is compatible but independant of the taus used.</span>
+<span class="sd">            Note that `step` and `tau_max` work consistently with intermittency.</span>
+<span class="sd">        tau_max : int, optional</span>
+<span class="sd">            Survival probability is calculated for the range 1 &lt;= `tau` &lt;= `tau_max`</span>
+<span class="sd">        intermittency : int, optional</span>
+<span class="sd">            The maximum number of consecutive frames for which a bond can disappear but be counted as present if it</span>
+<span class="sd">            returns at the next frame. An intermittency of `0` is equivalent to a continuous autocorrelation, which does</span>
+<span class="sd">            not allow for the hydrogen bond disappearance. For example, for `intermittency=2`, any given hbond may</span>
+<span class="sd">            disappear for up to two consecutive frames yet be treated as being present at all frames.</span>
+<span class="sd">            The default is continuous (0).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tau_timeseries : list</span>
+<span class="sd">            tau from 1 to `tau_max`. Saved in the field tau_timeseries.</span>
+<span class="sd">        timeseries : list</span>
+<span class="sd">            autcorrelation value for each value of `tau`. Saved in the field timeseries.</span>
+<span class="sd">        timeseries_data: list</span>
+<span class="sd">            raw datapoints from which the average is taken (timeseries).</span>
+<span class="sd">            Time dependancy and distribution can be extracted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeseries</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Autocorrelation analysis of hydrogen bonds cannot be done before the hydrogen bonds are found&quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Autocorrelation: Please use the .run() before calling this function&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Autocorrelation function should be carried out on consecutive frames. &quot;</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Autocorrelation: if you would like to allow bonds to break and reform, please use &#39;intermittency&#39;&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), ..]</span>
+        <span class="n">hydrogen_bonds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span>
+        <span class="n">found_hydrogen_bonds</span> <span class="o">=</span> <span class="p">[{</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">bond</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">])</span> <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">frame</span><span class="p">}</span> <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">hydrogen_bonds</span><span class="p">]</span>
+
+        <span class="n">intermittent_hbonds</span> <span class="o">=</span> <span class="n">correct_intermittency</span><span class="p">(</span><span class="n">found_hydrogen_bonds</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="n">intermittency</span><span class="p">)</span>
+        <span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">timeseries_data</span> <span class="o">=</span> <span class="n">autocorrelation</span><span class="p">(</span><span class="n">intermittent_hbonds</span><span class="p">,</span> <span class="n">tau_max</span><span class="p">,</span>
+                                                                      <span class="n">window_step</span><span class="o">=</span><span class="n">window_step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acf_tau_timeseries</span> <span class="o">=</span> <span class="n">tau_timeseries</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acf_timeseries</span> <span class="o">=</span> <span class="n">timeseries</span>
+        <span class="c1"># user can investigate the distribution and sample size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">acf_timeseries_data</span> <span class="o">=</span> <span class="n">timeseries_data</span>
+
+        <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
 
            </div>

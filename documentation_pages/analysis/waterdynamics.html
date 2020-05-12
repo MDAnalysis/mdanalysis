@@ -497,10 +497,6 @@ the zone, on the other hand, a fast decay means a short permanence time:</p>
 <span class="k">for</span> <span class="n">tau</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">):</span>
       <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{sp}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="n">sp</span><span class="p">))</span>
 
-<span class="c1"># SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:</span>
-<span class="n">tau_timeseries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">sp_timeseries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
 <span class="c1"># plot</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;SP&#39;</span><span class="p">)</span>
@@ -625,7 +621,7 @@ a list of all SPs calculated for each tau. This can be used to compute the distr
 <h2>4.8.3.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">HydrogenBondLifetimes</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1</em>, <em>selection2</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#HydrogenBondLifetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">HydrogenBondLifetimes</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1</em>, <em>selection2</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#HydrogenBondLifetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Hydrogen bond lifetime analysis</p>
 <p>This is a autocorrelation function that gives the “Hydrogen Bond Lifetimes”
 (HBL) proposed by D.C. Rapaport <a class="reference internal" href="#rapaport1983" id="id14">[Rapaport1983]</a>. From this function we can
@@ -832,6 +828,9 @@ define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resi
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>
 <div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.21.0: </span>Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations</p>
+</div>
+<div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
 </div>
 <dl class="method">
@@ -863,6 +862,8 @@ The default is continuous (0).</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
 <li><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to <cite>tau_max</cite>. Saved in the field tau_timeseries.</li>
 <li><strong>sp_timeseries</strong> (<em>list</em>) – survival probability for each value of <cite>tau</cite>. Saved in the field sp_timeseries.</li>
+<li><strong>sp_timeseries_data</strong> (<em>list</em>) – raw datapoints from which the average is taken (sp_timeseries).
+Time dependancy and distribution can be extracted.</li>
 </ul>
 </p>
 </td>
