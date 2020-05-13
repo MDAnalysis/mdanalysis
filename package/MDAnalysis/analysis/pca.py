@@ -114,6 +114,7 @@ from MDAnalysis.analysis.align import _fit_to
 from MDAnalysis.lib.log import ProgressBar
 
 from ..lib import util
+from ..due import due, Doi
 from .base import AnalysisBase
 
 
@@ -348,12 +349,20 @@ class PCA(AnalysisBase):
 
         return dot
 
+    @due.dcite(
+        Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
+        Doi('10.1529/biophysj.104.052449'),
+        description="RMSIP",
+        path='MDAnalysis.analysis.pca',
+    )
     def rmsip(self, other, n_components=None):
         """Compute the root mean square inner product between subspaces.
 
         This is only symmetric if the number of components is the same for 
         both instances. The RMSIP effectively measures how 
         correlated the vectors of this instance are to those of ``other``.
+
+        Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
 
         Parameters
         ----------
@@ -369,6 +378,10 @@ class PCA(AnalysisBase):
             Root mean square inner product of the selected subspaces. 
             0 indicates that they are mutually orthogonal, whereas 1 indicates 
             that they are identical. 
+
+        See also
+        --------
+        rmsip
 
         .. versionadded:: 1.0.0
         """
@@ -388,6 +401,11 @@ class PCA(AnalysisBase):
 
         return rmsip(a.T, b.T, n_components=n_components)
 
+    @due.dcite(
+        Doi('10.1016/j.str.2007.12.011'),
+        description="Cumulative overlap",
+        path='MDAnalysis.analysis.pca',
+    )
     def cumulative_overlap(self, other, i=0, n_components=None):
         """Compute the cumulative overlap of a vector in a subspace.
 
@@ -412,6 +430,10 @@ class PCA(AnalysisBase):
             Cumulative overlap of the chosen vector in this instance to 
             the ``other`` subspace. 0 indicates that they are mutually 
             orthogonal, whereas 1 indicates that they are identical. 
+
+        See also
+        --------
+        cumulative_overlap
 
         .. versionadded:: 1.0.0
 
@@ -470,6 +492,12 @@ def cosine_content(pca_space, i):
             scipy.integrate.simps(pca_space[:, i] ** 2))
 
 
+@due.dcite(
+    Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
+    Doi('10.1529/biophysj.104.052449'),
+    description="RMSIP",
+    path='MDAnalysis.analysis.pca',
+)
 def rmsip(a, b, n_components=None):
     """Compute the root mean square inner product between subspaces.
 
@@ -516,6 +544,11 @@ def rmsip(a, b, n_components=None):
     return msip**0.5
 
 
+@due.dcite(
+    Doi('10.1016/j.str.2007.12.011'),
+    description="Cumulative overlap",
+    path='MDAnalysis.analysis.pca',
+)
 def cumulative_overlap(a, b, i=0, n_components=None):
     """Compute the cumulative overlap of a vector in a subspace.
 
