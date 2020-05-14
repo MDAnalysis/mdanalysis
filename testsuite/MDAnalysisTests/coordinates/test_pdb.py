@@ -29,7 +29,7 @@ import os
 
 import MDAnalysis as mda
 import numpy as np
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
@@ -914,12 +914,12 @@ def test_standalone_pdb():
     assert r.n_atoms == 4
 
 
-def test_write_pdb_zero_atoms():
+def test_write_pdb_zero_atoms(tmpdir):
     # issue 1083
     u = make_Universe(trajectory=True)
 
-    with tempdir.TempDir() as tmpdir:
-        outfile = tmpdir + '/out.pdb'
+    with tmpdir.as_cwd():
+        outfile = 'out.pdb'
 
         ag = u.atoms[:0]  # empty ag
 

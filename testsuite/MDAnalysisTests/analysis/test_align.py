@@ -30,7 +30,7 @@ import os
 import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
-from MDAnalysisTests import executable_not_found, tempdir
+from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
@@ -235,8 +235,8 @@ class TestAlign(object):
         rmsd_weights = align.alignto(universe, reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
-    def test_AlignTraj_outfile_default(self, universe, reference):
-        with tempdir.in_tempdir():
+    def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
+        with tmpdir.as_cwd():
             reference.trajectory[-1]
             x = align.AlignTraj(universe, reference)
             try:
@@ -255,7 +255,7 @@ class TestAlign(object):
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             align.AlignTraj(fitted, reference)
 
             # we are careful now. The default does nothing

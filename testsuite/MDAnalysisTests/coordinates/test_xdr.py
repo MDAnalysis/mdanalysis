@@ -573,19 +573,20 @@ class TestXTCWriter_2(BaseWriterTest):
     def ref():
         return XTCReference()
 
-    def test_different_precision(self, ref, tempdir):
-        out = self.tmp_file('precision-test', ref, tempdir)
+    def test_different_precision(self, ref, tmpdir):
+        out = 'precision-test' + ref.ext
         # store more then 9 atoms to enable compression
         n_atoms = 40
-        with ref.writer(out, n_atoms, precision=5) as w:
-            ts = Timestep(n_atoms=n_atoms)
-            ts.positions = np.random.random(size=(n_atoms, 3))
-            w.write(ts)
-        xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
-        frame = xtc.read()
-        assert_equal(len(xtc), 1)
-        assert_equal(xtc.n_atoms, n_atoms)
-        assert_equal(frame.prec, 10.0**5)
+        with tmpdir.as_cwd():
+            with ref.writer(out, n_atoms, precision=5) as w:
+                ts = Timestep(n_atoms=n_atoms)
+                ts.positions = np.random.random(size=(n_atoms, 3))
+                w.write(ts)
+            xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
+            frame = xtc.read()
+            assert_equal(len(xtc), 1)
+            assert_equal(xtc.n_atoms, n_atoms)
+            assert_equal(frame.prec, 10.0**5)
 
 
 class TRRReference(BaseReference):
@@ -634,16 +635,18 @@ class TestTRRWriter_2(BaseWriterTest):
         return TRRReference()
 
     # tests writing and reading in one!
-    def test_lambda(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-lambda-test', ref, tempdir)
-        with ref.writer(outfile, reader.n_atoms) as W:
-            for i, ts in enumerate(reader):
-                ts.data['lambda'] = i / float(reader.n_frames)
-                W.write(ts)
+    def test_lambda(self, ref, reader, tmpdir):
+        outfile = 'write-lambda-test' + ref.ext
 
-        reader = ref.reader(outfile)
-        for i, ts in enumerate(reader):
-            assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, reader.n_atoms) as W:
+                for i, ts in enumerate(reader):
+                    ts.data['lambda'] = i / float(reader.n_frames)
+                    W.write(ts)
+
+            reader = ref.reader(outfile)
+            for i, ts in enumerate(reader):
+                assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(object):
