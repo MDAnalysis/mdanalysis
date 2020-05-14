@@ -419,7 +419,7 @@ in a hydrogen bond.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>counts</strong> – Contains the total number of hydrogen bonds found at each timestep.
-Can be used along with <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.timesteps</span></code> to plot
+Can be used along with <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondAnalysis.times</span></code> to plot
 the number of hydrogen bonds over time.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)">numpy.ndarray</a></td>
@@ -481,9 +481,6 @@ capable of participating in hydrogen bonds.</p>
 <p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential acceptor atoms involved
 in hydrogen bonding. This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">acceptors_sel</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -519,9 +516,6 @@ called to guess the selection.</p>
 <p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential donor atoms involved
 in hydrogen bonding. This <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
-</div>
 </dd></dl>
 
 <dl class="method">
@@ -556,9 +550,6 @@ charge greater than <code class="xref py py-attr docutils literal notranslate"><
 <p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential hydrogen atoms involved
 in hydrogen bonding. This str may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code>.</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
-</div>
 </dd></dl>
 
 </dd></dl>
