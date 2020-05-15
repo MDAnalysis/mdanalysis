@@ -71,37 +71,40 @@ class TestXYZWriter(BaseWriterTest):
     def ref():
         return XYZReference()
 
-    def test_write_selection(self, ref, reader, tempdir):
+    def test_write_selection(self, ref, reader, tmpdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'name CA'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test', ref, tempdir)
+        outfile = 'write-selection-test' + ref.ext
 
-        with ref.writer(outfile, sel.n_atoms) as W:
-            for ts in uni.trajectory:
-                W.write(sel.atoms)
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, sel.n_atoms) as W:
+                for ts in uni.trajectory:
+                    W.write(sel.atoms)
 
-        copy = ref.reader(outfile)
-        for orig_ts, copy_ts in zip(uni.trajectory, copy):
-            assert_almost_equal(
-                copy_ts._pos, sel.atoms.positions, ref.prec,
-                err_msg="coordinate mismatch between original and written "
-                        "trajectory at frame {} (orig) vs {} (copy)".format(
-                    orig_ts.frame, copy_ts.frame))
+            copy = ref.reader(outfile)
+            for orig_ts, copy_ts in zip(uni.trajectory, copy):
+                assert_almost_equal(
+                    copy_ts._pos, sel.atoms.positions, ref.prec,
+                    err_msg="coordinate mismatch between original and written "
+                            "trajectory at frame {} (orig) vs {} (copy)".format(
+                        orig_ts.frame, copy_ts.frame))
 
-    def test_write_different_models_in_trajectory(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-models-in-trajectory', ref, tempdir)
+    def test_write_different_models_in_trajectory(self, ref, reader, tmpdir):
+        outfile = 'write-models-in-trajectory' + ref.ext
         # n_atoms should match for each TimeStep if it was specified
-        with ref.writer(outfile, n_atoms=4) as w:
-            with pytest.raises(ValueError):
-                w.write(reader.ts)
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, n_atoms=4) as w:
+                with pytest.raises(ValueError):
+                    w.write(reader.ts)
 
-    def test_no_conversion(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-no-conversion', ref, tempdir)
-        with ref.writer(outfile, convert_units=False) as w:
-            for ts in reader:
-                w.write(ts)
-        self._check_copy(outfile, ref, reader)
+    def test_no_conversion(self, ref, reader, tmpdir):
+        outfile = 'write-no-conversion' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, convert_units=False) as w:
+                for ts in reader:
+                    w.write(ts)
+            self._check_copy(outfile, ref, reader)
 
 
 class XYZ_BZ_Reference(XYZReference):
