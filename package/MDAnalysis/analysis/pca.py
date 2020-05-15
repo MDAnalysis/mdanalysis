@@ -148,9 +148,6 @@ class PCA(AnalysisBase):
         of the components preceding it. If a subset of components is not chosen
         then all components are stored and the cumulated variance will converge
         to 1.
-    pca_space : array (n_frames, n_components)
-        After running :meth:`pca.transform` the projection of the
-        positions onto the principal components will exist here.
     mean_atoms: MDAnalyis atomgroup
         After running :meth:`PCA.run`, the mean position of all the atoms
         used for the creation of the covariance matrix will exist here.
@@ -159,17 +156,20 @@ class PCA(AnalysisBase):
     -------
     transform(atomgroup, n_components=None)
         Take an atomgroup or universe with the same number of atoms as was
-        used for the calculation in :meth:`PCA.run` and project it onto the
+        used for the calculation in :meth:`PCA.run`, and project it onto the
         principal components.
 
     Notes
     -----
-    Computation can be speed up by supplying a precalculated mean structure
+    Computation can be sped up by supplying a precalculated mean structure.
 
     .. versionchanged:: 1.0.0
-       n_components now limits the correct axis of p_components
-       align=True now correctly aligns the trajectory and computes the correct
-       means and covariance matrix
+       ``n_components`` now limits the correct axis of ``p_components``. ``cumulated_variance`` now accurately represents the contribution of each 
+       principal component and does not change when ``n_components`` is given. If 
+       ``n_components`` is not None or is less than the number of ``p_components``, 
+       ``cumulated_variance`` will not sum to 1.
+       ``align=True`` now correctly aligns the trajectory and computes the correct
+       means and covariance matrix.
 
     .. versionchanged:: 0.19.0
        The start frame is used when performing selections and calculating
