@@ -83,6 +83,7 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
+  * Added .frames and .times arrays to AnalysisBase (Issue #2661)
   * Added elements attribute to PDBParser (Issue #2553, #2647)
   * Added new density.DensityAnalysis (Issue #2502)
   * Added ability to use Chemfiles as a trajectory reader backend (PR #1862)
@@ -121,6 +122,9 @@ Enhancements
   * Added weights_groupselections option in RMSD for mapping custom weights
     to groupselections (PR #2610, Issue #2429)
   * PersistenceLength.plot() now create new axes if current axes not provided (Issue #2590)
+  * Added a correlations module to provide functionality for analysis modules to
+    calculate the discrete autocorrelation function in a standardised way. Added
+    the capability to allow intermittent behaviour (PR #2256)
 
 Changes
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
