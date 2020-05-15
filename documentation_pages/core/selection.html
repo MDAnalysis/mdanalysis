@@ -247,6 +247,15 @@ an <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGr
 </dd></dl>
 
 <dl class="class">
+<dt id="MDAnalysis.core.selection.ByResSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ByResSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ByResSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ByResSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects all atoms that are in the same segment and residue as selection</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Use <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">&quot;resids&quot;</span></code> (see #2669 and #2672)</p>
+</div>
+</dd></dl>
+
+<dl class="class">
 <dt id="MDAnalysis.core.selection.DistanceSelection">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">DistanceSelection</code><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for distance search based selections</p>
@@ -368,6 +377,16 @@ For example</p>
 <dt id="MDAnalysis.core.selection.ResidueNameSelection">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ResidueNameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ResidueNameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ResidueNameSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select atoms based on ‘resnames’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.SameSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SameSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects all atoms that have the same subkeyword value as any atom in selection</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Map <code class="code docutils literal notranslate"><span class="pre">&quot;residue&quot;</span></code> to <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> and <code class="code docutils literal notranslate"><span class="pre">&quot;segment&quot;</span></code> to
+<code class="code docutils literal notranslate"><span class="pre">&quot;segindices&quot;</span></code> (see #2669 and #2672)</p>
+</div>
 </dd></dl>
 
 <dl class="class">
