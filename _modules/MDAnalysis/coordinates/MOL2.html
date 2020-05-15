@@ -532,10 +532,21 @@
 
         <span class="n">check_sums</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="n">check_sums</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">check_sums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">)),</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bondgroup</span><span class="p">))</span>
+
+        <span class="c1"># prevent behavior change between repeated calls</span>
+        <span class="c1"># see gh-2678</span>
+        <span class="n">molecule_0_store</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">molecule_1_store</span> <span class="o">=</span> <span class="n">molecule</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
         <span class="n">molecule</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">check_sums</span><span class="p">))</span>
         <span class="n">molecule</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;@&lt;TRIPOS&gt;MOLECULE</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span> <span class="o">+</span> <span class="n">atom_lines</span> <span class="o">+</span> <span class="n">bond_lines</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">substructure</span><span class="p">)</span></div>
+        <span class="n">return_val</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">molecule</span><span class="p">)</span> <span class="o">+</span> <span class="n">atom_lines</span> <span class="o">+</span>
+                      <span class="n">bond_lines</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">substructure</span><span class="p">))</span>
+
+        <span class="n">molecule</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">molecule_0_store</span>
+        <span class="n">molecule</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">molecule_1_store</span>
+        <span class="k">return</span> <span class="n">return_val</span></div>
 
 <div class="viewcode-block" id="MOL2Writer.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/MOL2.html#MDAnalysis.coordinates.MOL2.MOL2Writer.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write a new frame to the MOL2 file.</span>
