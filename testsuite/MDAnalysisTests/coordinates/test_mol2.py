@@ -183,3 +183,10 @@ def test_mol2_write_NIE(tmpdir):
         u = make_Universe(trajectory=True)
         with pytest.raises(NotImplementedError):
             u.atoms.write(outfile)
+
+def test_mol2_multi_write(tmpdir):
+    # see: gh-2678
+    with tmpdir.as_cwd():
+        u = mda.Universe(mol2_molecules)
+        u.atoms[:4].write('group1.mol2')
+        u.atoms[:4].write('group1.mol2')
