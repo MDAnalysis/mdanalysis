@@ -38,7 +38,7 @@ import pytest
 import tidynamics
 
 SELECTION = 'backbone and name CA and resid 1-10'
-NSTEP = 5000
+NSTEP = 20000
 
 #universe
 @pytest.fixture(scope='module')
@@ -78,6 +78,11 @@ def step_traj(): # constant velocity
     u = mda.Universe.empty(1)
     u.load_new(traj_reshape)
     return u
+@pytest.fixture(scope='module')
+def step_traj_arr(): # constant velocity
+    x = np.arange(NSTEP)
+    traj = np.vstack([x,x,x]).T
+    return traj
 
 def random_walk_3d():
     steps = -1 + 2*np.random.randint(0, 2, size=(NSTEP, 3))
@@ -127,7 +132,7 @@ def test_fft_vs_simple_all_dims_per_particle(dimension_list, u):
         per_particle_fft = m_fft.msd_per_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
-#testing on step trajectory
+#testing on step trajectory in tidynamics
 def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
     m_simple = MSD(step_traj, 'all' , msd_type='xyz', fft=False)
     m_simple.run()
@@ -163,6 +168,15 @@ def test_fft_step_traj_1d(step_traj): # this should fit the polynomial x**2
     m_fft.run()
     poly1 = characteristic_poly(NSTEP,1)
     assert_almost_equal(m_fft.timeseries, poly1, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
+
+# test tidynamics on a constant velocity trajectory.
+def test_step_traj_tidy_3d(step_traj_arr): # this should fit the polynomial y = 3x**2
+    msd_tidy = tidynamics.msd(step_traj_arr.astype(np.float64))
+    print(msd_tidy)
+    poly3 = characteristic_poly(NSTEP,3)
+    print(poly3)
+    assert_almost_equal(msd_tidy, poly3, decimal=4) # this passes with NSTEP=5000, and 10000 but fails for 20,000
+
 
 #test that tidynamics and our code give the same result for an arbitrary random walk
 def test_tidynamics_msd():
