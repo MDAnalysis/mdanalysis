@@ -303,8 +303,10 @@ class TestHoleAnalysis(BaseTestHole):
                                        output_level=100)
                 h.run(start=self.start,
                       stop=self.stop, random_seed=self.random_seed)
-            assert len(rec) == 1
+            assert len(rec) == 3
             assert 'needs to be < 3' in rec[0].message.args[0]
+            assert 'has no dt information' in rec[1].message.args[0]
+            assert 'has no dt information' in rec[2].message.args[0]
             # no profiles
             assert len(h.profiles) == 0
 
