@@ -214,13 +214,20 @@ class GlobalSelection(UnarySelection):
 
 
 class ByResSelection(UnarySelection):
+    """
+    Selects all atoms that are in the same segment and residue as selection
+
+    .. versionchanged:: 1.0.0
+       Use :code:`"resindices"` instead of :code:`"resids"` (see #2669 and #2672)
+    """
+
     token = 'byres'
     precedence = 1
 
     def apply(self, group):
         res = self.sel.apply(group)
-        unique_res = unique_int_1d(res.resids.astype(np.int64))
-        mask = np.in1d(group.resids, unique_res)
+        unique_res = unique_int_1d(res.resindices.astype(np.int64))
+        mask = np.in1d(group.resindices, unique_res)
 
         return group[mask].unique
 
@@ -1007,6 +1014,14 @@ class PropertySelection(Selection):
 
 
 class SameSelection(Selection):
+    """
+    Selects all atoms that have the same subkeyword value as any atom in selection
+
+    .. versionchanged:: 1.0.0
+       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to 
+       :code:`"segindices"` (see #2669 and #2672)
+    """
+
     token = 'same'
     precedence = 1
 
@@ -1015,8 +1030,8 @@ class SameSelection(Selection):
         'x': None,
         'y': None,
         'z': None,
-        'residue': 'resids',
-        'segment': 'segids',
+        'residue': 'resindices',
+        'segment': 'segindices',
         'name': 'names',
         'type': 'types',
         'resname': 'resnames',
