@@ -352,6 +352,20 @@ class BaseAuxReaderTest(object):
                          "representative value does not match when iterating through all trajectory timesteps")
         u.trajectory.close()
 
+    def test_auxiliary_read_ts_rewind(self, ref):
+        # add to trajectory
+        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
+        u.trajectory.add_auxiliary('test', ref.testdata)
+        # AuxiliaryBase.read_ts() should retrieve the correct step after
+        # reading the last one. Issue #2674 describes a case in which the
+        # object gets stuck on the last frame.
+        aux_info_0 = u.trajectory[0].aux.test
+        u.trajectory[-1].aux.test
+        aux_info_0_rewind = u.trajectory[0].aux.test
+        assert_equal(aux_info_0, aux_info_0_rewind,
+                     "aux info was retrieved incorrectly after reading the last step")
+        u.trajectory.close()
+
     def test_get_description(self, ref, reader):
         description = reader.get_description()
         for attr in ref.description:
