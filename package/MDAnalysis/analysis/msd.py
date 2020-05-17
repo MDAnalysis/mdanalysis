@@ -125,7 +125,6 @@ References
 
 .. [Maginn2019] Maginn, E. J.; Messerly, R. A.; Carlson, D. J.; Roe, D. R.; Elliott, J. R. Best Practices for Computing Transport Properties 1. Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1).
 .. [Calandri2011] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.; Kneller, G. R. NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. Collect. SFN 2011, 12, 201–232.
-.. [SO2015] https://stackoverflow.com/questions/34222272/computing-mean-square-displacement-using-python-and-fft
 
 Classes and Functions
 ---------------------
@@ -149,6 +148,13 @@ from numpy.fft import fft,ifft
 import logging
 import tidynamics
 import MDAnalysis
+from ..due import due, Doi
+
+due.cite(Doi("10.21105/joss.00877"),
+         description="Mean Squared Displacements with tidynamics",
+         path="MDAnalysis.analysis.msd",
+         cite_module=True)
+del Doi
 
 class EinsteinMSD(object):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.

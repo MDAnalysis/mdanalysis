@@ -156,19 +156,19 @@ def test_simple_step_traj_1d(step_traj): # this should fit the polynomial y=x**2
 #fft based tests require a slight decrease in expected prescision due to roundoff in fft(ifft()) calls
 #relative accuracy expected to be around ~1e-12
 
-def test_fft_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
+def test_fft_step_traj_3d(step_traj): # this should fit the polynomial y=3x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xyz', fft=True)
     m_fft.run()
     poly3 = characteristic_poly(NSTEP,3)
     assert_almost_equal(m_fft.timeseries, poly3, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
 
-def test_fft_step_traj_2d(step_traj): # this should fit the polynomial 2x**2
+def test_fft_step_traj_2d(step_traj): # this should fit the polynomial y=2x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xy', fft=True)
     m_fft.run()
     poly2 = characteristic_poly(NSTEP,2)
     assert_almost_equal(m_fft.timeseries, poly2, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
 
-def test_fft_step_traj_1d(step_traj): # this should fit the polynomial x**2
+def test_fft_step_traj_1d(step_traj): # this should fit the polynomial y=x**2
     m_fft = MSD(step_traj, 'all' , msd_type='x', fft=True)
     m_fft.run()
     poly1 = characteristic_poly(NSTEP,1)
