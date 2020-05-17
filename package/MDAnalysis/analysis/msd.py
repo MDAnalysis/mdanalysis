@@ -42,7 +42,6 @@ where :math:`\tau_{max}` is the length of the trajectory, thereby maximising the
 
 The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`\tau_{max}`. 
 An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_.
-The python implementation was originally presented here [SO2015]_. 
 
 Computing an MSD
 ----------------
@@ -152,6 +151,12 @@ from ..due import due, Doi
 
 due.cite(Doi("10.21105/joss.00877"),
          description="Mean Squared Displacements with tidynamics",
+         path="MDAnalysis.analysis.msd",
+         cite_module=True)
+del Doi
+
+due.cite(Doi("10.1051/sfn/201112010"),
+         description="FCA fast correlation algorithm",
          path="MDAnalysis.analysis.msd",
          cite_module=True)
 del Doi
