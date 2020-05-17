@@ -153,7 +153,6 @@ due.cite(Doi("10.21105/joss.00877"),
          description="Mean Squared Displacements with tidynamics",
          path="MDAnalysis.analysis.msd",
          cite_module=True)
-
 due.cite(Doi("10.1051/sfn/201112010"),
          description="FCA fast correlation algorithm",
          path="MDAnalysis.analysis.msd",
