@@ -147,6 +147,7 @@ import functools
 import numpy as np
 from numpy.fft import fft,ifft
 import logging
+import tidynamics
 import MDAnalysis
 
 class EinsteinMSD(object):
@@ -316,56 +317,10 @@ class EinsteinMSD(object):
             The MSD as a function of lagtime.
 
         """
-        msds_byparticle = []
+        msds_byparticle = np.zeros([self.N_frames, self.N_particles])
         reshape_positions = self._position_array[:,:,self._dim].astype(np.float64)
-        N=reshape_positions.shape[0]
-        D=np.square(reshape_positions).sum(axis=2, dtype=np.float64) 
-        D=np.append(D,np.zeros(reshape_positions.shape[:2]), axis=0) 
-        Q=2*D.sum(axis=0, dtype=np.float64)
-        S1=np.zeros(reshape_positions.shape[:2],dtype=np.float64)
-        for m in range(N):
-            Q=Q-D[m-1,:]-D[N-m,:]
-            S1[m,:]=Q/(N-m)
-        S2accumulate = []
-        for i in range(reshape_positions.shape[2]):
-            S2accumulate.append(self._autocorrFFT(reshape_positions[:,:,i]))
-        S2= np.sum(S2accumulate,axis=0,dtype=np.float64)
-
-        msds_byparticle.append(S1-2*S2)
-        self.msd_per_particle = np.concatenate(msds_byparticle,axis=1)
-        msds = self.msd_per_particle.mean(axis=-1, dtype=np.float64)
+        for n in range(self.N_particles):
+            msds_byparticle[:,n] = tidynamics.msd(reshape_positions[:,n,:])
+        self.msd_per_particle= msds_byparticle
+        msds = msds_byparticle.mean(axis=1, dtype=np.float64)
         return msds
-
-    @staticmethod
-    def _autocorrFFT(x):
-        r""" Calculates an autocorrelation function of the input signal via an FFT.
-
-        Parameters
-        ----------
-        x : :class:`np.ndarray`
-            Array to compute the autocorrelation for.
-
-        Returns
-        -------
-        autocorr : :class:`np.ndarray`
-            The autocorrelation of the input signal.
-
-        """
-        N=(x.shape[0])
-
-        #find closest power of 2 (code adapted from tidynamics)
-        current_exp = int(np.ceil(np.log2(N+1)))
-        if N == 2**current_exp:
-            n_fft = N
-        if N < 2**current_exp:
-            n_fft = 2**current_exp
-        elif N > 2**current_exp:
-            n_fft = 2**(current_exp+1)
-        #closest power of 2 gives the fastest FFTs 
-
-        F = fft(x, n=2*n_fft, axis=0)  #zero pad to get non-cyclic autocorrelation
-        PowerSpectralDensity = F * F.conjugate()
-        inverse = ifft(PowerSpectralDensity,axis=0)
-        autocorr = (inverse[:N]).real   #autocorr convention B
-        n = np.arange(1, N+1)[::-1] 
-        return autocorr/n[:, np.newaxis] #autocorr convention A

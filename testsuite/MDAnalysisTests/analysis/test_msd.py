@@ -30,15 +30,13 @@ from numpy.testing import (assert_array_less,
                            assert_almost_equal, assert_equal)
 import numpy as np
 
-from numpy.fft import fft,ifft
-
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
 
 import pytest
 import tidynamics
 
 SELECTION = 'backbone and name CA and resid 1-10'
-NSTEP = 20000
+NSTEP = 10000
 
 #universe
 @pytest.fixture(scope='module')
@@ -107,11 +105,13 @@ def test_fft_vs_simple_default(msd, msd_fft):
     timeseries_fft = msd_fft.timeseries
     assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
+#check fft and simple give same result per particle
 def test_fft_vs_simple_default_per_particle(msd, msd_fft):
     per_particle_simple = msd.msd_per_particle
     per_particle_fft = msd_fft.msd_per_particle
     assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
+#check fft and simple give same result for each dimensionality
 def test_fft_vs_simple_all_dims(dimension_list, u):
     for dim in dimension_list:
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
@@ -122,6 +122,7 @@ def test_fft_vs_simple_all_dims(dimension_list, u):
         timeseries_fft = m_fft.timeseries
         assert_almost_equal(timeseries_simple, timeseries_fft, decimal=4)
 
+#check fft and simple give same result for each particle in each dimension
 def test_fft_vs_simple_all_dims_per_particle(dimension_list, u):
     for dim in dimension_list:
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
@@ -132,24 +133,28 @@ def test_fft_vs_simple_all_dims_per_particle(dimension_list, u):
         per_particle_fft = m_fft.msd_per_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
-#testing on step trajectory in tidynamics
-def test_simple_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
+#testing the "simple" algorithm on constant velocity trajectory
+
+def test_simple_step_traj_3d(step_traj): # this should fit the polynomial y=3x**2
     m_simple = MSD(step_traj, 'all' , msd_type='xyz', fft=False)
     m_simple.run()
     poly3 = characteristic_poly(NSTEP,3)
     assert_almost_equal(m_simple.timeseries, poly3, decimal=4)
 
-def test_simple_step_traj_2d(step_traj): # this should fit the polynomial 2x**2
+def test_simple_step_traj_2d(step_traj): # this should fit the polynomial y=2x**2
     m_simple = MSD(step_traj, 'all' , msd_type='xy',  fft=False)
     m_simple.run()
     poly2 = characteristic_poly(NSTEP,2)
     assert_almost_equal(m_simple.timeseries, poly2, decimal=4)
 
-def test_simple_step_traj_1d(step_traj): # this should fit the polynomial x**
+def test_simple_step_traj_1d(step_traj): # this should fit the polynomial y=x**2
     m_simple = MSD(step_traj, 'all' , msd_type='x', fft=False)
     m_simple.run()
     poly1 = characteristic_poly(NSTEP,1)
     assert_almost_equal(m_simple.timeseries, poly1,decimal=4)  
+
+#fft based tests require a slight decrease in expected prescision due to roundoff in fft(ifft()) calls
+#relative accuracy expected to be around ~1e-12
 
 def test_fft_step_traj_3d(step_traj): # this should fit the polynomial 3x**2
     m_fft = MSD(step_traj, 'all' , msd_type='xyz', fft=True)
@@ -169,38 +174,6 @@ def test_fft_step_traj_1d(step_traj): # this should fit the polynomial x**2
     poly1 = characteristic_poly(NSTEP,1)
     assert_almost_equal(m_fft.timeseries, poly1, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
 
-# test tidynamics on a constant velocity trajectory.
-def test_step_traj_tidy_3d(step_traj_arr): # this should fit the polynomial y = 3x**2
-    msd_tidy = tidynamics.msd(step_traj_arr.astype(np.float64))
-    print(msd_tidy)
-    poly3 = characteristic_poly(NSTEP,3)
-    print(poly3)
-    assert_almost_equal(msd_tidy, poly3, decimal=4) # this passes with NSTEP=5000, and 10000 but fails for 20,000
-
-
-#test that tidynamics and our code give the same result for an arbitrary random walk
-def test_tidynamics_msd():
-    u, array = random_walk_3d()
-    msd_mda = MSD(u, 'all', msd_type='xyz', fft=True)
-    msd_mda.run()
-    msd_mda_msd = msd_mda.timeseries
-    msd_tidy = tidynamics.msd(array.astype(np.float64))
-    assert_almost_equal(msd_mda_msd, msd_tidy, decimal=5)
-
-#test that tidynamics and our code give the same result for SPECIFIC random walk
-def test_random_walk_tidynamics(random_walk_u):
-    msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
-    msd_rw.run()
-    array = msd_rw._position_array.astype(np.float64)
-    tidy_msds = np.zeros(msd_rw.N_frames)
-    count = 0
-    for mol in range(array.shape[1]):
-        pos = array[:,mol,:]
-        mol_msd = tidynamics.msd(pos)
-        tidy_msds += mol_msd
-        count += 1.0
-    msd_tidy = tidy_msds /count
-    assert_almost_equal(msd_tidy, msd_rw.timeseries, decimal=5)
 
 #regress against random_walk test data
 def test_random_walk_u_simple(random_walk_u):
@@ -210,6 +183,7 @@ def test_random_walk_u_simple(random_walk_u):
     val = 3932.39927487146
     assert_almost_equal(norm, val, decimal=5)
 
+#regress against random_walk test data
 def test_random_walk_u_fft(random_walk_u):
     msd_rw = MSD(random_walk_u, 'all', msd_type='xyz', fft=True)
     msd_rw.run()
