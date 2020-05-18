@@ -288,6 +288,8 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.analysis.align</span> <span class="kn">import</span> <span class="n">_fit_to</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
 
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
 
 
@@ -308,9 +310,11 @@
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
-<span class="sd">    p_components: array, (n_components, n_atoms * 3)</span>
+<span class="sd">    p_components: array, (n_atoms * 3, n_components)</span>
 <span class="sd">        The principal components of the feature space,</span>
 <span class="sd">        representing the directions of maximum variance in the data.</span>
+<span class="sd">        The column vector p_components[:, i] is the eigenvector</span>
+<span class="sd">        corresponding to the variance[i].</span>
 <span class="sd">    variance : array (n_components, )</span>
 <span class="sd">        The raw variance explained by each eigenvector of the covariance</span>
 <span class="sd">        matrix.</span>
@@ -319,9 +323,6 @@
 <span class="sd">        of the components preceding it. If a subset of components is not chosen</span>
 <span class="sd">        then all components are stored and the cumulated variance will converge</span>
 <span class="sd">        to 1.</span>
-<span class="sd">    pca_space : array (n_frames, n_components)</span>
-<span class="sd">        After running :meth:`pca.transform` the projection of the</span>
-<span class="sd">        positions onto the principal components will exist here.</span>
 <span class="sd">    mean_atoms: MDAnalyis atomgroup</span>
 <span class="sd">        After running :meth:`PCA.run`, the mean position of all the atoms</span>
 <span class="sd">        used for the creation of the covariance matrix will exist here.</span>
@@ -330,16 +331,20 @@
 <span class="sd">    -------</span>
 <span class="sd">    transform(atomgroup, n_components=None)</span>
 <span class="sd">        Take an atomgroup or universe with the same number of atoms as was</span>
-<span class="sd">        used for the calculation in :meth:`PCA.run` and project it onto the</span>
+<span class="sd">        used for the calculation in :meth:`PCA.run`, and project it onto the</span>
 <span class="sd">        principal components.</span>
 
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
-<span class="sd">    Computation can be speed up by supplying a precalculated mean structure</span>
+<span class="sd">    Computation can be sped up by supplying a precalculated mean structure.</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       align=True now correctly aligns the trajectory and computes the correct</span>
-<span class="sd">       means and covariance matrix</span>
+<span class="sd">       ``n_components`` now limits the correct axis of ``p_components``. ``cumulated_variance`` now accurately represents the contribution of each </span>
+<span class="sd">       principal component and does not change when ``n_components`` is given. If </span>
+<span class="sd">       ``n_components`` is not None or is less than the number of ``p_components``, </span>
+<span class="sd">       ``cumulated_variance`` will not sum to 1.</span>
+<span class="sd">       ``align=True`` now correctly aligns the trajectory and computes the correct</span>
+<span class="sd">       means and covariance matrix.</span>
 
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       The start frame is used when performing selections and calculating</span>
@@ -376,7 +381,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">align</span> <span class="o">=</span> <span class="n">align</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="n">n_components</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span> <span class="o">=</span> <span class="n">n_components</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_select</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mean</span> <span class="o">=</span> <span class="n">mean</span>
 
@@ -440,12 +445,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">cov</span> <span class="o">/=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">-</span> <span class="mi">1</span>
         <span class="n">e_vals</span><span class="p">,</span> <span class="n">e_vects</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cov</span><span class="p">)</span>
         <span class="n">sort_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">e_vals</span><span class="p">)[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> <span class="n">e_vals</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span> <span class="o">=</span> <span class="n">e_vects</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="n">sort_idx</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">)</span> <span class="o">/</span>
-                                   <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variance</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_variance</span> <span class="o">=</span> <span class="n">e_vals</span><span class="p">[</span><span class="n">sort_idx</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span> <span class="o">=</span> <span class="n">e_vects</span><span class="p">[:,</span> <span class="n">sort_idx</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span>
+
+    <span class="nd">@n_components</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">n_components</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculated</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cumulated_variance</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">)</span> <span class="o">/</span>
+                                       <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_variance</span><span class="p">))[:</span><span class="n">n</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n_components</span> <span class="o">=</span> <span class="n">n</span>
 
 <div class="viewcode-block" id="PCA.transform"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.PCA.transform">[docs]</a>    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                   <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -471,7 +489,7 @@
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        pca_space : array, shape (number of frames, number of components)</span>
+<span class="sd">        pca_space : array, shape (n_frames, n_components)</span>
 
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">           Transform now requires that :meth:`run` has been called before,</span>
@@ -502,9 +520,116 @@
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">]):</span>
             <span class="n">xyz</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">mean</span>
-            <span class="n">dot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">n_components</span><span class="p">])</span>
+            <span class="n">dot</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_p_components</span><span class="p">[:,</span> <span class="p">:</span><span class="n">dim</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="n">dot</span></div></div>
+        <span class="k">return</span> <span class="n">dot</span></div>
+
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">rmsip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
+
+<span class="sd">        This is only symmetric if the number of components is the same for </span>
+<span class="sd">        both instances. The RMSIP effectively measures how </span>
+<span class="sd">        correlated the vectors of this instance are to those of ``other``.</span>
+
+<span class="sd">        Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other: :class:`~MDAnalysis.analysis.pca.PCA`</span>
+<span class="sd">            Another PCA class. This must have already been run.</span>
+<span class="sd">        n_components: int or tuple of ints, optional</span>
+<span class="sd">            number of components to compute for the inner products.</span>
+<span class="sd">            ``None`` computes all of them.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float:</span>
+<span class="sd">            Root mean square inner product of the selected subspaces. </span>
+<span class="sd">            0 indicates that they are mutually orthogonal, whereas 1 indicates </span>
+<span class="sd">            that they are identical. </span>
+
+<span class="sd">        See also</span>
+<span class="sd">        --------</span>
+<span class="sd">        rmsip</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Call run() on the PCA before using rmsip&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">p_components</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Call run() on the other PCA before using rmsip&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">rmsip</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
+
+    <span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+        <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
+        <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">cumulative_overlap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
+
+<span class="sd">        This is not symmetric. The cumulative overlap measures the overlap of </span>
+<span class="sd">        the chosen vector in this instance, in the ``other`` subspace.</span>
+
+<span class="sd">        Please cite [Yang2008]_ if you use this function.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other: :class:`~MDAnalysis.analysis.pca.PCA`</span>
+<span class="sd">            Another PCA class. This must have already been run.</span>
+<span class="sd">        i: int, optional</span>
+<span class="sd">            The index of eigenvector to be analysed.</span>
+<span class="sd">        n_components: int, optional</span>
+<span class="sd">            number of components in ``other`` to compute for the cumulative overlap.</span>
+<span class="sd">            ``None`` computes all of them.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float:</span>
+<span class="sd">            Cumulative overlap of the chosen vector in this instance to </span>
+<span class="sd">            the ``other`` subspace. 0 indicates that they are mutually </span>
+<span class="sd">            orthogonal, whereas 1 indicates that they are identical. </span>
+
+<span class="sd">        See also</span>
+<span class="sd">        --------</span>
+<span class="sd">        cumulative_overlap</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_components</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Call run() on the PCA before using cumulative_overlap&#39;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">p_components</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Call run() on the other PCA before using cumulative_overlap&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;other must be another PCA class&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cosine_content"><a class="viewcode-back" href="../../../documentation_pages/analysis/pca.html#MDAnalysis.analysis.pca.cosine_content">[docs]</a><span class="k">def</span> <span class="nf">cosine_content</span><span class="p">(</span><span class="n">pca_space</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
@@ -521,7 +646,7 @@
 <span class="sd">    pca_space: array, shape (number of frames, number of components)</span>
 <span class="sd">        The PCA space to be analyzed.</span>
 <span class="sd">    i: int</span>
-<span class="sd">        The index of the pca_component projectection to be analyzed.</span>
+<span class="sd">        The index of the pca_component projection to be analyzed.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -540,6 +665,110 @@
     <span class="n">cos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">t</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">((</span><span class="mf">2.0</span> <span class="o">/</span> <span class="n">T</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simps</span><span class="p">(</span><span class="n">cos</span><span class="o">*</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]))</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span>
             <span class="n">scipy</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">simps</span><span class="p">(</span><span class="n">pca_space</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span></div>
+
+
+<span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1002/(SICI)1097-0134(19990901)36:4&lt;419::AID-PROT5&gt;3.0.CO;2-U&#39;</span><span class="p">),</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1529/biophysj.104.052449&#39;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;RMSIP&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">rmsip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the root mean square inner product between subspaces.</span>
+
+<span class="sd">    This is only symmetric if the number of components is the same for </span>
+<span class="sd">    ``a`` and ``b``. The RMSIP effectively measures how </span>
+<span class="sd">    correlated the vectors of ``a`` are to those of ``b``.</span>
+
+<span class="sd">    Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array, shape (n_components, n_features)</span>
+<span class="sd">        The first subspace. Must have the same number of features as ``b``.</span>
+<span class="sd">    b: array, shape (n_components, n_features)</span>
+<span class="sd">        The second subspace. Must have the same number of features as ``a``.</span>
+<span class="sd">    n_components: int or tuple of ints, optional</span>
+<span class="sd">        number of components to compute for the inner products.</span>
+<span class="sd">        ``None`` computes all of them.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float:</span>
+<span class="sd">        Root mean square inner product of the selected subspaces. </span>
+<span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates </span>
+<span class="sd">        that they are identical. </span>
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n_components</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">n_a</span> <span class="o">=</span> <span class="n">n_b</span> <span class="o">=</span> <span class="n">n_components</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_components</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">n_a</span><span class="p">,</span> <span class="n">n_b</span> <span class="o">=</span> <span class="n">n_components</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Too many values provided for n_components&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">n_a</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n_a</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n_b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n_b</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="n">sip</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="n">n_a</span><span class="p">],</span> <span class="n">b</span><span class="p">[:</span><span class="n">n_b</span><span class="p">]</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+    <span class="n">msip</span> <span class="o">=</span> <span class="n">sip</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">n_a</span>
+    <span class="k">return</span> <span class="n">msip</span><span class="o">**</span><span class="mf">0.5</span>
+
+
+<span class="nd">@due</span><span class="o">.</span><span class="n">dcite</span><span class="p">(</span>
+    <span class="n">Doi</span><span class="p">(</span><span class="s1">&#39;10.1016/j.str.2007.12.011&#39;</span><span class="p">),</span>
+    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Cumulative overlap&quot;</span><span class="p">,</span>
+    <span class="n">path</span><span class="o">=</span><span class="s1">&#39;MDAnalysis.analysis.pca&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">cumulative_overlap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Compute the cumulative overlap of a vector in a subspace.</span>
+
+<span class="sd">    This is not symmetric. The cumulative overlap measures the overlap of </span>
+<span class="sd">    the chosen vector in ``a``, in the ``b`` subspace.</span>
+
+<span class="sd">    Please cite [Yang2008]_ if you use this function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    a: array, shape (n_components, n_features) or vector, length n_features</span>
+<span class="sd">        The first subspace containing the vector of interest. Alternatively,</span>
+<span class="sd">        the actual vector. Must have the same number of features as ``b``.</span>
+<span class="sd">    b: array, shape (n_components, n_features)</span>
+<span class="sd">        The second subspace. Must have the same number of features as ``a``.</span>
+<span class="sd">    i: int, optional</span>
+<span class="sd">        The index of eigenvector to be analysed.</span>
+<span class="sd">    n_components: int, optional</span>
+<span class="sd">        number of components in ``b`` to compute for the cumulative overlap.</span>
+<span class="sd">        ``None`` computes all of them.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    float:</span>
+<span class="sd">        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace. </span>
+<span class="sd">        0 indicates that they are mutually orthogonal, whereas 1 indicates </span>
+<span class="sd">        that they are identical. </span>
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">shape</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">vec_norm</span> <span class="o">=</span> <span class="p">(</span><span class="n">vec</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+    <span class="k">if</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n_components</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">[:</span><span class="n">n_components</span><span class="p">]</span>
+    <span class="n">b_norms</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+    <span class="n">o</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">T</span><span class="p">))</span> <span class="o">/</span> <span class="p">(</span><span class="n">b_norms</span><span class="o">*</span><span class="n">vec_norm</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">o</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
 </pre></div>
 
            </div>
