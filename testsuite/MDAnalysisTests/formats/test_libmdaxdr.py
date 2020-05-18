@@ -51,8 +51,19 @@ def trr():
 
 
 @pytest.mark.parametrize('fname, xdr', ((XTC_multi_frame, XTCFile),
-                                        (TRR_multi_frame, TRRFile)))
+                                        (TRR_multi_frame, TRRFile)),
+                         indirect=True)
 class TestCommonAPI(object):
+    @staticmethod
+    @pytest.fixture
+    def fname(request):
+        return request.param
+
+    @staticmethod
+    @pytest.fixture
+    def xdr(request):
+        return request.param
+
     @staticmethod
     @pytest.fixture
     def reader(fname, xdr):
@@ -94,7 +105,7 @@ class TestCommonAPI(object):
         reader.seek(4)
         assert reader.tell() == 4
 
-    def test_seek_negatice(self, reader):
+    def test_seek_negative(self, reader):
         with pytest.raises(IOError):
             reader.seek(-4)
 
@@ -136,11 +147,26 @@ class TestCommonAPI(object):
         assert reader.tell() != new_reader.tell()
 
 
-
 @pytest.mark.parametrize("xdrfile, fname, offsets",
                          ((XTCFile, XTC_multi_frame, XTC_OFFSETS),
-                          (TRRFile, TRR_multi_frame, TRR_OFFSETS)))
+                          (TRRFile, TRR_multi_frame, TRR_OFFSETS)),
+                         indirect=True)
 class TestOffsets(object):
+    @staticmethod
+    @pytest.fixture
+    def fname(request):
+        return request.param
+
+    @staticmethod
+    @pytest.fixture
+    def xdrfile(request):
+        return request.param
+
+    @staticmethod
+    @pytest.fixture
+    def offsets(request):
+        return request.param
+
     @staticmethod
     @pytest.fixture
     def reader(xdrfile, fname):

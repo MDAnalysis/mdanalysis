@@ -559,6 +559,7 @@ if __name__ == '__main__':
           'matplotlib>=1.5.1',
           'mock',
           'tidynamics>=1.0.0'
+          'tqdm>=4.43.0',
     ]
     if not os.name == 'nt':
         install_requires.append('gsd>=1.4.0')
@@ -593,7 +594,7 @@ if __name__ == '__main__':
           ext_modules=exts,
           requires=['numpy (>=1.13.3)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)'],
+                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[

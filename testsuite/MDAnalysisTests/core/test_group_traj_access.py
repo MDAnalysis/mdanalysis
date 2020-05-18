@@ -55,12 +55,12 @@ def assert_correct_errormessage(func, var):
         pytest.fail()
 
 
-@pytest.mark.parametrize('pos, vel, force', (
+@pytest.mark.parametrize('pos,vel,force', (
     (True, False, False),
     (True, True, False),
     (True, False, True),
     (True, True, True),
-))
+), indirect=True)
 class TestAtomGroupTrajAccess(object):
     """
     For AtomGroup and Atom access:
@@ -81,6 +81,17 @@ class TestAtomGroupTrajAccess(object):
       - check value in master Timestep object is updated
     if not present, check we get proper NoDataError on setting
     """
+    @pytest.fixture()
+    def pos(self, request):
+        return request.param
+
+    @pytest.fixture()
+    def force(self, request):
+        return request.param
+
+    @pytest.fixture()
+    def vel(self, request):
+        return request.param
 
     @pytest.fixture()
     def u(self, pos, vel, force):
@@ -149,7 +160,8 @@ class TestAtomGroupTrajAccess(object):
         else:
             with pytest.raises(NoDataError):
                 getattr(at, 'velocity')
-            assert_correct_errormessage((getattr, at, 'velocity'), 'velocities')
+            assert_correct_errormessage(
+                (getattr, at, 'velocity'), 'velocities')
 
     def test_atom_force_access(self, u, force):
         at = u.atoms[55]

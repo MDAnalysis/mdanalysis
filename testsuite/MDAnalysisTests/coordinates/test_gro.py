@@ -25,7 +25,7 @@ import MDAnalysis as mda
 import numpy as np
 from MDAnalysis.coordinates.GRO import GROReader, GROWriter
 from MDAnalysis.transformations import translate
-from MDAnalysisTests import make_Universe, tempdir
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import (
     BaseReference, BaseReaderTest, BaseWriterTest, BaseTimestepTest,
 )
@@ -192,48 +192,53 @@ class TestGROWriter(BaseWriterTest):
     def ref():
         return GROReference()
 
-    def test_write_velocities(self, ref, tempdir):
+    def test_write_velocities(self, ref, tmpdir):
         u = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-velocities-test', ref, tempdir)
-        u.atoms.write(outfile)
+        with tmpdir.as_cwd():
+            outfile = 'write-velocities-test.' + ref.ext
+            u.atoms.write(outfile)
 
-        u2 = mda.Universe(outfile)
-        assert_almost_equal(u.atoms.velocities,
-                            u2.atoms.velocities)
+            u2 = mda.Universe(outfile)
+            assert_almost_equal(u.atoms.velocities,
+                                u2.atoms.velocities)
 
-    def test_write_no_resnames(self, u_no_resnames, ref, tempdir):
-        outfile = self.tmp_file('write-no-resnames-test', ref, tempdir)
-        u_no_resnames.atoms.write(outfile)
-        u = mda.Universe(outfile)
-        expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
-        assert_equal(u.atoms.resnames, expected)
+    def test_write_no_resnames(self, u_no_resnames, ref, tmpdir):
+        outfile = 'write-no-resnames-test.' + ref.ext
+        with tmpdir.as_cwd():
+            u_no_resnames.atoms.write(outfile)
+            u = mda.Universe(outfile)
+            expected = np.array(['UNK'] * u_no_resnames.atoms.n_atoms)
+            assert_equal(u.atoms.resnames, expected)
 
-    def test_write_no_resids(self, u_no_resids, ref, tempdir):
-        outfile = self.tmp_file('write-no-resids-test', ref, tempdir)
-        u_no_resids.atoms.write(outfile)
-        u = mda.Universe(outfile)
-        expected = np.ones((25,))
-        assert_equal(u.residues.resids, expected)
+    def test_write_no_resids(self, u_no_resids, ref, tmpdir):
+        outfile = 'write-no-resids-test.' + ref.ext
+        with tmpdir.as_cwd():
+            u_no_resids.atoms.write(outfile)
+            u = mda.Universe(outfile)
+            expected = np.ones((25,))
+            assert_equal(u.residues.resids, expected)
 
-    def test_writer_no_atom_names(self, u_no_names, ref, tempdir):
-        outfile = self.tmp_file('write-no-names-test', ref, tempdir)
-        u_no_names.atoms.write(outfile)
-        u = mda.Universe(outfile)
-        expected = np.array(['X'] * u_no_names.atoms.n_atoms)
-        assert_equal(u.atoms.names, expected)
+    def test_writer_no_atom_names(self, u_no_names, ref, tmpdir):
+        outfile = 'write-no-names-test.' + ref.ext
+        with tmpdir.as_cwd():
+            u_no_names.atoms.write(outfile)
+            u = mda.Universe(outfile)
+            expected = np.array(['X'] * u_no_names.atoms.n_atoms)
+            assert_equal(u.atoms.names, expected)
 
-    def test_check_coordinate_limits_min(self, ref, tempdir):
+    def test_check_coordinate_limits_min(self, ref, tmpdir):
         """Test that illegal GRO coordinates (x <= -999.9995 nm) are caught
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO)
         u.atoms[2000].position = [11.589, -999.9995 * 10, 22.2]  # nm -> A
-        outfile = self.tmp_file('coordinate-limits-min-test', ref, tempdir)
-        with pytest.raises(ValueError):
-            u.atoms.write(outfile)
+        outfile = 'coordinate-limits-min-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with pytest.raises(ValueError):
+                u.atoms.write(outfile)
 
-    def test_check_coordinate_limits_max(self, ref, tempdir):
+    def test_check_coordinate_limits_max(self, ref, tmpdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) are caught
         with ValueError (Issue 57)"""
         # modify coordinates so we need our own copy or we could mess up
@@ -241,21 +246,22 @@ class TestGROWriter(BaseWriterTest):
         u = mda.Universe(GRO)
         # nm -> A  ; [ob] 9999.9996 not caught
         u.atoms[1000].position = [0, 9999.9999 * 10, 1]
-        outfile = self.tmp_file('coordinate-limits-max-test', ref, tempdir)
-        with pytest.raises(ValueError):
-            u.atoms.write(outfile)
+        outfile = 'coordinate-limits-max-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with pytest.raises(ValueError):
+                u.atoms.write(outfile)
 
-    def test_check_coordinate_limits_max_noconversion(self, ref, tempdir):
+    def test_check_coordinate_limits_max_noconversion(self, ref, tmpdir):
         """Test that illegal GRO coordinates (x > 9999.9995 nm) also
         raises exception for convert_units=False"""
         # modify coordinates so we need our own copy or we could mess up
         # parallel tests
         u = mda.Universe(GRO, convert_units=False)
         u.atoms[1000].position = [22.2, 9999.9999, 37.89]
-        outfile = self.tmp_file('coordinate-limits-max-noconversion-test', ref,
-                                tempdir)
-        with pytest.raises(ValueError):
-            u.atoms.write(outfile, convert_units=False)
+        outfile = 'coordinate-limits-max-noconversion-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with pytest.raises(ValueError):
+                u.atoms.write(outfile, convert_units=False)
 
 
 class GRONoConversionReference(GROReference):
@@ -367,60 +373,61 @@ class TestGROLargeWriter(BaseWriterTest):
     def ref():
         return GROLargeReference()
 
-    def test_writer_large(self, ref, tempdir):
+    def test_writer_large(self, ref, tmpdir):
         """
         Test that atom numbers are truncated for large
         GRO files (Issue 550).
         """
-        outfile = self.tmp_file('outfile1.gro', ref, tempdir)
+        outfile = 'outfile1.' + ref.ext
         u = mda.Universe(ref.topology, ref.trajectory)
-        u.atoms.write(outfile)
+        with tmpdir.as_cwd():
+            u.atoms.write(outfile)
 
-        with open(outfile, 'rt') as mda_output:
-            with mda.lib.util.anyopen(ref.topology, 'rt') as expected_output:
-                produced_lines = mda_output.readlines()[1:]
-                expected_lines = expected_output.readlines()[1:]
-                assert_equal(produced_lines,
-                             expected_lines,
-                             err_msg="Writing GRO file with > 100 000 "
-                                     "coords does not truncate properly.")
+            with open(outfile, 'rt') as mda_output:
+                with mda.lib.util.anyopen(ref.topology, 'rt') as expected_output:
+                    produced_lines = mda_output.readlines()[1:]
+                    expected_lines = expected_output.readlines()[1:]
+                    assert_equal(produced_lines,
+                                 expected_lines,
+                                 err_msg="Writing GRO file with > 100 000 "
+                                         "coords does not truncate properly.")
 
-    def test_writer_large_residue_count(self, ref, tempdir):
+    def test_writer_large_residue_count(self, ref, tmpdir):
         """
         Ensure large residue number truncation for
         GRO files (Issue 886).
         """
-        outfile = self.tmp_file('outfile2.gro', ref, tempdir)
+        outfile = 'outfile2.' + ref.ext
         u = mda.Universe(ref.topology, ref.trajectory)
         target_resname = u.residues[-1].resname
         resid_value = 9999999
         u.residues[-1].resid = resid_value
-        u.atoms.write(outfile)
+        with tmpdir.as_cwd():
+            u.atoms.write(outfile)
 
-        with open(outfile, 'rt') as mda_output:
-            output_lines = mda_output.readlines()
-            produced_resid = output_lines[-2].split(target_resname)[0]
-            expected_resid = str(resid_value)[:5]
-            assert_equal(produced_resid,
-                         expected_resid,
-                         err_msg="Writing GRO file with > 99 999 "
-                                 "resids does not truncate properly.")
+            with open(outfile, 'rt') as mda_output:
+                output_lines = mda_output.readlines()
+                produced_resid = output_lines[-2].split(target_resname)[0]
+                expected_resid = str(resid_value)[:5]
+                assert_equal(produced_resid,
+                             expected_resid,
+                             err_msg="Writing GRO file with > 99 999 "
+                                     "resids does not truncate properly.")
 
 
-@tempdir.run_in_tempdir()
-def test_growriter_resid_truncation():
-    u = make_Universe(extras=['resids'], trajectory=True)
-    u.residues[0].resid = 123456789
-    u.atoms.write('out.gro')
+def test_growriter_resid_truncation(tmpdir):
+    with tmpdir.as_cwd():
+        u = make_Universe(extras=['resids'], trajectory=True)
+        u.residues[0].resid = 123456789
+        u.atoms.write('out.gro')
 
-    with open('out.gro', 'r') as grofile:
-        grofile.readline()
-        grofile.readline()
-        line = grofile.readline()
-    # larger digits should get truncated
-    assert line.startswith('56789UNK')
+        with open('out.gro', 'r') as grofile:
+            grofile.readline()
+            grofile.readline()
+            line = grofile.readline()
+        # larger digits should get truncated
+        assert line.startswith('56789UNK')
 
-@tempdir.run_in_tempdir()
 class TestGrowriterReindex(object):
     @pytest.fixture()
     def u(self):
@@ -432,40 +439,44 @@ class TestGrowriterReindex(object):
         u.atoms[0].id = 3
         return u
 
-    def test_growriter_resid_true(self, u):
-        u.atoms.write('temp.gro', reindex=True)
+    def test_growriter_resid_true(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            u.atoms.write('temp.gro', reindex=True)
 
-        with open('temp.gro', 'r') as grofile:
-            grofile.readline()
-            grofile.readline()
-            line = grofile.readline()
-        assert line.startswith('    2CL      CL    1')
+            with open('temp.gro', 'r') as grofile:
+                grofile.readline()
+                grofile.readline()
+                line = grofile.readline()
+            assert line.startswith('    2CL      CL    1')
 
-    def test_growriter_resid_false(self, u):
-        u.atoms.write('temp.gro', reindex=False)
-        with open('temp.gro', 'r') as grofile:
-            grofile.readline()
-            grofile.readline()
-            line = grofile.readline()
-        assert line.startswith('    2CL      CL    3')
+    def test_growriter_resid_false(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            u.atoms.write('temp.gro', reindex=False)
+            with open('temp.gro', 'r') as grofile:
+                grofile.readline()
+                grofile.readline()
+                line = grofile.readline()
+            assert line.startswith('    2CL      CL    3')
 
-    def test_writer_resid_false(self, u):
-        with mda.Writer('temp.gro', reindex=False) as w:
-            w.write(u.atoms)
-        with open('temp.gro', 'r') as grofile:
-            grofile.readline()
-            grofile.readline()
-            line = grofile.readline()
-        assert line.startswith('    2CL      CL    3')
+    def test_writer_resid_false(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            with mda.Writer('temp.gro', reindex=False) as w:
+                w.write(u.atoms)
+            with open('temp.gro', 'r') as grofile:
+                grofile.readline()
+                grofile.readline()
+                line = grofile.readline()
+            assert line.startswith('    2CL      CL    3')
 
-    def test_writer_resid_true(self, u):
-        with mda.Writer('temp.gro', reindex=True) as w:
-            w.write(u.atoms)
-        with open('temp.gro', 'r') as grofile:
-            grofile.readline()
-            grofile.readline()
-            line = grofile.readline()
-        assert line.startswith('    2CL      CL    1')
+    def test_writer_resid_true(self, u, tmpdir):
+        with tmpdir.as_cwd():
+            with mda.Writer('temp.gro', reindex=True) as w:
+                w.write(u.atoms)
+            with open('temp.gro', 'r') as grofile:
+                grofile.readline()
+                grofile.readline()
+                line = grofile.readline()
+            assert line.startswith('    2CL      CL    1')
 
 class TestGROTimestep(BaseTimestepTest):
     Timestep = mda.coordinates.GRO.Timestep

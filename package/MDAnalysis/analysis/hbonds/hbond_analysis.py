@@ -331,9 +331,10 @@ import numpy as np
 
 from MDAnalysis import MissingDataWarning, NoDataError, SelectionError, SelectionWarning
 from .. import base
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
 from MDAnalysis.lib import distances
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 
 
 logger = logging.getLogger('MDAnalysis.analysis.hbonds')
@@ -381,6 +382,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
     .. versionchanged:: 0.7.6
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
        default values for different force fields.
+
+    .. versionchanged:: 0.21.0
+        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
 
     .. versionchanged:: 1.0.0
        ``save_table()`` method has been removed. You can use ``np.save()`` or
@@ -952,10 +956,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self._timeseries = []
         self.timesteps = []
 
-        pm = ProgressMeter(self.n_frames,
-                           format="HBonds frame {current_step:5d}: {step:5d}/{numsteps} [{percentage:5.1f}%]\r",
-                           verbose=kwargs.get('verbose', False))
-
         try:
             self.u.trajectory.time
             def _get_timestep():
@@ -970,7 +970,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         logger.info("Starting analysis (frame index start=%d stop=%d, step=%d)",
                     self.start, self.stop, self.step)
 
-        for progress, ts in enumerate(self.u.trajectory[self.start:self.stop:self.step]):
+        for ts in ProgressBar(self.u.trajectory[self.start:self.stop:self.step],
+                              desc="HBond analysis",
+                              verbose=kwargs.get('verbose', False)):
             # all bonds for this timestep
             frame_results = []
             # dict of tuples (atom.index, atom.index) for quick check if
@@ -981,7 +983,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             timestep = _get_timestep()
             self.timesteps.append(timestep)
 
-            pm.echo(progress, current_step=frame)
             self.logger_debug("Analyzing frame %(frame)d, timestep %(timestep)f ps", vars())
             if self.update_selection1:
                 self._update_selection_1()
@@ -1041,7 +1042,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                                     dist, angle])
 
             self._timeseries.append(frame_results)
-
         logger.info("HBond analysis: complete; timeseries  %s.timeseries",
                     self.__class__.__name__)
 
@@ -1413,3 +1413,56 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         h2donor.update(_make_dict(s1d, s1h))
 
         return h2donor
+
+
+    def autocorrelation(self, tau_max=20, window_step=1, intermittency=0):
+        """
+        Computes and returns the autocorrelation (HydrogenBondLifetimes ) on the computed hydrogen bonds.
+
+        Parameters
+        ----------
+        window_step : int, optional
+            Jump every `step`-th frame. This is compatible but independant of the taus used.
+            Note that `step` and `tau_max` work consistently with intermittency.
+        tau_max : int, optional
+            Survival probability is calculated for the range 1 <= `tau` <= `tau_max`
+        intermittency : int, optional
+            The maximum number of consecutive frames for which a bond can disappear but be counted as present if it
+            returns at the next frame. An intermittency of `0` is equivalent to a continuous autocorrelation, which does
+            not allow for the hydrogen bond disappearance. For example, for `intermittency=2`, any given hbond may
+            disappear for up to two consecutive frames yet be treated as being present at all frames.
+            The default is continuous (0).
+
+        Returns
+        -------
+        tau_timeseries : list
+            tau from 1 to `tau_max`. Saved in the field tau_timeseries.
+        timeseries : list
+            autcorrelation value for each value of `tau`. Saved in the field timeseries.
+        timeseries_data: list
+            raw datapoints from which the average is taken (timeseries).
+            Time dependancy and distribution can be extracted.
+        """
+
+        if self._timeseries is None:
+            logging.error("Autocorrelation analysis of hydrogen bonds cannot be done before the hydrogen bonds are found")
+            logging.error("Autocorrelation: Please use the .run() before calling this function")
+            return
+
+        if self.step != 1:
+            logging.warning("Autocorrelation function should be carried out on consecutive frames. ")
+            logging.warning("Autocorrelation: if you would like to allow bonds to break and reform, please use 'intermittency'")
+
+        # Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), ..]
+        hydrogen_bonds = self.timeseries
+        found_hydrogen_bonds = [{frozenset(bond[0:2]) for bond in frame} for frame in hydrogen_bonds]
+
+        intermittent_hbonds = correct_intermittency(found_hydrogen_bonds, intermittency=intermittency)
+        tau_timeseries, timeseries, timeseries_data = autocorrelation(intermittent_hbonds, tau_max,
+                                                                      window_step=window_step)
+        self.acf_tau_timeseries = tau_timeseries
+        self.acf_timeseries = timeseries
+        # user can investigate the distribution and sample size
+        self.acf_timeseries_data = timeseries_data
+
+        return self

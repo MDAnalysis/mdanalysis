@@ -16,11 +16,20 @@ The rules for this file:
 mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
-         ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance
+         ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
+         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix
 
   * 0.21.0
 
 Fixes
+  * Use internal residue indices instead of resids for similarity and connectivity
+    selections (Issues #2669 and #2672, PR #2673)
+  * Checks for cryo-em 1 A^3 default CRYST1 record, 
+    disabling setting of box dimensions if found (Issue #2599)
+  * mdamath.angles now returns np.pi instead of -np.pi in cases of
+    lower bound roundoff errors. (Issue #2632, PR #2634)
+  * Proper error message for AlignTraj on trajectory without mass (Issue #2469)
+  * Updated tests to have explicit fixtures (Issue #2618)
   * XDR offsets now read from trajectory if offsets file read-in fails on
     IOError (Issue #1893, PR #2611)
   * Fixed the deprecation warning from `collections` library in `flatten_dict`
@@ -32,13 +41,13 @@ Fixes
   * Fixed mda.Merge for Universes without coordinates (Issue #2470)(PR #2580)
   * PCA(align=True) now correctly aligns the trajectory and computes the
     correct means and covariance matrix (Issue #2561)
-  * Correct args order of base.AnalysisFromFunction (Issue #2503)  
+  * Correct args order of base.AnalysisFromFunction (Issue #2503)
   * encore.dres() returns dimensionality reduction details instead of a
     reference to itself (Issue #2471)
   * Handle exception when PDBWriter is trying to remove an invalid StringIO
     (Issue #2512)
   * Clarifies density_from_Universe docs and adds user warning (Issue #2372)
-  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in 
+  * Fix upstream deprecation of `matplotlib.axis.Tick` attributes in
     `MDAnalysis.analysis.psa`
   * PDBWriter now uses first character of segid as ChainID (Issue #2224)
   * Adds a more detailed warning when attempting to read chamber-style parm7
@@ -46,7 +55,7 @@ Fixes
   * ClusterCollection.get_ids now returns correctly (Issue #2464)
   * Removes files for stubs mainly introduced in 0.11.0 (Issue #2443)
   * Removes support for reading AMBER NetCDF files with `cell_angle` units set
-    to `degrees` instead of the convention agreed `degree` (Issue #2327). 
+    to `degrees` instead of the convention agreed `degree` (Issue #2327).
   * Removes the MassWeight option from gnm (PR #2479).
   * AtomGroup.guess_bonds now uses periodic boundary information when available
     (Issue #2350)
@@ -68,12 +77,18 @@ Fixes
     match TPRParser. (PR #2408)
   * Added parmed to setup.py
   * Fixed example docs for polymer persistence length (#2582)
+  * Fixed HydrogenBondAnalysis to return atom indices rather than atom ids (PR #2572).
+    Fixed the check for bond information in the _get_dh_pairs method (Issue #2396).
   * Added missing selection module to leaflet.py (Issue #2612)
+  * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
+  * Added .frames and .times arrays to AnalysisBase (Issue #2661)
+  * Added elements attribute to PDBParser (Issue #2553, #2647)
+  * Added new density.DensityAnalysis (Issue #2502)
   * Added ability to use Chemfiles as a trajectory reader backend (PR #1862)
-  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole) 
-    for running HOLE on singular PDB files and class (HoleAnalysis) for 
+  * New analysis.hole2 module for HOLE interfacing. Contains a function (hole)
+    for running HOLE on singular PDB files and class (HoleAnalysis) for
     trajectories (PR #2523)
   * Changed selection wildcards to support multiple wildcards (#2436)
   * Added coordinate reader and writer for NAMD binary coordinate format (PR #2485)
@@ -104,8 +119,17 @@ Enhancements
   * Added ParmEdParser, ParmEdReader and ParmEdConverter to
     convert between a parmed.Structure and MDAnalysis Universe (PR #2404)
   * Improve the distance search in water bridge analysis with capped_distance (PR #2480)
+  * Added weights_groupselections option in RMSD for mapping custom weights
+    to groupselections (PR #2610, Issue #2429)
+  * PersistenceLength.plot() now create new axes if current axes not provided (Issue #2590)
+  * Added a correlations module to provide functionality for analysis modules to
+    calculate the discrete autocorrelation function in a standardised way. Added
+    the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
+    the tqdm package (Issue #928, PR #2617). Also fixes issue #2504.
+  * Removed `details` from `ClusteringMethod`s (Issue #2575, PR #2620)
   * Removed deprecated :meth:`PersistenceLength.perform_fit` (Issue #2596)
   * Changed :meth:`PSAnalysis.generate_paths` keywords `store` and `filename`
     defaults to `False` and `None` (Issue #2593)
@@ -120,15 +144,15 @@ Changes
     Segment.r1, Universe.s4AKE).  Use select_atoms instead (Issue #1377)
   * Calling Universe() now raises a TypeError advising you to use Universe.empty.
     Universe.empty() now no longer has n_atoms=0 as default. (Issue #2527)
-  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__` 
-    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run` 
+  * deprecated `start`, `stop`, and `step` keywords have been removed from `__init__`
+    in :class:`AnalysisBase`. These should now be called in :meth:`AnalysisBase.run`
     (Issue #1463)
   * Standardize `select` keyword by removing `selection`, `atomselection`
     and `ref_select` (Issue #2461, Issue #2530)
   * Removes support for setting `start`/`stop`/`step` trajecotry slicing
     keywords on :class:`HOLEtraj` construction. Also removes undocumented
     support for passing :class:`HOLE` parameters to :meth:`HOLEtraj.run`
-    (Issue #2513). 
+    (Issue #2513).
   * Removes the `nproc` keyword from
     :class:`Waterdynamics.HydrogenBondLifetimes` as the multiprocessing functionality
     did not work in some cases(Issues #2511).
@@ -157,6 +181,9 @@ Changes
 Deprecations
   * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
+  * analysis.density.density_from_Universe() (remove in 2.0)
+  * analysis.density.notwithin_coordinates_factory() (remove in 2.0)
+  * analysis.density.density_from_PDB and BfactorDensityCreator (remove in 2.0)
 
 
 09/05/19 IAlibay, richardjgowers

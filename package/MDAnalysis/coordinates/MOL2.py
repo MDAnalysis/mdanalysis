@@ -357,10 +357,21 @@ class MOL2Writer(base.WriterBase):
 
         check_sums = molecule[1].split()
         check_sums[0], check_sums[1] = str(len(obj.atoms)), str(len(bondgroup))
+
+        # prevent behavior change between repeated calls
+        # see gh-2678
+        molecule_0_store = molecule[0]
+        molecule_1_store = molecule[1]
+
         molecule[1] = "{0}\n".format(" ".join(check_sums))
         molecule.insert(0, "@<TRIPOS>MOLECULE\n")
 
-        return "".join(molecule) + atom_lines + bond_lines + "".join(substructure)
+        return_val = ("".join(molecule) + atom_lines +
+                      bond_lines + "".join(substructure))
+
+        molecule[0] = molecule_0_store
+        molecule[1] = molecule_1_store
+        return return_val
 
     def write(self, obj):
         """Write a new frame to the MOL2 file.
