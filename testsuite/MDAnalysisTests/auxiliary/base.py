@@ -328,29 +328,34 @@ class BaseAuxReaderTest(object):
         reader = mda.auxiliary.core.get_auxreader_for(ref.testdata)
         assert reader == ref.reader
 
-    def test_iterate_through_trajectory(self, ref):
-        # add to trajectory
-        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
-        u.trajectory.add_auxiliary('test', ref.testdata)
+    def test_iterate_through_trajectory(self, ref, ref_universe):
         # check the representative values of aux for each frame are as expected
         # trajectory here has same dt, offset; so there's a direct correspondence
         # between frames and steps
-        for i, ts in enumerate(u.trajectory):
+        for i, ts in enumerate(ref_universe.trajectory):
             assert_equal(ts.aux.test, ref.auxsteps[i].data,
-                         "representative value does not match when iterating through all trajectory timesteps")
-        u.trajectory.close()
+                         "representative value does not match when "
+                         "iterating through all trajectory timesteps")
 
-    def test_iterate_as_auxiliary_from_trajectory(self, ref):
-        # add to trajectory
-        u = mda.Universe(COORDINATES_TOPOLOGY, COORDINATES_XTC)
-        u.trajectory.add_auxiliary('test', ref.testdata)
+    def test_iterate_as_auxiliary_from_trajectory(self, ref, ref_universe):
         # check representative values of aux for each frame are as expected
-        # trahectory here has same dt, offset, so there's a direct correspondence
+        # trajectory here has same dt, offset, so there's a direct correspondence
         # between frames and steps, and iter_as_aux will run through all frames
-        for i, ts in enumerate(u.trajectory.iter_as_aux('test')):
+        for i, ts in enumerate(ref_universe.trajectory.iter_as_aux('test')):
             assert_equal(ts.aux.test, ref.auxsteps[i].data,
-                         "representative value does not match when iterating through all trajectory timesteps")
-        u.trajectory.close()
+                         "representative value does not match when "
+                         "iterating through all trajectory timesteps")
+
+    def test_auxiliary_read_ts_rewind(self, ref_universe):
+        # AuxiliaryBase.read_ts() should retrieve the correct step after
+        # reading the last one. Issue #2674 describes a case in which the
+        # object gets stuck on the last frame.
+        aux_info_0 = ref_universe.trajectory[0].aux.test
+        ref_universe.trajectory[-1]
+        aux_info_0_rewind = ref_universe.trajectory[0].aux.test
+        assert_equal(aux_info_0, aux_info_0_rewind,
+                     "aux info was retrieved incorrectly "
+                     "after reading the last step")
 
     def test_get_description(self, ref, reader):
         description = reader.get_description()
