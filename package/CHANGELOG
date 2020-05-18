@@ -83,6 +83,7 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
+  * Added computation of Mean Squared Displacements (PR #2619)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
   * Added elements attribute to PDBParser (Issue #2553, #2647)
   * Added new density.DensityAnalysis (Issue #2502)

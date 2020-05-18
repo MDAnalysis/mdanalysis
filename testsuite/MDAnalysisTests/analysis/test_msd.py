@@ -36,7 +36,7 @@ import pytest
 import tidynamics
 
 SELECTION = 'backbone and name CA and resid 1-10'
-NSTEP = 10000
+NSTEP = 5000
 
 #universe
 @pytest.fixture(scope='module')
