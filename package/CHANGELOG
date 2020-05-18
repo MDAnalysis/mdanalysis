@@ -22,6 +22,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * n_components correctly selects PCA components (Issue #2623)
   * Use internal residue indices instead of resids for similarity and connectivity
     selections (Issues #2669 and #2672, PR #2673)
   * Checks for cryo-em 1 A^3 default CRYST1 record, 
@@ -83,6 +84,8 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
+  * Added methods to compute the root-mean-square-inner-product of subspaces 
+    and the cumulative overlap of a vector in a subspace for PCA (PR #2613)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
   * Added elements attribute to PDBParser (Issue #2553, #2647)
   * Added new density.DensityAnalysis (Issue #2502)
