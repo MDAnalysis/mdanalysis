@@ -19,7 +19,7 @@ a `tax-deductible donation`_ to help the project pay for developer time, profess
 .. raw:: html
 
    <center>
-   <img src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" width="50%" alt="NumFOCUS" align="center">
+   <img src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" width="25%" alt="NumFOCUS">
    </center>
   
 This project is bound by a `Code of Conduct`_.
