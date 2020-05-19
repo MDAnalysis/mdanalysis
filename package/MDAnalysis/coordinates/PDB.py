@@ -634,7 +634,13 @@ class PDBWriter(base.WriterBase):
         """
         Write PDB header.
 
-        CRYST1 field is skipped if if :code:`u.dimensions` is  :code:`None`.
+        The HEADER record is set to :code: `trajectory.header`.
+        The TITLE record explicitly mentions MDAnalysis and contains
+        information about trajectory frame(s).
+        The COMPND record is set to :code:`trajectory.compound`.
+        The REMARKS records are set to :code:`u.trajectory.remarks`
+        The CRYST1 record specifies the unit cell. This record is skipped 
+        if :code:`u.dimensions` is  :code:`None`.
 
         .. versionchanged: 1.0.0
            Write CRYST1 only if :code:`u.dimensions`
