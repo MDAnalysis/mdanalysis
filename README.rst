@@ -21,7 +21,8 @@ a `tax-deductible donation`_ to help the project pay for developer time, profess
    <div align="center">
       <a href="https://numfocus.org/project/mdanalysis">
          <img height="60px" 
-            src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" 
+            src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png"
+            alt="NumFOCUS Logo"
             align="center">
       </a>
    </div>
