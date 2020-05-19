@@ -303,6 +303,18 @@ class TestPDBWriter(object):
 
         uout = mda.Universe(outfile)
 
+        assert_equal(
+            uout.trajectory.n_frames, 1,
+            err_msg="Output PDB should only contain a single frame"
+        )
+
+        assert_almost_equal(
+            u.atoms.positions, uout.atoms.positions,
+            self.prec,
+            err_msg="Written coordinates do not "
+                "agree with original coordinates from frame %d" %
+                u.trajectory.frame
+        )
 
     def test_check_coordinate_limits_min(self, universe, outfile):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught

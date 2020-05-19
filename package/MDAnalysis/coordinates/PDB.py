@@ -631,6 +631,11 @@ class PDBWriter(base.WriterBase):
                        "".format(self.start, self.remarks))
 
     def _write_pdb_header(self):
+        """
+        .. versionchanged: 1.0.0
+           Write CRYST1 only if :code:`u.trajectory.ts.dimensions`
+           is not :code:`None`.
+        """
         if self.first_frame_done == True:
             return
 
@@ -652,7 +657,8 @@ class PDBWriter(base.WriterBase):
         except AttributeError:
             pass
 
-        self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
+        if u.trajectory.ts.dimensions is not None:
+            self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
     def _check_pdb_coordinates(self):
         """Check if the coordinate values fall within the range allowed for PDB files.
