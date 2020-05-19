@@ -47,6 +47,7 @@ from numpy.testing import (assert_equal,
 
 class TestPDBReader(_SingleFrameReader):
     __test__ = True
+
     def setUp(self):
         # can lead to race conditions when testing in parallel
         self.universe = mda.Universe(RefAdKSmall.filename)
@@ -191,6 +192,10 @@ class TestPDBWriter(object):
         return mda.Universe(PDB)
 
     @pytest.fixture
+    def universe4(self):
+        return mda.fetch_mmtf("2BBM")
+
+    @pytest.fixture
     def outfile(self, tmpdir):
         return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
 
@@ -290,6 +295,14 @@ class TestPDBWriter(object):
                             self.prec, err_msg="Written coordinates do not "
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
+
+    def test_write_nodimes(self, universe4, outfile):
+        u = universe4
+
+        u.atoms.write(outfile)
+
+        uout = mda.Universe(outfile)
+
 
     def test_check_coordinate_limits_min(self, universe, outfile):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught
@@ -513,6 +526,7 @@ class TestMultiPDBReader(object):
                                               "the test reference; len(actual) is %d, len(desired) "
                                               "is %d" % (len(u._topology.bonds.values), len(desired)))
 
+
 def test_conect_bonds_all(tmpdir):
     conect = mda.Universe(CONECT, guess_bonds=True)
 
@@ -527,6 +541,7 @@ def test_conect_bonds_all(tmpdir):
     assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
+
 
 def test_write_bonds_partial(tmpdir):
     u = mda.Universe(CONECT)

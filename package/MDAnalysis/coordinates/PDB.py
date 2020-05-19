@@ -651,6 +651,7 @@ class PDBWriter(base.WriterBase):
             self.REMARK(*remarks)
         except AttributeError:
             pass
+
         self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
     def _check_pdb_coordinates(self):
