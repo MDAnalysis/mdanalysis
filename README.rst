@@ -17,6 +17,7 @@ The MDAnalysis project uses an `open governance model`_ and is fiscally sponsore
 a `tax-deductible donation`_ to help the project pay for developer time, professional services, travel, workshops, and a variety of other needs.
 
 .. raw:: html
+
    <center>
    <img src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" width="50%" alt="NumFOCUS" align="center">
    </center>
