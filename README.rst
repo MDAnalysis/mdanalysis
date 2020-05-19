@@ -19,7 +19,7 @@ a `tax-deductible donation`_ to help the project pay for developer time, profess
 .. raw:: html
 
    <div align="center">
-      <a href="<PROJECT_NUMFOCUS_SPONSORSHIP_LINK>">
+      <a href="https://numfocus.org/project/mdanalysis">
          <img height="60px" 
             src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png" 
             align="center">
