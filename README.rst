@@ -25,6 +25,7 @@ a `tax-deductible donation`_ to help the project pay for developer time, profess
             align="center">
       </a>
    </div>
+   <br />
 
 
 This project is bound by a `Code of Conduct`_.
