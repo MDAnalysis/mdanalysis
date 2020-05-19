@@ -632,10 +632,15 @@ class PDBWriter(base.WriterBase):
 
     def _write_pdb_header(self):
         """
+        Write PDB header.
+
+        CRYST1 field is skipped if if :code:`u.dimensions` is  :code:`None`.
+
         .. versionchanged: 1.0.0
-           Write CRYST1 only if :code:`u.trajectory.ts.dimensions`
-           is not :code:`None`.
+           Write CRYST1 only if :code:`u.dimensions`
+           is not :code:`None` (Issue #2679).
         """
+
         if self.first_frame_done == True:
             return
 
@@ -667,7 +672,10 @@ class PDBWriter(base.WriterBase):
         already been written (in multi-frame mode) adds a REMARK instead of the
         coordinates and closes the file.
 
-        Raises :exc:`ValueError` if the coordinates fail the check.
+        Raises
+        ------
+        ValueError
+            if the coordinates fail the check.
 
         .. versionchanged: 1.0.0
             Check if :attr:`filename` is `StringIO` when attempting to remove

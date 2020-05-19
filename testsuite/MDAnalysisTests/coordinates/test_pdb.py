@@ -296,9 +296,16 @@ class TestPDBWriter(object):
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
 
-    def test_write_nodimes(self, universe4, outfile):
-        u = universe4
+    def test_write_nodims(self, universe4, outfile):
+        """
+        Test :code:`PDBWriter` for universe without cell dimensions.
 
+        Notes
+        -----
+        Test fix for Issue #2679.
+        """
+
+        u = universe4
         u.atoms.write(outfile)
 
         uout = mda.Universe(outfile)
