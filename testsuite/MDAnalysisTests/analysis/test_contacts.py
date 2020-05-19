@@ -44,8 +44,6 @@ from MDAnalysisTests.datafiles import (
     contacts_file
 )
 
-from MDAnalysisTests import tempdir
-
 
 def test_soft_cut_q():
     # just check some of the extremal points
