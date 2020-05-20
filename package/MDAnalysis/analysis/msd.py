@@ -70,14 +70,14 @@ The MSD can then be accessed as
 Visual inspection of the MSD is important, so lets take a look at it with a simple plot.
 
     >>> import matplotlib.pyplot as plt
-    >>> nframes = MSD.N_frames
+    >>> nframes = MSD.n_frames
     >>> timestep = 1 # this needs to be the actual time between frames in your trajectory
     >>> lagtimes = np.arange(nframes)*timestep # make the lag time axis
     >>> plt.plot(msd, lagtimes)
     >>> plt.show()
 
-We can see that the MSD is roughly linear, this is a numerical proof of a known theoretical result that the MSD of a random walk is approximately linear with respect to lagtime, where the slope is approximatley :math:`2*D`.
-Note that the majority of MSDs computed from MD trajectories will not be this well behaved. Linearity of a segment of the MSD is required to accurately determine self diffusivity.
+We can see that the MSD is approximately linear, this is a numerical proof of a known theoretical result that the MSD of a random walk is approximately linear with respect to lagtime, where the slope is approximately :math:`2*D`.
+A segment of the MSD is required to be linear to accurately determine self-diffusivity.
 This linear segment represents the so called "middle" of the MSD plot, where ballistic trajectories at short time-lags are excluded along with poorly averaged data at long time-lags.
 We can select the "middle" of the MSD by indexing the MSD and the time-lags. Appropriately linear segments of the MSD can be confirmed with a log-log plot as is often reccomended [Maginn2019]_ where the "middle" segment can be identified as having a slope of 1.
 
@@ -94,7 +94,7 @@ Self diffusivity is closely related to the MSD.
 
    D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
 
-From the MSD, self diffusivities :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
+From the MSD, self-diffusivities :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
 An example of this is shown below, using the MSD computed in the example above. The segment between :math:`\tau = 20` and :math:`\tau = 80` is used to demonstrate selection of an MSD segment.
 
     >>> from scipy.stats import linregress as lr
@@ -113,8 +113,8 @@ We have now computed a self diffusivity!
 Notes
 _____
 
-There are several factors that must be taken into account when setting up and processing trajectories for computation of self diffusivities.
-These include specific instructions around simulation settings, using unwrapped trajectories and maintaining relativley small elapsed time between saved frames. 
+There are several factors that must be taken into account when setting up and processing trajectories for computation of self-diffusivities.
+These include specific instructions around simulation settings, using unwrapped trajectories and maintaining relatively small elapsed time between saved frames. 
 Additionally corrections for finite size effects are sometimes employed along with varied means of estimating errors.
 The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self diffusivity including from a Green-Kubo integral. At this point in time these methods are beyond the scope of this module
 
@@ -134,8 +134,6 @@ Classes and Functions
 """
 
 from __future__ import division, absolute_import
-from six.moves import zip
-
 
 import numpy as np
 import logging
@@ -157,13 +155,13 @@ class EinsteinMSD(AnalysisBase):
     
     Attributes
     ----------
-    dim_fac : float
+    dim_fac : int
         Dimensionality :math:`d` of the MSD.
     timeseries : :class:`np.ndarray`
         The averaged MSD with respect to lag-time.
     msd_per_particle : :class:`np.ndarray`
         The MSD of each individual particle with respect to lag-time.
-    N_frames : int
+    n_frames : int
         Number of frames in trajectory.
     n_particles : int
         Number of particles MSD was calculated over.
@@ -185,6 +183,8 @@ class EinsteinMSD(AnalysisBase):
             Otherwise, use the naive or "simple" algorithm. Defaults to ``True``.
 
         """
+        super(EinsteinMSD, self).__init__(universe.trajectory, **kwargs)
+
         #args
         self.u = u
         self.selection = selection
@@ -194,23 +194,24 @@ class EinsteinMSD(AnalysisBase):
         #local
         self._dim = None
         self._position_array = None
+        self._atoms = None
         
         #indexing
-        self.N_frames = len(self.u.trajectory)
-        self.n_particles = 0
+        self._n_frames = 0
+        self._n_particles = 0
 
         #result
         self.dim_fac = 0
         self.timeseries = None
         self.msd_per_particle = None
 
-        #prep
-        self._prepare()
-
-            
     def _prepare(self):
         self._parse_msd_type()
-        self._select_reference_positions()
+        self._atoms = self.u.select_atoms(self.selection)
+        self._n_frames = len(self._u.trajectory)
+        self._n_particles = len(self._atoms)
+        self._position_array = np.zeros((self._n_frames, self._n_particles, 3))
+
         
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
@@ -224,10 +225,11 @@ class EinsteinMSD(AnalysisBase):
         -------
         self._dim : list
             Array-like used to slice the positions to obtain desired dimensionality
-        self.dim_fac : float
+        self.dim_fac : int
             Dimension factor :math:`d` of the MSD.
 
         """
+        #TODO fix to dict
         keys = {'x':0, 'y':1, 'z':2}
         dim = []
 
@@ -243,7 +245,7 @@ class EinsteinMSD(AnalysisBase):
         self._dim = dim
         self.dim_fac = len(dim)
 
-    def _select_reference_positions(self):
+    def _single_frame(self):
         r""" Constructs array of positions for MSD calculation.
         
         Parameters
@@ -256,35 +258,36 @@ class EinsteinMSD(AnalysisBase):
         Returns
         -------
         self._position_array : :class:`np.ndarray`
-            Array of particle positions with respect to time shape = (N_frames, n_particles, 3)
+            Array of particle positions with respect to time shape = (n_frames, n_particles, 3)
         self.n_particles : float
             Number of particles used in the MSD calculation
 
         """
         #avoid memory transfer by iterating 
-        idxs = self.u.select_atoms(self.selection).ix
-        position_array_dummy = np.zeros((len(self.u.trajectory), len(self.u.atoms), 3))
-        for idx, ts in enumerate(self.u.trajectory):
-           position_array_dummy[idx,:,:] = self.u.atoms.positions
-        self._position_array = position_array_dummy[:,idxs,:]
-        self.n_particles = self._position_array.shape[1]
+        self._position_array[] = self._atoms.positions
+
+        
+        # idxs = self.u.select_atoms(self.selection).ix
+        # position_array_dummy = np.zeros((len(self.u.trajectory), len(self.u.atoms), 3))
+        # for idx, ts in enumerate(self.u.trajectory):
+        #    position_array_dummy[idx,:,:] = self.u.atoms.positions
+        # self._position_array = position_array_dummy[:,idxs,:]
+
 
     
-    def run(self):
-        r""" Wrapper to calculate the MSD via either the "simple" or "fft" algorithm.
-        """
+    def _conclude(self):
         if self.fft == True:
-            self.timeseries = self._run_fft()
+            self.timeseries = self._conclude_fft()
         else:
-            self.timeseries = self._run_simple()
+            self.timeseries = self._conclude_simple()
 
-    def _run_simple(self): # naieve algorithm without FFT
-        r""" Calculates the MSD via the naieve "windowed" algorithm.
+    def _conclude_simple(self): # simple algorithm without FFT
+        r""" Calculates the MSD via the simple "windowed" algorithm.
         
         Parameters
         ----------
         self._position_array : :class:`np.ndarray`
-            Array of particle positions with respect to time shape (N_frames, n_particles, 3).
+            Array of particle positions with respect to time shape (n_frames, n_particles, 3).
 
         Returns
         -------
@@ -292,25 +295,25 @@ class EinsteinMSD(AnalysisBase):
             The MSD as a function of lag-time.
 
         """
-        msds_byparticle = np.zeros((self.N_frames, self.n_particles))
-        lagtimes = np.arange(1,self.N_frames)
+        msds_byparticle = np.zeros((self.n_frames, self.n_particles))
+        lagtimes = np.arange(1,self.n_frames)
         msds_byparticle[0,:] = np.zeros(self.n_particles) # preset the zero lagtime so we dont have to iterate through
         for n in range(self.n_particles):
             for lag in lagtimes:
                 disp = self._position_array[:-lag,n,self._dim if lag else None] - self._position_array[lag:,n,self._dim]
-                sqdist = np.square(disp, dtype=np.float64).sum(axis=1, dtype=np.float64) #accumulation in anything other than f64 is innacurate
+                sqdist = np.square(disp, dtype=np.float64).sum(axis=1, dtype=np.float64) #accumulation in anything other than f64 is inaccurate
                 msds_byparticle[lag,n] = np.mean(sqdist, dtype=np.float64)
         self.msd_per_particle = msds_byparticle
         msds = msds_byparticle.mean(axis=1, dtype=np.float64)
         return msds
 
-    def _run_fft(self): #with FFT, np.f64 bit prescision required.
+    def _conclude_fft(self): #with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
         
         Parameters
         ----------
         self._position_array : :class:`np.ndarray`
-            Array of particle positions with respect to time shape (N_frames, n_particles, 3).
+            Array of particle positions with respect to time shape (n_frames, n_particles, 3).
 
         Returns
         -------
@@ -318,7 +321,7 @@ class EinsteinMSD(AnalysisBase):
             The MSD as a function of lagtime.
 
         """
-        msds_byparticle = np.zeros((self.N_frames, self.n_particles))
+        msds_byparticle = np.zeros((self.n_frames, self.n_particles))
         reshape_positions = self._position_array[:,:,self._dim].astype(np.float64)
         for n in range(self.n_particles):
             msds_byparticle[:,n] = tidynamics.msd(reshape_positions[:,n,:])
