@@ -1039,11 +1039,16 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
-        print("test")
+        
         # Sort
         indices = np.argsort(e_val)[::-1]
-        # Return transposed in more logical form. See Issue 33.
-        return e_vec[:, indices].T
+        # Make transposed in more logical form. See Issue 33.
+        e_vec = e_vec[:, indices].T
+
+        if np.dot(np.dot(e_vac[0], e_vac[1]), e_vac[2]):
+            e_vac = e_vac * -1
+
+        return e_vec
 
     transplants[GroupBase].append(
         ('principal_axes', principal_axes))
