@@ -1039,7 +1039,7 @@ class Masses(AtomAttr):
         """
         atomgroup = group.atoms
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
-
+        print("test")
         # Sort
         indices = np.argsort(e_val)[::-1]
         # Return transposed in more logical form. See Issue 33.
