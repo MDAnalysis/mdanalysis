@@ -232,21 +232,16 @@ class EinsteinMSD(AnalysisBase):
             Dimension factor :math:`d` of the MSD.
 
         """
-        #TODO fix to dict
-        keys = {'x':0, 'y':1, 'z':2}
-        dim = []
+        keys = {'x':[0], 'y':[1], 'z':[2], 'xy':[0,1], 'xz':[0,2], 'yz':[1,2], 'xyz':[0,1,2]}
 
         self.msd_type = self.msd_type.lower()
+
         try:
-            for tok in self.msd_type:
-                vals = keys.pop(tok)
-                dim.append(vals)
+            self._dim = keys[self.msd_type]
         except KeyError:
-            raise ValueError(f'invalid msd_type: {self.msd_type} specified, please specify one of xyz, xy, xz, yz, x, y, z ')
-        
-        dim.sort()
-        self._dim = dim
-        self.dim_fac = len(dim)
+            raise ValueError(f'invalid msd_type: {self.msd_type} specified, please specify one of xyz, xy, xz, yz, x, y, z')
+
+        self.dim_fac = len(self._dim)
 
     def _single_frame(self):
         r""" Constructs array of positions for MSD calculation.
