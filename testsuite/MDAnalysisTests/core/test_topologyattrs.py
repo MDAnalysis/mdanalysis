@@ -32,7 +32,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -335,8 +335,9 @@ class TestAttr(object):
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04]]))
 
-    def test_principal_axes_handedness(self, ag):
-        e_vec = ag.principal_axes()
+    def test_principal_axes_handedness(self):
+        universe = mda.Universe(PDB_CHECK_RIGHTHAND_PA)
+        e_vec = universe.principal_axes()
         assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
