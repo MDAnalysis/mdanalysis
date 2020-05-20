@@ -107,8 +107,8 @@ def test_fft_vs_simple_default(msd, msd_fft):
 
 #check fft and simple give same result per particle
 def test_fft_vs_simple_default_per_particle(msd, msd_fft):
-    per_particle_simple = msd.msd_per_particle
-    per_particle_fft = msd_fft.msd_per_particle
+    per_particle_simple = msd.msds_by_particle
+    per_particle_fft = msd_fft.msds_by_particle
     assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 #check fft and simple give same result for each dimensionality
@@ -127,10 +127,10 @@ def test_fft_vs_simple_all_dims_per_particle(dimension_list, u):
     for dim in dimension_list:
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
         m_simple.run()
-        per_particle_simple = m_simple.msd_per_particle
+        per_particle_simple = m_simple.msds_by_particle
         m_fft = MSD(u,SELECTION, msd_type=dim, fft=True)
         m_fft.run()
-        per_particle_fft = m_fft.msd_per_particle
+        per_particle_fft = m_fft.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 #testing the "simple" algorithm on constant velocity trajectory
