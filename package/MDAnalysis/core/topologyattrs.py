@@ -1045,7 +1045,8 @@ class Masses(AtomAttr):
         # Make transposed in more logical form. See Issue 33.
         e_vec = e_vec[:, indices].T
 
-        if np.dot(np.dot(e_vac[0], e_vac[1]), e_vac[2]):
+        # Make sure the right hand convention is followed
+        if np.dot(np.cross(e_vac[0], e_vac[1]), e_vac[2]) == -1.0:
             e_vac = e_vac * -1
 
         return e_vec
