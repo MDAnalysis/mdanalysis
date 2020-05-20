@@ -22,6 +22,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Ensures principa_axes() returns axes with the right hand convention (Issue #2637)
   * Fixed retrieval of auxiliary information after getting the last timestep
     of the trajectory (Issue #2674, PR #2683).
   * n_components correctly selects PCA components (Issue #2623)
