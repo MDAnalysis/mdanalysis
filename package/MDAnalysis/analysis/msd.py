@@ -27,9 +27,9 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 ==============================================================
 
 This module implements the calculation of Mean Squared Displacmements (MSDs) by the Einstein relation.
-MSDs can be used to characterise the speed at which particles move and has its roots
-in the study of Brownian motion. For a full explanation of the theory behind MSDs and the subsequent calculation of self diffusivities the reader is directed to [Maginn2019]_.
-MSDs can be computed from the following expression, known as "Einstein" formula:
+MSDs can be used to characterize the speed at which particles move and has its roots
+in the study of Brownian motion. For a full explanation of the theory behind MSDs and the subsequent calculation of self-diffusivities the reader is directed to [Maginn2019]_.
+MSDs can be computed from the following expression, known as the "Einstein" formula:
 
 .. math::
 
@@ -84,11 +84,11 @@ We can select the "middle" of the MSD by indexing the MSD and the time-lags. App
     >>> plt.loglog(msd, lagtimes)
     >>> plt.show()
 
-Now that we have identified what segment of our MSD to analyse, lets compute a self diffusivity.
+Now that we have identified what segment of our MSD to analyse, lets compute a self-diffusivity.
 
-Computing Self Diffusivity
+Computing Self-Diffusivity
 --------------------------------
-Self diffusivity is closely related to the MSD.
+Self-diffusivity is closely related to the MSD.
 
 .. math::
 
@@ -107,7 +107,7 @@ An example of this is shown below, using the MSD computed in the example above. 
     >>> error = linear_model.rvalue
     >>> D = slope * 1/(2*MSD.dim_fac) #dim_fac is 3 as we computed a 3D msd ('xyz')
 
-We have now computed a self diffusivity!
+We have now computed a self-diffusivity!
 
 
 Notes
@@ -116,7 +116,7 @@ _____
 There are several factors that must be taken into account when setting up and processing trajectories for computation of self-diffusivities.
 These include specific instructions around simulation settings, using unwrapped trajectories and maintaining relatively small elapsed time between saved frames. 
 Additionally corrections for finite size effects are sometimes employed along with varied means of estimating errors.
-The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self diffusivity including from a Green-Kubo integral. At this point in time these methods are beyond the scope of this module
+The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self-diffusivity including from a Green-Kubo integral. At this point in time these methods are beyond the scope of this module
 
 
 References
@@ -140,6 +140,9 @@ import logging
 import tidynamics
 from ..due import due, Doi
 from .base import AnalysisBase
+from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
+from MDAnalysis.core.universe import Universe
+
 
 due.cite(Doi("10.21105/joss.00877"),
          description="Mean Squared Displacements with tidynamics",
@@ -169,7 +172,7 @@ class EinsteinMSD(AnalysisBase):
 
     """
 
-    def __init__(self, u, selection=None, msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u, select=None, msd_type='xyz', fft=True, **kwargs):
         r"""
         Parameters
         ----------
@@ -189,7 +192,7 @@ class EinsteinMSD(AnalysisBase):
         super(EinsteinMSD, self).__init__(self.u.trajectory, **kwargs)
 
         #args
-        self.selection = selection
+        self.select = select
         self.msd_type = msd_type
         self.fft = fft
         
@@ -209,7 +212,7 @@ class EinsteinMSD(AnalysisBase):
 
     def _prepare(self):
         self._parse_msd_type()
-        self._atoms = self.u.select_atoms(self.selection)
+        self._atoms = self.u.select_atoms(self.select)
         self._n_frames = len(self.u.trajectory)
         self._n_particles = len(self._atoms)
         self._position_array = np.zeros((self._n_frames, self._n_particles, 3))
