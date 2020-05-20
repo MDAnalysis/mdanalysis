@@ -38,10 +38,10 @@ MSDs can be computed from the following expression, known as the "Einstein" form
 Where :math:`N` is the number of equivalent particles the MSD is calculated over, :math:`r` are their coordinates and :math:`d` the desired
 dimensionality of the MSD. Note that while the definition of the MSD is universal, there are many practical considerations to computing the MSD
 that vary between implementations. In this module, we compute a "windowed" MSD, where the MSD is averaged over all possible lag times :math:`\tau \le \tau_{max}`,
-where :math:`\tau_{max}` is the length of the trajectory, thereby maximising the number of samples.
+where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing the number of samples.
 
 The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`\tau_{max}`. 
-An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_.
+An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_ [Buyl2018]_.
 
 Computing an MSD
 ----------------
@@ -122,8 +122,9 @@ The reader is directed to the following review, which describes many of the comm
 References
 ----------
 
-.. [Maginn2019] Maginn, E. J.; Messerly, R. A.; Carlson, D. J.; Roe, D. R.; Elliott, J. R. Best Practices for Computing Transport Properties 1. Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1).
-.. [Calandri2011] Calandrini, V.; Pellegrini, E.; Calligari, P.; Hinsen, K.; Kneller, G. R. NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. Collect. SFN 2011, 12, 201–232.
+.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R., Elliott, J. R. Best Practices for Computing Transport Properties 1. Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1).
+.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R. NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. Collect. SFN 2011 12, 201–232.
+.. [Buyl2018] Buyl, P. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software, 2018 3(28), 877.
 
 Classes and Functions
 ---------------------
@@ -140,9 +141,6 @@ import logging
 import tidynamics
 from ..due import due, Doi
 from .base import AnalysisBase
-from MDAnalysis.core.groups import AtomGroup, UpdatingAtomGroup
-from MDAnalysis.core.universe import Universe
-
 
 due.cite(Doi("10.21105/joss.00877"),
          description="Mean Squared Displacements with tidynamics",

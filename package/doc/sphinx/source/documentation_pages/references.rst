@@ -166,7 +166,19 @@ If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
 
 .. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
 
+If you use the Mean Squared Displacement analysis code in
+:mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2019]_.
 
+.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R. 
+   NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. 
+   *Collect. SFN*, **12**, 201–232 (2011). doi: `10.1051/sfn/201112010`_
+   	
+.. _`10.1051/sfn/201112010`: https://doi.org/10.1051/sfn/201112010
+
+.. [Buyl2018] Buyl, P. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software,
+   3(28), 877 (2018). doi: `10.21105/joss.00877`_
+
+.. _`10.21105/joss.00877`: https://doi.org/10.21105/joss.00877
 
 .. _citations-using-duecredit:
 
