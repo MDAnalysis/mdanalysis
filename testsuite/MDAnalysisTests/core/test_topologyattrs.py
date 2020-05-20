@@ -337,7 +337,7 @@ class TestAttr(object):
 
     def test_principal_axes_handedness(self):
         universe = mda.Universe(PDB_CHECK_RIGHTHAND_PA)
-        e_vec = universe.principal_axes()
+        e_vec = universe.atoms.principal_axes()
         assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
