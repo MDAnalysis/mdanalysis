@@ -270,7 +270,7 @@ class EinsteinMSD(AnalysisBase):
         else:
             self.timeseries = self._conclude_simple()
 
-    def _conclude_simple(self): # simple algorithm without FFT
+    def _conclude_simple(self): 
         r""" Calculates the MSD via the simple "windowed" algorithm.
         
         Parameters
