@@ -97,7 +97,7 @@ def characteristic_poly(n,d): #polynomial that describes unit step trajectory MS
 
 #test some basic size and shape things
 def test_selection_works(msd):
-    assert_equal(msd.N_particles, 10)
+    assert_equal(msd._n_particles, 10)
 
 #testing on the  PSF, DCD trajectory
 def test_fft_vs_simple_default(msd, msd_fft):

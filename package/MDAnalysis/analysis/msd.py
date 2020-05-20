@@ -139,6 +139,7 @@ import numpy as np
 import logging
 import tidynamics
 from ..due import due, Doi
+from .base import AnalysisBase
 
 due.cite(Doi("10.21105/joss.00877"),
          description="Mean Squared Displacements with tidynamics",
@@ -168,7 +169,7 @@ class EinsteinMSD(AnalysisBase):
 
     """
 
-    def __init__(self, u, selection=None, msd_type='xyz', fft=True):
+    def __init__(self, u, selection=None, msd_type='xyz', fft=True, **kwargs):
         r"""
         Parameters
         ----------
@@ -183,10 +184,11 @@ class EinsteinMSD(AnalysisBase):
             Otherwise, use the naive or "simple" algorithm. Defaults to ``True``.
 
         """
-        super(EinsteinMSD, self).__init__(universe.trajectory, **kwargs)
+        self.u = u
+        
+        super(EinsteinMSD, self).__init__(self.u.trajectory, **kwargs)
 
         #args
-        self.u = u
         self.selection = selection
         self.msd_type = msd_type
         self.fft = fft
@@ -208,7 +210,7 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         self._parse_msd_type()
         self._atoms = self.u.select_atoms(self.selection)
-        self._n_frames = len(self._u.trajectory)
+        self._n_frames = len(self.u.trajectory)
         self._n_particles = len(self._atoms)
         self._position_array = np.zeros((self._n_frames, self._n_particles, 3))
 
@@ -252,20 +254,14 @@ class EinsteinMSD(AnalysisBase):
         ----------
         self.u : :class:`Universe`
             MDAnalysis Universe
-        self.selection : str
-            MDAnalysis selection string
         
         Returns
         -------
         self._position_array : :class:`np.ndarray`
             Array of particle positions with respect to time shape = (n_frames, n_particles, 3)
-        self.n_particles : float
-            Number of particles used in the MSD calculation
-
         """
-        #avoid memory transfer by iterating 
-        self._position_array[] = self._atoms.positions
 
+        self._position_array[self._frame_index,:,:] = self._atoms.positions
         
         # idxs = self.u.select_atoms(self.selection).ix
         # position_array_dummy = np.zeros((len(self.u.trajectory), len(self.u.atoms), 3))
@@ -295,13 +291,13 @@ class EinsteinMSD(AnalysisBase):
             The MSD as a function of lag-time.
 
         """
-        msds_byparticle = np.zeros((self.n_frames, self.n_particles))
+        msds_byparticle = np.zeros((self._n_frames, self._n_particles))
         lagtimes = np.arange(1,self.n_frames)
-        msds_byparticle[0,:] = np.zeros(self.n_particles) # preset the zero lagtime so we dont have to iterate through
-        for n in range(self.n_particles):
+        msds_byparticle[0,:] = np.zeros(self._n_particles) # preset the zero lagtime so we don't have to iterate through
+        for n in range(self._n_particles):
             for lag in lagtimes:
                 disp = self._position_array[:-lag,n,self._dim if lag else None] - self._position_array[lag:,n,self._dim]
-                sqdist = np.square(disp, dtype=np.float64).sum(axis=1, dtype=np.float64) #accumulation in anything other than f64 is inaccurate
+                sqdist = np.square(disp, dtype=np.float64).sum(axis=1, dtype=np.float64) #accumulation in np.float64 required
                 msds_byparticle[lag,n] = np.mean(sqdist, dtype=np.float64)
         self.msd_per_particle = msds_byparticle
         msds = msds_byparticle.mean(axis=1, dtype=np.float64)
@@ -321,9 +317,9 @@ class EinsteinMSD(AnalysisBase):
             The MSD as a function of lagtime.
 
         """
-        msds_byparticle = np.zeros((self.n_frames, self.n_particles))
+        msds_byparticle = np.zeros((self._n_frames, self._n_particles))
         reshape_positions = self._position_array[:,:,self._dim].astype(np.float64)
-        for n in range(self.n_particles):
+        for n in range(self._n_particles):
             msds_byparticle[:,n] = tidynamics.msd(reshape_positions[:,n,:])
         self.msd_per_particle= msds_byparticle
         msds = msds_byparticle.mean(axis=1, dtype=np.float64)
