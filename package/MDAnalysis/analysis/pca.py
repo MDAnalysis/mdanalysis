@@ -111,8 +111,10 @@ import scipy.integrate
 
 from MDAnalysis import Universe
 from MDAnalysis.analysis.align import _fit_to
-from MDAnalysis.lib.log import ProgressMeter
+from MDAnalysis.lib.log import ProgressBar
 
+from ..lib import util
+from ..due import due, Doi
 from .base import AnalysisBase
 
 
@@ -133,9 +135,11 @@ class PCA(AnalysisBase):
 
     Attributes
     ----------
-    p_components: array, (n_components, n_atoms * 3)
+    p_components: array, (n_atoms * 3, n_components)
         The principal components of the feature space,
         representing the directions of maximum variance in the data.
+        The column vector p_components[:, i] is the eigenvector
+        corresponding to the variance[i].
     variance : array (n_components, )
         The raw variance explained by each eigenvector of the covariance
         matrix.
@@ -144,9 +148,6 @@ class PCA(AnalysisBase):
         of the components preceding it. If a subset of components is not chosen
         then all components are stored and the cumulated variance will converge
         to 1.
-    pca_space : array (n_frames, n_components)
-        After running :meth:`pca.transform` the projection of the
-        positions onto the principal components will exist here.
     mean_atoms: MDAnalyis atomgroup
         After running :meth:`PCA.run`, the mean position of all the atoms
         used for the creation of the covariance matrix will exist here.
@@ -155,17 +156,21 @@ class PCA(AnalysisBase):
     -------
     transform(atomgroup, n_components=None)
         Take an atomgroup or universe with the same number of atoms as was
-        used for the calculation in :meth:`PCA.run` and project it onto the
+        used for the calculation in :meth:`PCA.run`, and project it onto the
         principal components.
 
     Notes
     -----
-    Computation can be speed up by supplying a precalculated mean structure
-    
+    Computation can be sped up by supplying a precalculated mean structure.
+
     .. versionchanged:: 1.0.0
-       align=True now correctly aligns the trajectory and computes the correct
-       means and covariance matrix
-    
+       ``n_components`` now limits the correct axis of ``p_components``. ``cumulated_variance`` now accurately represents the contribution of each 
+       principal component and does not change when ``n_components`` is given. If 
+       ``n_components`` is not None or is less than the number of ``p_components``, 
+       ``cumulated_variance`` will not sum to 1.
+       ``align=True`` now correctly aligns the trajectory and computes the correct
+       means and covariance matrix.
+
     .. versionchanged:: 0.19.0
        The start frame is used when performing selections and calculating
        mean positions.  Previously the 0th frame was always used.
@@ -201,7 +206,7 @@ class PCA(AnalysisBase):
         self.align = align
 
         self._calculated = False
-        self.n_components = n_components
+        self._n_components = n_components
         self._select = select
         self._mean = mean
 
@@ -230,15 +235,8 @@ class PCA(AnalysisBase):
         self._ref_atom_positions -= self._ref_cog
 
         if self._calc_mean:
-            interval = int(self.n_frames // 100)
-            interval = interval if interval > 0 else 1
-            format = ("Mean Calculation Step"
-                      "%(step)5d/%(numsteps)d [%(percentage)5.1f%%]")
-            mean_pm = ProgressMeter(self.n_frames if self.n_frames else 1,
-                                    interval=interval, verbose=self._verbose,
-                                    format=format)
-            for i, ts in enumerate(self._u.trajectory[self.start:self.stop:
-                                                      self.step]):
+            for ts in ProgressBar(self._u.trajectory[self.start:self.stop:self.step],
+                                  verbose=self._verbose, desc="Mean Calculation"):
                 if self.align:
                     mobile_cog = self._atoms.center_of_geometry()
                     mobile_atoms, old_rmsd = _fit_to(self._atoms.positions - mobile_cog,
@@ -248,7 +246,6 @@ class PCA(AnalysisBase):
                                                      ref_com=self._ref_cog)
 
                 self.mean += self._atoms.positions.ravel()
-                mean_pm.echo(i)
             self.mean /= self.n_frames
 
         self.mean_atoms = self._atoms
@@ -273,12 +270,25 @@ class PCA(AnalysisBase):
         self.cov /= self.n_frames - 1
         e_vals, e_vects = np.linalg.eig(self.cov)
         sort_idx = np.argsort(e_vals)[::-1]
-        self.variance = e_vals[sort_idx]
-        self.variance = self.variance[:self.n_components]
-        self.p_components = e_vects[:self.n_components, sort_idx]
-        self.cumulated_variance = (np.cumsum(self.variance) /
-                                   np.sum(self.variance))
+        self._variance = e_vals[sort_idx]
+        self._p_components = e_vects[:, sort_idx]
         self._calculated = True
+        self.n_components = self._n_components
+
+    @property
+    def n_components(self):
+        return self._n_components
+
+    @n_components.setter
+    def n_components(self, n):
+        if self._calculated:
+            if n is None:
+                n = len(self._variance)
+            self.variance = self._variance[:n]
+            self.cumulated_variance = (np.cumsum(self._variance) /
+                                       np.sum(self._variance))[:n]
+            self.p_components = self._p_components[:, :n]
+        self._n_components = n
 
     def transform(self, atomgroup, n_components=None, start=None, stop=None,
                   step=None):
@@ -304,7 +314,7 @@ class PCA(AnalysisBase):
 
         Returns
         -------
-        pca_space : array, shape (number of frames, number of components)
+        pca_space : array, shape (n_frames, n_components)
 
         .. versionchanged:: 0.19.0
            Transform now requires that :meth:`run` has been called before,
@@ -335,9 +345,116 @@ class PCA(AnalysisBase):
 
         for i, ts in enumerate(traj[start:stop:step]):
             xyz = atomgroup.positions.ravel() - self.mean
-            dot[i] = np.dot(xyz, self.p_components[:, :n_components])
+            dot[i] = np.dot(xyz, self._p_components[:, :dim])
 
         return dot
+
+    @due.dcite(
+        Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
+        Doi('10.1529/biophysj.104.052449'),
+        description="RMSIP",
+        path='MDAnalysis.analysis.pca',
+    )
+    def rmsip(self, other, n_components=None):
+        """Compute the root mean square inner product between subspaces.
+
+        This is only symmetric if the number of components is the same for 
+        both instances. The RMSIP effectively measures how 
+        correlated the vectors of this instance are to those of ``other``.
+
+        Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+
+        Parameters
+        ----------
+        other: :class:`~MDAnalysis.analysis.pca.PCA`
+            Another PCA class. This must have already been run.
+        n_components: int or tuple of ints, optional
+            number of components to compute for the inner products.
+            ``None`` computes all of them.
+
+        Returns
+        -------
+        float:
+            Root mean square inner product of the selected subspaces. 
+            0 indicates that they are mutually orthogonal, whereas 1 indicates 
+            that they are identical. 
+
+        See also
+        --------
+        rmsip
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            a = self.p_components
+        except AttributeError:
+            raise ValueError('Call run() on the PCA before using rmsip')
+
+        try:
+            b = other.p_components
+        except AttributeError:
+            if isinstance(other, type(self)):
+                raise ValueError(
+                    'Call run() on the other PCA before using rmsip')
+            else:
+                raise ValueError('other must be another PCA class')
+
+        return rmsip(a.T, b.T, n_components=n_components)
+
+    @due.dcite(
+        Doi('10.1016/j.str.2007.12.011'),
+        description="Cumulative overlap",
+        path='MDAnalysis.analysis.pca',
+    )
+    def cumulative_overlap(self, other, i=0, n_components=None):
+        """Compute the cumulative overlap of a vector in a subspace.
+
+        This is not symmetric. The cumulative overlap measures the overlap of 
+        the chosen vector in this instance, in the ``other`` subspace.
+
+        Please cite [Yang2008]_ if you use this function.
+
+        Parameters
+        ----------
+        other: :class:`~MDAnalysis.analysis.pca.PCA`
+            Another PCA class. This must have already been run.
+        i: int, optional
+            The index of eigenvector to be analysed.
+        n_components: int, optional
+            number of components in ``other`` to compute for the cumulative overlap.
+            ``None`` computes all of them.
+
+        Returns
+        -------
+        float:
+            Cumulative overlap of the chosen vector in this instance to 
+            the ``other`` subspace. 0 indicates that they are mutually 
+            orthogonal, whereas 1 indicates that they are identical. 
+
+        See also
+        --------
+        cumulative_overlap
+
+        .. versionadded:: 1.0.0
+
+        """
+
+        try:
+            a = self.p_components
+        except AttributeError:
+            raise ValueError(
+                'Call run() on the PCA before using cumulative_overlap')
+
+        try:
+            b = other.p_components
+        except AttributeError:
+            if isinstance(other, type(self)):
+                raise ValueError(
+                    'Call run() on the other PCA before using cumulative_overlap')
+            else:
+                raise ValueError('other must be another PCA class')
+
+        return cumulative_overlap(a.T, b.T, i=i, n_components=n_components)
 
 
 def cosine_content(pca_space, i):
@@ -354,7 +471,7 @@ def cosine_content(pca_space, i):
     pca_space: array, shape (number of frames, number of components)
         The PCA space to be analyzed.
     i: int
-        The index of the pca_component projectection to be analyzed.
+        The index of the pca_component projection to be analyzed.
 
     Returns
     -------
@@ -373,3 +490,107 @@ def cosine_content(pca_space, i):
     cos = np.cos(np.pi * t * (i + 1) / T)
     return ((2.0 / T) * (scipy.integrate.simps(cos*pca_space[:, i])) ** 2 /
             scipy.integrate.simps(pca_space[:, i] ** 2))
+
+
+@due.dcite(
+    Doi('10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U'),
+    Doi('10.1529/biophysj.104.052449'),
+    description="RMSIP",
+    path='MDAnalysis.analysis.pca',
+)
+def rmsip(a, b, n_components=None):
+    """Compute the root mean square inner product between subspaces.
+
+    This is only symmetric if the number of components is the same for 
+    ``a`` and ``b``. The RMSIP effectively measures how 
+    correlated the vectors of ``a`` are to those of ``b``.
+
+    Please cite [Amadei1999]_ and [Leo-Macias2004]_ if you use this function.
+
+    Parameters
+    ----------
+    a: array, shape (n_components, n_features)
+        The first subspace. Must have the same number of features as ``b``.
+    b: array, shape (n_components, n_features)
+        The second subspace. Must have the same number of features as ``a``.
+    n_components: int or tuple of ints, optional
+        number of components to compute for the inner products.
+        ``None`` computes all of them.
+
+    Returns
+    -------
+    float:
+        Root mean square inner product of the selected subspaces. 
+        0 indicates that they are mutually orthogonal, whereas 1 indicates 
+        that they are identical. 
+
+    .. versionadded:: 1.0.0
+    """
+    n_components = util.asiterable(n_components)
+    if len(n_components) == 1:
+        n_a = n_b = n_components[0]
+    elif len(n_components) == 2:
+        n_a, n_b = n_components
+    else:
+        raise ValueError('Too many values provided for n_components')
+
+    if n_a is None:
+        n_a = len(a)
+    if n_b is None:
+        n_b = len(b)
+
+    sip = np.matmul(a[:n_a], b[:n_b].T) ** 2
+    msip = sip.sum()/n_a
+    return msip**0.5
+
+
+@due.dcite(
+    Doi('10.1016/j.str.2007.12.011'),
+    description="Cumulative overlap",
+    path='MDAnalysis.analysis.pca',
+)
+def cumulative_overlap(a, b, i=0, n_components=None):
+    """Compute the cumulative overlap of a vector in a subspace.
+
+    This is not symmetric. The cumulative overlap measures the overlap of 
+    the chosen vector in ``a``, in the ``b`` subspace.
+
+    Please cite [Yang2008]_ if you use this function.
+
+    Parameters
+    ----------
+    a: array, shape (n_components, n_features) or vector, length n_features
+        The first subspace containing the vector of interest. Alternatively,
+        the actual vector. Must have the same number of features as ``b``.
+    b: array, shape (n_components, n_features)
+        The second subspace. Must have the same number of features as ``a``.
+    i: int, optional
+        The index of eigenvector to be analysed.
+    n_components: int, optional
+        number of components in ``b`` to compute for the cumulative overlap.
+        ``None`` computes all of them.
+
+    Returns
+    -------
+    float:
+        Cumulative overlap of the chosen vector in ``a`` to the ``b`` subspace. 
+        0 indicates that they are mutually orthogonal, whereas 1 indicates 
+        that they are identical. 
+
+    .. versionadded:: 1.0.0
+    """
+
+    if len(a.shape) < len(b.shape):
+        a = a[np.newaxis, :]
+
+    vec = a[i][np.newaxis, :]
+    vec_norm = (vec**2).sum() ** 0.5
+
+    if n_components is None:
+        n_components = len(b)
+
+    b = b[:n_components]
+    b_norms = (b**2).sum(axis=1) ** 0.5
+
+    o = np.abs(np.matmul(vec, b.T)) / (b_norms*vec_norm)
+    return (o**2).sum() ** 0.5

@@ -23,6 +23,7 @@
 from __future__ import division, absolute_import
 
 import pytest
+from mock import patch
 from six.moves import zip, range
 
 import errno
@@ -572,19 +573,20 @@ class TestXTCWriter_2(BaseWriterTest):
     def ref():
         return XTCReference()
 
-    def test_different_precision(self, ref, tempdir):
-        out = self.tmp_file('precision-test', ref, tempdir)
+    def test_different_precision(self, ref, tmpdir):
+        out = 'precision-test' + ref.ext
         # store more then 9 atoms to enable compression
         n_atoms = 40
-        with ref.writer(out, n_atoms, precision=5) as w:
-            ts = Timestep(n_atoms=n_atoms)
-            ts.positions = np.random.random(size=(n_atoms, 3))
-            w.write(ts)
-        xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
-        frame = xtc.read()
-        assert_equal(len(xtc), 1)
-        assert_equal(xtc.n_atoms, n_atoms)
-        assert_equal(frame.prec, 10.0**5)
+        with tmpdir.as_cwd():
+            with ref.writer(out, n_atoms, precision=5) as w:
+                ts = Timestep(n_atoms=n_atoms)
+                ts.positions = np.random.random(size=(n_atoms, 3))
+                w.write(ts)
+            xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
+            frame = xtc.read()
+            assert_equal(len(xtc), 1)
+            assert_equal(xtc.n_atoms, n_atoms)
+            assert_equal(frame.prec, 10.0**5)
 
 
 class TRRReference(BaseReference):
@@ -633,16 +635,18 @@ class TestTRRWriter_2(BaseWriterTest):
         return TRRReference()
 
     # tests writing and reading in one!
-    def test_lambda(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-lambda-test', ref, tempdir)
-        with ref.writer(outfile, reader.n_atoms) as W:
-            for i, ts in enumerate(reader):
-                ts.data['lambda'] = i / float(reader.n_frames)
-                W.write(ts)
+    def test_lambda(self, ref, reader, tmpdir):
+        outfile = 'write-lambda-test' + ref.ext
 
-        reader = ref.reader(outfile)
-        for i, ts in enumerate(reader):
-            assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, reader.n_atoms) as W:
+                for i, ts in enumerate(reader):
+                    ts.data['lambda'] = i / float(reader.n_frames)
+                    W.write(ts)
+
+            reader = ref.reader(outfile)
+            for i, ts in enumerate(reader):
+                assert_almost_equal(ts.data['lambda'], i / float(reader.n_frames))
 
 
 class _GromacsReader_offsets(object):
@@ -683,6 +687,8 @@ class _GromacsReader_offsets(object):
         outfile_offsets = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
 
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
         assert_almost_equal(
             trajectory._xdr.offsets,
             saved_offsets['offsets'],
@@ -704,11 +710,35 @@ class _GromacsReader_offsets(object):
     def test_reload_offsets(self, traj):
         self._reader(traj, refresh_offsets=True)
 
+    def test_nonexistant_offsets_file(self, traj):
+        # assert that a nonexistant file returns False during read-in
+        outfile_offsets = XDR.offsets_filename(traj)
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = IOError
+            saved_offsets = XDR.read_numpy_offsets(outfile_offsets)
+            assert_equal(saved_offsets, False)
+
+    def test_reload_offsets_if_offsets_readin_fails(self, trajectory):
+        # force the np.load call that is called in read_numpy_offsets
+        # during _load_offsets to give an IOError
+        # ensure that offsets are then read-in from the trajectory
+        with patch.object(np, "load") as np_load_mock:
+            np_load_mock.side_effect = IOError
+            trajectory._load_offsets()
+            assert_almost_equal(
+                trajectory._xdr.offsets,
+                self.ref_offsets,
+                err_msg="error loading frame offsets")
+
     def test_persistent_offsets_size_mismatch(self, traj):
         # check that stored offsets are not loaded when trajectory
         # size differs from stored size
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
+
         saved_offsets['size'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -721,6 +751,10 @@ class _GromacsReader_offsets(object):
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
+
         saved_offsets['ctime'] += 1
         with open(fname, 'wb') as f:
             np.savez(f, **saved_offsets)
@@ -733,6 +767,10 @@ class _GromacsReader_offsets(object):
         # ctime differs from stored ctime
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
+
         saved_offsets['n_atoms'] += 1
         np.savez(fname, **saved_offsets)
 
@@ -742,6 +780,9 @@ class _GromacsReader_offsets(object):
     def test_persistent_offsets_last_frame_wrong(self, traj):
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
 
         idx_frame = 3
         saved_offsets['offsets'][idx_frame] += 42
@@ -754,6 +795,9 @@ class _GromacsReader_offsets(object):
     def test_unsupported_format(self, traj):
         fname = XDR.offsets_filename(traj)
         saved_offsets = XDR.read_numpy_offsets(fname)
+
+        assert isinstance(saved_offsets, dict), \
+            "read_numpy_offsets did not return a dict"
 
         idx_frame = 3
         saved_offsets.pop('n_atoms')

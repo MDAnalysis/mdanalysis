@@ -37,7 +37,7 @@ from MDAnalysis.lib.mdamath import triclinic_vectors
 
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.datafiles import AUX_XVG_HIGHF, AUX_XVG_LOWF
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 
 
 class _SingleFrameReader(TestCase, RefAdKSmall):
@@ -234,16 +234,16 @@ class BaseReaderTest(object):
         reader.close()
         reader._reopen()
 
-    def test_get_writer_1(self, ref, reader):
-        with tempdir.in_tempdir():
-            outfile = 'test-writer' + ref.ext
+    def test_get_writer_1(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, reader.n_atoms)
 
-    def test_get_writer_2(self, ref, reader):
-        with tempdir.in_tempdir():
-            outfile = 'test-writer' + ref.ext
+    def test_get_writer_2(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test-writer.' + ref.ext
             with reader.Writer(outfile, n_atoms=100) as W:
                 assert_equal(isinstance(W, ref.writer), True)
                 assert_equal(W.n_atoms, 100)
@@ -513,70 +513,68 @@ class BaseWriterTest(object):
         return make_Universe(['resids', 'resnames'],
                              trajectory=True)
 
-    @staticmethod
-    @pytest.fixture()
-    def tempdir():
-        return tempdir.TempDir()
-
-    def tmp_file(self, name, ref, tempdir):
-        return tempdir.name + name + '.' + ref.ext
-
-    def test_write_trajectory_timestep(self,ref, reader, tempdir):
-        outfile = self.tmp_file('write-timestep-test', ref, tempdir)
-        with ref.writer(outfile, reader.n_atoms) as W:
-            for ts in reader:
-                W.write(ts)
-        self._check_copy(outfile, ref, reader)
-
-    def test_write_different_box(self, ref, reader, tempdir):
-        if ref.changing_dimensions:
-            outfile = self.tmp_file('write-dimensions-test', ref, tempdir)
+    def test_write_trajectory_timestep(self,ref, reader, tmpdir):
+        outfile = 'write-timestep-test.' + ref.ext
+        with tmpdir.as_cwd():
             with ref.writer(outfile, reader.n_atoms) as W:
                 for ts in reader:
-                    ts.dimensions[:3] += 1
                     W.write(ts)
+            self._check_copy(outfile, ref, reader)
 
-            written = ref.reader(outfile)
+    def test_write_different_box(self, ref, reader, tmpdir):
+        if ref.changing_dimensions:
+            outfile = 'write-dimensions-test' + ref.ext
+            with tmpdir.as_cwd():
+                with ref.writer(outfile, reader.n_atoms) as W:
+                    for ts in reader:
+                        ts.dimensions[:3] += 1
+                        W.write(ts)
 
-            for ts_ref, ts_w in zip(reader, written):
-                ts_ref.dimensions[:3] += 1
-                assert_array_almost_equal(ts_ref.dimensions,
-                                          ts_w.dimensions,
-                                          decimal=ref.prec)
+                written = ref.reader(outfile)
 
-    def test_write_trajectory_atomgroup(self, ref,reader, tempdir):
+                for ts_ref, ts_w in zip(reader, written):
+                    ts_ref.dimensions[:3] += 1
+                    assert_array_almost_equal(ts_ref.dimensions,
+                                              ts_w.dimensions,
+                                              decimal=ref.prec)
+
+    def test_write_trajectory_atomgroup(self, ref,reader, tmpdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-atoms-test', ref, tempdir)
-        with ref.writer(outfile, uni.atoms.n_atoms) as w:
-            for ts in uni.trajectory:
-                w.write(uni.atoms)
-        self._check_copy(outfile, ref, reader)
+        outfile = 'write-atoms-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, uni.atoms.n_atoms) as w:
+                for ts in uni.trajectory:
+                    w.write(uni.atoms)
+            self._check_copy(outfile, ref, reader)
 
-    def test_write_trajectory_universe(self, ref, reader, tempdir):
+    def test_write_trajectory_universe(self, ref, reader, tmpdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
-        outfile = self.tmp_file('write-uni-test', ref, tempdir)
-        with ref.writer(outfile, uni.atoms.n_atoms) as w:
-            for ts in uni.trajectory:
-                w.write(uni)
-        self._check_copy(outfile, ref, reader)
+        outfile = 'write-uni-test.' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, uni.atoms.n_atoms) as w:
+                for ts in uni.trajectory:
+                    w.write(uni)
+            self._check_copy(outfile, ref, reader)
 
-    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tempdir):
+    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tmpdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'resid 1'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test', ref, tempdir)
+        outfile = 'write-selection-test.' + ref.ext
 
-        with ref.writer(outfile, sel.n_atoms) as W:
-            for ts in uni.trajectory:
-                W.write(sel.atoms)
 
-        copy = ref.reader(outfile)
-        for orig_ts, copy_ts in zip(uni.trajectory, copy):
-            assert_array_almost_equal(
-                copy_ts._pos, sel.atoms.positions, ref.prec,
-                err_msg="coordinate mismatch between original and written "
-                        "trajectory at frame {} (orig) vs {} (copy)".format(
-                    orig_ts.frame, copy_ts.frame))
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, sel.n_atoms) as W:
+                for ts in uni.trajectory:
+                    W.write(sel.atoms)
+
+            copy = ref.reader(outfile)
+            for orig_ts, copy_ts in zip(uni.trajectory, copy):
+                assert_array_almost_equal(
+                    copy_ts._pos, sel.atoms.positions, ref.prec,
+                    err_msg="coordinate mismatch between original and written "
+                            "trajectory at frame {} (orig) vs {} (copy)".format(
+                        orig_ts.frame, copy_ts.frame))
 
     def _check_copy(self, fname, ref, reader):
         copy = ref.reader(fname)
@@ -585,27 +583,29 @@ class BaseWriterTest(object):
             assert_timestep_almost_equal(
                 copy_ts, orig_ts, decimal=ref.prec)
 
-    def test_write_none(self, ref, tempdir):
-        outfile = self.tmp_file('write-none', ref, tempdir)
-        with pytest.raises(TypeError):
-            with ref.writer(outfile, 42) as w:
-                w.write(None)
+    def test_write_none(self, ref, tmpdir):
+        outfile = 'write-none.' + ref.ext
+        with tmpdir.as_cwd():
+            with pytest.raises(TypeError):
+                with ref.writer(outfile, 42) as w:
+                    w.write(None)
 
-    def test_no_container(self, ref):
-        with tempdir.in_tempdir():
+    def test_no_container(self, ref, tmpdir):
+        with tmpdir.as_cwd():
             if ref.container_format:
                 ref.writer('foo')
             else:
                 with pytest.raises(TypeError):
                     ref.writer('foo')
 
-    def test_write_not_changing_ts(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-not-changing-ts', ref, tempdir)
+    def test_write_not_changing_ts(self, ref, reader, tmpdir):
+        outfile = 'write-not-changing-ts.' + ref.ext
         ts = reader.ts.copy()
         copy_ts = ts.copy()
-        with ref.writer(outfile, n_atoms=5) as W:
-            W.write(ts)
-            assert_timestep_almost_equal(copy_ts, ts)
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, n_atoms=5) as W:
+                W.write(ts)
+                assert_timestep_almost_equal(copy_ts, ts)
 
 
 class BaseTimestepTest(object):

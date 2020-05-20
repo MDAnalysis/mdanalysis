@@ -189,6 +189,8 @@ class PersistenceLength(AnalysisBase):
     .. versionadded:: 0.13.0
     .. versionchanged:: 0.20.0
        The run method now automatically performs the exponential fit
+    .. versionchanged:: 1.0.0
+       Deprecated :meth:`PersistenceLength.perform_fit` has now been removed.
     """
     def __init__(self, atomgroups, **kwargs):
         super(PersistenceLength, self).__init__(
@@ -240,10 +242,6 @@ class PersistenceLength(AnalysisBase):
             bs.append(b)
         self.lb = np.mean(bs)
 
-    def perform_fit(self):
-        warnings.warn("perform_fit is now called automatically from run",
-                      DeprecationWarning)
-
     def _perform_fit(self):
         """Fit the results to an exponential decay"""
         try:
@@ -270,7 +268,7 @@ class PersistenceLength(AnalysisBase):
         """
         import matplotlib.pyplot as plt
         if ax is None:
-            ax = plt.gca()
+            fig, ax = plt.subplots()
         ax.plot(self.x, self.results, 'ro', label='Result')
         ax.plot(self.x, self.fit, label='Fit')
         ax.set_xlabel(r'x')

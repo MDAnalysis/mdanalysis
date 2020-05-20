@@ -196,7 +196,6 @@ import gzip
 import re
 import io
 import warnings
-import collections
 import functools
 from functools import wraps
 import textwrap
@@ -208,8 +207,12 @@ from numpy.testing import assert_equal
 import inspect
 
 from ..exceptions import StreamWarning, DuplicateWarning
-from ._cutil import unique_int_1d
-
+try:
+    from ._cutil import unique_int_1d
+except ImportError:
+    raise ImportError("MDAnalysis not installed properly. "
+                      "This can happen if your C extensions "
+                      "have not been built.")
 
 # Python 3.0, 3.1 do not have the builtin callable()
 try:
@@ -925,7 +928,7 @@ def get_ext(filename):
     ext : str
     """
     root, ext = os.path.splitext(filename)
-    
+
     if ext.startswith(os.extsep):
         ext = ext[1:]
 
@@ -1370,7 +1373,7 @@ def get_weights(atoms, weights):
                             "the atoms ({1})".format(
                                 len(weights), len(atoms)))
     elif weights is not None:
-        raise TypeError("weights must be {'mass', None} or an iterable of the "
+        raise ValueError("weights must be {'mass', None} or an iterable of the "
                         "same size as the atomgroup.")
 
     return weights
@@ -1582,7 +1585,7 @@ def unique_rows(arr, return_index=False):
     Examples
     --------
     Remove dupicate rows from an array:
-    
+
     >>> a = np.array([[0, 1], [1, 2], [1, 2], [0, 1], [2, 3]])
     >>> b = unique_rows(a)
     >>> b
@@ -1767,7 +1770,7 @@ def flatten_dict(d, parent_key=tuple()):
             new_key = parent_key + (k, )
         else:
             new_key = parent_key + k
-        if isinstance(v, collections.MutableMapping):
+        if isinstance(v, dict):
             items.extend(flatten_dict(v, new_key).items())
         else:
             items.append((new_key, v))

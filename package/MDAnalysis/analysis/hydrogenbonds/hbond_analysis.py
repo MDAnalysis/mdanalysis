@@ -165,14 +165,15 @@ The class and its methods
 
 .. autoclass:: HydrogenBondAnalysis
    :members:
-
 """
 from __future__ import absolute_import, division
 
+import warnings
 import numpy as np
 
 from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
+from MDAnalysis.exceptions import NoDataError
 
 from ...due import due, Doi
 
@@ -268,12 +269,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Alternatively, this function may be used to quickly generate a :class:`str` of potential hydrogen atoms involved
         in hydrogen bonding. This str may then be modified before being used to set the attribute
         :attr:`hydrogens_sel`.
-
-        .. versionchanged: 1.0.0
-            Added `min_mass` parameter to specify minimum mass (Issue #2472)
-
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
         """
 
         if min_mass > max_mass:
@@ -326,8 +321,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`donors_sel`.
 
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
         """
 
         # We need to know `hydrogens_sel` before we can find donors
@@ -382,8 +375,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in hydrogen bonding. This :class:`str` may then be modified before being used to set the attribute
         :attr:`acceptors_sel`.
 
-        .. versionchanged:: 1.0.0
-           Changed `selection` keyword to `select`
         """
 
         ag = self.u.select_atoms(select)
@@ -409,11 +400,14 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         # If donors_sel is not provided, use topology to find d-h pairs
         if not self.donors_sel:
 
-            if len(self.u.bonds) == 0:
-                raise Exception('Cannot assign donor-hydrogen pairs via topology as no bonded information is present. '
-                                'Please either: load a topology file with bonded information; use the guess_bonds() '
-                                'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
-                                'can be used.')
+            # We're using u._topology.bonds rather than u.bonds as it is a million times faster to access.
+            # This is because u.bonds also calculates properties of each bond (e.g bond length).
+            # See https://github.com/MDAnalysis/mdanalysis/issues/2396#issuecomment-596251787
+            if not (hasattr(self.u._topology, 'bonds') and len(self.u._topology.bonds.values) != 0):
+                raise NoDataError('Cannot assign donor-hydrogen pairs via topology as no bond information is present. '
+                                  'Please either: load a topology file with bond information; use the guess_bonds() '
+                                  'topology guesser; or set HydrogenBondAnalysis.donors_sel so that a distance cutoff '
+                                  'can be used.')
 
             hydrogens = self.u.select_atoms(self.hydrogens_sel)
             donors = sum(h.bonded_atoms[0] for h in hydrogens)
@@ -437,10 +431,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         return donors, hydrogens
 
     def _prepare(self):
-
         self.hbonds = [[], [], [], [], [], []]
-        self.frames = np.arange(self.start, self.stop, self.step)
-        self.timesteps = (self.frames * self.u.trajectory.dt) + self.u.trajectory[0].time
 
         # Set atom selections if they have not been provided
         if not self.acceptors_sel:
@@ -449,7 +440,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             self.hydrogens_sel = self.guess_hydrogens()
 
         # Select atom groups
-        self._acceptors = self.u.select_atoms(self.acceptors_sel, updating=self.update_selections)
+        self._acceptors = self.u.select_atoms(self.acceptors_sel,
+                                              updating=self.update_selections)
         self._donors, self._hydrogens = self._get_dh_pairs()
 
     def _single_frame(self):
@@ -496,9 +488,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # Store data on hydrogen bonds found at this frame
         self.hbonds[0].extend(np.full_like(hbond_donors, self._ts.frame))
-        self.hbonds[1].extend(hbond_donors.ids)
-        self.hbonds[2].extend(hbond_hydrogens.ids)
-        self.hbonds[3].extend(hbond_acceptors.ids)
+        self.hbonds[1].extend(hbond_donors.indices)
+        self.hbonds[2].extend(hbond_hydrogens.indices)
+        self.hbonds[3].extend(hbond_acceptors.indices)
         self.hbonds[4].extend(hbond_distances)
         self.hbonds[5].extend(hbond_angles)
 
@@ -513,11 +505,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         -------
         counts : numpy.ndarray
              Contains the total number of hydrogen bonds found at each timestep.
-             Can be used along with :attr:`HydrogenBondAnalysis.timesteps` to plot
+             Can be used along with :attr:`HydrogenBondAnalysis.times` to plot
              the number of hydrogen bonds over time.
         """
 
-        indices, tmp_counts = np.unique(self.hbonds[:, 0], axis=0, return_counts=True)
+        indices, tmp_counts = np.unique(self.hbonds[:, 0], axis=0,
+                                        return_counts=True)
 
         indices -= self.start
         indices /= self.step
@@ -544,11 +537,14 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         d = self.u.atoms[self.hbonds[:, 1].astype(np.int)]
         a = self.u.atoms[self.hbonds[:, 3].astype(np.int)]
 
-        tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types], dtype=np.str).T
-        hbond_type, type_counts = np.unique(tmp_hbonds, axis=0, return_counts=True)
+        tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types],
+                              dtype=np.str).T
+        hbond_type, type_counts = np.unique(
+            tmp_hbonds, axis=0, return_counts=True)
         hbond_type_list = []
         for hb_type, hb_count in zip(hbond_type, type_counts):
-            hbond_type_list.append([":".join(hb_type[:2]), ":".join(hb_type[2:4]), hb_count])
+            hbond_type_list.append([":".join(hb_type[:2]),
+                                    ":".join(hb_type[2:4]), hb_count])
 
         return np.array(hbond_type_list)
 
@@ -572,10 +568,12 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         a = self.u.atoms[self.hbonds[:, 3].astype(np.int)]
 
         tmp_hbonds = np.array([d.ids, h.ids, a.ids]).T
-        hbond_ids, ids_counts = np.unique(tmp_hbonds, axis=0, return_counts=True)
+        hbond_ids, ids_counts = np.unique(tmp_hbonds, axis=0,
+                                          return_counts=True)
 
         # Find unique hbonds and sort rows so that most frequent observed bonds are at the top of the array
-        unique_hbonds = np.concatenate((hbond_ids, ids_counts[:, None]), axis=1)
+        unique_hbonds = np.concatenate((hbond_ids, ids_counts[:, None]),
+                                       axis=1)
         unique_hbonds = unique_hbonds[unique_hbonds[:, 3].argsort()[::-1]]
 
         return unique_hbonds
