@@ -167,7 +167,7 @@ If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or
 .. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
 
 If you use the Mean Squared Displacement analysis code in
-:mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2019]_.
+:mod:`MDAnalysis.analysis.msd` please cite [Calandri2011]_ and [Buyl2018]_.
 
 .. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R. 
    NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. 

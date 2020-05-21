@@ -43,6 +43,8 @@ where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing the
 The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`\tau_{max}`. 
 An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_ [Buyl2018]_.
 
+Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to the normal MDAnalysis citations.
+
 Computing an MSD
 ----------------
 This example computes a 3D MSD for the movement of 100 particles undergoing a random walk.
@@ -123,8 +125,8 @@ References
 ----------
 
 .. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R., Elliott, J. R. Best Practices for Computing Transport Properties 1. Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1).
-.. [Calandri2011] Calandrini, V., Pellegrini, E., Calligari, P., Hinsen, K., Kneller, G. R. NMoldyn-Interfacing Spectroscopic Experiments, Molecular Dynamics Simulations and Models for Time Correlation Functions. Collect. SFN 2011 12, 201–232.
-.. [Buyl2018] Buyl, P. tidynamics: A tiny package to compute the dynamics of stochastic and molecular simulations. Journal of Open Source Software, 2018 3(28), 877.
+
+
 
 Classes and Functions
 ---------------------
