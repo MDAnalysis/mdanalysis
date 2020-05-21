@@ -2258,7 +2258,7 @@ class AtomGroup(GroupBase):
         """A sorted :class:`ResidueGroup` of the unique
         :class:`Residues<Residue>` present in the :class:`AtomGroup`.
         """
-        rg = self.universe.residues[unique_int_1d(self.resindices)]
+        rg = self.universe.residues[unique_int_1d(np.array((self.resindices),dtype='int64'))]
         rg._cache['isunique'] = True
         rg._cache['unique'] = rg
         return rg
