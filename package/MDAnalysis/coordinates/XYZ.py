@@ -149,7 +149,7 @@ class XYZWriter(base.WriterBase):
             version and frame
 
         .. versionchanged:: 1.0.0
-           Removed unused :code:`default_remark` variable.
+           Removed unused :code:`default_remark` variable (Issue #2692).
         """
         self.filename = filename
         self.remark = remark
@@ -238,7 +238,8 @@ class XYZWriter(base.WriterBase):
 
 
         .. versionchanged:: 1.0.0
-           Print out :code:`remark` if present, otherwise use generic one.
+           Print out :code:`remark` if present, otherwise use generic one 
+           (Issue #2692).
         """
         if ts is None:
             if not hasattr(self, 'ts'):

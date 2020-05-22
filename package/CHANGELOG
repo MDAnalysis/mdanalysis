@@ -22,6 +22,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Use user-provided `remark` in `XYZWriter` (Issue #2692)
   * `PDBWriter` skips `CRYST1` record when `u.dimensions` is 
     `None` (Issue #2679, PR #2685)
   * Fixed retrieval of auxiliary information after getting the last timestep
