@@ -22,11 +22,14 @@
 #
 from __future__ import absolute_import
 
+import MDAnalysis as mda
+
 import pytest
 import numpy as np
 from numpy.testing import assert_equal
 
 from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
+from MDAnalysis.tests.datafiles import PSF, DCD
 
 
 @pytest.mark.parametrize('values', (
@@ -37,6 +40,10 @@ from MDAnalysis.lib._cutil import unique_int_1d, find_fragments
     [1, 2, 2, 4, 4, 6, ],  # duplicates, monotonic
     [1, 2, 2, 6, 4, 4, ],  # duplicates, non-monotonic
 ))
+
+def u():
+    return mda.Universe(PSF, DCD)
+
 def test_unique_int_1d(values):
     array = np.array(values, dtype=np.int64)
     ref = np.unique(array)
@@ -44,6 +51,10 @@ def test_unique_int_1d(values):
     assert_equal(res, ref)
     assert type(res) == type(ref)
     assert res.dtype == ref.dtype
+
+def test_array_unique_int_1d():
+    universe=u()
+    assert unique_int_1d(universe.atoms[100:130].resindices) == [5,6,7]
 
 
 @pytest.mark.parametrize('edges,ref', [

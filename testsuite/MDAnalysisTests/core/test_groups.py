@@ -885,6 +885,10 @@ class TestReprs(object):
     def test_segmentgroup_str(self, u):
         sg = u.segments[:10]
         assert str(sg) == '<SegmentGroup [<Segment 4AKE>]>'
+    
+    def test_atomgroupresidue_dtype(self,u):
+        rg = list(u.atoms[100:130].residues)
+        assert rg == '[<Residue LEU, 6>, <Residue GLY, 7>, <Residue ALA, 8>]'
 
 
 def _yield_mix(groups, components):
