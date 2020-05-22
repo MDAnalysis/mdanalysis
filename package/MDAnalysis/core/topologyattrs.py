@@ -1046,8 +1046,8 @@ class Masses(AtomAttr):
         e_vec = e_vec[:, indices].T
 
         # Make sure the right hand convention is followed
-        if np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]) == -1.0:
-            e_vec = e_vec * -1
+        if np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]) < 0:
+            e_vec *= -1
 
         return e_vec
 

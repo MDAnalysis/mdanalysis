@@ -274,7 +274,7 @@ PDB_conect2TER = resource_filename(__name__, 'data/CONECT2TER.pdb')
 PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 PDB_icodes = resource_filename(__name__, 'data/1osm.pdb.gz')
 PDB_CRYOEM_BOX = resource_filename(__name__, 'data/5a7u.pdb')
-PDB_CHECK_RIGHTHAND_PA = resource_filename(__name__, 'data/6msm.pdb')
+PDB_CHECK_RIGHTHAND_PA = resource_filename(__name__, 'data/6msm.pdb.bz2')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
