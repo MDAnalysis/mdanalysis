@@ -1021,6 +1021,8 @@ class Masses(AtomAttr):
         corresponds to the highest eigenvalue and is thus the first principal
         axes.
 
+        The eigenvectors form a right-handed coordinate system.
+
         Parameters
         ----------
         pbc : bool, optional
@@ -1036,7 +1038,7 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 1.0.0 
-        Always return principal axes in right hand convention.
+            Always return principal axes in right-hand convention.
 
         """
         atomgroup = group.atoms
