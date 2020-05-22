@@ -106,6 +106,46 @@ class TestXYZWriter(BaseWriterTest):
                     w.write(ts)
             self._check_copy(outfile, ref, reader)
 
+    def test_remark(self, ref, tmpdir):
+        """
+        Test remark handling with custom remark.
+        """
+
+        u = mda.Universe(ref.topology, ref.trajectory)
+
+        outfile = "write-remark.xyz"
+        remark = "This is a custom remark."
+
+        with tmpdir.as_cwd():
+            u.atoms.write(outfile, remark=remark)
+
+            with open(outfile, "r") as xyzout:
+                lines = xyzout.readlines()
+
+                print(lines)
+
+                assert lines[1].strip() == remark
+
+    def test_emptyremark(self, ref, tmpdir):
+        """
+        Test remark handling with empty remark.
+        """
+
+        u = mda.Universe(ref.topology, ref.trajectory)
+
+        outfile = "write-remark-empty.xyz"
+        remark = ""
+
+        with tmpdir.as_cwd():
+            u.atoms.write(outfile, remark=remark)
+
+            with open(outfile, "r") as xyzout:
+                lines = xyzout.readlines()
+
+                print(lines)
+
+                assert lines[1].strip() == remark
+
 
 class XYZ_BZ_Reference(XYZReference):
     def __init__(self):

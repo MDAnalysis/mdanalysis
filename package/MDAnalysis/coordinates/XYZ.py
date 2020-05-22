@@ -54,7 +54,7 @@ will need to tweak this class.
 XYZ File format
 ---------------
 
-Definiton used by the :class:`XYZReader` and :class:`XYZWriter` (and
+Definition used by the :class:`XYZReader` and :class:`XYZWriter` (and
 the `VMD xyzplugin`_ from whence the definition was taken)::
 
     [ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
@@ -139,28 +139,29 @@ class XYZWriter(base.WriterBase):
             used when a trajectory is written from raw
             :class:`Timestep` objects which do not contain atom
             information. If you write a :class:`AtomGroup` with
-            :meth:`XYZWriter.write` then atom information is taken
+            :math:`XYZWriter.write` then atom information is taken
             at each step and *atoms* is ignored.
         convert_units : bool (optional)
             convert quantities to default MDAnalysis units of Angstrom upon
             writing  [``True``]
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
-            version
+            version and frame
         """
         self.filename = filename
+        self.remark = remark
         self.n_atoms = n_atoms
         self.convert_units = convert_units
 
         self.atomnames = self._get_atoms_elements_or_names(atoms)
-        default_remark = "Written by {0} (release {1})".format(
-            self.__class__.__name__, __version__)
-        self.remark = default_remark if remark is None else remark
+
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atoms_elements_or_names(self, atoms):
-        """Return a list of atom elements (if present) or fallback to atom names"""
+        """
+        Return a list of atom elements (if present) or fallback to atom names
+        """
         # Default case
         if atoms is None:
             return itertools.cycle(('X',))
@@ -190,8 +191,8 @@ class XYZWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Atom elements (or names) in the output are taken from the `obj` or default
-        to the value of the `atoms` keyword supplied to the
+        Atom elements (or names) in the output are taken from the `obj` or
+        default to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
         Parameters
@@ -259,8 +260,20 @@ class XYZWriter(base.WriterBase):
         else:
             coordinates = ts.positions
 
+        # Write number of atoms
         self._xyz.write("{0:d}\n".format(ts.n_atoms))
-        self._xyz.write("frame {0}\n".format(ts.frame))
+
+        # Write remark
+        if self.remark is None:
+            remark = "Written by {0} (release {1})".format(
+                self.__class__.__name__, __version__
+                ) + "| Frame {0}\n".format(ts.frame)
+
+            self._xyz.write(remark)
+        else:
+            self._xyz.write(self.remark.strip() + "\n")
+
+        # Write content
         for atom, (x, y, z) in zip(self.atomnames, coordinates):
             self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
                             "".format(atom, x, y, z))
