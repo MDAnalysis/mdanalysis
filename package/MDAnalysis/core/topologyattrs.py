@@ -1035,11 +1035,13 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 1.0.0 
+        Always return principal axes in right hand convention.
 
         """
         atomgroup = group.atoms
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
-        
+
         # Sort
         indices = np.argsort(e_val)[::-1]
         # Make transposed in more logical form. See Issue 33.
