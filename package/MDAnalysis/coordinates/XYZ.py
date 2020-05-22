@@ -147,6 +147,9 @@ class XYZWriter(base.WriterBase):
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
             version and frame
+
+        .. versionchanged:: 1.0.0
+           Removed unused :code:`default_remark` variable.
         """
         self.filename = filename
         self.remark = remark
@@ -230,7 +233,13 @@ class XYZWriter(base.WriterBase):
         self.write_next_timestep(ts)
 
     def write_next_timestep(self, ts=None):
-        """Write coordinate information in *ts* to the trajectory"""
+        """
+        Write coordinate information in *ts* to the trajectory
+
+
+        .. versionchanged:: 1.0.0
+           Print out :code:`remark` if present, otherwise use generic one.
+        """
         if ts is None:
             if not hasattr(self, 'ts'):
                 raise NoDataError('XYZWriter: no coordinate data to write to '
