@@ -265,9 +265,9 @@ class XYZWriter(base.WriterBase):
 
         # Write remark
         if self.remark is None:
-            remark = "Written by {0} (release {1})".format(
+            remark = "Written by MDAnalysis {0} (release {1})".format(
                 self.__class__.__name__, __version__
-                ) + "| Frame {0}\n".format(ts.frame)
+                ) + " | Frame {0}\n".format(ts.frame)
 
             self._xyz.write(remark)
         else:
