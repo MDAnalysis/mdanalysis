@@ -26,6 +26,10 @@ r"""
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 ==============================================================
 
+:Authors: Hugo MacDermott-Opeskin
+:Year: 2020
+:Copyright: GNU Public License v2
+
 This module implements the calculation of Mean Squared Displacmements (MSDs) by the Einstein relation.
 MSDs can be used to characterize the speed at which particles move and has its roots
 in the study of Brownian motion. For a full explanation of the theory behind MSDs and the subsequent calculation of self-diffusivities the reader is directed to [Maginn2019]_.
@@ -75,15 +79,30 @@ Visual inspection of the MSD is important, so lets take a look at it with a simp
     >>> nframes = MSD.n_frames
     >>> timestep = 1 # this needs to be the actual time between frames in your trajectory
     >>> lagtimes = np.arange(nframes)*timestep # make the lag time axis
-    >>> plt.plot(msd, lagtimes)
+    >>> fig = plt.figure()
+    >>> ax = plt.axes()
+    >>> ax.plot(lagtimes, msd, color="black", linestyle="-", label=r'3D random walk') # plot the actual MSD
+    >>> exact = lagtimes*6
+    >>> ax.plot(lagtimes, exact, color="black", linestyle="--", label=r'$y=2 D\tau$') # plot the exact result
     >>> plt.show()
 
-We can see that the MSD is approximately linear, this is a numerical proof of a known theoretical result that the MSD of a random walk is approximately linear with respect to lagtime, where the slope is approximately :math:`2*D`.
-A segment of the MSD is required to be linear to accurately determine self-diffusivity.
+Which gives us the following plot of the MSD with respect to lag-time (:math:`\tau`).
+We can see that the MSD is approximately linear with respect to :math:`\tau`.
+This is a numerical example of a known theoretical result that the MSD of a random walk is linear with respect to lagtime, with a slope of :math:`2d`.
+In this expression :math:`d` is the dimensionality of the MSD which for our 3D MSD is equal to 3.
+For comparison we have plotted the line :math:`y=6\tau` to which an ensemble of 3D random walks should converge.
+
+.. _figure-msd: 
+  
+.. figure:: /images/msd_demo_plot.png 
+    :scale: 100 % 
+    :alt: MSD plot 
+
+Note that a segment of the MSD is required to be linear to accurately determine self-diffusivity.
 This linear segment represents the so called "middle" of the MSD plot, where ballistic trajectories at short time-lags are excluded along with poorly averaged data at long time-lags.
 We can select the "middle" of the MSD by indexing the MSD and the time-lags. Appropriately linear segments of the MSD can be confirmed with a log-log plot as is often reccomended [Maginn2019]_ where the "middle" segment can be identified as having a slope of 1.
 
-    >>> plt.loglog(msd, lagtimes)
+    >>> plt.loglog(lagtimes, msd)
     >>> plt.show()
 
 Now that we have identified what segment of our MSD to analyse, lets compute a self-diffusivity.
@@ -97,13 +116,13 @@ Self-diffusivity is closely related to the MSD.
    D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
 
 From the MSD, self-diffusivities :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
-An example of this is shown below, using the MSD computed in the example above. The segment between :math:`\tau = 20` and :math:`\tau = 80` is used to demonstrate selection of an MSD segment.
+An example of this is shown below, using the MSD computed in the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60` is used to demonstrate selection of an MSD segment.
 
     >>> from scipy.stats import linregress as lr
     >>> start_time = 20
-    >>> start_index = start_time/timestep
-    >>> end_time = 80
-    >>> end_index = end_time/timestep
+    >>> start_index = int(start_time/timestep)
+    >>> end_time = 60
+    >>> end_index = int(end_time/timestep)
     >>> linear_model = lr(lagtimes[start_index:end_index], msd[start_index:end_index])
     >>> slope = linear_model.slope
     >>> error = linear_model.rvalue
