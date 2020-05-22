@@ -22,6 +22,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * test added to check datatype of self.resindices being passed in unique_int_1d
+    function under residues attribute of AtomGroup (Issue #2687)
   * n_components correctly selects PCA components (Issue #2623)
   * Use internal residue indices instead of resids for similarity and connectivity
     selections (Issues #2669 and #2672, PR #2673)
