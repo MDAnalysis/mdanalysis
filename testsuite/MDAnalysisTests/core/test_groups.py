@@ -55,7 +55,7 @@ class TestGroupProperties(object):
             'segment': u.segments
         }
 
-    uni = make_Universe() # can't use fixtures in @pytest.mark.parametrize
+    uni = make_Universe()  # can't use fixtures in @pytest.mark.parametrize
 
     def test_dimensions(self, u, group_dict):
         dimensions = np.arange(6)
@@ -64,7 +64,7 @@ class TestGroupProperties(object):
             group.dimensions = dimensions.copy()
             assert_array_equal(group.dimensions, dimensions)
             assert_equal(u.dimensions, group.dimensions)
-    
+
     @pytest.mark.parametrize('group', (uni.atoms[:2], uni.residues[:2],
                                        uni.segments[:2]))
     def test_group_isunique(self, group):
@@ -88,7 +88,7 @@ class TestGroupProperties(object):
         # Check if cache is set correctly:
         assert group._cache['isunique'] is False
 
-        #Check empty group:
+        # Check empty group:
         group = group[[]]
         assert len(group) == 0
         # Cache must be empty:
@@ -256,7 +256,8 @@ def _yield_groups(group_dict, singles, levels, groupclasses, repeat):
     for level in levels:
         for groups in itertools.product([group_dict[level], singles[level]],
                                         repeat=repeat):
-            yield  list(groups) + [groupclasses[level]]
+            yield list(groups) + [groupclasses[level]]
+
 
 class TestGroupAddition(object):
     """Tests for combining Group objects
@@ -677,7 +678,7 @@ class TestComponentComparisons(object):
         return abc[0]
 
     @pytest.fixture
-    def b (self, abc):
+    def b(self, abc):
         return abc[1]
 
     @pytest.fixture
@@ -800,17 +801,17 @@ class TestGroupBy(object):
         gb = u.atoms.groupby(['charges', 'segids'])
 
         for ref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
-            for subref in ['SegA','SegB','SegC','SegD','SegE']:
+            for subref in ['SegA', 'SegB', 'SegC', 'SegD', 'SegE']:
                 assert (ref, subref) in gb.keys()
                 a = gb[(ref, subref)]
                 assert len(a) == 5
                 assert all(a.charges == ref)
-                assert all(a.segids  == subref)
+                assert all(a.segids == subref)
 
     def test_groupby_int_float(self, u):
         gb = u.atoms.groupby(['resids', 'charges'])
 
-        uplim=int(len(gb)/5+1)
+        uplim = int(len(gb)/5+1)
         for ref in range(1, uplim):
             for subref in [-1.5, -0.5, 0.0, 0.5, 1.5]:
                 assert (ref, subref) in gb.keys()
@@ -824,7 +825,7 @@ class TestGroupBy(object):
 
         assert len(gb) == 25
         res = 1
-        for ref in ['SegA','SegB','SegC','SegD','SegE']:
+        for ref in ['SegA', 'SegB', 'SegC', 'SegD', 'SegE']:
             for subref in range(0, 5):
                 assert (ref, res) in gb.keys()
                 a = gb[(ref, res)]
@@ -840,7 +841,8 @@ class TestReprs(object):
 
     def test_atom_repr(self, u):
         at = u.atoms[0]
-        assert repr(at) == '<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>'
+        assert repr(
+            at) == '<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>'
 
     def test_residue_repr(self, u):
         res = u.residues[0]
@@ -856,11 +858,13 @@ class TestReprs(object):
 
     def test_atomgroup_str_short(self, u):
         ag = u.atoms[:2]
-        assert str(ag) == '<AtomGroup [<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>, <Atom 2: HT1 of type 2 of resname MET, resid 1 and segid 4AKE>]>'
+        assert str(
+            ag) == '<AtomGroup [<Atom 1: N of type 56 of resname MET, resid 1 and segid 4AKE>, <Atom 2: HT1 of type 2 of resname MET, resid 1 and segid 4AKE>]>'
 
     def test_atomgroup_str_long(self, u):
         ag = u.atoms[:11]
-        assert str(ag).startswith('<AtomGroup [<Atom 1: N of type 56 of resname MET,')
+        assert str(ag).startswith(
+            '<AtomGroup [<Atom 1: N of type 56 of resname MET,')
         assert '...' in str(ag)
         assert str(ag).endswith(', resid 1 and segid 4AKE>]>')
 
@@ -885,10 +889,13 @@ class TestReprs(object):
     def test_segmentgroup_str(self, u):
         sg = u.segments[:10]
         assert str(sg) == '<SegmentGroup [<Segment 4AKE>]>'
-    
-    def test_atomgroupresidue_dtype(self,u):
-        rg = list(u.atoms[100:130].residues)
-        assert rg == '[<Residue LEU, 6>, <Residue GLY, 7>, <Residue ALA, 8>]'
+
+    def test_atomgroupresidue_dtype(self, u):
+        try:
+            rg = list(u.atoms[100:130].residues)
+            assert len(rg) == 3
+        except ValueError:
+            raise AssertionError("Issue #2687 failure")
 
 
 def _yield_mix(groups, components):
@@ -897,9 +904,11 @@ def _yield_mix(groups, components):
         yield (groups[left], components[right])
         yield (components[left], groups[right])
 
+
 def _yield_sliced_groups(u, slice_left, slice_right):
     for level in ('atoms', 'residues', 'segments'):
         yield (getattr(u, level)[slice_left], getattr(u, level)[slice_right])
+
 
 class TestGroupBaseOperators(object):
     u = make_Universe()
@@ -969,7 +978,6 @@ class TestGroupBaseOperators(object):
         assert_equal(len(c), 6)
         assert_equal(len(d), 0)
         assert_equal(len(e), 5)
-
 
     def test_equal(self, groups):
         a, b, c, d, e = groups
@@ -1239,13 +1247,16 @@ class TestGroupHash(object):
 class TestAtomGroup(object):
 
     def test_PDB_atom_repr(self):
-        u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
-        assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
+        u = make_Universe(extras=('altLocs', 'names', 'types',
+                                  'resnames', 'resids', 'segids'))
+        assert_equal(
+            "<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
 
 
 @pytest.fixture()
 def attr_universe():
     return make_Universe(('names', 'resids', 'segids'))
+
 
 class TestAttributeSetting(object):
     @pytest.mark.parametrize('groupname', ['atoms', 'residues', 'segments'])
@@ -1317,7 +1328,6 @@ class TestAttributeSetting(object):
             setattr(comp, attr, 24)
 
 
-
 class TestInitGroup(object):
     @staticmethod
     @pytest.fixture(
@@ -1381,4 +1391,5 @@ class TestDecorator(object):
             with pytest.raises(ValueError):
                 self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap)
         else:
-            assert_equal(self.dummy_funtion(compound=compound, pbc=pbc, unwrap=unwrap), 0)
+            assert_equal(self.dummy_funtion(
+                compound=compound, pbc=pbc, unwrap=unwrap), 0)
