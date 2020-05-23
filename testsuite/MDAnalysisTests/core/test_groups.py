@@ -891,11 +891,8 @@ class TestReprs(object):
         assert str(sg) == '<SegmentGroup [<Segment 4AKE>]>'
 
     def test_atomgroupresidue_dtype(self, u):
-        try:
-            rg = list(u.atoms[100:130].residues)
-            assert len(rg) == 3
-        except ValueError:
-            raise AssertionError("Issue #2687 failure")
+        rg = list(u.atoms[100:130].residues)
+        assert len(rg) == 3
 
 
 def _yield_mix(groups, components):
