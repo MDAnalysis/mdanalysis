@@ -83,6 +83,7 @@ def step_traj_arr(): # constant velocity
     return traj
 
 def random_walk_3d():
+    np.random.seed(1)
     steps = -1 + 2*np.random.randint(0, 2, size=(NSTEP, 3))
     traj = np.cumsum(steps, axis=0)
     traj_reshape = traj.reshape([NSTEP,1,3])
