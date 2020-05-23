@@ -48,9 +48,9 @@ def test_unique_int_1d(values):
     assert res.dtype == ref.dtype
 
 
-def test_array_unique_int_1d():
+def test_array_size_unique_int_1d():
     try:
-        res_indices = np.array([6, 5, 5, 7], dtype=np.int_)
+        res_indices = np.array([6, 5, 5, 7], dtype=np.int64)
         assert_equal(unique_int_1d(res_indices),  [5, 6, 7])
     except ValueError:
         raise AssertionError("Issue #2687 failure")
