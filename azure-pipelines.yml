@@ -1,0 +1,49 @@
+trigger:
+  # start a new build for every push
+  batch: False
+  branches:
+    include:
+      - develop
+  paths:
+    include:
+      - '*'
+
+pr:
+  branches:
+    include:
+    - '*'  # must quote since "*" is a YAML reserved character; we want a string
+
+
+jobs:
+- job: Windows
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
+  pool:
+    vmImage: 'VS2017-Win2016'
+  strategy:
+    maxParallel: 4
+    matrix:
+        Python37-32bit-full:
+          PYTHON_VERSION: '3.7'
+          PYTHON_ARCH: 'x86'
+          BITS: 32
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: $(PYTHON_VERSION)
+      addToPath: true
+      architecture: $(PYTHON_ARCH)
+  - script: python -m pip install --upgrade pip setuptools wheel
+    displayName: 'Install tools'
+  - script: python -m pip install numpy scipy cython pytest pytest-xdist matplotlib
+    displayName: 'Install dependencies'
+  - powershell: |
+      cd package
+      python setup.py install
+      cd ..\testsuite
+      python setup.py install
+      cd ..
+    displayName: 'Build MDAnalysis'
+  - powershell: |
+      cd testsuite
+      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2
+    displayName: 'Run MDAnalysis Test Suite'
