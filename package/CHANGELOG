@@ -17,11 +17,12 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
-         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi
+         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150
 
   * 0.21.0
 
 Fixes
+  * Ensures principal_axes() returns axes with the right hand convention (Issue #2637)
   * Fixed retrieval of auxiliary information after getting the last timestep
     of the trajectory (Issue #2674, PR #2683).
   * n_components correctly selects PCA components (Issue #2623)
