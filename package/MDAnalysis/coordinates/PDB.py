@@ -220,8 +220,8 @@ class PDBReader(base.ReaderBase):
     Notes
     -----
     If a system does not have unit cell parameters (such as in EM structures),
-    the PDB file format requires the CRYST1 field to be provides the unitary
-    values, with an appropriate REMARK. If unitary values are found within the
+    the PDB file format requires the CRYST1 field to be provided with unitary
+    values and an appropriate REMARK. If unitary values are found within the
     CRYST1 field, :code:`PDBReader` will not set unit cell dimensions and it
     will warn the user.
 
