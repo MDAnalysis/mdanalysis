@@ -142,46 +142,22 @@ def test_fft_vs_simple_all_dims_per_particle(u, SELECTION, dim):
     assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 #testing the "simple" algorithm on constant velocity trajectory
-
-def test_simple_step_traj_3d(step_traj, NSTEP): # this should fit the polynomial y=3x**2
-    m_simple = MSD(step_traj, 'all' , msd_type='xyz', fft=False)
+@pytest.mark.parametrize("dim, dim_factor", [('xyz',3), ('xy',2), ('xz',2), ('yz',2), ('x',1), ('y',1), ('z',1)])
+def test_simple_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor): # this should fit the polynomial y=dim_factor*x**2
+    m_simple = MSD(step_traj, 'all' , msd_type=dim, fft=False)
     m_simple.run()
-    poly3 = characteristic_poly(NSTEP,3)
-    assert_almost_equal(m_simple.timeseries, poly3, decimal=4)
+    poly = characteristic_poly(NSTEP,dim_factor)
+    assert_almost_equal(m_simple.timeseries, poly, decimal=4)
 
-def test_simple_step_traj_2d(step_traj, NSTEP): # this should fit the polynomial y=2x**2
-    m_simple = MSD(step_traj, 'all' , msd_type='xy',  fft=False)
-    m_simple.run()
-    poly2 = characteristic_poly(NSTEP,2)
-    assert_almost_equal(m_simple.timeseries, poly2, decimal=4)
-
-def test_simple_step_traj_1d(step_traj, NSTEP): # this should fit the polynomial y=x**2
-    m_simple = MSD(step_traj, 'all' , msd_type='x', fft=False)
-    m_simple.run()
-    poly1 = characteristic_poly(NSTEP,1)
-    assert_almost_equal(m_simple.timeseries, poly1,decimal=4)  
-
+#testing the fft algorithm on constant velocity trajectory
 #fft based tests require a slight decrease in expected prescision due to roundoff in fft(ifft()) calls
 #relative accuracy expected to be around ~1e-12
-
-def test_fft_step_traj_3d(step_traj, NSTEP): # this should fit the polynomial y=3x**2
-    m_fft = MSD(step_traj, 'all' , msd_type='xyz', fft=True)
-    m_fft.run()
-    poly3 = characteristic_poly(NSTEP,3)
-    assert_almost_equal(m_fft.timeseries, poly3, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
-
-def test_fft_step_traj_2d(step_traj, NSTEP): # this should fit the polynomial y=2x**2
-    m_fft = MSD(step_traj, 'all' , msd_type='xy', fft=True)
-    m_fft.run()
-    poly2 = characteristic_poly(NSTEP,2)
-    assert_almost_equal(m_fft.timeseries, poly2, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
-
-def test_fft_step_traj_1d(step_traj, NSTEP): # this should fit the polynomial y=x**2
-    m_fft = MSD(step_traj, 'all' , msd_type='x', fft=True)
-    m_fft.run()
-    poly1 = characteristic_poly(NSTEP,1)
-    assert_almost_equal(m_fft.timeseries, poly1, decimal=3) # this was relaxed from decimal=4 for numpy=1.13 test
-
+@pytest.mark.parametrize("dim, dim_factor", [('xyz',3), ('xy',2), ('xz',2), ('yz',2), ('x',1), ('y',1), ('z',1)])
+def test_fft_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor): # this should fit the polynomial y=dim_factor*x**2
+    m_simple = MSD(step_traj, 'all' , msd_type=dim, fft=True)
+    m_simple.run()
+    poly = characteristic_poly(NSTEP,dim_factor)
+    assert_almost_equal(m_simple.timeseries, poly, decimal=3)  # this was relaxed from decimal=4 for numpy=1.13 test
 
 #regress against random_walk test data
 def test_random_walk_u_simple(random_walk_u):
