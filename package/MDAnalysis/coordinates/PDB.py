@@ -476,6 +476,8 @@ class PDBWriter(base.WriterBase):
     The maximum frame number that can be stored in a PDB file is 9999 and it
     will wrap around (see :meth:`MODEL` for further details).
 
+    If unit cell dimensions are not set, unitary values are used and an
+    user warning raised.
 
     See Also
     --------
@@ -593,7 +595,6 @@ class PDBWriter(base.WriterBase):
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
 
-
         .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
         .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
         .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
@@ -650,12 +651,13 @@ class PDBWriter(base.WriterBase):
         information about trajectory frame(s).
         The COMPND record is set to :code:`trajectory.compound`.
         The REMARKS records are set to :code:`u.trajectory.remarks`
-        The CRYST1 record specifies the unit cell. This record is skipped 
-        if :code:`u.dimensions` is  :code:`None`.
+        The CRYST1 record specifies the unit cell. This record is set to
+        unitary values if unit cell dimensions are nor set.
 
         .. versionchanged: 1.0.0
-           Write CRYST1 only if :code:`u.dimensions`
-           is not :code:`None` (Issue #2679).
+           Fix writing of PDB file without unit cell dimensions (Issue #2679).
+           If cell dimensions are not found, unitary values are used (PDB
+           standard).
         """
 
         if self.first_frame_done == True:
