@@ -217,6 +217,13 @@ class PDBReader(base.ReaderBase):
     79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
 
+    Notes
+    -----
+    If a system does not have unit cell parameters (such as in EM structures),
+    the PDB file format requires the CRYST1 field to be provides the unitary
+    values, with an appropriate REMARK. If unitary values are found within the
+    CRYST1 field, :code:`PDBReader` will not set unit cell dimensions and it
+    will warn the user.
 
     See Also
     --------
@@ -364,6 +371,10 @@ class PDBReader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
+        """
+        .. versionchanged:: 1.0.0
+           User warning for CRYST1 cryo-em structures
+        """
         try:
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
@@ -402,15 +413,15 @@ class PDBReader(base.ReaderBase):
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
-                    if (cell_dims == np.array([1, 1, 1, 90, 90, 90], 
+                    if (cell_dims == np.array([1, 1, 1, 90, 90, 90],
                         dtype=np.float32)).all():
-                        warnings.warn("1 A^3 CRYST1 record," 
+                        warnings.warn("1 A^3 CRYST1 record,"
                                       " this is usually a placeholder in"
                                       " cryo-em structures. Unit cell"
                                       " dimensions will not be set.")
                     else:
                         self.ts._unitcell[:] = cell_dims
-                        
+
         # check if atom number changed
         if pos != self.n_atoms:
             raise ValueError("Inconsistency in file '{}': The number of atoms "
