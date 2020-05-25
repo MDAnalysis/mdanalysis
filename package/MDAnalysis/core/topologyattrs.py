@@ -1021,6 +1021,8 @@ class Masses(AtomAttr):
         corresponds to the highest eigenvalue and is thus the first principal
         axes.
 
+        The eigenvectors form a right-handed coordinate system.
+
         Parameters
         ----------
         pbc : bool, optional
@@ -1035,6 +1037,8 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 1.0.0 
+            Always return principal axes in right-hand convention.
 
         """
         atomgroup = group.atoms
@@ -1042,8 +1046,14 @@ class Masses(AtomAttr):
 
         # Sort
         indices = np.argsort(e_val)[::-1]
-        # Return transposed in more logical form. See Issue 33.
-        return e_vec[:, indices].T
+        # Make transposed in more logical form. See Issue 33.
+        e_vec = e_vec[:, indices].T
+
+        # Make sure the right hand convention is followed
+        if np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]) < 0:
+            e_vec *= -1
+
+        return e_vec
 
     transplants[GroupBase].append(
         ('principal_axes', principal_axes))
