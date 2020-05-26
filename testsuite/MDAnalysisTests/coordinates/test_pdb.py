@@ -307,28 +307,27 @@ class TestPDBWriter(object):
 
         u = universe4
 
-        with pytest.warns(UserWarning) as record:
+        expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
+
+        with pytest.warns(UserWarning, match=expected_msg):
 
             u.atoms.write(outfile)
 
-            uout = mda.Universe(outfile)
+        uout = mda.Universe(outfile)
 
-            assert_equal(
-                uout.trajectory.n_frames, 1,
-                err_msg="Output PDB should only contain a single frame"
-            )
+        assert_equal(
+            uout.trajectory.n_frames, 1,
+            err_msg="Output PDB should only contain a single frame"
+        )
 
-            assert_almost_equal(
-                u.atoms.positions, uout.atoms.positions,
-                self.prec,
-                err_msg="Written coordinates do not "
-                        "agree with original coordinates from frame %d" %
-                        u.trajectory.frame
-            )
+        assert_almost_equal(
+            u.atoms.positions, uout.atoms.positions,
+            self.prec,
+            err_msg="Written coordinates do not "
+                    "agree with original coordinates from frame %d" %
+                    u.trajectory.frame
+        )
 
-        expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
-
-        assert record[0].message.args[0] == expected_msg
 
     def test_check_coordinate_limits_min(self, universe, outfile):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught
