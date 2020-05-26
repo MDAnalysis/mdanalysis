@@ -145,7 +145,6 @@ from __future__ import absolute_import
 from six.moves import range, zip
 from six import raise_from, StringIO, BytesIO
 
-import io
 import os
 import errno
 import itertools
@@ -158,7 +157,6 @@ import numpy as np
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 
@@ -166,6 +164,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple('Atom', 'resname name')
+
 
 class PDBReader(base.ReaderBase):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
@@ -406,15 +405,15 @@ class PDBReader(base.ReaderBase):
                 try:
                     cell_dims = np.array([line[6:15], line[15:24],
                                          line[24:33], line[33:40],
-                                         line[40:47], line[47:54]], 
-                                         dtype=np.float32)  
+                                         line[40:47], line[47:54]],
+                                         dtype=np.float32)
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
                     if (cell_dims == np.array([1, 1, 1, 90, 90, 90],
-                        dtype=np.float32)).all():
+                       dtype=np.float32)).all():
                         warnings.warn("1 A^3 CRYST1 record,"
                                       " this is usually a placeholder in"
                                       " cryo-em structures. Unit cell"
@@ -504,7 +503,7 @@ class PDBWriter(base.WriterBase):
        Strip trajectory header of trailing spaces and newlines
 
     .. versionchanged:: 1.0.0
-       ChainID now comes from the last character of segid, as stated in the documentation. 
+       ChainID now comes from the last character of segid, as stated in the documentation.
        An indexing issue meant it previously used the first charater (Issue #2224)
 
 
@@ -615,7 +614,7 @@ class PDBWriter(base.WriterBase):
         if start < 0:
             raise ValueError("'Start' must be a positive value")
 
-        self.start =  self.frames_written = start
+        self.start = self.frames_written = start
         self.step = step
         self.remarks = remarks
 
@@ -646,21 +645,28 @@ class PDBWriter(base.WriterBase):
         """
         Write PDB header.
 
-        The HEADER record is set to :code: `trajectory.header`.
+        The HEADER_ record is set to :code: `trajectory.header`.
         The TITLE record explicitly mentions MDAnalysis and contains
         information about trajectory frame(s).
         The COMPND record is set to :code:`trajectory.compound`.
         The REMARKS records are set to :code:`u.trajectory.remarks`
-        The CRYST1 record specifies the unit cell. This record is set to
-        unitary values if unit cell dimensions are nor set.
+        The CRYST1_ record specifies the unit cell. This record is set to
+        unitary values (cubic box with sides of 1Å) if unit cell dimensions
+        are not set.
+
+        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER
+        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE
+        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
+        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
 
         .. versionchanged: 1.0.0
            Fix writing of PDB file without unit cell dimensions (Issue #2679).
-           If cell dimensions are not found, unitary values are used (PDB
-           standard).
+           If cell dimensions are not found, unitary values (cubic box with
+           sides of 1Å) are used (PDB standard).
         """
 
-        if self.first_frame_done == True:
+        if self.first_frame_done is True:
             return
 
         self.first_frame_done = True
@@ -697,7 +703,7 @@ class PDBWriter(base.WriterBase):
 
             warnings.warn("Unit cell dimensions not found. "
                           "CRYST1 record set to unitary values."
-            )
+                          )
 
     def _check_pdb_coordinates(self):
         """Check if the coordinate values fall within the range allowed for PDB files.
@@ -969,7 +975,7 @@ class PDBWriter(base.WriterBase):
            have been written.)
 
         .. versionchanged:: 1.0.0
-           ChainID now comes from the last character of segid, as stated in the documentation. 
+           ChainID now comes from the last character of segid, as stated in the documentation.
            An indexing issue meant it previously used the first charater (Issue #2224)
 
         """
