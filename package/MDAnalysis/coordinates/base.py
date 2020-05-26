@@ -218,7 +218,6 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..core import flags
 from ..lib.util import asiterable, Namespace, anyopen
 
 
