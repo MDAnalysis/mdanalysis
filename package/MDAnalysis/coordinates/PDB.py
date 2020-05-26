@@ -687,7 +687,13 @@ class PDBWriter(base.WriterBase):
             # Unitary unit cell by default (PDB standard)
             self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
 
-            # TODO: Remark
+            # Add CRYST1 REMARK (285)
+            self.REMARK("285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET")
+            self.REMARK("285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION")
+            self.REMARK("285 WAS MISSING.")
+            self.REMARK("285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT")
+            self.REMARK("285 CRYST1 AND SCALE RECORDS BE INCLUDED, BUT THE VALUES ON")
+            self.REMARK("285 THESE RECORDS ARE MEANINGLESS.")
 
             warnings.warn("Unit cell dimensions not found. "
                           "CRYST1 record set to unitary values."
