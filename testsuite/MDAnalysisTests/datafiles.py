@@ -187,7 +187,8 @@ __all__ = [
     "GMX_TOP_BAD", # file with an #include that doesn't exist
     "ITP_no_endif", # file missing an #endif
     "PDB_CRYOEM_BOX", #Issue 2599
-    "PDB_CHECK_RIGHTHAND_PA" # for testing right handedness of principal_axes
+    "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
+    "PDB_NOCRYST", # File missing CRYST1 record (Issue #2679, PR #2685)
 ]
 
 from pkg_resources import resource_filename
@@ -275,6 +276,7 @@ PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 PDB_icodes = resource_filename(__name__, 'data/1osm.pdb.gz')
 PDB_CRYOEM_BOX = resource_filename(__name__, 'data/5a7u.pdb')
 PDB_CHECK_RIGHTHAND_PA = resource_filename(__name__, 'data/6msm.pdb.bz2')
+PDB_NOCRYST = resource_filename(__name__, "data/2bbm.pdb.gz")
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')

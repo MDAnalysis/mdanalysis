@@ -39,7 +39,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2, 
-                                       PDB_CRYOEM_BOX)
+                                       PDB_CRYOEM_BOX, PDB_NOCRYST)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -193,7 +193,10 @@ class TestPDBWriter(object):
 
     @pytest.fixture
     def universe4(self):
-        return mda.fetch_mmtf("2BBM")
+        """
+        PDB file with meaningless CRYST1 record.
+        """
+        return mda.Universe(PDB_NOCRYST)
 
     @pytest.fixture
     def outfile(self, tmpdir):
@@ -306,6 +309,8 @@ class TestPDBWriter(object):
         """
 
         u = universe4
+
+        print(u.dimensions)
 
         expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
 

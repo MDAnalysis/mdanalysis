@@ -220,9 +220,13 @@ class PDBReader(base.ReaderBase):
     -----
     If a system does not have unit cell parameters (such as in EM structures),
     the PDB file format requires the CRYST1 field to be provided with unitary
-    values and an appropriate REMARK. If unitary values are found within the
-    CRYST1 field, :code:`PDBReader` will not set unit cell dimensions and it
+    values (cubic box with sides of 1Å) and an appropriate REMARK. If unitary
+    values are found within the CRYST1 field, :code:`PDBReader` will not set
+    unit cell dimensions and it
     will warn the user.
+
+    .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+
 
     See Also
     --------
@@ -237,7 +241,8 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
     .. versionchanged:: 1.0.0
-       User warning for CRYST1 cryo-em structures
+       Raise user warning for CRYST1 record with unitary valuse
+       (cubic box with sides of 1Å) and do not set cell dimensions.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -371,8 +376,19 @@ class PDBReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         """
+        Read frame from PDB file.
+
+        Notes
+        -----
+        When the CRYST1_ record has unitary values (cubic box with sides of 1Å),
+        cell dimensions are considered fictitious. An user warning is raised
+        and cell dimensions are not set.
+
+        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+
         .. versionchanged:: 1.0.0
-           User warning for CRYST1 cryo-em structures
+           Raise user warning for CRYST1 record with unitary valuse
+           (cubic box with sides of 1Å) and do not set cell dimensions.
         """
         try:
             start = self._start_offsets[frame]
@@ -412,12 +428,10 @@ class PDBReader(base.ReaderBase):
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
-                    if (cell_dims == np.array([1, 1, 1, 90, 90, 90],
-                       dtype=np.float32)).all():
+                    if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
                         warnings.warn("1 A^3 CRYST1 record,"
-                                      " this is usually a placeholder in"
-                                      " cryo-em structures. Unit cell"
-                                      " dimensions will not be set.")
+                                      " this is usually a placeholder."
+                                      " Unit cell dimensions will not be set.")
                     else:
                         self.ts._unitcell[:] = cell_dims
 
