@@ -378,6 +378,16 @@ class ChainReader(base.ProtoReader):
                 util.iterable(thing) and
                 not util.isstream(thing))
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('_ChainReader__chained_trajectories_iter', None)
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.__chained_trajectories_iter = self._chained_iterator()
+
     def _get_local_frame(self, k):
         """Find trajectory index and trajectory frame for chained frame `k`.
 
@@ -440,8 +450,6 @@ class ChainReader(base.ProtoReader):
         # been modified since initial load
         new.ts = self.ts.copy()
         return new
-
-
 
     # attributes that can change with the current reader
     @property

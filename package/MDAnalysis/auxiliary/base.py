@@ -308,6 +308,10 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
             self.auxstep._dt = self.time - self.initial_time
             self.rewind()
 
+    def __getstate__(self):
+        # probably works fine, but someone needs to write tests to confirm
+        return NotImplementedError
+
     def copy(self):
         raise NotImplementedError("Copy not implemented for AuxReader")
 

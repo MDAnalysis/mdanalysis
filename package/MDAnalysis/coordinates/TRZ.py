@@ -125,7 +125,7 @@ class Timestep(base.Timestep):
         self._unitcell[:] = triclinic_vectors(box).reshape(9)
 
 
-class TRZReader(base.ReaderBase):
+class TRZReader(base.ReaderBase, base._BAsciiPickle):
     """Reads an IBIsCO or YASP trajectory file
 
     Attributes
@@ -169,7 +169,7 @@ class TRZReader(base.ReaderBase):
         if n_atoms is None:
             raise ValueError('TRZReader requires the n_atoms keyword')
 
-        self.trzfile = util.anyopen(self.filename, 'rb')
+        self._f = util.anyopen(self.filename, 'rb')
         self._cache = dict()
         self._n_atoms = n_atoms
 
@@ -233,7 +233,7 @@ class TRZReader(base.ReaderBase):
             ('p2', '<2i4'),
             ('force', '<i4'),
             ('p3', '<i4')])
-        data = np.fromfile(self.trzfile, dtype=self._headerdtype, count=1)
+        data = np.fromfile(self._f, dtype=self._headerdtype, count=1)
         self.title = ''.join(c.decode('utf-8') for c in data['title'][0]).strip()
         if data['force'] == 10:
             self.has_force = False
@@ -247,7 +247,7 @@ class TRZReader(base.ReaderBase):
             ts = self.ts
 
         try:
-            data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            data = np.fromfile(self._f, dtype=self._dtype, count=1)
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]
@@ -289,17 +289,17 @@ class TRZReader(base.ReaderBase):
     def n_frames(self):
         """Total number of frames in a trajectory"""
         try:
-            return self._read_trz_n_frames(self.trzfile)
+            return self._read_trz_n_frames(self._f)
         except IOError:
             return 0
 
-    def _read_trz_n_frames(self, trzfile):
+    def _read_trz_n_frames(self, _f):
         """Uses size of file and dtype information to determine how many frames exist
 
         .. versionchanged:: 0.9.0
            Now is based on filesize rather than reading entire file
         """
-        fsize = os.fstat(trzfile.fileno()).st_size  # size of file in bytes
+        fsize = os.fstat(_f.fileno()).st_size  # size of file in bytes
 
         if not (fsize - self._headerdtype.itemsize) % self._dtype.itemsize == 0:
             raise IOError("Trajectory has incomplete frames")  # check that division is sane
@@ -392,12 +392,12 @@ class TRZReader(base.ReaderBase):
             rem = int(seeksize % maxi_l)  # amount leftover to do once max seeks done
 
             for _ in range(nreps):
-                self.trzfile.seek(maxint, 1)
-            self.trzfile.seek(rem, 1)
+                self._f.seek(maxint, 1)
+            self._f.seek(rem, 1)
         else:
             seeksize = int(seeksize)
 
-            self.trzfile.seek(seeksize, 1)
+            self._f.seek(seeksize, 1)
 
     def _reopen(self):
         self.close()
@@ -406,18 +406,18 @@ class TRZReader(base.ReaderBase):
 
     def open_trajectory(self):
         """Open the trajectory file"""
-        if self.trzfile is not None:
+        if self._f is not None:
             raise IOError(errno.EALREADY, 'TRZ file already opened', self.filename)
         if not os.path.exists(self.filename):
             raise IOError(errno.ENOENT, 'TRZ file not found', self.filename)
 
-        self.trzfile = util.anyopen(self.filename, 'rb')
+        self._f = util.anyopen(self.filename, 'rb')
 
         #Reset ts
         ts = self.ts
         ts.frame = -1
 
-        return self.trzfile
+        return self._f
 
     def Writer(self, filename, n_atoms=None):
         if n_atoms is None:
@@ -427,9 +427,9 @@ class TRZReader(base.ReaderBase):
 
     def close(self):
         """Close trz file if it was open"""
-        if self.trzfile is not None:
-            self.trzfile.close()
-            self.trzfile = None
+        if self._f is not None:
+            self._f.close()
+            self._f = None
 
 
 class TRZWriter(base.WriterBase):
@@ -473,7 +473,7 @@ class TRZWriter(base.WriterBase):
 
         self.convert_units = convert_units
 
-        self.trzfile = util.anyopen(self.filename, 'wb')
+        self._f = util.anyopen(self.filename, 'wb')
 
         self._writeheader(title)
 
@@ -528,7 +528,7 @@ class TRZWriter(base.WriterBase):
         out['title'] = title + ' ' * (80 - len(title))
         out['pad3'], out['pad4'] = 4, 4
         out['nrec'] = 10
-        out.tofile(self.trzfile)
+        out.tofile(self._f)
 
     def write_next_timestep(self, ts):
         # Check size of ts is same as initial
@@ -602,11 +602,11 @@ class TRZWriter(base.WriterBase):
         out['vy'] = self.convert_velocities_to_native(vels[:, 1], inplace=False)
         out['p10a'], out['p10b'] = size, size
         out['vz'] = self.convert_velocities_to_native(vels[:, 2], inplace=False)
-        out.tofile(self.trzfile)
+        out.tofile(self._f)
 
     def close(self):
         """Close if it was open"""
-        if self.trzfile is None:
+        if self._f is None:
             return
-        self.trzfile.close()
-        self.trzfile = None
+        self._f.close()
+        self._f = None

@@ -218,7 +218,8 @@ from .. import (
 from .. import units
 from ..auxiliary.base import AuxReader
 from ..auxiliary.core import auxreader
-from ..lib.util import asiterable, Namespace
+from ..core import flags
+from ..lib.util import asiterable, Namespace, anyopen
 
 
 class Timestep(object):
@@ -384,6 +385,15 @@ class Timestep(object):
             ts.forces = forces
 
         return ts
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('_reader', None)
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
@@ -2069,6 +2079,33 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         return ts
 
 
+class _AsciiPickle(object):
+    # mixin to allow ascii files to pickle it up with the pros
+    def __getstate__(self):
+        # Shallow copy of state of self
+        # shallow ie don't recursively copy all objects,
+        # just copy the references that __dict__ holds
+        stuff = self.__dict__.copy()
+        # don't pass the file handle over
+        del stuff['_f']
+        # instead pass enough metadata to reconstruct
+        stuff['_pickle_fn'] = self._f.name
+        # TODO: what other state does Reader hold?
+        # TODO: reconstruct file handle position
+        return stuff
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._f = anyopen(self._pickle_fn)
+
+        del self._pickle_fn
+
+class _BAsciiPickle(_AsciiPickle):
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._f = anyopen(self._pickle_fn, 'rb')
+
+        del self._pickle_fn
 
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
@@ -2115,6 +2152,9 @@ class ReaderBase(ProtoReader):
                 ts_kwargs[att] = val
 
         self._ts_kwargs = ts_kwargs
+
+    def __len__(self):
+        return self.n_frames
 
     def copy(self):
         """Return independent copy of this Reader.

@@ -266,7 +266,7 @@ class XYZWriter(base.WriterBase):
                             "".format(atom, x, y, z))
 
 
-class XYZReader(base.ReaderBase):
+class XYZReader(base.ReaderBase, base._AsciiPickle):
     """Reads from an XYZ file
 
     :Data:
@@ -310,7 +310,7 @@ class XYZReader(base.ReaderBase):
         # coordinates::core.py so the last file extension will tell us if it is
         # bzipped or not
         root, ext = os.path.splitext(self.filename)
-        self.xyzfile = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename)
         self.compression = ext[1:] if ext[1:] != "xyz" else None
         self._cache = dict()
 
@@ -359,7 +359,7 @@ class XYZReader(base.ReaderBase):
         return n_frames
 
     def _read_frame(self, frame):
-        self.xyzfile.seek(self._offsets[frame])
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in next
         return self._read_next_timestep()
 
@@ -368,7 +368,7 @@ class XYZReader(base.ReaderBase):
         if ts is None:
             ts = self.ts
 
-        f = self.xyzfile
+        f = self._f
 
         try:
             # we assume that there are only two header lines per frame
@@ -389,17 +389,17 @@ class XYZReader(base.ReaderBase):
         self.open_trajectory()
 
     def open_trajectory(self):
-        if self.xyzfile is not None:
+        if self._f is not None:
             raise IOError(
                 errno.EALREADY, 'XYZ file already opened', self.filename)
 
-        self.xyzfile = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename)
 
         # reset ts
         ts = self.ts
         ts.frame = -1
 
-        return self.xyzfile
+        return self._f
 
     def Writer(self, filename, n_atoms=None, **kwargs):
         """Returns a XYZWriter for *filename* with the same parameters as this
@@ -429,7 +429,7 @@ class XYZReader(base.ReaderBase):
 
     def close(self):
         """Close xyz trajectory file if it was open."""
-        if self.xyzfile is None:
+        if self._f is None:
             return
-        self.xyzfile.close()
-        self.xyzfile = None
+        self._f.close()
+        self._f = None

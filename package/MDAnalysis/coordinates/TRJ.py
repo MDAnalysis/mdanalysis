@@ -186,7 +186,7 @@ class Timestep(base.Timestep):
     order = 'C'
 
 
-class TRJReader(base.ReaderBase):
+class TRJReader(base.ReaderBase, base._AsciiPickle):
     """AMBER trajectory reader.
 
     Reads the ASCII formatted `AMBER TRJ format`_. Periodic box information
@@ -218,7 +218,7 @@ class TRJReader(base.ReaderBase):
         self._n_atoms = n_atoms
         self._n_frames = None
 
-        self.trjfile = None  # have _read_next_timestep() open it properly!
+        self._f = None  # have _read_next_timestep() open it properly!
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
 
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
@@ -243,22 +243,22 @@ class TRJReader(base.ReaderBase):
         self._read_next_timestep()
 
     def _read_frame(self, frame):
-        if self.trjfile is None:
+        if self._f is None:
             self.open_trajectory()
-        self.trjfile.seek(self._offsets[frame])
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in _read_next
         return self._read_next_timestep()
 
     def _read_next_timestep(self):
         # FORMAT(10F8.3)  (X(i), Y(i), Z(i), i=1,NATOM)
         ts = self.ts
-        if self.trjfile is None:
+        if self._f is None:
             self.open_trajectory()
 
         # Read coordinat frame:
         # coordinates = numpy.zeros(3*self.n_atoms, dtype=np.float32)
         _coords = []
-        for number, line in enumerate(self.trjfile):
+        for number, line in enumerate(self._f):
             try:
                 _coords.extend(self.default_line_parser.read(line))
             except ValueError:
@@ -273,7 +273,7 @@ class TRJReader(base.ReaderBase):
 
         # Read box information
         if self.periodic:
-            line = next(self.trjfile)
+            line = next(self._f)
             box = self.box_line_parser.read(line)
             ts._unitcell[:3] = np.array(box, dtype=np.float32)
             ts._unitcell[3:] = [90., 90., 90.]  # assumed
@@ -320,7 +320,7 @@ class TRJReader(base.ReaderBase):
         self._read_next_timestep()
         ts = self.ts
         # TODO: what do we do with 1-frame trajectories? Try..except EOFError?
-        line = next(self.trjfile)
+        line = next(self._f)
         nentries = self.default_line_parser.number_of_matches(line)
         if nentries == 3:
             self.periodic = True
@@ -371,8 +371,8 @@ class TRJReader(base.ReaderBase):
 
     def open_trajectory(self):
         """Open the trajectory for reading and load first frame."""
-        self.trjfile = util.anyopen(self.filename)
-        self.header = self.trjfile.readline()  # ignore first line
+        self._f = util.anyopen(self.filename)
+        self.header = self._f.readline()  # ignore first line
         if len(self.header.rstrip()) > 80:
             # Chimera uses this check
             raise OSError(
@@ -382,14 +382,14 @@ class TRJReader(base.ReaderBase):
         ts = self.ts
         ts.frame = -1
 
-        return self.trjfile
+        return self._f
 
     def close(self):
         """Close trj trajectory file if it was open."""
-        if self.trjfile is None:
+        if self._f is None:
             return
-        self.trjfile.close()
-        self.trjfile = None
+        self._f.close()
+        self._f = None
 
 
 class NCDFReader(base.ReaderBase):
@@ -473,12 +473,11 @@ class NCDFReader(base.ReaderBase):
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
-        self.trjfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                   mmap=self._mmap)
+        self._f = scipy.io.netcdf.netcdf_file(self.filename,
+                                              mmap=self._mmap)
 
-        # AMBER NetCDF files should always have a convention
         try:
-            conventions = self.trjfile.Conventions
+            conventions = self._f.Conventions
             if not ('AMBER' in conventions.decode('utf-8').split(',') or
                     'AMBER' in conventions.decode('utf-8').split()):
                 errmsg = ("NCDF trajectory {0} does not conform to AMBER "
@@ -496,7 +495,7 @@ class NCDFReader(base.ReaderBase):
 
         # AMBER NetCDF files should also have a ConventionVersion
         try:
-            ConventionVersion = self.trjfile.ConventionVersion.decode('utf-8')
+            ConventionVersion = self._f.ConventionVersion.decode('utf-8')
             if not ConventionVersion == self.version:
                 wmsg = ("NCDF trajectory format is {0!s} but the reader "
                         "implements format {1!s}".format(
@@ -509,7 +508,7 @@ class NCDFReader(base.ReaderBase):
             raise_from(ValueError(errmsg), None)
 
         # The AMBER NetCDF standard enforces 64 bit offsets
-        if not self.trjfile.version_byte == 2:
+        if not self._f.version_byte == 2:
             errmsg = ("NCDF trajectory {0} does not conform to AMBER "
                       "specifications, as detailed in "
                       "https://ambermd.org/netcdf/nctraj.xhtml "
@@ -520,7 +519,7 @@ class NCDFReader(base.ReaderBase):
 
         # The AMBER NetCDF standard enforces 3D coordinates
         try:
-            if not self.trjfile.dimensions['spatial'] == 3:
+            if not self._f.dimensions['spatial'] == 3:
                 errmsg = "Incorrect spatial value for NCDF trajectory file"
                 raise TypeError(errmsg)
         except KeyError:
@@ -529,8 +528,8 @@ class NCDFReader(base.ReaderBase):
 
         # AMBER NetCDF specs require program and programVersion. Warn users
         # if those attributes do not exist
-        if not (hasattr(self.trjfile, 'program') and
-                hasattr(self.trjfile, 'programVersion')):
+        if not (hasattr(self._f, 'program') and
+                hasattr(self._f, 'programVersion')):
             wmsg = ("NCDF trajectory {0} may not fully adhere to AMBER "
                     "standards as either the `program` or `programVersion` "
                     "attributes are missing".format(self.filename))
@@ -538,7 +537,7 @@ class NCDFReader(base.ReaderBase):
             logger.warning(wmsg)
 
         try:
-            self.n_atoms = self.trjfile.dimensions['atom']
+            self.n_atoms = self._f.dimensions['atom']
             if n_atoms is not None and n_atoms != self.n_atoms:
                 errmsg = ("Supplied n_atoms ({0}) != natom from ncdf ({1}). "
                           "Note: n_atoms can be None and then the ncdf value "
@@ -546,18 +545,19 @@ class NCDFReader(base.ReaderBase):
                 raise ValueError(errmsg)
         except KeyError:
             errmsg = ("NCDF trajectory {0} does not contain atom "
-                      "information".format(self.filename))
+                      "information".format(
+                        self._f.ConventionVersion, self.version))
             raise_from(ValueError(errmsg), None)
 
         try:
-            self.n_frames = self.trjfile.dimensions['frame']
+            self.n_frames = self._f.dimensions['frame']
             # example trajectory when read with scipy.io.netcdf has
             # dimensions['frame'] == None (indicating a record dimension that
             # can grow) whereas if read with netCDF4 I get
             # len(dimensions['frame']) ==  10: in any case, we need to get
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
-                self.n_frames = self.trjfile.variables['time'].shape[0]
+                self.n_frames = self._f.variables['time'].shape[0]
         except KeyError:
             raise_from(
                 ValueError(
@@ -567,7 +567,7 @@ class NCDFReader(base.ReaderBase):
                 None)
 
         try:
-            self.remarks = self.trjfile.title
+            self.remarks = self._f.title
         except AttributeError:
             self.remarks = ""
         # other metadata (*= requd):
@@ -576,8 +576,8 @@ class NCDFReader(base.ReaderBase):
 
         # checks for not-implemented features (other units would need to be
         # hacked into MDAnalysis.units)
-        self._verify_units(self.trjfile.variables['time'].units, 'picosecond')
-        self._verify_units(self.trjfile.variables['coordinates'].units,
+        self._verify_units(self._f.variables['time'].units, 'picosecond')
+        self._verify_units(self._f.variables['coordinates'].units,
                            'angstrom')
 
         # Check for scale_factor attributes for all data variables and
@@ -589,32 +589,32 @@ class NCDFReader(base.ReaderBase):
                               'velocities': 1.0,
                               'forces': 1.0}
 
-        for variable in self.trjfile.variables:
-            if hasattr(self.trjfile.variables[variable], 'scale_factor'):
+        for variable in self._f.variables:
+            if hasattr(self._f.variables[variable], 'scale_factor'):
                 if variable in self.scale_factors:
-                    scale_factor = self.trjfile.variables[variable].scale_factor
+                    scale_factor = self._f.variables[variable].scale_factor
                     self.scale_factors[variable] = scale_factor
                 else:
                     errmsg = ("scale_factors for variable {0} are "
                               "not implemented".format(variable))
                     raise NotImplementedError(errmsg)
 
-        self.has_velocities = 'velocities' in self.trjfile.variables
+        self.has_velocities = 'velocities' in self._f.variables
         if self.has_velocities:
-            self._verify_units(self.trjfile.variables['velocities'].units,
+            self._verify_units(self._f.variables['velocities'].units,
                                'angstrom/picosecond')
 
-        self.has_forces = 'forces' in self.trjfile.variables
+        self.has_forces = 'forces' in self._f.variables
         if self.has_forces:
-            self._verify_units(self.trjfile.variables['forces'].units,
+            self._verify_units(self._f.variables['forces'].units,
                                'kilocalorie/mole/angstrom')
 
-        self.periodic = 'cell_lengths' in self.trjfile.variables
+        self.periodic = 'cell_lengths' in self._f.variables
         if self.periodic:
-            self._verify_units(self.trjfile.variables['cell_lengths'].units,
+            self._verify_units(self._f.variables['cell_lengths'].units,
                                'angstrom')
             # As of v1.0.0 only `degree` is accepted as a unit
-            cell_angle_units = self.trjfile.variables['cell_angles'].units
+            cell_angle_units = self._f.variables['cell_angles'].units
             self._verify_units(cell_angle_units, 'degree')
 
         self._current_frame = 0
@@ -627,6 +627,30 @@ class NCDFReader(base.ReaderBase):
 
         # load first data frame
         self._read_frame(0)
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        del state['_f']
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self._f = scipy.io.netcdf.netcdf_file(self.filename,
+                                              mmap=self._mmap)
+
+    @property
+    def n_frames(self):
+        n_frames = self._f.dimensions['frame']
+        # example trajectory when read with scipy.io.netcdf has
+        # dimensions['frame'] == None (indicating a record dimension that can
+        # grow) whereas if read with netCDF4 I get len(dimensions['frame']) ==
+        # 10: in any case, we need to get the number of frames from somewhere
+        # such as the time variable:
+        if n_frames is None:
+            n_frames = self._f.variables['time'].shape[0]
+
+        return n_frames
 
     @staticmethod
     def _verify_units(eval_unit, expected_units):
@@ -645,7 +669,7 @@ class NCDFReader(base.ReaderBase):
     def _read_frame(self, frame):
         ts = self.ts
 
-        if self.trjfile is None:
+        if self._f is None:
             raise IOError("Trajectory is closed")
         if np.dtype(type(frame)) != np.dtype(int):
             # convention... for netcdf could also be a slice
@@ -653,21 +677,21 @@ class NCDFReader(base.ReaderBase):
         if frame >= self.n_frames or frame < 0:
             raise IndexError("frame index must be 0 <= frame < {0}".format(
                 self.n_frames))
-        # note: self.trjfile.variables['coordinates'].shape == (frames, n_atoms, 3)
-        ts._pos[:] = (self.trjfile.variables['coordinates'][frame] *
+        # note: self._f.variables['coordinates'].shape == (frames, n_atoms, 3)
+        ts._pos[:] = (self._f.variables['coordinates'][frame] *
                       self.scale_factors['coordinates'])
-        ts.time = (self.trjfile.variables['time'][frame] *
+        ts.time = (self._f.variables['time'][frame] *
                    self.scale_factors['time'])
         if self.has_velocities:
-            ts._velocities[:] = (self.trjfile.variables['velocities'][frame] *
+            ts._velocities[:] = (self._f.variables['velocities'][frame] *
                                  self.scale_factors['velocities'])
         if self.has_forces:
-            ts._forces[:] = (self.trjfile.variables['forces'][frame] *
+            ts._forces[:] = (self._f.variables['forces'][frame] *
                              self.scale_factors['forces'])
         if self.periodic:
-            ts._unitcell[:3] = (self.trjfile.variables['cell_lengths'][frame] *
+            ts._unitcell[:3] = (self._f.variables['cell_lengths'][frame] *
                                 self.scale_factors['cell_lengths'])
-            ts._unitcell[3:] = (self.trjfile.variables['cell_angles'][frame] *
+            ts._unitcell[3:] = (self._f.variables['cell_angles'][frame] *
                                 self.scale_factors['cell_angles'])
         if self.convert_units:
             self.convert_pos_from_native(ts._pos)  # in-place !
@@ -697,8 +721,8 @@ class NCDFReader(base.ReaderBase):
             raise_from(IOError, None)
 
     def _get_dt(self):
-        t1 = self.trjfile.variables['time'][1]
-        t0 = self.trjfile.variables['time'][0]
+        t1 = self._f.variables['time'][1]
+        t0 = self._f.variables['time'][0]
         return t1 - t0
 
     def close(self):
@@ -710,9 +734,9 @@ class NCDFReader(base.ReaderBase):
                   before the file can be closed.
 
         """
-        if self.trjfile is not None:
-            self.trjfile.close()
-            self.trjfile = None
+        if self._f is not None:
+            self._f.close()
+            self._f = None
 
     def Writer(self, filename, **kwargs):
         """Returns a NCDFWriter for `filename` with the same parameters as this NCDF.
@@ -871,7 +895,7 @@ class NCDFWriter(base.WriterBase):
 
         self.ts = None  # when/why would this be assigned??
         self._first_frame = True  # signals to open trajectory
-        self.trjfile = None  # open on first write with _init_netcdf()
+        self._f = None  # open on first write with _init_netcdf()
         self.periodic = None  # detect on first write
         self.has_velocities = kwargs.get('velocities', False)
         self.has_forces = kwargs.get('forces', False)
@@ -970,7 +994,7 @@ class NCDFWriter(base.WriterBase):
 
         ncfile.sync()
         self._first_frame = False
-        self.trjfile = ncfile
+        self._f = ncfile
 
     def is_periodic(self, ts=None):
         """Test if `Timestep` contains a periodic trajectory.
@@ -1010,7 +1034,7 @@ class NCDFWriter(base.WriterBase):
             raise IOError(
                 "NCDFWriter: Timestep does not have the correct number of atoms")
 
-        if self.trjfile is None:
+        if self._f is None:
             # first time step: analyze data and open trajectory accordingly
             self._init_netcdf(periodic=self.is_periodic(ts))
 
@@ -1046,12 +1070,12 @@ class NCDFWriter(base.WriterBase):
             unitcell = self.convert_dimensions_to_unitcell(ts)
 
         # write step
-        self.trjfile.variables['coordinates'][self.curr_frame, :, :] = pos
-        self.trjfile.variables['time'][self.curr_frame] = time
+        self._f.variables['coordinates'][self.curr_frame, :, :] = pos
+        self._f.variables['time'][self.curr_frame] = time
         if self.periodic:
-            self.trjfile.variables['cell_lengths'][
+            self._f.variables['cell_lengths'][
                 self.curr_frame, :] = unitcell[:3]
-            self.trjfile.variables['cell_angles'][
+            self._f.variables['cell_angles'][
                 self.curr_frame, :] = unitcell[3:]
 
         if self.has_velocities:
@@ -1059,19 +1083,19 @@ class NCDFWriter(base.WriterBase):
             if self.convert_units:
                 velocities = self.convert_velocities_to_native(
                     velocities, inplace=False)
-            self.trjfile.variables['velocities'][self.curr_frame, :, :] = velocities
+            self._f.variables['velocities'][self.curr_frame, :, :] = velocities
 
         if self.has_forces:
             forces = ts._forces
             if self.convert_units:
                 forces = self.convert_forces_to_native(
                     forces, inplace=False)
-            self.trjfile.variables['forces'][self.curr_frame, :, :] = forces
+            self._f.variables['forces'][self.curr_frame, :, :] = forces
 
-        self.trjfile.sync()
+        self._f.sync()
         self.curr_frame += 1
 
     def close(self):
-        if self.trjfile is not None:
-            self.trjfile.close()
-            self.trjfile = None
+        if self._f is not None:
+            self._f.close()
+            self._f = None

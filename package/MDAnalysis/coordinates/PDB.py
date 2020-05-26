@@ -167,7 +167,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple('Atom', 'resname name')
 
-class PDBReader(base.ReaderBase):
+class PDBReader(base.ReaderBase, base._BAsciiPickle):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
 
     The following *PDB records* are parsed (see `PDB coordinate section`_ for
@@ -280,7 +280,7 @@ class PDBReader(base.ReaderBase):
         if isinstance(filename, util.NamedStream) and isinstance(filename.stream, StringIO):
             filename.stream = BytesIO(filename.stream.getvalue().encode())
 
-        pdbfile = self._pdbfile = util.anyopen(filename, 'rb')
+        pdbfile = self._f = util.anyopen(filename, 'rb')
 
         line = "magical"
         while line:
@@ -348,7 +348,7 @@ class PDBReader(base.ReaderBase):
         # Pretend the current TS is -1 (in 0 based) so "next" is the
         # 0th frame
         self.close()
-        self._pdbfile = util.anyopen(self.filename, 'rb')
+        self._f = util.anyopen(self.filename, 'rb')
         self.ts.frame = -1
 
     def _read_next_timestep(self, ts=None):
@@ -374,8 +374,8 @@ class PDBReader(base.ReaderBase):
         occupancy = np.ones(self.n_atoms)
 
         # Seek to start and read until start of next frame
-        self._pdbfile.seek(start)
-        chunk = self._pdbfile.read(stop - start).decode()
+        self._f.seek(start)
+        chunk = self._f.read(stop - start).decode()
 
         tmp_buf = []
         for line in chunk.splitlines():
@@ -432,7 +432,7 @@ class PDBReader(base.ReaderBase):
         return self.ts
 
     def close(self):
-        self._pdbfile.close()
+        self._f.close()
 
 
 class PDBWriter(base.WriterBase):
