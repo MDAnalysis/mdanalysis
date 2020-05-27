@@ -39,7 +39,7 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2, 
-                                       PDB_CRYOEM_BOX, PDB_NOCRYST)
+                                       PDB_CRYOEM_BOX, PDB_NOCRYST, MMTF_NOCRYST)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -191,12 +191,22 @@ class TestPDBWriter(object):
     def universe3(self):
         return mda.Universe(PDB)
 
-    @pytest.fixture
-    def universe4(self):
+    @pytest.fixture(params=[
+            [PDB_NOCRYST, np.zeros(6)],
+            [MMTF_NOCRYST, None]
+        ])
+    def universe_and_expected_dims(self, request):
         """
-        PDB file with meaningless CRYST1 record.
+        File with meaningless CRYST1 record and expected dimensions.
+
+        Notes
+        -----
+        This will need to be made consistent, see Issue #2698
         """
-        return mda.Universe(PDB_NOCRYST)
+        filein = request.param[0]
+        expected_dims = request.param[1]
+
+        return mda.Universe(filein), expected_dims
 
     @pytest.fixture
     def outfile(self, tmpdir):
@@ -299,7 +309,7 @@ class TestPDBWriter(object):
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
 
-    def test_write_nodims(self, universe4, outfile):
+    def test_write_nodims(self, universe_and_expected_dims, outfile):
         """
         Test :code:`PDBWriter` for universe without cell dimensions.
 
@@ -308,9 +318,12 @@ class TestPDBWriter(object):
         Test fix for Issue #2679.
         """
 
-        u = universe4
+        u, expected_dims = universe_and_expected_dims
 
-        print(u.dimensions)
+        if expected_dims is None:
+            assert u.dimensions is None
+        else:
+            assert np.allclose(u.dimensions, expected_dims)
 
         expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
 

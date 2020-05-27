@@ -188,7 +188,8 @@ __all__ = [
     "ITP_no_endif", # file missing an #endif
     "PDB_CRYOEM_BOX", #Issue 2599
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
-    "PDB_NOCRYST", # File missing CRYST1 record (Issue #2679, PR #2685)
+    "PDB_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
+    "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
 ]
 
 from pkg_resources import resource_filename
@@ -488,6 +489,7 @@ MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
 MMTF_skinny = resource_filename(__name__, 'data/1ubq-less-optional.mmtf')
 MMTF_skinny2 = resource_filename(__name__, 'data/3NJW-onlyrequired.mmtf')
+MMTF_NOCRYST = resource_filename(__name__, "data/2BBM.mmtf.gz")
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')

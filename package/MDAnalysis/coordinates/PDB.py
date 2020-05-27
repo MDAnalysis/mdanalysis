@@ -701,9 +701,7 @@ class PDBWriter(base.WriterBase):
         except AttributeError:
             pass
 
-        if u.dimensions is not None:
-            self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
-        else:
+        if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
             # Unitary unit cell by default (PDB standard)
             self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
 
@@ -718,6 +716,9 @@ class PDBWriter(base.WriterBase):
             warnings.warn("Unit cell dimensions not found. "
                           "CRYST1 record set to unitary values."
                           )
+
+        else:
+            self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
     def _check_pdb_coordinates(self):
         """Check if the coordinate values fall within the range allowed for PDB files.
