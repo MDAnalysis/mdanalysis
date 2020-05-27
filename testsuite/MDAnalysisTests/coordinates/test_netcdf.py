@@ -57,7 +57,7 @@ class _NCDFReaderTest(_TRJReaderTest):
                      err_msg="slicing did not produce the expected frames")
 
     def test_metadata(self, universe):
-        data = universe.trajectory.trjfile
+        data = universe.trajectory._f
         assert_equal(data.Conventions.decode('utf-8'), 'AMBER')
         assert_equal(data.ConventionVersion.decode('utf-8'), '1.0')
 
@@ -687,8 +687,8 @@ class _NCDFWriterTest(object):
                                       self.prec,
                                       err_msg="unitcells are not identical")
         # check that the NCDF data structures are the same
-        nc_orig = universe.trajectory.trjfile
-        nc_copy = uw.trajectory.trjfile
+        nc_orig = universe.trajectory._f
+        nc_copy = uw.trajectory._f
 
         # note that here 'dimensions' is a specific netcdf data structure and
         # not the unit cell dimensions in MDAnalysis

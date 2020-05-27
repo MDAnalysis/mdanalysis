@@ -639,18 +639,18 @@ class NCDFReader(base.ReaderBase):
         self._f = scipy.io.netcdf.netcdf_file(self.filename,
                                               mmap=self._mmap)
 
-    @property
-    def n_frames(self):
-        n_frames = self._f.dimensions['frame']
-        # example trajectory when read with scipy.io.netcdf has
-        # dimensions['frame'] == None (indicating a record dimension that can
-        # grow) whereas if read with netCDF4 I get len(dimensions['frame']) ==
-        # 10: in any case, we need to get the number of frames from somewhere
-        # such as the time variable:
-        if n_frames is None:
-            n_frames = self._f.variables['time'].shape[0]
-
-        return n_frames
+#    @property
+#    def n_frames(self):
+#        n_frames = self._f.dimensions['frame']
+#        # example trajectory when read with scipy.io.netcdf has
+#        # dimensions['frame'] == None (indicating a record dimension that can
+#        # grow) whereas if read with netCDF4 I get len(dimensions['frame']) ==
+#        # 10: in any case, we need to get the number of frames from somewhere
+#        # such as the time variable:
+#        if n_frames is None:
+#            n_frames = self._f.variables['time'].shape[0]
+#
+#        return n_frames
 
     @staticmethod
     def _verify_units(eval_unit, expected_units):
