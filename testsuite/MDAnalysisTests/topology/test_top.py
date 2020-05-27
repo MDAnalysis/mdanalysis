@@ -41,6 +41,8 @@ from MDAnalysisTests.datafiles import (
 ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, guessing atom elements "
                      "based on their atom types")
 COORDINATE_READER_MSG = ("No coordinate reader found")
+
+
 class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
@@ -344,7 +346,6 @@ class TestPRM2(TOPBase):
         assert len(record) == 2
         assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
         assert COORDINATE_READER_MSG in str(record[1].message.args[0])
-        
 
 
 class TestPRMNCRST(TOPBase):
