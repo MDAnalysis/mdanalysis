@@ -58,7 +58,7 @@ from . import base
 from ..lib.util import openany, cached
 
 
-class TXYZReader(base.ReaderBase):
+class TXYZReader(base.ReaderBase, base._AsciiPickle):
     """Reads from a TXYZ file"""
 
 
@@ -74,7 +74,7 @@ class TXYZReader(base.ReaderBase):
         # coordinates::core.py so the last file extension will tell us if it is
         # bzipped or not
         root, ext = os.path.splitext(self.filename)
-        self.xyzfile = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename)
         self._cache = dict()
         # Check if file has box information saved
         with util.openany(self.filename) as inp:
@@ -131,7 +131,7 @@ class TXYZReader(base.ReaderBase):
         return n_frames
 
     def _read_frame(self, frame):
-        self.xyzfile.seek(self._offsets[frame])
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in next
         return self._read_next_timestep()
 
@@ -140,7 +140,7 @@ class TXYZReader(base.ReaderBase):
         if ts is None:
             ts = self.ts
 
-        f = self.xyzfile
+        f = self._f
 
         try:
             # we assume that there is only one header line per frame
@@ -162,21 +162,21 @@ class TXYZReader(base.ReaderBase):
         self.open_trajectory()
 
     def open_trajectory(self):
-        if self.xyzfile is not None:
+        if self._f is not None:
             raise IOError(
                 errno.EALREADY, 'TXYZ file already opened', self.filename)
 
-        self.xyzfile = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename)
 
         # reset ts
         ts = self.ts
         ts.frame = -1
 
-        return self.xyzfile
+        return self._f
 
     def close(self):
         """Close arc trajectory file if it was open."""
-        if self.xyzfile is None:
+        if self._f is None:
             return
-        self.xyzfile.close()
-        self.xyzfile = None
+        self._f.close()
+        self._f = None
