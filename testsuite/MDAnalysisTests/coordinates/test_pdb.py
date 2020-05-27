@@ -885,8 +885,6 @@ class TestWriterAlignments(object):
                 "ATOM      3 CA  ",
                 "ATOM      4 H5''",)
 
-        print(writtenstuff)
-
         for written, reference in zip(writtenstuff[9:], refs):
             assert_equal(written[:16], reference)
 
