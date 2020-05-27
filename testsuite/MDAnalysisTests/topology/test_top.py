@@ -236,60 +236,27 @@ class TestPRM12Parser(TOPBase):
                               (338, 337, 335, 354), (351, 337, 335, 354))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((335, 337, 338, 351),)
-    elems_ranges = [[0, 403], ]
-    expected_elems = np.array(["H", "O", "C", "H", "H", "C", "H", "O", "C",
-                               "H", "N", "C", "H", "N", "C", "C", "O", "N",
-                               "H", "C", "N", "H", "H", "N", "C", "C", "H",
-                               "C", "H", "H", "O", "P", "O", "O", "O", "C",
-                               "H", "H", "C", "H", "O", "C", "H", "N", "C",
-                               "H", "N", "C", "C", "O", "N", "H", "C", "N",
-                               "H", "H", "N", "C", "C", "H", "C", "H", "H",
-                               "O", "P", "O", "O", "O", "C", "H", "H", "C",
-                               "H", "O", "C", "H", "N", "C", "H", "N", "C",
-                               "C", "O", "N", "H", "C", "N", "H", "H", "N",
-                               "C", "C", "H", "C", "H", "H", "O", "H", "H",
-                               "O", "C", "H", "H", "C", "H", "O", "C", "H",
-                               "N", "C", "H", "N", "C", "C", "O", "N", "H",
-                               "C", "N", "H", "H", "N", "C", "C", "H", "C",
-                               "H", "H", "O", "P", "O", "O", "O", "C", "H",
-                               "H", "C", "H", "O", "C", "H", "N", "C", "H",
-                               "N", "C", "C", "O", "N", "H", "C", "N", "H",
-                               "H", "N", "C", "C", "H", "C", "H", "H", "O",
-                               "P", "O", "O", "O", "C", "H", "H", "C", "H",
-                               "O", "C", "H", "N", "C", "H", "N", "C", "C", 
-                               "O", "N", "H", "C", "N", "H", "H", "N", "C",
-                               "C", "H", "C", "H", "H", "O", "H", "H", "O",
-                               "C", "H", "H", "C", "H", "O", "C", "H", "N",
-                               "C", "H", "N", "C", "C", "O", "N", "H", "C",
-                               "N", "H", "H", "N", "C", "C", "H", "C", "H",
-                               "H", "O", "P", "O", "O", "O", "C", "H", "H",
-                               "C", "H", "O", "C", "H", "N", "C", "H", "N",
-                               "C", "C", "O", "N", "H", "C", "N", "H", "H",
-                               "N", "C", "C", "H", "C", "H", "H", "O", "P",
-                               "O", "O", "O", "C", "H", "H", "C", "H", "O",
-                               "C", "H", "N", "C", "H", "N", "C", "C", "O",
-                               "N", "H", "C", "N", "H", "H", "N", "C", "C",
-                               "H", "C", "H", "H", "O", "H", "H", "O", "C",
-                               "H", "H", "C", "H", "O", "C", "H", "N", "C",
-                               "H", "N", "C", "C", "O", "N", "H", "C", "N",
-                               "H", "H", "N", "C", "C", "H", "C", "H", "H",
-                               "O", "P", "O", "O", "O", "C", "H", "H", "C",
-                               "H", "O", "C", "H", "N", "C", "H", "N", "C",
-                               "C", "O", "N", "H", "C", "N", "H", "H", "N",
-                               "C", "C", "H", "C", "H", "H", "O", "P", "O", 
-                               "O", "O", "C", "H", "H", "C", "H", "O", "C",
-                               "H", "N", "C", "H", "N", "C", "C", "O", "N",
-                               "H", "C", "N", "H", "H", "N", "C", "C", "H",
-                               "C", "H", "H", "O", "H", "Na", "Na", "Na",
-                               "Na", "Na", "Na", "Na", "Na", "O", "H", "H"],
-                               dtype=object)
+    elems_ranges = [[0, 36], [351, 403]]
+    expected_elems = [np.array(["H", "O", "C", "H", "H", "C", "H", "O", "C",
+                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
+                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                                "C", "H", "H", "O", "P", "O", "O", "O", "C"],
+                                dtype=object),
+                      np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O", 
+                                "O", "O", "C", "H", "H", "C", "H", "O", "C",
+                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
+                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                                "C", "H", "H", "O", "H", "Na", "Na", "Na",
+                                "Na", "Na", "Na", "Na", "Na", "O", "H", "H"],
+                                dtype=object)]
     
     def test_elements(self, top):
         """Loops over ranges of the topology elements list and compared
-        against a provided list of expected values"""
-        for elem_range in self.elems_ranges:
-            assert_equal(top.elements.values[1:403],
-                         self.expected_elems)
+        against a provided list of expected values.
+        """
+        for erange, evals in zip(self.elems_ranges, self.expected_elems):
+            assert_equal(top.elements.values[erange[0]:erange[1]], evals,
+                         "unexpected element match")
 
 
 class TestParm7Parser(TOPBase):
