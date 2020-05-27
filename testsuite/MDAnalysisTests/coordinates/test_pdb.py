@@ -29,7 +29,7 @@ import os
 
 import MDAnalysis as mda
 import numpy as np
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
@@ -38,7 +38,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
-                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2)
+                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2, 
+                                       PDB_CRYOEM_BOX)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -913,12 +914,12 @@ def test_standalone_pdb():
     assert r.n_atoms == 4
 
 
-def test_write_pdb_zero_atoms():
+def test_write_pdb_zero_atoms(tmpdir):
     # issue 1083
     u = make_Universe(trajectory=True)
 
-    with tempdir.TempDir() as tmpdir:
-        outfile = tmpdir + '/out.pdb'
+    with tmpdir.as_cwd():
+        outfile = 'out.pdb'
 
         ag = u.atoms[:0]  # empty ag
 
@@ -961,3 +962,20 @@ def test_partially_missing_cryst():
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
+
+
+def test_cryst_em_warning():
+    #issue 2599  
+    with pytest.warns(UserWarning) as record:
+        u = mda.Universe(PDB_CRYOEM_BOX)
+    assert record[0].message.args[0] == "1 A^3 CRYST1 record," \
+                                        " this is usually a placeholder in" \
+                                        " cryo-em structures. Unit cell" \
+                                        " dimensions will not be set."
+                                    
+
+def test_cryst_em_select():
+    #issue 2599
+    u = mda.Universe(PDB_CRYOEM_BOX)
+    cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
+    assert cur_sele.n_atoms == 0

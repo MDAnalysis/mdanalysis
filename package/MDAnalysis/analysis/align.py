@@ -271,6 +271,9 @@ def rotation_matrix(a, b, weights=None):
     if a.shape != b.shape:
         raise ValueError("'a' and 'b' must have same shape")
 
+    if np.allclose(a, b) and weights is None:
+        return np.eye(3, dtype=np.float64), 0.0
+
     N = b.shape[0]
 
     if weights is not None:
@@ -1293,32 +1296,6 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         rsize_mismatches = np.absolute(rsize1 - rsize2)
         mismatch_mask = (rsize_mismatches > 0)
         if np.any(mismatch_mask):
-            if strict:
-                # diagnostics
-                mismatch_resindex = np.arange(ag1.n_residues)[mismatch_mask]
-
-                def log_mismatch(
-                        number,
-                        ag,
-                        rsize,
-                        mismatch_resindex=mismatch_resindex):
-                    logger.error("Offending residues: group {0}: {1}".format(
-                        number,
-                        ", ".join(["{0[0]}{0[1]} ({0[2]})".format(r) for r in
-                                   zip(ag.resnames[mismatch_resindex],
-                                       ag.resids[mismatch_resindex],
-                                       rsize[mismatch_resindex]
-                                       )])))
-                logger.error("Found {0} residues with non-matching numbers of atoms (#)".format(
-                    mismatch_mask.sum()))
-                log_mismatch(1, ag1, rsize1)
-                log_mismatch(2, ag2, rsize2)
-
-                errmsg = ("Different number of atoms in some residues. "
-                          "(Use strict=False to attempt using matching atoms only.)")
-                logger.error(errmsg)
-                raise SelectionError(errmsg)
-
             def get_atoms_byres(g, match_mask=np.logical_not(mismatch_mask)):
                 # not pretty... but need to do things on a per-atom basis in
                 # order to preserve original selection

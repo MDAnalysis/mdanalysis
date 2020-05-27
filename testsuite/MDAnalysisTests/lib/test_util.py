@@ -29,6 +29,8 @@ import os
 import warnings
 import re
 import textwrap
+from mock import Mock, patch
+import sys
 
 import numpy as np
 from numpy.testing import (assert_equal, assert_almost_equal,
@@ -48,6 +50,26 @@ from MDAnalysisTests.datafiles import (
     Make_Whole, TPR, GRO, fullerene, two_water_gro,
 )
 
+def test_absence_cutil():
+    with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':None}):
+        #http://docs.python.org/library/sys.html#sys.hexversion
+        if sys.hexversion <= 0x03030000:
+            import imp
+            with pytest.raises(ImportError):
+                imp.reload(sys.modules['MDAnalysis.lib.util'])
+        else:
+            import importlib
+            with pytest.raises(ImportError):
+                importlib.reload(sys.modules['MDAnalysis.lib.util'])
+
+def test_presence_cutil():
+    mock = Mock()
+    with patch.dict('sys.modules', {'MDAnalysis.lib._cutil':mock}):
+        try:
+            import MDAnalysis.lib._cutil
+        except ImportError:
+            pytest.fail(msg='''MDAnalysis.lib._cutil should not raise
+                         an ImportError if cutil is available.''')
 
 def convert_aa_code_long_data():
     aa = [
@@ -220,6 +242,13 @@ class TestGeometryFunctions(object):
     def test_normal(self, vec1, vec2, value):
         assert_equal(mdamath.normal(vec1, vec2), value)
         # add more non-trivial tests
+
+    def test_angle_lower_clip(self):
+        a = np.array([0.1, 0, 0.2])
+        x = np.dot(a**0.5,-(a**0.5)) / (mdamath.norm(a**0.5) * mdamath.norm(-(a**0.5)))
+        assert x < -1.0
+        assert mdamath.angle(a, -(a)) == np.pi
+        assert mdamath.angle(a**0.5, -(a**0.5)) == np.pi
 
     def test_stp(self):
         assert mdamath.stp(self.e1, self.e2, self.e3) == 1.0

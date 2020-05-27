@@ -420,9 +420,13 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         # following frame. Move to right position if not.
         frame_for_step = self.step_to_frame(self.step, ts)
         frame_for_next_step = self.step_to_frame(self.step+1, ts)
-        if (frame_for_step is not None and frame_for_next_step is not None
-                and not (frame_for_step < ts.frame <= frame_for_next_step)):
-            self.move_to_ts(ts)
+        if frame_for_step is not None:
+            if frame_for_next_step is None:
+                # self.step is the last auxiliary step in memory.
+                if frame_for_step >= ts.frame:
+                    self.move_to_ts(ts)
+            elif not (frame_for_step < ts.frame <= frame_for_next_step):
+                self.move_to_ts(ts)
 
         self._reset_frame_data() # clear previous frame data
         # read through all the steps 'assigned' to ts.frame + add to frame_data

@@ -297,10 +297,6 @@ the zone, on the other hand, a fast decay means a short permanence time::
   for tau, sp in zip(tau_timeseries, sp_timeseries):
         print("{time} {sp}".format(time=tau, sp=sp))
 
-  # SP is not calculated at tau=0, but if you would like to plot SP=1 at tau=0:
-  tau_timeseries.insert(0, 0)
-  sp_timeseries.insert(1, 0)
-
   # plot
   plt.xlabel('Time')
   plt.ylabel('SP')
@@ -449,12 +445,15 @@ Classes
 """
 from __future__ import print_function, division, absolute_import
 
-import warnings
-
-from six.moves import range, zip_longest
-
-import numpy as np
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 import MDAnalysis.analysis.hbonds
+from six.moves import range, zip_longest
+import logging
+import warnings
+import numpy as np
+
+
+logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 from MDAnalysis.lib.log import ProgressBar
 
 
@@ -507,7 +506,9 @@ class HydrogenBondLifetimes(object):
        may have failed in some cases.
     """
 
-    def __init__(self, universe, selection1, selection2, t0, tf, dtmax):
+
+    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
+                 nproc=1):
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
@@ -1172,6 +1173,8 @@ class SurvivalProbability(object):
 
     .. versionadded:: 0.11.0
     .. versionchanged:: 1.0.0
+       Using the MDAnalysis.lib.correlations.py to carry out the intermittency
+       and autocorrelation calculations.
        Changed `selection` keyword to `select`.
        Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
        These should instead be passed to :meth:`SurvivalProbability.run` as
@@ -1182,63 +1185,6 @@ class SurvivalProbability(object):
         self.universe = universe
         self.selection = select
         self.verbose = verbose
-
-    def print(self, verbose, *args):
-        if self.verbose:
-            print(args)
-        elif verbose:
-            print(args)
-
-    def _correct_intermittency(self, intermittency, selected_ids):
-        """
-        Pre-process Consecutive Intermittency with a single pass over the data.
-        If an atom is absent for a number of frames equal or smaller
-        than the `intermittency`, then correct the data and remove the absence.
-        ie 7,A,A,7 with intermittency=2 will be replaced by 7,7,7,7, where A=absence
-
-        Parameters
-        ----------
-        intermittency : int
-            the max gap allowed and to be corrected
-        selected_ids: list of ids
-            modifies the selecteded IDs in place by adding atoms which left for <= `intermittency`
-        """
-        self.print('Correcting the selected IDs for intermittancy (gaps). ')
-        if intermittency == 0:
-            return
-
-        for i, ids in enumerate(selected_ids):
-            # initially update each frame as seen 0 ago (now)
-            seen_frames_ago = {i: 0 for i in ids}
-            for j in range(1, intermittency + 2):
-                for atomid in seen_frames_ago.keys():
-                    # no more frames
-                    if i + j >= len(selected_ids):
-                        continue
-
-                    # if the atom is absent now
-                    if not atomid in selected_ids[i + j]:
-                        # increase its absence counter
-                        seen_frames_ago[atomid] += 1
-                        continue
-
-                    # the atom is found
-                    if seen_frames_ago[atomid] == 0:
-                        # the atom was present in the last frame
-                        continue
-
-                    # it was absent more times than allowed
-                    if seen_frames_ago[atomid] > intermittency:
-                        continue
-
-                    # the atom was absent but returned (within <= intermittency)
-                    # add it to the frames where it was absent.
-                    # Introduce the corrections.
-                    for k in range(seen_frames_ago[atomid], 0, -1):
-                        selected_ids[i + j - k].add(atomid)
-
-                    seen_frames_ago[atomid] = 0
-
 
     def run(self, tau_max=20, start=None, stop=None, step=None, residues=False,
             intermittency=0, verbose=False):
@@ -1285,6 +1231,9 @@ class SurvivalProbability(object):
         sp_timeseries : list
             survival probability for each value of `tau`. Saved in the field
             sp_timeseries.
+        sp_timeseries_data: list
+            raw datapoints from which the average is taken (sp_timeseries).
+            Time dependancy and distribution can be extracted.
 
 
         .. versionchanged:: 1.0.0
@@ -1302,9 +1251,13 @@ class SurvivalProbability(object):
             raise ValueError("Too few frames selected for given tau_max.")
 
         # preload the frames (atom IDs) to a list of sets
-        self.selected_ids = []
+        self._selected_ids = []
 
-        # skip frames that will not be used
+        # fixme - to parallise: the section should be rewritten so that this loop only creates a list of indices,
+        # on which the parallel _single_frame can be applied.
+
+        # skip frames that will not be used in order to improve performance
+        # because AtomGroup.select_atoms is the most expensive part of this calculation
         # Example: step 5 and tau 2: LLLSS LLLSS, ... where L = Load, and S = Skip
         # Intermittency means that we have to load the extra frames to know if the atom is actually missing.
         # Say step=5 and tau=1, intermittency=0: LLSSS LLSSS
@@ -1319,7 +1272,7 @@ class SurvivalProbability(object):
         frame_no = start
         while frame_no < stop:      # we have already added 1 to stop, therefore <
             if num_frames_to_skip != 0 and frame_loaded_counter == frames_per_window:
-                self.print(verbose, "Skipping the next %d frames:" % num_frames_to_skip)
+                logger.info("Skipping the next %d frames:", num_frames_to_skip)
                 frame_no += num_frames_to_skip
                 frame_loaded_counter = 0
                 # Correct the number of frames to be loaded after the first window (which starts at t=0, and
@@ -1330,46 +1283,31 @@ class SurvivalProbability(object):
             # update the frame number
             self.universe.trajectory[frame_no]
 
-            self.print(verbose, "Loading frame:", self.universe.trajectory.ts)
+            logger.info("Loading frame: %d", self.universe.trajectory.frame)
             atoms = self.universe.select_atoms(self.selection)
 
             # SP of residues or of atoms
             ids = atoms.residues.resids if residues else atoms.ids
-            self.selected_ids.append(set(ids))
+            self._selected_ids.append(set(ids))
 
             frame_no += 1
             frame_loaded_counter += 1
-
-        # correct the dataset for gaps (intermittency)
-        self._correct_intermittency(intermittency, self.selected_ids)
-
-        # calculate Survival Probability
-        tau_timeseries = np.arange(1, tau_max + 1)
-        sp_timeseries_data = [[] for _ in range(tau_max)]
 
         # adjust for the frames that were not loaded (step>tau_max + 1),
         # and for extra frames that were loaded (intermittency)
         window_jump = step - num_frames_to_skip
 
-        for t in range(0, len(self.selected_ids), window_jump):
-            Nt = len(self.selected_ids[t])
+        self._intermittent_selected_ids = correct_intermittency(self._selected_ids, intermittency=intermittency)
+        tau_timeseries, sp_timeseries, sp_timeseries_data = autocorrelation(self._intermittent_selected_ids,
+                                                                            tau_max, window_jump)
 
-            if Nt == 0:
-                self.print(verbose,
-                           "At frame {} the selection did not find any molecule. Moving on to the next frame".format(t))
-                continue
-
-            for tau in tau_timeseries:
-                if t + tau >= len(self.selected_ids):
-                    break
-
-                # continuous: IDs that survive from t to t + tau and at every frame in between
-                Ntau = len(set.intersection(*self.selected_ids[t:t + tau + 1]))
-                sp_timeseries_data[tau - 1].append(Ntau / float(Nt))
+        # warn the user if the NaN are found
+        if all(np.isnan(sp_timeseries[1:])):
+            logger.warning('NaN Error: Most likely data was not found. Check your atom selections. ')
 
         # user can investigate the distribution and sample size
         self.sp_timeseries_data = sp_timeseries_data
 
         self.tau_timeseries = tau_timeseries
-        self.sp_timeseries = [np.mean(sp) for sp in sp_timeseries_data]
+        self.sp_timeseries = sp_timeseries
         return self

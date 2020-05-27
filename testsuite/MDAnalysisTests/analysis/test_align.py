@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import, division, print_function
+from contextlib import contextmanager
 
 import MDAnalysis as mda
 import MDAnalysis.analysis.align as align
@@ -29,7 +30,7 @@ import os
 import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
-from MDAnalysisTests import executable_not_found, tempdir
+from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
@@ -38,6 +39,10 @@ from numpy.testing import (
     assert_array_almost_equal,
 )
 
+#Function for Parametrizing conditional raising
+@contextmanager
+def does_not_raise():
+    yield
 
 class TestRotationMatrix(object):
     a = np.array([[0.1, 0.2, 0.3], [1.1, 1.1, 1.1]])
@@ -151,6 +156,17 @@ class TestGetMatchingAtoms(object):
         with pytest.raises(SelectionError):
             align.alignto(u, ref, select='all', match_atoms=False)
 
+    @pytest.mark.parametrize('subselection, expectation', [
+        ('resname ALA and name CA', does_not_raise()),
+        (mda.Universe(PSF, DCD).select_atoms('resname ALA and name CA'), does_not_raise()),
+        (1234, pytest.raises(TypeError)),
+    ])
+    def test_subselection_alignto(self, universe, reference, subselection, expectation):
+
+        with expectation:
+            rmsd = align.alignto(universe, reference, subselection=subselection)
+            assert_almost_equal(rmsd[1], 0.0, decimal=9)
+
     def test_no_atom_masses(self, universe):
         #if no masses are present
         u = mda.Universe.empty(6, 2, atom_resindex=[0, 0, 0, 1, 1, 1], trajectory=True)
@@ -163,7 +179,6 @@ class TestGetMatchingAtoms(object):
         ref.add_TopologyAttr('masses')
         with pytest.warns(SelectionWarning):
             align.get_matching_atoms(u.atoms, ref.atoms)
-
 
 class TestAlign(object):
     @staticmethod
@@ -220,8 +235,8 @@ class TestAlign(object):
         rmsd_weights = align.alignto(universe, reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
-    def test_AlignTraj_outfile_default(self, universe, reference):
-        with tempdir.in_tempdir():
+    def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
+        with tmpdir.as_cwd():
             reference.trajectory[-1]
             x = align.AlignTraj(universe, reference)
             try:
@@ -240,7 +255,7 @@ class TestAlign(object):
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             align.AlignTraj(fitted, reference)
 
             # we are careful now. The default does nothing
@@ -462,6 +477,16 @@ class TestAlignmentProcessing(object):
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
+    def test_fasta2select_file(self, tmpdir):
+        sel = align.fasta2select(self.seq, is_aligned=False,
+                                 alnfilename=None, treefilename=None)
+        assert len(
+            sel['reference']) == 23080, "selection string has unexpected length"
+        assert len(
+            sel['mobile']) == 23090, "selection string has unexpected length"
+
+    @pytest.mark.skipif(executable_not_found("clustalw2"),
+                        reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
         """MDAnalysis.analysis.align: test fasta2select() with ClustalW (Issue 113)"""
         alnfile = str(tmpdir.join('alignmentprocessing.aln'))
@@ -475,7 +500,6 @@ class TestAlignmentProcessing(object):
             sel['reference']) == 23080, "selection string has unexpected length"
         assert len(
             sel['mobile']) == 23090, "selection string has unexpected length"
-
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)

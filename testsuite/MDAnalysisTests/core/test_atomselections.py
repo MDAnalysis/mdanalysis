@@ -1101,6 +1101,36 @@ class TestICodeSelection(object):
             u.select_atoms('resid 10A-12')
 
 
+@pytest.fixture
+def u_pdb_icodes():
+    return mda.Universe(PDB_icodes)
+
+
+@pytest.mark.parametrize(
+    "selection, n_atoms",
+    [
+        # Selection using resindices
+        # For PDBs:
+        # residues with different insertion codes have different resindices
+        ("same residue as ", 11),
+        # Selection using resids
+        # Residues with different insertion codes have the same resid
+        # See Issues #2308 for a discussion
+        ("same resid as", 72),
+        # Selection using resindices
+        # For PDBs: 
+        # residues with different insertion codes have different resindices
+        ("byres", 11)
+    ]
+)
+def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
+
+    # Select residues 162 and 163A
+    sel = u_pdb_icodes.select_atoms(selection + "(around 2.0 resid 163)")
+
+    assert len(sel.atoms) == n_atoms
+
+
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
     with pytest.raises(TypeError):
