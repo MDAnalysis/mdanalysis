@@ -241,15 +241,15 @@ class TestPRM12Parser(TOPBase):
                                 "H", "N", "C", "H", "N", "C", "C", "O", "N",
                                 "H", "C", "N", "H", "H", "N", "C", "C", "H",
                                 "C", "H", "H", "O", "P", "O", "O", "O", "C"],
-                                dtype=object),
+                      dtype=object),
                       np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O", 
                                 "O", "O", "C", "H", "H", "C", "H", "O", "C",
                                 "H", "N", "C", "H", "N", "C", "C", "O", "N",
                                 "H", "C", "N", "H", "H", "N", "C", "C", "H",
                                 "C", "H", "H", "O", "H", "Na", "Na", "Na",
                                 "Na", "Na", "Na", "Na", "Na", "O", "H", "H"],
-                                dtype=object)]
-    
+                      dtype=object)]
+
     def test_elements(self, top):
         """Loops over ranges of the topology elements list and compared
         against a provided list of expected values.
