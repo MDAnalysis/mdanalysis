@@ -466,29 +466,33 @@ class TestAverageStructure(object):
 class TestAlignmentProcessing(object):
     seq = FASTA
 
-    def test_fasta2select_aligned(self, tmpdir):
+    def test_fasta2select_aligned(self):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
-        assert len(
-            sel['reference']) == 30623, "selection string has unexpected length"
+        assert len(sel['reference']) == 30623, ("selection string has"
+                                                "unexpected length")
         assert len(
             sel['mobile']) == 30623, "selection string has unexpected length"
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_file(self, tmpdir):
-        sel = align.fasta2select(self.seq, is_aligned=False,
-                                 alnfilename=None, treefilename=None)
-        assert len(
-            sel['reference']) == 23080, "selection string has unexpected length"
-        assert len(
-            sel['mobile']) == 23090, "selection string has unexpected length"
+        """test align.fasta2select() on a non-aligned FASTA with default
+        filenames"""
+        with tmpdir.as_cwd():
+            sel = align.fasta2select(self.seq, is_aligned=False,
+                                     alnfilename=None, treefilename=None)
+            assert len(sel['reference']) == 23080, ("selection string has"
+                                                    "unexpected length")
+            assert len(sel['mobile']) == 23090, ("selection string has"
+                                                 "unexpected length")
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
-        """MDAnalysis.analysis.align: test fasta2select() with ClustalW (Issue 113)"""
+        """MDAnalysis.analysis.align: test fasta2select() with ClustalW
+        (Issue 113)"""
         alnfile = str(tmpdir.join('alignmentprocessing.aln'))
         treefile = str(tmpdir.join('alignmentprocessing.dnd'))
         sel = align.fasta2select(self.seq, is_aligned=False,
@@ -496,10 +500,11 @@ class TestAlignmentProcessing(object):
         # numbers computed from alignment with clustalw 2.1 on Mac OS X
         # [orbeckst] length of the output strings, not residues or anything
         # real...
-        assert len(
-            sel['reference']) == 23080, "selection string has unexpected length"
+        assert len(sel['reference']) == 23080, ("selection string has"
+                                                "unexpected length")
         assert len(
             sel['mobile']) == 23090, "selection string has unexpected length"
+
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)

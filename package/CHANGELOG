@@ -133,6 +133,8 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * :meth:`align.fasta2select` now writes `alnfilename` and `treefilename` to
+    the current working directory (Issue #2701)
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
     the tqdm package (Issue #928, PR #2617). Also fixes issue #2504.
   * Removed `details` from `ClusteringMethod`s (Issue #2575, PR #2620)
