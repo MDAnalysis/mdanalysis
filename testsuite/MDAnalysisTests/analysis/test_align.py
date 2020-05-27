@@ -466,7 +466,7 @@ class TestAverageStructure(object):
 class TestAlignmentProcessing(object):
     seq = FASTA
 
-    def test_fasta2select_aligned(self):
+    def test_fasta2select_aligned(self, tmpdir):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
