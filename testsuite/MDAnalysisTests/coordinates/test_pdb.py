@@ -879,18 +879,21 @@ class TestWriterAlignments(object):
             return fh.readlines()
 
     def test_atomname_alignment(self, writtenstuff):
-        # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
+        # Our PDBWriter adds some stuff up top, so line 1 happens at [9]
         refs = ("ATOM      1  H5T",
                 "ATOM      2  CA ",
                 "ATOM      3 CA  ",
                 "ATOM      4 H5''",)
-        for written, reference in zip(writtenstuff[3:], refs):
+
+        print(writtenstuff)
+
+        for written, reference in zip(writtenstuff[9:], refs):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA H\n")
-        assert_equal(writtenstuff[3], result_line)
+        assert_equal(writtenstuff[9], result_line)
 
 
 @pytest.mark.parametrize('atom, refname', ((mda.coordinates.PDB.Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
@@ -1022,18 +1025,14 @@ def test_partially_missing_cryst():
     assert_array_almost_equal(u.dimensions, 0.0)
 
 
-def test_cryst_em_warning():
-    #issue 2599  
-    with pytest.warns(UserWarning) as record:
-        u = mda.Universe(PDB_CRYOEM_BOX)
-    assert record[0].message.args[0] == "1 A^3 CRYST1 record," \
-                                        " this is usually a placeholder in" \
-                                        " cryo-em structures. Unit cell" \
-                                        " dimensions will not be set."
-                                    
+def test_cryst_meaningless_warning():
+    # issue 2599
+    with pytest.warns(UserWarning, match="Unit cell dimensions will not be set."):
+        mda.Universe(PDB_CRYOEM_BOX)
 
-def test_cryst_em_select():
-    #issue 2599
+
+def test_cryst_meaningless_select():
+    # issue 2599
     u = mda.Universe(PDB_CRYOEM_BOX)
     cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
     assert cur_sele.n_atoms == 0
