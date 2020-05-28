@@ -1025,7 +1025,8 @@ def test_partially_missing_cryst():
 
 def test_cryst_meaningless_warning():
     # issue 2599
-    with pytest.warns(UserWarning, match="Unit cell dimensions will not be set."):
+    # FIXME: This message change with Issue #2698
+    with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
         mda.Universe(PDB_CRYOEM_BOX)
 
 
