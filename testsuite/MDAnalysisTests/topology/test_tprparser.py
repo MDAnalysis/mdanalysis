@@ -55,7 +55,7 @@ class TPRAttrs(ParserBase):
     def test_molnums(self, top):
         molnums = top.molnums.values
         assert_equal(molnums, self.ref_molnums)
-        assert molnums.dtype == np.int64
+        assert molnums.dtype == np.intp
 
 
 class TestTPR(TPRAttrs):

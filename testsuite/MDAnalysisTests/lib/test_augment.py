@@ -105,5 +105,5 @@ def test_undoaugment(b, qres):
     q = apply_PBC(q, b)
     aug, mapping = augment_coordinates(q, b, radius)
     for idx, val in enumerate(aug):
-        imageid = np.asarray([len(q) + idx], dtype=np.int64)
+        imageid = np.asarray([len(q) + idx], dtype=np.intp)
         assert_equal(mapping[idx], undo_augment(imageid, mapping, len(q))[0])

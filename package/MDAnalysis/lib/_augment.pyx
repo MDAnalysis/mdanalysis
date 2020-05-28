@@ -294,12 +294,12 @@ def augment_coordinates(float[:, ::1] coordinates, float[:] box, float r):
                 output.push_back(coord[j] - shiftZ[j])
             indices.push_back(i)
     n = indices.size()
-    return np.asarray(output, dtype=np.float32).reshape(n, 3), np.asarray(indices, dtype=np.int64)
+    return np.asarray(output, dtype=np.float32).reshape(n, 3), np.asarray(indices, dtype=np.intp)
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def undo_augment(np.int64_t[:] results, np.int64_t[:] translation, int nreal):
+def undo_augment(np.intp_t[:] results, np.intp_t[:] translation, int nreal):
     """Translate augmented indices back to original indices.
 
     Parameters
@@ -339,4 +339,4 @@ def undo_augment(np.int64_t[:] results, np.int64_t[:] translation, int nreal):
     for i in range(N):
         if results[i] >= nreal:
             results[i] = translation[results[i] - nreal]
-    return np.asarray(results, dtype=np.int64)
+    return np.asarray(results, dtype=np.intp)

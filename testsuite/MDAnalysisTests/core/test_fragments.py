@@ -129,7 +129,7 @@ class TestFragments(object):
         # number of unique fragindices must correspond to number of fragments:
         assert len(np.unique(fragindices)) == len(fragments)
         # check fragindices dtype:
-        assert fragindices.dtype == np.int64
+        assert fragindices.dtype == np.intp
         #check n_fragments
         assert u.atoms.n_fragments == len(fragments)
 

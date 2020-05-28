@@ -17,7 +17,8 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
-         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150
+         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150,
+         tylerjereddy
 
   * 0.21.0
 
@@ -87,6 +88,7 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
+  * vastly improved support for 32-bit Windows (PR #2696)
   * Added methods to compute the root-mean-square-inner-product of subspaces 
     and the cumulative overlap of a vector in a subspace for PCA (PR #2613)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
