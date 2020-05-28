@@ -1649,7 +1649,7 @@
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
     <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span></div>
+    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intp</span></div>
 
 <span class="c1"># segment attributes</span>
 
@@ -1905,7 +1905,7 @@
 <span class="sd">        .. versionadded:: 0.20.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">fragdict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fragdict</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">fragdict</span><span class="p">[</span><span class="n">aix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span> <span class="k">for</span> <span class="n">aix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bonds.fragment"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragment">[docs]</a>    <span class="k">def</span> <span class="nf">fragment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An :class:`~MDAnalysis.core.groups.AtomGroup` representing the</span>
