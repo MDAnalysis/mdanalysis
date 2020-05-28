@@ -218,12 +218,12 @@ class PDBReader(base.ReaderBase):
 
     Notes
     -----
-    If a system does not have unit cell parameters (such as in EM structures),
-    the PDB file format requires the CRYST1 field to be provided with unitary
-    values (cubic box with sides of 1Å) and an appropriate REMARK. If unitary
-    values are found within the CRYST1 field, :code:`PDBReader` will not set
-    unit cell dimensions and it
-    will warn the user.
+    If a system does not have unit cell parameters (such as in electron
+    microscopy structures), the PDB file format requires the CRYST1_ field to
+    be provided with unitary values (cubic box with sides of 1 Å) and an
+    appropriate REMARK. If unitary values are found within the CRYST1_ field,
+    :code:`PDBReader` will not set unit cell dimensions and it will warn the
+    user.
 
     .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
 
@@ -241,8 +241,8 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
     .. versionchanged:: 1.0.0
-       Raise user warning for CRYST1 record with unitary valuse
-       (cubic box with sides of 1Å) and do not set cell dimensions.
+       Raise user warning for CRYST1_ record with unitary valuse
+       (cubic box with sides of 1 Å) and do not set cell dimensions.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -380,15 +380,14 @@ class PDBReader(base.ReaderBase):
 
         Notes
         -----
-        When the CRYST1_ record has unitary values (cubic box with sides of 1Å),
-        cell dimensions are considered fictitious. An user warning is raised
-        and cell dimensions are not set.
-
-        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+        When the CRYST1_ record has unitary values (cubic box with sides of
+        1 Å), cell dimensions are considered fictitious. An user warning is
+        raised and cell dimensions are set to
+        :code:`np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])` (see Issue #2698)
 
         .. versionchanged:: 1.0.0
-           Raise user warning for CRYST1 record with unitary valuse
-           (cubic box with sides of 1Å) and do not set cell dimensions.
+           Raise user warning for CRYST1_ record with unitary valuse
+           (cubic box with sides of 1 Å) and do not set cell dimensions.
         """
         try:
             start = self._start_offsets[frame]
@@ -429,9 +428,12 @@ class PDBReader(base.ReaderBase):
                                   "".format(line))
                 else:
                     if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
+                        # FIXME: Dimensions set to zeros.
+                        # FIXME: This might change with Issue #2698
                         warnings.warn("1 A^3 CRYST1 record,"
                                       " this is usually a placeholder."
-                                      " Unit cell dimensions will not be set.")
+                                      " Unit cell dimensions will be set"
+                                      " to zeros.")
                     else:
                         self.ts._unitcell[:] = cell_dims
 
@@ -489,8 +491,9 @@ class PDBWriter(base.WriterBase):
     The maximum frame number that can be stored in a PDB file is 9999 and it
     will wrap around (see :meth:`MODEL` for further details).
 
-    If unit cell dimensions are not set, unitary values are used and an
-    user warning raised.
+    The CRYST1_ record specifies the unit cell. This record is set to
+    unitary values (cubic box with sides of 1 Å) if unit cell dimensions
+    are not set.
 
     See Also
     --------
@@ -519,7 +522,6 @@ class PDBWriter(base.WriterBase):
     .. versionchanged:: 1.0.0
        ChainID now comes from the last character of segid, as stated in the documentation.
        An indexing issue meant it previously used the first charater (Issue #2224)
-
 
     """
     fmt = {
@@ -660,24 +662,21 @@ class PDBWriter(base.WriterBase):
         Write PDB header.
 
         The HEADER_ record is set to :code: `trajectory.header`.
-        The TITLE record explicitly mentions MDAnalysis and contains
+        The TITLE_ record explicitly mentions MDAnalysis and contains
         information about trajectory frame(s).
-        The COMPND record is set to :code:`trajectory.compound`.
-        The REMARKS records are set to :code:`u.trajectory.remarks`
+        The COMPND_ record is set to :code:`trajectory.compound`.
+        The REMARKS_ records are set to :code:`u.trajectory.remarks`
         The CRYST1_ record specifies the unit cell. This record is set to
-        unitary values (cubic box with sides of 1Å) if unit cell dimensions
+        unitary values (cubic box with sides of 1 Å) if unit cell dimensions
         are not set.
 
-        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER
-        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE
         .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
         .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
-        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
 
         .. versionchanged: 1.0.0
            Fix writing of PDB file without unit cell dimensions (Issue #2679).
            If cell dimensions are not found, unitary values (cubic box with
-           sides of 1Å) are used (PDB standard).
+           sides of 1 Å) are used (PDB standard for CRYST1_).
         """
 
         if self.first_frame_done is True:
@@ -701,17 +700,22 @@ class PDBWriter(base.WriterBase):
         except AttributeError:
             pass
 
+        # FIXME: Values for meaningless cell dimensions are not consistent.
+        # FIXME: See Issue #2698. Here we check for both None and zeros
         if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
-            # Unitary unit cell by default (PDB standard)
+            # Unitary unit cell by default. See PDB standard:
+            # http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
             self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
 
             # Add CRYST1 REMARK (285)
+            # The SCALE record is not included
+            # (We are only implementing a subset of the PDB standard)
             self.REMARK("285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET")
             self.REMARK("285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION")
             self.REMARK("285 WAS MISSING.")
             self.REMARK("285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT")
-            self.REMARK("285 CRYST1 AND SCALE RECORDS BE INCLUDED, BUT THE VALUES ON")
-            self.REMARK("285 THESE RECORDS ARE MEANINGLESS.")
+            self.REMARK("285 CRYST1 RECORD IS INCLUDED, BUT THE VALUES ON")
+            self.REMARK("285 THIS RECORD ARE MEANINGLESS.")
 
             warnings.warn("Unit cell dimensions not found. "
                           "CRYST1 record set to unitary values."
