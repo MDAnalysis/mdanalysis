@@ -88,7 +88,7 @@ class TestCheckAndFixLongFilename(object):
             fixed = check_and_fix_long_filename(path)
             assert os.path.islink(fixed)
             assert fixed.endswith(short_name)
-    
+
     @pytest.mark.skipif(os.name == 'nt' and sys.maxsize <= 2**32,
                         reason="OSError: symbolic link privilege not held")
     def test_symlink_file(self, tmpdir):
@@ -308,10 +308,14 @@ class TestHoleAnalysis(BaseTestHole):
                                        output_level=100)
                 h.run(start=self.start,
                       stop=self.stop, random_seed=self.random_seed)
-            assert len(rec) == 3
-            assert 'needs to be < 3' in rec[0].message.args[0]
-            assert 'has no dt information' in rec[1].message.args[0]
-            assert 'has no dt information' in rec[2].message.args[0]
+            assert len(rec) == 5
+
+            print([r.message.args[0] for r in rec])
+
+            assert any('needs to be < 3' in r.message.args[0] for r in rec)
+            assert any('has no dt information' in r.message.args[0] for r in rec) # 2x
+            assert any('Unit cell dimensions not found.' in r.message.args[0] for r in rec)
+
             # no profiles
             assert len(h.profiles) == 0
 
