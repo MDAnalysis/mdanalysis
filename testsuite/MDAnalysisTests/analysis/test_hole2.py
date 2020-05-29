@@ -73,6 +73,8 @@ class TestCheckAndFixLongFilename(object):
             fixed = check_and_fix_long_filename(abspath)
             assert fixed == self.filename
     
+    @pytest.mark.skipif(os.name == 'nt' and sys.maxsize <= 2**32,
+                        reason="FileNotFoundError on Win 32-bit")
     def test_symlink_dir(self, tmpdir):
         dirname = 'really_'*20 +'long_name'
         short_name = self.filename[-20:]
@@ -86,6 +88,8 @@ class TestCheckAndFixLongFilename(object):
             assert os.path.islink(fixed)
             assert fixed.endswith(short_name)
     
+    @pytest.mark.skipif(os.name == 'nt' and sys.maxsize <= 2**32,
+                        reason="OSError: symbolic link privilege not held")
     def test_symlink_file(self, tmpdir):
         long_name = 'a'*10 + self.filename
 

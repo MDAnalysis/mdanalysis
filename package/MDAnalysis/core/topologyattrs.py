@@ -1474,7 +1474,7 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-    dtype = np.int64
+    dtype = np.intp
 
 # segment attributes
 
@@ -1730,7 +1730,7 @@ class Bonds(_Connection):
         .. versionadded:: 0.20.0
         """
         fragdict = self.universe._fragdict
-        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
+        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.intp)
 
     def fragment(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
