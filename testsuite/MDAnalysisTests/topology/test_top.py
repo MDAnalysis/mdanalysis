@@ -23,7 +23,8 @@
 from __future__ import absolute_import
 import MDAnalysis as mda
 import pytest
-
+import numpy as np
+from numpy.testing import assert_equal
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PRM,  # ache.prmtop
@@ -41,6 +42,8 @@ from MDAnalysisTests.datafiles import (
 ATOMIC_NUMBER_MSG = ("ATOMIC_NUMBER record not found, guessing atom elements "
                      "based on their atom types")
 COORDINATE_READER_MSG = ("No coordinate reader found")
+
+
 class TOPBase(ParserBase):
     parser = mda.topology.TOPParser.TOPParser
     expected_attrs = [
@@ -129,7 +132,7 @@ class TOPBase(ParserBase):
             forward = ((imp[0], imp[2]), (imp[1], imp[2]), (imp[2], imp[3]))
             backward = ((imp[0], imp[1]), (imp[1], imp[2]), (imp[1], imp[3]))
             for a, b in zip(forward, backward):
-                assert ((b in vals) or (b[::-1] in vals) or 
+                assert ((b in vals) or (b[::-1] in vals) or
                         (a in vals) or (a[::-1] in vals))
 
 
@@ -233,6 +236,27 @@ class TestPRM12Parser(TOPBase):
                               (338, 337, 335, 354), (351, 337, 335, 354))
     atom_zero_improper_values = ()
     atom_i_improper_values = ((335, 337, 338, 351),)
+    elems_ranges = [[0, 36], [351, 403]]
+    expected_elems = [np.array(["H", "O", "C", "H", "H", "C", "H", "O", "C",
+                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
+                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                                "C", "H", "H", "O", "P", "O", "O", "O", "C"],
+                      dtype=object),
+                      np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O", 
+                                "O", "O", "C", "H", "H", "C", "H", "O", "C",
+                                "H", "N", "C", "H", "N", "C", "C", "O", "N",
+                                "H", "C", "N", "H", "H", "N", "C", "C", "H",
+                                "C", "H", "H", "O", "H", "Na", "Na", "Na",
+                                "Na", "Na", "Na", "Na", "Na", "O", "H", "H"],
+                      dtype=object)]
+
+    def test_elements(self, top):
+        """Loops over ranges of the topology elements list and compared
+        against a provided list of expected values.
+        """
+        for erange, evals in zip(self.elems_ranges, self.expected_elems):
+            assert_equal(top.elements.values[erange[0]:erange[1]], evals,
+                         "unexpected element match")
 
 
 class TestParm7Parser(TOPBase):
@@ -344,7 +368,6 @@ class TestPRM2(TOPBase):
         assert len(record) == 2
         assert str(record[0].message.args[0]) == ATOMIC_NUMBER_MSG
         assert COORDINATE_READER_MSG in str(record[1].message.args[0])
-        
 
 
 class TestPRMNCRST(TOPBase):
