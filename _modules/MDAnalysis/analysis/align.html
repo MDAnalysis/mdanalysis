@@ -1208,6 +1208,10 @@
 <span class="sd">    .. _ClustalW: http://www.clustal.org/</span>
 <span class="sd">    .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/</span>
 
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Passing `alnfilename` or `treefilename` as `None` will create a file in</span>
+<span class="sd">       the current working directory.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_aligned</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Using provided alignment </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">))</span>
@@ -1217,10 +1221,10 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">alnfilename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filepath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fastafilename</span><span class="p">)</span>
-            <span class="n">alnfilename</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;.aln&#39;</span>
+            <span class="n">alnfilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.aln&#39;</span>
         <span class="k">if</span> <span class="n">treefilename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">filepath</span><span class="p">,</span> <span class="n">ext</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">alnfilename</span><span class="p">)</span>
-            <span class="n">treefilename</span> <span class="o">=</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;.dnd&#39;</span>
+            <span class="n">treefilename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">filepath</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.dnd&#39;</span>
         <span class="n">run_clustalw</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Align</span><span class="o">.</span><span class="n">Applications</span><span class="o">.</span><span class="n">ClustalwCommandline</span><span class="p">(</span>
             <span class="n">clustalw</span><span class="p">,</span>
             <span class="n">infile</span><span class="o">=</span><span class="n">fastafilename</span><span class="p">,</span>
