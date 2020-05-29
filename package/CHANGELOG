@@ -135,6 +135,8 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * :meth:`align.fasta2select` now writes `alnfilename` and `treefilename` to
+    the current working directory (Issue #2701)
   * Removes duplicate `NUMBER_TO_ELEMENTS` table from topology._elements,
     `Z2SYMB` from topology.tables should now be used instead (Issue #2699)
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
