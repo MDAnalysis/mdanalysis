@@ -93,7 +93,7 @@ from math import ceil
 import itertools
 
 from . import guessers
-from .tables import NUMBER_TO_ELEMENT
+from .tables import Z2SYMB
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -433,7 +433,7 @@ class TOPParser(TopologyReaderBase):
 
         vals = self.parsesection_mapper(
                 numlines,
-                lambda x: NUMBER_TO_ELEMENT[int(x)] if int(x) > 0 else "DUMMY")
+                lambda x: Z2SYMB[int(x)] if int(x) > 0 else "DUMMY")
         attr = Elements(np.array(vals, dtype=object))
         return attr
 

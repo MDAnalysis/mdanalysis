@@ -226,7 +226,7 @@ class ByResSelection(UnarySelection):
 
     def apply(self, group):
         res = self.sel.apply(group)
-        unique_res = unique_int_1d(res.resindices.astype(np.int64))
+        unique_res = unique_int_1d(res.resindices)
         mask = np.in1d(group.resindices, unique_res)
 
         return group[mask].unique
