@@ -123,7 +123,7 @@ class TestHole(object):
             SPHPDB hole.sph
             SAMPLE 0.200000
             ENDRAD 22.000000
-            IGNORE SOL WAT TIP HOH K   NA  CL
+            IGNORE SOL WAT TIP HOH K   NA  CL 
             SHORTO 0
             RASEED 31415
             """)
@@ -149,7 +149,7 @@ class TestHole(object):
             SPHPDB hole.sph
             SAMPLE 0.200000
             ENDRAD 22.000000
-            IGNORE
+            IGNORE 
             SHORTO 0
             RASEED 31415
             CPOINT -0.0180961507 -0.0122730583 4.1497999943
@@ -308,13 +308,12 @@ class TestHoleAnalysis(BaseTestHole):
                                        output_level=100)
                 h.run(start=self.start,
                       stop=self.stop, random_seed=self.random_seed)
+
             assert len(rec) == 5
 
-            print([r.message.args[0] for r in rec])
-
             assert any('needs to be < 3' in r.message.args[0] for r in rec)
-            assert any('has no dt information' in r.message.args[0] for r in rec) # 2x
-            assert any('Unit cell dimensions not found.' in r.message.args[0] for r in rec)
+            assert any('has no dt information' in r.message.args[0] for r in rec)  # 2x
+            assert any('Unit cell dimensions not found.' in r.message.args[0] for r in rec)  # 2x
 
             # no profiles
             assert len(h.profiles) == 0
