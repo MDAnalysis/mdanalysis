@@ -487,7 +487,7 @@ MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
 MMTF_skinny = resource_filename(__name__, 'data/1ubq-less-optional.mmtf')
 MMTF_skinny2 = resource_filename(__name__, 'data/3NJW-onlyrequired.mmtf')
-MMTF_NOCRYST = resource_filename(__name__, "data/2BBM.mmtf.gz")
+MMTF_NOCRYST = resource_filename(__name__, "data/6QYR.mmtf.gz")
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')
