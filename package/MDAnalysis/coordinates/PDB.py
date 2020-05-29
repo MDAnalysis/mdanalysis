@@ -223,7 +223,7 @@ class PDBReader(base.ReaderBase):
     be provided with unitary values (cubic box with sides of 1 Å) and an
     appropriate REMARK. If unitary values are found within the CRYST1_ field,
     :code:`PDBReader` will not set unit cell dimensions (which will take the
-    default value :code:`np.array([0.0,0.0,0.0,0.0,0.0,0.0])`, see Issue #2698)
+    default value :code:`np.zeros(6)`, see Issue #2698)
     and it will warn the user.
 
     .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
@@ -384,7 +384,7 @@ class PDBReader(base.ReaderBase):
         When the CRYST1_ record has unitary values (cubic box with sides of
         1 Å), cell dimensions are considered fictitious. An user warning is
         raised and cell dimensions are set to
-        :code:`np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])` (see Issue #2698)
+        :code:`np.zeros(6)` (see Issue #2698)
 
         .. versionchanged:: 1.0.0
            Raise user warning for CRYST1_ record with unitary valuse
@@ -494,7 +494,7 @@ class PDBWriter(base.WriterBase):
 
     The CRYST1_ record specifies the unit cell. This record is set to
     unitary values (cubic box with sides of 1 Å) if unit cell dimensions
-    are not set (:code:`None` or :code:`np.array([0.0,0.0,0.0,0.0,0.0,0.0])`,
+    are not set (:code:`None` or :code:`np.zeros(6)`,
     see Issue #2698).
 
     See Also

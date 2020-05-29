@@ -38,8 +38,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
-                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2, 
-                                       PDB_CRYOEM_BOX, PDB_NOCRYST, MMTF_NOCRYST)
+                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2,
+                                       PDB_CRYOEM_BOX, MMTF_NOCRYST)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -192,7 +192,7 @@ class TestPDBWriter(object):
         return mda.Universe(PDB)
 
     @pytest.fixture(params=[
-            [PDB_NOCRYST, np.zeros(6)],
+            [PDB_CRYOEM_BOX, np.zeros(6)],
             [MMTF_NOCRYST, None]
         ])
     def universe_and_expected_dims(self, request):
