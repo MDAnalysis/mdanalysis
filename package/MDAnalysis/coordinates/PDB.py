@@ -222,8 +222,9 @@ class PDBReader(base.ReaderBase):
     microscopy structures), the PDB file format requires the CRYST1_ field to
     be provided with unitary values (cubic box with sides of 1 Å) and an
     appropriate REMARK. If unitary values are found within the CRYST1_ field,
-    :code:`PDBReader` will not set unit cell dimensions and it will warn the
-    user.
+    :code:`PDBReader` will not set unit cell dimensions (which will take the
+    default value :code:`np.array([0.0,0.0,0.0,0.0,0.0,0.0])`, see Issue #2698)
+    and it will warn the user.
 
     .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
 
@@ -493,7 +494,8 @@ class PDBWriter(base.WriterBase):
 
     The CRYST1_ record specifies the unit cell. This record is set to
     unitary values (cubic box with sides of 1 Å) if unit cell dimensions
-    are not set.
+    are not set (:code:`None` or :code:`np.array([0.0,0.0,0.0,0.0,0.0,0.0])`,
+    see Issue #2698).
 
     See Also
     --------
@@ -718,8 +720,7 @@ class PDBWriter(base.WriterBase):
             self.REMARK("285 THIS RECORD ARE MEANINGLESS.")
 
             warnings.warn("Unit cell dimensions not found. "
-                          "CRYST1 record set to unitary values."
-                          )
+                          "CRYST1 record set to unitary values.")
 
         else:
             self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
