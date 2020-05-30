@@ -227,3 +227,4 @@ class RefLAMMPSDataMini(object):
     vel_atom1 = np.array([-0.005667593, 0.00791380978, -0.00300779533],
                          dtype=np.float32)
     dimensions = np.array([60., 50., 30., 90., 90., 90.], dtype=np.float32)
+

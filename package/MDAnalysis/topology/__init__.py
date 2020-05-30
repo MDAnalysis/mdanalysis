@@ -165,6 +165,11 @@ the attributes they provide.
                                 types, icodes,
                                 resnames, resids,
                                 segids, models
+
+
+   FHIAIMS[#a]       in         names             FHIAIMS File Parser.  Reads only the labels from atoms
+                                                  and constructs minimal topology data.
+                                                  :mod:`MDAnalysis.topology.FHIAIMSParser`
    ================= ========== ================= ===================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -313,3 +318,4 @@ from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
 from . import ParmEdParser
+from . import FHIAIMSParser
