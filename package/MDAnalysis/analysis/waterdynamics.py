@@ -289,7 +289,7 @@ the zone, on the other hand, a fast decay means a short permanence time::
   universe = MDAnalysis.Universe(pdb, trajectory)
   select = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
   sp = SP(universe, select, verbose=True)
-  sp.run(start=0, stop=100, tau_max=20)
+  sp.run(start=0, stop=101, tau_max=20)
   tau_timeseries = sp.tau_timeseries
   sp_timeseries = sp.sp_timeseries
 
@@ -303,6 +303,12 @@ the zone, on the other hand, a fast decay means a short permanence time::
   plt.title('Survival Probability')
   plt.plot(tau_timeseries, sp_timeseries)
   plt.show()
+
+One should note that the `stop` keyword as used in the above example has an
+`exclusive` behaviour, i.e. here the final frame used will be 100 not 101.
+This behaviour is aligned with :class:`AnalysisBase` but currently differs from
+other :mod:`MDAnalysis.analysis.waterdynamics` classes, which all exhibit
+`inclusive` behaviour for their final frame selections.
 
 Another example applies to the situation where you work with many different "residues".
 Here we calculate the SP of a potassium ion around each lipid in a membrane and
@@ -1171,6 +1177,16 @@ class SurvivalProbability(object):
       When True, prints progress and comments to the console.
 
 
+    Notes
+    -----
+    Currently :class:`SurvivalProbability` is the only on in
+    :mod:`MDAnalysis.analysis.waterdynamics` to support an `exclusive`
+    behaviour (i.e. similar to the current behaviour of :class:`AnalysisBase`
+    to the `stop` keyword passed to :meth:`SurvivalProbability.run`. Unlike
+    other :mod:`MDAnalysis.analysis.waterdynamics` final frame definitions
+    which are `inclusive`.
+
+
     .. versionadded:: 0.11.0
     .. versionchanged:: 1.0.0
        Using the MDAnalysis.lib.correlations.py to carry out the intermittency
@@ -1178,7 +1194,10 @@ class SurvivalProbability(object):
        Changed `selection` keyword to `select`.
        Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
        These should instead be passed to :meth:`SurvivalProbability.run` as
-       the `start`, `stop`, and `tau_max` keywords respectively. 
+       the `start`, `stop`, and `tau_max` keywords respectively.
+       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now
+       changed behaviour and will act in an `exclusive` manner (instead of it's
+       previous `inclusive` behaviour),
     """
 
     def __init__(self, universe, select, verbose=False):
