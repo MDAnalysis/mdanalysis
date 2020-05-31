@@ -1100,9 +1100,6 @@ class PDBWriter(base.WriterBase):
 
     def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1_ record.
-
-        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1
-
         """
         self.pdbfile.write(self.fmt['CRYST1'].format(
             box=dimensions[:3],
