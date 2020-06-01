@@ -89,7 +89,7 @@ Visual inspection of the MSD is important, so let's take a look at it with a sim
 This gives us the plot of the MSD with respect to lag-time (:math:`\tau`).
 We can see that the MSD is approximately linear with respect to :math:`\tau`.
 This is a numerical example of a known theoretical result that the MSD of a random walk is linear with respect to lagtime, with a slope of :math:`2d`.
-In this expression :math:`d` is the dimensionality of the MSD which for our 3D MSD is equal to 3.
+In this expression :math:`d` is the dimensionality of the MSD. For our 3D MSD, this is 3.
 For comparison we have plotted the line :math:`y=6\tau` to which an ensemble of 3D random walks should converge.
 
 .. _figure-msd: 
