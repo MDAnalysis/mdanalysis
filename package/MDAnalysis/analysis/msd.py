@@ -45,7 +45,7 @@ that vary between implementations. In this module, we compute a "windowed" MSD, 
 where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing the number of samples.
 
 The computation of the MSD in this way can be computationally intensive due to it's :math:`N^2` scaling with respect to :math:`\tau_{max}`. 
-An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting fft=True [Calandri2011]_ [Buyl2018]_.
+An algorithm to compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier Transform is known and can be accessed by setting ``fft=True`` [Calandri2011]_ [Buyl2018]_.
 
 Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to the normal MDAnalysis citations.
 
