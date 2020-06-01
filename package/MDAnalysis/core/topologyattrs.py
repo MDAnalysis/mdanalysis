@@ -480,15 +480,28 @@ class Atomnames(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
-    def phi_selection(residue):
-        """AtomGroup corresponding to the phi protein backbone dihedral
+    def phi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+        """Select AtomGroup corresponding to the phi protein backbone dihedral
         C'-N-CA-C.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
 
         Returns
         -------
         AtomGroup
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
+
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
         """
         # fnmatch is expensive. try the obv candidate first
         prev = residue.universe.residues[residue.ix-1]
@@ -500,31 +513,106 @@ class Atomnames(AtomAttr):
                 prev = residue.universe.select_atoms(sel).residues[0]
             except IndexError:
                 return None
-        c_ = prev.atoms[prev.atoms.names == 'C']
-        if not c_:
+        c_ = prev.atoms[prev.atoms.names == c_name]
+        if not len(c_) == 1:
             return None
 
-        # ncac = residue.atoms.select_atoms('name N', 'name CA', 'name C')
-        ncac = residue.atoms[np.in1d(residue.atoms.names, ['N', 'CA', 'C'])]
-        if len(ncac) != 3:
+        atnames = residue.atoms.names
+        ncac_names = [n_name, ca_name, c_name]
+        ncac = [residue.atoms[atnames == n] for n in ncac_names]
+        if not all(len(ag) == 1 for ag in ncac):
             return None
 
-        # sel = c_+ncac
-        names = ncac.names
-        sel = c_+ncac[names == 'N']+ncac[names == 'CA']+ncac[names == 'C']
+        sel = c_+sum(ncac)
         return sel
 
     transplants[Residue].append(('phi_selection', phi_selection))
 
-    def psi_selection(residue):
-        """AtomGroup corresponding to the psi protein backbone dihedral
+    def phi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+        """Select list of AtomGroups corresponding to the phi protein 
+        backbone dihedral C'-N-CA-C.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+
+        Returns
+        -------
+        list of AtomGroups
+            4-atom selections in the correct order. If no C' found in the
+            previous residue (by resid) then corresponding item in the list
+            is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+
+        u = residues[0].universe
+        prev = u.residues[residues.ix-1]  # obv candidates first
+        rsid = residues.segids
+        prid = residues.resids-1
+        ncac_names = [n_name, ca_name, c_name]
+        sel = 'segid {} and resid {}'
+
+        # replace wrong residues
+        wix = np.where((prev.segids != rsid) | (prev.resids != prid))[0]
+        invalid = []
+        if len(wix):
+            prevls = list(prev)
+            for s, r, i in zip(rsid[wix], prid[wix], wix):
+                try:
+                    prevls[i] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    invalid.append(i)
+            prev = sum(prevls)
+        
+        keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names) 
+                    for r in residues]
+        keep = np.array(keep_prev) & np.array(keep_res)
+        keep[invalid] = False
+        results = np.zeros_like(residues, dtype=object)
+        results[~keep] = None
+        prev = prev[keep]
+        residues = residues[keep]
+        keepix = np.where(keep)[0]
+        
+        c_ = prev.atoms[prev.atoms.names == c_name]
+        n = residues.atoms[residues.atoms.names == n_name]
+        ca = residues.atoms[residues.atoms.names == ca_name]
+        c = residues.atoms[residues.atoms.names == c_name]
+        results[keepix] = [sum(atoms) for atoms in zip(c_, n, ca, c)]
+        return list(results)
+
+    transplants[ResidueGroup].append(('phi_selections', phi_selections))
+
+
+    def psi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+        """Select AtomGroup corresponding to the psi protein backbone dihedral
         N-CA-C-N'.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
 
         Returns
         -------
         AtomGroup
             4-atom selection in the correct order. If no N' found in the
             following residue (by resid) then this method returns ``None``.
+
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
         """
 
         # fnmatch is expensive. try the obv candidate first
@@ -545,29 +633,123 @@ class Atomnames(AtomAttr):
                 nxt = residue.universe.select_atoms(sel).residues[0]
             except IndexError:
                 return None
-        n_ = nxt.atoms[nxt.atoms.names == 'N']
-        if not n_:
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        if not len(n_) == 1:
             return None
 
-        # ncac = residue.atoms.select_atoms('name N', 'name CA', 'name C')
-        ncac = residue.atoms[np.in1d(residue.atoms.names, ['N', 'CA', 'C'])]
-        if len(ncac) != 3:
+        atnames = residue.atoms.names
+        ncac_names = [n_name, ca_name, c_name]
+        ncac = [residue.atoms[atnames == n] for n in ncac_names]
+        if not all(len(ag) == 1 for ag in ncac):
             return None
 
-        # sel = c_+ncac
-        names = ncac.names
-        sel = ncac[names == 'N']+ncac[names == 'CA']+ncac[names == 'C']+n_
+        sel = sum(ncac) + n_
         return sel
 
     transplants[Residue].append(('psi_selection', psi_selection))
 
-    def omega_selection(residue):
-        """AtomGroup corresponding to the omega protein backbone dihedral
+    def _get_next_residues_by_resid(residues):
+        """Select list of Residues corresponding to the next resid for each 
+        residue in `residues`.
+
+        Returns
+        -------
+        List of Residues
+            The next residue in Universe. If not found, the corresponding 
+            item in the list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        u = residues[0].universe
+        nxres = rview = np.array([None]*len(residues), dtype=object)
+        # no guarantee residues is ordered or unique
+        last = max(residues.ix)
+        if last == len(u.residues)-1:
+            notlast = residues.ix != last
+            rview = nxres[notlast]
+            residues = residues[notlast]
+
+        rview[:] = nxt = u.residues[residues.ix+1]
+        rsid = residues.segids
+        nrid = residues.resids+1
+        sel = 'segid {} and resid {}'
+        invalid = []
+
+        # replace wrong residues
+        wix = np.where((nxt.segids != rsid) | (nxt.resids != nrid))[0]
+        if len(wix):
+            for s, r, i in zip(rsid[wix], nrid[wix], wix):
+                try:
+                    rview[i] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    rview[i] = None
+        return nxres
+    
+    transplants[ResidueGroup].append(('_get_next_residues_by_resid',
+                                      _get_next_residues_by_resid))
+
+    def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+        """Select list of AtomGroups corresponding to the psi protein 
+        backbone dihedral N-CA-C-N'.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+
+        Returns
+        -------
+        List of AtomGroups
+            4-atom selections in the correct order. If no N' found in the
+            following residue (by resid) then the corresponding item in the 
+            list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        results = np.array([None]*len(residues), dtype=object)
+        nxtres = residues._get_next_residues_by_resid()
+        rix = np.where(nxtres)[0]
+        nxt = sum(nxtres[rix])
+        residues = residues[rix]
+        ncac_names = [n_name, ca_name, c_name]
+
+        keep_nxt = [sum(r.atoms.names == n_name) == 1 for r in nxt]
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names) 
+                    for r in residues]
+        keep = np.array(keep_nxt) & np.array(keep_res)
+        nxt = nxt[keep]
+        residues = residues[keep]
+        keepix = np.where(keep)[0]
+        
+        n = residues.atoms[residues.atoms.names == n_name]
+        ca = residues.atoms[residues.atoms.names == ca_name]
+        c = residues.atoms[residues.atoms.names == c_name]
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        results[rix[keepix]] = [sum(atoms) for atoms in zip(n, ca, c, n_)]
+        return list(results)
+
+    transplants[ResidueGroup].append(('psi_selections', psi_selections))
+
+    def omega_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+        """Select AtomGroup corresponding to the omega protein backbone dihedral
         CA-C-N'-CA'.
 
         omega describes the -C-N- peptide bond. Typically, it is trans (180
         degrees) although cis-bonds (0 degrees) are also occasionally observed
         (especially near Proline).
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
 
         Returns
         -------
@@ -575,22 +757,108 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
 
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
         """
-        nextres = residue.resid + 1
-        segid = residue.segment.segid
-        sel = (residue.atoms.select_atoms('name CA', 'name C') +
-               residue.universe.select_atoms(
-                   'segid {} and resid {} and name N'.format(segid, nextres),
-                   'segid {} and resid {} and name CA'.format(segid, nextres)))
-        if len(sel) == 4:
-            return sel
+        # fnmatch is expensive. try the obv candidate first
+        _manual_sel = False
+        sid = residue.segment.segid
+        rid = residue.resid+1
+        try:
+            nxt = residue.universe.residues[residue.ix+1]
+        except IndexError:
+            _manual_sel = True
         else:
+            if not (nxt.segment.segid == sid and nxt.resid == rid):
+                _manual_sel = True
+
+        if _manual_sel:
+            sel = 'segid {} and resid {}'.format(sid, rid)
+            try:
+                nxt = residue.universe.select_atoms(sel).residues[0]
+            except IndexError:
+                return None
+
+        ca = residue.atoms[residue.atoms.names == ca_name]
+        c = residue.atoms[residue.atoms.names == c_name]
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        ca_ = nxt.atoms[nxt.atoms.names == ca_name]
+
+        if not all(len(ag) == 1 for ag in [ca_, n_, ca, c]):
             return None
+
+        return ca+c+n_+ca_
 
     transplants[Residue].append(('omega_selection', omega_selection))
 
-    def chi1_selection(residue):
-        """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+    def omega_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+        """Select list of AtomGroups corresponding to the omega protein 
+        backbone dihedral CA-C-N'-CA'.
+
+        omega describes the -C-N- peptide bond. Typically, it is trans (180
+        degrees) although cis-bonds (0 degrees) are also occasionally observed
+        (especially near Proline).
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+
+        Returns
+        -------
+        List of AtomGroups
+            4-atom selections in the correct order. If no C' found in the
+            previous residue (by resid) then the corresponding item in the 
+            list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        results = np.array([None]*len(residues), dtype=object)
+        nxtres = residues._get_next_residues_by_resid()
+        rix = np.where(nxtres)[0]
+        nxt = sum(nxtres[rix])
+        residues = residues[rix]
+        
+        nxtatoms = [ca_name, n_name]
+        resatoms = [ca_name, c_name]
+        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms) 
+                    for r in nxt]
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in resatoms) 
+                    for r in residues]
+        keep = np.array(keep_nxt) & np.array(keep_res)
+        nxt = nxt[keep]
+        residues = residues[keep]
+        keepix = np.where(keep)[0]
+        
+        c = residues.atoms[residues.atoms.names == c_name]
+        ca = residues.atoms[residues.atoms.names == ca_name]
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        ca_ = nxt.atoms[nxt.atoms.names == ca_name]
+
+        results[rix[keepix]] = [sum(atoms) for atoms in zip(ca, c, n_, ca_)]
+        return list(results)
+
+    transplants[ResidueGroup].append(('omega_selections', omega_selections))
+
+    def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB', 
+                       cg_name='CG'):
+        """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+        cb_name: str (optional)
+            name for the beta-carbon atom
+        cg_name: str (optional)
+            name for the gamma-carbon atom
 
         Returns
         -------
@@ -598,16 +866,57 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no CB and/or CG is found
             then this method returns ``None``.
 
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
+
         .. versionadded:: 0.7.5
         """
-        ag = residue.atoms.select_atoms('name N', 'name CA',
-                                        'name CB', 'name CG')
-        if len(ag) == 4:
-            return ag
-        else:
+        names = [n_name, ca_name, cb_name, cg_name]
+        ags = [residue.atoms[residue.atoms.names == n] for n in names]
+        if any(len(ag)!= 1 for ag in ags):
             return None
+        return sum(ags)
 
     transplants[Residue].append(('chi1_selection', chi1_selection))
+
+    def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB', 
+                        cg_name='CG'):
+        """Select list of AtomGroups corresponding to the chi1 sidechain dihedral 
+        N-CA-CB-CG.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+        cb_name: str (optional)
+            name for the beta-carbon atom
+        cg_name: str (optional)
+            name for the gamma-carbon atom
+
+        Returns
+        -------
+        List of AtomGroups
+            4-atom selections in the correct order. If no CB and/or CG is found
+            then the corresponding item in the list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        results = np.array([None]*len(residues))
+        names = [n_name, ca_name, cb_name, cg_name]
+        keep = [all(sum(r.atoms.names == n) == 1 for n in names) 
+                for r in residues]
+        keepix = np.where(keep)[0]
+        residues = residues[keep]
+
+        atnames = residues.atoms.names
+        ags = [residues.atoms[atnames == n] for n in names]
+        results[keepix] = [sum(atoms) for atoms in zip(*ags)]
+        return list(results)
+    
+    transplants[ResidueGroup].append(('chi1_selections', chi1_selections))
 
 
 # TODO: update docs to property doc
