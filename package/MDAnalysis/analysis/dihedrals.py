@@ -209,6 +209,7 @@ class Dihedral(AnalysisBase):
     it must be given as a list of one atomgroup.
 
     """
+
     def __init__(self, atomgroups, **kwargs):
         """Parameters
         ----------
@@ -221,7 +222,8 @@ class Dihedral(AnalysisBase):
             If any atomgroups do not contain 4 atoms
 
         """
-        super(Dihedral, self).__init__(atomgroups[0].universe.trajectory, **kwargs)
+        super(Dihedral, self).__init__(
+            atomgroups[0].universe.trajectory, **kwargs)
         self.atomgroups = atomgroups
 
         if any([len(ag) != 4 for ag in atomgroups]):
@@ -261,7 +263,9 @@ class Ramachandran(AnalysisBase):
     selection cannot be made, that residue will be removed from the analysis.
 
     """
-    def __init__(self, atomgroup, **kwargs):
+
+    def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
+                 **kwargs):
         """Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
@@ -274,7 +278,8 @@ class Ramachandran(AnalysisBase):
             If the selection of residues is not contained within the protein
 
         """
-        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        super(Ramachandran, self).__init__(
+            atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = self.atomgroup.residues
         protein = self.atomgroup.universe.select_atoms("protein").residues
@@ -288,26 +293,71 @@ class Ramachandran(AnalysisBase):
                           "or last residues")
             residues = residues.difference(protein[[0, -1]])
 
-        phi_sel = [res.phi_selection() for res in residues]
-        psi_sel = [res.psi_selection() for res in residues]
-        # phi_selection() and psi_selection() currently can't handle topologies
-        # with an altloc attribute so this removes any residues that have either
-        # angle return none instead of a value
-        if any(sel is None for sel in phi_sel):
-            warnings.warn("Some residues in selection do not have phi selections")
-            remove = [i for i, sel in enumerate(phi_sel) if sel is None]
-            phi_sel = [sel for i, sel in enumerate(phi_sel) if i not in remove]
-            psi_sel = [sel for i, sel in enumerate(psi_sel) if i not in remove]
-        if any(sel is None for sel in psi_sel):
-            warnings.warn("Some residues in selection do not have psi selections")
-            remove = [i for i, sel in enumerate(psi_sel) if sel is None]
-            phi_sel = [sel for i, sel in enumerate(phi_sel) if i not in remove]
-            psi_sel = [sel for i, sel in enumerate(psi_sel) if i not in remove]
-        self.ag1 = mda.AtomGroup([atoms[0] for atoms in phi_sel])
-        self.ag2 = mda.AtomGroup([atoms[1] for atoms in phi_sel])
-        self.ag3 = mda.AtomGroup([atoms[2] for atoms in phi_sel])
-        self.ag4 = mda.AtomGroup([atoms[3] for atoms in phi_sel])
-        self.ag5 = mda.AtomGroup([atoms[3] for atoms in psi_sel])
+        # find previous/next residues
+        u = residues[0].universe
+        nxt = u.residues[residues.ix[:-1]+1]  # residues is ordered
+        if residues[-1].ix != len(u.residues):
+            nxt += u.residues[residues[-1].ix+1]
+        else:
+            residues = residues[:-1]
+        prev = u.residues[residues.ix-1]
+        psid = residues.segids
+        prid = residues.resids-1
+        nrid = residues.resids+1
+        sel = 'segid {} and resid {}'
+
+        # delete wrong ones
+        pix = np.where((prev.segids != psid) | (prev.resids != prid))[0]
+        nix = np.where((nxt.segids != psid) | (nxt.resids != nrid))[0]
+        delete = []  # probably better way to do this
+        if len(pix):
+            prevls = list(prev)
+            for s, r, p in zip(psid[pix], prid[pix], pix):
+                try:
+                    prevls[p] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    delete.append(p)
+            prev = sum(prevls)
+        
+        if len(nix):
+            nxtls = list(nxt)
+            for s, r, n in zip(psid[nix], nrid[nix], nix):
+                try:
+                    nxtls[n] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    delete.append(n)
+            nxt = sum(nxtls)
+        
+        if len(delete):
+            warnings.warn("Some residues in selection do not have "
+                          "phi or psi selections")
+            keep = np.ones_like(residues, dtype=bool)
+            keep[delete] = False
+            prev = prev[keep]
+            nxt = nxt[keep]
+            residues = residues[keep]
+
+
+        # find n, c, ca
+        keep_prev = [sum(r.atoms.names==c_name)==1 for r in prev]
+        rnames = [n_name, c_name, ca_name]
+        keep_res = [all(sum(r.atoms.names==n)==1 for n in rnames) 
+                    for r in residues]
+        keep_next = [sum(r.atoms.names==n_name)==1 for r in nxt]
+
+        # alright we'll keep these
+        keep = np.array(keep_prev) & np.array(keep_res) & np.array(keep_next)
+        prev = prev[keep]
+        res = residues[keep]
+        nxt = nxt[keep]
+
+        rnames = res.atoms.names
+        self.ag1 = prev.atoms[prev.atoms.names == c_name]
+        self.ag2 = res.atoms[rnames == n_name]
+        self.ag3 = res.atoms[rnames == ca_name]
+        self.ag4 = res.atoms[rnames == c_name]
+        self.ag5 = nxt.atoms[nxt.atoms.names == n_name]
+
 
     def _prepare(self):
         self.angles = []
@@ -324,7 +374,6 @@ class Ramachandran(AnalysisBase):
 
     def _conclude(self):
         self.angles = np.rad2deg(np.array(self.angles))
-
 
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard ramachandran plot. Each time step in
@@ -348,19 +397,21 @@ class Ramachandran(AnalysisBase):
         """
         if ax is None:
             ax = plt.gca()
-        ax.axis([-180,180,-180,180])
+        ax.axis([-180, 180, -180, 180])
         ax.axhline(0, color='k', lw=1)
         ax.axvline(0, color='k', lw=1)
         ax.set(xticks=range(-180, 181, 60), yticks=range(-180, 181, 60),
                xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
         if ref == True:
-            X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+            X, Y = np.meshgrid(np.arange(-180, 180, 4),
+                               np.arange(-180, 180, 4))
             levels = [1, 17, 15000]
             colors = ['#A1D4FF', '#35A1FF']
             ax.contourf(X, Y, np.load(Rama_ref), levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
-        ax.scatter(a[:,0], a[:,1], **kwargs)
+        ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax
+
 
 class Janin(Ramachandran):
     """Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.
@@ -380,6 +431,7 @@ class Janin(Ramachandran):
     selection and must be removed.
 
     """
+
     def __init__(self, atomgroup, **kwargs):
         """Parameters
         ----------
@@ -397,7 +449,8 @@ class Janin(Ramachandran):
              selection, usually due to missing atoms or alternative locations
 
         """
-        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        super(Ramachandran, self).__init__(
+            atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = atomgroup.residues
         protein = atomgroup.universe.select_atoms("protein").residues
@@ -463,5 +516,5 @@ class Janin(Ramachandran):
             colors = ['#A1D4FF', '#35A1FF']
             ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
-        ax.scatter(a[:,0], a[:,1], **kwargs)
+        ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax

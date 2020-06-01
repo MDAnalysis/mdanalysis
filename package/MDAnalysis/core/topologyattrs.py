@@ -490,18 +490,29 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
         """
-        # TODO: maybe this can be reformulated into one selection string without
-        # the additions later
-        sel_str = "segid {} and resid {} and name C".format(
-            residue.segment.segid, residue.resid - 1)
-        sel = (residue.universe.select_atoms(sel_str) +
-               residue.atoms.select_atoms('name N', 'name CA', 'name C'))
-
-        # select_atoms doesnt raise errors if nothing found, so check size
-        if len(sel) == 4:
-            return sel
-        else:
+        # fnmatch is expensive. try the obv candidate first
+        prev = residue.universe.residues[residue.ix-1]
+        sid = residue.segment.segid
+        rid = residue.resid-1
+        if not (prev.segment.segid == sid and prev.resid == rid):
+            sel = 'segid {} and resid {}'.format(sid, rid)
+            try:
+                prev = residue.universe.select_atoms(sel).residues[0]
+            except IndexError:
+                return None
+        c_ = prev.atoms[prev.atoms.names == 'C']
+        if not c_:
             return None
+
+        # ncac = residue.atoms.select_atoms('name N', 'name CA', 'name C')
+        ncac = residue.atoms[np.in1d(residue.atoms.names, ['N', 'CA', 'C'])]
+        if len(ncac) != 3:
+            return None
+
+        # sel = c_+ncac
+        names = ncac.names
+        sel = c_+ncac[names == 'N']+ncac[names == 'CA']+ncac[names == 'C']
+        return sel
 
     transplants[Residue].append(('phi_selection', phi_selection))
 
@@ -515,16 +526,38 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no N' found in the
             following residue (by resid) then this method returns ``None``.
         """
-        sel_str = "segid {} and resid {} and name N".format(
-            residue.segment.segid, residue.resid + 1)
 
-        sel = (residue.atoms.select_atoms('name N', 'name CA', 'name C') +
-               residue.universe.select_atoms(sel_str))
-
-        if len(sel) == 4:
-            return sel
+        # fnmatch is expensive. try the obv candidate first
+        _manual_sel = False
+        sid = residue.segment.segid
+        rid = residue.resid+1
+        try:
+            nxt = residue.universe.residues[residue.ix+1]
+        except IndexError:
+            _manual_sel = True
         else:
+            if not (nxt.segment.segid == sid and nxt.resid == rid):
+                _manual_sel = True
+
+        if _manual_sel:
+            sel = 'segid {} and resid {}'.format(sid, rid)
+            try:
+                nxt = residue.universe.select_atoms(sel).residues[0]
+            except IndexError:
+                return None
+        n_ = nxt.atoms[nxt.atoms.names == 'N']
+        if not n_:
             return None
+
+        # ncac = residue.atoms.select_atoms('name N', 'name CA', 'name C')
+        ncac = residue.atoms[np.in1d(residue.atoms.names, ['N', 'CA', 'C'])]
+        if len(ncac) != 3:
+            return None
+
+        # sel = c_+ncac
+        names = ncac.names
+        sel = ncac[names == 'N']+ncac[names == 'CA']+ncac[names == 'C']+n_
+        return sel
 
     transplants[Residue].append(('psi_selection', psi_selection))
 
@@ -830,9 +863,11 @@ class Masses(AtomAttr):
         unwrap = kwargs.pop('unwrap', False)
         compound = kwargs.pop('compound', 'group')
 
-        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        com = atomgroup.center_of_mass(
+            pbc=pbc, unwrap=unwrap, compound=compound)
         if compound != 'group':
-            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+            com = (com * group.masses[:, None]
+                   ).sum(axis=0) / group.masses.sum()
 
         if pbc:
             pos = atomgroup.pack_into_box(inplace=False) - com
@@ -942,7 +977,8 @@ class Masses(AtomAttr):
                                            recenteredpos[x, :])
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
-        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
+        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
+                               ) / np.power(np.sum(eig_vals), 3)
 
         return shape
 
@@ -985,9 +1021,11 @@ class Masses(AtomAttr):
         atomgroup = group.atoms
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
+        com = atomgroup.center_of_mass(
+            pbc=pbc, unwrap=unwrap, compound=compound)
         if compound != 'group':
-            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+            com = (com * group.masses[:, None]
+                   ).sum(axis=0) / group.masses.sum()
 
         if pbc:
             recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
@@ -1200,6 +1238,7 @@ class AltLocs(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
+
 class GBScreens(AtomAttr):
     """Generalized Born screening factor"""
     attrname = 'gbscreens'
@@ -1210,6 +1249,7 @@ class GBScreens(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
+
 
 class SolventRadii(AtomAttr):
     """Intrinsic solvation radius"""
@@ -1222,6 +1262,7 @@ class SolventRadii(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
 
+
 class NonbondedIndices(AtomAttr):
     """Nonbonded index (AMBER)"""
     attrname = 'nbindices'
@@ -1232,7 +1273,8 @@ class NonbondedIndices(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na, dtype=np.int32)
-    
+
+
 class RMins(AtomAttr):
     """The Rmin/2 LJ parameter"""
     attrname = 'rmins'
@@ -1243,6 +1285,7 @@ class RMins(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
+
 
 class Epsilons(AtomAttr):
     """The epsilon LJ parameter"""
@@ -1255,6 +1298,7 @@ class Epsilons(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
 
+
 class RMin14s(AtomAttr):
     """The Rmin/2 LJ parameter for 1-4 interactions"""
     attrname = 'rmin14s'
@@ -1266,6 +1310,7 @@ class RMin14s(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
 
+
 class Epsilon14s(AtomAttr):
     """The epsilon LJ parameter for 1-4 interactions"""
     attrname = 'epsilon14s'
@@ -1276,6 +1321,7 @@ class Epsilon14s(AtomAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.zeros(na)
+
 
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
@@ -1414,13 +1460,14 @@ class Resnames(ResidueAttr):
         format = kwargs.pop("format", "SeqRecord")
         if format not in formats:
             raise TypeError("Unknown format='{0}': must be one of: {1}".format(
-                    format, ", ".join(formats)))
+                format, ", ".join(formats)))
         try:
-            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
+            sequence = "".join([convert_aa_code(r)
+                                for r in self.residues.resnames])
         except KeyError as err:
             six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
-                             "does not have a IUPAC protein 1-letter "
-                             "character".format(err.message)), None)
+                                      "does not have a IUPAC protein 1-letter "
+                                      "character".format(err.message)), None)
         if format == "string":
             return sequence
         seq = Bio.Seq.Seq(sequence)
@@ -1477,6 +1524,7 @@ class Molnums(ResidueAttr):
     dtype = np.intp
 
 # segment attributes
+
 
 class SegmentAttr(TopologyAttr):
     """Base class for segment attributes.
@@ -1535,12 +1583,12 @@ def _check_connection_values(func):
     """
     @functools.wraps(func)
     def wrapper(self, values, *args, **kwargs):
-        if not all(len(x) == self._n_atoms 
-                and all(isinstance(y, (int, np.integer)) for y in x)
-                for x in values):
+        if not all(len(x) == self._n_atoms
+                   and all(isinstance(y, (int, np.integer)) for y in x)
+                   for x in values):
             raise ValueError(("{} must be an iterable of tuples with {}"
-                            " atom indices").format(self.attrname,
-                            self._n_atoms))
+                              " atom indices").format(self.attrname,
+                                                      self._n_atoms))
         clean = []
         for v in values:
             if v[0] > v[-1]:
@@ -1550,9 +1598,10 @@ def _check_connection_values(func):
         return func(self, clean, *args, **kwargs)
     return wrapper
 
+
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms
-    
+
     .. versionchanged:: 0.21.0
         Added type checking to atom index values.
     """
@@ -1638,7 +1687,7 @@ class _Connection(AtomAttr):
             del self._cache['bd']
         except KeyError:
             pass
-    
+
     @_check_connection_values
     def _delete_bonds(self, values):
         """
@@ -1667,6 +1716,7 @@ class _Connection(AtomAttr):
             del self._cache['bd']
         except KeyError:
             pass
+
 
 class Bonds(_Connection):
     """Bonds between two atoms
@@ -1820,6 +1870,7 @@ class Bonds(_Connection):
         ('n_fragments', property(n_fragments, None, None,
                                  n_fragments.__doc__)))
 
+
 class UreyBradleys(_Connection):
     """Angles between two atoms
 
@@ -1833,6 +1884,7 @@ class UreyBradleys(_Connection):
     singular = 'ureybradleys'
     transplants = defaultdict(list)
     _n_atoms = 2
+
 
 class Angles(_Connection):
     """Angles between three atoms
@@ -1862,6 +1914,7 @@ class Impropers(_Connection):
     singular = 'impropers'
     transplants = defaultdict(list)
     _n_atoms = 4
+
 
 class CMaps(_Connection):
     """
