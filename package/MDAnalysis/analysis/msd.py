@@ -116,7 +116,7 @@ Self-diffusivity is closely related to the MSD.
    D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
 
 From the MSD, self-diffusivities :math:`D` with the desired dimensionality :math:`d` can be computed by fitting the MSD with respect to the lag time to a linear model. 
-An example of this is shown below, using the MSD computed in the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60` is used to demonstrate selection of an MSD segment.
+An example of this is shown below, using the MSD computed in the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60` is used to demonstrate selection of a MSD segment.
 
     >>> from scipy.stats import linregress as lr
     >>> start_time = 20
