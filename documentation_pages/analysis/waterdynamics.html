@@ -489,7 +489,7 @@ the zone, on the other hand, a fast decay means a short permanence time:</p>
 <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
 <span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
 <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">tau_timeseries</span>
 <span class="n">sp_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sp_timeseries</span>
 
@@ -505,6 +505,11 @@ the zone, on the other hand, a fast decay means a short permanence time:</p>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
+<p>One should note that the <cite>stop</cite> keyword as used in the above example has an
+<cite>exclusive</cite> behaviour, i.e. here the final frame used will be 100 not 101.
+This behaviour is aligned with <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code> but currently differs from
+other <a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a> classes, which all exhibit
+<cite>inclusive</cite> behaviour for their final frame selections.</p>
 <p>Another example applies to the situation where you work with many different “residues”.
 Here we calculate the SP of a potassium ion around each lipid in a membrane and
 average the results. In this example, if the SP analysis were run without treating each lipid
@@ -802,7 +807,7 @@ average distance that particles travels. The MSD is given by:</p>
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">SurvivalProbability</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>t0=None</em>, <em>tf=None</em>, <em>dtmax=None</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">SurvivalProbability</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition">¶</a></dt>
 <dd><p>Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
 The SP is given by:</p>
 <div class="math notranslate nohighlight">
@@ -824,44 +829,66 @@ define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resi
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>Currently <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SurvivalProbability</span></code></a> is the only on in
+<a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a> to support an <cite>exclusive</cite>
+behaviour (i.e. similar to the current behaviour of <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code>
+to the <cite>stop</cite> keyword passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a>. Unlike
+other <a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a> final frame definitions
+which are <cite>inclusive</cite>.</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 0.11.0.</span></p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.21.0: </span>Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations</p>
-</div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Using the MDAnalysis.lib.correlations.py to carry out the intermittency
+and autocorrelation calculations.
+Changed <cite>selection</cite> keyword to <cite>select</cite>.
+Removed support for the deprecated <cite>t0</cite>, <cite>tf</cite>, and <cite>dtmax</cite> keywords.
+These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a> as
+the <cite>start</cite>, <cite>stop</cite>, and <cite>tau_max</cite> keywords respectively.
+The <cite>stop</cite> keyword as passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a> has now
+changed behaviour and will act in an <cite>exclusive</cite> manner (instead of it’s
+previous <cite>inclusive</cite> behaviour),</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>start=0</em>, <em>stop=None</em>, <em>step=1</em>, <em>residues=False</em>, <em>intermittency=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>residues=False</em>, <em>intermittency=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes and returns the Survival Probability (SP) timeseries</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed</li>
-<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the last frame to be analysed (inclusive)</li>
-<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of the taus used, and it is good to consider
-using the  <cite>step</cite> equal to <cite>tau_max</cite> to remove the overlap.
-Note that <cite>step</cite> and <cite>tau_max</cite> work consistently with intermittency.</li>
-<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range 1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite></li>
-<li><strong>residues</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).
-A single atom is sufficient to classify the residue as within the distance.</li>
-<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns
-at the next frame. An intermittency of <cite>0</cite> is equivalent to a continuous survival probability, which does
-not allow for the leaving and returning of atoms. For example, for <cite>intermittency=2</cite>, any given atom may
-leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.
-The default is continuous (0).</li>
-<li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Print the progress to the console</li>
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed, Default: None
+(first frame).</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the last frame to be analysed (exclusive),
+Default: None (last frame).</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of
+the taus used, and it is good to consider using the  <cite>step</cite> equal
+to <cite>tau_max</cite> to remove the overlap. Note that <cite>step</cite> and <cite>tau_max</cite>
+work consistently with intermittency. Default: None
+(use every frame).</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range
+1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite>.</li>
+<li><strong>residues</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – If true, the analysis will be carried out on the residues
+(.resids) rather than on atom (.ids). A single atom is sufficient
+to classify the residue as within the distance.</li>
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which an atom can
+leave but be counted as present if it returns at the next frame.
+An intermittency of <cite>0</cite> is equivalent to a continuous survival
+probability, which does not allow for the leaving and returning of
+atoms. For example, for <cite>intermittency=2</cite>, any given atom may leave
+a region of interest for up to two consecutive frames yet be
+treated as being present at all frames. The default is continuous
+(0).</li>
+<li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Print the progress to the console.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
 <li><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to <cite>tau_max</cite>. Saved in the field tau_timeseries.</li>
-<li><strong>sp_timeseries</strong> (<em>list</em>) – survival probability for each value of <cite>tau</cite>. Saved in the field sp_timeseries.</li>
+<li><strong>sp_timeseries</strong> (<em>list</em>) – survival probability for each value of <cite>tau</cite>. Saved in the field
+sp_timeseries.</li>
 <li><strong>sp_timeseries_data</strong> (<em>list</em>) – raw datapoints from which the average is taken (sp_timeseries).
 Time dependancy and distribution can be extracted.</li>
 </ul>
@@ -870,6 +897,10 @@ Time dependancy and distribution can be extracted.</li>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>To math other analysis methods, the <cite>stop</cite> keyword is now exclusive
+rather than inclusive.</p>
+</div>
 </dd></dl>
 
 </dd></dl>

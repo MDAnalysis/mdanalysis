@@ -464,7 +464,7 @@
 <span class="sd">  universe = MDAnalysis.Universe(pdb, trajectory)</span>
 <span class="sd">  select = &quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
 <span class="sd">  sp = SP(universe, select, verbose=True)</span>
-<span class="sd">  sp.run(start=0, stop=100, tau_max=20)</span>
+<span class="sd">  sp.run(start=0, stop=101, tau_max=20)</span>
 <span class="sd">  tau_timeseries = sp.tau_timeseries</span>
 <span class="sd">  sp_timeseries = sp.sp_timeseries</span>
 
@@ -478,6 +478,12 @@
 <span class="sd">  plt.title(&#39;Survival Probability&#39;)</span>
 <span class="sd">  plt.plot(tau_timeseries, sp_timeseries)</span>
 <span class="sd">  plt.show()</span>
+
+<span class="sd">One should note that the `stop` keyword as used in the above example has an</span>
+<span class="sd">`exclusive` behaviour, i.e. here the final frame used will be 100 not 101.</span>
+<span class="sd">This behaviour is aligned with :class:`AnalysisBase` but currently differs from</span>
+<span class="sd">other :mod:`MDAnalysis.analysis.waterdynamics` classes, which all exhibit</span>
+<span class="sd">`inclusive` behaviour for their final frame selections.</span>
 
 <span class="sd">Another example applies to the situation where you work with many different &quot;residues&quot;.</span>
 <span class="sd">Here we calculate the SP of a potassium ion around each lipid in a membrane and</span>
@@ -1346,85 +1352,94 @@
 <span class="sd">      When True, prints progress and comments to the console.</span>
 
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Currently :class:`SurvivalProbability` is the only on in</span>
+<span class="sd">    :mod:`MDAnalysis.analysis.waterdynamics` to support an `exclusive`</span>
+<span class="sd">    behaviour (i.e. similar to the current behaviour of :class:`AnalysisBase`</span>
+<span class="sd">    to the `stop` keyword passed to :meth:`SurvivalProbability.run`. Unlike</span>
+<span class="sd">    other :mod:`MDAnalysis.analysis.waterdynamics` final frame definitions</span>
+<span class="sd">    which are `inclusive`.</span>
+
+
 <span class="sd">    .. versionadded:: 0.11.0</span>
-<span class="sd">    .. versionchanged:: 0.21.0</span>
-<span class="sd">        Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       Changed `selection` keyword to `select`</span>
+<span class="sd">       Using the MDAnalysis.lib.correlations.py to carry out the intermittency</span>
+<span class="sd">       and autocorrelation calculations.</span>
+<span class="sd">       Changed `selection` keyword to `select`.</span>
+<span class="sd">       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. </span>
+<span class="sd">       These should instead be passed to :meth:`SurvivalProbability.run` as</span>
+<span class="sd">       the `start`, `stop`, and `tau_max` keywords respectively.</span>
+<span class="sd">       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now</span>
+<span class="sd">       changed behaviour and will act in an `exclusive` manner (instead of it&#39;s</span>
+<span class="sd">       previous `inclusive` behaviour),</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">t0</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtmax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection</span> <span class="o">=</span> <span class="n">select</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
 
-        <span class="c1"># backward compatibility</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">t0</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">t0</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;t0 is deprecated, use run(start=t0) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">tf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="n">tf</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;tf is deprecated, use run(stop=tf) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">dtmax</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="o">=</span> <span class="n">dtmax</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;dtmax is deprecated, use run(tau_max=dtmax) instead&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SurvivalProbability.run"><a class="viewcode-back" href="../../../documentation_pages/analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">residues</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes and returns the Survival Probability (SP) timeseries</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        start : int, optional</span>
-<span class="sd">            Zero-based index of the first frame to be analysed</span>
+<span class="sd">            Zero-based index of the first frame to be analysed, Default: None</span>
+<span class="sd">            (first frame).</span>
 <span class="sd">        stop : int, optional</span>
-<span class="sd">            Zero-based index of the last frame to be analysed (inclusive)</span>
+<span class="sd">            Zero-based index of the last frame to be analysed (exclusive),</span>
+<span class="sd">            Default: None (last frame).</span>
 <span class="sd">        step : int, optional</span>
-<span class="sd">            Jump every `step`-th frame. This is compatible but independant of the taus used, and it is good to consider</span>
-<span class="sd">            using the  `step` equal to `tau_max` to remove the overlap.</span>
-<span class="sd">            Note that `step` and `tau_max` work consistently with intermittency.</span>
+<span class="sd">            Jump every `step`-th frame. This is compatible but independant of</span>
+<span class="sd">            the taus used, and it is good to consider using the  `step` equal</span>
+<span class="sd">            to `tau_max` to remove the overlap. Note that `step` and `tau_max`</span>
+<span class="sd">            work consistently with intermittency. Default: None</span>
+<span class="sd">            (use every frame).</span>
 <span class="sd">        tau_max : int, optional</span>
-<span class="sd">            Survival probability is calculated for the range 1 &lt;= `tau` &lt;= `tau_max`</span>
+<span class="sd">            Survival probability is calculated for the range</span>
+<span class="sd">            1 &lt;= `tau` &lt;= `tau_max`.</span>
 <span class="sd">        residues : Boolean, optional</span>
-<span class="sd">            If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).</span>
-<span class="sd">            A single atom is sufficient to classify the residue as within the distance.</span>
+<span class="sd">            If true, the analysis will be carried out on the residues</span>
+<span class="sd">            (.resids) rather than on atom (.ids). A single atom is sufficient</span>
+<span class="sd">            to classify the residue as within the distance.</span>
 <span class="sd">        intermittency : int, optional</span>
-<span class="sd">            The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns</span>
-<span class="sd">            at the next frame. An intermittency of `0` is equivalent to a continuous survival probability, which does</span>
-<span class="sd">            not allow for the leaving and returning of atoms. For example, for `intermittency=2`, any given atom may</span>
-<span class="sd">            leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.</span>
-<span class="sd">            The default is continuous (0).</span>
+<span class="sd">            The maximum number of consecutive frames for which an atom can</span>
+<span class="sd">            leave but be counted as present if it returns at the next frame.</span>
+<span class="sd">            An intermittency of `0` is equivalent to a continuous survival</span>
+<span class="sd">            probability, which does not allow for the leaving and returning of</span>
+<span class="sd">            atoms. For example, for `intermittency=2`, any given atom may leave</span>
+<span class="sd">            a region of interest for up to two consecutive frames yet be</span>
+<span class="sd">            treated as being present at all frames. The default is continuous</span>
+<span class="sd">            (0).</span>
 <span class="sd">        verbose : Boolean, optional</span>
-<span class="sd">            Print the progress to the console</span>
+<span class="sd">            Print the progress to the console.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        tau_timeseries : list</span>
 <span class="sd">            tau from 1 to `tau_max`. Saved in the field tau_timeseries.</span>
 <span class="sd">        sp_timeseries : list</span>
-<span class="sd">            survival probability for each value of `tau`. Saved in the field sp_timeseries.</span>
+<span class="sd">            survival probability for each value of `tau`. Saved in the field</span>
+<span class="sd">            sp_timeseries.</span>
 <span class="sd">        sp_timeseries_data: list</span>
 <span class="sd">            raw datapoints from which the average is taken (sp_timeseries).</span>
 <span class="sd">            Time dependancy and distribution can be extracted.</span>
+
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           To math other analysis methods, the `stop` keyword is now exclusive</span>
+<span class="sd">           rather than inclusive.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># backward compatibility (and priority)</span>
-        <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">start</span>
-        <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">stop</span>
-        <span class="n">tau_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tau_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">tau_max</span>
-
-        <span class="c1"># sanity checks</span>
-        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">stop</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\&quot;</span><span class="s2">stop</span><span class="se">\&quot;</span><span class="s2"> must be smaller than the number of frames in the trajectory.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">stop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">stop</span> <span class="o">=</span> <span class="n">stop</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span>
+            <span class="n">start</span><span class="p">,</span>
+            <span class="n">stop</span><span class="p">,</span>
+            <span class="n">step</span>
+        <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">tau_max</span> <span class="o">&gt;</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Too few frames selected for given tau_max.&quot;</span><span class="p">)</span>
