@@ -93,7 +93,7 @@ class AtomNeighborSearch(object):
                                 radius, box=self._box, return_distances=False)
 
         if pairs.size > 0:
-            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.int64))
+            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.intp))
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):

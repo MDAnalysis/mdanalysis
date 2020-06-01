@@ -289,7 +289,7 @@ the zone, on the other hand, a fast decay means a short permanence time::
   universe = MDAnalysis.Universe(pdb, trajectory)
   select = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
   sp = SP(universe, select, verbose=True)
-  sp.run(start=0, stop=100, tau_max=20)
+  sp.run(start=0, stop=101, tau_max=20)
   tau_timeseries = sp.tau_timeseries
   sp_timeseries = sp.sp_timeseries
 
@@ -303,6 +303,12 @@ the zone, on the other hand, a fast decay means a short permanence time::
   plt.title('Survival Probability')
   plt.plot(tau_timeseries, sp_timeseries)
   plt.show()
+
+One should note that the `stop` keyword as used in the above example has an
+`exclusive` behaviour, i.e. here the final frame used will be 100 not 101.
+This behaviour is aligned with :class:`AnalysisBase` but currently differs from
+other :mod:`MDAnalysis.analysis.waterdynamics` classes, which all exhibit
+`inclusive` behaviour for their final frame selections.
 
 Another example applies to the situation where you work with many different "residues".
 Here we calculate the SP of a potassium ion around each lipid in a membrane and
@@ -1171,85 +1177,94 @@ class SurvivalProbability(object):
       When True, prints progress and comments to the console.
 
 
+    Notes
+    -----
+    Currently :class:`SurvivalProbability` is the only on in
+    :mod:`MDAnalysis.analysis.waterdynamics` to support an `exclusive`
+    behaviour (i.e. similar to the current behaviour of :class:`AnalysisBase`
+    to the `stop` keyword passed to :meth:`SurvivalProbability.run`. Unlike
+    other :mod:`MDAnalysis.analysis.waterdynamics` final frame definitions
+    which are `inclusive`.
+
+
     .. versionadded:: 0.11.0
-    .. versionchanged:: 0.21.0
-        Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations
     .. versionchanged:: 1.0.0
-       Changed `selection` keyword to `select`
+       Using the MDAnalysis.lib.correlations.py to carry out the intermittency
+       and autocorrelation calculations.
+       Changed `selection` keyword to `select`.
+       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
+       These should instead be passed to :meth:`SurvivalProbability.run` as
+       the `start`, `stop`, and `tau_max` keywords respectively.
+       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now
+       changed behaviour and will act in an `exclusive` manner (instead of it's
+       previous `inclusive` behaviour),
     """
 
-    def __init__(self, universe, select, t0=None, tf=None, dtmax=None, verbose=False):
+    def __init__(self, universe, select, verbose=False):
         self.universe = universe
         self.selection = select
         self.verbose = verbose
 
-        # backward compatibility
-        self.start = self.stop = self.tau_max = None
-        if t0 is not None:
-            self.start = t0
-            warnings.warn("t0 is deprecated, use run(start=t0) instead", category=DeprecationWarning)
-
-        if tf is not None:
-            self.stop = tf
-            warnings.warn("tf is deprecated, use run(stop=tf) instead", category=DeprecationWarning)
-
-        if dtmax is not None:
-            self.tau_max = dtmax
-            warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
-
-
-    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
+    def run(self, tau_max=20, start=None, stop=None, step=None, residues=False,
+            intermittency=0, verbose=False):
         """
         Computes and returns the Survival Probability (SP) timeseries
 
         Parameters
         ----------
         start : int, optional
-            Zero-based index of the first frame to be analysed
+            Zero-based index of the first frame to be analysed, Default: None
+            (first frame).
         stop : int, optional
-            Zero-based index of the last frame to be analysed (inclusive)
+            Zero-based index of the last frame to be analysed (exclusive),
+            Default: None (last frame).
         step : int, optional
-            Jump every `step`-th frame. This is compatible but independant of the taus used, and it is good to consider
-            using the  `step` equal to `tau_max` to remove the overlap.
-            Note that `step` and `tau_max` work consistently with intermittency.
+            Jump every `step`-th frame. This is compatible but independant of
+            the taus used, and it is good to consider using the  `step` equal
+            to `tau_max` to remove the overlap. Note that `step` and `tau_max`
+            work consistently with intermittency. Default: None
+            (use every frame).
         tau_max : int, optional
-            Survival probability is calculated for the range 1 <= `tau` <= `tau_max`
+            Survival probability is calculated for the range
+            1 <= `tau` <= `tau_max`.
         residues : Boolean, optional
-            If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).
-            A single atom is sufficient to classify the residue as within the distance.
+            If true, the analysis will be carried out on the residues
+            (.resids) rather than on atom (.ids). A single atom is sufficient
+            to classify the residue as within the distance.
         intermittency : int, optional
-            The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns
-            at the next frame. An intermittency of `0` is equivalent to a continuous survival probability, which does
-            not allow for the leaving and returning of atoms. For example, for `intermittency=2`, any given atom may
-            leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.
-            The default is continuous (0).
+            The maximum number of consecutive frames for which an atom can
+            leave but be counted as present if it returns at the next frame.
+            An intermittency of `0` is equivalent to a continuous survival
+            probability, which does not allow for the leaving and returning of
+            atoms. For example, for `intermittency=2`, any given atom may leave
+            a region of interest for up to two consecutive frames yet be
+            treated as being present at all frames. The default is continuous
+            (0).
         verbose : Boolean, optional
-            Print the progress to the console
+            Print the progress to the console.
 
         Returns
         -------
         tau_timeseries : list
             tau from 1 to `tau_max`. Saved in the field tau_timeseries.
         sp_timeseries : list
-            survival probability for each value of `tau`. Saved in the field sp_timeseries.
+            survival probability for each value of `tau`. Saved in the field
+            sp_timeseries.
         sp_timeseries_data: list
             raw datapoints from which the average is taken (sp_timeseries).
             Time dependancy and distribution can be extracted.
+
+
+        .. versionchanged:: 1.0.0
+           To math other analysis methods, the `stop` keyword is now exclusive
+           rather than inclusive.
         """
 
-        # backward compatibility (and priority)
-        start = self.start if self.start is not None else start
-        stop = self.stop if self.stop is not None else stop
-        tau_max = self.tau_max if self.tau_max is not None else tau_max
-
-        # sanity checks
-        if stop is not None and stop >= len(self.universe.trajectory):
-            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
-
-        if stop is None:
-            stop = len(self.universe.trajectory)
-        else:
-            stop = stop + 1
+        start, stop, step = self.universe.trajectory.check_slice_indices(
+            start,
+            stop,
+            step
+        )
 
         if tau_max > (stop - start):
             raise ValueError("Too few frames selected for given tau_max.")

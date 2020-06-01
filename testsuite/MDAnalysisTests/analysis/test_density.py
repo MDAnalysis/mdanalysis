@@ -398,6 +398,8 @@ class TestNotWithin(object):
     def u():
         return mda.Universe(GRO)
 
+    @pytest.mark.skipif(sys.maxsize <= 2**32,
+                        reason="non-kdtree density too large for 32-bit")
     def test_within(self, u):
         vers1 = density.notwithin_coordinates_factory(u, 'resname SOL',
                                                       'protein', 2,
@@ -410,6 +412,8 @@ class TestNotWithin(object):
 
         assert_equal(vers1, vers2)
 
+    @pytest.mark.skipif(sys.maxsize <= 2**32,
+                        reason="non-kdtree density too large for 32-bit")
     def test_not_within(self, u):
         vers1 = density.notwithin_coordinates_factory(u, 'resname SOL',
                                                      'protein', 2,

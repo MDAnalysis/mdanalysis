@@ -385,7 +385,7 @@ cdef class NSResults(object):
             and initial atom coordinates of shape ``(N, 2)``
         """
 
-        return np.asarray(self.pairs_buffer, dtype=np.int64).reshape(self.npairs, 2)
+        return np.asarray(self.pairs_buffer, dtype=np.intp).reshape(self.npairs, 2)
 
     def get_pair_distances(self):
         """Returns all the distances corresponding to each pair of neighbors
