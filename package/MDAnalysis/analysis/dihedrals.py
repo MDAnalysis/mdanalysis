@@ -254,39 +254,60 @@ class Ramachandran(AnalysisBase):
     :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is
     compared to the protein to determine if it is a legitimate selection.
 
+    Parameters
+    ----------
+    atomgroup : AtomGroup or ResidueGroup
+        atoms for residues for which :math:`\phi` and :math:`\psi` are
+        calculated
+    c_name: str (optional)
+        name for the backbone C atom
+    n_name: str (optional)
+        name for the backbone N atom
+    ca_name: str (optional)
+        name for the alpha-carbon atom
+    check_protein: bool (optional)
+        whether to raise an error if the provided atomgroup is not a 
+        subset of protein atoms
+
+    Example
+    -------
+    For standard proteins, the default arguments will suffice to run a 
+    Ramachandran analysis::
+
+        r = Ramachandran(u.select_atoms('protein')).run()
+
+    For proteins with non-standard residues, or for calculating dihedral 
+    angles for other linear polymers, you can switch off the protein checking 
+    and provide your own atom names in place of the typical peptide backbone 
+    atoms::
+
+        r = Ramachandran(u.atoms, c_name='CX', n_name='NT', ca_name='S',
+                         check_protein=False).run()
+
+    The above analysis will calculate angles from a "phi" selection of 
+    CX'-NT-S-CX and "psi" selections of NT-S-CX-NT'.
+
+    Raises
+    ------
+    ValueError
+        If the selection of residues is not contained within the protein
+        and ``check_protein`` is ``True``
+
     Note
     ----
-    If the residue selection is beyond the scope of the protein, then an error
-    will be raised. If the residue selection includes the first or last residue,
+    If ``check_protein`` is ``True`` and the residue selection is beyond 
+    the scope of the protein and, then an error will be raised. 
+    If the residue selection includes the first or last residue,
     then a warning will be raised and they will be removed from the list of
     residues, but the analysis will still run. If a :math:`\phi` or :math:`\psi`
     selection cannot be made, that residue will be removed from the analysis.
 
+    .. versionchanged:: 1.0.0
+        added c_name, n_name, ca_name, and check_protein keyword arguments
     """
 
     def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
                  check_protein=True, **kwargs):
-        """Parameters
-        ----------
-        atomgroup : AtomGroup or ResidueGroup
-            atoms for residues for which :math:`\phi` and :math:`\psi` are
-            calculated
-        c_name: str (optional)
-            name for the backbone C atom
-        n_name: str (optional)
-            name for the backbone N atom
-        ca_name: str (optional)
-            name for the alpha-carbon atom
-        check_protein: bool (optional)
-            whether to raise an error if the provided atomgroup is not a 
-            subset of protein atoms
-
-        Raises
-        ------
-        ValueError
-            If the selection of residues is not contained within the protein
-
-        """
         super(Ramachandran, self).__init__(
             atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
