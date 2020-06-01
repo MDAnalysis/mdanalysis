@@ -33,7 +33,7 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 This module implements the calculation of Mean Squared Displacmements (MSDs) by the Einstein relation.
 MSDs can be used to characterize the speed at which particles move and has its roots
 in the study of Brownian motion. For a full explanation of the theory behind MSDs and the subsequent calculation of self-diffusivities the reader is directed to [Maginn2019]_.
-MSDs can be computed from the following expression, known as the "Einstein" formula:
+MSDs can be computed from the following expression, known as the _Einstein formula_:
 
 .. math::
 
