@@ -279,7 +279,7 @@ class EinsteinMSD(AnalysisBase):
             Array of particle positions with respect to time shape = (n_frames, n_particles, 3)
         """
 
-        self._position_array[self._frame_index,:,:] = self._atoms.positions
+        self._position_array[self._frame_index] = self._atoms.positions[:, self._dim]
             
     def _conclude(self):
         if self.fft == True:
