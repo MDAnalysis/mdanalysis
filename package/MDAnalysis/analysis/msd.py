@@ -202,7 +202,7 @@ class EinsteinMSD(AnalysisBase):
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
             Desired dimensions to be included in the MSD. Defaults to 'xyz'.
         fft : bool
-            Use a fast FFT based algorithm for computation of the MSD.
+            If ``True``, uses a fast FFT based algorithm for computation of the MSD.
             Otherwise, use the simple "windowed" algorithm. Defaults to ``True``.
 
         """
