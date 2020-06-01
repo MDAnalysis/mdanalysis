@@ -655,38 +655,71 @@ class Atomnames(AtomAttr):
         Returns
         -------
         List of Residues
-            The next residue in Universe. If not found, the corresponding 
-            item in the list is ``None``.
+            List of the next residues in the Universe, by resid and segid. 
+            If not found, the corresponding item in the list is ``None``.
 
         .. versionadded:: 1.0.0
         """
         u = residues[0].universe
-        nxres = rview = np.array([None]*len(residues), dtype=object)
+        nxres = np.array([None]*len(residues), dtype=object)
+        ix = np.arange(len(residues))
         # no guarantee residues is ordered or unique
         last = max(residues.ix)
         if last == len(u.residues)-1:
             notlast = residues.ix != last
-            rview = nxres[notlast]
+            ix = ix[notlast]
             residues = residues[notlast]
 
-        rview[:] = nxt = u.residues[residues.ix+1]
+        nxres[ix] = nxt = u.residues[residues.ix+1]
         rsid = residues.segids
         nrid = residues.resids+1
         sel = 'segid {} and resid {}'
-        invalid = []
 
         # replace wrong residues
         wix = np.where((nxt.segids != rsid) | (nxt.resids != nrid))[0]
         if len(wix):
             for s, r, i in zip(rsid[wix], nrid[wix], wix):
                 try:
-                    rview[i] = u.select_atoms(sel.format(s, r)).residues[0]
+                    nxres[ix[i]] = u.select_atoms(sel.format(s, r)).residues[0]
                 except IndexError:
-                    rview[i] = None
+                    nxres[ix[i]] = None
         return nxres
-    
+
     transplants[ResidueGroup].append(('_get_next_residues_by_resid',
                                       _get_next_residues_by_resid))
+
+    def _get_prev_residues_by_resid(residues):
+        """Select list of Residues corresponding to the previous resid for each 
+        residue in `residues`.
+
+        Returns
+        -------
+        List of Residues
+            List of the previous residues in the Universe, by resid and segid. 
+            If not found, the corresponding item in the list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        u = residues[0].universe
+        pvres = np.array([None]*len(residues))
+        pvres[:] = prev = u.residues[residues.ix-1]
+        rsid = residues.segids
+        prid = residues.resids-1
+        sel = 'segid {} and resid {}'
+
+        # replace wrong residues
+        wix = np.where((prev.segids != rsid) | (prev.resids != prid))[0]
+        if len(wix):
+            for s, r, i in zip(rsid[wix], prid[wix], wix):
+                try:
+                    pvres[i] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    pvres[i] = None
+        return pvres
+
+    
+    transplants[ResidueGroup].append(('_get_prev_residues_by_resid',
+                                      _get_prev_residues_by_resid))
 
     def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
         """Select list of AtomGroups corresponding to the psi protein 

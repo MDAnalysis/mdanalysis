@@ -265,12 +265,21 @@ class Ramachandran(AnalysisBase):
     """
 
     def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
-                 **kwargs):
+                 check_protein=True, **kwargs):
         """Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
             atoms for residues for which :math:`\phi` and :math:`\psi` are
             calculated
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+        check_protein: bool (optional)
+            whether to raise an error if the provided atomgroup is not a 
+            subset of protein atoms
 
         Raises
         ------
@@ -282,61 +291,30 @@ class Ramachandran(AnalysisBase):
             atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = self.atomgroup.residues
-        protein = self.atomgroup.universe.select_atoms("protein").residues
 
-        if not residues.issubset(protein):
-            raise ValueError("Found atoms outside of protein. Only atoms "
-                             "inside of a 'protein' selection can be used to "
-                             "calculate dihedrals.")
-        elif not residues.isdisjoint(protein[[0, -1]]):
-            warnings.warn("Cannot determine phi and psi angles for the first "
-                          "or last residues")
-            residues = residues.difference(protein[[0, -1]])
+        if check_protein:
+            protein = self.atomgroup.universe.select_atoms("protein").residues
 
-        # find previous/next residues
-        u = residues[0].universe
-        nxt = u.residues[residues.ix[:-1]+1]  # residues is ordered
-        if residues[-1].ix != len(u.residues):
-            nxt += u.residues[residues[-1].ix+1]
-        else:
-            residues = residues[:-1]
-        prev = u.residues[residues.ix-1]
-        psid = residues.segids
-        prid = residues.resids-1
-        nrid = residues.resids+1
-        sel = 'segid {} and resid {}'
+            if not residues.issubset(protein):
+                raise ValueError("Found atoms outside of protein. Only atoms "
+                                "inside of a 'protein' selection can be used to "
+                                "calculate dihedrals.")
+            elif not residues.isdisjoint(protein[[0, -1]]):
+                warnings.warn("Cannot determine phi and psi angles for the first "
+                            "or last residues")
+                residues = residues.difference(protein[[0, -1]])
 
-        # delete wrong ones
-        pix = np.where((prev.segids != psid) | (prev.resids != prid))[0]
-        nix = np.where((nxt.segids != psid) | (nxt.resids != nrid))[0]
-        delete = []  # probably better way to do this
-        if len(pix):
-            prevls = list(prev)
-            for s, r, p in zip(psid[pix], prid[pix], pix):
-                try:
-                    prevls[p] = u.select_atoms(sel.format(s, r)).residues[0]
-                except IndexError:
-                    delete.append(p)
-            prev = sum(prevls)
-        
-        if len(nix):
-            nxtls = list(nxt)
-            for s, r, n in zip(psid[nix], nrid[nix], nix):
-                try:
-                    nxtls[n] = u.select_atoms(sel.format(s, r)).residues[0]
-                except IndexError:
-                    delete.append(n)
-            nxt = sum(nxtls)
-        
-        if len(delete):
+        prev = residues._get_prev_residues_by_resid()
+        nxt = residues._get_next_residues_by_resid()
+        keep = np.array([r is not None for r in prev])
+        keep = keep & np.array([r is not None for r in nxt])
+
+        if not np.all(keep):
             warnings.warn("Some residues in selection do not have "
                           "phi or psi selections")
-            keep = np.ones_like(residues, dtype=bool)
-            keep[delete] = False
-            prev = prev[keep]
-            nxt = nxt[keep]
-            residues = residues[keep]
-
+        prev = sum(prev[keep])
+        nxt = sum(nxt[keep])
+        residues = residues[keep]
 
         # find n, c, ca
         keep_prev = [sum(r.atoms.names==c_name)==1 for r in prev]
