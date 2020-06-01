@@ -234,7 +234,7 @@ class EinsteinMSD(AnalysisBase):
         self._atoms = self.u.select_atoms(self.select)
         self._n_frames = len(self.u.trajectory)
         self._n_particles = len(self._atoms)
-        self._position_array = np.zeros((self._n_frames, self._n_particles, 3))
+        self._position_array = np.zeros((self.n_frames, self._n_particles, self.dim_fac))
         self.msds_by_particle = np.zeros((self._n_frames, self._n_particles))
         # self.timeseries not set here
         
