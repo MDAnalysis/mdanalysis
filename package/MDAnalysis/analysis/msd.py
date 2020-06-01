@@ -86,7 +86,7 @@ Visual inspection of the MSD is important, so let's take a look at it with a sim
     >>> ax.plot(lagtimes, exact, color="black", linestyle="--", label=r'$y=2 D\tau$') # plot the exact result
     >>> plt.show()
 
-Which gives us the following plot of the MSD with respect to lag-time (:math:`\tau`).
+This gives us the plot of the MSD with respect to lag-time (:math:`\tau`).
 We can see that the MSD is approximately linear with respect to :math:`\tau`.
 This is a numerical example of a known theoretical result that the MSD of a random walk is linear with respect to lagtime, with a slope of :math:`2d`.
 In this expression :math:`d` is the dimensionality of the MSD which for our 3D MSD is equal to 3.
