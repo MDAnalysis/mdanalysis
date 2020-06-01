@@ -137,7 +137,7 @@ _____
 There are several factors that must be taken into account when setting up and processing trajectories for computation of self-diffusivities.
 These include specific instructions around simulation settings, using unwrapped trajectories and maintaining a relatively small elapsed time between saved frames. 
 Additionally, corrections for finite size effects are sometimes employed along with various means of estimating errors.
-The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self-diffusivity including from a Green-Kubo integral. At this point in time these methods are beyond the scope of this module
+The reader is directed to the following review, which describes many of the common pitfalls [Maginn2019]_. There are other ways to compute self-diffusivity, such as from a Green-Kubo integral. At this point in time, these methods are beyond the scope of this module.
 
 
 References
