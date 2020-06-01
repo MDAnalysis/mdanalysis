@@ -135,6 +135,11 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * Removes the deprecated `t0`, `tf`, and `dtmax` from
+    :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
+    `tau_max` keywords should be passed to
+    :meth:`Waterdynamics.SurvivalProbability.run`. Furthermore, the `stop`
+    keyword is now exclusive instead of inclusive (Issue #2524).
   * :meth:`align.fasta2select` now writes `alnfilename` and `treefilename` to
     the current working directory (Issue #2701)
   * Removes duplicate `NUMBER_TO_ELEMENTS` table from topology._elements,
