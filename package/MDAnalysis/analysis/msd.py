@@ -73,7 +73,7 @@ The MSD can then be accessed as
 
     >>> msd =  MSD.timeseries
 
-Visual inspection of the MSD is important, so lets take a look at it with a simple plot.
+Visual inspection of the MSD is important, so let's take a look at it with a simple plot.
 
     >>> import matplotlib.pyplot as plt
     >>> nframes = MSD.n_frames
