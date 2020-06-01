@@ -105,7 +105,7 @@ We can select the "middle" of the MSD by indexing the MSD and the time-lags. App
     >>> plt.loglog(lagtimes, msd)
     >>> plt.show()
 
-Now that we have identified what segment of our MSD to analyse, lets compute a self-diffusivity.
+Now that we have identified what segment of our MSD to analyse, let's compute a self-diffusivity.
 
 Computing Self-Diffusivity
 --------------------------------
