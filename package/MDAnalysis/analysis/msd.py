@@ -63,7 +63,7 @@ First load all modules and test data
     >>> from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 
 Given a universe containing trajectory data we can extract the MSD
-Analyis by using the class :class:`EinsteinMSD` 
+analysis by using the class :class:`EinsteinMSD` 
 
     >>> u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
     >>> MSD = msd.EinsteinMSD(u, 'all', msd_type='xyz', fft=True)
