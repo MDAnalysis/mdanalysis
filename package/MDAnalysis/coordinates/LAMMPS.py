@@ -454,7 +454,7 @@ class DATAWriter(base.WriterBase):
                 self._write_velocities(atoms)
 
 
-class DumpReader(base.ReaderBase):
+class DumpReader(base.ReaderBase, base._BAsciiPickle):
     """Reads the default `LAMMPS dump format`_
 
     Expects trajectories produced by the default 'atom' style dump.
@@ -478,7 +478,7 @@ class DumpReader(base.ReaderBase):
 
     def _reopen(self):
         self.close()
-        self._file = util.anyopen(self.filename)
+        self._f = util.anyopen(self.filename, 'rb')
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self.ts.frame = -1
 
@@ -510,17 +510,17 @@ class DumpReader(base.ReaderBase):
         return len(self._offsets)
 
     def close(self):
-        if hasattr(self, '_file'):
-            self._file.close()
+        if hasattr(self, '_f'):
+            self._f.close()
 
     def _read_frame(self, frame):
-        self._file.seek(self._offsets[frame])
+        self._f.seek(self._offsets[frame])
         self.ts.frame = frame - 1  # gets +1'd in next
 
         return self._read_next_timestep()
 
     def _read_next_timestep(self):
-        f = self._file
+        f = self._f
         ts = self.ts
         ts.frame += 1
         if ts.frame >= len(self):
