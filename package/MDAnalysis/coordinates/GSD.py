@@ -136,10 +136,3 @@ class GSDReader(base.ReaderBase, base._ExAsciiPickle):
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
 
-#    def __getstate__(self):
-#        """Implement the pickle protocol."""
-#        return dict(name=self.filename)
-#
-#    def __setstate__(self, state):
-#        """Implement the pickle protocol."""
-#        self.__init__(state['name'])
