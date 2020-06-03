@@ -278,13 +278,12 @@ class EinsteinMSD(AnalysisBase):
         self.select = select
         self.msd_type = msd_type
         self._parse_msd_type()
-
         self.fft = fft
 
         # local
         self._atoms = self.u.select_atoms(self.select)
         self._n_particles = len(self._atoms)
-        self._n_frames = None  # this is set in the baseclass
+        self._n_frames = None  # this is set in the baseclass in _prepare
         self._position_array = None
 
         # result
@@ -408,7 +407,7 @@ class EinsteinMSD(AnalysisBase):
                     pip install tidynamics
                     
                 or set fft=False""")
-                
+
         reshape_positions = self._position_array[:, :, :].astype(
             np.float64)
         for n in range(self._n_particles):
