@@ -353,9 +353,9 @@ class EinsteinMSD(AnalysisBase):
 
     def _conclude(self):
         if self.fft == True:
-            self.timeseries = self._conclude_fft()
+            self._conclude_fft()
         else:
-            self.timeseries = self._conclude_simple()
+            self._conclude_simple()
 
     def _conclude_simple(self):
         r""" Calculates the MSD via the simple "windowed" algorithm.
@@ -373,8 +373,6 @@ class EinsteinMSD(AnalysisBase):
 
         """
         lagtimes = np.arange(1, self.n_frames)
-        # preset the zero lagtime so we don't have to iterate through
-        self.msds_by_particle[0, :] = np.zeros(self._n_particles)
         for lag in lagtimes:
             disp = self._position_array[:-lag, :, self._dim] - \
                 self._position_array[lag:, :, self._dim]
@@ -382,8 +380,7 @@ class EinsteinMSD(AnalysisBase):
                 axis=-1, dtype=np.float64)  # np.float64 required
             self.msds_by_particle[lag, :] = np.mean(
                 sqdist, axis=0, dtype=np.float64)
-        msd = self.msds_by_particle.mean(axis=1, dtype=np.float64)
-        return msd
+        self.timeseries = self.msds_by_particle.mean(axis=1, dtype=np.float64)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
@@ -405,5 +402,4 @@ class EinsteinMSD(AnalysisBase):
         for n in range(self._n_particles):
             self.msds_by_particle[:, n] = tidynamics.msd(
                 reshape_positions[:, n, :])
-        msd = self.msds_by_particle.mean(axis=1, dtype=np.float64)
-        return msd
+        self.timeseries = self.msds_by_particle.mean(axis=1, dtype=np.float64)
