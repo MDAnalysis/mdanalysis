@@ -655,61 +655,309 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Atomnames.phi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;AtomGroup corresponding to the phi protein backbone dihedral</span>
+<div class="viewcode-block" id="Atomnames.phi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the phi protein backbone dihedral</span>
 <span class="sd">        C&#39;-N-CA-C.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        n_name: str (optional)</span>
+<span class="sd">            name for the backbone N atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        AtomGroup</span>
 <span class="sd">            4-atom selection in the correct order. If no C&#39; found in the</span>
 <span class="sd">            previous residue (by resid) then this method returns ``None``.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># TODO: maybe this can be reformulated into one selection string without</span>
-        <span class="c1"># the additions later</span>
-        <span class="n">sel_str</span> <span class="o">=</span> <span class="s2">&quot;segid </span><span class="si">{}</span><span class="s2"> and resid </span><span class="si">{}</span><span class="s2"> and name C&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">residue</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">residue</span><span class="o">.</span><span class="n">resid</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_str</span><span class="p">)</span> <span class="o">+</span>
-               <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">,</span> <span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="s1">&#39;name C&#39;</span><span class="p">))</span>
 
-        <span class="c1"># select_atoms doesnt raise errors if nothing found, so check size</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">sel</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">            Added arguments for flexible atom names and refactored code for</span>
+<span class="sd">            faster atom matching with boolean arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># fnmatch is expensive. try the obv candidate first</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span>
+        <span class="n">rid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">resid</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">prev</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span> <span class="o">==</span> <span class="n">sid</span> <span class="ow">and</span> <span class="n">prev</span><span class="o">.</span><span class="n">resid</span> <span class="o">==</span> <span class="n">rid</span><span class="p">):</span>
+            <span class="n">sel</span> <span class="o">=</span> <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">rid</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">prev</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">c_</span> <span class="o">=</span> <span class="n">prev</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">prev</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">c_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">atnames</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">ncac_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">ncac</span> <span class="o">=</span> <span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">atnames</span> <span class="o">==</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ncac_names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">ncac</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">c_</span><span class="o">+</span><span class="nb">sum</span><span class="p">(</span><span class="n">ncac</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sel</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;phi_selection&#39;</span><span class="p">,</span> <span class="n">phi_selection</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Atomnames.psi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.psi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">psi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;AtomGroup corresponding to the psi protein backbone dihedral</span>
+<div class="viewcode-block" id="Atomnames.phi_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selections">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the phi protein </span>
+<span class="sd">        backbone dihedral C&#39;-N-CA-C.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        n_name: str (optional)</span>
+<span class="sd">            name for the backbone N atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of AtomGroups</span>
+<span class="sd">            4-atom selections in the correct order. If no C&#39; found in the</span>
+<span class="sd">            previous residue (by resid) then corresponding item in the list</span>
+<span class="sd">            is ``None``.</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">u</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># obv candidates first</span>
+        <span class="n">rsid</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">segids</span>
+        <span class="n">prid</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">ncac_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">&#39;</span>
+
+        <span class="c1"># replace wrong residues</span>
+        <span class="n">wix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">prev</span><span class="o">.</span><span class="n">segids</span> <span class="o">!=</span> <span class="n">rsid</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">prev</span><span class="o">.</span><span class="n">resids</span> <span class="o">!=</span> <span class="n">prid</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">invalid</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wix</span><span class="p">):</span>
+            <span class="n">prevls</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prev</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rsid</span><span class="p">[</span><span class="n">wix</span><span class="p">],</span> <span class="n">prid</span><span class="p">[</span><span class="n">wix</span><span class="p">],</span> <span class="n">wix</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">prevls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">invalid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">prevls</span><span class="p">)</span>
+        
+        <span class="n">keep_prev</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">prev</span><span class="p">]</span>
+        <span class="n">keep_res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ncac_names</span><span class="p">)</span> 
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keep_prev</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keep_res</span><span class="p">)</span>
+        <span class="n">keep</span><span class="p">[</span><span class="n">invalid</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">results</span><span class="p">[</span><span class="o">~</span><span class="n">keep</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">prev</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="n">keepix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">keep</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">c_</span> <span class="o">=</span> <span class="n">prev</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">prev</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">ca_name</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">keepix</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">c_</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">c</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;phi_selections&#39;</span><span class="p">,</span> <span class="n">phi_selections</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="Atomnames.psi_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.psi_selection">[docs]</a>    <span class="k">def</span> <span class="nf">psi_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the psi protein backbone dihedral</span>
 <span class="sd">        N-CA-C-N&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        n_name: str (optional)</span>
+<span class="sd">            name for the backbone N atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        AtomGroup</span>
 <span class="sd">            4-atom selection in the correct order. If no N&#39; found in the</span>
 <span class="sd">            following residue (by resid) then this method returns ``None``.</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">            Added arguments for flexible atom names and refactored code for</span>
+<span class="sd">            faster atom matching with boolean arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sel_str</span> <span class="o">=</span> <span class="s2">&quot;segid </span><span class="si">{}</span><span class="s2"> and resid </span><span class="si">{}</span><span class="s2"> and name N&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="n">residue</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span><span class="p">,</span> <span class="n">residue</span><span class="o">.</span><span class="n">resid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">,</span> <span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="s1">&#39;name C&#39;</span><span class="p">)</span> <span class="o">+</span>
-               <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel_str</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">sel</span>
+        <span class="c1"># fnmatch is expensive. try the obv candidate first</span>
+        <span class="n">_manual_sel</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span>
+        <span class="n">rid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">resid</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nxt</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">ix</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">_manual_sel</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">nxt</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span> <span class="o">==</span> <span class="n">sid</span> <span class="ow">and</span> <span class="n">nxt</span><span class="o">.</span><span class="n">resid</span> <span class="o">==</span> <span class="n">rid</span><span class="p">):</span>
+                <span class="n">_manual_sel</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">_manual_sel</span><span class="p">:</span>
+            <span class="n">sel</span> <span class="o">=</span> <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">rid</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nxt</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">n_</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">atnames</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">ncac_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">ncac</span> <span class="o">=</span> <span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">atnames</span> <span class="o">==</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ncac_names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">ncac</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">sel</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ncac</span><span class="p">)</span> <span class="o">+</span> <span class="n">n_</span>
+        <span class="k">return</span> <span class="n">sel</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;psi_selection&#39;</span><span class="p">,</span> <span class="n">psi_selection</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Atomnames.omega_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.omega_selection">[docs]</a>    <span class="k">def</span> <span class="nf">omega_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;AtomGroup corresponding to the omega protein backbone dihedral</span>
+    <span class="k">def</span> <span class="nf">_get_next_residues_by_resid</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the next resid for each </span>
+<span class="sd">        residue in `residues`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of Residues</span>
+<span class="sd">            List of the next residues in the Universe, by resid and segid. </span>
+<span class="sd">            If not found, the corresponding item in the list is ``None``.</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
+        <span class="n">nxres</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">))</span>
+        <span class="c1"># no guarantee residues is ordered or unique</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">residues</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">last</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">notlast</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">ix</span> <span class="o">!=</span> <span class="n">last</span>
+            <span class="n">ix</span> <span class="o">=</span> <span class="n">ix</span><span class="p">[</span><span class="n">notlast</span><span class="p">]</span>
+            <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">notlast</span><span class="p">]</span>
+
+        <span class="n">nxres</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">nxt</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">ix</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">rsid</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">segids</span>
+        <span class="n">nrid</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="o">+</span><span class="mi">1</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">&#39;</span>
+
+        <span class="c1"># replace wrong residues</span>
+        <span class="n">wix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">nxt</span><span class="o">.</span><span class="n">segids</span> <span class="o">!=</span> <span class="n">rsid</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">nxt</span><span class="o">.</span><span class="n">resids</span> <span class="o">!=</span> <span class="n">nrid</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wix</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rsid</span><span class="p">[</span><span class="n">wix</span><span class="p">],</span> <span class="n">nrid</span><span class="p">[</span><span class="n">wix</span><span class="p">],</span> <span class="n">wix</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">nxres</span><span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">nxres</span><span class="p">[</span><span class="n">ix</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">nxres</span>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;_get_next_residues_by_resid&#39;</span><span class="p">,</span>
+                                      <span class="n">_get_next_residues_by_resid</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_prev_residues_by_resid</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the previous resid for each </span>
+<span class="sd">        residue in `residues`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of Residues</span>
+<span class="sd">            List of the previous residues in the Universe, by resid and segid. </span>
+<span class="sd">            If not found, the corresponding item in the list is ``None``.</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">universe</span>
+        <span class="n">pvres</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">))</span>
+        <span class="n">pvres</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">prev</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">ix</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">rsid</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">segids</span>
+        <span class="n">prid</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">resids</span><span class="o">-</span><span class="mi">1</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">&#39;</span>
+
+        <span class="c1"># replace wrong residues</span>
+        <span class="n">wix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">prev</span><span class="o">.</span><span class="n">segids</span> <span class="o">!=</span> <span class="n">rsid</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">prev</span><span class="o">.</span><span class="n">resids</span> <span class="o">!=</span> <span class="n">prid</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">wix</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rsid</span><span class="p">[</span><span class="n">wix</span><span class="p">],</span> <span class="n">prid</span><span class="p">[</span><span class="n">wix</span><span class="p">],</span> <span class="n">wix</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pvres</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="n">pvres</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">pvres</span>
+
+    
+    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;_get_prev_residues_by_resid&#39;</span><span class="p">,</span>
+                                      <span class="n">_get_prev_residues_by_resid</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Atomnames.psi_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.psi_selections">[docs]</a>    <span class="k">def</span> <span class="nf">psi_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the psi protein </span>
+<span class="sd">        backbone dihedral N-CA-C-N&#39;.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        n_name: str (optional)</span>
+<span class="sd">            name for the backbone N atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of AtomGroups</span>
+<span class="sd">            4-atom selections in the correct order. If no N&#39; found in the</span>
+<span class="sd">            following residue (by resid) then the corresponding item in the </span>
+<span class="sd">            list is ``None``.</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">nxtres</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">_get_next_residues_by_resid</span><span class="p">()</span>
+        <span class="n">rix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nxtres</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nxt</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nxtres</span><span class="p">[</span><span class="n">rix</span><span class="p">])</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span>
+        <span class="n">ncac_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">c_name</span><span class="p">]</span>
+
+        <span class="n">keep_nxt</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">nxt</span><span class="p">]</span>
+        <span class="n">keep_res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">ncac_names</span><span class="p">)</span> 
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keep_nxt</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keep_res</span><span class="p">)</span>
+        <span class="n">nxt</span> <span class="o">=</span> <span class="n">nxt</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="n">keepix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">keep</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">n</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">ca_name</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">n_</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">rix</span><span class="p">[</span><span class="n">keepix</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n_</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;psi_selections&#39;</span><span class="p">,</span> <span class="n">psi_selections</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Atomnames.omega_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.omega_selection">[docs]</a>    <span class="k">def</span> <span class="nf">omega_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the omega protein backbone dihedral</span>
 <span class="sd">        CA-C-N&#39;-CA&#39;.</span>
 
 <span class="sd">        omega describes the -C-N- peptide bond. Typically, it is trans (180</span>
 <span class="sd">        degrees) although cis-bonds (0 degrees) are also occasionally observed</span>
 <span class="sd">        (especially near Proline).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        n_name: str (optional)</span>
+<span class="sd">            name for the backbone N atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -717,22 +965,108 @@
 <span class="sd">            4-atom selection in the correct order. If no C&#39; found in the</span>
 <span class="sd">            previous residue (by resid) then this method returns ``None``.</span>
 
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">            Added arguments for flexible atom names and refactored code for</span>
+<span class="sd">            faster atom matching with boolean arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">nextres</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">resid</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">segid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span>
-        <span class="n">sel</span> <span class="o">=</span> <span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="s1">&#39;name C&#39;</span><span class="p">)</span> <span class="o">+</span>
-               <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span>
-                   <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1"> and name N&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">segid</span><span class="p">,</span> <span class="n">nextres</span><span class="p">),</span>
-                   <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1"> and name CA&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">segid</span><span class="p">,</span> <span class="n">nextres</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">sel</span>
+        <span class="c1"># fnmatch is expensive. try the obv candidate first</span>
+        <span class="n">_manual_sel</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">sid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span>
+        <span class="n">rid</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">resid</span><span class="o">+</span><span class="mi">1</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">nxt</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">ix</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="n">_manual_sel</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">nxt</span><span class="o">.</span><span class="n">segment</span><span class="o">.</span><span class="n">segid</span> <span class="o">==</span> <span class="n">sid</span> <span class="ow">and</span> <span class="n">nxt</span><span class="o">.</span><span class="n">resid</span> <span class="o">==</span> <span class="n">rid</span><span class="p">):</span>
+                <span class="n">_manual_sel</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">_manual_sel</span><span class="p">:</span>
+            <span class="n">sel</span> <span class="o">=</span> <span class="s1">&#39;segid </span><span class="si">{}</span><span class="s1"> and resid </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sid</span><span class="p">,</span> <span class="n">rid</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">nxt</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel</span><span class="p">)</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">ca_name</span><span class="p">]</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">n_</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="n">ca_</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">ca_name</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ca_</span><span class="p">,</span> <span class="n">n_</span><span class="p">,</span> <span class="n">ca</span><span class="p">,</span> <span class="n">c</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">ca</span><span class="o">+</span><span class="n">c</span><span class="o">+</span><span class="n">n_</span><span class="o">+</span><span class="n">ca_</span></div>
 
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;omega_selection&#39;</span><span class="p">,</span> <span class="n">omega_selection</span><span class="p">))</span>
 
-<div class="viewcode-block" id="Atomnames.chi1_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</span>
+<div class="viewcode-block" id="Atomnames.omega_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.omega_selections">[docs]</a>    <span class="k">def</span> <span class="nf">omega_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the omega protein </span>
+<span class="sd">        backbone dihedral CA-C-N&#39;-CA&#39;.</span>
+
+<span class="sd">        omega describes the -C-N- peptide bond. Typically, it is trans (180</span>
+<span class="sd">        degrees) although cis-bonds (0 degrees) are also occasionally observed</span>
+<span class="sd">        (especially near Proline).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        n_name: str (optional)</span>
+<span class="sd">            name for the backbone N atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of AtomGroups</span>
+<span class="sd">            4-atom selections in the correct order. If no C&#39; found in the</span>
+<span class="sd">            previous residue (by resid) then the corresponding item in the </span>
+<span class="sd">            list is ``None``.</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">nxtres</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">_get_next_residues_by_resid</span><span class="p">()</span>
+        <span class="n">rix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">nxtres</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">nxt</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">nxtres</span><span class="p">[</span><span class="n">rix</span><span class="p">])</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">rix</span><span class="p">]</span>
+        
+        <span class="n">nxtatoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca_name</span><span class="p">,</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="n">resatoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">ca_name</span><span class="p">,</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">keep_nxt</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nxtatoms</span><span class="p">)</span> 
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">nxt</span><span class="p">]</span>
+        <span class="n">keep_res</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">resatoms</span><span class="p">)</span> 
+                    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keep_nxt</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">keep_res</span><span class="p">)</span>
+        <span class="n">nxt</span> <span class="o">=</span> <span class="n">nxt</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+        <span class="n">keepix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">keep</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        
+        <span class="n">c</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">c_name</span><span class="p">]</span>
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">ca_name</span><span class="p">]</span>
+        <span class="n">n_</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n_name</span><span class="p">]</span>
+        <span class="n">ca_</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">nxt</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">ca_name</span><span class="p">]</span>
+
+        <span class="n">results</span><span class="p">[</span><span class="n">rix</span><span class="p">[</span><span class="n">keepix</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ca</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">n_</span><span class="p">,</span> <span class="n">ca_</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+
+    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;omega_selections&#39;</span><span class="p">,</span> <span class="n">omega_selections</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Atomnames.chi1_selection"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selection</span><span class="p">(</span><span class="n">residue</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="n">cb_name</span><span class="o">=</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span> 
+                       <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
+<span class="sd">        cb_name: str (optional)</span>
+<span class="sd">            name for the beta-carbon atom</span>
+<span class="sd">        cg_name: str (optional)</span>
+<span class="sd">            name for the gamma-carbon atom</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -740,16 +1074,57 @@
 <span class="sd">            4-atom selection in the correct order. If no CB and/or CG is found</span>
 <span class="sd">            then this method returns ``None``.</span>
 
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">            Added arguments for flexible atom names and refactored code for</span>
+<span class="sd">            faster atom matching with boolean arrays.</span>
+
 <span class="sd">        .. versionadded:: 0.7.5</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ag</span> <span class="o">=</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name N&#39;</span><span class="p">,</span> <span class="s1">&#39;name CA&#39;</span><span class="p">,</span>
-                                        <span class="s1">&#39;name CB&#39;</span><span class="p">,</span> <span class="s1">&#39;name CG&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ag</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">cb_name</span><span class="p">,</span> <span class="n">cg_name</span><span class="p">]</span>
+        <span class="n">ags</span> <span class="o">=</span> <span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span><span class="o">!=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">ag</span> <span class="ow">in</span> <span class="n">ags</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">ags</span><span class="p">)</span></div>
 
-    <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;chi1_selection&#39;</span><span class="p">,</span> <span class="n">chi1_selection</span><span class="p">))</span></div>
+    <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;chi1_selection&#39;</span><span class="p">,</span> <span class="n">chi1_selection</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Atomnames.chi1_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selections">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="n">cb_name</span><span class="o">=</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span> 
+                        <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the chi1 sidechain dihedral </span>
+<span class="sd">        N-CA-CB-CG.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        c_name: str (optional)</span>
+<span class="sd">            name for the backbone C atom</span>
+<span class="sd">        ca_name: str (optional)</span>
+<span class="sd">            name for the alpha-carbon atom</span>
+<span class="sd">        cb_name: str (optional)</span>
+<span class="sd">            name for the beta-carbon atom</span>
+<span class="sd">        cg_name: str (optional)</span>
+<span class="sd">            name for the gamma-carbon atom</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        List of AtomGroups</span>
+<span class="sd">            4-atom selections in the correct order. If no CB and/or CG is found</span>
+<span class="sd">            then the corresponding item in the list is ``None``.</span>
+
+<span class="sd">        .. versionadded:: 1.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="kc">None</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">residues</span><span class="p">))</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_name</span><span class="p">,</span> <span class="n">ca_name</span><span class="p">,</span> <span class="n">cb_name</span><span class="p">,</span> <span class="n">cg_name</span><span class="p">]</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="p">[</span><span class="nb">all</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">)</span> 
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">residues</span><span class="p">]</span>
+        <span class="n">keepix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">keep</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">residues</span> <span class="o">=</span> <span class="n">residues</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+
+        <span class="n">atnames</span> <span class="o">=</span> <span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">ags</span> <span class="o">=</span> <span class="p">[</span><span class="n">residues</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">atnames</span> <span class="o">==</span> <span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">names</span><span class="p">]</span>
+        <span class="n">results</span><span class="p">[</span><span class="n">keepix</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">sum</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="k">for</span> <span class="n">atoms</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">ags</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">results</span><span class="p">)</span></div>
+    
+    <span class="n">transplants</span><span class="p">[</span><span class="n">ResidueGroup</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;chi1_selections&#39;</span><span class="p">,</span> <span class="n">chi1_selections</span><span class="p">))</span></div>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
@@ -1005,9 +1380,11 @@
         <span class="n">unwrap</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;unwrap&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">compound</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;compound&#39;</span><span class="p">,</span> <span class="s1">&#39;group&#39;</span><span class="p">)</span>
 
-        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span>
+            <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">compound</span> <span class="o">!=</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
-            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+                   <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
             <span class="n">pos</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span>
@@ -1117,7 +1494,8 @@
                                            <span class="n">recenteredpos</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="p">:])</span>
         <span class="n">tensor</span> <span class="o">/=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">total_mass</span><span class="p">()</span>
         <span class="n">eig_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eigvalsh</span><span class="p">(</span><span class="n">tensor</span><span class="p">)</span>
-        <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">))</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">shape</span> <span class="o">=</span> <span class="mf">27.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">eig_vals</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">)</span>
+                               <span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">eig_vals</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">shape</span></div>
 
@@ -1160,9 +1538,11 @@
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atoms</span>
         <span class="n">masses</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">masses</span>
 
-        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
+        <span class="n">com</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span>
+            <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">compound</span> <span class="o">!=</span> <span class="s1">&#39;group&#39;</span><span class="p">:</span>
-            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">com</span> <span class="o">=</span> <span class="p">(</span><span class="n">com</span> <span class="o">*</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+                   <span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="n">pbc</span><span class="p">:</span>
             <span class="n">recenteredpos</span> <span class="o">=</span> <span class="p">(</span><span class="n">atomgroup</span><span class="o">.</span><span class="n">pack_into_box</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-</span> <span class="n">com</span><span class="p">)</span>
@@ -1375,6 +1755,7 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;&#39;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">na</span><span class="p">)],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="GBScreens"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.GBScreens">[docs]</a><span class="k">class</span> <span class="nc">GBScreens</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generalized Born screening factor&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;gbscreens&#39;</span>
@@ -1385,6 +1766,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="SolventRadii"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SolventRadii">[docs]</a><span class="k">class</span> <span class="nc">SolventRadii</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Intrinsic solvation radius&quot;&quot;&quot;</span>
@@ -1397,6 +1779,7 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="NonbondedIndices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.NonbondedIndices">[docs]</a><span class="k">class</span> <span class="nc">NonbondedIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Nonbonded index (AMBER)&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;nbindices&#39;</span>
@@ -1407,7 +1790,8 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
-    
+
+
 <div class="viewcode-block" id="RMins"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMins">[docs]</a><span class="k">class</span> <span class="nc">RMins</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;rmins&#39;</span>
@@ -1418,6 +1802,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="Epsilons"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilons">[docs]</a><span class="k">class</span> <span class="nc">Epsilons</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The epsilon LJ parameter&quot;&quot;&quot;</span>
@@ -1430,6 +1815,7 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="RMin14s"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.RMin14s">[docs]</a><span class="k">class</span> <span class="nc">RMin14s</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The Rmin/2 LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;rmin14s&#39;</span>
@@ -1441,6 +1827,7 @@
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
 
+
 <div class="viewcode-block" id="Epsilon14s"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Epsilon14s">[docs]</a><span class="k">class</span> <span class="nc">Epsilon14s</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The epsilon LJ parameter for 1-4 interactions&quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;epsilon14s&#39;</span>
@@ -1451,6 +1838,7 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">na</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="ResidueAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.ResidueAttr">[docs]</a><span class="k">class</span> <span class="nc">ResidueAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;residueattrs&#39;</span>
@@ -1589,13 +1977,14 @@
         <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="s2">&quot;SeqRecord&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown format=&#39;</span><span class="si">{0}</span><span class="s2">&#39;: must be one of: </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="nb">format</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formats</span><span class="p">)))</span>
+                <span class="nb">format</span><span class="p">,</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">formats</span><span class="p">)))</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">sequence</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">convert_aa_code</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resnames</span><span class="p">])</span>
+            <span class="n">sequence</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">convert_aa_code</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">resnames</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
             <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;AtomGroup contains a residue name &#39;</span><span class="si">{0}</span><span class="s2">&#39; that &quot;</span>
-                             <span class="s2">&quot;does not have a IUPAC protein 1-letter &quot;</span>
-                             <span class="s2">&quot;character&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+                                      <span class="s2">&quot;does not have a IUPAC protein 1-letter &quot;</span>
+                                      <span class="s2">&quot;character&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">message</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;string&quot;</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">sequence</span>
         <span class="n">seq</span> <span class="o">=</span> <span class="n">Bio</span><span class="o">.</span><span class="n">Seq</span><span class="o">.</span><span class="n">Seq</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
@@ -1652,6 +2041,7 @@
     <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intp</span></div>
 
 <span class="c1"># segment attributes</span>
+
 
 <div class="viewcode-block" id="SegmentAttr"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.SegmentAttr">[docs]</a><span class="k">class</span> <span class="nc">SegmentAttr</span><span class="p">(</span><span class="n">TopologyAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for segment attributes.</span>
@@ -1710,12 +2100,12 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span> 
-                <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span>
+                   <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">integer</span><span class="p">))</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span>
+                   <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">((</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> must be an iterable of tuples with </span><span class="si">{}</span><span class="s2">&quot;</span>
-                            <span class="s2">&quot; atom indices&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span>
-                            <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">))</span>
+                              <span class="s2">&quot; atom indices&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attrname</span><span class="p">,</span>
+                                                      <span class="bp">self</span><span class="o">.</span><span class="n">_n_atoms</span><span class="p">))</span>
         <span class="n">clean</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -1725,9 +2115,10 @@
         <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clean</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">wrapper</span>
 
+
 <span class="k">class</span> <span class="nc">_Connection</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for connectivity between atoms</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. versionchanged:: 0.21.0</span>
 <span class="sd">        Added type checking to atom index values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1813,7 +2204,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;bd&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
-    
+
     <span class="nd">@_check_connection_values</span>
     <span class="k">def</span> <span class="nf">_delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1842,6 +2233,7 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="s1">&#39;bd&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
+
 
 <div class="viewcode-block" id="Bonds"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds">[docs]</a><span class="k">class</span> <span class="nc">Bonds</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Bonds between two atoms</span>
@@ -1995,6 +2387,7 @@
         <span class="p">(</span><span class="s1">&#39;n_fragments&#39;</span><span class="p">,</span> <span class="nb">property</span><span class="p">(</span><span class="n">n_fragments</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
                                  <span class="n">n_fragments</span><span class="o">.</span><span class="vm">__doc__</span><span class="p">)))</span></div>
 
+
 <div class="viewcode-block" id="UreyBradleys"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.UreyBradleys">[docs]</a><span class="k">class</span> <span class="nc">UreyBradleys</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Angles between two atoms</span>
 
@@ -2008,6 +2401,7 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;ureybradleys&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">_n_atoms</span> <span class="o">=</span> <span class="mi">2</span></div>
+
 
 <div class="viewcode-block" id="Angles"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Angles">[docs]</a><span class="k">class</span> <span class="nc">Angles</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Angles between three atoms</span>
@@ -2037,6 +2431,7 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;impropers&#39;</span>
     <span class="n">transplants</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
     <span class="n">_n_atoms</span> <span class="o">=</span> <span class="mi">4</span></div>
+
 
 <div class="viewcode-block" id="CMaps"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.CMaps">[docs]</a><span class="k">class</span> <span class="nc">CMaps</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>

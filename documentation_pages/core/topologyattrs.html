@@ -316,17 +316,57 @@ elements in that group.</p>
 <dd><p>Name for each atom.</p>
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Atomnames.chi1_selection">
-<code class="descname">chi1_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.chi1_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
+<code class="descname">chi1_selection</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.chi1_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.chi1_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><ul class="simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>cb_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the beta-carbon atom</li>
+<li><strong>cg_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the gamma-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
 <li><em>AtomGroup</em> – 4-atom selection in the correct order. If no CB and/or CG is found
 then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
 <li><em>.. versionadded:: 0.7.5</em></li>
 </ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.chi1_selections">
+<code class="descname">chi1_selections</code><span class="sig-paren">(</span><em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>cb_name='CB'</em>, <em>cg_name='CG'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.chi1_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.chi1_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the chi1 sidechain dihedral
+N-CA-CB-CG.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>cb_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the beta-carbon atom</li>
+<li><strong>cg_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the gamma-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no CB and/or CG is found
+then the corresponding item in the list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
 </td>
 </tr>
 </tbody>
@@ -341,8 +381,8 @@ then this method returns <code class="docutils literal notranslate"><span class=
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Atomnames.omega_selection">
-<code class="descname">omega_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.omega_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.omega_selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>AtomGroup corresponding to the omega protein backbone dihedral
+<code class="descname">omega_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.omega_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.omega_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the omega protein backbone dihedral
 CA-C-N’-CA’.</p>
 <p>omega describes the -C-N- peptide bond. Typically, it is trans (180
 degrees) although cis-bonds (0 degrees) are also occasionally observed
@@ -351,10 +391,53 @@ degrees) although cis-bonds (0 degrees) are also occasionally observed
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">4-atom selection in the correct order. If no C’ found in the
-previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no C’ found in the
+previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.omega_selections">
+<code class="descname">omega_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.omega_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.omega_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the omega protein
+backbone dihedral CA-C-N’-CA’.</p>
+<p>omega describes the -C-N- peptide bond. Typically, it is trans (180
+degrees) although cis-bonds (0 degrees) are also occasionally observed
+(especially near Proline).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no C’ found in the
+previous residue (by resid) then the corresponding item in the
+list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -362,17 +445,57 @@ previous residue (by resid) then this method returns <code class="docutils liter
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Atomnames.phi_selection">
-<code class="descname">phi_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.phi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.phi_selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>AtomGroup corresponding to the phi protein backbone dihedral
+<code class="descname">phi_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.phi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.phi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the phi protein backbone dihedral
 C’-N-CA-C.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">4-atom selection in the correct order. If no C’ found in the
-previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no C’ found in the
+previous residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.phi_selections">
+<code class="descname">phi_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.phi_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.phi_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the phi protein
+backbone dihedral C’-N-CA-C.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>list of AtomGroups</em> – 4-atom selections in the correct order. If no C’ found in the
+previous residue (by resid) then corresponding item in the list
+is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -380,17 +503,57 @@ previous residue (by resid) then this method returns <code class="docutils liter
 
 <dl class="method">
 <dt id="MDAnalysis.core.topologyattrs.Atomnames.psi_selection">
-<code class="descname">psi_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.psi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.psi_selection" title="Permalink to this definition">¶</a></dt>
-<dd><p>AtomGroup corresponding to the psi protein backbone dihedral
+<code class="descname">psi_selection</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.psi_selection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.psi_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select AtomGroup corresponding to the psi protein backbone dihedral
 N-CA-C-N’.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">4-atom selection in the correct order. If no N’ found in the
-following residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>AtomGroup</em> – 4-atom selection in the correct order. If no N’ found in the
+following residue (by resid) then this method returns <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionchanged:: 1.0.0</em> – Added arguments for flexible atom names and refactored code for
+faster atom matching with boolean arrays.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.topologyattrs.Atomnames.psi_selections">
+<code class="descname">psi_selections</code><span class="sig-paren">(</span><em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/topologyattrs.html#Atomnames.psi_selections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.topologyattrs.Atomnames.psi_selections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select list of AtomGroups corresponding to the psi protein
+backbone dihedral N-CA-C-N’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><em>List of AtomGroups</em> – 4-atom selections in the correct order. If no N’ found in the
+following residue (by resid) then the corresponding item in the
+list is <code class="docutils literal notranslate"><span class="pre">None</span></code>.</li>
+<li><em>.. versionadded:: 1.0.0</em></li>
+</ul>
+</p>
+</td>
 </tr>
 </tbody>
 </table>

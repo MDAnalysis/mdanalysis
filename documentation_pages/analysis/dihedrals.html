@@ -364,31 +364,66 @@ an <code class="docutils literal notranslate"><span class="pre">n_frames×len(at
 
 <dl class="class">
 <dt id="MDAnalysis.analysis.dihedrals.Ramachandran">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.dihedrals.</code><code class="descname">Ramachandran</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.dihedrals.</code><code class="descname">Ramachandran</code><span class="sig-paren">(</span><em>atomgroup</em>, <em>c_name='C'</em>, <em>n_name='N'</em>, <em>ca_name='CA'</em>, <em>check_protein=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Ramachandran"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> dihedral angles of selected residues.</p>
 <p><span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> angles will be calculated for each residue
 corresponding to <cite>atomgroup</cite> for each time step in the trajectory. A
 <code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code> is generated from <cite>atomgroup</cite> which is
 compared to the protein to determine if it is a legitimate selection.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If the residue selection is beyond the scope of the protein, then an error
-will be raised. If the residue selection includes the first or last residue,
-then a warning will be raised and they will be removed from the list of
-residues, but the analysis will still run. If a <span class="math notranslate nohighlight">\(\phi\)</span> or <span class="math notranslate nohighlight">\(\psi\)</span>
-selection cannot be made, that residue will be removed from the analysis.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><em>ResidueGroup</em></a>) – atoms for residues for which <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> are
-calculated</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If the selection of residues is not contained within the protein</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>atomgroup</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="MDAnalysis.core.groups.ResidueGroup"><em>ResidueGroup</em></a>) – atoms for residues for which <span class="math notranslate nohighlight">\(\phi\)</span> and <span class="math notranslate nohighlight">\(\psi\)</span> are
+calculated</li>
+<li><strong>c_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone C atom</li>
+<li><strong>n_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the backbone N atom</li>
+<li><strong>ca_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – name for the alpha-carbon atom</li>
+<li><strong>check_protein</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – whether to raise an error if the provided atomgroup is not a
+subset of protein atoms</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Example</p>
+<p>For standard proteins, the default arguments will suffice to run a
+Ramachandran analysis:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For proteins with non-standard residues, or for calculating dihedral
+angles for other linear polymers, you can switch off the protein checking
+and provide your own atom names in place of the typical peptide backbone
+atoms:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">r</span> <span class="o">=</span> <span class="n">Ramachandran</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;CX&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;NT&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span>
+                 <span class="n">check_protein</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The above analysis will calculate angles from a “phi” selection of
+CX’-NT-S-CX and “psi” selections of NT-S-CX-NT’.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If the selection of residues is not contained within the protein
+and <code class="docutils literal notranslate"><span class="pre">check_protein</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">check_protein</span></code> is <code class="docutils literal notranslate"><span class="pre">True</span></code> and the residue selection is beyond
+the scope of the protein and, then an error will be raised.
+If the residue selection includes the first or last residue,
+then a warning will be raised and they will be removed from the list of
+residues, but the analysis will still run. If a <span class="math notranslate nohighlight">\(\phi\)</span> or <span class="math notranslate nohighlight">\(\psi\)</span>
+selection cannot be made, that residue will be removed from the analysis.</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>added c_name, n_name, ca_name, and check_protein keyword arguments</p>
+</div>
+</div>
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.dihedrals.Ramachandran.angles">
 <code class="descname">angles</code><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Ramachandran.angles" title="Permalink to this definition">¶</a></dt>
