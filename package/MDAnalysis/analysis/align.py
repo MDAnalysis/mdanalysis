@@ -1033,6 +1033,10 @@ def fasta2select(fastafilename, is_aligned=False,
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
+    .. versionchanged:: 1.0.0
+       Passing `alnfilename` or `treefilename` as `None` will create a file in
+       the current working directory.
+
     """
     if is_aligned:
         logger.info("Using provided alignment {}".format(fastafilename))
@@ -1042,10 +1046,10 @@ def fasta2select(fastafilename, is_aligned=False,
     else:
         if alnfilename is None:
             filepath, ext = os.path.splitext(fastafilename)
-            alnfilename = filepath + '.aln'
+            alnfilename = os.path.basename(filepath) + '.aln'
         if treefilename is None:
             filepath, ext = os.path.splitext(alnfilename)
-            treefilename = filepath + '.dnd'
+            treefilename = os.path.basename(filepath) + '.dnd'
         run_clustalw = Bio.Align.Applications.ClustalwCommandline(
             clustalw,
             infile=fastafilename,
