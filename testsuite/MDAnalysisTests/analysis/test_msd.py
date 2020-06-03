@@ -163,6 +163,17 @@ def test_simple_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
     poly = characteristic_poly(NSTEP, dim_factor)
     assert_almost_equal(m_simple.timeseries, poly, decimal=4)
 
+@pytest.mark.parametrize("dim, dim_factor", \
+[('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
+def test_simple_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
+    # testing the "simple" algorithm on constant velocity trajectory
+    # test start stop step is working correctly
+    m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False, start=10, \
+         stop=1000, step=10)
+    m_simple.run()
+    poly = characteristic_poly(NSTEP, dim_factor)
+    assert_almost_equal(m_simple.timeseries, poly[10:1000:10], decimal=4)
+
 
 @pytest.mark.parametrize("dim, dim_factor", \
 [('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
@@ -177,6 +188,17 @@ def test_fft_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
     poly = characteristic_poly(NSTEP, dim_factor)
     # this was relaxed from decimal=4 for numpy=1.13 test
     assert_almost_equal(m_simple.timeseries, poly, decimal=3)
+
+@pytest.mark.parametrize("dim, dim_factor", \
+[('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
+def test_fft_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
+    # testing the fft algorithm on constant velocity trajectory
+    # test start stop step is working correctly
+    m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True, start=10, \
+         stop=1000, step=10)
+    m_simple.run()
+    poly = characteristic_poly(NSTEP, dim_factor)
+    assert_almost_equal(m_simple.timeseries, poly[10:1000:10], decimal=3)
 
 
 def test_random_walk_u_simple(random_walk_u):
