@@ -116,26 +116,21 @@ class RDKitParser(TopologyReaderBase):
                     if 'atomname' in prop.lower(): # usually _TriposAtomName
                         names.append(value)
                     elif 'atomtype' in prop.lower(): # usually _TriposAtomType
-                        atomtypes.append(value)
-
+                        atomtypes.append(value)                
+                
         # make Topology attributes
         attrs = []
         n_atoms = len(ids)
 
+        # * Attributes always present *
+
+        # Atom index, symbol and mass
         for vals, Attr, dtype in (
             (ids, Atomids, np.int32),
             (elements, Elements, object),
-            (names, Atomnames, object),
             (masses, Masses, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
-
-        # Optional
-        if atomtypes:
-            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
-        else:
-            atomtypes = guessers.guess_types(names)
-            attrs.append(Atomtypes(atomtypes, guessed=True))
 
         # Bonds
         bonds = []
@@ -145,10 +140,27 @@ class RDKitParser(TopologyReaderBase):
             bonds.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
             bond_orders.append(bond.GetBondTypeAsDouble())
             bond_types.append(str(bond.GetBondType()))
-
         attrs.append(Bonds(bonds, types=bond_types, order=bond_orders))
 
-        # Others
+        # * Optional attributes *
+
+        # Atom name
+        if names:
+            attrs.append(Atomnames(np.array(names, dtype=object)))
+        else:
+            for atom in mol.GetAtoms():
+                name = "%s%d" % (atom.GetSymbol(), atom.GetIdx())
+                names.append(name)
+            attrs.append(Atomnames(np.array(names, dtype=object)))
+
+        # Atom type
+        if atomtypes:
+            attrs.append(Atomtypes(np.array(atomtypes, dtype=object)))
+        else:
+            atomtypes = guessers.guess_types(names)
+            attrs.append(Atomtypes(atomtypes, guessed=True))
+
+        # Residue
         residx, residue_numbers, (residue_names,) = squash_by(
             residue_numbers, np.array(residue_names))
         n_residues = len(residue_numbers)
@@ -164,8 +176,11 @@ class RDKitParser(TopologyReaderBase):
             attrs.append(Resnums(np.array([1])))
             residx = None
             n_residues = 1
+
+        # Segment
         attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
 
+        # create topology
         top = Topology(n_atoms, n_residues, 1,
                        attrs=attrs,
                        atom_resindex=residx)
