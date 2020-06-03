@@ -46,7 +46,7 @@ from __future__ import absolute_import, division
 import logging
 import numpy as np
 
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, change_squash
 from . import guessers
 from ..core.topologyattrs import (
     Atomids,
@@ -96,12 +96,13 @@ class RDKitParser(TopologyReaderBase):
 
         # Atoms
         names = []
-        residue_numbers = []
-        residue_names = []
+        resnums = []
+        resnames = []
         elements = []
         masses = []
         ids = []
         atomtypes = []
+        segids = []
         for atom in mol.GetAtoms():
             ids.append(atom.GetIdx())
             elements.append(atom.GetSymbol())
@@ -109,8 +110,9 @@ class RDKitParser(TopologyReaderBase):
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
-                residue_numbers.append(mi.GetResidueNumber())
-                residue_names.append(mi.GetResidueName())
+                resnums.append(mi.GetResidueNumber())
+                resnames.append(mi.GetResidueName())
+                segids.append(mi.GetSegmentNumber())
             else:
                 for prop, value in atom.GetPropsAsDict(True).items():
                     if 'atomname' in prop.lower(): # usually _TriposAtomName
@@ -161,14 +163,18 @@ class RDKitParser(TopologyReaderBase):
             attrs.append(Atomtypes(atomtypes, guessed=True))
 
         # Residue
-        residx, residue_numbers, (residue_names,) = squash_by(
-            residue_numbers, np.array(residue_names))
-        n_residues = len(residue_numbers)
-        if n_residues > 0:
+        if any(resnums) and not any(val is None for val in resnums):
+            resnums = np.array(resnums, dtype=np.int32)
+            resnames = np.array(resnames, dtype=object)
+            segids = np.array(segids, dtype=object)
+            residx, (resnums, resnames, segids) = change_squash(
+                (resnums, resnames, segids), 
+                (resnums, resnames, segids))
+            n_residues = len(resnums)
             for vals, Attr, dtype in (
-                (residue_numbers, Resids, np.int32),
-                (residue_numbers.copy(), Resnums, np.int32),
-                (residue_names, Resnames, object)
+                (resnums, Resids, np.int32),
+                (resnums.copy(), Resnums, np.int32),
+                (resnames, Resnames, object)
             ):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
         else:
@@ -178,11 +184,19 @@ class RDKitParser(TopologyReaderBase):
             n_residues = 1
 
         # Segment
-        attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+        if any(segids) and not any(val is None for val in segids):
+            segidx, (segids,) = change_squash((segids,), (segids,))
+            n_segments = len(segids)
+            attrs.append(Segids(segids))
+        else:
+            n_segments = 1
+            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+            segidx = None
 
         # create topology
-        top = Topology(n_atoms, n_residues, 1,
+        top = Topology(n_atoms, n_residues, n_segments,
                        attrs=attrs,
-                       atom_resindex=residx)
+                       atom_resindex=residx,
+                       residue_segindex=segidx)
 
         return top
