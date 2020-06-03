@@ -151,7 +151,7 @@ def test_fft_vs_simple_all_dims_per_particle(u, SELECTION, dim):
     assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
 
-@pytest.mark.parametrize("dim, dim_factor", \ 
+@pytest.mark.parametrize("dim, dim_factor", \
 [('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
 def test_simple_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
     # testing the "simple" algorithm on constant velocity trajectory
