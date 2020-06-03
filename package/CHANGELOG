@@ -135,6 +135,15 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * Refactored dihedral selections and Ramachandran.__init__ to speed up 
+    dihedral selections for faster tests (Issue #2671, PR #2706)
+  * Removes the deprecated `t0`, `tf`, and `dtmax` from
+    :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
+    `tau_max` keywords should be passed to
+    :meth:`Waterdynamics.SurvivalProbability.run`. Furthermore, the `stop`
+    keyword is now exclusive instead of inclusive (Issue #2524).
+  * :meth:`align.fasta2select` now writes `alnfilename` and `treefilename` to
+    the current working directory (Issue #2701)
   * Removes duplicate `NUMBER_TO_ELEMENTS` table from topology._elements,
     `Z2SYMB` from topology.tables should now be used instead (Issue #2699)
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
