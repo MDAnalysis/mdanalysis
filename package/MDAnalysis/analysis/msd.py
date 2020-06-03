@@ -218,9 +218,10 @@ from __future__ import division, absolute_import
 
 import numpy as np
 import logging
-import tidynamics
 from ..due import due, Doi
 from .base import AnalysisBase
+
+logger = logging.getLogger('MDAnalysis.analysis.msd')
 
 due.cite(Doi("10.21105/joss.00877"),
          description="Mean Squared Displacements with tidynamics",
@@ -276,30 +277,27 @@ class EinsteinMSD(AnalysisBase):
         # args
         self.select = select
         self.msd_type = msd_type
+        self._parse_msd_type()
+
         self.fft = fft
 
         # local
-        self._dim = None
+        self._atoms = self.u.select_atoms(self.select)
+        self._n_particles = len(self._atoms)
+        self._n_frames = None  # this is set in the baseclass
         self._position_array = None
-        self._atoms = None
-
-        # indexing
-        self._n_frames = 0  # this is set in the baseclass
-        self._n_particles = 0
 
         # result
-        self.dim_fac = 0
-        self.timeseries = None
         self.msds_by_particle = None
+        self.timeseries = None
 
     def _prepare(self):
-        self._parse_msd_type()
-        self._atoms = self.u.select_atoms(self.select)
-        self._n_frames = self.n_frames  # set in base class
-        self._n_particles = len(self._atoms)
-        self._position_array = np.zeros(
-            (self.n_frames, self._n_particles, self.dim_fac))
+        # only available here
+        self._n_frames = self.n_frames
+        # these need to be zeroed prior to each run() call
         self.msds_by_particle = np.zeros((self._n_frames, self._n_particles))
+        self._position_array = np.zeros(
+            (self._n_frames, self._n_particles, self.dim_fac))
         # self.timeseries not set here
 
     def _parse_msd_type(self):
@@ -398,6 +396,19 @@ class EinsteinMSD(AnalysisBase):
             The MSD as a function of lagtime.
 
         """
+        try:
+            import tidynamics
+        except ImportError:
+            ("""ERROR --- tidynamics was not found!
+
+                tidynamics is required to compute an FFT based MSD (default)
+
+                try installing it using pip eg:
+                    
+                    pip install tidynamics
+                    
+                or set fft=False""")
+                
         reshape_positions = self._position_array[:, :, :].astype(
             np.float64)
         for n in range(self._n_particles):
