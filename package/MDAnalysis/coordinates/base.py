@@ -2106,6 +2106,27 @@ class _BAsciiPickle(_AsciiPickle):
 
         del self._pickle_fn
 
+class _ExAsciiPickle(object):
+    # For external file reader, e.g. GSD 
+    def __getstate__(self):
+        # Shallow copy of state of self
+        # shallow ie don't recursively copy all objects,
+        # just copy the references that __dict__ holds
+        stuff = self.__dict__.copy()
+        # don't pass the file handle over
+        del stuff['_f']
+        # instead pass enough metadata to reconstruct
+        stuff['_pickle_fn'] = self.filename
+        # TODO: what other state does Reader hold?
+        # TODO: reconstruct file handle position
+        return stuff
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.open_trajectory_for_pickle()
+        del self._pickle_fn
+        
+
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.

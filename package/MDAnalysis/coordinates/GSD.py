@@ -54,7 +54,7 @@ import gsd.hoomd
 
 from . import base
 
-class GSDReader(base.ReaderBase):
+class GSDReader(base.ReaderBase, base._ExAsciiPickle):
     """Reader for the GSD format.
 
     """
@@ -76,23 +76,27 @@ class GSDReader(base.ReaderBase):
         super(GSDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()
-        self.n_atoms = self._file[0].particles.N
+        self.n_atoms = self._f[0].particles.N
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._read_next_timestep()
 
-    def open_trajectory(self) :
+    def open_trajectory(self):
         """opens the trajectory file using gsd.hoomd module"""
         self._frame = -1
-        self._file = gsd.hoomd.open(self.filename,mode='rb')
+        self._f = gsd.hoomd.open(self.filename,mode='rb')
+
+    def open_trajectory_for_pickle(self):
+        """opens the trajectory file while not reset frame"""
+        self._f = gsd.hoomd.open(self.filename, mode='rb')
 
     def close(self):
         """close reader"""
-        self._file.file.close()
+        self._f.file.close()
 
     @property
     def n_frames(self):
         """number of frames in trajectory"""
-        return len(self._file)
+        return len(self._f)
 
     def _reopen(self):
         """reopen trajectory"""
@@ -101,7 +105,7 @@ class GSDReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         try :
-            myframe = self._file[frame]
+            myframe = self._f[frame]
         except IndexError:
             raise_from(IOError, None)
 
@@ -131,3 +135,11 @@ class GSDReader(base.ReaderBase):
     def _read_next_timestep(self) :
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
+
+#    def __getstate__(self):
+#        """Implement the pickle protocol."""
+#        return dict(name=self.filename)
+#
+#    def __setstate__(self, state):
+#        """Implement the pickle protocol."""
+#        self.__init__(state['name'])
