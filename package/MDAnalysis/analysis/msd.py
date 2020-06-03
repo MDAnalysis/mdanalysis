@@ -36,14 +36,14 @@ which particles move and has its roots in the study of Brownian motion.
 For a full explanation of the theory behind MSDs and the subsequent 
 calculation of self-diffusivities the reader is directed to [Maginn2019]_. 
 MSDs can be computed from the following expression, known as the 
-_Einstein formula_:
+_Einstein_ _formula_:
 
 .. math::
 
    MSD(r_{d}) = \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d} 
     - r_{d}(t_0)|^2 \bigg{\rangle}_{t_{0}}
 
-Where :math:`N` is the number of equivalent particles the MSD is calculated 
+where :math:`N` is the number of equivalent particles the MSD is calculated 
 over, :math:`r` are their coordinates and :math:`d` the desired dimensionality 
 of the MSD. Note that while the definition of the MSD is universal, there are 
 many practical considerations to computing the MSD that vary between 
@@ -70,37 +70,44 @@ random walk. Files provided as part of the MDAnalysis test suite are used
 
 First load all modules and test data
 
-    >>> import MDAnalysis as mda
-    >>> import MDAnalysis.analysis.msd as msd
-    >>> from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
+.. code-block:: python
+
+    import MDAnalysis as mda
+    import MDAnalysis.analysis.msd as msd
+    from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 
 Given a universe containing trajectory data we can extract the MSD
 analysis by using the class :class:`EinsteinMSD` 
 
-    >>> u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
-    >>> MSD = msd.EinsteinMSD(u, 'all', msd_type='xyz', fft=True)
-    >>> MSD.run()
+.. code-block:: python
+
+    u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
+    MSD = msd.EinsteinMSD(u, 'all', msd_type='xyz', fft=True)
+    MSD.run()
 
 The MSD can then be accessed as
 
-    >>> msd =  MSD.timeseries
+.. code-block:: python
+
+    msd =  MSD.timeseries
 
 Visual inspection of the MSD is important, so let's take a look at it with a
  simple plot.
 
-    >>> import matplotlib.pyplot as plt
-    >>> nframes = MSD.n_frames
-    >>> timestep = 1 # this needs to be the actual time between frames in your
-     trajectory
-    >>> lagtimes = np.arange(nframes)*timestep # make the lag time axis
-    >>> fig = plt.figure()
-    >>> ax = plt.axes()
-    >>> ax.plot(lagtimes, msd, color="black", linestyle="-",
-     label=r'3D random walk') # plot the actual MSD
-    >>> exact = lagtimes*6
-    >>> ax.plot(lagtimes, exact, color="black", linestyle="--",
-     label=r'$y=2 D\tau$') # plot the exact result
-    >>> plt.show()
+.. code-block:: python
+
+    import matplotlib.pyplot as plt
+    nframes = MSD.n_frames
+    timestep = 1 # this needs to be the actual time between frames 
+    lagtimes = np.arange(nframes)*timestep # make the lag time axis
+    fig = plt.figure()
+    ax = plt.axes()
+    # plot the actual MSD
+    ax.plot(lagtimes, msd, lc="black", ls="-", label=r'3D random walk') 
+    exact = lagtimes*6
+    # plot the exact result
+    ax.plot(lagtimes, exact, lc="black", ls="--", label=r'$y=2 D\tau$') 
+    plt.show()
 
 This gives us the plot of the MSD with respect to lag-time (:math:`\tau`).
 We can see that the MSD is approximately linear with respect to :math:`\tau`.
@@ -125,8 +132,10 @@ linear segments of the MSD can be confirmed with a log-log plot as is often
 reccomended [Maginn2019]_ where the "middle" segment can be identified as 
 having a slope of 1.
 
-    >>> plt.loglog(lagtimes, msd)
-    >>> plt.show()
+.. code-block:: python
+
+    plt.loglog(lagtimes, msd)
+    plt.show()
 
 Now that we have identified what segment of our MSD to analyse, let's compute 
 a self-diffusivity.
@@ -145,17 +154,18 @@ a linear model. An example of this is shown below, using the MSD computed in
 the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60` 
 is used to demonstrate selection of a MSD segment.
 
-    >>> from scipy.stats import linregress as lr
-    >>> start_time = 20
-    >>> start_index = int(start_time/timestep)
-    >>> end_time = 60
-    >>> end_index = int(end_time/timestep)
-    >>> linear_model = lr(lagtimes[start_index:end_index],
-     msd[start_index:end_index])
-    >>> slope = linear_model.slope
-    >>> error = linear_model.rvalue
-    >>> D = slope * 1/(2*MSD.dim_fac) 
-    #dim_fac is 3 as we computed a 3D msd ('xyz')
+.. code-block:: python
+
+    from scipy.stats import linregress as lr
+    start_time = 20
+    start_index = int(start_time/timestep)
+    end_time = 60
+    linear_model = lr(lagtimes[start_index:end_index], \
+    msd[start_index:end_index])
+    slope = linear_model.slope
+    error = linear_model.rvalue
+    # dim_fac is 3 as we computed a 3D msd with 'xyz'
+    D = slope * 1/(2*MSD.dim_fac) 
 
 We have now computed a self-diffusivity!
 
@@ -178,10 +188,10 @@ scope of this module.
 References
 ----------
 
-.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. 
-R., Elliott, J. R. Best Practices for Computing Transport Properties 1. 
-Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics 
-[Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1). 
+.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R., 
+    Elliott, J. R. Best Practices for Computing Transport Properties 1. 
+    Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics 
+    [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1). 
 
 
 
@@ -326,8 +336,8 @@ class EinsteinMSD(AnalysisBase):
             shape = (n_frames, n_particles, 3)
         """
 
-        self._position_array[self._frame_index] = 
-        self._atoms.positions[:, self._dim]
+        self._position_array[self._frame_index] = \
+            self._atoms.positions[:, self._dim]
 
     def _conclude(self):
         if self.fft == True:
@@ -357,7 +367,7 @@ class EinsteinMSD(AnalysisBase):
             disp = self._position_array[:-lag, :, self._dim] - \
                 self._position_array[lag:, :, self._dim]
             sqdist = np.square(disp, dtype=np.float64).sum(
-                axis=-1, dtype=np.float64)  #np.float64 required
+                axis=-1, dtype=np.float64)  # np.float64 required
             self.msds_by_particle[lag, :] = np.mean(
                 sqdist, axis=0, dtype=np.float64)
         msd = self.msds_by_particle.mean(axis=1, dtype=np.float64)
