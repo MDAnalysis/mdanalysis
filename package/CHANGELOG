@@ -135,6 +135,8 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * Refactored dihedral selections and Ramachandran.__init__ to speed up 
+    dihedral selections for faster tests (Issue #2671, PR #2706)
   * Removes the deprecated `t0`, `tf`, and `dtmax` from
     :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
     `tau_max` keywords should be passed to
