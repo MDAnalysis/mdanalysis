@@ -61,17 +61,18 @@ class TestRDKitParserMOL2(RDKitParserBase):
 
     @pytest.fixture
     def filename(self):
-        return Chem.MolFromMol2File(self.ref_filename, removeHs=False)
+        return Chem.MolFromMol2File(self.ref_filename, removeHs=False, 
+                                    sanitize=False)
 
     def test_bond_orders(self, top, filename):
-        # not exactly what's written in the mol2 file but the 2 double bonds in 
-        # the thiophene moiety should be written as aromatic, and they should 
-        # be perceived as such by RDKit
-        expected = [1.5, 1, 1, 2, 1, 2, 1, 1, 1.5, 1, 1, 1.5, 2, 2, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1.5, 1.5, 1.5, 1, 1.5, 1, 1.5, 1, 1.5, 1,
-        1, 1, 1.5, 1, 1, 1, 1, 1.5, 1, 1, 2, 1, 1]
+        # The 3 first aromatic bonds in the mol2 file are not actually 
+        # aromatic but just part of a conjugated system. RDKit doesn't follow
+        # the mol2 file and marks them as single, even with `sanitize=False`.
+        expected = [1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1, 1, 1.5, 1.5, 1.5, 1, 1.5, 1, 1.5, 1, 1.5, 1, 1, 1,
+        2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1]
         expected = [float(i) for i in expected]
-        assert sorted(top.bonds.order) == sorted(expected)
+        assert top.bonds.order == expected
 
 
 class TestRDKitParserPDB(RDKitParserBase):
