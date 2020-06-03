@@ -89,3 +89,20 @@ class TestRDKitParserPDB(RDKitParserBase):
     @pytest.fixture
     def filename(self):
         return Chem.MolFromPDBFile(self.ref_filename, removeHs=False)
+
+
+class TestRDKitParserSMILES(RDKitParserBase):
+    ref_filename = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+
+    guessed_attrs = ['types']
+
+    expected_n_atoms = 24
+    expected_n_residues = 1
+    expected_n_segments = 1
+    expected_n_bonds = 25
+
+    @pytest.fixture
+    def filename(self):
+        mol = Chem.MolFromSmiles(self.ref_filename)
+        mol = Chem.AddHs(mol)
+        return mol
