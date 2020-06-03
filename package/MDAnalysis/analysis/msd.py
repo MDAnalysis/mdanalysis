@@ -178,20 +178,31 @@ processing trajectories for computation of self-diffusivities.
 These include specific instructions around simulation settings, using 
 unwrapped trajectories and maintaining a relatively small elapsed time between 
 saved frames. Additionally, corrections for finite size effects are sometimes 
-employed along with various means of estimating errors. The reader is directed 
-to the following review, which describes many of the common pitfalls 
-[Maginn2019]_. There are other ways to compute self-diffusivity, such as from 
-a Green-Kubo integral. At this point in time, these methods are beyond the 
-scope of this module.
+employed along with various means of estimating errors [Yeh2004]_ [Bulow2020]_.
+The reader is directed to the following review, which describes many of the 
+common pitfalls [Maginn2019]_. There are other ways to compute 
+self-diffusivity, such as from a Green-Kubo integral. At this point in time, 
+these methods are beyond the scope of this module.
 
 
 References
 ----------
 
 .. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R., 
-    Elliott, J. R. Best Practices for Computing Transport Properties 1. 
-    Self-Diffusivity and Viscosity from Equilibrium Molecular Dynamics 
-    [Article v1.0]. Living J. Comput. Mol. Sci. 2019, 1 (1). 
+                Elliott, J. R. Best Practices for Computing Transport 
+                Properties 1. Self-Diffusivity and Viscosity from Equilibrium 
+                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 
+                2019, 1 (1).
+
+.. [Yeh2004] Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion
+                Coefficients and Viscosities from Molecular Dynamics 
+                Simulations with Periodic Boundary Conditions. 
+                J. Phys. Chem. B 2004, 108 (40), 15873–15879.
+                
+.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic 
+                Errors in Diffusion Coefficients from Long-Time Molecular 
+                Dynamics Simulations at Constant Pressure. 2020. 
+                arXiv:2003.09205 [Cond-Mat, Physics:Physics].
 
 
 
@@ -229,9 +240,9 @@ class EinsteinMSD(AnalysisBase):
     ----------
     dim_fac : int
         Dimensionality :math:`d` of the MSD.
-    timeseries : :class:`np.ndarray`
+    timeseries : :class:`numpy.ndarray`
         The averaged MSD with respect to lag-time.
-    msd_per_particle : :class:`np.ndarray`
+    msd_per_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     n_frames : int
         Number of frames in trajectory.
@@ -247,7 +258,8 @@ class EinsteinMSD(AnalysisBase):
         u : Universe
             An MDAnalysis :class:`Universe`.
         selection : str
-            An MDAnalysis selection string. Defaults to `None`.
+            An MDAnalysis selection string. Defaults to `None` in which case 
+            all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
             Desired dimensions to be included in the MSD. Defaults to 'xyz'.
         fft : bool
@@ -331,7 +343,7 @@ class EinsteinMSD(AnalysisBase):
 
         Returns
         -------
-        self._position_array : :class:`np.ndarray`
+        self._position_array : :class:`numpy.ndarray`
             Array of particle positions with respect to time 
             shape = (n_frames, n_particles, 3)
         """
@@ -350,13 +362,13 @@ class EinsteinMSD(AnalysisBase):
 
         Parameters
         ----------
-        self._position_array : :class:`np.ndarray`
+        self._position_array : :class:`numpy.ndarray`
             Array of particle positions with respect to time 
             shape (n_frames, n_particles, 3).
 
         Returns
         -------
-        self.timeseries : :class:`np.ndarray`
+        self.timeseries : :class:`numpy.ndarray`
             The MSD as a function of lag-time.
 
         """
@@ -378,13 +390,13 @@ class EinsteinMSD(AnalysisBase):
 
         Parameters
         ----------
-        self._position_array : :class:`np.ndarray`
+        self._position_array : :class:`numpy.ndarray`
             Array of particle positions with respect to time 
             shape (n_frames, n_particles, 3).
 
         Returns
         -------
-        self.timeseries : :class:`np.ndarray`
+        self.timeseries : :class:`numpy.ndarray`
             The MSD as a function of lagtime.
 
         """
