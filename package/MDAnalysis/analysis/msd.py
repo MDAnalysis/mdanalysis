@@ -284,7 +284,7 @@ class EinsteinMSD(AnalysisBase):
         self._atoms = None
 
         # indexing
-        self._n_frames = 0 #this is set in the baseclass
+        self._n_frames = 0  # this is set in the baseclass
         self._n_particles = 0
 
         # result
@@ -295,7 +295,7 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         self._parse_msd_type()
         self._atoms = self.u.select_atoms(self.select)
-        self._n_frames = self.n_frames #set in base class
+        self._n_frames = self.n_frames  # set in base class
         self._n_particles = len(self._atoms)
         self._position_array = np.zeros(
             (self.n_frames, self._n_particles, self.dim_fac))
@@ -345,9 +345,10 @@ class EinsteinMSD(AnalysisBase):
         -------
         self._position_array : :class:`numpy.ndarray`
             Array of particle positions with respect to time 
-            shape = (n_frames, n_particles, 3)
+            shape = (n_frames, n_particles, dim_fac)
         """
-
+        # shape of position array set here, use span in last dimension
+        # from this point on
         self._position_array[self._frame_index] = \
             self._atoms.positions[:, self._dim]
 
@@ -364,7 +365,7 @@ class EinsteinMSD(AnalysisBase):
         ----------
         self._position_array : :class:`numpy.ndarray`
             Array of particle positions with respect to time 
-            shape (n_frames, n_particles, 3).
+            shape (n_frames, n_particles, dim_fac).
 
         Returns
         -------
@@ -389,7 +390,7 @@ class EinsteinMSD(AnalysisBase):
         ----------
         self._position_array : :class:`numpy.ndarray`
             Array of particle positions with respect to time 
-            shape (n_frames, n_particles, 3).
+            shape (n_frames, n_particles, dim_fac).
 
         Returns
         -------
