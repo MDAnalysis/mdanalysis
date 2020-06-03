@@ -48,7 +48,7 @@ over, :math:`r` are their coordinates and :math:`d` the desired dimensionality
 of the MSD. Note that while the definition of the MSD is universal, there are 
 many practical considerations to computing the MSD that vary between 
 implementations. In this module, we compute a "windowed" MSD, where the MSD 
-is averaged over all possible lag times :math:`\tau \le \tau_{max}`, 
+is averaged over all possible lag-times :math:`\tau \le \tau_{max}`, 
 where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing 
 the number of samples.
 
@@ -99,7 +99,7 @@ Visual inspection of the MSD is important, so let's take a look at it with a
     import matplotlib.pyplot as plt
     nframes = MSD.n_frames
     timestep = 1 # this needs to be the actual time between frames 
-    lagtimes = np.arange(nframes)*timestep # make the lag time axis
+    lagtimes = np.arange(nframes)*timestep # make the lag-time axis
     fig = plt.figure()
     ax = plt.axes()
     # plot the actual MSD
@@ -112,7 +112,7 @@ Visual inspection of the MSD is important, so let's take a look at it with a
 This gives us the plot of the MSD with respect to lag-time (:math:`\tau`).
 We can see that the MSD is approximately linear with respect to :math:`\tau`.
 This is a numerical example of a known theoretical result that the MSD of a
-random walk is linear with respect to lagtime, with a slope of :math:`2d`.
+random walk is linear with respect to lag-time, with a slope of :math:`2d`.
 In this expression :math:`d` is the dimensionality of the MSD. For our 3D MSD,
 this is 3. For comparison we have plotted the line :math:`y=6\tau` to which an 
 ensemble of 3D random walks should converge.
@@ -149,7 +149,7 @@ Self-diffusivity is closely related to the MSD.
    D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
 
 From the MSD, self-diffusivities :math:`D` with the desired dimensionality 
-:math:`d` can be computed by fitting the MSD with respect to the lag time to 
+:math:`d` can be computed by fitting the MSD with respect to the lag-time to 
 a linear model. An example of this is shown below, using the MSD computed in 
 the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60` 
 is used to demonstrate selection of a MSD segment.
@@ -184,6 +184,9 @@ common pitfalls [Maginn2019]_. There are other ways to compute
 self-diffusivity, such as from a Green-Kubo integral. At this point in time, 
 these methods are beyond the scope of this module.
 
+
+Note also that computation of MSDs is highly memory intensive. If this is 
+proving a problem, judicious use of start, stop, step indexing is required.
 
 References
 ----------
@@ -291,7 +294,7 @@ class EinsteinMSD(AnalysisBase):
         self.timeseries = None
 
     def _prepare(self):
-        # only available here
+        # self.n_frames only available here
         self._n_frames = self.n_frames
         # these need to be zeroed prior to each run() call
         self.msds_by_particle = np.zeros((self._n_frames, self._n_particles))
@@ -392,7 +395,7 @@ class EinsteinMSD(AnalysisBase):
         Returns
         -------
         self.timeseries : :class:`numpy.ndarray`
-            The MSD as a function of lagtime.
+            The MSD as a function of lag-time.
 
         """
         try:
