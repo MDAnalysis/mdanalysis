@@ -284,7 +284,7 @@ class EinsteinMSD(AnalysisBase):
         self._atoms = None
 
         # indexing
-        self._n_frames = 0
+        self._n_frames = 0 #this is set in the baseclass
         self._n_particles = 0
 
         # result
@@ -295,7 +295,7 @@ class EinsteinMSD(AnalysisBase):
     def _prepare(self):
         self._parse_msd_type()
         self._atoms = self.u.select_atoms(self.select)
-        self._n_frames = len(self.u.trajectory)
+        self._n_frames = self.n_frames #set in base class
         self._n_particles = len(self._atoms)
         self._position_array = np.zeros(
             (self.n_frames, self._n_particles, self.dim_fac))
@@ -374,8 +374,8 @@ class EinsteinMSD(AnalysisBase):
         """
         lagtimes = np.arange(1, self.n_frames)
         for lag in lagtimes:
-            disp = self._position_array[:-lag, :, self._dim] - \
-                self._position_array[lag:, :, self._dim]
+            disp = self._position_array[:-lag, :, :] - \
+                self._position_array[lag:, :, :]
             sqdist = np.square(disp, dtype=np.float64).sum(
                 axis=-1, dtype=np.float64)  # np.float64 required
             self.msds_by_particle[lag, :] = np.mean(
@@ -397,7 +397,7 @@ class EinsteinMSD(AnalysisBase):
             The MSD as a function of lagtime.
 
         """
-        reshape_positions = self._position_array[:, :, self._dim].astype(
+        reshape_positions = self._position_array[:, :, :].astype(
             np.float64)
         for n in range(self._n_particles):
             self.msds_by_particle[:, n] = tidynamics.msd(
