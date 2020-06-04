@@ -26,7 +26,7 @@ import pytest
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import mol2_molecule, PDB_helix
+from MDAnalysisTests.datafiles import mol2_molecule, PDB_helix, SDF_molecule
 
 Chem = pytest.importorskip('rdkit.Chem')
 
@@ -106,3 +106,26 @@ class TestRDKitParserSMILES(RDKitParserBase):
         mol = Chem.MolFromSmiles(self.ref_filename)
         mol = Chem.AddHs(mol)
         return mol
+
+
+class TestRDKitParserSDF(RDKitParserBase):
+    ref_filename = SDF_molecule
+
+    guessed_attrs = ['types']
+
+    expected_n_atoms = 49
+    expected_n_residues = 1
+    expected_n_segments = 1
+    expected_n_bonds = 49
+
+    @pytest.fixture
+    def filename(self):
+        return Chem.SDMolSupplier(SDF_molecule, removeHs=False, 
+                                  sanitize=False)[0]
+
+    def test_bond_orders(self, top, filename):
+        expected = [1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+            1, 1, 1, 1, 1, 1, 1]
+        expected = [float(i) for i in expected]
+        assert top.bonds.order == expected
