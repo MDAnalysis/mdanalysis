@@ -24,7 +24,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
 
 Fixes
   * `PDBWriter` writes unitary `CRYST1` record (cubic box with sides of 1 Å)
-    when `u.dimensions` is `None` (Issue #2679, PR #2685)
+    when `u.dimensions` is `None` or `np.zeros(6)` (Issue #2679, PR #2685)
   * Ensures principal_axes() returns axes with the right hand convention (Issue #2637)
   * Fixed retrieval of auxiliary information after getting the last timestep
     of the trajectory (Issue #2674, PR #2683).
