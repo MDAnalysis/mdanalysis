@@ -117,7 +117,6 @@ class RDKitParser(TopologyReaderBase):
             ids.append(atom.GetIdx())
             elements.append(atom.GetSymbol())
             masses.append(atom.GetMass())
-            charges.append(atom.GetFormalCharge())
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
@@ -129,12 +128,29 @@ class RDKitParser(TopologyReaderBase):
                 occupancies.append(mi.GetOccupancy())
                 tempfactors.append(mi.GetTempFactor())
             else:
-                for prop, value in atom.GetPropsAsDict(True).items():
-                    if 'atomname' in prop.lower(): # usually _TriposAtomName
-                        names.append(value)
-                    elif 'atomtype' in prop.lower(): # usually _TriposAtomType
-                        atomtypes.append(value)
+                # atom name (MOL2 only)
+                try:
+                    names.append(atom.GetProp('_TriposAtomName'))
+                except KeyError:
+                    pass
+                # atom type (MOL2 only)
+                try:
+                    atomtypes.append(atom.GetProp('_TriposAtomType'))
+                except KeyError:
+                    pass
+                # gasteiger charge (computed):
+                # if the user took the time to compute them, make it a priority
+                # over charges read from a MOL2 file
+                try:
+                    charges.append(atom.GetProp('_GasteigerCharge'))
+                except KeyError:
+                    # partial charge (MOL2 only)
+                    try:
+                        charges.append(atom.GetProp('_TriposPartialCharge'))
+                    except KeyError:
+                        pass
                 
+
         # make Topology attributes
         attrs = []
         n_atoms = len(ids)
@@ -146,7 +162,6 @@ class RDKitParser(TopologyReaderBase):
             (ids, Atomids, np.int32),
             (elements, Elements, object),
             (masses, Masses, np.float32),
-            (charges, Charges, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
@@ -177,6 +192,12 @@ class RDKitParser(TopologyReaderBase):
         else:
             atomtypes = guessers.guess_types(names)
             attrs.append(Atomtypes(atomtypes, guessed=True))
+
+        # Partial charges
+        if charges:
+            attrs.append(Charges(np.array(charges, dtype=np.float32)))
+        else:
+            pass # no guesser yet
         
         # PDB only
         for vals, Attr, dtype in (

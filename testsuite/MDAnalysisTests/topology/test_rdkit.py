@@ -32,7 +32,7 @@ Chem = pytest.importorskip('rdkit.Chem')
 
 class RDKitParserBase(ParserBase):
     parser = mda.topology.RDKitParser.RDKitParser
-    expected_attrs = ['ids', 'names', 'elements', 'masses', 'charges',
+    expected_attrs = ['ids', 'names', 'elements', 'masses',
                       'resids', 'resnums',
                       'segids',
                       'bonds',
@@ -53,6 +53,8 @@ class RDKitParserBase(ParserBase):
 
 class TestRDKitParserMOL2(RDKitParserBase):
     ref_filename = mol2_molecule
+
+    expected_attrs = RDKitParserBase.expected_attrs + ['charges']
 
     expected_n_atoms = 49
     expected_n_residues = 1
