@@ -320,6 +320,7 @@ class TestPDBWriter(object):
 
         u, expected_dims = universe_and_expected_dims
 
+        # See Issue #2698
         if expected_dims is None:
             assert u.dimensions is None
         else:
@@ -328,10 +329,16 @@ class TestPDBWriter(object):
         expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
 
         with pytest.warns(UserWarning, match=expected_msg):
-
             u.atoms.write(outfile)
 
-        uout = mda.Universe(outfile)
+        with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+            uout = mda.Universe(outfile)
+
+        assert_almost_equal(
+            uout.dimensions, np.zeros(6),
+            self.prec,
+            err_msg="Problem with default box."
+        )
 
         assert_equal(
             uout.trajectory.n_frames, 1,
@@ -1025,7 +1032,7 @@ def test_partially_missing_cryst():
 
 def test_cryst_meaningless_warning():
     # issue 2599
-    # FIXME: This message change with Issue #2698
+    # FIXME: This message might change with Issue #2698
     with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
         mda.Universe(PDB_CRYOEM_BOX)
 

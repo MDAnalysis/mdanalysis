@@ -73,7 +73,7 @@ class TestCheckAndFixLongFilename(object):
         if len(abspath) > self.max_length:
             fixed = check_and_fix_long_filename(abspath)
             assert fixed == self.filename
-    
+
     @pytest.mark.skipif(os.name == 'nt' and sys.maxsize <= 2**32,
                         reason="FileNotFoundError on Win 32-bit")
     def test_symlink_dir(self, tmpdir):
@@ -204,7 +204,8 @@ class TestHole(object):
     def test_output_level(self, tmpdir):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning) as rec:
-                profiles = hole2.hole(self.filename, random_seed=self.random_seed,
+                profiles = hole2.hole(self.filename,
+                                      random_seed=self.random_seed,
                                       output_level=100)
             assert len(rec) == 1
             assert 'needs to be < 3' in rec[0].message.args[0]
@@ -308,7 +309,6 @@ class TestHoleAnalysis(BaseTestHole):
                                        output_level=100)
                 h.run(start=self.start,
                       stop=self.stop, random_seed=self.random_seed)
-
             assert len(rec) == 5
 
             assert any('needs to be < 3' in r.message.args[0] for r in rec)
