@@ -54,11 +54,16 @@ from ..core.topologyattrs import (
     Atomtypes,
     Elements,
     Masses,
+    Charges,
     Bonds,
     Resids,
     Resnums,
     Resnames,
     Segids,
+    AltLocs,
+    ChainIDs,
+    Occupancies,
+    Tempfactors,
 )
 from ..core.topology import Topology
 
@@ -100,25 +105,35 @@ class RDKitParser(TopologyReaderBase):
         resnames = []
         elements = []
         masses = []
+        charges = []
         ids = []
         atomtypes = []
         segids = []
+        altlocs = []
+        chainids = []
+        occupancies = []
+        tempfactors = []
         for atom in mol.GetAtoms():
             ids.append(atom.GetIdx())
             elements.append(atom.GetSymbol())
             masses.append(atom.GetMass())
+            charges.append(atom.GetFormalCharge())
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
                 resnums.append(mi.GetResidueNumber())
                 resnames.append(mi.GetResidueName())
                 segids.append(mi.GetSegmentNumber())
+                altlocs.append(mi.GetAltLoc().strip())
+                chainids.append(mi.GetChainId().strip())
+                occupancies.append(mi.GetOccupancy())
+                tempfactors.append(mi.GetTempFactor())
             else:
                 for prop, value in atom.GetPropsAsDict(True).items():
                     if 'atomname' in prop.lower(): # usually _TriposAtomName
                         names.append(value)
                     elif 'atomtype' in prop.lower(): # usually _TriposAtomType
-                        atomtypes.append(value)                
+                        atomtypes.append(value)
                 
         # make Topology attributes
         attrs = []
@@ -126,11 +141,12 @@ class RDKitParser(TopologyReaderBase):
 
         # * Attributes always present *
 
-        # Atom index, symbol and mass
+        # Atom attributes
         for vals, Attr, dtype in (
             (ids, Atomids, np.int32),
             (elements, Elements, object),
             (masses, Masses, np.float32),
+            (charges, Charges, np.float32),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
@@ -161,6 +177,16 @@ class RDKitParser(TopologyReaderBase):
         else:
             atomtypes = guessers.guess_types(names)
             attrs.append(Atomtypes(atomtypes, guessed=True))
+        
+        # PDB only
+        for vals, Attr, dtype in (
+            (altlocs, AltLocs, object),
+            (chainids, ChainIDs, object),
+            (occupancies, Occupancies, np.float32),
+            (tempfactors, Tempfactors, np.float32),
+        ):
+            if vals:
+                attrs.append(Attr(np.array(vals, dtype=dtype)))
 
         # Residue
         if any(resnums) and not any(val is None for val in resnums):

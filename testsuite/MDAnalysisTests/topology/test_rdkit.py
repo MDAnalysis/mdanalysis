@@ -32,7 +32,7 @@ Chem = pytest.importorskip('rdkit.Chem')
 
 class RDKitParserBase(ParserBase):
     parser = mda.topology.RDKitParser.RDKitParser
-    expected_attrs = ['ids', 'names', 'elements', 'masses',
+    expected_attrs = ['ids', 'names', 'elements', 'masses', 'charges',
                       'resids', 'resnums',
                       'segids',
                       'bonds',
@@ -78,7 +78,8 @@ class TestRDKitParserMOL2(RDKitParserBase):
 class TestRDKitParserPDB(RDKitParserBase):
     ref_filename = PDB_helix
 
-    expected_attrs = RDKitParserBase.expected_attrs + ['resnames']
+    expected_attrs = RDKitParserBase.expected_attrs + ['resnames', 'altLocs', 
+        'chainIDs', 'occupancies', 'tempfactors']
     guessed_attrs = ['types']
     
     expected_n_atoms = 137
