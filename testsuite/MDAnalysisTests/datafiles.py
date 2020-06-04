@@ -187,7 +187,8 @@ __all__ = [
     "GMX_TOP_BAD", # file with an #include that doesn't exist
     "ITP_no_endif", # file missing an #endif
     "PDB_CRYOEM_BOX", #Issue 2599
-    "PDB_CHECK_RIGHTHAND_PA" # for testing right handedness of principal_axes
+    "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
+    "SDF_molecule" # MDL SDFile 
 ]
 
 from pkg_resources import resource_filename
@@ -513,6 +514,8 @@ GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')
 ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
+
+SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 # This should be the last line: clean up namespace
 del resource_filename
