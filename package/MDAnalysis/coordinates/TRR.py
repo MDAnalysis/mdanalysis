@@ -73,12 +73,13 @@ class TRRWriter(XDRBaseWriter):
         <FormatWriter>.write(AtomGroup/Universe/TimeStep)
         The normal write() method takes a more general input
 
-        .. versionchanged:: 0.19.1
+        .. versionchanged:: 1.0.0
            Deprecated the use of Timestep as arguments to write.  Use either a AtomGroup or Universe
         """
         if isinstance(ag, base.Timestep):
             warnings.warn(
                 'Passing a Timestep to write is deprecated, '
+                'and will be removed in 2.0; '
                 'use either an AtomGroup or Universe',
                 DeprecationWarning)
             ts = ag
