@@ -137,6 +137,7 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * Unused `MDAnalysis.lib.mdamath._angle` has been removed (Issue #2650)
   * Refactored dihedral selections and Ramachandran.__init__ to speed up 
     dihedral selections for faster tests (Issue #2671, PR #2706)
   * Removes the deprecated `t0`, `tf`, and `dtmax` from
