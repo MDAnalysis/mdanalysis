@@ -320,7 +320,6 @@
 <span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
 <span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">BytesIO</span>
 
-<span class="kn">import</span> <span class="nn">io</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -333,7 +332,6 @@
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..topology.core</span> <span class="kn">import</span> <span class="n">guess_atom_element</span>
-<span class="kn">from</span> <span class="nn">..core.universe</span> <span class="kn">import</span> <span class="n">Universe</span>
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
 
 
@@ -341,6 +339,7 @@
 
 <span class="c1"># Pairs of residue name / atom name in use to deduce PDB formatted atom names</span>
 <span class="n">Pair</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Atom&#39;</span><span class="p">,</span> <span class="s1">&#39;resname name&#39;</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="PDBReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader">[docs]</a><span class="k">class</span> <span class="nc">PDBReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PDBReader that reads a `PDB-formatted`_ file, no frills.</span>
@@ -392,6 +391,18 @@
 <span class="sd">    79 - 80        LString(2)    charge       Charge  on the atom.</span>
 <span class="sd">    =============  ============  ===========  =============================================</span>
 
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    If a system does not have unit cell parameters (such as in electron</span>
+<span class="sd">    microscopy structures), the PDB file format requires the CRYST1_ field to</span>
+<span class="sd">    be provided with unitary values (cubic box with sides of 1 Å) and an</span>
+<span class="sd">    appropriate REMARK. If unitary values are found within the CRYST1_ field,</span>
+<span class="sd">    :code:`PDBReader` will not set unit cell dimensions (which will take the</span>
+<span class="sd">    default value :code:`np.zeros(6)`, see Issue #2698)</span>
+<span class="sd">    and it will warn the user.</span>
+
+<span class="sd">    .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1</span>
+
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -406,7 +417,8 @@
 <span class="sd">    .. versionchanged:: 0.20.0</span>
 <span class="sd">       Strip trajectory header of trailing spaces and newlines</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       User warning for CRYST1 cryo-em structures</span>
+<span class="sd">       Raise user warning for CRYST1_ record with unitary valuse</span>
+<span class="sd">       (cubic box with sides of 1 Å) and do not set cell dimensions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
     <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
@@ -539,6 +551,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read frame from PDB file.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        When the CRYST1_ record has unitary values (cubic box with sides of</span>
+<span class="sd">        1 Å), cell dimensions are considered fictitious. An user warning is</span>
+<span class="sd">        raised and cell dimensions are set to</span>
+<span class="sd">        :code:`np.zeros(6)` (see Issue #2698)</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Raise user warning for CRYST1_ record with unitary valuse</span>
+<span class="sd">           (cubic box with sides of 1 Å) and do not set cell dimensions.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
             <span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_offsets</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
@@ -570,22 +596,23 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">cell_dims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">15</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">15</span><span class="p">:</span><span class="mi">24</span><span class="p">],</span>
                                          <span class="n">line</span><span class="p">[</span><span class="mi">24</span><span class="p">:</span><span class="mi">33</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">33</span><span class="p">:</span><span class="mi">40</span><span class="p">],</span>
-                                         <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]],</span> 
-                                         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>  
+                                         <span class="n">line</span><span class="p">[</span><span class="mi">40</span><span class="p">:</span><span class="mi">47</span><span class="p">],</span> <span class="n">line</span><span class="p">[</span><span class="mi">47</span><span class="p">:</span><span class="mi">54</span><span class="p">]],</span>
+                                         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                     <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Failed to read CRYST1 record, &quot;</span>
                                   <span class="s2">&quot;possibly invalid PDB file, got:</span><span class="se">\n</span><span class="si">{}</span><span class="s2">&quot;</span>
                                   <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">cell_dims</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> 
-                        <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
-                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;1 A^3 CRYST1 record,&quot;</span> 
-                                      <span class="s2">&quot; this is usually a placeholder in&quot;</span>
-                                      <span class="s2">&quot; cryo-em structures. Unit cell&quot;</span>
-                                      <span class="s2">&quot; dimensions will not be set.&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">cell_dims</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">])):</span>
+                        <span class="c1"># FIXME: Dimensions set to zeros.</span>
+                        <span class="c1"># FIXME: This might change with Issue #2698</span>
+                        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;1 A^3 CRYST1 record,&quot;</span>
+                                      <span class="s2">&quot; this is usually a placeholder.&quot;</span>
+                                      <span class="s2">&quot; Unit cell dimensions will be set&quot;</span>
+                                      <span class="s2">&quot; to zeros.&quot;</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">cell_dims</span>
-                        
+
         <span class="c1"># check if atom number changed</span>
         <span class="k">if</span> <span class="n">pos</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Inconsistency in file &#39;</span><span class="si">{}</span><span class="s2">&#39;: The number of atoms &quot;</span>
@@ -640,6 +667,10 @@
 <span class="sd">    The maximum frame number that can be stored in a PDB file is 9999 and it</span>
 <span class="sd">    will wrap around (see :meth:`MODEL` for further details).</span>
 
+<span class="sd">    The CRYST1_ record specifies the unit cell. This record is set to</span>
+<span class="sd">    unitary values (cubic box with sides of 1 Å) if unit cell dimensions</span>
+<span class="sd">    are not set (:code:`None` or :code:`np.zeros(6)`,</span>
+<span class="sd">    see Issue #2698).</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -666,9 +697,8 @@
 <span class="sd">       Strip trajectory header of trailing spaces and newlines</span>
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
-<span class="sd">       ChainID now comes from the last character of segid, as stated in the documentation. </span>
+<span class="sd">       ChainID now comes from the last character of segid, as stated in the documentation.</span>
 <span class="sd">       An indexing issue meant it previously used the first charater (Issue #2224)</span>
-
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
@@ -757,7 +787,6 @@
 <span class="sd">           multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_</span>
 <span class="sd">           records. If ``None``, then the class default is chosen.    [``None``]</span>
 
-
 <span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
 <span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
 <span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
@@ -778,7 +807,7 @@
         <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;Start&#39; must be a positive value&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span>  <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">=</span> <span class="n">start</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">remarks</span>
 
@@ -806,7 +835,28 @@
                        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_write_pdb_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_frame_done</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write PDB header.</span>
+
+<span class="sd">        The HEADER_ record is set to :code: `trajectory.header`.</span>
+<span class="sd">        The TITLE_ record explicitly mentions MDAnalysis and contains</span>
+<span class="sd">        information about trajectory frame(s).</span>
+<span class="sd">        The COMPND_ record is set to :code:`trajectory.compound`.</span>
+<span class="sd">        The REMARKS_ records are set to :code:`u.trajectory.remarks`</span>
+<span class="sd">        The CRYST1_ record specifies the unit cell. This record is set to</span>
+<span class="sd">        unitary values (cubic box with sides of 1 Å) if unit cell dimensions</span>
+<span class="sd">        are not set.</span>
+
+<span class="sd">        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND</span>
+<span class="sd">        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html</span>
+
+<span class="sd">        .. versionchanged: 1.0.0</span>
+<span class="sd">           Fix writing of PDB file without unit cell dimensions (Issue #2679).</span>
+<span class="sd">           If cell dimensions are not found, unitary values (cubic box with</span>
+<span class="sd">           sides of 1 Å) are used (PDB standard for CRYST1_).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_frame_done</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">first_frame_done</span> <span class="o">=</span> <span class="kc">True</span>
@@ -826,7 +876,29 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="o">*</span><span class="n">remarks</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">CRYST1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">))</span>
+
+        <span class="c1"># FIXME: Values for meaningless cell dimensions are not consistent.</span>
+        <span class="c1"># FIXME: See Issue #2698. Here we check for both None and zeros</span>
+        <span class="k">if</span> <span class="n">u</span><span class="o">.</span><span class="n">dimensions</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">dimensions</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">)):</span>
+            <span class="c1"># Unitary unit cell by default. See PDB standard:</span>
+            <span class="c1"># http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CRYST1</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">]))</span>
+
+            <span class="c1"># Add CRYST1 REMARK (285)</span>
+            <span class="c1"># The SCALE record is not included</span>
+            <span class="c1"># (We are only implementing a subset of the PDB standard)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="s2">&quot;285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="s2">&quot;285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="s2">&quot;285 WAS MISSING.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="s2">&quot;285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="s2">&quot;285 CRYST1 RECORD IS INCLUDED, BUT THE VALUES ON&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">REMARK</span><span class="p">(</span><span class="s2">&quot;285 THIS RECORD ARE MEANINGLESS.&quot;</span><span class="p">)</span>
+
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Unit cell dimensions not found. &quot;</span>
+                          <span class="s2">&quot;CRYST1 record set to unitary values.&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">CRYST1</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="p">))</span>
 
 <div class="viewcode-block" id="PDBWriter._check_pdb_coordinates"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter._check_pdb_coordinates">[docs]</a>    <span class="k">def</span> <span class="nf">_check_pdb_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Check if the coordinate values fall within the range allowed for PDB files.</span>
@@ -835,7 +907,10 @@
 <span class="sd">        already been written (in multi-frame mode) adds a REMARK instead of the</span>
 <span class="sd">        coordinates and closes the file.</span>
 
-<span class="sd">        Raises :exc:`ValueError` if the coordinates fail the check.</span>
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            if the coordinates fail the check.</span>
 
 <span class="sd">        .. versionchanged: 1.0.0</span>
 <span class="sd">            Check if :attr:`filename` is `StringIO` when attempting to remove</span>
@@ -1095,7 +1170,7 @@
 <span class="sd">           have been written.)</span>
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
-<span class="sd">           ChainID now comes from the last character of segid, as stated in the documentation. </span>
+<span class="sd">           ChainID now comes from the last character of segid, as stated in the documentation.</span>
 <span class="sd">           An indexing issue meant it previously used the first charater (Issue #2224)</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1200,9 +1275,6 @@
 
 <div class="viewcode-block" id="PDBWriter.CRYST1"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.CRYST1">[docs]</a>    <span class="k">def</span> <span class="nf">CRYST1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">spacegroup</span><span class="o">=</span><span class="s1">&#39;P 1&#39;</span><span class="p">,</span> <span class="n">zvalue</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write CRYST1_ record.</span>
-
-<span class="sd">        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;CRYST1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">box</span><span class="o">=</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span>

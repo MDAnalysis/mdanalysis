@@ -444,6 +444,14 @@ details):</p>
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<p>If a system does not have unit cell parameters (such as in electron
+microscopy structures), the PDB file format requires the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> field to
+be provided with unitary values (cubic box with sides of 1 Å) and an
+appropriate REMARK. If unitary values are found within the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> field,
+<code class="code docutils literal notranslate"><span class="pre">PDBReader</span></code> will not set unit cell dimensions (which will take the
+default value <code class="code docutils literal notranslate"><span class="pre">np.zeros(6)</span></code>, see Issue #2698)
+and it will warn the user.</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p><a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a>, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBReader</span></code></a></p>
@@ -458,7 +466,7 @@ details):</p>
 <dt><code class="xref py py-class docutils literal notranslate"></code></dt>
 <dd>Strip trajectory header of trailing spaces and newlines</dd>
 <dt><code class="xref py py-class docutils literal notranslate"></code></dt>
-<dd>User warning for CRYST1 cryo-em structures</dd>
+<dd>Raise user warning for <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> record with unitary valuse (cubic box with sides of 1 Å) and do not set cell dimensions.</dd>
 </dl>
 </div>
 <p>Read coordinates from <em>filename</em>.</p>
@@ -510,8 +518,12 @@ and if bond information is available in the topology.  (For selections
 smaller than the whole <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>, the atom numbering in the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a>
 records would not match the numbering of the atoms in the new PDB file and
 therefore a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is raised.)</p>
-<p class="last">The maximum frame number that can be stored in a PDB file is 9999 and it
+<p>The maximum frame number that can be stored in a PDB file is 9999 and it
 will wrap around (see <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.MODEL" title="MDAnalysis.coordinates.PDB.PDBWriter.MODEL"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MODEL()</span></code></a> for further details).</p>
+<p class="last">The <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> record specifies the unit cell. This record is set to
+unitary values (cubic box with sides of 1 Å) if unit cell dimensions
+are not set (<code class="code docutils literal notranslate"><span class="pre">None</span></code> or <code class="code docutils literal notranslate"><span class="pre">np.zeros(6)</span></code>,
+see Issue #2698).</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -562,6 +574,9 @@ not write any bonds. The default is “conect”.</li>
 <li><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame to the file; <code class="docutils literal notranslate"><span class="pre">True</span></code>: create a
 multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a>
 records. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the class default is chosen.    [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>_CONECT</strong> (<em>.</em>) – </li>
+<li><strong>_MODEL</strong> (<em>.</em>) – </li>
+<li><strong>_ENDMDL</strong> (<em>.</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -574,7 +589,19 @@ records. If <code class="docutils literal notranslate"><span class="pre">None</s
 <p>Deletes the output file if this is the first frame or if frames have
 already been written (in multi-frame mode) adds a REMARK instead of the
 coordinates and closes the file.</p>
-<p>Raises <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> if the coordinates fail the check.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – if the coordinates fail the check.</li>
+<li><em>.. versionchanged: 1.0.0</em> – Check if <code class="xref py py-attr docutils literal notranslate"><span class="pre">filename</span></code> is <cite>StringIO</cite> when attempting to remove
+a PDB file with invalid coordinates (Issue #2512)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -634,7 +661,7 @@ An indexing issue meant it previously used the first charater (Issue #2224)</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.CRYST1">
 <code class="descname">CRYST1</code><span class="sig-paren">(</span><em>dimensions</em>, <em>spacegroup='P 1'</em>, <em>zvalue=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.CRYST1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.CRYST1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1">CRYST1</a> record.</p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> record.</p>
 </dd></dl>
 
 <dl class="method">
@@ -815,6 +842,9 @@ not write any bonds. The default is “conect”.</li>
 <li><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame to the file; <code class="docutils literal notranslate"><span class="pre">True</span></code>: create a
 multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a>
 records. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the class default is chosen.    [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>_CONECT</strong> (<em>.</em>) – </li>
+<li><strong>_MODEL</strong> (<em>.</em>) – </li>
+<li><strong>_ENDMDL</strong> (<em>.</em>) – </li>
 </ul>
 </td>
 </tr>
