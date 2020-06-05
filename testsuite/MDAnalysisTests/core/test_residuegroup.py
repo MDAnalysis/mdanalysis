@@ -265,3 +265,21 @@ class TestResidueGroup(object):
     def test_atom_order(self, universe):
         assert_equal(universe.residues.atoms.indices,
                      sorted(universe.residues.atoms.indices))
+
+    def test_get_next_residue(self, rg):
+        unsorted_rep_res = rg[[0, 1, 8, 3, 4, 0, 3, 1, -1]]
+        next_res = unsorted_rep_res._get_next_residues_by_resid()
+        resids = list(unsorted_rep_res.resids+1)
+        resids[-1] = None
+        next_resids = [r.resid if r is not None else None for r in next_res]
+        assert_equal(len(next_res), len(unsorted_rep_res))
+        assert_equal(next_resids, resids)
+
+    def test_get_prev_residue(self, rg):
+        unsorted_rep_res = rg[[0, 1, 8, 3, 4, 0, 3, 1, -1]]
+        prev_res = unsorted_rep_res._get_prev_residues_by_resid()
+        resids = list(unsorted_rep_res.resids-1)
+        resids[0] = resids[5] = None
+        prev_resids = [r.resid if r is not None else None for r in prev_res]
+        assert_equal(len(prev_res), len(unsorted_rep_res))
+        assert_equal(prev_resids, resids)
