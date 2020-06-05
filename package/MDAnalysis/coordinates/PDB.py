@@ -145,7 +145,6 @@ from __future__ import absolute_import
 from six.moves import range, zip
 from six import raise_from, StringIO, BytesIO
 
-import io
 import os
 import errno
 import itertools
@@ -158,7 +157,6 @@ import numpy as np
 from ..lib import util
 from . import base
 from ..topology.core import guess_atom_element
-from ..core.universe import Universe
 from ..exceptions import NoDataError
 
 
@@ -166,6 +164,7 @@ logger = logging.getLogger("MDAnalysis.coordinates.PBD")
 
 # Pairs of residue name / atom name in use to deduce PDB formatted atom names
 Pair = collections.namedtuple('Atom', 'resname name')
+
 
 class PDBReader(base.ReaderBase):
     """PDBReader that reads a `PDB-formatted`_ file, no frills.
@@ -217,6 +216,18 @@ class PDBReader(base.ReaderBase):
     79 - 80        LString(2)    charge       Charge  on the atom.
     =============  ============  ===========  =============================================
 
+    Notes
+    -----
+    If a system does not have unit cell parameters (such as in electron
+    microscopy structures), the PDB file format requires the CRYST1_ field to
+    be provided with unitary values (cubic box with sides of 1 Å) and an
+    appropriate REMARK. If unitary values are found within the CRYST1_ field,
+    :code:`PDBReader` will not set unit cell dimensions (which will take the
+    default value :code:`np.zeros(6)`, see Issue #2698)
+    and it will warn the user.
+
+    .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+
 
     See Also
     --------
@@ -231,7 +242,8 @@ class PDBReader(base.ReaderBase):
     .. versionchanged:: 0.20.0
        Strip trajectory header of trailing spaces and newlines
     .. versionchanged:: 1.0.0
-       User warning for CRYST1 cryo-em structures
+       Raise user warning for CRYST1_ record with unitary valuse
+       (cubic box with sides of 1 Å) and do not set cell dimensions.
     """
     format = ['PDB', 'ENT']
     units = {'time': None, 'length': 'Angstrom'}
@@ -364,6 +376,20 @@ class PDBReader(base.ReaderBase):
         return self._read_frame(frame)
 
     def _read_frame(self, frame):
+        """
+        Read frame from PDB file.
+
+        Notes
+        -----
+        When the CRYST1_ record has unitary values (cubic box with sides of
+        1 Å), cell dimensions are considered fictitious. An user warning is
+        raised and cell dimensions are set to
+        :code:`np.zeros(6)` (see Issue #2698)
+
+        .. versionchanged:: 1.0.0
+           Raise user warning for CRYST1_ record with unitary valuse
+           (cubic box with sides of 1 Å) and do not set cell dimensions.
+        """
         try:
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
@@ -395,22 +421,23 @@ class PDBReader(base.ReaderBase):
                 try:
                     cell_dims = np.array([line[6:15], line[15:24],
                                          line[24:33], line[33:40],
-                                         line[40:47], line[47:54]], 
-                                         dtype=np.float32)  
+                                         line[40:47], line[47:54]],
+                                         dtype=np.float32)
                 except ValueError:
                     warnings.warn("Failed to read CRYST1 record, "
                                   "possibly invalid PDB file, got:\n{}"
                                   "".format(line))
                 else:
-                    if (cell_dims == np.array([1, 1, 1, 90, 90, 90], 
-                        dtype=np.float32)).all():
-                        warnings.warn("1 A^3 CRYST1 record," 
-                                      " this is usually a placeholder in"
-                                      " cryo-em structures. Unit cell"
-                                      " dimensions will not be set.")
+                    if np.allclose(cell_dims, np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0])):
+                        # FIXME: Dimensions set to zeros.
+                        # FIXME: This might change with Issue #2698
+                        warnings.warn("1 A^3 CRYST1 record,"
+                                      " this is usually a placeholder."
+                                      " Unit cell dimensions will be set"
+                                      " to zeros.")
                     else:
                         self.ts._unitcell[:] = cell_dims
-                        
+
         # check if atom number changed
         if pos != self.n_atoms:
             raise ValueError("Inconsistency in file '{}': The number of atoms "
@@ -465,6 +492,10 @@ class PDBWriter(base.WriterBase):
     The maximum frame number that can be stored in a PDB file is 9999 and it
     will wrap around (see :meth:`MODEL` for further details).
 
+    The CRYST1_ record specifies the unit cell. This record is set to
+    unitary values (cubic box with sides of 1 Å) if unit cell dimensions
+    are not set (:code:`None` or :code:`np.zeros(6)`,
+    see Issue #2698).
 
     See Also
     --------
@@ -491,9 +522,8 @@ class PDBWriter(base.WriterBase):
        Strip trajectory header of trailing spaces and newlines
 
     .. versionchanged:: 1.0.0
-       ChainID now comes from the last character of segid, as stated in the documentation. 
+       ChainID now comes from the last character of segid, as stated in the documentation.
        An indexing issue meant it previously used the first charater (Issue #2224)
-
 
     """
     fmt = {
@@ -582,7 +612,6 @@ class PDBWriter(base.WriterBase):
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
 
-
         .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
         .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
         .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
@@ -603,7 +632,7 @@ class PDBWriter(base.WriterBase):
         if start < 0:
             raise ValueError("'Start' must be a positive value")
 
-        self.start =  self.frames_written = start
+        self.start = self.frames_written = start
         self.step = step
         self.remarks = remarks
 
@@ -634,20 +663,25 @@ class PDBWriter(base.WriterBase):
         """
         Write PDB header.
 
-        The HEADER record is set to :code: `trajectory.header`.
-        The TITLE record explicitly mentions MDAnalysis and contains
+        The HEADER_ record is set to :code: `trajectory.header`.
+        The TITLE_ record explicitly mentions MDAnalysis and contains
         information about trajectory frame(s).
-        The COMPND record is set to :code:`trajectory.compound`.
-        The REMARKS records are set to :code:`u.trajectory.remarks`
-        The CRYST1 record specifies the unit cell. This record is skipped 
-        if :code:`u.dimensions` is  :code:`None`.
+        The COMPND_ record is set to :code:`trajectory.compound`.
+        The REMARKS_ records are set to :code:`u.trajectory.remarks`
+        The CRYST1_ record specifies the unit cell. This record is set to
+        unitary values (cubic box with sides of 1 Å) if unit cell dimensions
+        are not set.
+
+        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
 
         .. versionchanged: 1.0.0
-           Write CRYST1 only if :code:`u.dimensions`
-           is not :code:`None` (Issue #2679).
+           Fix writing of PDB file without unit cell dimensions (Issue #2679).
+           If cell dimensions are not found, unitary values (cubic box with
+           sides of 1 Å) are used (PDB standard for CRYST1_).
         """
 
-        if self.first_frame_done == True:
+        if self.first_frame_done is True:
             return
 
         self.first_frame_done = True
@@ -667,9 +701,6 @@ class PDBWriter(base.WriterBase):
             self.REMARK(*remarks)
         except AttributeError:
             pass
-
-        if u.dimensions is not None:
-            self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
 
     def _check_pdb_coordinates(self):
         """Check if the coordinate values fall within the range allowed for PDB files.
@@ -941,7 +972,7 @@ class PDBWriter(base.WriterBase):
            have been written.)
 
         .. versionchanged:: 1.0.0
-           ChainID now comes from the last character of segid, as stated in the documentation. 
+           ChainID now comes from the last character of segid, as stated in the documentation.
            An indexing issue meant it previously used the first charater (Issue #2224)
 
         """
@@ -1046,9 +1077,6 @@ class PDBWriter(base.WriterBase):
 
     def CRYST1(self, dimensions, spacegroup='P 1', zvalue=1):
         """Write CRYST1_ record.
-
-        .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1
-
         """
         self.pdbfile.write(self.fmt['CRYST1'].format(
             box=dimensions[:3],

@@ -38,8 +38,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
-                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2, 
-                                       PDB_CRYOEM_BOX)
+                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2,
+                                       PDB_CRYOEM_BOX, MMTF_NOCRYST)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -191,6 +191,23 @@ class TestPDBWriter(object):
     def universe3(self):
         return mda.Universe(PDB)
 
+    @pytest.fixture(params=[
+            [PDB_CRYOEM_BOX, np.zeros(6)],
+            [MMTF_NOCRYST, None]
+        ])
+    def universe_and_expected_dims(self, request):
+        """
+        File with meaningless CRYST1 record and expected dimensions.
+
+        Notes
+        -----
+        This will need to be made consistent, see Issue #2698
+        """
+        filein = request.param[0]
+        expected_dims = request.param[1]
+
+        return mda.Universe(filein), expected_dims
+
     @pytest.fixture
     def universe4(self):
         return mda.fetch_mmtf("2BBM")
@@ -296,7 +313,7 @@ class TestPDBWriter(object):
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
 
-    def test_write_nodims(self, universe4, outfile):
+    def test_write_nodims(self, universe_and_expected_dims, outfile):
         """
         Test :code:`PDBWriter` for universe without cell dimensions.
 
@@ -305,10 +322,27 @@ class TestPDBWriter(object):
         Test fix for Issue #2679.
         """
 
-        u = universe4
-        u.atoms.write(outfile)
+        u, expected_dims = universe_and_expected_dims
 
-        uout = mda.Universe(outfile)
+        # See Issue #2698
+        if expected_dims is None:
+            assert u.dimensions is None
+        else:
+            assert np.allclose(u.dimensions, expected_dims)
+
+        expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
+
+        with pytest.warns(UserWarning, match=expected_msg):
+            u.atoms.write(outfile)
+
+        with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+            uout = mda.Universe(outfile)
+
+        assert_almost_equal(
+            uout.dimensions, np.zeros(6),
+            self.prec,
+            err_msg="Problem with default box."
+        )
 
         assert_equal(
             uout.trajectory.n_frames, 1,
@@ -319,9 +353,10 @@ class TestPDBWriter(object):
             u.atoms.positions, uout.atoms.positions,
             self.prec,
             err_msg="Written coordinates do not "
-                "agree with original coordinates from frame %d" %
-                u.trajectory.frame
+                    "agree with original coordinates from frame %d" %
+                    u.trajectory.frame
         )
+
 
     def test_check_coordinate_limits_min(self, universe, outfile):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught
@@ -855,18 +890,19 @@ class TestWriterAlignments(object):
             return fh.readlines()
 
     def test_atomname_alignment(self, writtenstuff):
-        # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
+        # Our PDBWriter adds some stuff up top, so line 1 happens at [9]
         refs = ("ATOM      1  H5T",
                 "ATOM      2  CA ",
                 "ATOM      3 CA  ",
                 "ATOM      4 H5''",)
-        for written, reference in zip(writtenstuff[3:], refs):
+
+        for written, reference in zip(writtenstuff[9:], refs):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self, writtenstuff):
         result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA H\n")
-        assert_equal(writtenstuff[3], result_line)
+        assert_equal(writtenstuff[9], result_line)
 
 
 @pytest.mark.parametrize('atom, refname', ((mda.coordinates.PDB.Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
@@ -998,18 +1034,15 @@ def test_partially_missing_cryst():
     assert_array_almost_equal(u.dimensions, 0.0)
 
 
-def test_cryst_em_warning():
-    #issue 2599  
-    with pytest.warns(UserWarning) as record:
-        u = mda.Universe(PDB_CRYOEM_BOX)
-    assert record[0].message.args[0] == "1 A^3 CRYST1 record," \
-                                        " this is usually a placeholder in" \
-                                        " cryo-em structures. Unit cell" \
-                                        " dimensions will not be set."
-                                    
+def test_cryst_meaningless_warning():
+    # issue 2599
+    # FIXME: This message might change with Issue #2698
+    with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+        mda.Universe(PDB_CRYOEM_BOX)
 
-def test_cryst_em_select():
-    #issue 2599
+
+def test_cryst_meaningless_select():
+    # issue 2599
     u = mda.Universe(PDB_CRYOEM_BOX)
     cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
     assert cur_sele.n_atoms == 0
