@@ -113,15 +113,14 @@ class NAMDBINWriter(base.WriterBase):
         """
         self.filename = util.filename(filename)
 
-    def write(self, obj):
+    def write_next_timestep(self, obj):
         """Write obj at current trajectory frame to file.
 
         Parameters
         ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep` 
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
               write coordinate information associate with `obj`
         """
-
         if isinstance(obj, base.Timestep):
             n_atoms = obj.n_atoms
             coor = obj.positions.reshape(n_atoms*3)
