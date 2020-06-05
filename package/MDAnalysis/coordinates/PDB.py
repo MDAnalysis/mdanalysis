@@ -702,7 +702,7 @@ class PDBWriter(base.WriterBase):
         except AttributeError:
             pass
 
-                # FIXME: Values for meaningless cell dimensions are not consistent.
+        # FIXME: Values for meaningless cell dimensions are not consistent.
         # FIXME: See Issue #2698. Here we check for both None and zeros
         if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
             # Unitary unit cell by default. See PDB standard:
