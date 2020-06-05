@@ -254,6 +254,9 @@ also recognized when they are compressed with :program:`gzip` or
    | NAMD          | coor,     |  r/w  | NAMD binary file format for coordinates              |
    |               | namdbin   |       | :mod:`MDAnalysis.coordinates.NAMDBIN`                |
    +---------------+-----------+-------+------------------------------------------------------+
+   | FHIAIMS       | in        |  r/w  | FHI-AIMS file format for coordinates                 |
+   |               |           |       | :mod:`MDAnalysis.coordinates.FHIAIMS`                |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -741,3 +744,4 @@ from . import MMTF
 from . import GSD
 from . import null
 from . import NAMDBIN
+from . import FHIAIMS
