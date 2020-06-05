@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>6.26. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>6.27. Base classes — MDAnalysis.coordinates.base &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
   
 
   
@@ -42,8 +42,8 @@
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.27. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
-    <link rel="prev" title="6.25. Null output — MDAnalysis.coordinates.null" href="null.html" /> 
+    <link rel="next" title="6.28. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" />
+    <link rel="prev" title="6.26. Null output — MDAnalysis.coordinates.null" href="null.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -123,21 +123,22 @@
 <li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.20. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="XTC.html">6.21. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.22. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory.html">6.23. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.24. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="null.html">6.25. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.26. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#timestep">6.26.1. Timestep</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#frameiterators">6.26.2. FrameIterators</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#readers">6.26.3. Readers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#writers">6.26.4. Writers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#converters">6.26.5. Converters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#helper-classes">6.26.6. Helper classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.23. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.24. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.25. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.26. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.27. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#timestep">6.27.1. Timestep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#frameiterators">6.27.2. FrameIterators</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#readers">6.27.3. Readers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writers">6.27.4. Writers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#converters">6.27.5. Converters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#helper-classes">6.27.6. Helper classes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">6.27. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.28. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.29. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.28. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.29. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.30. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -198,7 +199,7 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.26. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></li>
+      <li>6.27. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -218,12 +219,12 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.coordinates.base"></span><div class="section" id="base-classes-mdanalysis-coordinates-base">
-<h1>6.26. Base classes — <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
+<h1>6.27. Base classes — <a class="reference internal" href="#module-MDAnalysis.coordinates.base" title="MDAnalysis.coordinates.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a><a class="headerlink" href="#base-classes-mdanalysis-coordinates-base" title="Permalink to this headline">¶</a></h1>
 <p>Derive other Timestep, FrameIterator, Reader and Writer classes from the classes
 in this module. The derived classes must follow the <a class="reference internal" href="init.html#trajectory-api"><span class="std std-ref">Trajectory API</span></a>
 in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a>.</p>
 <div class="section" id="timestep">
-<h2>6.26.1. Timestep<a class="headerlink" href="#timestep" title="Permalink to this headline">¶</a></h2>
+<h2>6.27.1. Timestep<a class="headerlink" href="#timestep" title="Permalink to this headline">¶</a></h2>
 <p>A <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> holds information for the current time frame in
 the trajectory. It is one of the central data structures in
 MDAnalysis.</p>
@@ -619,7 +620,7 @@ copy official attributes of the Timestep.</p>
 
 </div>
 <div class="section" id="frameiterators">
-<h2>6.26.2. FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this headline">¶</a></h2>
+<h2>6.27.2. FrameIterators<a class="headerlink" href="#frameiterators" title="Permalink to this headline">¶</a></h2>
 <p>Iterator classes used by the by the <a class="reference internal" href="#MDAnalysis.coordinates.base.ProtoReader" title="MDAnalysis.coordinates.base.ProtoReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProtoReader</span></code></a>.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.FrameIteratorBase">
@@ -698,7 +699,7 @@ trajectory.</p>
 
 </div>
 <div class="section" id="readers">
-<h2>6.26.3. Readers<a class="headerlink" href="#readers" title="Permalink to this headline">¶</a></h2>
+<h2>6.27.3. Readers<a class="headerlink" href="#readers" title="Permalink to this headline">¶</a></h2>
 <p>Readers know how to take trajectory data in a given format and present it in a
 common API to the user in MDAnalysis. There are two types of readers:</p>
 <ol class="arabic simple">
@@ -2447,7 +2448,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
 
 </div>
 <div class="section" id="writers">
-<h2>6.26.4. Writers<a class="headerlink" href="#writers" title="Permalink to this headline">¶</a></h2>
+<h2>6.27.4. Writers<a class="headerlink" href="#writers" title="Permalink to this headline">¶</a></h2>
 <p>Writers know how to write information in a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> to a trajectory
 file.</p>
 <dl class="class">
@@ -2751,7 +2752,7 @@ when setting up the trajectory.</p>
 
 </div>
 <div class="section" id="converters">
-<h2>6.26.5. Converters<a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h2>
+<h2>6.27.5. Converters<a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h2>
 <p>Converters output information to other libraries.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.base.ConverterBase">
@@ -2998,7 +2999,7 @@ is avoided.</p>
 
 </div>
 <div class="section" id="helper-classes">
-<h2>6.26.6. Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h2>
+<h2>6.27.6. Helper classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline">¶</a></h2>
 <p>The following classes contain basic functionality that all readers and
 writers share.</p>
 <dl class="class">
@@ -3265,10 +3266,10 @@ is avoided.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="core.html" class="btn btn-neutral float-right" title="6.27. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="core.html" class="btn btn-neutral float-right" title="6.28. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="null.html" class="btn btn-neutral float-left" title="6.25. Null output — MDAnalysis.coordinates.null" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="null.html" class="btn btn-neutral float-left" title="6.26. Null output — MDAnalysis.coordinates.null" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -3277,7 +3278,7 @@ is avoided.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>

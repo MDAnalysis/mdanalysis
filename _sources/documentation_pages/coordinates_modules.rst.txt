@@ -40,6 +40,7 @@ provide the format in the keyword argument *format* to
    coordinates/TXYZ
    coordinates/XTC
    coordinates/XYZ
+   coordinates/FHIAIMS
    coordinates/memory
    coordinates/chemfiles
    coordinates/null
