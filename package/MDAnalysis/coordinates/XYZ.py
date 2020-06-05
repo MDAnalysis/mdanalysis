@@ -139,7 +139,7 @@ class XYZWriter(base.WriterBase):
             used when a trajectory is written from raw
             :class:`Timestep` objects which do not contain atom
             information. If you write a :class:`AtomGroup` with
-            :math:`XYZWriter.write` then atom information is taken
+            :meth:`XYZWriter.write` then atom information is taken
             at each step and *atoms* is ignored.
         convert_units : bool (optional)
             convert quantities to default MDAnalysis units of Angstrom upon
