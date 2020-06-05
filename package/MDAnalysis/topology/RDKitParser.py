@@ -25,13 +25,20 @@
 RDKit topology parser
 =====================
 
-Converts a `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ 
+Converts an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ 
 :class:`rdkit.Chem.rdchem.Mol` into a :class:`MDAnalysis.core.Topology`.
 
 
 Example
 -------
+
 TODO
+
+
+See Also
+--------
+:mod:`MDAnalysis.coordinates.RDKit`
+
 
 Classes
 -------
@@ -74,6 +81,28 @@ logger = logging.getLogger("MDAnalysis.topology.RDKitParser")
 class RDKitParser(TopologyReaderBase):
     """
     For RDKit structures
+
+    Create the following Attributes:
+     - Atomids
+     - Atomnames
+     - Elements
+     - Masses
+     - Bonds
+     - Resids
+     - Resnums
+     - Segids
+
+    Guesses the following:
+     - Atomtypes
+
+    Depending on RDKit's input, the following Attributes might be present:
+     - Charges
+     - Resnames
+     - AltLocs
+     - ChainIDs
+     - Occupancies
+     - Tempfactors
+     
     """
     format = 'RDKIT'
 
@@ -95,7 +124,7 @@ class RDKitParser(TopologyReaderBase):
 
         Returns
         -------
-        MDAnalysis *Topology* object
+        MDAnalysis Topology object
         """
 
         mol = self.filename
