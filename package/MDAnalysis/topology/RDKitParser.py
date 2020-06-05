@@ -25,14 +25,7 @@
 RDKit topology parser
 =====================
 
-Converts an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ 
-:class:`rdkit.Chem.rdchem.Mol` into a :class:`MDAnalysis.core.Topology`.
-
-
-Example
--------
-
-TODO
+Converts an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ :class:`rdkit.Chem.rdchem.Mol` into a :class:`MDAnalysis.core.Topology`.
 
 
 See Also
@@ -150,7 +143,7 @@ class RDKitParser(TopologyReaderBase):
         atom.HasProp('_TriposPartialCharge')
         ):
             warnings.warn(
-                'Both _GasteigerCharge and _TriposPartialCharge properties ',
+                'Both _GasteigerCharge and _TriposPartialCharge properties '
                 'are present. Using Gasteiger charges by default.')
 
         for atom in mol.GetAtoms():

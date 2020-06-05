@@ -22,13 +22,17 @@
 #
 from __future__ import absolute_import
 
+import warnings
 import pytest
+import numpy as np
+from numpy.testing import assert_array_equal
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_helix, SDF_molecule
 
 Chem = pytest.importorskip('rdkit.Chem')
+AllChem = pytest.importorskip('rdkit.Chem.AllChem')
 
 class RDKitParserBase(ParserBase):
     parser = mda.topology.RDKitParser.RDKitParser
@@ -66,6 +70,34 @@ class TestRDKitParserMOL2(RDKitParserBase):
         return Chem.MolFromMol2File(self.ref_filename, removeHs=False, 
                                     sanitize=False)
 
+    def _create_mol_gasteiger_charges(self):
+        mol = Chem.MolFromMol2File(self.ref_filename, removeHs=False, 
+                                   sanitize=True)
+        AllChem.ComputeGasteigerCharges(mol)
+        return mol
+
+    def _remove_tripos_charges(self, mol):
+        for atom in mol.GetAtoms():
+            atom.ClearProp("_TriposPartialCharge")
+    
+    @pytest.fixture
+    def top_gas_tripos(self):
+        mol = self._create_mol_gasteiger_charges()
+        return self.parser(mol).parse()
+
+    @pytest.fixture
+    def filename_gasteiger(self):
+        mol = self._create_mol_gasteiger_charges()
+        self._remove_tripos_charges(mol)
+        return mol
+
+    @pytest.fixture
+    def top_gasteiger(self):
+        mol = self._create_mol_gasteiger_charges()
+        self._remove_tripos_charges(mol)
+        return self.parser(mol).parse()
+    
+
     def test_bond_orders(self, top, filename):
         # The 3 first aromatic bonds in the mol2 file are not actually 
         # aromatic but just part of a conjugated system. RDKit doesn't follow
@@ -75,6 +107,37 @@ class TestRDKitParserMOL2(RDKitParserBase):
         2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1]
         expected = [float(i) for i in expected]
         assert top.bonds.order == expected
+    
+    def test_multiple_charge_priority(self, 
+        top_gas_tripos, filename_gasteiger):
+        expected = np.array([
+            a.GetDoubleProp('_GasteigerCharge') for a in 
+            filename_gasteiger.GetAtoms()], dtype=np.float32)
+        assert_array_equal(expected, top_gas_tripos.charges.values)
+
+    def test_multiple_charge_props_warning(self):
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            mol = self._create_mol_gasteiger_charges()
+            # Trigger a warning.
+            top = self.parser(mol).parse()
+            # Verify the warning
+            assert len(w) == 1
+            assert "_GasteigerCharge and _TriposPartialCharge" in str(
+                w[-1].message)
+
+    def test_gasteiger_charges(self, top_gasteiger, filename_gasteiger):
+        expected = np.array([
+            a.GetDoubleProp('_GasteigerCharge') for a in 
+            filename_gasteiger.GetAtoms()], dtype=np.float32)
+        assert_array_equal(expected, top_gasteiger.charges.values)
+
+    def test_tripos_charges(self, top, filename):
+        expected = np.array([
+            a.GetDoubleProp('_TriposPartialCharge') for a in filename.GetAtoms()
+            ], dtype=np.float32)
+        assert_array_equal(expected, top.charges.values)
 
 
 class TestRDKitParserPDB(RDKitParserBase):
@@ -92,7 +155,7 @@ class TestRDKitParserPDB(RDKitParserBase):
     @pytest.fixture
     def filename(self):
         return Chem.MolFromPDBFile(self.ref_filename, removeHs=False)
-
+    
 
 class TestRDKitParserSMILES(RDKitParserBase):
     ref_filename = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"

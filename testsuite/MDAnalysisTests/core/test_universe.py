@@ -216,6 +216,12 @@ class TestUniverseCreation(object):
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
         assert u2._topology is u._topology
 
+    def test_universe_from_smiles(self):
+        smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+        u = mda.Universe.from_smiles(smi, addHs=False, format='RDKIT')
+        assert u.atoms.n_atoms == 14
+        assert len(u.bonds.indices) == 15
+
 
 class TestUniverse(object):
     # older tests, still useful

@@ -1289,6 +1289,41 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
+    
+    @classmethod
+    def from_smiles(cls, smiles, sanitize=True, addHs=True, **kwargs):
+        """Create a Universe from a SMILES string with rdkit
+
+        Parameters
+        ----------
+        smiles : str
+            SMILES string
+
+        sanitize : bool (optional, default True)
+            Toggle the sanitization of the molecule
+
+        addHs : bool (optional, default True)
+            Add all necessary hydrogens to the molecule
+
+        kwargs : dict
+            Parameters passed on Universe creation
+
+        Returns
+        -------
+        :class:`~MDAnalysis.core.Universe`
+        """
+        try:
+            from rdkit import Chem
+        except ImportError as e:
+            raise ImportError(
+                "Creating a Universe from a SMILES string requires RDKit but " 
+                "it does not appear to be installed: {0}".format(e))
+
+        mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+        if addHs:
+            mol = Chem.AddHs(mol)
+
+        return cls(mol, **kwargs)
 
 
 # TODO: what is the point of this function???
