@@ -44,6 +44,7 @@ Classes
 from __future__ import absolute_import, division
 
 import logging
+import warnings
 import numpy as np
 
 from .base import TopologyReaderBase, change_squash
@@ -113,6 +114,16 @@ class RDKitParser(TopologyReaderBase):
         chainids = []
         occupancies = []
         tempfactors = []
+
+        # check if multiple charges present
+        atom = mol.GetAtomWithIdx(0)
+        if atom.HasProp('_GasteigerCharge') and (
+        atom.HasProp('_TriposPartialCharge')
+        ):
+            warnings.warn(
+                'Both _GasteigerCharge and _TriposPartialCharge properties ',
+                'are present. Using Gasteiger charges by default.')
+
         for atom in mol.GetAtoms():
             ids.append(atom.GetIdx())
             elements.append(atom.GetSymbol())
@@ -142,11 +153,11 @@ class RDKitParser(TopologyReaderBase):
                 # if the user took the time to compute them, make it a priority
                 # over charges read from a MOL2 file
                 try:
-                    charges.append(atom.GetProp('_GasteigerCharge'))
+                    charges.append(atom.GetDoubleProp('_GasteigerCharge'))
                 except KeyError:
                     # partial charge (MOL2 only)
                     try:
-                        charges.append(atom.GetProp('_TriposPartialCharge'))
+                        charges.append(atom.GetDoubleProp('_TriposPartialCharge'))
                     except KeyError:
                         pass
                 
