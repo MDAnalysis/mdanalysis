@@ -702,6 +702,29 @@ class PDBWriter(base.WriterBase):
         except AttributeError:
             pass
 
+                # FIXME: Values for meaningless cell dimensions are not consistent.
+        # FIXME: See Issue #2698. Here we check for both None and zeros
+        if u.dimensions is None or np.allclose(u.dimensions, np.zeros(6)):
+            # Unitary unit cell by default. See PDB standard:
+            # http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1
+            self.CRYST1(np.array([1.0, 1.0, 1.0, 90.0, 90.0, 90.0]))
+
+            # Add CRYST1 REMARK (285)
+            # The SCALE record is not included
+            # (We are only implementing a subset of the PDB standard)
+            self.REMARK("285 UNITARY VALUES FOR THE UNIT CELL AUTOMATICALLY SET")
+            self.REMARK("285 BY MDANALYSIS PDBWRITER BECAUSE UNIT CELL INFORMATION")
+            self.REMARK("285 WAS MISSING.")
+            self.REMARK("285 PROTEIN DATA BANK CONVENTIONS REQUIRE THAT")
+            self.REMARK("285 CRYST1 RECORD IS INCLUDED, BUT THE VALUES ON")
+            self.REMARK("285 THIS RECORD ARE MEANINGLESS.")
+
+            warnings.warn("Unit cell dimensions not found. "
+                          "CRYST1 record set to unitary values.")
+
+        else:
+            self.CRYST1(self.convert_dimensions_to_unitcell(u.trajectory.ts))
+
     def _check_pdb_coordinates(self):
         """Check if the coordinate values fall within the range allowed for PDB files.
 
