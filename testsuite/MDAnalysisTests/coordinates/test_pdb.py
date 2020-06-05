@@ -209,10 +209,6 @@ class TestPDBWriter(object):
         return mda.Universe(filein), expected_dims
 
     @pytest.fixture
-    def universe4(self):
-        return mda.fetch_mmtf("2BBM")
-
-    @pytest.fixture
     def outfile(self, tmpdir):
         return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
 

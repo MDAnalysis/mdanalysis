@@ -162,9 +162,7 @@ class XYZWriter(base.WriterBase):
         self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atoms_elements_or_names(self, atoms):
-        """
-        Return a list of atom elements (if present) or fallback to atom names
-        """
+        """Return a list of atom elements (if present) or fallback to atom names"""
         # Default case
         if atoms is None:
             return itertools.cycle(('X',))
