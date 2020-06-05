@@ -47,7 +47,10 @@ known_ts_haters = [
 def test_ts_deprecated(writer, tmpdir):
     u = mda.Universe.empty(10, trajectory=True)
 
-    fn = str(tmpdir.join('out.traj'))
+    if writer == mda.coordinates.chemfiles.ChemfilesWriter:
+        fn = str(tmpdir.join('out.xtc'))
+    else:
+        fn = str(tmpdir.join('out.traj'))
 
     with writer(fn, n_atoms=10) as w:
         with pytest.warns(DeprecationWarning):

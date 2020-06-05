@@ -273,8 +273,8 @@ class ChemfilesWriter(base.WriterBase):
             self._file.close()
             self._closed = True
 
-    def write(self, obj):
-        """Write object `obj` at current trajectory frame to file.
+    def write_next_timestep(self, obj):
+        """Write timestep object into trajectory.
 
         Topology for the output is taken from the `obj` or default to the value
         of the `topology` keyword supplied to the :class:`ChemfilesWriter`
@@ -286,7 +286,7 @@ class ChemfilesWriter(base.WriterBase):
 
         Parameters
         ----------
-        obj : Universe or AtomGroup
+        obj : AtomGroup or Universe
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
         """
@@ -311,16 +311,7 @@ class ChemfilesWriter(base.WriterBase):
 
         frame = self._timestep_to_chemfiles(ts)
         frame.topology = self._topology_to_chemfiles(obj, len(frame.atoms))
-        self._file.write(frame)
 
-    def write_next_timestep(self, ts):
-        """Write timestep object into trajectory.
-
-        Parameters
-        ----------
-        ts: TimeStep
-        """
-        frame = self._timestep_to_chemfiles(ts)
         self._file.write(frame)
 
     def _timestep_to_chemfiles(self, ts):
