@@ -189,6 +189,7 @@ __all__ = [
     "PDB_CRYOEM_BOX", # Issue 2599, Issue #2679, PR #2685
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
+    "FHIAIMS", # to test FHIAIMS coordinate files
 ]
 
 from pkg_resources import resource_filename
@@ -276,6 +277,7 @@ PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 PDB_icodes = resource_filename(__name__, 'data/1osm.pdb.gz')
 PDB_CRYOEM_BOX = resource_filename(__name__, 'data/5a7u.pdb')
 PDB_CHECK_RIGHTHAND_PA = resource_filename(__name__, 'data/6msm.pdb.bz2')
+FHIAIMS = resource_filename(__name__, 'data/fhiaims.in')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
