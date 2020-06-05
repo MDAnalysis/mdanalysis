@@ -149,7 +149,7 @@ class XYZWriter(base.WriterBase):
             version and frame
 
         .. versionchanged:: 1.0.0
-           Removed unused :code:`default_remark` variable (Issue #2692).
+           Removed :code:`default_remark` variable (Issue #2692).
         """
         self.filename = filename
         self.remark = remark
@@ -233,7 +233,6 @@ class XYZWriter(base.WriterBase):
     def write_next_timestep(self, ts=None):
         """
         Write coordinate information in *ts* to the trajectory
-
 
         .. versionchanged:: 1.0.0
            Print out :code:`remark` if present, otherwise use generic one 
