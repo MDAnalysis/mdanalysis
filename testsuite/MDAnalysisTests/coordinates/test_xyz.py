@@ -116,7 +116,6 @@ class TestXYZWriter(BaseWriterTest):
     )
     def test_remark(self, remarkout, remarkin, ref, tmpdir):
         u = mda.Universe(ref.topology, ref.trajectory)
-
         outfile = "write-remark.xyz"
 
         with tmpdir.as_cwd():
