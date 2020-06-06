@@ -49,7 +49,8 @@ def test_ts_deprecated(writer, tmpdir):
 
     if writer == mda.coordinates.chemfiles.ChemfilesWriter:
         # chemfiles Writer exists but doesn't work without chemfiles
-        pytest.importorskip('chemfiles')
+        if not mda.coordinates.chemfiles.check_chemfiles_version():
+            pytest.skip()
         fn = str(tmpdir.join('out.xtc'))
     else:
         fn = str(tmpdir.join('out.traj'))
