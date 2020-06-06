@@ -174,7 +174,7 @@
             
   <h1>Source code for MDAnalysis.exceptions</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
-<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 </span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
 <span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
 <span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
@@ -202,12 +202,17 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+
 <div class="viewcode-block" id="SelectionError"><a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.hole.SelectionError">[docs]</a><span class="k">class</span> <span class="nc">SelectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Raised when a atom selection failed.&quot;&quot;&quot;</span></div>
 
 
-<div class="viewcode-block" id="NoDataError"><a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.hole.NoDataError">[docs]</a><span class="k">class</span> <span class="nc">NoDataError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Raised when empty input is not allowed or required data are missing.&quot;&quot;&quot;</span></div>
+<div class="viewcode-block" id="NoDataError"><a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.hole.NoDataError">[docs]</a><span class="k">class</span> <span class="nc">NoDataError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when empty input is not allowed or required data are missing.</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">        Now a subclass of AttributeError as well as ValueError</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
 
 
 <div class="viewcode-block" id="ApplicationError"><a class="viewcode-back" href="../../documentation_pages/exceptions.html#MDAnalysis.analysis.hole.ApplicationError">[docs]</a><span class="k">class</span> <span class="nc">ApplicationError</span><span class="p">(</span><span class="ne">OSError</span><span class="p">):</span>
