@@ -111,14 +111,10 @@ class TestXYZWriter(BaseWriterTest):
         [   
             2 * ["Curstom Remark"],
             2 * [""],
-            [None, "Written by MDAnalysis XYZWriter (release {0}) | Frame 0".format(__version__)],
+            [None, "frame 0 | Written by MDAnalysis XYZWriter (release {0})".format(__version__)],
         ]
     )
     def test_remark(self, remarkout, remarkin, ref, tmpdir):
-        """
-        Test remark handling.
-        """
-
         u = mda.Universe(ref.topology, ref.trajectory)
 
         outfile = "write-remark.xyz"
