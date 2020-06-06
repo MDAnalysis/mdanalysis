@@ -287,13 +287,13 @@ class TOPParser(TopologyReaderBase):
 
         # Warn user if elements not in topology
         if 'elements' not in attrs:
-            msg = ("ATOMIC_NUMBER record not found, elements attribute will"
+            msg = ("ATOMIC_NUMBER record not found, elements attribute will "
                    "not be populated")
             logger.warning(msg)
             warnings.warn(msg)
         elif np.any(attrs['elements'].values == ""):
             # only send out one warning that some elements are unknown
-            msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these"
+            msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
                    "have been given an empty element record")
             logger.warning(msg)
             warnings.warn(msg)
