@@ -24,6 +24,12 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
 
 Fixes
   * Use user-provided `remark` in `XYZWriter` (Issue #2692)
+  * Added more informative error messages about topology attributes
+    (Issue #2565)
+  * Made NoDataError a subclass of ValueError *and* AttributeError
+    (Issue #2635)
+  * Fixed select_atoms("around 0.0 ...") selections and capped_distance 
+    causing a segfault (Issue #2656 PR #2665)
   * `PDBWriter` writes unitary `CRYST1` record (cubic box with sides of 1 Å)
     when `u.dimensions` is `None` or `np.zeros(6)` (Issue #2679, PR #2685)
   * Ensures principal_axes() returns axes with the right hand convention (Issue #2637)

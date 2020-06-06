@@ -34,7 +34,15 @@ jobs:
       architecture: $(PYTHON_ARCH)
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
-  - script: python -m pip install numpy scipy cython pytest pytest-xdist matplotlib
+  - script: >-
+      python -m pip install
+      cython
+      matplotlib
+      numpy
+      pytest
+      pytest-xdist
+      scikit-learn
+      scipy
     displayName: 'Install dependencies'
   - powershell: |
       cd package
@@ -45,5 +53,5 @@ jobs:
     displayName: 'Build MDAnalysis'
   - powershell: |
       cd testsuite
-      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2
+      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx
     displayName: 'Run MDAnalysis Test Suite'
