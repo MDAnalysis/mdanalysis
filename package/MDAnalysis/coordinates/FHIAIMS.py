@@ -267,22 +267,19 @@ class FHIAIMSWriter(base.WriterBase):
         self.filename = util.filename(filename, ext='.in', keep=True)
         self.n_atoms = n_atoms
 
-    def write(self, obj):
+    def write_next_timestep(self, obj):
         """Write selection at current trajectory frame to file.
 
         Parameters
         -----------
-        obj : AtomGroup or Universe or :class:`Timestep`
-
+        obj : AtomGroup or Universe
         """
         # write() method that complies with the Trajectory API
 
         try:
-
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms
             # can write from selection == Universe (Issue 49)
-
         except AttributeError:
             if isinstance(obj, base.Timestep):
                 ag_or_ts = obj.copy()
