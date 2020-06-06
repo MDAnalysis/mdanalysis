@@ -48,6 +48,8 @@ def test_ts_deprecated(writer, tmpdir):
     u = mda.Universe.empty(10, trajectory=True)
 
     if writer == mda.coordinates.chemfiles.ChemfilesWriter:
+        # chemfiles Writer exists but doesn't work without chemfiles
+        pytest.importorskip('chemfiles')
         fn = str(tmpdir.join('out.xtc'))
     else:
         fn = str(tmpdir.join('out.traj'))
