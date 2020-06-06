@@ -251,11 +251,26 @@ def u_pbc_triclinic():
     return u
 
 
-def test_around_superposed_small_res(u_pbc_triclinic):
-    ag = u_pbc_triclinic.select_atoms('around 0.0 resid 10')
-    assert len(ag) == 0
-
-
-def test_around_superposed_large_res(u_pbc_triclinic):
+def test_around_res(u_pbc_triclinic):
+    # sanity check for issue 2656, shouldn't segfault (obviously)
     ag = u_pbc_triclinic.select_atoms('around 0.0 resid 3')
     assert len(ag) == 0
+
+
+def test_around_overlapping():
+    # check that around 0.0 catches when atoms *are* superimposed
+    u = mda.Universe.empty(60, trajectory=True)
+    xyz = np.zeros((60, 3))
+    x = np.tile(np.arange(12), (5,))+np.repeat(np.arange(5)*100, 12)
+    # x is 5 images of 12 atoms
+
+    xyz[:, 0] = x  # y and z are 0
+    u.load_new(xyz)
+
+    u.dimensions = [100, 100, 100, 60, 60, 60]
+    # Technically true but not what we're testing:
+    # dist = mda.lib.distances.distance_array(u.atoms[:12].positions,
+    #                                         u.atoms[12:].positions,
+    #                                         box=u.dimensions)
+    # assert np.count_nonzero(np.any(dist <= 0.0, axis=0)) == 48
+    assert u.select_atoms('around 0.0 index 0:11').n_atoms == 48
