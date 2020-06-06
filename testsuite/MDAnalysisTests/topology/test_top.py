@@ -251,7 +251,7 @@ class TestPRM12Parser(TOPBase):
                                 "H", "C", "N", "H", "H", "N", "C", "C", "H",
                                 "C", "H", "H", "O", "P", "O", "O", "O", "C"],
                       dtype=object),
-                      np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O", 
+                      np.array(["C", "C", "H", "C", "H", "H", "O", "P", "O",
                                 "O", "O", "C", "H", "H", "C", "H", "O", "C",
                                 "H", "N", "C", "H", "N", "C", "C", "O", "N",
                                 "H", "C", "N", "H", "H", "N", "C", "C", "H",
@@ -392,8 +392,8 @@ class TestPRMNCRST(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
-    elems_ranges = [[0, 6],]
-    expected_elems = [np.array(["H", "C", "H", "H", "C", "O"], dtype=object),]
+    elems_ranges = [[0, 6], ]
+    expected_elems = [np.array(["H", "C", "H", "H", "C", "O"], dtype=object), ]
 
 
 class TestPRMNCRST_negative(TOPBase):
@@ -423,8 +423,8 @@ class TestPRMNCRST_negative(TOPBase):
     atom_i_dihedral_values = ((0, 1, 4, 5), (2, 1, 4, 5), (3, 1, 4, 5))
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
-    elems_ranges = [[0, 6],]
-    expected_elems = [np.array(["H", "", "H", "H", "C", ""], dtype=object),]
+    elems_ranges = [[0, 6], ]
+    expected_elems = [np.array(["H", "", "H", "H", "C", ""], dtype=object), ]
 
 
 class TestPRMEP(TOPBase):
@@ -437,7 +437,7 @@ class TestPRMEP(TOPBase):
     expected_n_angles = 36
     expected_n_dihedrals = 41
     expected_n_impropers = 4
-    atom_i = 25 # testing EPW atom
+    atom_i = 25  # testing EPW atom
     expected_n_zero_bonds = 1
     expected_n_i_bonds = 1
     expected_n_zero_angles = 3
@@ -455,8 +455,10 @@ class TestPRMEP(TOPBase):
     atom_zero_improper_values = ()
     atom_i_improper_values = ()
     elems_ranges = [[0, 8], [20, 28]]
-    expected_elems = [np.array(["H", "C", "H", "H", "C", "O", "N", "H"], dtype=object),
-                      np.array(["H", "H", "O", "H", "H", "", "O", "H"], dtype=object)]
+    expected_elems = [np.array(["H", "C", "H", "H", "C", "O", "N", "H"],
+                      dtype=object),
+                      np.array(["H", "H", "O", "H", "H", "", "O", "H"],
+                      dtype=object)]
 
 
 class TestErrorsAndWarnings(object):
