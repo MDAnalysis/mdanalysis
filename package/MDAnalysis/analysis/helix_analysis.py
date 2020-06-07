@@ -130,11 +130,9 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
     if not np.any(plane):  # zero when ref_axis, global_axis parallel
         # use random orthogonal vector
         new_ref = [[1, 0, 0], [0, 0, 1]]
-
         while not np.any(plane) and new_ref:
             plane = np.cross(new_ref.pop(), global_axis)
 
-    # normal to the plane of -`plane` and `global_axis`
     # needed to determine angle quadrants
     ortho_plane = np.cross(-plane, global_axis)
 
@@ -205,10 +203,11 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     #   CA_i+3
     #
     # V: vectors
-    # bi: bisectors. Note: not real bisectors are the vectors aren't normalised
+    # bi: approximate "bisectors" in plane of screen
+    #     Note: not real bisectors, as the vectors aren't normalised
     # θ: local_twists
     # origin: origins
-    # local_axes: in the plane of the screen. Orthogonal to the "bisectors"
+    # local_axes: perpendicular to plane of screen. Orthogonal to "bisectors"
 
     vectors = positions[1:] - positions[:-1]  # (n_res-1, 3)
     bisectors = vectors[:-1] - vectors[1:]  # (n_res-2, 3)
@@ -248,7 +247,7 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     local_helix_directions = (bisectors.T/bimags).T  # (n_res-2, 3)
 
     # get origins by subtracting radius from atom i+1
-    origins = positions[1:-1][:]  # (n_res-2, 3)
+    origins = positions[1:-1].copy()  # (n_res-2, 3)
     origins[:-1] -= (radii*local_helix_directions[:-1].T).T
     # subtract radius from atom i+2 in last one
     origins[-1] -= radii[-1]*local_helix_directions[-1]
@@ -380,12 +379,12 @@ class HELANAL(AnalysisBase):
                 if np.any(counts > 1):
                     dup = ', '.join(map(str, ids[counts > 1]))
                     warnings.warn('Your selection {} includes multiple atoms '
-                                'for residues with these resindices: {}.'
-                                'HELANAL is designed to work on one alpha-'
-                                'carbon per residue.'.format(s, dup))
-                
+                                  'for residues with these resindices: {}.'
+                                  'HELANAL is designed to work on one alpha-'
+                                  'carbon per residue.'.format(s, dup))
+
                 consecutive.append(ag[counter-ng:counter])
-                
+
         self.atomgroups = consecutive
         self.ref_axis = np.asarray(ref_axis)
         self._flatten = flatten_single_helix
@@ -410,7 +409,7 @@ class HELANAL(AnalysisBase):
     def _single_frame(self):
         _f = self._frame_index
         for i, ag in enumerate(self.atomgroups):
-            results = helix_analysis(ag.positions)
+            results = helix_analysis(ag.positions, ref_axis=self.ref_axis)
             for key, value in results.items():
                 attr = getattr(self, key)
                 attr[i][_f] = value

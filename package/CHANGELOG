@@ -257,6 +257,7 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
+  * analysis.helanal is deprecated in 1.0 (remove in 2.0)
   * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
   * analysis.density.density_from_Universe() (remove in 2.0)

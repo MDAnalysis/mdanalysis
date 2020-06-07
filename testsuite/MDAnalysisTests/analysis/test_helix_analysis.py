@@ -104,18 +104,21 @@ def read_bending_matrix(fn):
         data[k] = np.array(v)
     return data
 
+
 def test_local_screw_angles():
     xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     angles = hel.local_screw_angles([1, 1, 1], [1, -1, -1], xyz)
     assert_almost_equal(angles, [0, 135, 135])
 
+
 def test_local_screw_angles_parallel_axes():
     xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     angles = hel.local_screw_angles([1, 0, 0], [-1, 0, 0], xyz)
-    # new ref should be [0, 0, 1]; 
+    # new ref should be [0, 0, 1];
     # plane should be [0, -1, 0];
     # ortho_plane should be [0, 0, 1]
     assert_almost_equal(angles, [0, 90, 0])
+
 
 @pytest.fixture()
 def zigzag():
@@ -124,12 +127,14 @@ def zigzag():
     #   x    x    x    x    x
 
     n_atoms = 100
-    u = mda.Universe.empty(100, trajectory=True)
+    u = mda.Universe.empty(100, atom_resindex=np.arange(n_atoms),
+                           trajectory=True)
     xyz = np.array(list(zip([1, -1]*(n_atoms//2),  # x \in {0, 1}
                             [0]*n_atoms,  # y == 0
                             range(n_atoms))))  # z rises continuously
     u.load_new(xyz)
     return u
+
 
 @pytest.mark.parametrize('ref_axis,screw_angles', [
     ([0, 0, 1], [180, 0]),
@@ -139,7 +144,7 @@ def zigzag():
     ([1, 1, 2], [135, 45]),
 ])
 def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
-    properties = hel.helix_analysis(zigzag.atoms.positions, 
+    properties = hel.helix_analysis(zigzag.atoms.positions,
                                     ref_axis=ref_axis)
     assert_almost_equal(properties['local_twists'], 180, decimal=4)
     assert_almost_equal(properties['local_nres_per_turn'], 2, decimal=4)
@@ -150,15 +155,16 @@ def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     assert_almost_equal(properties['local_bends'], 0, decimal=4)
     assert_almost_equal(properties['all_bends'], 0, decimal=4)
     assert_almost_equal(properties['local_heights'], 0, decimal=4)
-    assert_almost_equal(properties['local_helix_directions'][0::2], 
+    assert_almost_equal(properties['local_helix_directions'][0::2],
                         [[-1, 0, 0]]*49, decimal=4)
     assert_almost_equal(properties['local_helix_directions'][1::2],
                         [[1, 0, 0]]*49, decimal=4)
-    origins = zigzag.atoms.positions[1:-1]
+    origins = zigzag.atoms.positions[1:-1].copy()
     origins[:, 0] = 0
     assert_almost_equal(properties['local_origins'], origins, decimal=4)
-    assert_almost_equal(properties['local_screw_angles'], 
+    assert_almost_equal(properties['local_screw_angles'],
                         screw_angles*49, decimal=4)
+
 
 def test_helix_analysis_square_oct():
     # square-octagon-square-octagon
@@ -311,7 +317,7 @@ class TestHELANAL(object):
     def test_residue_gaps_no_split(self, psf_ca):
         sel = 'resid 6:50 or resid 100:130 or resid 132:148'
         with pytest.warns(UserWarning) as rec:
-            ha = hel.HELANAL(psf_ca, select=sel, 
+            ha = hel.HELANAL(psf_ca, select=sel,
                              split_residue_sequences=False)
             ha.run()
             assert len(ha.atomgroups) == 1
@@ -320,6 +326,34 @@ class TestHELANAL(object):
         warnmsg = rec[0].message.args[0]
         assert 'has gaps in the residues' in warnmsg
         assert 'Splitting into' not in warnmsg
+
+    @pytest.mark.parametrize('ref_axis,screw_angles', [
+        ([0, 0, 1], [180, 0]),
+        ([0, 1, 0], [90, 90]),
+        ([1, 0, 0], [180, 0]),
+        ([1, 1, 1], [135, 45]),
+        ([1, 1, 2], [135, 45]),
+    ])
+    def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
+        ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
+                         flatten_single_helix=True).run()
+        assert_almost_equal(ha.local_twists, 180, decimal=4)
+        assert_almost_equal(ha.local_nres_per_turn, 2, decimal=4)
+        assert_almost_equal(ha.global_axis, [[0, 0, -1]], decimal=4)
+        # all 0 vectors
+        assert_almost_equal(ha.local_axes, 0, decimal=4)
+        assert_almost_equal(ha.local_bends, 0, decimal=4)
+        assert_almost_equal(ha.all_bends, 0, decimal=4)
+        assert_almost_equal(ha.local_heights, 0, decimal=4)
+        assert_almost_equal(ha.local_helix_directions[0][0::2],
+                            [[-1, 0, 0]]*49, decimal=4)
+        assert_almost_equal(ha.local_helix_directions[0][1::2],
+                            [[1, 0, 0]]*49, decimal=4)
+        origins = zigzag.atoms.positions[1:-1].copy()
+        origins[:, 0] = 0
+        assert_almost_equal(ha.local_origins[0], origins, decimal=4)
+        assert_almost_equal(ha.local_screw_angles[0],
+                            screw_angles*49, decimal=4)
 
 
 def test_vector_of_best_fit():
