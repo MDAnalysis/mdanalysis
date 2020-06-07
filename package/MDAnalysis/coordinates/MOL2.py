@@ -373,16 +373,7 @@ class MOL2Writer(base.WriterBase):
         molecule[1] = molecule_1_store
         return return_val
 
-    def write(self, obj):
-        """Write a new frame to the MOL2 file.
-
-        Parameters
-        ----------
-        obj : AtomGroup or Universe
-        """
-        self.write_next_timestep(obj)
-
-    def write_next_timestep(self, obj):
+    def _write_next_frame(self, obj):
         """Write a new frame to the MOL2 file.
 
         Parameters

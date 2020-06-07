@@ -61,7 +61,7 @@ class TRRWriter(XDRBaseWriter):
              'force': 'kJ/(mol*nm)'}
     _file = TRRFile
 
-    def write_next_timestep(self, ag):
+    def _write_next_frame(self, ag):
         """Write timestep object into trajectory.
 
         Parameters
@@ -79,11 +79,6 @@ class TRRWriter(XDRBaseWriter):
            an AtomGroup or Universe. To be removed in version 2.0.
         """
         if isinstance(ag, base.Timestep):
-            warnings.warn(
-                'Passing a Timestep to write is deprecated, '
-                'and will be removed in 2.0; '
-                'use either an AtomGroup or Universe',
-                DeprecationWarning)
             ts = ag
         else:
             try:

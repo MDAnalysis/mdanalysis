@@ -530,7 +530,7 @@ class TRZWriter(base.WriterBase):
         out['nrec'] = 10
         out.tofile(self.trzfile)
 
-    def write_next_timestep(self, obj):
+    def _write_next_frame(self, obj):
         # Check size of ts is same as initial
         # TODO: Remove Timestep logic in 2.0
         if isinstance(obj, base.Timestep):

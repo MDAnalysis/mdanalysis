@@ -237,9 +237,9 @@ class XYZWriter(base.WriterBase):
             # update atom names
             self.atomnames = self._get_atoms_elements_or_names(atoms)
 
-        self.write_next_timestep(ts)
+        self._write_next_frame(ts)
 
-    def write_next_timestep(self, ts=None):
+    def _write_next_frame(self, ts=None):
         """Write coordinate information in *ts* to the trajectory"""
         if ts is None:
             if not hasattr(self, 'ts'):

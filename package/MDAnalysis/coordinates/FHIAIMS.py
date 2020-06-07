@@ -267,7 +267,7 @@ class FHIAIMSWriter(base.WriterBase):
         self.filename = util.filename(filename, ext='.in', keep=True)
         self.n_atoms = n_atoms
 
-    def write_next_timestep(self, obj):
+    def _write_next_frame(self, obj):
         """Write selection at current trajectory frame to file.
 
         Parameters

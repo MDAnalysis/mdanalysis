@@ -273,7 +273,7 @@ class ChemfilesWriter(base.WriterBase):
             self._file.close()
             self._closed = True
 
-    def write_next_timestep(self, obj):
+    def _write_next_frame(self, obj):
         """Write timestep object into trajectory.
 
         Topology for the output is taken from the `obj` or default to the value

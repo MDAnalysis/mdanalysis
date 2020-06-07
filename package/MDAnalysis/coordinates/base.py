@@ -2216,7 +2216,26 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
                 'use either an AtomGroup or Universe',
                 DeprecationWarning)
 
-        return self.write_next_timestep(obj)
+        return self._write_next_frame(obj)
+
+    def write_next_timestep(self, obj)
+        """Write current timestep, using the supplied `obj`.
+
+        Parameters
+        ----------
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+            write coordinate information associate with `obj`
+
+
+        .. deprecated:: 1.0.0
+           Deprecated, use write() instead
+        """
+        warnings.warn(
+            'Writer.write_next_timestep is deprecated, '
+            'and will be removed 2.0; '
+            'use Writer.write()',
+            DeprecationWarning)
+        return self.write(obj)
 
     def __del__(self):
         self.close()
@@ -2249,8 +2268,6 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         """
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
-
-        # def write_next_timestep(self, ts=None)
 
 
 class SingleFrameReaderBase(ProtoReader):

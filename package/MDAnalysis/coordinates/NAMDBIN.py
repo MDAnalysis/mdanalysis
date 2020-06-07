@@ -113,7 +113,7 @@ class NAMDBINWriter(base.WriterBase):
         """
         self.filename = util.filename(filename)
 
-    def write_next_timestep(self, obj):
+    def _write_next_frame(self, obj):
         """Write obj at current trajectory frame to file.
 
         Parameters

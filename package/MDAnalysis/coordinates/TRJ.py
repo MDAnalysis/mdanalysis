@@ -987,7 +987,7 @@ class NCDFWriter(base.WriterBase):
         """
         return np.all(ts.dimensions > 0)
 
-    def write_next_timestep(self, ag):
+    def _write_next_frame(self, ag):
         """write a new timestep to the trj file
 
         Parameters
@@ -1001,11 +1001,6 @@ class NCDFWriter(base.WriterBase):
            Added ability to use either AtomGroup or Universe.
         """
         if isinstance(ag, base.Timestep):
-            warnings.warn(
-                'Passing a Timestep to write is deprecated, '
-                'and will be removed in 2.0; '
-                'use either an AtomGroup or Universe',
-                DeprecationWarning)
             ts = ag
         else:
             try:
@@ -1032,7 +1027,7 @@ class NCDFWriter(base.WriterBase):
         """Write coordinates and unitcell information to NCDF file.
 
         Do not call this method directly; instead use
-        :meth:`write_next_timestep` because some essential setup is done
+        :meth:`write` because some essential setup is done
         there before writing the first frame.
 
         Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.

@@ -162,12 +162,12 @@ class TestChemfiles(object):
             # Manually setting the topology when creating the ChemfilesWriter
             # (1) from an object
             with ChemfilesWriter(outfile, topology=u) as writer:
-                writer.write_next_timestep(u.trajectory.ts)
+                writer.write(u)
             self.check_topology(datafiles.CONECT, outfile)
 
             # (2) from a file
             with ChemfilesWriter(outfile, topology=datafiles.CONECT) as writer:
-                writer.write_next_timestep(u.trajectory.ts)
+                writer.write(u)
             # FIXME: this does not work, since chemfiles also insert the bonds
             # which are implicit in PDB format (between standard residues), while
             # MDAnalysis only read the explicit CONNECT records.
@@ -201,7 +201,7 @@ class TestChemfiles(object):
         outfile = "chemfiles-write-velocities.lmp"
         with tmpdir.as_cwd():
             with ChemfilesWriter(outfile, topology=u, chemfiles_format='LAMMPS Data') as writer:
-                writer.write_next_timestep(ts)
+                writer.write(u)
 
             with open(outfile) as file:
                 content = file.read()

@@ -390,7 +390,7 @@ class DCDWriter(base.WriterBase):
             is_periodic=1,
             istart=istart)
 
-    def write_next_timestep(self, ag):
+    def _write_next_frame(self, ag):
         """Write timestep object into trajectory.
 
         Parameters
@@ -408,11 +408,6 @@ class DCDWriter(base.WriterBase):
            Added ability to pass AtomGroup or Universe.
         """
         if isinstance(ag, base.Timestep):
-            warnings.warn(
-                'Passing a Timestep to write is deprecated, '
-                'and will be removed in 2.0; '
-                'use either an AtomGroup or Universe',
-                DeprecationWarning)
             ts = ag
         else:
             try:

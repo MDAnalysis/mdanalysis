@@ -73,7 +73,7 @@ class XTCWriter(XDRBaseWriter):
                                         **kwargs)
         self.precision = precision
 
-    def write_next_timestep(self, ag):
+    def _write_next_frame(self, ag):
         """Write timestep object into trajectory.
 
         Parameters
@@ -92,11 +92,6 @@ class XTCWriter(XDRBaseWriter):
            Added ability to use either AtomGroup or Universe.
         """
         if isinstance(ag, base.Timestep):
-            warnings.warn(
-                'Passing a Timestep to write is deprecated, '
-                'and will be removed in 2.0; '
-                'use either an AtomGroup or Universe',
-                DeprecationWarning)
             ts = ag
         else:
             try:
