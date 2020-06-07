@@ -56,7 +56,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
                      check_pbc_and_unwrap)
-from .. import _TOPOLOGY_ATTRS
+from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
 def _check_length(func):
@@ -170,13 +170,24 @@ class _TopologyAttrMeta(type):
     # register TopologyAttrs
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
-        for attr in ['attrname', 'singular']:
-            try:
-                attrname = classdict[attr]
-            except KeyError:
-                pass
-            else:
-                _TOPOLOGY_ATTRS[attrname] = cls
+        attrname = classdict.get('attrname')
+        singular = classdict.get('singular', attrname)
+
+        if attrname is None:
+            attrname = singular
+
+        if singular:
+            _TOPOLOGY_ATTRS[singular] = _TOPOLOGY_ATTRS[attrname] = cls
+            _singular = singular.lower().replace('_', '')
+            _attrname = attrname.lower().replace('_', '')
+            _TOPOLOGY_ATTRNAMES[_singular] = singular
+            _TOPOLOGY_ATTRNAMES[_attrname] = attrname
+
+            for clstype, transplants in cls.transplants.items():
+                for name, method in transplants:
+                    _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
+                    clean = name.lower().replace('_', '')
+                    _TOPOLOGY_ATTRNAMES[clean] = name
 
 
 class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):

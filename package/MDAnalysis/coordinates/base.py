@@ -446,6 +446,14 @@ class Timestep(object):
             return self._pos[atoms]
         else:
             raise TypeError
+    
+    def __getattr__(self, attr):
+        # special-case timestep info
+        if attr in ('velocities', 'forces', 'positions'):
+            raise NoDataError('This Timestep has no ' + attr)
+        err = "{selfcls} object has no attribute '{attr}'"
+        raise AttributeError(err.format(selfcls=type(self).__name__,
+                                        attr=attr))
 
     def __len__(self):
         return self.n_atoms

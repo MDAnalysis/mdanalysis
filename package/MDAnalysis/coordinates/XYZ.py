@@ -54,7 +54,7 @@ will need to tweak this class.
 XYZ File format
 ---------------
 
-Definiton used by the :class:`XYZReader` and :class:`XYZWriter` (and
+Definition used by the :class:`XYZReader` and :class:`XYZWriter` (and
 the `VMD xyzplugin`_ from whence the definition was taken)::
 
     [ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
@@ -147,16 +147,18 @@ class XYZWriter(base.WriterBase):
             writing  [``True``]
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
-            version
+            version and frame
+
+        .. versionchanged:: 1.0.0
+           Removed :code:`default_remark` variable (Issue #2692).
         """
         self.filename = filename
+        self.remark = remark
         self.n_atoms = n_atoms
         self.convert_units = convert_units
 
         self.atomnames = self._get_atoms_elements_or_names(atoms)
-        default_remark = "Written by {0} (release {1})".format(
-            self.__class__.__name__, __version__)
-        self.remark = default_remark if remark is None else remark
+
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
@@ -191,8 +193,8 @@ class XYZWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Atom elements (or names) in the output are taken from the `obj` or default
-        to the value of the `atoms` keyword supplied to the
+        Atom elements (or names) in the output are taken from the `obj` or
+        default to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
         Parameters
@@ -240,7 +242,13 @@ class XYZWriter(base.WriterBase):
         self._write_next_frame(ts)
 
     def _write_next_frame(self, ts=None):
-        """Write coordinate information in *ts* to the trajectory"""
+        """
+        Write coordinate information in *ts* to the trajectory
+
+        .. versionchanged:: 1.0.0
+           Print out :code:`remark` if present, otherwise use generic one 
+           (Issue #2692).
+        """
         if ts is None:
             if not hasattr(self, 'ts'):
                 raise NoDataError('XYZWriter: no coordinate data to write to '
@@ -270,8 +278,19 @@ class XYZWriter(base.WriterBase):
         else:
             coordinates = ts.positions
 
+        # Write number of atoms
         self._xyz.write("{0:d}\n".format(ts.n_atoms))
-        self._xyz.write("frame {0}\n".format(ts.frame))
+
+        # Write remark
+        if self.remark is None:
+            remark = "frame {} | Written by MDAnalysis {} (release {})\n".format(
+                ts.frame, self.__class__.__name__, __version__)
+
+            self._xyz.write(remark)
+        else:
+            self._xyz.write(self.remark.strip() + "\n")
+
+        # Write content
         for atom, (x, y, z) in zip(self.atomnames, coordinates):
             self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
                             "".format(atom, x, y, z))

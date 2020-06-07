@@ -46,7 +46,7 @@ def assert_not_view(arr):
 
 
 def assert_correct_errormessage(func, var):
-    errmsg = "Timestep does not contain {}".format(var)
+    errmsg = "Timestep has no {}".format(var)
     try:
         func[0](*func[1:])
     except NoDataError as e:
