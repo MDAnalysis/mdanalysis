@@ -35,7 +35,7 @@ Guessing elements from atom names
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Currently, it is possible to guess elements from atom names using
-:mod:`guess_atom_element` (or the synonymous :mod:`guess_atom_type`). This can
+:func:`guess_atom_element` (or the synonymous :func:`guess_atom_type`). This can
 be done in the following manner::
 
   import MDAnalysis as mda
@@ -51,7 +51,7 @@ be done in the following manner::
   print(element)  # returns element H
 
 In the above example, we take an atom named H1 and use
-:mod:`guess_atom_element` to guess the element hydrogen (i.e. H). It is
+:func:`guess_atom_element` to guess the element hydrogen (i.e. H). It is
 important to note that element guessing is not always accurate. Indeed in cases
 where the atom type is not recognised, we may end up with the wrong element.
 For example::
@@ -73,7 +73,7 @@ would not be an expected result. We therefore always recommend that users
 carefully check the outcomes of any guessers.
 
 In some cases, one may want to guess elements for an entire universe and add
-this guess as a topology attribute. This can be done using :mod:`guess_types`
+this guess as a topology attribute. This can be done using :func:`guess_types`
 in the following manner::
 
   import MDAnalysis as mda
