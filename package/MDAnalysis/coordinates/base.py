@@ -2218,7 +2218,7 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
         return self._write_next_frame(obj)
 
-    def write_next_timestep(self, obj)
+    def write_next_timestep(self, obj):
         """Write current timestep, using the supplied `obj`.
 
         Parameters
