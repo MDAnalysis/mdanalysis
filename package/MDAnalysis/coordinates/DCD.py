@@ -401,9 +401,11 @@ class DCDWriter(base.WriterBase):
         --------
         :meth:`DCDWriter.write`  takes a more general input
 
+
         .. deprecated:: 1.0.0
-           Deprecated use of Timestep as argument.
-           Added ability to pass AtomGroup or Universe
+           Deprecated use of Timestep as argument. To be removed in version 2.0
+        .. versionchanged:: 1.0.0
+           Added ability to pass AtomGroup or Universe.
         """
         if isinstance(ag, base.Timestep):
             warnings.warn(

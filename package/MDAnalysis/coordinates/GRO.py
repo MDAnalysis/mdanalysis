@@ -358,7 +358,8 @@ class GROWriter(base.WriterBase):
         .. versionchanged:: 0.16.0
            `frame` kwarg has been removed
         .. deprecated:: 1.0.0
-           Deprecated calling with Timestep, use AtomGroup or Universe
+           Deprecated calling with Timestep, use AtomGroup or Universe.
+           To be removed in version 2.0.
         """
         # write() method that complies with the Trajectory API
 

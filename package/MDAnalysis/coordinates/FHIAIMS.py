@@ -275,7 +275,7 @@ class FHIAIMSWriter(base.WriterBase):
         obj : AtomGroup or Universe
         """
         # write() method that complies with the Trajectory API
-
+        # TODO 2.0: Remove timestep logic
         try:
             # make sure to use atoms (Issue 46)
             ag_or_ts = obj.atoms

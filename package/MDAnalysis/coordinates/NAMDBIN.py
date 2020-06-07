@@ -121,6 +121,7 @@ class NAMDBINWriter(base.WriterBase):
         obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
               write coordinate information associate with `obj`
 
+
         .. deprecated:: 1.0.0
            Passing a Timestep is deprecated for removal in version 2.0
         """

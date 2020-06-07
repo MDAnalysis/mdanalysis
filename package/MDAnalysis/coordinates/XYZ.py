@@ -200,6 +200,11 @@ class XYZWriter(base.WriterBase):
         obj : Universe or AtomGroup
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
+
+
+        .. deprecated:: 1.0.0
+           Deprecated the use of Timestep as arguments to write. Use either an
+           AtomGroup or Universe. To be removed in version 2.0.
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write
