@@ -530,10 +530,20 @@ class TRZWriter(base.WriterBase):
         out['nrec'] = 10
         out.tofile(self.trzfile)
 
-    def write_next_timestep(self, ts):
+    def write_next_timestep(self, obj):
         # Check size of ts is same as initial
-        if not ts.n_atoms == self.n_atoms:
-            raise ValueError("Number of atoms in ts different to initialisation")
+        # TODO: Remove Timestep logic in 2.0
+        if isinstance(obj, base.Timestep):
+            ts = obj
+            if not ts.n_atoms == self.n_atoms:
+                raise ValueError("Number of atoms in ts different to initialisation")
+        else:
+            try:  # atomgroup?
+                ts = obj.ts
+            except AttributeError:  # universe?
+                ts = obj.trajectory.ts
+            if not obj.atoms.n_atoms == self.n_atoms:
+                raise ValueError("Number of atoms in ts different to initialisation")
 
         # Gather data, faking it when unavailable
         data = {}

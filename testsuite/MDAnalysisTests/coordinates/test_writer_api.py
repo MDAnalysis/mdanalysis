@@ -42,6 +42,7 @@ known_ts_haters = [
     mda.coordinates.CRD.CRDWriter,
 ]
 
+
 @pytest.mark.parametrize('writer', [w for w in writers
                                     if not w in known_ts_haters])
 def test_ts_deprecated(writer, tmpdir):
@@ -50,11 +51,52 @@ def test_ts_deprecated(writer, tmpdir):
     if writer == mda.coordinates.chemfiles.ChemfilesWriter:
         # chemfiles Writer exists but doesn't work without chemfiles
         if not mda.coordinates.chemfiles.check_chemfiles_version():
-            pytest.skip()
+            pytest.skip("Chemfiles not available")
         fn = str(tmpdir.join('out.xtc'))
     else:
         fn = str(tmpdir.join('out.traj'))
 
-    with writer(fn, n_atoms=10) as w:
+    with writer(fn, n_atoms=u.atoms.n_atoms) as w:
         with pytest.warns(DeprecationWarning):
             w.write(u.trajectory.ts)
+
+
+@pytest.mark.parametrize('writer', writers)
+def test_write_with_atomgroup(writer, tmpdir):
+    u = mda.Universe.empty(10, trajectory=True)
+
+    if writer == mda.coordinates.chemfiles.ChemfilesWriter:
+        # chemfiles Writer exists but doesn't work without chemfiles
+        if not mda.coordinates.chemfiles.check_chemfiles_version():
+            pytest.skip("Chemfiles not available")
+        fn = str(tmpdir.join('out.xtc'))
+    elif writer == mda.coordinates.MOL2.MOL2Writer:
+        pytest.skip("MOL2 only writes MOL2 back out")
+    elif writer == mda.coordinates.LAMMPS.DATAWriter:
+        pytest.skip("DATAWriter requires integer atom types")
+    else:
+        fn = str(tmpdir.join('out.traj'))
+
+    with writer(fn, n_atoms=u.atoms.n_atoms) as w:
+        w.write(u.atoms)
+
+
+@pytest.mark.parametrize('writer', writers)
+def test_write_with_universe(writer, tmpdir):
+    u = mda.Universe.empty(10, trajectory=True)
+
+    if writer == mda.coordinates.chemfiles.ChemfilesWriter:
+        # chemfiles Writer exists but doesn't work without chemfiles
+        if not mda.coordinates.chemfiles.check_chemfiles_version():
+            pytest.skip("Chemfiles not available")
+        fn = str(tmpdir.join('out.xtc'))
+    elif writer == mda.coordinates.MOL2.MOL2Writer:
+        pytest.skip("MOL2 only writes MOL2 back out")
+    elif writer == mda.coordinates.LAMMPS.DATAWriter:
+        pytest.skip("DATAWriter requires integer atom types")
+    else:
+        fn = str(tmpdir.join('out.traj'))
+
+    with writer(fn, n_atoms=10) as w:
+        w.write(u)
+
