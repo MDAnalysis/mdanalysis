@@ -46,7 +46,7 @@ be done in the following manner::
 
   print(u.atoms.names[1])  # returns the atom name H1
 
-  element = guessers.guess_atom_element(u.atom.names[1])
+  element = guess_atom_element(u.atoms.names[1])
 
   print(element)  # returns element H
 
@@ -64,7 +64,7 @@ For example::
 
   print(u.atoms.names[-1])  # returns the atom name EPW
 
-  element = guessers.guess_atom_element(u.atom.names[-1])
+  element = guess_atom_element(u.atoms.names[-1])
 
   print(element)  # returns element P
 
@@ -77,12 +77,12 @@ this guess as a topology attribute. This can be done using :func:`guess_types`
 in the following manner::
 
   import MDAnalysis as mda
-  from MDAanalysis.topology.guessers import guess_types
-  from MDANalysisTests.datafiles import PRM7
+  from MDAnalysis.topology.guessers import guess_types
+  from MDAnalysisTests.datafiles import PRM7
 
   u = mda.Universe(PRM7)
 
-  guessed_elements = guessers.guess_types(u.atoms.names)
+  guessed_elements = guess_types(u.atoms.names)
 
   u.add_TopologyAttr('elements', guessed_elements)
 
