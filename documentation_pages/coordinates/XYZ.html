@@ -240,7 +240,7 @@ it’s assumed to be in ps (default: 1 ps).</li>
 will need to tweak this class.</p>
 <div class="section" id="xyz-file-format">
 <span id="xyz-format"></span><h2>6.22.1. XYZ File format<a class="headerlink" href="#xyz-file-format" title="Permalink to this headline">¶</a></h2>
-<p>Definiton used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZReader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> (and
+<p>Definition used by the <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZReader" title="MDAnalysis.coordinates.XYZ.XYZReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZReader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> (and
 the <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">VMD xyzplugin</a> from whence the definition was taken):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
 [ N                       ] # of atoms, required by this xyz reader plugin  line 1
@@ -371,7 +371,8 @@ at each step and <em>atoms</em> is ignored.</li>
 <li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
 writing  [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
-version</li>
+version and frame</li>
+<li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Removed <code class="code docutils literal notranslate"><span class="pre">default_remark</span></code> variable (Issue #2692).</li>
 </ul>
 </td>
 </tr>
@@ -387,8 +388,8 @@ version</li>
 <dt id="MDAnalysis.coordinates.XYZ.XYZWriter.write">
 <code class="descname">write</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write object <cite>obj</cite> at current trajectory frame to file.</p>
-<p>Atom elements (or names) in the output are taken from the <cite>obj</cite> or default
-to the value of the <cite>atoms</cite> keyword supplied to the
+<p>Atom elements (or names) in the output are taken from the <cite>obj</cite> or
+default to the value of the <cite>atoms</cite> keyword supplied to the
 <a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="MDAnalysis.coordinates.XYZ.XYZWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">XYZWriter</span></code></a> constructor.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -405,6 +406,10 @@ to the value of the <cite>atoms</cite> keyword supplied to the
 <dt id="MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep">
 <code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>ts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write coordinate information in <em>ts</em> to the trajectory</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Print out <code class="code docutils literal notranslate"><span class="pre">remark</span></code> if present, otherwise use generic one
+(Issue #2692).</p>
+</div>
 </dd></dl>
 
 </dd></dl>

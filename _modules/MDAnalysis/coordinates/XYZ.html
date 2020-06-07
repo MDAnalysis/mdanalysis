@@ -229,7 +229,7 @@
 <span class="sd">XYZ File format</span>
 <span class="sd">---------------</span>
 
-<span class="sd">Definiton used by the :class:`XYZReader` and :class:`XYZWriter` (and</span>
+<span class="sd">Definition used by the :class:`XYZReader` and :class:`XYZWriter` (and</span>
 <span class="sd">the `VMD xyzplugin`_ from whence the definition was taken)::</span>
 
 <span class="sd">    [ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE</span>
@@ -321,16 +321,18 @@
 <span class="sd">            writing  [``True``]</span>
 <span class="sd">        remark: str (optional)</span>
 <span class="sd">            single line of text (&quot;molecule name&quot;). By default writes MDAnalysis</span>
-<span class="sd">            version</span>
+<span class="sd">            version and frame</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Removed :code:`default_remark` variable (Issue #2692).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">remark</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atoms_elements_or_names</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
-        <span class="n">default_remark</span> <span class="o">=</span> <span class="s2">&quot;Written by </span><span class="si">{0}</span><span class="s2"> (release </span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="o">=</span> <span class="n">default_remark</span> <span class="k">if</span> <span class="n">remark</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">remark</span>
+
         <span class="c1"># can also be gz, bz2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">anyopen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span>
 
@@ -365,8 +367,8 @@
 <div class="viewcode-block" id="XYZWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write object `obj` at current trajectory frame to file.</span>
 
-<span class="sd">        Atom elements (or names) in the output are taken from the `obj` or default</span>
-<span class="sd">        to the value of the `atoms` keyword supplied to the</span>
+<span class="sd">        Atom elements (or names) in the output are taken from the `obj` or</span>
+<span class="sd">        default to the value of the `atoms` keyword supplied to the</span>
 <span class="sd">        :class:`XYZWriter` constructor.</span>
 
 <span class="sd">        Parameters</span>
@@ -404,7 +406,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="XYZWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write coordinate information in *ts* to the trajectory&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write coordinate information in *ts* to the trajectory</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Print out :code:`remark` if present, otherwise use generic one </span>
+<span class="sd">           (Issue #2692).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="s1">&#39;XYZWriter: no coordinate data to write to &#39;</span>
@@ -434,8 +442,19 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">coordinates</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span>
 
+        <span class="c1"># Write number of atoms</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0:d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;frame </span><span class="si">{0}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">))</span>
+
+        <span class="c1"># Write remark</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">remark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">remark</span> <span class="o">=</span> <span class="s2">&quot;frame </span><span class="si">{}</span><span class="s2"> | Written by MDAnalysis </span><span class="si">{}</span><span class="s2"> (release </span><span class="si">{}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">remark</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remark</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Write content</span>
         <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s:&gt;8}</span><span class="s2">  </span><span class="si">{1:10.5f}</span><span class="s2"> </span><span class="si">{2:10.5f}</span><span class="s2"> </span><span class="si">{3:10.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span></div></div>
