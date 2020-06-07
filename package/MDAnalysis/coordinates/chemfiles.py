@@ -290,6 +290,7 @@ class ChemfilesWriter(base.WriterBase):
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
         """
+        # TODO 2.0: Remove timestep logic
         if hasattr(obj, "atoms"):
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)

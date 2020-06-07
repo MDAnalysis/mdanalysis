@@ -994,7 +994,7 @@ class NCDFWriter(base.WriterBase):
         ----------
         ag : AtomGroup or Universe
 
-        .. versionchanged:: 1.0.0
+        .. deprecated:: 1.0.0
            Deprecated using Timestep
            Added ability to use either AtomGroup or Universe
         """

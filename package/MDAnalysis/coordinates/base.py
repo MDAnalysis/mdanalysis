@@ -2204,7 +2204,7 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         The size of the `obj` must be the same as the number of atoms provided
         when setting up the trajectory.
 
-        .. versionchanged:: 1.0.0
+        .. deprecated:: 1.0.0
            Deprecated the use of Timestep as arguments to write.  Use either a AtomGroup or Universe
         """
         if isinstance(obj, Timestep):

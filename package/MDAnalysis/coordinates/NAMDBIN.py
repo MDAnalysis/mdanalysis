@@ -120,7 +120,11 @@ class NAMDBINWriter(base.WriterBase):
         ----------
         obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
               write coordinate information associate with `obj`
+
+        .. deprecated:: 1.0.0
+           Passing a Timestep is deprecated for removal in version 2.0
         """
+        # TODO 2.0: Remove Timestep logic
         if isinstance(obj, base.Timestep):
             n_atoms = obj.n_atoms
             coor = obj.positions.reshape(n_atoms*3)

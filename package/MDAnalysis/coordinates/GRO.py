@@ -357,7 +357,7 @@ class GROWriter(base.WriterBase):
            *resName* and *atomName* are truncated to a maximum of 5 characters
         .. versionchanged:: 0.16.0
            `frame` kwarg has been removed
-        .. versionchanged:: 1.0.0
+        .. deprecated:: 1.0.0
            Deprecated calling with Timestep, use AtomGroup or Universe
         """
         # write() method that complies with the Trajectory API

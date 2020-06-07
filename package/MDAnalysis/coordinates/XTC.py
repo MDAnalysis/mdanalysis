@@ -85,7 +85,7 @@ class XTCWriter(XDRBaseWriter):
         <FormatWriter>.write(AtomGroup/Universe/TimeStep)
         The normal write() method takes a more general input
 
-        .. versionchanged:: 1.0.0
+        .. deprecated:: 1.0.0
            Deprecated using Timestep
            Added ability to use either AtomGroup or Universe
         """
