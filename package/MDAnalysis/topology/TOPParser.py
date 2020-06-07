@@ -60,7 +60,7 @@ Amber keywords are turned into the following attributes:
 
 TODO:
   Add support for Chamber-style topologies
-  Add support for atomnum topology attributes
+  Add support for storing atomic numbers
   More stringent tests
 
 .. Note::
@@ -75,7 +75,8 @@ TODO:
 
    As of version X.0.0, elements are no longer guessed if ATOMIC_NUMBER records
    are missing. In those scenarios, if elements are necessary, users will have
-   to invoke the element guessers after parsing the topology file.
+   to invoke the element guessers after parsing the topology file. Please see
+   :mod:`MDAnalysis.topology.guessers` for more details.
 
 .. _`PARM parameter/topology file specification`:
    http://ambermd.org/formats.html#topology
@@ -288,13 +289,15 @@ class TOPParser(TopologyReaderBase):
         # Warn user if elements not in topology
         if 'elements' not in attrs:
             msg = ("ATOMIC_NUMBER record not found, elements attribute will "
-                   "not be populated")
+                   "not be populated. If needed these can be guessed using "
+                   "MDAnalysis.topology.guessers.")
             logger.warning(msg)
             warnings.warn(msg)
         elif np.any(attrs['elements'].values == ""):
             # only send out one warning that some elements are unknown
             msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
-                   "have been given an empty element record")
+                   "have been given an empty element record. If needed these "
+                   "can be guessed using MDAnalysis.topology.guessers.")
             logger.warning(msg)
             warnings.warn(msg)
 
