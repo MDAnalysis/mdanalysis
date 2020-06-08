@@ -23,6 +23,7 @@ mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira
   * 0.21.0
 
 Fixes
+  * Use user-provided `remark` in `XYZWriter` (Issue #2692)
   * Added more informative error messages about topology attributes
     (Issue #2565)
   * Made NoDataError a subclass of ValueError *and* AttributeError
