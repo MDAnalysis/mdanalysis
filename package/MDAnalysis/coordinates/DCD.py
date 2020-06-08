@@ -390,17 +390,35 @@ class DCDWriter(base.WriterBase):
             is_periodic=1,
             istart=istart)
 
-    def write_next_timestep(self, ts):
-        """Write timestep object into trajectory.
+    def _write_next_frame(self, ag):
+        """Write information associated with ``obj`` at current frame into trajectory
 
         Parameters
         ----------
-        ts: TimeStep
+        ag : AtomGroup or Universe
 
         See Also
         --------
         :meth:`DCDWriter.write`  takes a more general input
+
+
+        .. deprecated:: 1.0.0
+           Deprecated use of Timestep as argument. To be removed in version 2.0
+        .. versionchanged:: 1.0.0
+           Added ability to pass AtomGroup or Universe.
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
+        if isinstance(ag, base.Timestep):
+            ts = ag
+        else:
+            try:
+                ts = ag.ts
+            except AttributeError:
+                try:
+                    # Universe?
+                    ts = ag.trajectory.ts
+                except AttributeError:
+                    raise TypeError("No Timestep found in ag argument")
         xyz = ts.positions.copy()
         dimensions = ts.dimensions.copy()
 

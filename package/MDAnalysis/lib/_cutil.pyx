@@ -49,7 +49,7 @@ ctypedef cmap[int, intset] intmap
 
 @cython.boundscheck(False) # turn off bounds-checking for entire function
 @cython.wraparound(False)  # turn off negative index wrapping for entire function
-def unique_int_1d(np.int64_t[:] values):
+def unique_int_1d(np.intp_t[:] values):
     """Find the unique elements of a 1D array of integers.
 
     This function is optimal on sorted arrays.
@@ -71,7 +71,7 @@ def unique_int_1d(np.int64_t[:] values):
     cdef int i = 0
     cdef int j = 0
     cdef int n_values = values.shape[0]
-    cdef np.int64_t[:] result = np.empty(n_values, dtype=np.int64)
+    cdef np.intp_t[:] result = np.empty(n_values, dtype=np.intp)
 
     if n_values == 0:
         return np.array(result)

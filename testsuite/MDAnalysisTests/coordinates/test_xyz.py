@@ -38,6 +38,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReferenc
                                               BaseWriterTest)
 from MDAnalysisTests import make_Universe
 
+from MDAnalysis import __version__
 
 class XYZReference(BaseReference):
     def __init__(self):
@@ -105,6 +106,25 @@ class TestXYZWriter(BaseWriterTest):
                 for ts in reader:
                     w.write(ts)
             self._check_copy(outfile, ref, reader)
+
+    @pytest.mark.parametrize("remarkout, remarkin", 
+        [   
+            2 * ["Curstom Remark"],
+            2 * [""],
+            [None, "frame 0 | Written by MDAnalysis XYZWriter (release {0})".format(__version__)],
+        ]
+    )
+    def test_remark(self, remarkout, remarkin, ref, tmpdir):
+        u = mda.Universe(ref.topology, ref.trajectory)
+        outfile = "write-remark.xyz"
+
+        with tmpdir.as_cwd():
+            u.atoms.write(outfile, remark=remarkout)
+
+            with open(outfile, "r") as xyzout:
+                lines = xyzout.readlines()
+
+                assert lines[1].strip() == remarkin
 
 
 class XYZ_BZ_Reference(XYZReference):

@@ -455,6 +455,14 @@ class Timestep(object):
             return self._pos[atoms]
         else:
             raise TypeError
+    
+    def __getattr__(self, attr):
+        # special-case timestep info
+        if attr in ('velocities', 'forces', 'positions'):
+            raise NoDataError('This Timestep has no ' + attr)
+        err = "{selfcls} object has no attribute '{attr}'"
+        raise AttributeError(err.format(selfcls=type(self).__name__,
+                                        attr=attr))
 
     def __len__(self):
         return self.n_atoms
@@ -2235,6 +2243,11 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
+
+
+    .. deprecated:: 1.0.0
+       :func:`write_next_timestep` has been deprecated, please use
+       :func:`write` instead.
     """
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
@@ -2256,26 +2269,46 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
         Parameters
         ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep`
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
             write coordinate information associate with `obj`
 
         Note
         ----
         The size of the `obj` must be the same as the number of atoms provided
         when setting up the trajectory.
+
+
+        .. deprecated:: 1.0.0
+           Deprecated the use of Timestep as arguments to write.  Use either
+           an AtomGroup or Universe. To be removed in version 2.0.
         """
         if isinstance(obj, Timestep):
-            ts = obj
-        else:
-            try:
-                ts = obj.ts
-            except AttributeError:
-                try:
-                    # special case: can supply a Universe, too...
-                    ts = obj.trajectory.ts
-                except AttributeError:
-                    six.raise_from(TypeError("No Timestep found in obj argument"), None)
-        return self.write_next_timestep(ts)
+            warnings.warn(
+                'Passing a Timestep to write is deprecated, '
+                'and will be removed in 2.0; '
+                'use either an AtomGroup or Universe',
+                DeprecationWarning)
+
+        return self._write_next_frame(obj)
+
+    def write_next_timestep(self, obj):
+        """Write current timestep, using the supplied ``obj``.
+
+        Parameters
+        ----------
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+            write coordinate information associated with ``obj``
+
+
+        .. deprecated:: 1.0.0
+           Deprecated, use write() instead
+        """
+        warnings.warn(
+            'Writer.write_next_timestep is deprecated, '
+            'and will be removed in 2.0; '
+            'use Writer.write()',
+            DeprecationWarning)
+        return self.write(obj)
 
     def __del__(self):
         self.close()
@@ -2308,8 +2341,6 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         """
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
-
-        # def write_next_timestep(self, ts=None)
 
 
 class SingleFrameReaderBase(ProtoReader):

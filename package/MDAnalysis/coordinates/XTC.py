@@ -33,6 +33,7 @@ MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 from __future__ import absolute_import
 
+from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
 from ..lib.mdamath import triclinic_vectors, triclinic_box
@@ -70,18 +71,37 @@ class XTCWriter(XDRBaseWriter):
                                         **kwargs)
         self.precision = precision
 
-    def write_next_timestep(self, ts):
-        """Write timestep object into trajectory.
+    def _write_next_frame(self, ag):
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------
-        ts : :class:`~base.Timestep`
+        ag : AtomGroup or Universe
 
         See Also
         --------
-        <FormatWriter>.write(AtomGroup/Universe/TimeStep)
+        <FormatWriter>.write(AtomGroup/Universe)
         The normal write() method takes a more general input
+
+
+        .. deprecated:: 1.0.0
+           Deprecated using Timestep. To be removed in version 2.0.
+        .. versionchanged:: 1.0.0
+           Added ability to use either AtomGroup or Universe.
         """
+        if isinstance(ag, base.Timestep):
+            ts = ag
+        else:
+            try:
+                # Atomgroup?
+                ts = ag.ts
+            except AttributeError:
+                try:
+                    # Universe?
+                    ts = ag.trajectory.ts
+                except AttributeError:
+                    raise TypeError("No Timestep found in ag argument")
+
         xyz = ts.positions.copy()
         time = ts.time
         step = ts.frame
