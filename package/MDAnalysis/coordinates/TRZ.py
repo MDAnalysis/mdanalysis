@@ -531,6 +531,16 @@ class TRZWriter(base.WriterBase):
         out.tofile(self.trzfile)
 
     def _write_next_frame(self, obj):
+        """Write timestep object into trajectory.
+
+        Parameters
+        ----------
+        ag : AtomGroup or Universe
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        """
         # Check size of ts is same as initial
         # TODO: Remove Timestep logic in 2.0
         if isinstance(obj, base.Timestep):

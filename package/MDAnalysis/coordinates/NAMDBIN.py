@@ -122,6 +122,8 @@ class NAMDBINWriter(base.WriterBase):
               write coordinate information associate with `obj`
 
 
+        .. versionchanged:: 1.0.0
+           Renamed from `write` to `_write_next_frame`.
         .. deprecated:: 1.0.0
            Passing a Timestep is deprecated for removal in version 2.0
         """

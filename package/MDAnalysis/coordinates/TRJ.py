@@ -999,6 +999,7 @@ class NCDFWriter(base.WriterBase):
            Deprecated using Timestep. To be removed in version 2.0.
         .. versionchanged:: 1.0.0
            Added ability to use either AtomGroup or Universe.
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         if isinstance(ag, base.Timestep):
             ts = ag

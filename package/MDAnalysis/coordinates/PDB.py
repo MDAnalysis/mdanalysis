@@ -931,6 +931,10 @@ class PDBWriter(base.WriterBase):
            argument, :meth:`PDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         '''
         if ts is None:
             try:

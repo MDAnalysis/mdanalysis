@@ -248,6 +248,7 @@ class XYZWriter(base.WriterBase):
         .. versionchanged:: 1.0.0
            Print out :code:`remark` if present, otherwise use generic one 
            (Issue #2692).
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         if ts is None:
             if not hasattr(self, 'ts'):
@@ -268,7 +269,7 @@ class XYZWriter(base.WriterBase):
                 len(self.atomnames) != ts.n_atoms):
                 logger.info('Trying to write a TimeStep with unkown atoms. '
                             'Expected {}, got {}. Try using "write" if you are '
-                            'using "write_next_timestep" directly'.format(
+                            'using "_write_next_frame" directly'.format(
                                 len(self.atomnames), ts.n_atoms))
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 

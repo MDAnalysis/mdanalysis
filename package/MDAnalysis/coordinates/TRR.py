@@ -74,6 +74,8 @@ class TRRWriter(XDRBaseWriter):
         The normal write() method takes a more general input
 
 
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         .. deprecated:: 1.0.0
            Deprecated the use of Timestep as arguments to write.  Use either
            an AtomGroup or Universe. To be removed in version 2.0.

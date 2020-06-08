@@ -2183,6 +2183,11 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
+
+
+    .. deprecated:: 1.0.0
+       :func:`write_next_timestep` has been deprecated, please use
+       :func:`write` instead.
     """
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):

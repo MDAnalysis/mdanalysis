@@ -379,6 +379,10 @@ class MOL2Writer(base.WriterBase):
         Parameters
         ----------
         obj : AtomGroup or Universe
+
+
+        .. versionchanged:: 1.0.0
+            Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         block = self.encode_block(obj)
         self.file.writelines(block)

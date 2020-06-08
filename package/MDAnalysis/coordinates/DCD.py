@@ -406,6 +406,7 @@ class DCDWriter(base.WriterBase):
            Deprecated use of Timestep as argument. To be removed in version 2.0
         .. versionchanged:: 1.0.0
            Added ability to pass AtomGroup or Universe.
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         if isinstance(ag, base.Timestep):
             ts = ag
