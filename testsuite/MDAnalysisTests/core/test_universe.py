@@ -216,11 +216,42 @@ class TestUniverseCreation(object):
         assert_equal(u.trajectory.n_frames, u2.trajectory.n_frames)
         assert u2._topology is u._topology
 
-    def test_universe_from_smiles(self):
+
+class TestUniverseFromSmiles(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+
+    def test_default(self):
         smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
-        u = mda.Universe.from_smiles(smi, addHs=False, format='RDKIT')
+        u = mda.Universe.from_smiles(smi, format='RDKIT')
+        assert u.atoms.n_atoms == 24
+        assert len(u.bonds.indices) == 25
+
+    def test_from_bad_smiles(self):
+        with pytest.raises(SyntaxError) as e:
+            u = mda.Universe.from_smiles("J", format='RDKIT')
+            assert "Error while parsing SMILES" in str(e.value)
+
+    def test_no_Hs(self):
+        smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+        u = mda.Universe.from_smiles(smi, addHs=False, 
+            generate_coordinates=False, format='RDKIT')
         assert u.atoms.n_atoms == 14
         assert len(u.bonds.indices) == 15
+
+    def test_gencoords_without_Hs_error(self):
+        with pytest.raises(ValueError) as e:
+            u = mda.Universe.from_smiles("CCO", addHs=False,
+                generate_coordinates=True, format='RDKIT')
+            assert "requires adding hydrogens" in str (e.value)
+
+    def test_gencoords_n_frames(self):
+        with pytest.raises(AssertionError) as e:
+            u = mda.Universe.from_smiles("CCO", n_frames=0, format='RDKIT')
+            assert "non-zero positive integer" in str (e.value)
+        with pytest.raises(AssertionError) as e:
+            u = mda.Universe.from_smiles("CCO", n_frames=2.1, format='RDKIT')
+            assert "non-zero positive integer" in str (e.value)
 
 
 class TestUniverse(object):

@@ -1291,7 +1291,8 @@ class Universe(object):
         return fragdict
     
     @classmethod
-    def from_smiles(cls, smiles, sanitize=True, addHs=True, **kwargs):
+    def from_smiles(cls, smiles, sanitize=True, addHs=True, 
+                    generate_coordinates=True, n_frames=1, **kwargs):
         """Create a Universe from a SMILES string with rdkit
 
         Parameters
@@ -1305,23 +1306,48 @@ class Universe(object):
         addHs : bool (optional, default True)
             Add all necessary hydrogens to the molecule
 
+        generate_coordinates : bool (optional, default True)
+            Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
+            function. Requires adding hydrogens with the `addHs` parameter
+
+        n_frames : int (optional, default 1)
+            Number of frames to generate coordinates for. Ignored if
+            `generate_coordinates=False`
+
         kwargs : dict
             Parameters passed on Universe creation
 
         Returns
         -------
         :class:`~MDAnalysis.core.Universe`
+
+        Example
+        -------
+        To create a Universe with 10 conformers of ethanol ::
+        >>> u = mda.Universe.from_smiles('CCO', n_frames=10)
+        >>> u
+        <Universe with 9 atoms>
         """
         try:
             from rdkit import Chem
+            from rdkit.Chem import AllChem
         except ImportError as e:
             raise ImportError(
                 "Creating a Universe from a SMILES string requires RDKit but " 
                 "it does not appear to be installed: {0}".format(e))
 
         mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+        if mol is None:
+            raise SyntaxError('Error while parsing SMILES {0}'.format(smiles))
         if addHs:
             mol = Chem.AddHs(mol)
+        if generate_coordinates:
+            if not addHs:
+                raise ValueError("Generating coordinates requires adding "
+                "hydrogens with `addHs=True`")
+            assert (type(n_frames) is int) and (n_frames > 0), ("n_frames must"
+            " be a non-zero positive integer instead of {0}".format(n_frames))
+            AllChem.EmbedMultipleConfs(mol, n_frames)
 
         return cls(mol, **kwargs)
 
