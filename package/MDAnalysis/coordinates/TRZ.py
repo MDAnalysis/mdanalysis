@@ -531,7 +531,7 @@ class TRZWriter(base.WriterBase):
         out.tofile(self.trzfile)
 
     def _write_next_frame(self, obj):
-        """Write timestep object into trajectory.
+        """Write information associated with ``obj`` at current frame into trajectory
 
         Parameters
         ----------

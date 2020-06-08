@@ -391,7 +391,7 @@ class DCDWriter(base.WriterBase):
             istart=istart)
 
     def _write_next_frame(self, ag):
-        """Write timestep object into trajectory.
+        """Write information associated with ``obj`` at current frame into trajectory
 
         Parameters
         ----------

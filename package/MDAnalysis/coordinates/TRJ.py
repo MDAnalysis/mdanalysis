@@ -972,7 +972,7 @@ class NCDFWriter(base.WriterBase):
         self.trjfile = ncfile
 
     def is_periodic(self, ts):
-        """Test if `Timestep` contains a periodic trajectory.
+        """Test if timestep ``ts`` contains a periodic box.
 
         Parameters
         ----------
@@ -988,7 +988,7 @@ class NCDFWriter(base.WriterBase):
         return np.all(ts.dimensions > 0)
 
     def _write_next_frame(self, ag):
-        """write a new timestep to the trj file
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------

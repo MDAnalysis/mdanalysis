@@ -33,8 +33,6 @@ MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 from __future__ import absolute_import
 
-import warnings
-
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import TRRFile
@@ -62,7 +60,7 @@ class TRRWriter(XDRBaseWriter):
     _file = TRRFile
 
     def _write_next_frame(self, ag):
-        """Write timestep object into trajectory.
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------

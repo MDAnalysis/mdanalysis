@@ -114,12 +114,14 @@ class NAMDBINWriter(base.WriterBase):
         self.filename = util.filename(filename)
 
     def _write_next_frame(self, obj):
-        """Write obj at current trajectory frame to file.
+        """Write information associated with ``obj`` at current frame into trajectory
+
 
         Parameters
         ----------
         obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
-              write coordinate information associate with `obj`
+              write coordinate information associated with `obj`
+
 
 
         .. versionchanged:: 1.0.0
