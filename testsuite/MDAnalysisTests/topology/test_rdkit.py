@@ -36,7 +36,7 @@ AllChem = pytest.importorskip('rdkit.Chem.AllChem')
 
 class RDKitParserBase(ParserBase):
     parser = mda.topology.RDKitParser.RDKitParser
-    expected_attrs = ['ids', 'names', 'elements', 'masses',
+    expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums',
                       'segids',
                       'bonds',
@@ -67,12 +67,10 @@ class TestRDKitParserMOL2(RDKitParserBase):
 
     @pytest.fixture
     def filename(self):
-        return Chem.MolFromMol2File(self.ref_filename, removeHs=False, 
-                                    sanitize=False)
+        return Chem.MolFromMol2File(self.ref_filename, removeHs=False)
 
     def _create_mol_gasteiger_charges(self):
-        mol = Chem.MolFromMol2File(self.ref_filename, removeHs=False, 
-                                   sanitize=True)
+        mol = Chem.MolFromMol2File(self.ref_filename, removeHs=False)
         AllChem.ComputeGasteigerCharges(mol)
         return mol
 
@@ -99,9 +97,6 @@ class TestRDKitParserMOL2(RDKitParserBase):
     
 
     def test_bond_orders(self, top, filename):
-        # The 3 first aromatic bonds in the mol2 file are not actually 
-        # aromatic but just part of a conjugated system. RDKit doesn't follow
-        # the mol2 file and marks them as single, even with `sanitize=False`.
         expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]
         assert top.bonds.order == expected
     
@@ -136,6 +131,9 @@ class TestRDKitParserMOL2(RDKitParserBase):
             ], dtype=np.float32)
         assert_array_equal(expected, top.charges.values)
 
+    def test_aromaticity(self, top, filename):
+        expected = np.array([atom.GetIsAromatic() for atom in filename.GetAtoms()])
+        assert_array_equal(expected, top.aromaticities.values)
 
 class TestRDKitParserPDB(RDKitParserBase):
     ref_filename = PDB_helix
@@ -183,8 +181,7 @@ class TestRDKitParserSDF(RDKitParserBase):
 
     @pytest.fixture
     def filename(self):
-        return Chem.SDMolSupplier(SDF_molecule, removeHs=False, 
-                                  sanitize=False)[0]
+        return Chem.SDMolSupplier(SDF_molecule, removeHs=False)[0]
 
     def test_bond_orders(self, top, filename):
         expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]

@@ -56,6 +56,7 @@ from ..core.topologyattrs import (
     Elements,
     Masses,
     Charges,
+    Aromaticities,
     Bonds,
     Resids,
     Resnums,
@@ -129,6 +130,7 @@ class RDKitParser(TopologyReaderBase):
         elements = []
         masses = []
         charges = []
+        aromatics = []
         ids = []
         atomtypes = []
         segids = []
@@ -150,6 +152,7 @@ class RDKitParser(TopologyReaderBase):
             ids.append(atom.GetIdx())
             elements.append(atom.GetSymbol())
             masses.append(atom.GetMass())
+            aromatics.append(atom.GetIsAromatic())
             mi = atom.GetMonomerInfo()
             if mi: # atom name and residue info are present
                 names.append(mi.GetName().strip())
@@ -195,6 +198,7 @@ class RDKitParser(TopologyReaderBase):
             (ids, Atomids, np.int32),
             (elements, Elements, object),
             (masses, Masses, np.float32),
+            (aromatics, Aromaticities, bool),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 

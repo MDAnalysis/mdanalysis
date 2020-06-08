@@ -1665,6 +1665,18 @@ class Epsilon14s(AtomAttr):
         return np.zeros(na)
 
 
+class Aromaticities(AtomAttr):
+    """Aromaticity (RDKit)"""
+    attrname = "aromaticities"
+    singular = "aromaticity"
+    per_object = "atom"
+    dtype = bool
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array([False for _ in range(na)], dtype=bool)
+
+
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
     singular = 'residueattr'
