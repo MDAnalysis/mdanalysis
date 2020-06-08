@@ -245,12 +245,12 @@ class TestUniverseFromSmiles(object):
                 generate_coordinates=True, format='RDKIT')
             assert "requires adding hydrogens" in str (e.value)
 
-    def test_gencoords_n_frames(self):
+    def test_generate_coordinates_numConfs(self):
         with pytest.raises(AssertionError) as e:
-            u = mda.Universe.from_smiles("CCO", n_frames=0, format='RDKIT')
+            u = mda.Universe.from_smiles("CCO", numConfs=0, format='RDKIT')
             assert "non-zero positive integer" in str (e.value)
         with pytest.raises(AssertionError) as e:
-            u = mda.Universe.from_smiles("CCO", n_frames=2.1, format='RDKIT')
+            u = mda.Universe.from_smiles("CCO", numConfs=2.1, format='RDKIT')
             assert "non-zero positive integer" in str (e.value)
 
 

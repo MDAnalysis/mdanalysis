@@ -1292,7 +1292,7 @@ class Universe(object):
     
     @classmethod
     def from_smiles(cls, smiles, sanitize=True, addHs=True, 
-                    generate_coordinates=True, n_frames=1, **kwargs):
+                    generate_coordinates=True, numConfs=1, **kwargs):
         """Create a Universe from a SMILES string with rdkit
 
         Parameters
@@ -1310,7 +1310,7 @@ class Universe(object):
             Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
             function. Requires adding hydrogens with the `addHs` parameter
 
-        n_frames : int (optional, default 1)
+        numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
             `generate_coordinates=False`
 
@@ -1324,7 +1324,7 @@ class Universe(object):
         Example
         -------
         To create a Universe with 10 conformers of ethanol ::
-        >>> u = mda.Universe.from_smiles('CCO', n_frames=10)
+        >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
         >>> u
         <Universe with 9 atoms>
         """
@@ -1345,9 +1345,9 @@ class Universe(object):
             if not addHs:
                 raise ValueError("Generating coordinates requires adding "
                 "hydrogens with `addHs=True`")
-            assert (type(n_frames) is int) and (n_frames > 0), ("n_frames must"
-            " be a non-zero positive integer instead of {0}".format(n_frames))
-            AllChem.EmbedMultipleConfs(mol, n_frames)
+            assert (type(numConfs) is int) and (numConfs > 0), ("numConfs must"
+            " be a non-zero positive integer instead of {0}".format(numConfs))
+            AllChem.EmbedMultipleConfs(mol, numConfs)
 
         return cls(mol, **kwargs)
 
