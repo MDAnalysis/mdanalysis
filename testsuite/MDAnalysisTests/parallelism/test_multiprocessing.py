@@ -22,7 +22,7 @@
 #
 
 from __future__ import absolute_import
-
+import sys
 import multiprocessing
 import numpy as np
 import pytest
@@ -88,6 +88,8 @@ def getnames(u, ix):
     return u.atoms[ix].name
 
 
+@pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
+                   working in python 2")
 def test_multiprocess_COG(u):
     ag = u.atoms[10:20]
 
@@ -101,6 +103,8 @@ def test_multiprocess_COG(u):
     assert_equal(ref, res)
 
 
+@pytest.mark.xfail(sys.version_info <= (3, 0), reason="pickle function not \
+                   working in python 2")
 def test_multiprocess_names(u):
     ref = [getnames(u, i)
            for i in range(10)]

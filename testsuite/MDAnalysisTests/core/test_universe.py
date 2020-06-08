@@ -27,7 +27,7 @@ from six.moves import cPickle
 
 import os
 import subprocess
-
+import sys
 try:
     from cStringIO import StringIO
 except:
@@ -272,13 +272,12 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
+    @pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
+                     working in python 2")
     def test_pickle(self):
         u = mda.Universe(PSF, DCD)
-
         s = cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
-
         new_u = cPickle.loads(s)
-
         assert_equal(u.atoms.names, new_u.atoms.names)
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
