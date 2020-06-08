@@ -208,6 +208,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">.XDR</span> <span class="kn">import</span> <span class="n">XDRBaseReader</span><span class="p">,</span> <span class="n">XDRBaseWriter</span>
 <span class="kn">from</span> <span class="nn">..lib.formats.libmdaxdr</span> <span class="kn">import</span> <span class="n">XTCFile</span>
 <span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span><span class="p">,</span> <span class="n">triclinic_box</span>
@@ -245,18 +246,37 @@
                                         <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">precision</span> <span class="o">=</span> <span class="n">precision</span>
 
-<div class="viewcode-block" id="XTCWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write timestep object into trajectory.</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write information associated with ``ag`` at current frame into trajectory</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        ts : :class:`~base.Timestep`</span>
+<span class="sd">        ag : AtomGroup or Universe</span>
 
 <span class="sd">        See Also</span>
 <span class="sd">        --------</span>
-<span class="sd">        &lt;FormatWriter&gt;.write(AtomGroup/Universe/TimeStep)</span>
+<span class="sd">        &lt;FormatWriter&gt;.write(AtomGroup/Universe)</span>
 <span class="sd">        The normal write() method takes a more general input</span>
+
+
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Deprecated using Timestep. To be removed in version 2.0.</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Added ability to use either AtomGroup or Universe.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Atomgroup?</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">ts</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="c1"># Universe?</span>
+                    <span class="n">ts</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No Timestep found in ag argument&quot;</span><span class="p">)</span>
+
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">time</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span>
         <span class="n">step</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
@@ -271,7 +291,7 @@
         <span class="c1"># a precision of 3 decimal places we need to pass 1000.0 to the xdr</span>
         <span class="c1"># library.</span>
         <span class="n">precision</span> <span class="o">=</span> <span class="mf">10.0</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">precision</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xdr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">precision</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="XTCReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XTC.html#MDAnalysis.coordinates.XTC.XTCReader">[docs]</a><span class="k">class</span> <span class="nc">XTCReader</span><span class="p">(</span><span class="n">XDRBaseReader</span><span class="p">):</span>

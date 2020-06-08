@@ -288,15 +288,23 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
-<div class="viewcode-block" id="NAMDBINWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/NAMDBIN.html#MDAnalysis.coordinates.NAMDBIN.NAMDBINWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write obj at current trajectory frame to file.</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write information associated with ``obj`` at current frame into trajectory</span>
+
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep` </span>
-<span class="sd">              write coordinate information associate with `obj`</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`</span>
+<span class="sd">              write coordinate information associated with `obj`</span>
 
+
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Renamed from `write` to `_write_next_frame`.</span>
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Passing a Timestep is deprecated for removal in version 2.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO 2.0: Remove Timestep logic</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
             <span class="n">n_atoms</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">n_atoms</span>
             <span class="n">coor</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">n_atoms</span><span class="o">*</span><span class="mi">3</span><span class="p">)</span>
@@ -311,7 +319,7 @@
             <span class="c1"># Write NUMATOMS</span>
             <span class="n">namdbin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">))</span>
             <span class="c1"># Write Coordinate</span>
-            <span class="n">namdbin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">d&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coor</span><span class="p">)),</span> <span class="o">*</span><span class="n">coor</span><span class="p">))</span></div></div>
+            <span class="n">namdbin</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">pack</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">d&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">coor</span><span class="p">)),</span> <span class="o">*</span><span class="n">coor</span><span class="p">))</span></div>
 </pre></div>
 
            </div>

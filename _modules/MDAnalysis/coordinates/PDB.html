@@ -1000,7 +1000,7 @@
 <span class="sd">        * :attr:`PDBWriter.timestep` (the underlying trajectory</span>
 <span class="sd">          :class:`~MDAnalysis.coordinates.base.Timestep`)</span>
 
-<span class="sd">        Before calling :meth:`write_next_timestep` this method **must** be</span>
+<span class="sd">        Before calling :meth:`_write_next_frame` this method **must** be</span>
 <span class="sd">        called at least once to enable extracting topology information from the</span>
 <span class="sd">        current frame.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1039,7 +1039,7 @@
         <span class="c1"># Issue 105: with write() ONLY write a single frame; use</span>
         <span class="c1"># write_all_timesteps() to dump everything in one go, or do the</span>
         <span class="c1"># traditional loop over frames</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_multiframe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_pdb_bonds</span><span class="p">()</span></div>
         <span class="c1"># END record is written when file is being close()d</span>
 
@@ -1082,7 +1082,7 @@
 
         <span class="k">for</span> <span class="n">framenumber</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">traj</span><span class="p">),</span> <span class="n">step</span><span class="p">):</span>
             <span class="n">traj</span><span class="p">[</span><span class="n">framenumber</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span> <span class="n">multiframe</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_write_pdb_bonds</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -1090,7 +1090,7 @@
         <span class="c1"># Set the trajectory to the starting position</span>
         <span class="n">traj</span><span class="p">[</span><span class="n">start</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="PDBWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;write a new timestep to the PDB file</span>
 
 <span class="sd">        :Keywords:</span>
@@ -1106,6 +1106,10 @@
 <span class="sd">           argument, :meth:`PDBWriter._update_frame` *must* be called</span>
 <span class="sd">           with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as</span>
 <span class="sd">           its argument so that topology information can be gathered.</span>
+
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Renamed from `write_next_timestep` to `_write_next_frame`.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1118,7 +1122,7 @@
                         <span class="p">),</span>
                     <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_pdb_coordinates</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_write_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_deduce_PDB_atom_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomname</span><span class="p">,</span> <span class="n">resname</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Deduce how the atom name should be aligned.</span>

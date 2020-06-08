@@ -1202,7 +1202,7 @@ is avoided.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>) – write coordinate information associate with <cite>obj</cite></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associate with <cite>obj</cite></td>
 </tr>
 </tbody>
 </table>
@@ -1211,24 +1211,26 @@ is avoided.</p>
 <p class="last">The size of the <cite>obj</cite> must be the same as the number of atoms provided
 when setting up the trajectory.</p>
 </div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated the use of Timestep as arguments to write.  Use either
+an AtomGroup or Universe. To be removed in version 2.0.</p>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XTC.XTCWriter.write_next_timestep">
-<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XTC.html#XTCWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write timestep object into trajectory.</p>
+<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XTC.XTCWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current timestep, using the supplied <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associated with <code class="docutils literal notranslate"><span class="pre">obj</span></code></td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">&lt;FormatWriter&gt;.write(AtomGroup/Universe/TimeStep)
-The normal write() method takes a more general input</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated, use write() instead</p>
 </div>
 </dd></dl>
 

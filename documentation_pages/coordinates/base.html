@@ -2457,6 +2457,10 @@ file.</p>
 <dd><p>Base class for trajectory writers.</p>
 <p>See Trajectory API definition in <a class="reference internal" href="init.html#module-MDAnalysis.coordinates.__init__" title="MDAnalysis.coordinates.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.__init__</span></code></a> for
 the required attributes and methods.</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span><a class="reference internal" href="#MDAnalysis.coordinates.base.WriterBase.write_next_timestep" title="MDAnalysis.coordinates.base.WriterBase.write_next_timestep"><code class="xref py py-func docutils literal notranslate"><span class="pre">write_next_timestep()</span></code></a> has been deprecated, please use
+<a class="reference internal" href="#MDAnalysis.coordinates.base.WriterBase.write" title="MDAnalysis.coordinates.base.WriterBase.write"><code class="xref py py-func docutils literal notranslate"><span class="pre">write()</span></code></a> instead.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.WriterBase.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.base.WriterBase.close" title="Permalink to this definition">¶</a></dt>
@@ -2737,7 +2741,7 @@ is avoided.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> or a <a class="reference internal" href="#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – write coordinate information associate with <cite>obj</cite></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associate with <cite>obj</cite></td>
 </tr>
 </tbody>
 </table>
@@ -2745,6 +2749,27 @@ is avoided.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">The size of the <cite>obj</cite> must be the same as the number of atoms provided
 when setting up the trajectory.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated the use of Timestep as arguments to write.  Use either
+an AtomGroup or Universe. To be removed in version 2.0.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.base.WriterBase.write_next_timestep">
+<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/base.html#WriterBase.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.base.WriterBase.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current timestep, using the supplied <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associated with <code class="docutils literal notranslate"><span class="pre">obj</span></code></td>
+</tr>
+</tbody>
+</table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated, use write() instead</p>
 </div>
 </dd></dl>
 

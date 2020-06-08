@@ -510,35 +510,18 @@ MDAnalysis (Issue #2327).</p>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic">
-<code class="descname">is_periodic</code><span class="sig-paren">(</span><em>ts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.is_periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test if <cite>Timestep</cite> contains a periodic trajectory.</p>
+<code class="descname">is_periodic</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.is_periodic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.is_periodic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test if timestep <code class="docutils literal notranslate"><span class="pre">ts</span></code> contains a periodic box.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance containing coordinates to
-be written to trajectory file; default is the current
-timestep</td>
+be written to trajectory file</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <cite>ts</cite> contains a valid simulation box</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)">bool</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.TRJ.NCDFWriter.write_next_timestep">
-<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>ts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/TRJ.html#NCDFWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.TRJ.NCDFWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>write a new timestep to the trj file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – <a class="reference internal" href="#MDAnalysis.coordinates.TRJ.Timestep" title="MDAnalysis.coordinates.TRJ.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> instance containing coordinates to
-be written to trajectory file; default is the current
-timestep</td>
 </tr>
 </tbody>
 </table>

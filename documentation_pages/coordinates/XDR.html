@@ -230,7 +230,7 @@ formats.</p>
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XDR.</code><code class="descname">XDRBaseReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>sub=None</em>, <em>refresh_offsets=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XDR.html#XDRBaseReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for libmdaxdr file formats xtc and trr</p>
 <p>This class handles integration of XDR based formats into MDAnalysis. The
-XTC and TRR classes only implement <cite>write_next_timestep</cite> and
+XTC and TRR classes only implement <cite>_write_next_frame</cite> and
 <cite>_frame_to_ts</cite>.</p>
 <p class="rubric" id="offsets-label">Notes</p>
 <p>XDR based readers store persistent offsets on disk. The offsets are used to
@@ -1212,7 +1212,7 @@ is avoided.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> or a <code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code>) – write coordinate information associate with <cite>obj</cite></td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associate with <cite>obj</cite></td>
 </tr>
 </tbody>
 </table>
@@ -1220,6 +1220,27 @@ is avoided.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">The size of the <cite>obj</cite> must be the same as the number of atoms provided
 when setting up the trajectory.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated the use of Timestep as arguments to write.  Use either
+an AtomGroup or Universe. To be removed in version 2.0.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.XDR.XDRBaseWriter.write_next_timestep">
+<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.coordinates.XDR.XDRBaseWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write current timestep, using the supplied <code class="docutils literal notranslate"><span class="pre">obj</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>) – write coordinate information associated with <code class="docutils literal notranslate"><span class="pre">obj</span></code></td>
+</tr>
+</tbody>
+</table>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated, use write() instead</p>
 </div>
 </dd></dl>
 

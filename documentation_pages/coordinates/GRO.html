@@ -400,7 +400,7 @@ of 3 decimal places is hard-coded here.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (AtomGroup or Universe or <a class="reference internal" href="#MDAnalysis.coordinates.GRO.Timestep" title="MDAnalysis.coordinates.GRO.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>) – </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – </td>
 </tr>
 </tbody>
 </table>
@@ -415,6 +415,10 @@ routine will chop off the leading digits.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.16.0: </span><cite>frame</cite> kwarg has been removed</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated calling with Timestep, use AtomGroup or Universe.
+To be removed in version 2.0.</p>
 </div>
 </dd></dl>
 

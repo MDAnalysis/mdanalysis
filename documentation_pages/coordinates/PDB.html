@@ -625,7 +625,7 @@ coordinates, either a <a class="reference internal" href="../core/groups.html#MD
 <li><code class="xref py py-attr docutils literal notranslate"><span class="pre">PDBWriter.timestep</span></code> (the underlying trajectory
 <a class="reference internal" href="base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>)</li>
 </ul>
-<p>Before calling <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.write_next_timestep" title="MDAnalysis.coordinates.PDB.PDBWriter.write_next_timestep"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_next_timestep()</span></code></a> this method <strong>must</strong> be
+<p>Before calling <code class="xref py py-meth docutils literal notranslate"><span class="pre">_write_next_frame()</span></code> this method <strong>must</strong> be
 called at least once to enable extracting topology information from the
 current frame.</p>
 </dd></dl>
@@ -770,36 +770,6 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 <p>will be writing frames 12, 14, 16, …</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.PDB.PDBWriter.write_next_timestep">
-<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>ts=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>write a new timestep to the PDB file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><dl class="first last docutils">
-<dt><em>ts</em></dt>
-<dd><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">base.Timestep</span></code> object containing coordinates to be written to trajectory file;
-if <code class="docutils literal notranslate"><span class="pre">None</span></code> then <code class="xref py py-attr docutils literal notranslate"><span class="pre">PDBWriter.ts`</span></code> is tried.</p>
-</dd>
-<dt><em>multiframe</em></dt>
-<dd><p class="first last"><code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame (default); <code class="docutils literal notranslate"><span class="pre">True</span></code> behave as a trajectory writer</p>
-</dd>
-</dl>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Before using this method with another <code class="xref py py-class docutils literal notranslate"><span class="pre">base.Timestep</span></code> in the <em>ts</em>
-argument, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter._update_frame" title="MDAnalysis.coordinates.PDB.PDBWriter._update_frame"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PDBWriter._update_frame()</span></code></a> <em>must</em> be called
-with the <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> as
-its argument so that topology information can be gathered.</p>
 </div>
 </dd></dl>
 

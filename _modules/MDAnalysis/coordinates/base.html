@@ -2358,6 +2358,11 @@
 
 <span class="sd">    See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for</span>
 <span class="sd">    the required attributes and methods.</span>
+
+
+<span class="sd">    .. deprecated:: 1.0.0</span>
+<span class="sd">       :func:`write_next_timestep` has been deprecated, please use</span>
+<span class="sd">       :func:`write` instead.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="WriterBase.convert_dimensions_to_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase.convert_dimensions_to_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">convert_dimensions_to_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -2379,26 +2384,46 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep`</span>
+<span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`</span>
 <span class="sd">            write coordinate information associate with `obj`</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
 <span class="sd">        The size of the `obj` must be the same as the number of atoms provided</span>
 <span class="sd">        when setting up the trajectory.</span>
+
+
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Deprecated the use of Timestep as arguments to write.  Use either</span>
+<span class="sd">           an AtomGroup or Universe. To be removed in version 2.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">Timestep</span><span class="p">):</span>
-            <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">ts</span>
-            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="c1"># special case: can supply a Universe, too...</span>
-                    <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
-                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No Timestep found in obj argument&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s1">&#39;Passing a Timestep to write is deprecated, &#39;</span>
+                <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
+                <span class="s1">&#39;use either an AtomGroup or Universe&#39;</span><span class="p">,</span>
+                <span class="ne">DeprecationWarning</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="WriterBase.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.WriterBase.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write current timestep, using the supplied ``obj``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`</span>
+<span class="sd">            write coordinate information associated with ``obj``</span>
+
+
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Deprecated, use write() instead</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;Writer.write_next_timestep is deprecated, &#39;</span>
+            <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
+            <span class="s1">&#39;use Writer.write()&#39;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -2431,8 +2456,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ravel</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;=</span> <span class="n">criteria</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">])</span></div></div>
-
-        <span class="c1"># def write_next_timestep(self, ts=None)</span>
 
 
 <div class="viewcode-block" id="SingleFrameReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.SingleFrameReaderBase">[docs]</a><span class="k">class</span> <span class="nc">SingleFrameReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>

@@ -705,10 +705,30 @@
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;nrec&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span>
         <span class="n">out</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write information associated with ``obj`` at current frame into trajectory</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ag : AtomGroup or Universe</span>
+
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Renamed from `write_next_timestep` to `_write_next_frame`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Check size of ts is same as initial</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of atoms in ts different to initialisation&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO: Remove Timestep logic in 2.0</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+            <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of atoms in ts different to initialisation&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>  <span class="c1"># atomgroup?</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">ts</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># universe?</span>
+                <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Number of atoms in ts different to initialisation&quot;</span><span class="p">)</span>
 
         <span class="c1"># Gather data, faking it when unavailable</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>

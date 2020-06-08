@@ -519,7 +519,7 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        obj : AtomGroup or Universe or :class:`Timestep`</span>
+<span class="sd">        obj : AtomGroup or Universe</span>
 
 <span class="sd">        Note</span>
 <span class="sd">        ----</span>
@@ -532,6 +532,9 @@
 <span class="sd">           *resName* and *atomName* are truncated to a maximum of 5 characters</span>
 <span class="sd">        .. versionchanged:: 0.16.0</span>
 <span class="sd">           `frame` kwarg has been removed</span>
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Deprecated calling with Timestep, use AtomGroup or Universe.</span>
+<span class="sd">           To be removed in version 2.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># write() method that complies with the Trajectory API</span>
 
@@ -543,6 +546,11 @@
 
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;Passing a Timestep to write is deprecated, &#39;</span>
+                    <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
+                    <span class="s1">&#39;use either an AtomGroup or Universe&#39;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">)</span>
                 <span class="n">ag_or_ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No Timestep found in obj argument&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>

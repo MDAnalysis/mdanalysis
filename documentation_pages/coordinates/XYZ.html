@@ -400,15 +400,9 @@ default to the value of the <cite>atoms</cite> keyword supplied to the
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep">
-<code class="descname">write_next_timestep</code><span class="sig-paren">(</span><em>ts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.write_next_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write coordinate information in <em>ts</em> to the trajectory</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Print out <code class="code docutils literal notranslate"><span class="pre">remark</span></code> if present, otherwise use generic one
-(Issue #2692).</p>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated the use of Timestep as arguments to write. Use either an
+AtomGroup or Universe. To be removed in version 2.0.</p>
 </div>
 </dd></dl>
 

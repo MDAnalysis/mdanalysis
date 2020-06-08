@@ -882,14 +882,12 @@ multiple frames to a trajectory file. Every time the
 another frame is appended to the trajectory.</p>
 <p>Typically, many methods and attributes are overriden.</p>
 <p>Signature:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">W</span> <span class="o">=</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="n">n_atoms</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">W</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">TrajectoryWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Universe</span><span class="p">)</span>    <span class="c1"># write a whole universe</span>
 </pre></div>
 </div>
 <p>or:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">)</span>   <span class="c1"># write a selection</span>
-<span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Universe</span><span class="p">)</span>    <span class="c1"># write a whole universe</span>
-<span class="n">W</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">Timestep</span><span class="p">)</span>    <span class="c1"># same as write_next_timestep()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">AtomGroup</span><span class="p">)</span>  <span class="c1"># write a selection of Atoms from Universe</span>
 </pre></div>
 </div>
 <div class="section" id="id20">
@@ -900,8 +898,6 @@ another frame is appended to the trajectory.</p>
 <dd>opens <em>filename</em> and writes header if required by format</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">write(obj)</span></code></dt>
 <dd>write Timestep data in <em>obj</em></dd>
-<dt><code class="docutils literal notranslate"><span class="pre">write_next_timestep([timestep])</span></code></dt>
-<dd>write data in <em>timestep</em> to trajectory file</dd>
 <dt><code class="docutils literal notranslate"><span class="pre">convert_dimensions_to_unitcell(timestep)</span></code></dt>
 <dd>take the dimensions from the timestep and convert to the native
 unitcell representation of the format</dd>

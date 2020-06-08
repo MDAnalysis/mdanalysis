@@ -264,6 +264,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.coordinates.XYZ&#39;</span><span class="p">)</span>
 
@@ -376,6 +377,11 @@
 <span class="sd">        obj : Universe or AtomGroup</span>
 <span class="sd">            The :class:`~MDAnalysis.core.groups.AtomGroup` or</span>
 <span class="sd">            :class:`~MDAnalysis.core.universe.Universe` to write.</span>
+
+
+<span class="sd">        .. deprecated:: 1.0.0</span>
+<span class="sd">           Deprecated the use of Timestep as arguments to write. Use either an</span>
+<span class="sd">           AtomGroup or Universe. To be removed in version 2.0.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># prepare the Timestep and extract atom names if possible</span>
         <span class="c1"># (The way it is written it should be possible to write</span>
@@ -385,6 +391,11 @@
             <span class="n">atoms</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s1">&#39;Passing a Timestep to write is deprecated, &#39;</span>
+                    <span class="s1">&#39;and will be removed in 2.0; &#39;</span>
+                    <span class="s1">&#39;use either an AtomGroup or Universe&#39;</span><span class="p">,</span>
+                    <span class="ne">DeprecationWarning</span><span class="p">)</span>
                 <span class="n">ts</span> <span class="o">=</span> <span class="n">obj</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;No Timestep found in obj argument&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
@@ -403,15 +414,16 @@
             <span class="c1"># update atom names</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_atoms_elements_or_names</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_next_frame</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="XYZWriter.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZWriter.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Write coordinate information in *ts* to the trajectory</span>
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Print out :code:`remark` if present, otherwise use generic one </span>
 <span class="sd">           (Issue #2692).</span>
+<span class="sd">           Renamed from `write_next_timestep` to `_write_next_frame`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ts&#39;</span><span class="p">):</span>
@@ -430,9 +442,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">)</span> <span class="ow">and</span>
                 <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">):</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Trying to write a TimeStep with unkown atoms. &#39;</span>
-                            <span class="s1">&#39;Expected </span><span class="si">{}</span><span class="s1">, got </span><span class="si">{}</span><span class="s1">. Try using &quot;write&quot; if you are &#39;</span>
-                            <span class="s1">&#39;using &quot;write_next_timestep&quot; directly&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Trying to write a TimeStep with unknown atoms. &#39;</span>
+                            <span class="s1">&#39;Expected </span><span class="si">{}</span><span class="s1"> atoms, got </span><span class="si">{}</span><span class="s1">. Try using &quot;write&quot; if you are &#39;</span>
+                            <span class="s1">&#39;using &quot;_write_next_frame&quot; directly&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                                 <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">),</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span>
 
@@ -457,7 +469,7 @@
         <span class="c1"># Write content</span>
         <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atomnames</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_xyz</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0!s:&gt;8}</span><span class="s2">  </span><span class="si">{1:10.5f}</span><span class="s2"> </span><span class="si">{2:10.5f}</span><span class="s2"> </span><span class="si">{3:10.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
-                            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span></div></div>
+                            <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="XYZReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/XYZ.html#MDAnalysis.coordinates.XYZ.XYZReader">[docs]</a><span class="k">class</span> <span class="nc">XYZReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>

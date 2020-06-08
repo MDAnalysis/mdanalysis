@@ -550,24 +550,19 @@
         <span class="n">molecule</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">molecule_1_store</span>
         <span class="k">return</span> <span class="n">return_val</span></div>
 
-<div class="viewcode-block" id="MOL2Writer.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/MOL2.html#MDAnalysis.coordinates.MOL2.MOL2Writer.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write a new frame to the MOL2 file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        obj : AtomGroup or Universe</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_next_timestep</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="MOL2Writer.write_next_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/MOL2.html#MDAnalysis.coordinates.MOL2.MOL2Writer.write_next_timestep">[docs]</a>    <span class="k">def</span> <span class="nf">write_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write a new frame to the MOL2 file.</span>
 
-<span class="sd">        Parameters</span>
-<span class="sd">        ----------</span>
-<span class="sd">        obj : AtomGroup or Universe</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">            Renamed from `write_next_timestep` to `_write_next_frame`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_block</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">block</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">block</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

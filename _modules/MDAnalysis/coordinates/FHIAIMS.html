@@ -442,22 +442,19 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;.in&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
 
-<div class="viewcode-block" id="FHIAIMSWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.FHIAIMSWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_write_next_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        -----------</span>
-<span class="sd">        obj : AtomGroup or Universe or :class:`Timestep`</span>
-
+<span class="sd">        obj : AtomGroup or Universe</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># write() method that complies with the Trajectory API</span>
-
+        <span class="c1"># TODO 2.0: Remove timestep logic</span>
         <span class="k">try</span><span class="p">:</span>
-
             <span class="c1"># make sure to use atoms (Issue 46)</span>
             <span class="n">ag_or_ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
             <span class="c1"># can write from selection == Universe (Issue 49)</span>
-
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
                 <span class="n">ag_or_ts</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -513,7 +510,7 @@
                     <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">has_velocities</span><span class="p">:</span>
                     <span class="n">output_fhiaims</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;vel&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">vel</span><span class="o">=</span><span class="n">velocities</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]))</span></div></div>
+                        <span class="n">vel</span><span class="o">=</span><span class="n">velocities</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]))</span></div>
 </pre></div>
 
            </div>
