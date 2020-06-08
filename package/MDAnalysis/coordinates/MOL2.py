@@ -306,6 +306,8 @@ class MOL2Writer(base.WriterBase):
         ----------
         obj : AtomGroup or Universe
         """
+        # Issue 2717
+        obj = obj.atoms
         traj = obj.universe.trajectory
         ts = traj.ts
 
