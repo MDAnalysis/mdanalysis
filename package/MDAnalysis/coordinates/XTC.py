@@ -33,8 +33,6 @@ MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
 from __future__ import absolute_import
 
-import warnings
-
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
@@ -74,7 +72,7 @@ class XTCWriter(XDRBaseWriter):
         self.precision = precision
 
     def _write_next_frame(self, ag):
-        """Write timestep object into trajectory.
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------
@@ -82,7 +80,7 @@ class XTCWriter(XDRBaseWriter):
 
         See Also
         --------
-        <FormatWriter>.write(AtomGroup/Universe/TimeStep)
+        <FormatWriter>.write(AtomGroup/Universe)
         The normal write() method takes a more general input
 
 

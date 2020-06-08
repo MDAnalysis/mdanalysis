@@ -267,8 +267,8 @@ class XYZWriter(base.WriterBase):
         else:
             if (not isinstance(self.atomnames, itertools.cycle) and
                 len(self.atomnames) != ts.n_atoms):
-                logger.info('Trying to write a TimeStep with unkown atoms. '
-                            'Expected {}, got {}. Try using "write" if you are '
+                logger.info('Trying to write a TimeStep with unknown atoms. '
+                            'Expected {} atoms, got {}. Try using "write" if you are '
                             'using "_write_next_frame" directly'.format(
                                 len(self.atomnames), ts.n_atoms))
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)

@@ -2225,19 +2225,19 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         if isinstance(obj, Timestep):
             warnings.warn(
                 'Passing a Timestep to write is deprecated, '
-                'and will be removed 2.0; '
+                'and will be removed in 2.0; '
                 'use either an AtomGroup or Universe',
                 DeprecationWarning)
 
         return self._write_next_frame(obj)
 
     def write_next_timestep(self, obj):
-        """Write current timestep, using the supplied `obj`.
+        """Write current timestep, using the supplied ``obj``.
 
         Parameters
         ----------
         obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
-            write coordinate information associate with `obj`
+            write coordinate information associated with ``obj``
 
 
         .. deprecated:: 1.0.0
@@ -2245,7 +2245,7 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         """
         warnings.warn(
             'Writer.write_next_timestep is deprecated, '
-            'and will be removed 2.0; '
+            'and will be removed in 2.0; '
             'use Writer.write()',
             DeprecationWarning)
         return self.write(obj)
