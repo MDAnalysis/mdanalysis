@@ -106,7 +106,7 @@ def vector_of_best_fit(coordinates):
 def local_screw_angles(global_axis, ref_axis, helix_directions):
     """
     Cylindrical azimuth angles between the local direction vectors
-    to the plane of global_axis and ref_axis.
+    to the plane of global_axis and ref_axis, from (-pi, pi].
 
     Parameters
     ----------
@@ -133,19 +133,18 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
         while not np.any(plane) and new_ref:
             plane = np.cross(new_ref.pop(), global_axis)
 
-    # needed to determine angle quadrants
-    ortho_plane = np.cross(-plane, global_axis)
-
     # angles to plane normal
-    refs = np.array([plane, ortho_plane])  # (2, 3)
+    refs = np.array([plane, global_axis])  # (2, 3)
     norms = np.outer(mdamath.pnorm(refs), mdamath.pnorm(helix_directions))
     cos = np.matmul(refs, helix_directions.T)/norms
-    cos[0] = np.abs(cos[0])  # acute angles to `plane` only
-    to_plane, to_normal = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
+    q2 = (cos[0] <= 0) & (cos[1] < 0)
+    to_plane, to_global = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
 
-    # angles to plane
-    to_plane[to_normal <= np.pi/2] *= -1
-    to_plane += (np.pi/2)
+    # angles to plane in (-pi, pi]
+    to_plane[to_global > np.pi/2] *= -1
+    to_plane -= np.pi/2
+    to_plane[q2] += 2*np.pi
+    to_plane[to_plane == -np.pi] = np.pi  # leave 180 alone
 
     return np.rad2deg(to_plane)
 

@@ -105,10 +105,28 @@ def read_bending_matrix(fn):
     return data
 
 
-def test_local_screw_angles():
-    xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    angles = hel.local_screw_angles([1, 1, 1], [1, -1, -1], xyz)
-    assert_almost_equal(angles, [0, 135, 135])
+def test_local_screw_angles_planecircle():
+    # circle in xz-plane
+    angdeg = np.arange(0, 360, 12, dtype=int)
+    angrad = np.deg2rad(angdeg)
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad])
+    screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
+    # normal to the plane: [0, 0, -1]
+    correct = np.zeros_like(angdeg)
+    correct[(angdeg > 90) & (angdeg < 270)] = 180
+    assert_almost_equal(screw, correct)
+
+
+def test_local_screw_angles_orthocircle():
+    # circle in xz-plane
+    angdeg = np.arange(0, 360, 12, dtype=int)
+    angrad = np.deg2rad(angdeg)
+    xyz = np.array([[np.cos(a), 0, np.sin(a)] for a in angrad])
+    screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
+    angdeg[-14:] = -angdeg[1:15][::-1]
+    angdeg[-15] = 180
+    # normal to the plane: [0, 0, -1]
+    assert_almost_equal(screw, angdeg)
 
 
 def test_local_screw_angles_parallel_axes():
@@ -117,7 +135,7 @@ def test_local_screw_angles_parallel_axes():
     # new ref should be [0, 0, 1];
     # plane should be [0, -1, 0];
     # ortho_plane should be [0, 0, 1]
-    assert_almost_equal(angles, [0, 90, 0])
+    assert_almost_equal(angles, [0, -90, 0])
 
 
 @pytest.fixture()
@@ -137,11 +155,11 @@ def zigzag():
 
 
 @pytest.mark.parametrize('ref_axis,screw_angles', [
-    ([0, 0, 1], [180, 0]),
-    ([0, 1, 0], [90, 90]),
-    ([1, 0, 0], [180, 0]),
-    ([1, 1, 1], [135, 45]),
-    ([1, 1, 2], [135, 45]),
+    ([0, 0, 1], [0, 0]),
+    ([0, 1, 0], [-90, 90]),
+    ([1, 0, 0], [0, 0]),
+    ([1, 1, 1], [-45, 45]),
+    ([1, 1, 2], [-45, 45]),
 ])
 def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     properties = hel.helix_analysis(zigzag.atoms.positions,
@@ -228,8 +246,8 @@ def test_helix_analysis_square_oct():
                         decimal=4)
 
     # a bit off-90
-    screw = [0, 89.99, 180, 77.2356, 45, 0,
-             45, 89.99, 135, 180, 135, 102.7644] * n_rep
+    screw = [180, -89.99, 0, 102.76, 135, 180,
+             -45, -89.99, -45, 0, 135, 102.7644] * n_rep
     assert_almost_equal(properties['local_screw_angles'], screw[:-2],
                         decimal=2)
 
@@ -328,11 +346,11 @@ class TestHELANAL(object):
         assert 'Splitting into' not in warnmsg
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
-        ([0, 0, 1], [180, 0]),
-        ([0, 1, 0], [90, 90]),
-        ([1, 0, 0], [180, 0]),
-        ([1, 1, 1], [135, 45]),
-        ([1, 1, 2], [135, 45]),
+        ([0, 0, 1], [0, 0]),
+        ([0, 1, 0], [-90, 90]),
+        ([1, 0, 0], [0, 0]),
+        ([1, 1, 1], [-45, 45]),
+        ([1, 1, 2], [-45, 45]),
     ])
     def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
         ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
