@@ -274,7 +274,7 @@ class ChemfilesWriter(base.WriterBase):
             self._closed = True
 
     def _write_next_frame(self, obj):
-        """Write timestep object into trajectory.
+        """Write information associated with ``obj`` at current frame into trajectory.
 
         Topology for the output is taken from the `obj` or default to the value
         of the `topology` keyword supplied to the :class:`ChemfilesWriter`
