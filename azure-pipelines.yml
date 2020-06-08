@@ -42,6 +42,7 @@ jobs:
       matplotlib
       numpy
       pytest
+      pytest-cov
       pytest-xdist
       scikit-learn
       scipy
@@ -55,5 +56,12 @@ jobs:
     displayName: 'Build MDAnalysis'
   - powershell: |
       cd testsuite
-      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx
+      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
+  - script: |
+      curl -s https://codecov.io/bash | bash
+      echo %CODECOV_TOKEN%
+    condition: succeeded()
+    displayName: 'Codecov Coverage Data Upload'
+    env:
+      CODECOV_TOKEN: $(CODECOV_TOKEN)
