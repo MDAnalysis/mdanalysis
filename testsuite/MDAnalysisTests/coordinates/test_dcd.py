@@ -280,7 +280,7 @@ def test_other_writer(universe_dcd, tmpdir, ext, decimal):
     outfile = str(tmpdir.join("test.{}".format(ext)))
     with t.OtherWriter(outfile) as W:
         for ts in universe_dcd.trajectory:
-            W.write_next_timestep(ts)
+            W.write(universe_dcd)
 
     uw = mda.Universe(PSF, outfile)
     # check that the coordinates are identical for each time step

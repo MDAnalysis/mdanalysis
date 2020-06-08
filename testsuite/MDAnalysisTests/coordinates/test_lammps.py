@@ -154,6 +154,20 @@ class TestLAMMPSDATAWriter(object):
                                 decimal=6)
 
 
+def test_datawriter_universe(tmpdir):
+    fn = str(tmpdir.join('out.data'))
+
+    u = mda.Universe(LAMMPSdata_mini)
+
+    with mda.Writer(fn, n_atoms=len(u.atoms)) as w:
+        w.write(u)
+
+    u2 = mda.Universe(fn)
+
+    assert_almost_equal(u.atoms.positions, u2.atoms.positions)
+    assert_almost_equal(u.dimensions, u2.dimensions)
+
+
 class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
     N_kept = 5
 
