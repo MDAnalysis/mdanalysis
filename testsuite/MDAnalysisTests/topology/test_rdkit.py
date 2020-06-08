@@ -102,10 +102,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
         # The 3 first aromatic bonds in the mol2 file are not actually 
         # aromatic but just part of a conjugated system. RDKit doesn't follow
         # the mol2 file and marks them as single, even with `sanitize=False`.
-        expected = [1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1.5, 1.5, 1.5, 1, 1.5, 1, 1.5, 1, 1.5, 1, 1, 1,
-        2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1]
-        expected = [float(i) for i in expected]
+        expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]
         assert top.bonds.order == expected
     
     def test_multiple_charge_priority(self, 
@@ -190,8 +187,5 @@ class TestRDKitParserSDF(RDKitParserBase):
                                   sanitize=False)[0]
 
     def test_bond_orders(self, top, filename):
-        expected = [1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1, 1, 2, 1, 2, 1, 2, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-            1, 1, 1, 1, 1, 1, 1]
-        expected = [float(i) for i in expected]
+        expected = [bond.GetBondTypeAsDouble() for bond in filename.GetBonds()]
         assert top.bonds.order == expected
