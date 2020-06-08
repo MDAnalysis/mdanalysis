@@ -165,7 +165,7 @@ def test_datawriter_universe(tmpdir):
     u2 = mda.Universe(fn)
 
     assert_almost_equal(u.atoms.positions, u2.atoms.positions)
-    assert_almost_equal(u.dimensions, u2.dimension)
+    assert_almost_equal(u.dimensions, u2.dimensions)
 
 
 class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
