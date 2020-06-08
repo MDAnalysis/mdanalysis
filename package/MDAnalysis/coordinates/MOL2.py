@@ -389,5 +389,6 @@ class MOL2Writer(base.WriterBase):
         ----------
         obj : AtomGroup or Universe
         """
+        obj = obj.atoms
         block = self.encode_block(obj)
         self.file.writelines(block)
