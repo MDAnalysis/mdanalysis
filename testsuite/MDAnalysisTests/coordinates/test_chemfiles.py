@@ -175,9 +175,11 @@ class TestChemfiles(object):
             # self.check_topology(datafiles.CONECT, outfile)
 
     def test_write_velocities(self, tmpdir):
-        ts = mda.coordinates.base.Timestep(4, velocities=True)
-        ts.dimensions = [20, 30, 41, 90, 90, 90]
+        u = mda.Universe.empty(4, trajectory=True)
+        u.add_TopologyAttr('type', values=['H', 'H', 'H', 'H'])
 
+        ts = u.trajectory.ts
+        ts.dimensions = [20, 30, 41, 90, 90, 90]
         ts.positions = [
             [1, 1, 1],
             [2, 2, 2],
@@ -190,13 +192,6 @@ class TestChemfiles(object):
             [30, 30, 30],
             [40, 40, 40],
         ]
-
-        u = mda.Universe.empty(4)
-        u.add_TopologyAttr('type')
-        u.atoms[0].type = "H"
-        u.atoms[1].type = "H"
-        u.atoms[2].type = "H"
-        u.atoms[3].type = "H"
 
         outfile = "chemfiles-write-velocities.lmp"
         with tmpdir.as_cwd():
