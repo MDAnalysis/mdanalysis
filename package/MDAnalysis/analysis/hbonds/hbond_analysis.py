@@ -383,10 +383,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
        default values for different force fields.
 
-    .. versionchanged:: 0.21.0
-        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
-
     .. versionchanged:: 1.0.0
+        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
        ``save_table()`` method has been removed. You can use ``np.save()`` or
        ``cPickle.dump()`` on :attr:`HydrogenBondAnalysis.table` instead.
     """

@@ -802,7 +802,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
+        .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
         """
         atoms = self.atoms
 
@@ -933,7 +933,7 @@ class GroupBase(_MutableBase):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
+        .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
         """
         return self.center(None, pbc=pbc, compound=compound, unwrap=unwrap)
 
@@ -1107,7 +1107,7 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour
+        .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
         """
         atomgroup = self.atoms
 
@@ -3043,7 +3043,7 @@ class AtomGroup(GroupBase):
             If the :class:`AtomGroup` is not length 2
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         if len(self) != 2:
             raise ValueError(
@@ -3061,7 +3061,7 @@ class AtomGroup(GroupBase):
             If the :class:`AtomGroup` is not length 5
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         if len(self) != 5:
             raise ValueError(
@@ -3104,7 +3104,7 @@ class AtomGroup(GroupBase):
             No converter was found for the required package
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         converter = get_converter_for(package)
         return converter().convert(self.atoms)
