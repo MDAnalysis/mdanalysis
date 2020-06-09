@@ -231,7 +231,6 @@ except ImportError:
         pass
 
 
-
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
 
@@ -263,6 +262,43 @@ def filename(name, ext=None, keep=False):
             else:
                 name = newname
     return name if isstream(name) else str(name)
+
+
+class FileIOPickable(io.FileIO):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def __getstate__(self):
+        return self.tell(), self.name
+
+    def __setstate__(self, args):
+        name = args[1]
+        super().__init__(name)
+        self.seek(args[0])
+
+
+class TextIOPickable(io.TextIOWrapper):
+    def __init__(self, buffer):
+        super().__init__(buffer)
+        self.buffer_class = buffer.__class__
+
+    def __getstate__(self):
+        return self.tell(), self.name, self.buffer_class
+
+    def __setstate__(self, args):
+        name = args[1]
+        buffer_class = args[2]
+        buffer = buffer_class(name)
+        super().__init__(buffer)
+        self.seek(args[0])
+
+
+def pickle_open(name, mode):
+    buffer = FileIOPickable(name)
+    if mode == 'rb':
+        return buffer
+    elif mode == 'rt' or mode == 'r':
+        return TextIOPickable(buffer)
 
 
 @contextmanager
