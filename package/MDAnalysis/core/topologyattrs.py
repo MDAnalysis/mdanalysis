@@ -1931,7 +1931,7 @@ def _check_connection_values(func):
      - coerces them to tuples of ints (for hashing)
      - ensures that first value is less than last (reversibility & hashing)
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
 
     """
     @functools.wraps(func)
@@ -1955,7 +1955,7 @@ def _check_connection_values(func):
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
         Added type checking to atom index values.
     """
 
@@ -2044,7 +2044,7 @@ class _Connection(AtomAttr):
     @_check_connection_values
     def _delete_bonds(self, values):
         """
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
 
         to_check = set(values)
@@ -2231,7 +2231,7 @@ class UreyBradleys(_Connection):
 
     These indices refer to the atom indices.
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     attrname = 'ureybradleys'
     singular = 'ureybradleys'
@@ -2272,7 +2272,7 @@ class Impropers(_Connection):
 class CMaps(_Connection):
     """
     A connection between five atoms
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     attrname = 'cmaps'
     singular = 'cmaps'

@@ -157,7 +157,7 @@ class TOPParser(TopologyReaderBase):
       parses both amber10 and amber12 formats
     .. versionchanged:: 0.19.0
       parses bonds, angles, dihedrals, and impropers
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
       warns users that chamber-style topologies are not current supported
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
