@@ -288,11 +288,14 @@ class TextIOPickable(io.TextIOWrapper):
     def __setstate__(self, args):
         name = args[1]
         buffer_class = args[2]
+        # buffer_class is used for further expansion this functionality to 
+        # GZip files, which also requires a text wrapper. 
         buffer = buffer_class(name)
         super().__init__(buffer)
         self.seek(args[0])
 
-
+# not as comprehensive as built-in open func--no need for other args
+# only should be used for 'reading' modes
 def pickle_open(name, mode):
     buffer = FileIOPickable(name)
     if mode == 'rb':
