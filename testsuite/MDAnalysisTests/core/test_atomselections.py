@@ -520,6 +520,17 @@ class TestSelectionsTPR(object):
         assert_equal(sel.ids, np.array(reference, dtype=np.int32))
 
 
+class TestSelectionRDKit(object):
+    def test_aromatic(self):
+        smi = "Cc1ccccc1" # toluene
+        u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
+                                            generate_coordinates=False)
+        arom = u.select_atoms("aromatic")
+        not_arom = u.select_atoms("not aromatic")
+        assert arom.n_atoms == 6
+        assert not_arom.n_atoms == 1
+
+
 class TestSelectionsNucleicAcids(object):
     @pytest.fixture(scope='class')
     def universe(self):

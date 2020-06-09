@@ -573,6 +573,20 @@ class AltlocSelection(StringSelection):
     field = 'altLocs'
 
 
+class AromaticSelection(Selection):
+    """Contains all aromatic atoms"""
+    token = 'aromatic'
+    field = 'aromaticities'
+
+    def __init__(self, parser, tokens):
+        pass
+
+    def apply(self, group):
+        mask = np.zeros(len(group), dtype=np.bool)
+        mask = getattr(group, self.field, mask)
+        return group[mask].unique
+
+
 class ResidSelection(Selection):
     """Select atoms based on numerical fields
 

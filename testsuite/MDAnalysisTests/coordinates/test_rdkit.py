@@ -46,6 +46,9 @@ class TestRDKitReader(object):
         expected = np.array([
             conf.GetPositions() for conf in mol.GetConformers()], 
             dtype=np.float32)
-        assert_equal(expected, universe.trajectory.coordinate_array)
         assert universe.trajectory.n_frames == 1
+        assert_equal(expected, universe.trajectory.coordinate_array)
 
+    def test_no_coordinates(self):
+        pass
+        
