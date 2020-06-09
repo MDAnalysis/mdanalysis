@@ -95,7 +95,6 @@ import os
 import errno
 
 from . import base
-from ..core import flags
 from ..lib import util
 from ..lib.util import cached
 from .core import triclinic_box, triclinic_vectors
@@ -270,7 +269,7 @@ class TRZReader(base.ReaderBase):
                 ts._forces[:, 1] = data['fy']
                 ts._forces[:, 2] = data['fz']
         except IndexError: # Raises indexerror if data has no data (EOF)
-            raise IOError
+            six.raise_from(IOError, None)
         else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
@@ -447,7 +446,7 @@ class TRZWriter(base.WriterBase):
 
     units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps'}
 
-    def __init__(self, filename, n_atoms, title='TRZ', convert_units=None):
+    def __init__(self, filename, n_atoms, title='TRZ', convert_units=True):
         """Create a TRZWriter
 
         Parameters
@@ -460,9 +459,7 @@ class TRZWriter(base.WriterBase):
             title of the trajectory; the title must be 80 characters or
             shorter, a longer title raises a ValueError exception.
         convert_units : bool (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths'].
-            (see :ref:`flags-label`)
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = filename
         if n_atoms is None:
@@ -474,8 +471,6 @@ class TRZWriter(base.WriterBase):
         if len(title) > 80:
             raise ValueError("TRZWriter: 'title' must be 80 characters of shorter")
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.trzfile = util.anyopen(self.filename, 'wb')
@@ -535,10 +530,30 @@ class TRZWriter(base.WriterBase):
         out['nrec'] = 10
         out.tofile(self.trzfile)
 
-    def write_next_timestep(self, ts):
+    def _write_next_frame(self, obj):
+        """Write information associated with ``obj`` at current frame into trajectory
+
+        Parameters
+        ----------
+        ag : AtomGroup or Universe
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        """
         # Check size of ts is same as initial
-        if not ts.n_atoms == self.n_atoms:
-            raise ValueError("Number of atoms in ts different to initialisation")
+        # TODO: Remove Timestep logic in 2.0
+        if isinstance(obj, base.Timestep):
+            ts = obj
+            if not ts.n_atoms == self.n_atoms:
+                raise ValueError("Number of atoms in ts different to initialisation")
+        else:
+            try:  # atomgroup?
+                ts = obj.ts
+            except AttributeError:  # universe?
+                ts = obj.trajectory.ts
+            if not obj.atoms.n_atoms == self.n_atoms:
+                raise ValueError("Number of atoms in ts different to initialisation")
 
         # Gather data, faking it when unavailable
         data = {}

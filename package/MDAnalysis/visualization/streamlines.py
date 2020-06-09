@@ -44,6 +44,7 @@ MDAnalysis.visualization.streamlines_3D : streamplots in 3D
 """
 from __future__ import absolute_import
 from six.moves import zip
+from six import raise_from
 
 import multiprocessing
 
@@ -54,10 +55,14 @@ try:
     import matplotlib
     import matplotlib.path
 except ImportError:
-    raise ImportError(
-        '2d streamplot module requires: matplotlib.path for its path.Path.contains_points method. The installation '
-        'instructions for the matplotlib module can be found here: '
-        'http://matplotlib.org/faq/installing_faq.html?highlight=install')
+    raise_from(
+        ImportError((
+            '2d streamplot module requires: matplotlib.path for its '
+            'path.Path.contains_points method. The installation '
+            'instructions for the matplotlib module can be found here: '
+            'http://matplotlib.org/faq/installing_faq.html?highlight=install'
+            )),
+        None)
 
 import MDAnalysis
 
@@ -130,11 +135,11 @@ def split_grid(grid, num_cores):
     # in the parent process
     current_column = 0
     while current_column < grid_vertex_cartesian_array.shape[0] - 1:
-    # go through all the columns except the last one and account for the square vertices (the last column
+        # go through all the columns except the last one and account for the square vertices (the last column
         #  has no 'right neighbour')
         current_row = 0
         while current_row < grid_vertex_cartesian_array.shape[1] - 1:
-        # all rows except the top row, which doesn't have a row above it for forming squares
+            # all rows except the top row, which doesn't have a row above it for forming squares
             bottom_left_vertex_current_square = grid_vertex_cartesian_array[current_column, current_row]
             bottom_right_vertex_current_square = grid_vertex_cartesian_array[current_column + 1, current_row]
             top_right_vertex_current_square = grid_vertex_cartesian_array[current_column + 1, current_row + 1]
@@ -188,14 +193,14 @@ def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_a
         if ts.frame < start_frame:  # don't start until first specified frame
             continue
         relevant_particle_coordinate_array_xy = universe_object.select_atoms(MDA_selection).positions[..., :-1]
-          # only 2D / xy coords for now
+        # only 2D / xy coords for now
         #I will need a list of indices for relevant particles falling within each square in THIS frame:
         list_indices_in_squares_this_frame = produce_list_indices_point_in_polygon_this_frame(
             list_square_vertex_arrays_this_core)
         #likewise, I will need a list of centroids of particles in each square (same order as above list):
         list_centroids_in_squares_this_frame = produce_list_centroids_this_frame(list_indices_in_squares_this_frame)
         if list_previous_frame_indices:  # if the previous frame had indices in at least one square I will need to use
-        #  those indices to generate the updates to the corresponding centroids in this frame:
+            #  those indices to generate the updates to the corresponding centroids in this frame:
             list_centroids_this_frame_using_indices_from_last_frame = produce_list_centroids_this_frame(
                 list_previous_frame_indices)
             #I need to write a velocity of zero if there are any 'empty' squares in either frame:
@@ -219,7 +224,7 @@ def per_core_work(topology_file_path, trajectory_file_path, list_square_vertex_a
             list_previous_frame_centroids = list_centroids_in_squares_this_frame[:]
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
         else:  # either no points in squares or after the first frame I'll just reset the 'previous' values so they
-        # can be used when consecutive frames have proper values
+            # can be used when consecutive frames have proper values
             list_previous_frame_centroids = list_centroids_in_squares_this_frame[:]
             list_previous_frame_indices = list_indices_in_squares_this_frame[:]
         if ts.frame > end_frame:
@@ -344,7 +349,7 @@ def generate_streamlines(topology_file_path, trajectory_file_path, grid_spacing,
     dy_array = np.zeros((total_rows, total_columns))
     #the parent_list_deltas is shaped like this: [ ([row_index,column_index],[dx,dy]), ... (...),...,]
     for index_array, delta_array in parent_list_deltas:  # go through the list in the parent process and assign to the
-    #  appropriate positions in the dx and dy matrices:
+        #  appropriate positions in the dx and dy matrices:
         #build in a filter to replace all values at the cap (currently between -8,8) with 0 to match Matthieu's code
         # (I think eventually we'll reduce the cap to a narrower boundary though)
         index_1 = index_array.tolist()[0]

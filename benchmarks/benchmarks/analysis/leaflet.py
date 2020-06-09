@@ -33,7 +33,7 @@ class LeafletBench(object):
         membrane system.
         """
         leaflet.LeafletFinder(universe=self.u,
-                              selectionstring=self.headgroup_sel,
+                              select=self.headgroup_sel,
                               cutoff=cutoff,
                               pbc=pbc,
                               sparse=sparse)
@@ -58,6 +58,6 @@ class LeafletOptimizeBench(object):
         range.
         """
         leaflet.optimize_cutoff(universe=self.u,
-                                selection=self.headgroup_sel,
+                                select=self.headgroup_sel,
                                 pbc=pbc,
                                 sparse=sparse)

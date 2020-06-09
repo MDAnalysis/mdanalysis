@@ -209,6 +209,7 @@ class Dihedral(AnalysisBase):
     it must be given as a list of one atomgroup.
 
     """
+
     def __init__(self, atomgroups, **kwargs):
         """Parameters
         ----------
@@ -221,7 +222,8 @@ class Dihedral(AnalysisBase):
             If any atomgroups do not contain 4 atoms
 
         """
-        super(Dihedral, self).__init__(atomgroups[0].universe.trajectory, **kwargs)
+        super(Dihedral, self).__init__(
+            atomgroups[0].universe.trajectory, **kwargs)
         self.atomgroups = atomgroups
 
         if any([len(ag) != 4 for ag in atomgroups]):
@@ -252,62 +254,109 @@ class Ramachandran(AnalysisBase):
     :class:`~MDAnalysis.ResidueGroup` is generated from `atomgroup` which is
     compared to the protein to determine if it is a legitimate selection.
 
+    Parameters
+    ----------
+    atomgroup : AtomGroup or ResidueGroup
+        atoms for residues for which :math:`\phi` and :math:`\psi` are
+        calculated
+    c_name: str (optional)
+        name for the backbone C atom
+    n_name: str (optional)
+        name for the backbone N atom
+    ca_name: str (optional)
+        name for the alpha-carbon atom
+    check_protein: bool (optional)
+        whether to raise an error if the provided atomgroup is not a 
+        subset of protein atoms
+
+    Example
+    -------
+    For standard proteins, the default arguments will suffice to run a 
+    Ramachandran analysis::
+
+        r = Ramachandran(u.select_atoms('protein')).run()
+
+    For proteins with non-standard residues, or for calculating dihedral 
+    angles for other linear polymers, you can switch off the protein checking 
+    and provide your own atom names in place of the typical peptide backbone 
+    atoms::
+
+        r = Ramachandran(u.atoms, c_name='CX', n_name='NT', ca_name='S',
+                         check_protein=False).run()
+
+    The above analysis will calculate angles from a "phi" selection of 
+    CX'-NT-S-CX and "psi" selections of NT-S-CX-NT'.
+
+    Raises
+    ------
+    ValueError
+        If the selection of residues is not contained within the protein
+        and ``check_protein`` is ``True``
+
     Note
     ----
-    If the residue selection is beyond the scope of the protein, then an error
-    will be raised. If the residue selection includes the first or last residue,
+    If ``check_protein`` is ``True`` and the residue selection is beyond 
+    the scope of the protein and, then an error will be raised. 
+    If the residue selection includes the first or last residue,
     then a warning will be raised and they will be removed from the list of
     residues, but the analysis will still run. If a :math:`\phi` or :math:`\psi`
     selection cannot be made, that residue will be removed from the analysis.
 
+    .. versionchanged:: 1.0.0
+        added c_name, n_name, ca_name, and check_protein keyword arguments
     """
-    def __init__(self, atomgroup, **kwargs):
-        """Parameters
-        ----------
-        atomgroup : AtomGroup or ResidueGroup
-            atoms for residues for which :math:`\phi` and :math:`\psi` are
-            calculated
 
-        Raises
-        ------
-        ValueError
-            If the selection of residues is not contained within the protein
-
-        """
-        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
+    def __init__(self, atomgroup, c_name='C', n_name='N', ca_name='CA',
+                 check_protein=True, **kwargs):
+        super(Ramachandran, self).__init__(
+            atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = self.atomgroup.residues
-        protein = self.atomgroup.universe.select_atoms("protein").residues
 
-        if not residues.issubset(protein):
-            raise ValueError("Found atoms outside of protein. Only atoms "
-                             "inside of a 'protein' selection can be used to "
-                             "calculate dihedrals.")
-        elif not residues.isdisjoint(protein[[0, -1]]):
-            warnings.warn("Cannot determine phi and psi angles for the first "
-                          "or last residues")
-            residues = residues.difference(protein[[0, -1]])
+        if check_protein:
+            protein = self.atomgroup.universe.select_atoms("protein").residues
 
-        phi_sel = [res.phi_selection() for res in residues]
-        psi_sel = [res.psi_selection() for res in residues]
-        # phi_selection() and psi_selection() currently can't handle topologies
-        # with an altloc attribute so this removes any residues that have either
-        # angle return none instead of a value
-        if any(sel is None for sel in phi_sel):
-            warnings.warn("Some residues in selection do not have phi selections")
-            remove = [i for i, sel in enumerate(phi_sel) if sel is None]
-            phi_sel = [sel for i, sel in enumerate(phi_sel) if i not in remove]
-            psi_sel = [sel for i, sel in enumerate(psi_sel) if i not in remove]
-        if any(sel is None for sel in psi_sel):
-            warnings.warn("Some residues in selection do not have psi selections")
-            remove = [i for i, sel in enumerate(psi_sel) if sel is None]
-            phi_sel = [sel for i, sel in enumerate(phi_sel) if i not in remove]
-            psi_sel = [sel for i, sel in enumerate(psi_sel) if i not in remove]
-        self.ag1 = mda.AtomGroup([atoms[0] for atoms in phi_sel])
-        self.ag2 = mda.AtomGroup([atoms[1] for atoms in phi_sel])
-        self.ag3 = mda.AtomGroup([atoms[2] for atoms in phi_sel])
-        self.ag4 = mda.AtomGroup([atoms[3] for atoms in phi_sel])
-        self.ag5 = mda.AtomGroup([atoms[3] for atoms in psi_sel])
+            if not residues.issubset(protein):
+                raise ValueError("Found atoms outside of protein. Only atoms "
+                                "inside of a 'protein' selection can be used to "
+                                "calculate dihedrals.")
+            elif not residues.isdisjoint(protein[[0, -1]]):
+                warnings.warn("Cannot determine phi and psi angles for the first "
+                            "or last residues")
+                residues = residues.difference(protein[[0, -1]])
+
+        prev = residues._get_prev_residues_by_resid()
+        nxt = residues._get_next_residues_by_resid()
+        keep = np.array([r is not None for r in prev])
+        keep = keep & np.array([r is not None for r in nxt])
+
+        if not np.all(keep):
+            warnings.warn("Some residues in selection do not have "
+                          "phi or psi selections")
+        prev = sum(prev[keep])
+        nxt = sum(nxt[keep])
+        residues = residues[keep]
+
+        # find n, c, ca
+        keep_prev = [sum(r.atoms.names==c_name)==1 for r in prev]
+        rnames = [n_name, c_name, ca_name]
+        keep_res = [all(sum(r.atoms.names==n)==1 for n in rnames) 
+                    for r in residues]
+        keep_next = [sum(r.atoms.names==n_name)==1 for r in nxt]
+
+        # alright we'll keep these
+        keep = np.array(keep_prev) & np.array(keep_res) & np.array(keep_next)
+        prev = prev[keep]
+        res = residues[keep]
+        nxt = nxt[keep]
+
+        rnames = res.atoms.names
+        self.ag1 = prev.atoms[prev.atoms.names == c_name]
+        self.ag2 = res.atoms[rnames == n_name]
+        self.ag3 = res.atoms[rnames == ca_name]
+        self.ag4 = res.atoms[rnames == c_name]
+        self.ag5 = nxt.atoms[nxt.atoms.names == n_name]
+
 
     def _prepare(self):
         self.angles = []
@@ -324,7 +373,6 @@ class Ramachandran(AnalysisBase):
 
     def _conclude(self):
         self.angles = np.rad2deg(np.array(self.angles))
-
 
     def plot(self, ax=None, ref=False, **kwargs):
         """Plots data into standard ramachandran plot. Each time step in
@@ -348,19 +396,21 @@ class Ramachandran(AnalysisBase):
         """
         if ax is None:
             ax = plt.gca()
-        ax.axis([-180,180,-180,180])
+        ax.axis([-180, 180, -180, 180])
         ax.axhline(0, color='k', lw=1)
         ax.axvline(0, color='k', lw=1)
         ax.set(xticks=range(-180, 181, 60), yticks=range(-180, 181, 60),
                xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
         if ref == True:
-            X, Y = np.meshgrid(np.arange(-180, 180, 4), np.arange(-180, 180, 4))
+            X, Y = np.meshgrid(np.arange(-180, 180, 4),
+                               np.arange(-180, 180, 4))
             levels = [1, 17, 15000]
             colors = ['#A1D4FF', '#35A1FF']
             ax.contourf(X, Y, np.load(Rama_ref), levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
-        ax.scatter(a[:,0], a[:,1], **kwargs)
+        ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax
+
 
 class Janin(Ramachandran):
     """Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.
@@ -380,6 +430,7 @@ class Janin(Ramachandran):
     selection and must be removed.
 
     """
+
     def __init__(self, atomgroup, **kwargs):
         """Parameters
         ----------
@@ -397,7 +448,8 @@ class Janin(Ramachandran):
              selection, usually due to missing atoms or alternative locations
 
         """
-        super(Ramachandran, self).__init__(atomgroup.universe.trajectory, **kwargs)
+        super(Ramachandran, self).__init__(
+            atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = atomgroup.residues
         protein = atomgroup.universe.select_atoms("protein").residues
@@ -463,5 +515,5 @@ class Janin(Ramachandran):
             colors = ['#A1D4FF', '#35A1FF']
             ax.contourf(X, Y, np.load(Janin_ref), levels=levels, colors=colors)
         a = self.angles.reshape(np.prod(self.angles.shape[:2]), 2)
-        ax.scatter(a[:,0], a[:,1], **kwargs)
+        ax.scatter(a[:, 0], a[:, 1], **kwargs)
         return ax

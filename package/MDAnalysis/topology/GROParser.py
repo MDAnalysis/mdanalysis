@@ -48,6 +48,7 @@ from __future__ import absolute_import
 
 import numpy as np
 from six.moves import range
+from six import raise_from
 
 from ..lib.util import openany
 from ..core.topologyattrs import (
@@ -103,9 +104,11 @@ class GROParser(TopologyReaderBase):
                     names[i] = line[10:15].strip()
                     indices[i] = int(line[15:20])
                 except (ValueError, TypeError):
-                    raise IOError(
+                    raise_from(
+                        IOError((
                         "Couldn't read the following line of the .gro file:\n"
-                        "{0}".format(line))
+                        "{0}").format(line)),
+                        None)
         # Check all lines had names
         if not np.all(names):
             missing = np.where(names == '')

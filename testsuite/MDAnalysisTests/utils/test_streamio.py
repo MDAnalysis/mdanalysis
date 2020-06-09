@@ -36,7 +36,6 @@ import MDAnalysis
 import MDAnalysis.lib.util as util
 import MDAnalysis.tests.datafiles as datafiles
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
-from MDAnalysisTests import tempdir
 
 import os
 
@@ -144,8 +143,8 @@ class TestNamedStream(object):
         assert_equal(ns.read(20), "".join(self.text)[:20])
         ns.close(force=True)
 
-    def test_File_write(self):
-        with tempdir.in_tempdir():
+    def test_File_write(self, tmpdir):
+        with tmpdir.as_cwd():
             outfile = "lookingglas.txt"
             with open(outfile, "w") as obj:
                 with util.NamedStream(obj, outfile, close=True) as ns:

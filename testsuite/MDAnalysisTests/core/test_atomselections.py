@@ -364,6 +364,21 @@ class TestSelectionsCHARMM(object):
         ag2 = ag.select_atoms("around 4 global backbone")
         assert_equal(ag2.indices, ag1.indices)
 
+    @pytest.mark.parametrize('selstring, wildstring', [
+        ('resname TYR THR', 'resname T*R'),
+        ('resname ASN GLN', 'resname *N'),
+        ('resname ASN ASP', 'resname AS*'),
+        ('resname TYR THR', 'resname T?R'),
+        ('resname ASN ASP HSD', 'resname *S?'),
+        ('resname LEU LYS', 'resname L**'),
+        ('resname MET', 'resname *M*'),
+        ('resname GLN GLY', 'resname GL[NY]'),
+        ('resname GLU', 'resname GL[!NY]'),
+    ])
+    def test_wildcard_selection(self, universe, selstring, wildstring):
+        ag = universe.select_atoms(selstring)
+        ag_wild = universe.select_atoms(wildstring)
+        assert ag == ag_wild
 
 class TestSelectionsAMBER(object):
     @pytest.fixture()
@@ -912,7 +927,6 @@ class TestSelectionErrors(object):
         'index or protein',
         'prop mass < 4.0 hello',  # unused token
         'prop mass > 10. and group this',  # missing group
-        'prop mass > 10. and fullgroup this',  # missing fullgroup
     ])
     def test_selection_fail(self, selstr, universe):
         with pytest.raises(SelectionError):
@@ -1085,6 +1099,36 @@ class TestICodeSelection(object):
         u = make_Universe(('resids',))
         with pytest.raises(ValueError):
             u.select_atoms('resid 10A-12')
+
+
+@pytest.fixture
+def u_pdb_icodes():
+    return mda.Universe(PDB_icodes)
+
+
+@pytest.mark.parametrize(
+    "selection, n_atoms",
+    [
+        # Selection using resindices
+        # For PDBs:
+        # residues with different insertion codes have different resindices
+        ("same residue as ", 11),
+        # Selection using resids
+        # Residues with different insertion codes have the same resid
+        # See Issues #2308 for a discussion
+        ("same resid as", 72),
+        # Selection using resindices
+        # For PDBs: 
+        # residues with different insertion codes have different resindices
+        ("byres", 11)
+    ]
+)
+def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
+
+    # Select residues 162 and 163A
+    sel = u_pdb_icodes.select_atoms(selection + "(around 2.0 resid 163)")
+
+    assert len(sel.atoms) == n_atoms
 
 
 def test_arbitrary_atom_group_raises_error():

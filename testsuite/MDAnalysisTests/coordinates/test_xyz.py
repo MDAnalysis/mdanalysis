@@ -38,6 +38,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest, BaseReferenc
                                               BaseWriterTest)
 from MDAnalysisTests import make_Universe
 
+from MDAnalysis import __version__
 
 class XYZReference(BaseReference):
     def __init__(self):
@@ -71,37 +72,59 @@ class TestXYZWriter(BaseWriterTest):
     def ref():
         return XYZReference()
 
-    def test_write_selection(self, ref, reader, tempdir):
+    def test_write_selection(self, ref, reader, tmpdir):
         uni = mda.Universe(ref.topology, ref.trajectory)
         sel_str = 'name CA'
         sel = uni.select_atoms(sel_str)
-        outfile = self.tmp_file('write-selection-test', ref, tempdir)
+        outfile = 'write-selection-test' + ref.ext
 
-        with ref.writer(outfile, sel.n_atoms) as W:
-            for ts in uni.trajectory:
-                W.write(sel.atoms)
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, sel.n_atoms) as W:
+                for ts in uni.trajectory:
+                    W.write(sel.atoms)
 
-        copy = ref.reader(outfile)
-        for orig_ts, copy_ts in zip(uni.trajectory, copy):
-            assert_almost_equal(
-                copy_ts._pos, sel.atoms.positions, ref.prec,
-                err_msg="coordinate mismatch between original and written "
-                        "trajectory at frame {} (orig) vs {} (copy)".format(
-                    orig_ts.frame, copy_ts.frame))
+            copy = ref.reader(outfile)
+            for orig_ts, copy_ts in zip(uni.trajectory, copy):
+                assert_almost_equal(
+                    copy_ts._pos, sel.atoms.positions, ref.prec,
+                    err_msg="coordinate mismatch between original and written "
+                            "trajectory at frame {} (orig) vs {} (copy)".format(
+                        orig_ts.frame, copy_ts.frame))
 
-    def test_write_different_models_in_trajectory(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-models-in-trajectory', ref, tempdir)
+    def test_write_different_models_in_trajectory(self, ref, reader, tmpdir):
+        outfile = 'write-models-in-trajectory' + ref.ext
         # n_atoms should match for each TimeStep if it was specified
-        with ref.writer(outfile, n_atoms=4) as w:
-            with pytest.raises(ValueError):
-                w.write(reader.ts)
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, n_atoms=4) as w:
+                with pytest.raises(ValueError):
+                    w.write(reader.ts)
 
-    def test_no_conversion(self, ref, reader, tempdir):
-        outfile = self.tmp_file('write-no-conversion', ref, tempdir)
-        with ref.writer(outfile, convert_units=False) as w:
-            for ts in reader:
-                w.write(ts)
-        self._check_copy(outfile, ref, reader)
+    def test_no_conversion(self, ref, reader, tmpdir):
+        outfile = 'write-no-conversion' + ref.ext
+        with tmpdir.as_cwd():
+            with ref.writer(outfile, convert_units=False) as w:
+                for ts in reader:
+                    w.write(ts)
+            self._check_copy(outfile, ref, reader)
+
+    @pytest.mark.parametrize("remarkout, remarkin", 
+        [   
+            2 * ["Curstom Remark"],
+            2 * [""],
+            [None, "frame 0 | Written by MDAnalysis XYZWriter (release {0})".format(__version__)],
+        ]
+    )
+    def test_remark(self, remarkout, remarkin, ref, tmpdir):
+        u = mda.Universe(ref.topology, ref.trajectory)
+        outfile = "write-remark.xyz"
+
+        with tmpdir.as_cwd():
+            u.atoms.write(outfile, remark=remarkout)
+
+            with open(outfile, "r") as xyzout:
+                lines = xyzout.readlines()
+
+                assert lines[1].strip() == remarkin
 
 
 class XYZ_BZ_Reference(XYZReference):
@@ -161,3 +184,18 @@ class TestXYZWriterNames(object):
 
         u2 = mda.Universe(outfile)
         assert all(u2.atoms.names == names)
+
+    @pytest.mark.parametrize("attr", ["elements", "names"])
+    def test_elements_and_names(self, outfile, attr):
+
+        u = mda.Universe.empty(n_atoms=5, trajectory=True)
+
+        u.add_TopologyAttr(attr, values=['Te', 'S', 'Ti', 'N', 'Ga'])
+
+        with mda.Writer(outfile) as w:
+            w.write(u)
+
+        with open(outfile, "r") as r:
+            names = ''.join(l.split()[0].strip() for l in r.readlines()[2:-1])
+
+        assert names[:-1].lower() == 'testing'

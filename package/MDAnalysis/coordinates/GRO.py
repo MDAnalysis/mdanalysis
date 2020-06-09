@@ -105,7 +105,10 @@ strings for writing lines in ``.gro`` files.  These are as follows:
 """
 from __future__ import absolute_import
 
+import re
 from six.moves import range, zip
+from six import raise_from
+
 import itertools
 import warnings
 
@@ -113,7 +116,6 @@ import numpy as np
 
 from . import base
 from .core import triclinic_box, triclinic_vectors
-from ..core import flags
 from ..exceptions import NoDataError
 from ..lib import util
 
@@ -200,7 +202,11 @@ class GROReader(base.SingleFrameReaderBase):
             for pos, line in enumerate(grofile, start=1):
                 # 2 header lines, 1 box line at end
                 if pos == n_atoms:
-                    unitcell = np.float32(line.split())
+                    try:
+                        unitcell = np.float32(line.split())
+                    except ValueError:
+                        # Try to parse floats with 5 digits if no spaces between values...
+                        unitcell = np.float32(re.findall(r"(\d+\.\d{5})", line))
                     break
 
                 ts._pos[pos] = [line[20 + cs * i:20 + cs * (i + 1)] for i in range(3)]
@@ -289,26 +295,22 @@ class GROWriter(base.WriterBase):
         # coordinates output format, see http://chembytes.wikidot.com/g-grofile
         'xyz': "{resid:>5d}{resname:<5.5s}{name:>5.5s}{index:>5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}\n",
         # unitcell
-        'box_orthorhombic': "{box[0]:10.5f}{box[1]:10.5f}{box[2]:10.5f}\n",
-        'box_triclinic': "{box[0]:10.5f}{box[4]:10.5f}{box[8]:10.5f}{box[1]:10.5f}{box[2]:10.5f}{box[3]:10.5f}{box[5]:10.5f}{box[6]:10.5f}{box[7]:10.5f}\n"
+        'box_orthorhombic': "{box[0]:10.5f} {box[1]:9.5f} {box[2]:9.5f}\n",
+        'box_triclinic': "{box[0]:10.5f} {box[4]:9.5f} {box[8]:9.5f} {box[1]:9.5f} {box[2]:9.5f} {box[3]:9.5f} {box[5]:9.5f} {box[6]:9.5f} {box[7]:9.5f}\n"
     }
     fmt['xyz_v'] = fmt['xyz'][:-1] + "{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}\n"
 
-    def __init__(self, filename, convert_units=None, n_atoms=None, **kwargs):
+    def __init__(self, filename, convert_units=True, n_atoms=None, **kwargs):
         """Set up a GROWriter with a precision of 3 decimal places.
 
         Parameters
         -----------
         filename : str
             output filename
-
         n_atoms : int (optional)
             number of atoms
-
-        convert_units : str (optional)
-            units are converted to the MDAnalysis base format; ``None`` selects
-            the value of :data:`MDAnalysis.core.flags` ['convert_lengths']
-
+        convert_units : bool (optional)
+            units are converted to the MDAnalysis base format; [``True``]
         reindex : bool (optional)
             By default, all the atoms were reindexed to have a atom id starting
             from 1. [``True``] However, this behaviour can be turned off by
@@ -335,8 +337,6 @@ class GROWriter(base.WriterBase):
         self.n_atoms = n_atoms
         self.reindex = kwargs.pop('reindex', True)
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units  # convert length and time to base units
 
     def write(self, obj):
@@ -344,7 +344,7 @@ class GROWriter(base.WriterBase):
 
         Parameters
         -----------
-        obj : AtomGroup or Universe or :class:`Timestep`
+        obj : AtomGroup or Universe
 
         Note
         ----
@@ -357,6 +357,9 @@ class GROWriter(base.WriterBase):
            *resName* and *atomName* are truncated to a maximum of 5 characters
         .. versionchanged:: 0.16.0
            `frame` kwarg has been removed
+        .. deprecated:: 1.0.0
+           Deprecated calling with Timestep, use AtomGroup or Universe.
+           To be removed in version 2.0.
         """
         # write() method that complies with the Trajectory API
 
@@ -368,9 +371,14 @@ class GROWriter(base.WriterBase):
 
         except AttributeError:
             if isinstance(obj, base.Timestep):
+                warnings.warn(
+                    'Passing a Timestep to write is deprecated, '
+                    'and will be removed in 2.0; '
+                    'use either an AtomGroup or Universe',
+                    DeprecationWarning)
                 ag_or_ts = obj.copy()
             else:
-                raise TypeError("No Timestep found in obj argument")
+                raise_from(TypeError("No Timestep found in obj argument"), None)
 
         try:
             velocities = ag_or_ts.velocities

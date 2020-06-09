@@ -1245,7 +1245,7 @@ class TestOutputTypes(object):
         else:
             pairs = res
         assert type(pairs) == np.ndarray
-        assert pairs.dtype.type == np.int64
+        assert pairs.dtype.type == np.intp
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
         if ret_dist:
@@ -1270,7 +1270,7 @@ class TestOutputTypes(object):
         else:
             pairs = res
         assert type(pairs) == np.ndarray
-        assert pairs.dtype.type == np.int64
+        assert pairs.dtype.type == np.intp
         assert pairs.ndim == 2
         assert pairs.shape[1] == 2
         if ret_dist:

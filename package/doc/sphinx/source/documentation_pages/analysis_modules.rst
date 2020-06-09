@@ -66,6 +66,7 @@ Hydrogen bonding
 .. toctree::
    :maxdepth: 1
 
+   analysis/hydrogenbonds
    analysis/hbond_analysis
    analysis/hbond_autocorrel
    analysis/wbridge_analysis
@@ -77,6 +78,7 @@ Membranes and membrane proteins
    :maxdepth: 1
 
    analysis/hole
+   analysis/hole2
    analysis/leaflet
 
 Nucleic acids

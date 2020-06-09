@@ -104,7 +104,7 @@ Classes, methods, and functions
 
       :class:`MDAnalysis.Universe` object containing a reference structure
 
-   .. attribute:: ref_select
+   .. attribute:: select
 
       string, selection for
       :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select frame
@@ -167,7 +167,7 @@ Classes, methods, and functions
 
       :class:`MDAnalysis.Universe` object containing a reference structure
 
-   .. attribute:: ref_select
+   .. attribute:: select
 
       string, selection for
       :meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` to select frame
@@ -183,11 +183,6 @@ Classes, methods, and functions
 
       int, frame index to select frame from :attr:`Path.u_reference`
 
-   .. attribute:: filename
-
-      string, name of file to store calculated distance matrix
-      (:attr:`PSAnalysis.D`)
-
    .. attribute:: paths
 
       list of :class:`numpy.ndarray` objects representing the set/ensemble of
@@ -195,8 +190,7 @@ Classes, methods, and functions
 
    .. attribute:: D
 
-      string, name of file to store calculated distance matrix
-      (:attr:`PSAnalysis.D`)
+      :class:`numpy.ndarray` whichs store calculated distance matrix
 
 
 .. Markup definitions
@@ -215,7 +209,7 @@ from __future__ import division, absolute_import, print_function
 
 import six
 from six.moves import range, cPickle, zip
-from six import string_types
+from six import raise_from, string_types
 
 import os
 import warnings
@@ -243,6 +237,7 @@ due.cite(Doi("10.1371/journal.pcbi.1004568"),
          cite_module=True)
 del Doi
 
+
 def get_path_metric_func(name):
     """Selects a path metric function by name.
 
@@ -266,9 +261,14 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        raise KeyError('Path metric "{}" not found. Valid selections: {}'
-                       ''.format(key, " ".join('"{}"'.format(n)
-                                               for n in path_metrics.keys())))
+        raise_from(
+            KeyError(
+                'Path metric "{}" not found. Valid selections: {}'.format(
+                    key,
+                    " ".join('"{}"'.format(n) for n in path_metrics.keys())
+                    )
+                ),
+            None)
 
 
 def sqnorm(v, axis=None):
@@ -789,7 +789,7 @@ class Path(object):
 
     """
 
-    def __init__(self, universe, reference, ref_select='name CA',
+    def __init__(self, universe, reference, select='name CA',
                  path_select='all', ref_frame=0):
         """Setting up trajectory alignment and fitted path generation.
 
@@ -799,7 +799,7 @@ class Path(object):
              :class:`MDAnalysis.Universe` object containing a trajectory
         reference : Universe
              reference structure (uses `ref_frame` from the trajectory)
-        ref_select : str or dict or tuple (optional)
+        select : str or dict or tuple (optional)
              The selection to operate on for rms fitting; can be one of:
 
              1. any valid selection string for
@@ -817,15 +817,15 @@ class Path(object):
              :ref:`ordered-selections-label`).
         ref_frame : int
              frame index to select the coordinate frame from
-             `ref_select.trajectory`
+             `select.trajectory`
         path_select : selection_string
              atom selection composing coordinates of (fitted) path; if ``None``
-             then `path_select` is set to `ref_select` [``None``]
+             then `path_select` is set to `select` [``None``]
 
         """
         self.u_original = universe
         self.u_reference = reference
-        self.ref_select = ref_select
+        self.select = select
         self.ref_frame = ref_frame
         self.path_select = path_select
 
@@ -835,7 +835,6 @@ class Path(object):
         self.u_fitted = None
         self.path = None
         self.natoms = None
-
 
     def fit_to_reference(self, filename=None, prefix='', postfix='_fit',
                          rmsdfile=None, targetdir=os.path.curdir,
@@ -886,7 +885,7 @@ class Path(object):
         self.u_reference.trajectory[self.ref_frame] # select frame from ref traj
         aligntrj = MDAnalysis.analysis.align.AlignTraj(self.u_original,
                                                        self.u_reference,
-                                                       select=self.ref_select,
+                                                       select=self.select,
                                                        filename=self.newtrj_name,
                                                        prefix=prefix,
                                                        weights=weights,
@@ -894,7 +893,6 @@ class Path(object):
         if rmsdfile is not None:
             aligntrj.save(rmsdfile)
         return MDAnalysis.Universe(self.top_name, self.newtrj_name)
-
 
     def to_path(self, fitted=False, select=None, flat=False):
         r"""Generates a coordinate time series from the fitted universe
@@ -948,7 +946,6 @@ class Path(object):
         else:
             return np.array([atoms.positions for _ in frames])
 
-
     def run(self, align=False, filename=None, postfix='_fit', rmsdfile=None,
             targetdir=os.path.curdir, weights=None, tol_mass=0.1,
             flat=False):
@@ -972,7 +969,7 @@ class Path(object):
         Parameters
         ----------
         align : bool (optional)
-             Align trajectory to atom selection :attr:`Path.ref_select` of
+             Align trajectory to atom selection :attr:`Path.select` of
              :attr:`Path.u_reference`. If ``True``, a universe containing an
              aligned trajectory is produced with :meth:`Path.fit_to_reference`
              [``False``]
@@ -1018,7 +1015,6 @@ class Path(object):
                                 weights=weights, tol_mass=0.1)
         self.path = self.to_path(fitted=align, flat=flat)
         return self.top_name, self.newtrj_name
-
 
     def get_num_atoms(self):
         """Return the number of atoms used to construct the :class:`Path`.
@@ -1104,7 +1100,6 @@ class PSAPair(object):
         # Set by self.getHausdorffPair
         self.hausdorff_pair = {'frames' : (None, None), 'distance' : None}
 
-
     def _dvec_idx(self, i, j):
         """Convert distance matrix indices (in the upper triangle) to the index
         of the corresponding distance vector.
@@ -1127,7 +1122,6 @@ class PSAPair(object):
              (matrix element) index in the corresponding distance vector
         """
         return (self.npaths*i) + j - (i+2)*(i+1)/2
-
 
     def compute_nearest_neighbors(self, P,Q, N=None):
         """Generates Hausdorff nearest neighbor lists of *frames* (by index) and
@@ -1156,7 +1150,6 @@ class PSAPair(object):
         self.nearest_neighbors['frames'] = hn['frames']
         self.nearest_neighbors['distances'] = hn['distances']
 
-
     def find_hausdorff_pair(self):
         r"""Find the Hausdorff pair (of frames) for *this* pair of paths.
 
@@ -1183,7 +1176,6 @@ class PSAPair(object):
             max_nn_idx_Q = np.argmax(nn_dist_Q)
             self.hausdorff_pair['frames'] = nn_idx_Q[max_nn_idx_Q], max_nn_idx_Q
             self.hausdorff_pair['distance'] = max_nn_dist_Q
-
 
     def get_nearest_neighbors(self, frames=True, distances=True):
         """Returns the nearest neighbor frame indices, distances, or both, for
@@ -1282,8 +1274,12 @@ class PSAnalysis(object):
     alignment of the original trajectories to a reference structure.
 
     .. versionadded:: 0.8
+
+    .. versionchanged:: 1.0.0
+       ``save_result()`` method has been removed. You can use ``np.save()`` on
+       :attr:`PSAnalysis.D` instead.
     """
-    def __init__(self, universes, reference=None, ref_select='name CA',
+    def __init__(self, universes, reference=None, select='name CA',
                  ref_frame=0, path_select=None, labels=None,
                  targetdir=os.path.curdir):
         """Setting up Path Similarity Analysis.
@@ -1300,7 +1296,7 @@ class PSAnalysis(object):
              reference coordinates; :class:`MDAnalysis.Universe` object; if
              ``None`` the first time step of the first item in `universes` is used
              [``None``]
-        ref_select : str or dict or tuple
+        select : str or dict or tuple
              The selection to operate on; can be one of:
 
              1. any valid selection string for
@@ -1323,7 +1319,7 @@ class PSAnalysis(object):
              frame index to select frame from *reference* [0]
         path_select : str
              atom selection composing coordinates of (fitted) path; if ``None``
-             then *path_select* is set to *ref_select* [``None``]
+             then *path_select* is set to *select* [``None``]
         targetdir : str
             output files are saved there; if ``None`` then "./psadata" is
             created and used [.]
@@ -1339,9 +1335,9 @@ class PSAnalysis(object):
         """
         self.universes = universes
         self.u_reference = self.universes[0] if reference is None else reference
-        self.ref_select = ref_select
+        self.select = select
         self.ref_frame = ref_frame
-        self.path_select = self.ref_select if path_select is None else path_select
+        self.path_select = self.select if path_select is None else path_select
         if targetdir is None:
             try:
                 targetdir = os.path.join(os.path.curdir, 'psadata')
@@ -1400,15 +1396,14 @@ class PSAnalysis(object):
         self._NN = None # (distance vector order) list of all nearest neighbors
         self._psa_pairs = None # (distance vector order) list of all PSAPairs
 
-
-    def generate_paths(self, align=False, filename='fitted', infix='', weights=None,
-                       tol_mass=False, ref_frame=None, flat=False, save=True, store=True):
+    def generate_paths(self, align=False, filename=None, infix='', weights=None,
+                       tol_mass=False, ref_frame=None, flat=False, save=True, store=False):
         """Generate paths, aligning each to reference structure if necessary.
 
         Parameters
         ----------
         align : bool
-             Align trajectories to atom selection :attr:`PSAnalysis.ref_select`
+             Align trajectories to atom selection :attr:`PSAnalysis.select`
              of :attr:`PSAnalysis.u_reference` [``False``]
         filename : str
              strings representing base filename for fitted trajectories and
@@ -1421,12 +1416,12 @@ class PSAnalysis(object):
              ``None`` weigh each atom equally. If a float array of the same
              length as the selected AtomGroup is provided, use each element of
              the `array_like` as a weight for the corresponding atom in the
-             AtomGroup.
+             AtomGroup [``None``]
         tol_mass : float
              Reject match if the atomic masses for matched atoms differ by more
-             than *tol_mass*
+             than *tol_mass* [``False``]
         ref_frame : int
-             frame index to select frame from *reference*
+             frame index to select frame from *reference* [``None``]
         flat : bool
              represent :attr:`Path.path` as a 2D (|2D|) :class:`numpy.ndarray`;
              if ``False`` then :attr:`Path.path` is a 3D (|3D|)
@@ -1456,6 +1451,11 @@ class PSAnalysis(object):
 
         .. versionchanged:: 0.17.0
            Deprecated keyword `mass_weighted` was removed.
+
+        .. versionchanged:: 1.0.0
+           Defaults for the `store` and `filename` keywords have been changed
+           from `True` and `fitted` to `False` and `None` respectively. These
+           now match the docstring documented defaults.
         """
         if ref_frame is None:
             ref_frame = self.ref_frame
@@ -1463,7 +1463,7 @@ class PSAnalysis(object):
         paths = []
         fit_trj_names = []
         for i, u in enumerate(self.universes):
-            p = Path(u, self.u_reference, ref_select=self.ref_select,
+            p = Path(u, self.u_reference, select=self.select,
                      path_select=self.path_select, ref_frame=ref_frame)
             trj_dir = os.path.join(self.targetdir, self.datadirs['fitted_trajs'])
             postfix = '{0}{1}{2:03n}'.format(infix, '_psa', i+1)
@@ -1484,7 +1484,6 @@ class PSAnalysis(object):
         if store:
             self.save_paths(filename=filename)
 
-
     def run(self, **kwargs):
         """Perform path similarity analysis on the trajectories to compute
         the distance matrix.
@@ -1504,31 +1503,15 @@ class PSAnalysis(object):
              ``trajectory[start:stop:step]`` [``None``]
         stop : int
         step : int
-        store : bool
-             if ``True`` then writes :attr:`PSAnalysis.D` to text and
-             compressed npz (numpy) files [``True``]
 
-             .. deprecated:: 0.19.0
-                `store` will be removed together with :meth:`save_results` in 1.0.0.
-
-        filename : str
-             string, filename to save :attr:`PSAnalysis.D`
-
-             .. deprecated:: 0.19.0
-                `filename` will be removed together with :meth:`save_results` in 1.0.0.
-
+        .. versionchanged:: 1.0.0
+           `store` and `filename` have been removed.
 
         """
         metric = kwargs.pop('metric', 'hausdorff')
         start = kwargs.pop('start', None)
         stop = kwargs.pop('stop', None)
         step = kwargs.pop('step', None)
-        # DEPRECATED 0.19.0: remove in 1.0
-        if 'store' in kwargs:
-            warnings.warn("PSAnalysis.run(): 'store' was deprecated in 0.19.0 "
-                          "and will be removed in 1.0",
-                          category=DeprecationWarning)
-        store = kwargs.pop('store', True)
 
         if isinstance(metric, string_types):
             metric_func = get_path_metric_func(str(metric))
@@ -1544,16 +1527,6 @@ class PSAnalysis(object):
                 D[i,j] = metric_func(P, Q)
                 D[j,i] = D[i,j]
         self.D = D
-        if store:
-            # DEPRECATED 0.19.0: remove in 1.0
-            if 'filename' in kwargs:
-                warnings.warn("PSAnalysis.run(): 'filename' was deprecated in "
-                              "0.19.0 and will be removed in 1.0",
-                              category=DeprecationWarning)
-            filename = kwargs.pop('filename', metric)
-            if not isinstance(metric, string_types):
-                filename = 'custom_metric'
-            self.save_result(filename=filename)
 
     def run_pairs_analysis(self, **kwargs):
         """Perform PSA Hausdorff (nearest neighbor) pairs analysis on all unique
@@ -1613,39 +1586,6 @@ class PSAnalysis(object):
                     self._HP.append(pp.get_hausdorff_pair())
         self.D = D
 
-    @deprecate(release="0.19.0", remove="1.0.0",
-               message="You can save the distance matrix :attr:`D` to a numpy "
-               "file with ``np.save(filename, PSAnalysis.D)``.")
-    def save_result(self, filename=None):
-        """Save distance matrix :attr:`PSAnalysis.D` to a numpy compressed npz
-        file and text file.
-
-        The data are saved with :func:`numpy.savez_compressed` and
-        :func:`numpy.savetxt` in the directory specified by
-        :attr:`PSAnalysis.targetdir`.
-
-        Parameters
-        ----------
-        filename : str
-             specifies filename [``None``]
-
-        Returns
-        -------
-        filename : str
-
-        """
-        filename = filename or 'psa_distances'
-        head = os.path.join(self.targetdir, self.datadirs['distance_matrices'])
-        outfile = os.path.join(head, filename)
-        if self.D is None:
-            raise NoDataError("Distance matrix has not been calculated yet")
-        np.save(outfile + '.npy', self.D)
-        np.savetxt(outfile + '.dat', self.D)
-        logger.info("Wrote distance matrix to file %r.npz", outfile)
-        logger.info("Wrote distance matrix to file %r.dat", outfile)
-        return filename
-
-
     def save_paths(self, filename=None):
         """Save fitted :attr:`PSAnalysis.paths` to numpy compressed npz files.
 
@@ -1682,7 +1622,6 @@ class PSAnalysis(object):
             cPickle.dump(self.path_names, output)
         return filename
 
-
     def load(self):
         """Load fitted paths specified by 'psa_path-names.pkl' in
         :attr:`PSAnalysis.targetdir`.
@@ -1697,12 +1636,11 @@ class PSAnalysis(object):
         if not os.path.exists(self._paths_pkl):
             raise NoDataError("Fitted trajectories cannot be loaded; save file" +
                               "{0} does not exist.".format(self._paths_pkl))
-        self.path_names = np.load(self._paths_pkl)
+        self.path_names = np.load(self._paths_pkl, allow_pickle=True)
         self.paths = [np.load(pname) for pname in self.path_names]
         if os.path.exists(self._labels_pkl):
-            self.labels = np.load(self._labels_pkl)
+            self.labels = np.load(self._labels_pkl, allow_pickle=True)
         logger.info("Loaded paths from %r", self._paths_pkl)
-
 
     def plot(self, filename=None, linkage='ward', count_sort=False,
              distance_sort=False, figsize=4.5, labelsize=12):
@@ -1742,12 +1680,16 @@ class PSAnalysis(object):
         dist_matrix_clus
           clustered distance matrix (reordered)
 
+        .. versionchanged:: 1.0.0
+            :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
+            changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
+            :attr:`label2` due to upstream deprecation (see #2493)
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         npaths = len(self.D)
         dist_matrix = self.D
 
@@ -1790,21 +1732,28 @@ class PSAnalysis(object):
                 format="%0.1f")
         ax_color.tick_params(labelsize=labelsize)
 
-        # Remove major ticks from both heat map axes
+        # Remove major ticks and labels from both heat map axes
         for tic in ax_hmap.xaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         for tic in ax_hmap.yaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         # Remove minor ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
         for tic in ax_hmap.yaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
         # Remove tickmarks from colorbar
         for tic in ax_color.yaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
 
         if filename is not None:
             head = os.path.join(self.targetdir, self.datadirs['plots'])
@@ -1812,7 +1761,6 @@ class PSAnalysis(object):
             savefig(outfile, dpi=300, bbox_inches='tight')
 
         return Z, dgram, dist_matrix_clus
-
 
     def plot_annotated_heatmap(self, filename=None, linkage='ward',             \
                                count_sort=False, distance_sort=False,           \
@@ -1859,13 +1807,18 @@ class PSAnalysis(object):
 
         .. _seaborn: https://seaborn.pydata.org/
 
+        .. versionchanged:: 1.0.0
+            :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
+            changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
+            :attr:`label2` due to upstream deprecation (see #2493)
+
         """
         from matplotlib.pyplot import figure, colorbar, cm, savefig, clf
 
         try:
-            import seaborn.apionly as sns
+            import seaborn as sns
         except ImportError:
-            raise ImportError(
+            raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
                 The seaborn API could not be imported. Please install it first.
@@ -1880,11 +1833,13 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-            )
+                ),
+                None,
+                )
 
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         dist_matrix = self.D
 
         Z, dgram = self.cluster(method=linkage,                                 \
@@ -1906,16 +1861,22 @@ class PSAnalysis(object):
 
         # Remove major ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         for tic in ax_hmap.yaxis.get_major_ticks():
-            tic.tick1On = tic.tick2On = False
-            tic.label1On = tic.label2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
+            tic.label1.set_visible(False)
+            tic.label2.set_visible(False)
         # Remove minor ticks from both heat map axes
         for tic in ax_hmap.xaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
         for tic in ax_hmap.yaxis.get_minor_ticks():
-            tic.tick1On = tic.tick2On = False
+            tic.tick1line.set_visible(False)
+            tic.tick2line.set_visible(False)
 
         if filename is not None:
             head = os.path.join(self.targetdir, self.datadirs['plots'])
@@ -1923,7 +1884,6 @@ class PSAnalysis(object):
             savefig(outfile, dpi=600, bbox_inches='tight')
 
         return Z, dgram, dist_matrix_clus
-
 
     def plot_nearest_neighbors(self, filename=None, idx=0,                      \
                                labels=('Path 1', 'Path 2'), figsize=4.5,        \
@@ -1972,9 +1932,9 @@ class PSAnalysis(object):
         """
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
-            import seaborn.apionly as sns
+            import seaborn as sns
         except ImportError:
-            raise ImportError(
+            raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
                 The seaborn API could not be imported. Please install it first.
@@ -1989,7 +1949,9 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-            )
+                ),
+                None,
+                )
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 
@@ -2027,7 +1989,6 @@ class PSAnalysis(object):
             savefig(outfile, dpi=300, bbox_inches='tight')
 
         return ax
-
 
     def cluster(self, dist_mat=None, method='ward', count_sort=False,           \
                 distance_sort=False, no_plot=False, no_labels=True,             \
@@ -2120,7 +2081,6 @@ class PSAnalysis(object):
 
         return dgram_loc, hmap_loc, cbar_loc
 
-
     def get_num_atoms(self):
         """Return the number of atoms used to construct the :class:`Path` instances in
         :class:`PSA`.
@@ -2140,7 +2100,6 @@ class PSAnalysis(object):
                 "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.natoms
 
-
     def get_num_paths(self):
         """Return the number of paths in :class:`PSA`.
 
@@ -2157,7 +2116,6 @@ class PSAnalysis(object):
             raise ValueError(
                 "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.npaths
-
 
     def get_paths(self):
         """Return the paths in :class:`PSA`.
@@ -2178,14 +2136,12 @@ class PSAnalysis(object):
                 "No path data; do 'PSAnalysis.generate_paths()' first.")
         return self.paths
 
-
     def get_pairwise_distances(self, vectorform=False, checks=False):
         """Return the distance matrix (or vector) of pairwise path distances.
 
         Note
         ----
-        Must run :meth:`PSAnalysis.run` with ``store=True`` prior to
-        calling this method.
+        Must run :meth:`PSAnalysis.run` prior to calling this method.
 
         Parameters
         ----------
@@ -2203,13 +2159,12 @@ class PSAnalysis(object):
         """
         if self.D is None:
             raise ValueError(
-                "No distance data; do 'PSAnalysis.run(store=True)' first.")
+                "No distance data; do 'PSAnalysis.run()' first.")
         if vectorform:
             return spatial.distance.squareform(self.D, force='tovector',
                                                checks=checks)
         else:
             return self.D
-
 
     @property
     def psa_pairs(self):
@@ -2239,7 +2194,6 @@ class PSAnalysis(object):
             raise ValueError("No nearest neighbors data; do"
                              " 'PSAnalysis.run_pairs_analysis()' first.")
         return self._psa_pairs
-
 
     @property
     def hausdorff_pairs(self):

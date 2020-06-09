@@ -32,9 +32,9 @@ from MDAnalysisTests.datafiles import (
 class TestXPDBParser(ParserBase):
     parser = mda.topology.ExtendedPDBParser.ExtendedPDBParser
     ref_filename = XPDB_small
-    expected_attrs = ['ids', 'names',
-                      'resids', 'resnames',
-                      'segids']
+    expected_attrs = ['ids', 'names', 'record_types', 'resids',
+                      'resnames', 'altLocs', 'icodes', 'occupancies',
+                      'bonds', 'tempfactors', 'chainIDs']
     guessed_attrs = ['masses', 'types']
     expected_n_atoms = 5
     expected_n_residues = 5

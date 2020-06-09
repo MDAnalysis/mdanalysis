@@ -202,3 +202,5 @@ Currently implemented transformations
    ./transformations/rotate
    ./transformations/positionaveraging
    ./transformations/fit
+   ./transformations/wrap
+

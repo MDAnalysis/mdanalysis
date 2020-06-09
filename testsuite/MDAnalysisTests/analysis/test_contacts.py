@@ -37,12 +37,12 @@ import numpy as np
 from MDAnalysisTests.datafiles import (
     PSF,
     DCD,
+    TPR,
+    XTC,
     contacts_villin_folded,
     contacts_villin_unfolded,
     contacts_file
 )
-
-from MDAnalysisTests import tempdir
 
 
 def test_soft_cut_q():
@@ -176,7 +176,7 @@ class TestContacts(object):
         basic = universe.select_atoms(self.sel_basic)
         return contacts.Contacts(
             universe,
-            selection=(self.sel_acidic, self.sel_basic),
+            select=(self.sel_acidic, self.sel_basic),
             refgroup=(acidic, basic),
             radius=6.0,
             **kwargs).run(start=start, stop=stop, step=step)
@@ -209,7 +209,7 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
@@ -217,9 +217,7 @@ class TestContacts(object):
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.timeseries[:, 1], results[:, 1])
 
-
     def test_villin_unfolded(self):
-
         # both folded
         f = mda.Universe(contacts_villin_folded)
         u = mda.Universe(contacts_villin_folded)
@@ -228,7 +226,7 @@ class TestContacts(object):
         grF = f.select_atoms(sel)
 
         q = contacts.Contacts(u,
-                              selection=(sel, sel),
+                              select=(sel, sel),
                               refgroup=(grF, grF),
                               method="soft_cut")
         q.run()
@@ -261,6 +259,19 @@ class TestContacts(object):
         assert len(ca.timeseries) == len(expected)
         assert_array_almost_equal(ca.timeseries[:, 1], expected)
 
+    def test_radius_cut_method(self, universe):
+        acidic = universe.select_atoms(self.sel_acidic)
+        basic = universe.select_atoms(self.sel_basic)
+        r = contacts.distance_array(acidic.positions, basic.positions)
+        initial_contacts = contacts.contact_matrix(r, 6.0)
+        expected = []
+        for ts in universe.trajectory:
+            r = contacts.distance_array(acidic.positions, basic.positions)
+            expected.append(contacts.radius_cut_q(r[initial_contacts], None, radius=6.0))
+
+        ca = self._run_Contacts(universe, method='radius_cut')
+        assert_array_equal(ca.timeseries[:, 1], expected)
+
     @staticmethod
     def _is_any_closer(r, r0, dist=2.5):
         return np.any(r < dist)
@@ -290,16 +301,23 @@ class TestContacts(object):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
 
-    def test_save(self, universe):
-        with tempdir.in_tempdir():
-            ca = self._run_Contacts(universe)
-            ca.save('testfile.npy')
-            saved = np.genfromtxt('testfile.npy')
-            assert_array_almost_equal(ca.timeseries, saved)
-            # check the header was written correctly
-            with open('testfile.npy', 'r') as fin:
-                assert fin.readline().strip() == '# q1 analysis'
-
+    @pytest.mark.parametrize("pbc,expected", [
+    (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
+            0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]),
+    (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
+             0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
+    ])
+    def test_distance_box(self, pbc, expected):
+        u = mda.Universe(TPR, XTC)
+        sel_basic = "(resname ARG LYS)"
+        sel_acidic = "(resname ASP GLU)"
+        acidic = u.select_atoms(sel_acidic)
+        basic = u.select_atoms(sel_basic)
+        
+        r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
+                        refgroup=(acidic, basic), radius=6.0, pbc=pbc)
+        r.run()
+        assert_array_almost_equal(r.timeseries[:, 1], expected)
 
 def test_q1q2():
     u = mda.Universe(PSF, DCD)

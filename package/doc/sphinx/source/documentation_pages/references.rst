@@ -131,6 +131,42 @@ If you use the streamline visualization in
 
 .. _`10.1039/c3fd00145h`: https://doi.org/10.1039/c3fd00145h
 
+If you use the hydrogen bond analysis code in
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` please cite [Smith2019]_.
+
+.. [Smith2019] P. Smith, R. M. Ziolek, E. Gazzarrini, D. M. Owen, and C. D. Lorenz.
+   On the interaction of hyaluronic acid with synovial fluid lipid membranes. *PCCP*
+   **21** (2019), 9845-9857. doi:  `10.1039/C9CP01532A`_
+
+.. _`10.1039/C9CP01532A`: http://dx.doi.org/10.1039/C9CP01532A
+
+If you use :meth:`~MDAnalysis.analysis.pca.PCA.rmsip` or 
+:func:`~MDAnalysis.analysis.pca.rmsip` please cite [Amadei1999]_ and 
+[Leo-Macias2004]_ .
+
+.. [Amadei1999] Amadei, A., Ceruso, M. A. & Nola, A. D. 
+   On the convergence of the conformational coordinates basis set obtained by the essential dynamics analysis of proteins’ molecular dynamics simulations. 
+   *Proteins: Structure, Function, and Bioinformatics* **36**, 419–424 (1999).
+   doi: `10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`_
+
+.. _`10.1002/(SICI)1097-0134(19990901)36:4<419::AID-PROT5>3.0.CO;2-U`: https://doi.org/10.1002/(SICI)1097-0134(19990901)36:4%3C419::AID-PROT5%3E3.0.CO;2-U
+
+.. [Leo-Macias2004] Leo-Macias, A., Lopez-Romero, P., Lupyan, D., Zerbino, D. & Ortiz, A. R. 
+   An Analysis of Core Deformations in Protein Superfamilies. 
+   *Biophys J* **88**, 1291–1299 (2005). doi: `10.1529/biophysj.104.052449`_
+
+.. _`10.1529/biophysj.104.052449`: https://dx.doi.org/10.1529%2Fbiophysj.104.052449
+
+If you use :meth:`~MDAnalysis.analysis.pca.PCA.cumulative_overlap` or 
+:func:`~MDAnalysis.analysis.pca.cumulative_overlap` please cite [Yang2008]_ .
+
+.. [Yang2008] Yang, L., Song, G., Carriquiry, A. & Jernigan, R. L. 
+   Close Correspondence between the Motions from Principal Component Analysis of Multiple HIV-1 Protease Structures and Elastic Network Modes. 
+   *Structure* **16**, 321–330 (2008). doi: `10.1016/j.str.2007.12.011`_
+
+.. _`10.1016/j.str.2007.12.011`: https://dx.doi.org/10.1016/j.str.2007.12.011
+
+
 
 .. _citations-using-duecredit:
 

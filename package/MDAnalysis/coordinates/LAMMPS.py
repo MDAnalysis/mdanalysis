@@ -124,10 +124,10 @@ Classes
 from __future__ import absolute_import
 
 from six.moves import zip, range, map
+from six import raise_from
 import os
 import numpy as np
 
-from ..core import flags
 from ..core.groups import requires
 from ..lib import util, mdamath, distances
 from ..lib.util import cached
@@ -161,7 +161,9 @@ class DCDWriter(DCD.DCDWriter):
                 if units.unit_types[unit] != unit_type:
                     raise TypeError("LAMMPS DCDWriter: wrong unit {0!r} for unit type {1!r}".format(unit, unit_type))
             except KeyError:
-                raise ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit))
+                raise_from(
+                    ValueError("LAMMPS DCDWriter: unknown unit {0!r}".format(unit)),
+                    None)
         super(DCDWriter, self).__init__(*args, **kwargs)
 
 
@@ -251,18 +253,18 @@ class DATAWriter(base.WriterBase):
     """
     format = 'DATA'
 
-    def __init__(self, filename, convert_units=None, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         """Set up a DATAWriter
 
         Parameters
         ----------
         filename : str
             output filename
+        convert_units : bool, optional
+            units are converted to the MDAnalysis base format; [``True``]
         """
         self.filename = util.filename(filename, ext='data')
 
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         self.convert_units = convert_units
 
         self.units = {'time': 'fs', 'length': 'Angstrom'}
@@ -341,9 +343,10 @@ class DATAWriter(base.WriterBase):
                 self.f.write('{:d} {:d} '.format(i, int(bond.type))+\
                         ' '.join((bond.atoms.indices + 1).astype(str))+'\n')
             except TypeError:
-                raise TypeError('LAMMPS DATAWriter: Trying to write bond, '
+                raise_from(TypeError('LAMMPS DATAWriter: Trying to write bond, '
                                 'but bond type {} is not '
-                                'numerical.'.format(bond.type))
+                                'numerical.'.format(bond.type)),
+                            None)
 
     def _write_dimensions(self, dimensions):
         """Convert dimensions to triclinic vectors, convert lengths to native
@@ -402,8 +405,11 @@ class DATAWriter(base.WriterBase):
         try:
             atoms.types.astype(np.int32)
         except ValueError:
-            raise ValueError('LAMMPS.DATAWriter: atom types must be '+
-                    'convertible to integers')
+            raise_from(
+                ValueError(
+                    'LAMMPS.DATAWriter: atom types must be '
+                    'convertible to integers'),
+                    None)
 
         try:
             velocities = atoms.velocities
@@ -422,25 +428,18 @@ class DATAWriter(base.WriterBase):
                 ('dihedral', 'dihedrals'), ('improper', 'impropers')]
 
             for btype, attr_name in attrs:
-                try:
-                    features[btype] = atoms.__getattribute__(attr_name)
-                    self.f.write('{:>12d}  {}\n'.format(len(features[btype]),
-                                 attr_name))
-                    features[btype] = features[btype].atomgroup_intersection(
-                                      atoms, strict=True)
-                except AttributeError:
-                    features[btype] = None
-                    self.f.write('{:>12d}  {}\n'.format(0, attr_name))
+                features[btype] = atoms.__getattribute__(attr_name)
+                self.f.write('{:>12d}  {}\n'.format(len(features[btype]),
+                                                    attr_name))
+                features[btype] = features[btype].atomgroup_intersection(
+                                    atoms, strict=True)
 
             self.f.write('\n')
             self.f.write('{:>12d}  atom types\n'.format(max(atoms.types.astype(np.int32))))
 
             for btype, attr in features.items():
-                if attr is None:
-                    self.f.write('{:>12d}  {} types\n'.format(0, btype))
-                else:
-                    self.f.write('{:>12d}  {} types\n'.format(len(attr.types()),
-                                                              btype))
+                self.f.write('{:>12d}  {} types\n'.format(len(attr.types()),
+                                                          btype))
 
             self._write_dimensions(atoms.dimensions)
 

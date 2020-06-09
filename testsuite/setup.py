@@ -88,7 +88,7 @@ if sys.version_info[:2] < (2, 7):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.20.1"
+    RELEASE = "1.0.0"
 
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
@@ -149,6 +149,7 @@ if __name__ == '__main__':
                          'data/Amber/*.bz2',
                          'data/Amber/*.prmtop', 'data/Amber/*.top',
                          'data/Amber/*.parm7',
+                         'data/Amber/*.rst7',
                          'data/Amber/*.trj', 'data/Amber/*.mdcrd',
                          'data/Amber/*.ncdf', 'data/Amber/*.nc',
                          'data/Amber/*.inpcrd',
@@ -175,6 +176,8 @@ if __name__ == '__main__':
                          'data/analysis/*',
                          'data/*.gsd',
                          'data/windows/*',
+                         'data/*.itp',
+                         'data/*.coor',
                         ],
           },
           install_requires=[

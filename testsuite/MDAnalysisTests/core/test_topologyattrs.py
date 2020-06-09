@@ -32,7 +32,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -276,56 +276,6 @@ class TestResids(TestResidueAttr):
                                   np.array([23, 504, 27]))
 
 
-class TestResnames(TestResidueAttr):
-    values = np.array(['VAL', 'LYS', 'VAL', 'POPG'], dtype=np.object)
-    attrclass = tpattrs.Resnames
-
-    def test_residuegroup_getattr_single(self):
-        u = make_Universe(('resnames',))
-
-        res = u.residues.RsB
-
-        assert isinstance(res, groups.Residue)
-        assert res == u.residues[1]
-
-    def test_residuegroup_getattr_multiple(self):
-        u = make_Universe(('resnames',))
-        u.residues[:10].resnames = 'ABC'
-
-        rg = u.residues.ABC
-
-        assert isinstance(rg, groups.ResidueGroup)
-        assert len(rg) == 10
-
-    def test_residuegroup_getattr_AE(self):
-        u = make_Universe(('resnames',))
-        with pytest.raises(AttributeError):
-            getattr(u.residues, 'foo')
-
-
-    def test_segment_getattr_singular(self):
-        u = make_Universe(('resnames',))
-
-        res = u.segments[0].RsB
-
-        assert isinstance(res, groups.Residue)
-        assert res == u.residues[1]
-
-    def test_segment_getattr_multiple(self):
-        u = make_Universe(('resnames',))
-        u.residues[:3].resnames = 'bar'
-
-        rg = u.segments[0].bar
-
-        assert isinstance(rg, groups.ResidueGroup)
-        assert len(rg) == 3
-
-    def test_segment_getattr_AE(self):
-        u = make_Universe(('resnames',))
-        with pytest.raises(AttributeError):
-            getattr(u.segments[0], 'foo')
-
-
 class TestSegmentAttr(TopologyAttrMixin):
     """Test segment-level TopologyAttrs.
 
@@ -384,6 +334,14 @@ class TestAttr(object):
                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04]]))
+
+    @pytest.fixture()
+    def universe_pa(self):
+        return mda.Universe(PDB_CHECK_RIGHTHAND_PA)
+
+    def test_principal_axes_handedness(self, universe_pa):
+        e_vec = universe_pa.atoms.principal_axes()
+        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()
@@ -452,43 +410,6 @@ class TestCrossLevelAttributeSetting(object):
     def _check_crosslevel_fail(item, attr):
         with pytest.raises(NotImplementedError):
             setattr(item, attr, 1.0)
-
-
-class TestInstantSelectorDeprecation(object):
-    """Test the deprecation warnings for instant selectors
-
-    Instant selectors are deprecated since version 0.16.2. PR #1403 introduced
-    deprecation warnings for these selectors.
-    """
-    @staticmethod
-    @pytest.fixture()
-    def universe():
-        return mda.Universe(PSF, DCD)
-
-    @pytest.mark.parametrize('instruction', (
-        'universe.atoms.CA',
-        'universe.residues.LYS',
-        'universe.segments.s4AKE',
-        'universe.s4AKE',
-    ))
-    def test_deprecation(self, universe, instruction):
-        """Test that the warnings are issued when required.
-        """
-        with pytest.deprecated_call():
-            exec(instruction)  #pylint: disable=W0122
-
-    @pytest.mark.parametrize('instruction', (
-        'universe.atoms',
-        'universe.residues',
-        'universe.segments',
-    ))
-    def test_no_deprecation(self, universe, instruction):
-        """Test that the warnings are not issued when they should not.
-
-        See issue #1476.
-        """
-        with no_deprecated_call():
-            exec(instruction)  #pylint: disable=W0122
 
 
 class TestRecordTypes(object):

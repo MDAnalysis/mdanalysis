@@ -68,6 +68,7 @@ Functions
 """
 from __future__ import division, absolute_import
 from six.moves import range
+from six import raise_from
 
 import numpy as np
 from numpy.lib.utils import deprecate
@@ -99,8 +100,11 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
     try:
         func = getattr(_distances[backend], funcname)
     except KeyError:
-        raise ValueError("Function {0} not available with backend {1}; try one "
-                         "of: {2}".format(funcname, backend, _distances.keys()))
+        raise_from(
+            ValueError(
+                "Function {0} not available with backend {1}; try one "
+                "of: {2}".format(funcname, backend, _distances.keys())),
+            None)
     return func(*args, **kwargs)
 
 # serial versions are always available (and are typically used within
@@ -522,7 +526,7 @@ def _bruteforce_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``configuration[pairs[k, 1]]``.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
@@ -601,7 +605,7 @@ def _pkdtree_capped(reference, configuration, max_cutoff, min_cutoff=None,
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
@@ -681,7 +685,7 @@ def _nsgrid_capped(reference, configuration, max_cutoff, min_cutoff=None,
         ``configuration[pairs[k, 1]]``.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     if len(reference) > 0 and len(configuration) > 0:
@@ -915,7 +919,7 @@ def _bruteforce_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
        Added `return_distances` keyword.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     N = len(reference)
@@ -992,7 +996,7 @@ def _pkdtree_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
     from .pkdtree import PeriodicKDTree  # must be here to avoid circular import
 
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     # We're searching within a single coordinate set, so we need at least two
@@ -1064,7 +1068,7 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
        Added `return_distances` keyword.
     """
     # Default return values (will be overwritten only if pairs are found):
-    pairs = np.empty((0, 2), dtype=np.int64)
+    pairs = np.empty((0, 2), dtype=np.intp)
     distances = np.empty((0,), dtype=np.float64)
 
     # We're searching within a single coordinate set, so we need at least two

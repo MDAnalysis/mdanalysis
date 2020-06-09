@@ -596,24 +596,6 @@ class TestNCDFReaderExceptionsWarnings(_NCDFGenerator):
                     "attributes are missing")
             assert str(record[0].message.args[0]) == wmsg
 
-    def test_degrees_warn(self, tmpdir):
-        """Checks that plural degrees throws an user deprecation warning
-        TODO: remove in MDAnalysis version 1.0 (Issue #2327)"""
-        mutation = {'cell_angles': 'degrees'}
-        params = self.gen_params(keypair=mutation, restart=False)
-        with tmpdir.as_cwd():
-            self.create_ncdf(params)
-            with pytest.warns(DeprecationWarning) as record:
-                NCDFReader(params['filename'])
-
-            assert len(record) == 1
-            wmsg = ("DEPRECATED (1.0): NCDF trajectory {0} uses units of "
-                    "`degrees` for the `cell_angles` variable instead of "
-                    "`degree`. Support for non-AMBER convention units is "
-                    "now deprecated and will end in MDAnalysis version 1.0. "
-                    "Afterwards, reading this file will raise an error.")
-            assert str(record[0].message.args[0]) == wmsg
-
 
 class _NCDFWriterTest(object):
     prec = 5
@@ -682,7 +664,7 @@ class _NCDFWriterTest(object):
 
     def _copy_traj(self, writer, universe):
         for ts in universe.trajectory:
-            writer.write_next_timestep(ts)
+            writer.write(universe)
 
     def _check_new_traj(self, universe, outfile):
         uw = mda.Universe(self.topology, outfile)
@@ -742,7 +724,7 @@ class _NCDFWriterTest(object):
         with mda.Writer(outfile, trr.trajectory.n_atoms,
                         velocities=True, format="ncdf") as W:
             for ts in trr.trajectory:
-                W.write_next_timestep(ts)
+                W.write(trr)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -895,7 +877,7 @@ class TestNCDFWriterUnits(object):
         with mda.Writer(outfile, trr.trajectory.n_atoms, velocities=True,
                         forces=True, format='ncdf') as W:
             for ts in trr.trajectory:
-                W.write_next_timestep(ts)
+                W.write(trr)
 
         with netcdf.netcdf_file(outfile, mode='r') as ncdf:
             unit = ncdf.variables[var].units.decode('utf-8')
@@ -920,11 +902,3 @@ class TestNCDFWriterErrors(object):
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
                 w.write(u.trajectory.ts)
-
-    def test_no_ts(self, outfile):
-        # no ts supplied at any point
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
-        with NCDFWriter(outfile, 100) as w:
-            with pytest.raises(IOError):
-                w.write_next_timestep()

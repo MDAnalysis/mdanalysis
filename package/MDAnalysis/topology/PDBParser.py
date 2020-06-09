@@ -35,10 +35,15 @@ a different file format (e.g. the "extended" PDB, *XPDB* format, see
 :mod:`~MDAnalysis.topology.ExtendedPDBParser`) that can handle residue
 numbers up to 99,999.
 
+TODO:
+    Add attributes to guess elements for non-physical or missing elements
+
+
 .. Note::
 
    The parser processes atoms and their names. Masses are guessed and set to 0
-   if unknown. Partial charges are not set.
+   if unknown. Partial charges are not set. Elements are parsed if they are
+   valid.
 
 See Also
 --------
@@ -62,6 +67,7 @@ import warnings
 
 from six.moves import range
 from .guessers import guess_masses, guess_types
+from .tables import SYMB2Z
 from ..lib import util
 from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
@@ -72,6 +78,7 @@ from ..core.topologyattrs import (
     Bonds,
     ChainIDs,
     Atomtypes,
+    Elements,
     ICodes,
     Masses,
     Occupancies,
@@ -83,16 +90,19 @@ from ..core.topologyattrs import (
     Tempfactors,
 )
 
+
 def float_or_default(val, default):
     try:
         return float(val)
     except ValueError:
         return default
 
+
 DIGITS_UPPER = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 DIGITS_LOWER = DIGITS_UPPER.lower()
 DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
 DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
+
 
 def decode_pure(digits_values, s):
     """Decodes the string s using the digit, value associations for each
@@ -159,6 +169,7 @@ class PDBParser(TopologyReaderBase):
      - resids
      - resnames
      - segids
+     - elements
 
     Guesses the following Attributes:
      - masses
@@ -170,6 +181,8 @@ class PDBParser(TopologyReaderBase):
     .. versionadded:: 0.8
     .. versionchanged:: 0.18.0
        Added parsing of Record types
+    .. versionchanged:: 1.0.0
+       Added parsing of valid Elements
     """
     format = ['PDB', 'ENT']
 
@@ -210,10 +223,11 @@ class PDBParser(TopologyReaderBase):
         resnames = []
 
         segids = []
+        elements = []
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
-        with util.openany(self.filename ) as f:
+        with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
@@ -241,6 +255,7 @@ class PDBParser(TopologyReaderBase):
                 altlocs.append(line[16:17].strip())
                 resnames.append(line[17:21].strip())
                 chainids.append(line[21:22].strip())
+                elements.append(line[76:78].strip())
 
                 # Resids are optional
                 try:
@@ -257,7 +272,6 @@ class PDBParser(TopologyReaderBase):
                     warnings.warn("PDB file is missing resid information.  "
                                   "Defaulted to '1'")
                     resid = 1
-                    icode = ''
                 finally:
                     resids.append(resid)
                     icodes.append(line[26:27].strip())
@@ -275,7 +289,7 @@ class PDBParser(TopologyReaderBase):
 
         # If segids not present, try to use chainids
         if not any(segids):
-            segids, chainids = chainids, None
+            segids = chainids
 
         n_atoms = len(serials)
 
@@ -290,8 +304,7 @@ class PDBParser(TopologyReaderBase):
                 (tempfactors, Tempfactors, np.float32),
                 (occupancies, Occupancies, np.float32),
         ):
-            if not vals is None:
-                attrs.append(Attr(np.array(vals, dtype=dtype)))
+            attrs.append(Attr(np.array(vals, dtype=dtype)))
         # Guessed attributes
         # masses from types if they exist
         # OPT: We do this check twice, maybe could refactor to avoid this
@@ -303,6 +316,19 @@ class PDBParser(TopologyReaderBase):
 
         masses = guess_masses(atomtypes)
         attrs.append(Masses(masses, guessed=True))
+
+        # Getting element information from element column.
+        if all(elements):
+            element_set = set(i.capitalize() for i in set(elements))
+            if all(element in SYMB2Z for element in element_set):
+                element_list = [i.capitalize() for i in elements]
+                attrs.append(Elements(np.array(element_list, dtype=object)))
+            else:
+                warnings.warn("Invalid elements found in the PDB file, "
+                              "elements attributes will not be populated.")
+        else:
+            warnings.warn("Element information is absent or missing for a few "
+                          "atoms. Elements attributes will not be populated.")
 
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
@@ -322,7 +348,7 @@ class PDBParser(TopologyReaderBase):
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val == None for val in segids):
+        if any(segids) and not any(val is None for val in segids):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))

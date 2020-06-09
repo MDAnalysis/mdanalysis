@@ -40,6 +40,8 @@ Helper functions for common mathematical operations
 .. autofunction:: find_fragments
 
 .. versionadded:: 0.11.0
+.. versionchanged: 1.0.0
+   Unused function :func:`_angle()` has now been removed.
 """
 from __future__ import division, absolute_import
 from six.moves import zip
@@ -98,13 +100,13 @@ def angle(a, b):
 
     .. versionchanged:: 0.11.0
        Moved into lib.mdamath
+    .. versionchanged:: 1.0.0
+       Changed rounding-off code to use `np.clip()`. Values lower than
+       -1.0 now return `np.pi` instead of `-np.pi`
     """
     x = np.dot(a, b) / (norm(a) * norm(b))
     # catch roundoffs that lead to nan otherwise
-    if x > 1.0:
-        return 0.0
-    elif x < -1.0:
-        return -np.pi
+    x = np.clip(x, -1.0, 1.0)
     return np.arccos(x)
 
 
@@ -144,20 +146,6 @@ def dihedral(ab, bc, cd):
     """
     x = angle(normal(ab, bc), normal(bc, cd))
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
-
-
-def _angle(a, b):
-    """Angle between two vectors *a* and *b* in degrees.
-
-    If one of the lengths is 0 then the angle is returned as 0
-    (instead of `nan`).
-    """
-    # This function has different limits than angle?
-
-    angle = np.arccos(np.dot(a, b) / (norm(a) * norm(b)))
-    if np.isnan(angle):
-        return 0.0
-    return np.rad2deg(angle)
 
 
 def sarrus_det(matrix):

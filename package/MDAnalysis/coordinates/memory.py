@@ -185,6 +185,7 @@ Classes
 
 """
 from __future__ import absolute_import
+from six import raise_from
 import logging
 import errno
 import numpy as np
@@ -245,10 +246,12 @@ class MemoryReader(base.ProtoReader):
 
     A trajectory reader interface to a numpy array of the coordinates.
     For compatibility with the timeseries interface, support is provided for
-    specifying the order of columns through the format option.
+    specifying the order of columns through the `order` keyword.
 
     .. versionadded:: 0.16.0
-
+    .. versionchanged:: 1.0.0
+       Support for the deprecated `format` keyword for
+       :meth:`MemoryReader.timeseries` has now been removed.
     """
 
     format = 'MEMORY'
@@ -315,10 +318,11 @@ class MemoryReader(base.ProtoReader):
         try:
             if coordinate_array.ndim == 2 and coordinate_array.shape[1] == 3:
                 coordinate_array = coordinate_array[np.newaxis, :, :]
-        except AttributeError as e:
-            raise TypeError("The input has to be a numpy.ndarray that "
+        except AttributeError:
+            raise_from(TypeError("The input has to be a numpy.ndarray that "
                             "corresponds to the layout specified by the "
-                            "'order' keyword.")
+                            "'order' keyword."),
+                        None)
 
         self.set_array(coordinate_array, order)
         self.n_frames = \
@@ -330,8 +334,10 @@ class MemoryReader(base.ProtoReader):
             try:
                 velocities = np.asarray(velocities, dtype=np.float32)
             except ValueError:
-                raise TypeError("'velocities' must be array-like got {}"
-                                "".format(type(velocities)))
+                raise_from(
+                    TypeError("'velocities' must be array-like got {}"
+                              "".format(type(velocities))),
+                    None)
             # if single frame, make into array of 1 frame
             if velocities.ndim == 2:
                 velocities = velocities[np.newaxis, :, :]
@@ -348,8 +354,9 @@ class MemoryReader(base.ProtoReader):
             try:
                 forces = np.asarray(forces, dtype=np.float32)
             except ValueError:
-                raise TypeError("'forces' must be array like got {}"
-                                "".format(type(forces)))
+                raise_from(TypeError("'forces' must be array like got {}"
+                                     "".format(type(forces))),
+                           None)
             if forces.ndim == 2:
                 forces = forces[np.newaxis, :, :]
             if not forces.shape == self.coordinate_array.shape:
@@ -363,11 +370,13 @@ class MemoryReader(base.ProtoReader):
 
         provided_n_atoms = kwargs.pop("n_atoms", None)
         if (provided_n_atoms is not None and
-            provided_n_atoms != self.n_atoms):
-                raise ValueError("The provided value for n_atoms ({}) "
-                                 "does not match the shape of the coordinate "
-                                 "array ({})"
-                                 .format(provided_n_atoms, self.n_atoms))
+            provided_n_atoms != self.n_atoms
+        ):
+            raise ValueError(
+                "The provided value for n_atoms ({}) "
+                "does not match the shape of the coordinate "
+                "array ({})".format(provided_n_atoms, self.n_atoms)
+            )
 
         self.ts = self._Timestep(self.n_atoms, **kwargs)
         self.ts.dt = dt
@@ -377,8 +386,9 @@ class MemoryReader(base.ProtoReader):
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
-                raise TypeError("'dimensions' must be array-like got {}"
-                                "".format(type(dimensions)))
+                raise_from(TypeError("'dimensions' must be array-like got {}"
+                                     "".format(type(dimensions))),
+                           None)
             if dimensions.shape == (6,):
                 # single box, tile this to trajectory length
                 # allows modifying the box of some frames
@@ -391,6 +401,14 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
         self._read_next_timestep()
+
+    @staticmethod
+    def _format_hint(thing):
+        """For internal use: Check if MemoryReader can operate on *thing*
+
+        .. versionadded:: 1.0.0
+        """
+        return isinstance(thing, np.ndarray)
 
     @staticmethod
     def parse_n_atoms(filename, order='fac', **kwargs):
@@ -472,10 +490,10 @@ class MemoryReader(base.ProtoReader):
         self.ts.frame = -1
         self.ts.time = -1
 
-    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc', format=None):
+    def timeseries(self, asel=None, start=0, stop=-1, step=1, order='afc'):
         """Return a subset of coordinate data for an AtomGroup in desired
-        column order/format. If no selection is given, it will return a view of
-        the underlying array, while a copy is returned otherwise.
+        column order. If no selection is given, it will return a view of the
+        underlying array, while a copy is returned otherwise.
 
         Parameters
         ---------
@@ -494,26 +512,11 @@ class MemoryReader(base.ProtoReader):
             of 'a', 'f', 'c' are allowed ie "fac" - return array
             where the shape is (frame, number of atoms,
             coordinates).
-        format : str (optional)
-            deprecated, equivalent to `order`
-
-        Note
-        ----
-        The `format` parameter name is used to mimic the
-        :class:`MDAnalysis.coordinates.DCD.timeseries` interface. It is
-        identical to the `order` parameter for :class:`MemoryReader`. In a
-        future version, `format` will be renamed to `order`.
 
 
-        .. deprecated:: 0.17.0
-           `format` has been deprecated in favor of the standard keyword `order`.
+        .. versionchanged:: 1.0.0
+           Deprecated `format` keyword has been removed. Use `order` instead.
         """
-        if format is not None:
-            warnings.warn(
-                "'format' is deprecated and will be removed in 1.0. Use 'order' instead",
-                category=DeprecationWarning)
-            order = format
-
         array = self.get_array()
         if order == self.stored_order:
             pass

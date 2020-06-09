@@ -29,7 +29,7 @@ import os
 
 import MDAnalysis as mda
 import numpy as np
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
                                                    RefAdK)
@@ -38,7 +38,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        XPDB_small, PSF, DCD, CONECT, CRD,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
-                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2)
+                                       PDB_mc, PDB_mc_gz, PDB_mc_bz2,
+                                       PDB_CRYOEM_BOX, MMTF_NOCRYST)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -46,6 +47,7 @@ from numpy.testing import (assert_equal,
 
 class TestPDBReader(_SingleFrameReader):
     __test__ = True
+
     def setUp(self):
         # can lead to race conditions when testing in parallel
         self.universe = mda.Universe(RefAdKSmall.filename)
@@ -186,6 +188,27 @@ class TestPDBWriter(object):
         return mda.Universe(PSF, DCD)
 
     @pytest.fixture
+    def universe3(self):
+        return mda.Universe(PDB)
+
+    @pytest.fixture(params=[
+            [PDB_CRYOEM_BOX, np.zeros(6)],
+            [MMTF_NOCRYST, None]
+        ])
+    def universe_and_expected_dims(self, request):
+        """
+        File with meaningless CRYST1 record and expected dimensions.
+
+        Notes
+        -----
+        This will need to be made consistent, see Issue #2698
+        """
+        filein = request.param[0]
+        expected_dims = request.param[1]
+
+        return mda.Universe(filein), expected_dims
+
+    @pytest.fixture
     def outfile(self, tmpdir):
         return str(tmpdir.mkdir("PDBWriter").join('primitive-pdb-writer' + self.ext))
 
@@ -286,6 +309,51 @@ class TestPDBWriter(object):
                                                "agree with original coordinates from frame %d" %
                                                u.trajectory.frame)
 
+    def test_write_nodims(self, universe_and_expected_dims, outfile):
+        """
+        Test :code:`PDBWriter` for universe without cell dimensions.
+
+        Notes
+        -----
+        Test fix for Issue #2679.
+        """
+
+        u, expected_dims = universe_and_expected_dims
+
+        # See Issue #2698
+        if expected_dims is None:
+            assert u.dimensions is None
+        else:
+            assert np.allclose(u.dimensions, expected_dims)
+
+        expected_msg = "Unit cell dimensions not found. CRYST1 record set to unitary values."
+
+        with pytest.warns(UserWarning, match=expected_msg):
+            u.atoms.write(outfile)
+
+        with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+            uout = mda.Universe(outfile)
+
+        assert_almost_equal(
+            uout.dimensions, np.zeros(6),
+            self.prec,
+            err_msg="Problem with default box."
+        )
+
+        assert_equal(
+            uout.trajectory.n_frames, 1,
+            err_msg="Output PDB should only contain a single frame"
+        )
+
+        assert_almost_equal(
+            u.atoms.positions, uout.atoms.positions,
+            self.prec,
+            err_msg="Written coordinates do not "
+                    "agree with original coordinates from frame %d" %
+                    u.trajectory.frame
+        )
+
+
     def test_check_coordinate_limits_min(self, universe, outfile):
         """Test that illegal PDB coordinates (x <= -999.9995 A) are caught
         with ValueError (Issue 57)"""
@@ -353,6 +421,33 @@ class TestPDBWriter(object):
 
             # test number (only last 4 digits)
             assert int(line[10:14]) == model % 10000
+
+    def test_segid_chainid(self, universe2, outfile):
+        """check whether chainID comes from last character of segid (issue #2224)"""
+        ref_id = 'E'
+        u = universe2
+        u.atoms.write(outfile)
+        u_pdb = mda.Universe(outfile)
+        assert u_pdb.segments.chainIDs[0][0] == ref_id
+
+    def test_stringio_outofrange(self, universe3):
+        """
+        Check that when StringIO is used, the correct out-of-range error for
+        coordinates is raised (instead of failing trying to remove StringIO
+        as a file).
+        """
+
+        u = universe3
+
+        u.atoms.translate([-9999, -9999, -9999])
+
+        outstring = StringIO()
+
+        errmsg = "PDB files must have coordinate values between"
+
+        with pytest.raises(ValueError, match=errmsg):
+            with mda.coordinates.PDB.PDBWriter(outstring) as writer:
+                writer.write(u.atoms)
 
 
 class TestMultiPDBReader(object):
@@ -481,6 +576,7 @@ class TestMultiPDBReader(object):
                                               "the test reference; len(actual) is %d, len(desired) "
                                               "is %d" % (len(u._topology.bonds.values), len(desired)))
 
+
 def test_conect_bonds_all(tmpdir):
     conect = mda.Universe(CONECT, guess_bonds=True)
 
@@ -495,6 +591,7 @@ def test_conect_bonds_all(tmpdir):
     assert_equal(len([b for b in u2.bonds if not b.is_guessed]), 1922)
 
     # assert_equal(len([b for b in conect.bonds if not b.is_guessed]), 1922)
+
 
 def test_write_bonds_partial(tmpdir):
     u = mda.Universe(CONECT)
@@ -643,8 +740,8 @@ class TestPDBReaderBig(RefAdK):
                             err_msg="wrong coordinates for A10:CA")
 
     def test_distances(self, universe):
-        NTERM = universe.atoms.N[0]
-        CTERM = universe.atoms.C[-1]
+        NTERM = universe.select_atoms('name N')[0]
+        CTERM = universe.select_atoms('name C')[-1]
         d = mda.lib.mdamath.norm(NTERM.position - CTERM.position)
         assert_almost_equal(d, self.ref_distances['endtoend'], self.prec,
                             err_msg="wrong distance between M1:N and G214:C")
@@ -789,18 +886,19 @@ class TestWriterAlignments(object):
             return fh.readlines()
 
     def test_atomname_alignment(self, writtenstuff):
-        # Our PDBWriter adds some stuff up top, so line 1 happens at [4]
+        # Our PDBWriter adds some stuff up top, so line 1 happens at [9]
         refs = ("ATOM      1  H5T",
                 "ATOM      2  CA ",
                 "ATOM      3 CA  ",
                 "ATOM      4 H5''",)
-        for written, reference in zip(writtenstuff[3:], refs):
+
+        for written, reference in zip(writtenstuff[9:], refs):
             assert_equal(written[:16], reference)
 
     def test_atomtype_alignment(self, writtenstuff):
-        result_line = ("ATOM      1  H5T GUA R   1       7.974   6.430   9.561"
+        result_line = ("ATOM      1  H5T GUA A   1       7.974   6.430   9.561"
                        "  1.00  0.00      RNAA H\n")
-        assert_equal(writtenstuff[3], result_line)
+        assert_equal(writtenstuff[9], result_line)
 
 
 @pytest.mark.parametrize('atom, refname', ((mda.coordinates.PDB.Pair('ASP', 'CA'), ' CA '),  # Regular protein carbon alpha
@@ -882,12 +980,12 @@ def test_standalone_pdb():
     assert r.n_atoms == 4
 
 
-def test_write_pdb_zero_atoms():
+def test_write_pdb_zero_atoms(tmpdir):
     # issue 1083
     u = make_Universe(trajectory=True)
 
-    with tempdir.TempDir() as tmpdir:
-        outfile = tmpdir + '/out.pdb'
+    with tmpdir.as_cwd():
+        outfile = 'out.pdb'
 
         ag = u.atoms[:0]  # empty ag
 
@@ -930,3 +1028,17 @@ def test_partially_missing_cryst():
     assert len(u.atoms) == 3
     assert len(u.trajectory) == 2
     assert_array_almost_equal(u.dimensions, 0.0)
+
+
+def test_cryst_meaningless_warning():
+    # issue 2599
+    # FIXME: This message might change with Issue #2698
+    with pytest.warns(UserWarning, match="Unit cell dimensions will be set to zeros."):
+        mda.Universe(PDB_CRYOEM_BOX)
+
+
+def test_cryst_meaningless_select():
+    # issue 2599
+    u = mda.Universe(PDB_CRYOEM_BOX)
+    cur_sele = u.select_atoms('around 0.1 (resid 4 and name CA and segid A)')
+    assert cur_sele.n_atoms == 0

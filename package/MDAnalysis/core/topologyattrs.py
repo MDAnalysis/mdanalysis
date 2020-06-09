@@ -37,7 +37,6 @@ from six.moves import zip, range
 
 import Bio.Seq
 import Bio.SeqRecord
-import Bio.Alphabet
 from collections import defaultdict
 import copy
 import functools
@@ -46,9 +45,7 @@ import numbers
 import numpy as np
 import warnings
 
-from numpy.lib.utils import deprecate
 
-from . import flags
 from ..lib.util import (cached, convert_aa_code, iterable, warn_if_not_unique,
                         unique_int_1d)
 from ..lib import transformations, mdamath
@@ -59,7 +56,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
                      check_pbc_and_unwrap)
-from .. import _TOPOLOGY_ATTRS
+from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
 def _check_length(func):
@@ -173,13 +170,24 @@ class _TopologyAttrMeta(type):
     # register TopologyAttrs
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
-        for attr in ['attrname', 'singular']:
-            try:
-                attrname = classdict[attr]
-            except KeyError:
-                pass
-            else:
-                _TOPOLOGY_ATTRS[attrname] = cls
+        attrname = classdict.get('attrname')
+        singular = classdict.get('singular', attrname)
+
+        if attrname is None:
+            attrname = singular
+
+        if singular:
+            _TOPOLOGY_ATTRS[singular] = _TOPOLOGY_ATTRS[attrname] = cls
+            _singular = singular.lower().replace('_', '')
+            _attrname = attrname.lower().replace('_', '')
+            _TOPOLOGY_ATTRNAMES[_singular] = singular
+            _TOPOLOGY_ATTRNAMES[_attrname] = attrname
+
+            for clstype, transplants in cls.transplants.items():
+                for name, method in transplants:
+                    _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
+                    clean = name.lower().replace('_', '')
+                    _TOPOLOGY_ATTRNAMES[clean] = name
 
 
 class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
@@ -483,116 +491,309 @@ class Atomnames(AtomAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(na)], dtype=object)
 
-    def getattr__(atomgroup, name):
-        try:
-            return atomgroup._get_named_atom(name)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    atomgroup.__class__.__name__, name))
-
-    def _get_named_atom(group, name):
-        """Get all atoms with name *name* in the current AtomGroup.
-
-        For more than one atom it returns a list of :class:`Atom`
-        instance. A single :class:`Atom` is returned just as such. If
-        no atoms are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``AtomGroup.select_atoms('name <name>')`` instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # There can be more than one atom with the same name
-        atomlist = group.atoms.unique[group.atoms.unique.names == name]
-        if len(atomlist) == 0:
-            raise selection.SelectionError(
-                "No atoms with name '{0}'".format(name))
-        elif len(atomlist) == 1:
-            # XXX: keep this, makes more sense for names
-            atomlist = atomlist[0]
-        warnings.warn("Instant selector AtomGroup['<name>'] or AtomGroup.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use AtomGroup.select_atoms('name <name>') instead.",
-                      DeprecationWarning)
-        return atomlist
-
-    # AtomGroup already has a getattr
-#    transplants[AtomGroup].append(
-#        ('__getattr__', getattr__))
-
-    transplants[Residue].append(
-        ('__getattr__', getattr__))
-
-    # this is also getitem for a residue
-    transplants[Residue].append(
-        ('__getitem__', getattr__))
-
-    transplants[AtomGroup].append(
-        ('_get_named_atom', _get_named_atom))
-
-    transplants[Residue].append(
-        ('_get_named_atom', _get_named_atom))
-
-    def phi_selection(residue):
-        """AtomGroup corresponding to the phi protein backbone dihedral
+    def phi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+        """Select AtomGroup corresponding to the phi protein backbone dihedral
         C'-N-CA-C.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
 
         Returns
         -------
         AtomGroup
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
-        """
-        # TODO: maybe this can be reformulated into one selection string without
-        # the additions later
-        sel_str = "segid {} and resid {} and name C".format(
-            residue.segment.segid, residue.resid - 1)
-        sel = (residue.universe.select_atoms(sel_str) +
-               residue.atoms.select_atoms('name N', 'name CA', 'name C'))
 
-        # select_atoms doesnt raise errors if nothing found, so check size
-        if len(sel) == 4:
-            return sel
-        else:
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
+        """
+        # fnmatch is expensive. try the obv candidate first
+        prev = residue.universe.residues[residue.ix-1]
+        sid = residue.segment.segid
+        rid = residue.resid-1
+        if not (prev.segment.segid == sid and prev.resid == rid):
+            sel = 'segid {} and resid {}'.format(sid, rid)
+            try:
+                prev = residue.universe.select_atoms(sel).residues[0]
+            except IndexError:
+                return None
+        c_ = prev.atoms[prev.atoms.names == c_name]
+        if not len(c_) == 1:
             return None
+
+        atnames = residue.atoms.names
+        ncac_names = [n_name, ca_name, c_name]
+        ncac = [residue.atoms[atnames == n] for n in ncac_names]
+        if not all(len(ag) == 1 for ag in ncac):
+            return None
+
+        sel = c_+sum(ncac)
+        return sel
 
     transplants[Residue].append(('phi_selection', phi_selection))
 
-    def psi_selection(residue):
-        """AtomGroup corresponding to the psi protein backbone dihedral
+    def phi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+        """Select list of AtomGroups corresponding to the phi protein 
+        backbone dihedral C'-N-CA-C.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+
+        Returns
+        -------
+        list of AtomGroups
+            4-atom selections in the correct order. If no C' found in the
+            previous residue (by resid) then corresponding item in the list
+            is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+
+        u = residues[0].universe
+        prev = u.residues[residues.ix-1]  # obv candidates first
+        rsid = residues.segids
+        prid = residues.resids-1
+        ncac_names = [n_name, ca_name, c_name]
+        sel = 'segid {} and resid {}'
+
+        # replace wrong residues
+        wix = np.where((prev.segids != rsid) | (prev.resids != prid))[0]
+        invalid = []
+        if len(wix):
+            prevls = list(prev)
+            for s, r, i in zip(rsid[wix], prid[wix], wix):
+                try:
+                    prevls[i] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    invalid.append(i)
+            prev = sum(prevls)
+        
+        keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names) 
+                    for r in residues]
+        keep = np.array(keep_prev) & np.array(keep_res)
+        keep[invalid] = False
+        results = np.zeros_like(residues, dtype=object)
+        results[~keep] = None
+        prev = prev[keep]
+        residues = residues[keep]
+        keepix = np.where(keep)[0]
+        
+        c_ = prev.atoms[prev.atoms.names == c_name]
+        n = residues.atoms[residues.atoms.names == n_name]
+        ca = residues.atoms[residues.atoms.names == ca_name]
+        c = residues.atoms[residues.atoms.names == c_name]
+        results[keepix] = [sum(atoms) for atoms in zip(c_, n, ca, c)]
+        return list(results)
+
+    transplants[ResidueGroup].append(('phi_selections', phi_selections))
+
+
+    def psi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+        """Select AtomGroup corresponding to the psi protein backbone dihedral
         N-CA-C-N'.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
 
         Returns
         -------
         AtomGroup
             4-atom selection in the correct order. If no N' found in the
             following residue (by resid) then this method returns ``None``.
+
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
         """
-        sel_str = "segid {} and resid {} and name N".format(
-            residue.segment.segid, residue.resid + 1)
 
-        sel = (residue.atoms.select_atoms('name N', 'name CA', 'name C') +
-               residue.universe.select_atoms(sel_str))
-
-        if len(sel) == 4:
-            return sel
+        # fnmatch is expensive. try the obv candidate first
+        _manual_sel = False
+        sid = residue.segment.segid
+        rid = residue.resid+1
+        try:
+            nxt = residue.universe.residues[residue.ix+1]
+        except IndexError:
+            _manual_sel = True
         else:
+            if not (nxt.segment.segid == sid and nxt.resid == rid):
+                _manual_sel = True
+
+        if _manual_sel:
+            sel = 'segid {} and resid {}'.format(sid, rid)
+            try:
+                nxt = residue.universe.select_atoms(sel).residues[0]
+            except IndexError:
+                return None
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        if not len(n_) == 1:
             return None
+
+        atnames = residue.atoms.names
+        ncac_names = [n_name, ca_name, c_name]
+        ncac = [residue.atoms[atnames == n] for n in ncac_names]
+        if not all(len(ag) == 1 for ag in ncac):
+            return None
+
+        sel = sum(ncac) + n_
+        return sel
 
     transplants[Residue].append(('psi_selection', psi_selection))
 
-    def omega_selection(residue):
-        """AtomGroup corresponding to the omega protein backbone dihedral
+    def _get_next_residues_by_resid(residues):
+        """Select list of Residues corresponding to the next resid for each 
+        residue in `residues`.
+
+        Returns
+        -------
+        List of Residues
+            List of the next residues in the Universe, by resid and segid. 
+            If not found, the corresponding item in the list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        u = residues[0].universe
+        nxres = np.array([None]*len(residues), dtype=object)
+        ix = np.arange(len(residues))
+        # no guarantee residues is ordered or unique
+        last = max(residues.ix)
+        if last == len(u.residues)-1:
+            notlast = residues.ix != last
+            ix = ix[notlast]
+            residues = residues[notlast]
+
+        nxres[ix] = nxt = u.residues[residues.ix+1]
+        rsid = residues.segids
+        nrid = residues.resids+1
+        sel = 'segid {} and resid {}'
+
+        # replace wrong residues
+        wix = np.where((nxt.segids != rsid) | (nxt.resids != nrid))[0]
+        if len(wix):
+            for s, r, i in zip(rsid[wix], nrid[wix], wix):
+                try:
+                    nxres[ix[i]] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    nxres[ix[i]] = None
+        return nxres
+
+    transplants[ResidueGroup].append(('_get_next_residues_by_resid',
+                                      _get_next_residues_by_resid))
+
+    def _get_prev_residues_by_resid(residues):
+        """Select list of Residues corresponding to the previous resid for each 
+        residue in `residues`.
+
+        Returns
+        -------
+        List of Residues
+            List of the previous residues in the Universe, by resid and segid. 
+            If not found, the corresponding item in the list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        u = residues[0].universe
+        pvres = np.array([None]*len(residues))
+        pvres[:] = prev = u.residues[residues.ix-1]
+        rsid = residues.segids
+        prid = residues.resids-1
+        sel = 'segid {} and resid {}'
+
+        # replace wrong residues
+        wix = np.where((prev.segids != rsid) | (prev.resids != prid))[0]
+        if len(wix):
+            for s, r, i in zip(rsid[wix], prid[wix], wix):
+                try:
+                    pvres[i] = u.select_atoms(sel.format(s, r)).residues[0]
+                except IndexError:
+                    pvres[i] = None
+        return pvres
+
+    
+    transplants[ResidueGroup].append(('_get_prev_residues_by_resid',
+                                      _get_prev_residues_by_resid))
+
+    def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+        """Select list of AtomGroups corresponding to the psi protein 
+        backbone dihedral N-CA-C-N'.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+
+        Returns
+        -------
+        List of AtomGroups
+            4-atom selections in the correct order. If no N' found in the
+            following residue (by resid) then the corresponding item in the 
+            list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        results = np.array([None]*len(residues), dtype=object)
+        nxtres = residues._get_next_residues_by_resid()
+        rix = np.where(nxtres)[0]
+        nxt = sum(nxtres[rix])
+        residues = residues[rix]
+        ncac_names = [n_name, ca_name, c_name]
+
+        keep_nxt = [sum(r.atoms.names == n_name) == 1 for r in nxt]
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names) 
+                    for r in residues]
+        keep = np.array(keep_nxt) & np.array(keep_res)
+        nxt = nxt[keep]
+        residues = residues[keep]
+        keepix = np.where(keep)[0]
+        
+        n = residues.atoms[residues.atoms.names == n_name]
+        ca = residues.atoms[residues.atoms.names == ca_name]
+        c = residues.atoms[residues.atoms.names == c_name]
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        results[rix[keepix]] = [sum(atoms) for atoms in zip(n, ca, c, n_)]
+        return list(results)
+
+    transplants[ResidueGroup].append(('psi_selections', psi_selections))
+
+    def omega_selection(residue, c_name='C', n_name='N', ca_name='CA'):
+        """Select AtomGroup corresponding to the omega protein backbone dihedral
         CA-C-N'-CA'.
 
         omega describes the -C-N- peptide bond. Typically, it is trans (180
         degrees) although cis-bonds (0 degrees) are also occasionally observed
         (especially near Proline).
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
 
         Returns
         -------
@@ -600,22 +801,108 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no C' found in the
             previous residue (by resid) then this method returns ``None``.
 
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
         """
-        nextres = residue.resid + 1
-        segid = residue.segment.segid
-        sel = (residue.atoms.select_atoms('name CA', 'name C') +
-               residue.universe.select_atoms(
-                   'segid {} and resid {} and name N'.format(segid, nextres),
-                   'segid {} and resid {} and name CA'.format(segid, nextres)))
-        if len(sel) == 4:
-            return sel
+        # fnmatch is expensive. try the obv candidate first
+        _manual_sel = False
+        sid = residue.segment.segid
+        rid = residue.resid+1
+        try:
+            nxt = residue.universe.residues[residue.ix+1]
+        except IndexError:
+            _manual_sel = True
         else:
+            if not (nxt.segment.segid == sid and nxt.resid == rid):
+                _manual_sel = True
+
+        if _manual_sel:
+            sel = 'segid {} and resid {}'.format(sid, rid)
+            try:
+                nxt = residue.universe.select_atoms(sel).residues[0]
+            except IndexError:
+                return None
+
+        ca = residue.atoms[residue.atoms.names == ca_name]
+        c = residue.atoms[residue.atoms.names == c_name]
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        ca_ = nxt.atoms[nxt.atoms.names == ca_name]
+
+        if not all(len(ag) == 1 for ag in [ca_, n_, ca, c]):
             return None
+
+        return ca+c+n_+ca_
 
     transplants[Residue].append(('omega_selection', omega_selection))
 
-    def chi1_selection(residue):
-        """AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+    def omega_selections(residues, c_name='C', n_name='N', ca_name='CA'):
+        """Select list of AtomGroups corresponding to the omega protein 
+        backbone dihedral CA-C-N'-CA'.
+
+        omega describes the -C-N- peptide bond. Typically, it is trans (180
+        degrees) although cis-bonds (0 degrees) are also occasionally observed
+        (especially near Proline).
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        n_name: str (optional)
+            name for the backbone N atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+
+        Returns
+        -------
+        List of AtomGroups
+            4-atom selections in the correct order. If no C' found in the
+            previous residue (by resid) then the corresponding item in the 
+            list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        results = np.array([None]*len(residues), dtype=object)
+        nxtres = residues._get_next_residues_by_resid()
+        rix = np.where(nxtres)[0]
+        nxt = sum(nxtres[rix])
+        residues = residues[rix]
+        
+        nxtatoms = [ca_name, n_name]
+        resatoms = [ca_name, c_name]
+        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms) 
+                    for r in nxt]
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in resatoms) 
+                    for r in residues]
+        keep = np.array(keep_nxt) & np.array(keep_res)
+        nxt = nxt[keep]
+        residues = residues[keep]
+        keepix = np.where(keep)[0]
+        
+        c = residues.atoms[residues.atoms.names == c_name]
+        ca = residues.atoms[residues.atoms.names == ca_name]
+        n_ = nxt.atoms[nxt.atoms.names == n_name]
+        ca_ = nxt.atoms[nxt.atoms.names == ca_name]
+
+        results[rix[keepix]] = [sum(atoms) for atoms in zip(ca, c, n_, ca_)]
+        return list(results)
+
+    transplants[ResidueGroup].append(('omega_selections', omega_selections))
+
+    def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB', 
+                       cg_name='CG'):
+        """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+        cb_name: str (optional)
+            name for the beta-carbon atom
+        cg_name: str (optional)
+            name for the gamma-carbon atom
 
         Returns
         -------
@@ -623,16 +910,57 @@ class Atomnames(AtomAttr):
             4-atom selection in the correct order. If no CB and/or CG is found
             then this method returns ``None``.
 
+        .. versionchanged:: 1.0.0
+            Added arguments for flexible atom names and refactored code for
+            faster atom matching with boolean arrays.
+
         .. versionadded:: 0.7.5
         """
-        ag = residue.atoms.select_atoms('name N', 'name CA',
-                                        'name CB', 'name CG')
-        if len(ag) == 4:
-            return ag
-        else:
+        names = [n_name, ca_name, cb_name, cg_name]
+        ags = [residue.atoms[residue.atoms.names == n] for n in names]
+        if any(len(ag)!= 1 for ag in ags):
             return None
+        return sum(ags)
 
     transplants[Residue].append(('chi1_selection', chi1_selection))
+
+    def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB', 
+                        cg_name='CG'):
+        """Select list of AtomGroups corresponding to the chi1 sidechain dihedral 
+        N-CA-CB-CG.
+
+        Parameters
+        ----------
+        c_name: str (optional)
+            name for the backbone C atom
+        ca_name: str (optional)
+            name for the alpha-carbon atom
+        cb_name: str (optional)
+            name for the beta-carbon atom
+        cg_name: str (optional)
+            name for the gamma-carbon atom
+
+        Returns
+        -------
+        List of AtomGroups
+            4-atom selections in the correct order. If no CB and/or CG is found
+            then the corresponding item in the list is ``None``.
+
+        .. versionadded:: 1.0.0
+        """
+        results = np.array([None]*len(residues))
+        names = [n_name, ca_name, cb_name, cg_name]
+        keep = [all(sum(r.atoms.names == n) == 1 for n in names) 
+                for r in residues]
+        keepix = np.where(keep)[0]
+        residues = residues[keep]
+
+        atnames = residues.atoms.names
+        ags = [residues.atoms[atnames == n] for n in names]
+        results[keepix] = [sum(atoms) for atoms in zip(*ags)]
+        return list(results)
+    
+    transplants[ResidueGroup].append(('chi1_selections', chi1_selections))
 
 
 # TODO: update docs to property doc
@@ -771,7 +1099,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def center_of_mass(group, pbc=None, compound='group', unwrap=False):
+    def center_of_mass(group, pbc=False, compound='group', unwrap=False):
         """Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
@@ -817,8 +1145,6 @@ class Masses(AtomAttr):
         ----
         * This method can only be accessed if the underlying topology has
           information about atomic masses.
-        * The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-          ``True`` allows the *pbc* flag to be used by default.
 
 
         .. versionchanged:: 0.8 Added `pbc` parameter
@@ -871,7 +1197,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def moment_of_inertia(group, **kwargs):
+    def moment_of_inertia(group, pbc=False, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
 
@@ -881,24 +1207,20 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         unwrap = kwargs.pop('unwrap', False)
         compound = kwargs.pop('compound', 'group')
 
-        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound is not 'group':
-            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+        com = atomgroup.center_of_mass(
+            pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound != 'group':
+            com = (com * group.masses[:, None]
+                   ).sum(axis=0) / group.masses.sum()
 
         if pbc:
             pos = atomgroup.pack_into_box(inplace=False) - com
@@ -937,7 +1259,7 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
-    def radius_of_gyration(group, **kwargs):
+    def radius_of_gyration(group, pbc=False, **kwargs):
         """Radius of gyration.
 
         Parameters
@@ -946,17 +1268,11 @@ class Masses(AtomAttr):
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc)
@@ -974,7 +1290,7 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
-    def shape_parameter(group, **kwargs):
+    def shape_parameter(group, pbc=False, **kwargs):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
@@ -984,11 +1300,6 @@ class Masses(AtomAttr):
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
-
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
 
 
         References
@@ -1005,7 +1316,6 @@ class Masses(AtomAttr):
 
         """
         atomgroup = group.atoms
-        pbc = kwargs.pop('pbc', flags['use_pbc'])
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(pbc=pbc)
@@ -1020,7 +1330,8 @@ class Masses(AtomAttr):
                                            recenteredpos[x, :])
         tensor /= atomgroup.total_mass()
         eig_vals = np.linalg.eigvalsh(tensor)
-        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)) / np.power(np.sum(eig_vals), 3)
+        shape = 27.0 * np.prod(eig_vals - np.mean(eig_vals)
+                               ) / np.power(np.sum(eig_vals), 3)
 
         return shape
 
@@ -1029,7 +1340,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     @check_pbc_and_unwrap
-    def asphericity(group, pbc=None, unwrap=None, compound='group'):
+    def asphericity(group, pbc=False, unwrap=None, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
@@ -1038,17 +1349,11 @@ class Masses(AtomAttr):
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. If ``None`` use value defined in
-            MDAnalysis.core.flags['use_pbc']
+            calculation. [``False``]
         unwrap : bool, optional
             If ``True``, compounds will be unwrapped before computing their centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'}, optional
             Which type of component to keep together during unwrapping.
-
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
 
 
         References
@@ -1061,20 +1366,19 @@ class Masses(AtomAttr):
            <https://doi.org/10.1021/jp037128y>`_
 
 
-
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added *unwrap* and *compound* parameter
 
         """
         atomgroup = group.atoms
-        if pbc is None:
-            pbc = flags['use_pbc']
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(pbc=pbc, unwrap=unwrap, compound=compound)
-        if compound is not 'group':
-            com = (com * group.masses[:, None]).sum(axis=0) / group.masses.sum()
+        com = atomgroup.center_of_mass(
+            pbc=pbc, unwrap=unwrap, compound=compound)
+        if compound != 'group':
+            com = (com * group.masses[:, None]
+                   ).sum(axis=0) / group.masses.sum()
 
         if pbc:
             recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
@@ -1099,7 +1403,7 @@ class Masses(AtomAttr):
         ('asphericity', asphericity))
 
     @warn_if_not_unique
-    def principal_axes(group, pbc=None):
+    def principal_axes(group, pbc=False):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -1108,11 +1412,13 @@ class Masses(AtomAttr):
         corresponds to the highest eigenvalue and is thus the first principal
         axes.
 
+        The eigenvectors form a right-handed coordinate system.
+
         Parameters
         ----------
         pbc : bool, optional
             If ``True``, move all atoms within the primary unit cell before
-            calculation. If ``None`` use value defined in setup flags.
+            calculation. [``False``]
 
         Returns
         -------
@@ -1120,24 +1426,25 @@ class Masses(AtomAttr):
             3 x 3 array with ``v[0]`` as first, ``v[1]`` as second, and
             ``v[2]`` as third eigenvector.
 
-        Note
-        ----
-        The :class:`MDAnalysis.core.flags` flag *use_pbc* when set to
-        ``True`` allows the *pbc* flag to be used by default.
-
 
         .. versionchanged:: 0.8 Added *pbc* keyword
+        .. versionchanged:: 1.0.0 
+            Always return principal axes in right-hand convention.
 
         """
         atomgroup = group.atoms
-        if pbc is None:
-            pbc = flags['use_pbc']
         e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
 
         # Sort
         indices = np.argsort(e_val)[::-1]
-        # Return transposed in more logical form. See Issue 33.
-        return e_vec[:, indices].T
+        # Make transposed in more logical form. See Issue 33.
+        e_vec = e_vec[:, indices].T
+
+        # Make sure the right hand convention is followed
+        if np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]) < 0:
+            e_vec *= -1
+
+        return e_vec
 
     transplants[GroupBase].append(
         ('principal_axes', principal_axes))
@@ -1285,6 +1592,90 @@ class AltLocs(AtomAttr):
         return np.array(['' for _ in range(na)], dtype=object)
 
 
+class GBScreens(AtomAttr):
+    """Generalized Born screening factor"""
+    attrname = 'gbscreens'
+    singular = 'gbscreen'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
+class SolventRadii(AtomAttr):
+    """Intrinsic solvation radius"""
+    attrname = 'solventradii'
+    singular = 'solventradius'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
+class NonbondedIndices(AtomAttr):
+    """Nonbonded index (AMBER)"""
+    attrname = 'nbindices'
+    singular = 'nbindex'
+    per_object = 'atom'
+    dtype = int
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na, dtype=np.int32)
+
+
+class RMins(AtomAttr):
+    """The Rmin/2 LJ parameter"""
+    attrname = 'rmins'
+    singular = 'rmin'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
+class Epsilons(AtomAttr):
+    """The epsilon LJ parameter"""
+    attrname = 'epsilons'
+    singular = 'epsilon'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
+class RMin14s(AtomAttr):
+    """The Rmin/2 LJ parameter for 1-4 interactions"""
+    attrname = 'rmin14s'
+    singular = 'rmin14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
+class Epsilon14s(AtomAttr):
+    """The epsilon LJ parameter for 1-4 interactions"""
+    attrname = 'epsilon14s'
+    singular = 'epsilon14'
+    per_object = 'atom'
+    dtype = float
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.zeros(na)
+
+
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
     singular = 'residueattr'
@@ -1342,61 +1733,6 @@ class Resnames(ResidueAttr):
     @staticmethod
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(nr)], dtype=object)
-
-    def getattr__(residuegroup, resname):
-        try:
-            return residuegroup._get_named_residue(resname)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    residuegroup.__class__.__name__, resname))
-
-    transplants[ResidueGroup].append(('__getattr__', getattr__))
-    # This transplant is hardcoded for now to allow for multiple getattr things
-    #transplants[Segment].append(('__getattr__', getattr__))
-
-    def _get_named_residue(group, resname):
-        """Get all residues with name *resname* in the current ResidueGroup
-        or Segment.
-
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.ResidueGroup` instance. A single
-        :class:`MDAnalysis.core.group.Residue` is returned for a single match.
-        If no residues are found, a :exc:`SelectionError` is raised.
-
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``ResidueGroup[ResidueGroup.resnames == '<name>']``
-           or ``Segment.residues[Segment.residues == '<name>']``
-           instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # There can be more than one residue with the same name
-        residues = group.residues.unique[
-                group.residues.unique.resnames == resname]
-        if len(residues) == 0:
-            raise selection.SelectionError(
-                "No residues with resname '{0}'".format(resname))
-        warnings.warn("Instant selector ResidueGroup.<name> "
-                      "or Segment.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use ResidueGroup[ResidueGroup.resnames == '<name>'] "
-                      "or Segment.residues[Segment.residues == '<name>'] "
-                      "instead.",
-                      DeprecationWarning)
-        if len(residues) == 1:
-            # XXX: keep this, makes more sense for names
-            return residues[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return residues
-
-    transplants[ResidueGroup].append(
-        ('_get_named_residue', _get_named_residue))
 
     def sequence(self, **kwargs):
         """Returns the amino acid sequence.
@@ -1477,16 +1813,17 @@ class Resnames(ResidueAttr):
         format = kwargs.pop("format", "SeqRecord")
         if format not in formats:
             raise TypeError("Unknown format='{0}': must be one of: {1}".format(
-                    format, ", ".join(formats)))
+                format, ", ".join(formats)))
         try:
-            sequence = "".join([convert_aa_code(r) for r in self.residues.resnames])
+            sequence = "".join([convert_aa_code(r)
+                                for r in self.residues.resnames])
         except KeyError as err:
-            raise ValueError("AtomGroup contains a residue name '{0}' that "
-                             "does not have a IUPAC protein 1-letter "
-                             "character".format(err.message))
+            six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
+                                      "does not have a IUPAC protein 1-letter "
+                                      "character".format(err.message)), None)
         if format == "string":
             return sequence
-        seq = Bio.Seq.Seq(sequence, alphabet=Bio.Alphabet.IUPAC.protein)
+        seq = Bio.Seq.Seq(sequence)
         if format == "Seq":
             return seq
         return Bio.SeqRecord.SeqRecord(seq, **kwargs)
@@ -1537,9 +1874,10 @@ class Molnums(ResidueAttr):
     attrname = 'molnums'
     singular = 'molnum'
     target_classes = [AtomGroup, ResidueGroup, Atom, Residue]
-    dtype = np.int64
+    dtype = np.intp
 
 # segment attributes
+
 
 class SegmentAttr(TopologyAttr):
     """Base class for segment attributes.
@@ -1585,64 +1923,45 @@ class Segids(SegmentAttr):
     def _gen_initial_values(na, nr, ns):
         return np.array(['' for _ in range(ns)], dtype=object)
 
-    def getattr__(segmentgroup, segid):
-        try:
-            return segmentgroup._get_named_segment(segid)
-        except selection.SelectionError:
-            raise AttributeError("'{0}' object has no attribute '{1}'".format(
-                    segmentgroup.__class__.__name__, segid))
 
-    transplants[SegmentGroup].append(
-        ('__getattr__', getattr__))
+def _check_connection_values(func):
+    """
+    Checks values passed to _Connection methods for:
+     - appropriate number of atom indices
+     - coerces them to tuples of ints (for hashing)
+     - ensures that first value is less than last (reversibility & hashing)
 
-    def _get_named_segment(group, segid):
-        """Get all segments with name *segid* in the current SegmentGroup.
+    .. versionadded:: 1.0.0
 
-        For more than one residue it returns a
-        :class:`MDAnalysis.core.groups.SegmentGroup` instance. A single
-        :class:`MDAnalysis.core.group.Segment` is returned for a single match.
-        If no residues are found, a :exc:`SelectionError` is raised.
+    """
+    @functools.wraps(func)
+    def wrapper(self, values, *args, **kwargs):
+        if not all(len(x) == self._n_atoms
+                   and all(isinstance(y, (int, np.integer)) for y in x)
+                   for x in values):
+            raise ValueError(("{} must be an iterable of tuples with {}"
+                              " atom indices").format(self.attrname,
+                                                      self._n_atoms))
+        clean = []
+        for v in values:
+            if v[0] > v[-1]:
+                v = v[::-1]
+            clean.append(tuple(v))
 
-        .. versionadded:: 0.9.2
-
-        .. deprecated:: 0.16.2
-           *Instant selectors* will be removed in the 1.0 release.
-           Use ``SegmentGroup[SegmentGroup.segids == '<name>']`` instead.
-           See issue `#1377
-           <https://github.com/MDAnalysis/mdanalysis/issues/1377>`_ for
-           more details.
-
-        """
-        # Undo adding 's' if segid started with digit
-        if segid.startswith('s') and len(segid) >= 2 and segid[1].isdigit():
-            segid = segid[1:]
-
-        # There can be more than one segment with the same name
-        segments = group.segments.unique[
-                group.segments.unique.segids == segid]
-        if len(segments) == 0:
-            raise selection.SelectionError(
-                "No segments with segid '{0}'".format(segid))
-        warnings.warn("Instant selector SegmentGroup.<name> "
-                      "is deprecated and will be removed in 1.0. "
-                      "Use SegmentGroup[SegmentGroup.segids == '<name>'] "
-                      "instead.",
-                      DeprecationWarning)
-        if len(segments) == 1:
-            # XXX: keep this, makes more sense for names
-            return segments[0]
-        else:
-            # XXX: but inconsistent (see residues and Issue 47)
-            return segments
-
-    transplants[SegmentGroup].append(
-        ('_get_named_segment', _get_named_segment))
+        return func(self, clean, *args, **kwargs)
+    return wrapper
 
 
 class _Connection(AtomAttr):
-    """Base class for connectivity between atoms"""
+    """Base class for connectivity between atoms
+
+    .. versionchanged:: 1.0.0
+        Added type checking to atom index values.
+    """
+
+    @_check_connection_values
     def __init__(self, values, types=None, guessed=False, order=None):
-        self.values = list(values)
+        self.values = values
         if types is None:
             types = [None] * len(values)
         self.types = types
@@ -1674,12 +1993,6 @@ class _Connection(AtomAttr):
 
         for b, t, g, o in zip(self.values, self.types,
                               self._guessed, self.order):
-            # We always want the first index
-            # to be less than the last
-            # eg (0, 1) not (1, 0)
-            # and (4, 10, 8) not (8, 10, 4)
-            if b[0] > b[-1]:
-                b = b[::-1]
             for a in b:
                 bd[a].append((b, t, g, o))
         return bd
@@ -1706,7 +2019,8 @@ class _Connection(AtomAttr):
                              guessed,
                              order)
 
-    def add_bonds(self, values, types=None, guessed=True, order=None):
+    @_check_connection_values
+    def _add_bonds(self, values, types=None, guessed=True, order=None):
         if types is None:
             types = itertools.cycle((None,))
         if guessed in (True, False):
@@ -1721,6 +2035,35 @@ class _Connection(AtomAttr):
                 self.types.append(t)
                 self._guessed.append(g)
                 self.order.append(o)
+        # kill the old cache of bond Dict
+        try:
+            del self._cache['bd']
+        except KeyError:
+            pass
+
+    @_check_connection_values
+    def _delete_bonds(self, values):
+        """
+        .. versionadded:: 1.0.0
+        """
+
+        to_check = set(values)
+        self_values = set(self.values)
+        if not to_check.issubset(self_values):
+            missing = to_check-self_values
+            indices = ', '.join(map(str, missing))
+            raise ValueError(('Cannot delete nonexistent '
+                              '{attrname} with atom indices:'
+                              '{indices}').format(attrname=self.attrname,
+                                                  indices=indices))
+        idx = [self.values.index(v) for v in to_check]
+        for i in sorted(idx, reverse=True):
+            del self.values[i]
+
+        for attr in ('types', '_guessed', 'order'):
+            arr = np.array(getattr(self, attr), dtype='object')
+            new = np.delete(arr, idx)
+            setattr(self, attr, list(new))
         # kill the old cache of bond Dict
         try:
             del self._cache['bd']
@@ -1743,6 +2086,7 @@ class Bonds(_Connection):
     # many bonds, so still asks for "bonds" in the plural
     singular = 'bonds'
     transplants = defaultdict(list)
+    _n_atoms = 2
 
     def bonded_atoms(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` of all
@@ -1789,7 +2133,7 @@ class Bonds(_Connection):
         .. versionadded:: 0.20.0
         """
         fragdict = self.universe._fragdict
-        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.int64)
+        return np.array([fragdict[aix].ix for aix in self.ix], dtype=np.intp)
 
     def fragment(self):
         """An :class:`~MDAnalysis.core.groups.AtomGroup` representing the
@@ -1880,6 +2224,21 @@ class Bonds(_Connection):
                                  n_fragments.__doc__)))
 
 
+class UreyBradleys(_Connection):
+    """Angles between two atoms
+
+    Initialise with a list of 2 long tuples
+
+    These indices refer to the atom indices.
+
+    .. versionadded:: 1.0.0
+    """
+    attrname = 'ureybradleys'
+    singular = 'ureybradleys'
+    transplants = defaultdict(list)
+    _n_atoms = 2
+
+
 class Angles(_Connection):
     """Angles between three atoms
 
@@ -1891,6 +2250,7 @@ class Angles(_Connection):
     attrname = 'angles'
     singular = 'angles'
     transplants = defaultdict(list)
+    _n_atoms = 3
 
 
 class Dihedrals(_Connection):
@@ -1898,6 +2258,7 @@ class Dihedrals(_Connection):
     attrname = 'dihedrals'
     singular = 'dihedrals'
     transplants = defaultdict(list)
+    _n_atoms = 4
 
 
 class Impropers(_Connection):
@@ -1905,3 +2266,15 @@ class Impropers(_Connection):
     attrname = 'impropers'
     singular = 'impropers'
     transplants = defaultdict(list)
+    _n_atoms = 4
+
+
+class CMaps(_Connection):
+    """
+    A connection between five atoms
+    .. versionadded:: 1.0.0
+    """
+    attrname = 'cmaps'
+    singular = 'cmaps'
+    transplants = defaultdict(list)
+    _n_atoms = 5

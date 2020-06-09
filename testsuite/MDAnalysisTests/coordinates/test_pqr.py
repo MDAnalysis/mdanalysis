@@ -33,7 +33,7 @@ from numpy.testing import (
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import PQR
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 
 
 class TestPQRReader(_SingleFrameReader):
@@ -50,7 +50,7 @@ class TestPQRReader(_SingleFrameReader):
             "Total charge (in CHARMM) does not match expected value.")
 
     def test_hydrogenCharges(self):
-        assert_almost_equal(self.universe.atoms.H.charges,
+        assert_almost_equal(self.universe.select_atoms('name H').charges,
                             self.ref_charmm_Hcharges, 3,
                             "Charges for H atoms do not match.")
 

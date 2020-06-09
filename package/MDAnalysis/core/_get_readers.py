@@ -20,14 +20,14 @@ circular imports.
 
 """
 from __future__ import absolute_import
+from six import raise_from
 
 import copy
 import inspect
-import mmtf
-import numpy as np
-from MDAnalysis.lib.util import isstream
 
-from .. import _READERS, _PARSERS, _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS
+from .. import (_READERS, _READER_HINTS,
+                _PARSERS, _PARSER_HINTS,
+                _MULTIFRAME_WRITERS, _SINGLEFRAME_WRITERS, _CONVERTERS)
 from ..lib import util
 
 
@@ -65,6 +65,8 @@ def get_reader_for(filename, format=None):
       :class:`~MDAnalysis.coordinates.memory.MemoryReader` is returned.
     - If `filename` is an MMTF object,
       :class:`~MDAnalysis.coordinates.MMTF.MMTFReader` is returned.
+    - If `filename` is a ParmEd Structure,
+      :class:`~MDAnalysis.coordinates.ParmEd.ParmEdReader` is returned.
     - If `filename` is an iterable of filenames,
       :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned.
 
@@ -73,31 +75,30 @@ def get_reader_for(filename, format=None):
     :class:`~MDAnalysis.coordinates.chain.ChainReader` is returned and `format`
     passed to the :class:`~MDAnalysis.coordinates.chain.ChainReader`.
 
+    .. versionchanged:: 1.0.0
+       Added format_hint functionalityx
     """
     # check if format is actually a Reader
     if inspect.isclass(format):
         return format
 
     # ChainReader gets returned even if format is specified
-    if not isinstance(filename, np.ndarray) and util.iterable(filename) and not isstream(filename):
+    if _READER_HINTS['CHAIN'](filename):
         format = 'CHAIN'
     # Only guess if format is not specified
-    elif format is None:
-        # Checks for specialised formats
-        if isinstance(filename, np.ndarray):
-            # memoryreader slurps numpy arrays
-            format = 'MEMORY'
-        elif isinstance(filename, mmtf.MMTFDecoder):
-            # mmtf slurps mmtf object
-            format = 'MMTF'
-        else:
+    if format is None:
+        for fmt_name, test in _READER_HINTS.items():
+            if test(filename):
+                format = fmt_name
+                break
+        else:  # hits else if for loop completes
             # else let the guessing begin!
             format = util.guess_format(filename)
     format = format.upper()
     try:
         return _READERS[format]
     except KeyError:
-        raise ValueError(
+        raise_from(ValueError(
             "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
             "           {2}\n"
             "           are implemented in MDAnalysis.\n"
@@ -105,7 +106,8 @@ def get_reader_for(filename, format=None):
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
             "http://issues.mdanalysis.org".format(
-                format, filename, _READERS.keys()))
+                format, filename, _READERS.keys())),
+                   None)
 
 
 def get_writer_for(filename, format=None, multiframe=None):
@@ -168,10 +170,20 @@ def get_writer_for(filename, format=None, multiframe=None):
             # be manipulated as a string.
             # A TypeError is raised in py3.6
             # "TypeError: expected str, bytes or os.PathLike object"
-            raise ValueError('File format could not be guessed from "{0}"'
-                             .format(filename))
+            raise_from(
+                ValueError('File format could not be guessed from "{0}"'
+                             .format(filename)),
+                None)
         else:
             format = util.check_compressed_format(root, ext)
+
+    if format == '':
+        raise ValueError((
+            'File format could not be guessed from {}, '
+            'resulting in empty string - '
+            'only None or valid formats are supported.'
+            ).format(filename))
+
     format = format.upper()
     if multiframe is None:
         # Multiframe takes priority, else use singleframe
@@ -192,7 +204,7 @@ def get_writer_for(filename, format=None, multiframe=None):
     try:
         return options[format]
     except KeyError:
-        raise TypeError(errmsg.format(format))
+        raise_from(TypeError(errmsg.format(format)), None)
 
 
 def get_parser_for(filename, format=None):
@@ -214,14 +226,18 @@ def get_parser_for(filename, format=None):
     ValueError
         If no appropriate parser could be found.
 
+    .. versionchanged:: 1.0.0
+       Added format_hint functionality
     """
     if inspect.isclass(format):
         return format
 
     # Only guess if format is not provided
     if format is None:
-        if isinstance(filename, mmtf.MMTFDecoder):
-            format = 'mmtf'
+        for fmt_name, test in _PARSER_HINTS.items():
+            if test(filename):
+                format = fmt_name
+                break
         else:
             format = util.guess_format(filename)
     format = format.upper()
@@ -231,7 +247,8 @@ def get_parser_for(filename, format=None):
         try:
             rdr = get_reader_for(filename)
         except ValueError:
-            raise ValueError(
+            raise_from(
+                ValueError(
                 "'{0}' isn't a valid topology format, nor a coordinate format\n"
                 "   from which a topology can be minimally inferred.\n"
                 "   You can use 'Universe(topology, ..., topology_format=FORMAT)'\n"
@@ -240,6 +257,30 @@ def get_parser_for(filename, format=None):
                 "   {1}\n"
                 "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
                 "   For missing formats, raise an issue at \n"
-                "   http://issues.mdanalysis.org".format(format, _PARSERS.keys()))
+                "   http://issues.mdanalysis.org".format(format, _PARSERS.keys())),
+                None)
         else:
             return _PARSERS['MINIMAL']
+
+def get_converter_for(format):
+    """Return the appropriate topology converter for ``format``.
+
+    Parameters
+    ----------
+    format : str
+        description of the file format
+
+    Raises
+    ------
+    TypeError
+        If no appropriate parser could be found.
+
+
+    .. versionadded:: 1.0.0
+    """
+    try:
+        writer = _CONVERTERS[format]
+    except KeyError:
+        errmsg = 'No converter found for {} format'
+        raise_from(TypeError(errmsg.format(format)), None)
+    return writer

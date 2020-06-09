@@ -37,6 +37,7 @@ Real MD simulation data, used for examples and the unit tests::
    http://pypi.python.org/pypi/MDAnalysisTests and installed.
 """
 from __future__ import print_function, absolute_import
+from six import raise_from
 
 try:
     from MDAnalysisTests.datafiles import *
@@ -50,4 +51,4 @@ except ImportError:
     print()
     print("and download and install the `MDAnalysisTests-x.y.z.tar.gz'")
     print("that matches your MDAnalysis release.")
-    raise ImportError("MDAnalysisTests package not installed.")
+    raise_from(ImportError("MDAnalysisTests package not installed."), None)

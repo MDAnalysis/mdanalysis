@@ -90,7 +90,7 @@ class TXYZParser(TopologyReaderBase):
 
             atomids = np.zeros(natoms, dtype=np.int)
             names = np.zeros(natoms, dtype=object)
-            types = np.zeros(natoms, dtype=np.int)
+            types = np.zeros(natoms, dtype=object)
             bonds = []
             # Find first atom line, maybe there's box information
             fline = inf.readline()
@@ -115,7 +115,7 @@ class TXYZParser(TopologyReaderBase):
                 for other_atom in bonded_atoms:
                     other_atom = int(other_atom) - 1
                     if i < other_atom:
-                         bonds.append((i, other_atom))
+                        bonds.append((i, other_atom))
 
         # Guessing time
         masses = guessers.guess_masses(names)

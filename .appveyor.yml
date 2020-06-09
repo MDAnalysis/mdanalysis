@@ -10,11 +10,10 @@ cache:
 environment:
     global:
         CONDA_CHANNELS: conda-forge
-        CONDA_DEPENDENCIES: pip setuptools wheel cython mock six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov
-        PIP_DEPENDENCIES: gsd==1.5.2 duecredit
+        CONDA_DEPENDENCIES: pip setuptools wheel cython mock six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov chemfiles tqdm
+        PIP_DEPENDENCIES: gsd==1.9.3 duecredit parmed
         DEBUG: "False"
         MINGW_64: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
-        OPENBLAS_64: https://3f23b170c54c2533c070-1c8a9b3114517dc5fe17b7c3f8c63a43.ssl.cf2.rackcdn.com/openblas-5f998ef_gcc7_1_0_win64.zip
         APPVEYOR_SAVE_CACHE_ON_ERROR: true
         APPVEYOR_SKIP_FINALIZE_ON_EXIT: true
         TEST_TIMEOUT: 1000
@@ -25,6 +24,10 @@ environment:
 
     matrix:
         - PYTHON_VERSION: 3.6
+          PYTHON_ARCH: 64
+          MSVC_VERSION: "Visual Studio 10 Win64"
+
+        - PYTHON_VERSION: 3.8
           PYTHON_ARCH: 64
           MSVC_VERSION: "Visual Studio 10 Win64"
 
@@ -47,7 +50,6 @@ install:
     - ps: $env:PATH = "${env:PYTHON};${env:PYTHON}\Scripts;" + $env:PATH
     # deal with missing stdint.h as previously described
     # see https://github.com/swistakm/pyimgui/blob/master/.appveyor.yml
-    - ps: cp "C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\include\stdint.h" "C:\Users\appveyor\AppData\Local\Programs\Common\Microsoft\Visual C++ for Python\9.0\VC\include\stdint.h"
     - ps: activate test
 
 build_script:

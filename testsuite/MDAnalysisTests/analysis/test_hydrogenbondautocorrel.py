@@ -205,24 +205,6 @@ class TestHydrogenBondAutocorrel(object):
             np.array([0.33, 0.33, 5, 1, 0.1]),
         )
 
-    def test_save(self, u, hydrogens, oxygens, nitrogens, tmpdir):
-        hbond = HBAC(u,
-                     hydrogens=hydrogens,
-                     acceptors=oxygens,
-                     donors=nitrogens,
-                     bond_type='continuous',
-                     sample_time=0.06,
-        )
-        hbond.run()
-
-        tmpfile = os.path.join(str(tmpdir), 'hbondout.npz')
-
-        hbond.save_results(tmpfile)
-
-        loaded = np.load(tmpfile)
-        assert 'time' in loaded
-        assert 'results' in loaded
-
     # setup errors
     def test_wronglength_DA(self, u, hydrogens, oxygens, nitrogens):
         with pytest.raises(ValueError):
@@ -286,17 +268,6 @@ class TestHydrogenBondAutocorrel(object):
                 bond_type='continuous',
                 sample_time=0.06
         )
-
-    def test_save_without_run_VE(self, u, hydrogens, oxygens, nitrogens):
-        hbond = HBAC(u,
-                     hydrogens=hydrogens,
-                     acceptors=oxygens,
-                     donors=nitrogens,
-                     bond_type='continuous',
-                     sample_time=0.06,
-        )
-        with pytest.raises(ValueError):
-            hbond.save_results()
 
     def test_repr(self, u, hydrogens, oxygens, nitrogens):
         hbond = HBAC(u,

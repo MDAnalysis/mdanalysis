@@ -120,9 +120,6 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 * The trajectory does not contain time information so we simply set
   the time step to 1 ps (or the user could provide it as kwarg *dt*)
 
-* **No direct access of frames is implemented, only iteration through
-  the trajectory.**
-
 * Trajectories with fewer than 4 atoms probably fail to be read (BUG).
 
 * If the trajectory contains exactly *one* atom then it is always
@@ -154,6 +151,8 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 """
 from __future__ import (absolute_import, division, print_function,
                         unicode_literals)
+from six import raise_from
+
 import scipy.io.netcdf
 import numpy as np
 import warnings
@@ -161,7 +160,6 @@ import errno
 import logging
 
 import MDAnalysis
-from ..core import flags
 from . import base
 from ..lib import util
 
@@ -202,9 +200,6 @@ class TRJReader(base.ReaderBase):
     The length of a timestep is not stored in the trajectory itself but can
     be set by passing the `dt` keyword argument to the constructor; it
     is assumed to be in ps. The default value is 1 ps.
-
-    Functionality is currently limited to simple iteration over the
-    trajectory.
 
     .. _AMBER TRJ format: http://ambermd.org/formats.html#trajectory
 
@@ -456,10 +451,9 @@ class NCDFReader(base.ReaderBase):
        kJ/(mol*Angstrom). It is noted that with 0.19.2 and earlier versions,
        velocities would have often been reported in values of angstrom/AKMA
        time units instead (Issue #2323).
-
-    .. TODO:
-       * Remove support for `degrees` units in MDAnalysis version > 1.0
-         (Issue #2327, PR #2326).
+    .. versionchanged:: 1.0.0
+       Support for reading `degrees` units for `cell_angles` has now been
+       removed (Issue #2327)
 
     """
 
@@ -498,7 +492,7 @@ class NCDFReader(base.ReaderBase):
             errmsg = "NCDF trajectory {0} is missing Conventions".format(
                       self.filename)
             logger.fatal(errmsg)
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         # AMBER NetCDF files should also have a ConventionVersion
         try:
@@ -512,7 +506,7 @@ class NCDFReader(base.ReaderBase):
         except AttributeError:
             errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
                       self.filename)
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         # The AMBER NetCDF standard enforces 64 bit offsets
         if not self.trjfile.version_byte == 2:
@@ -531,7 +525,7 @@ class NCDFReader(base.ReaderBase):
                 raise TypeError(errmsg)
         except KeyError:
             errmsg = "NCDF trajectory does not contain spatial dimension"
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         # AMBER NetCDF specs require program and programVersion. Warn users
         # if those attributes do not exist
@@ -553,7 +547,7 @@ class NCDFReader(base.ReaderBase):
         except KeyError:
             errmsg = ("NCDF trajectory {0} does not contain atom "
                       "information".format(self.filename))
-            raise ValueError(errmsg)
+            raise_from(ValueError(errmsg), None)
 
         try:
             self.n_frames = self.trjfile.dimensions['frame']
@@ -565,9 +559,12 @@ class NCDFReader(base.ReaderBase):
             if self.n_frames is None:
                 self.n_frames = self.trjfile.variables['time'].shape[0]
         except KeyError:
-            errmsg = ("NCDF trajectory {0} does not contain frame "
-                      "information".format(self.filename))
-            raise ValueError(errmsg)
+            raise_from(
+                ValueError(
+                    ("NCDF trajectory {0} does not contain frame "
+                     "information").format(self.filename)
+                    ),
+                None)
 
         try:
             self.remarks = self.trjfile.title
@@ -616,21 +613,9 @@ class NCDFReader(base.ReaderBase):
         if self.periodic:
             self._verify_units(self.trjfile.variables['cell_lengths'].units,
                                'angstrom')
-            # Currently the MDA writer outputs 'degrees' rather than the
-            # singular form 'degree' agreed in the conventions. As discussed
-            # in PR #2326 from MDA 1.0 only and 'degree' will be accepted.
+            # As of v1.0.0 only `degree` is accepted as a unit
             cell_angle_units = self.trjfile.variables['cell_angles'].units
-            if (cell_angle_units.decode('utf-8') == 'degrees'):
-                wmsg = ("DEPRECATED (1.0): NCDF trajectory {0} uses units of "
-                        "`degrees` for the `cell_angles` variable instead of "
-                        "`degree`. Support for non-AMBER convention units is "
-                        "now deprecated and will end in MDAnalysis version "
-                        "1.0. Afterwards, reading this file will raise an "
-                        "error.")
-                warnings.warn(wmsg, category=DeprecationWarning)
-                logger.warning(wmsg)
-            else:
-                self._verify_units(cell_angle_units, 'degree')
+            self._verify_units(cell_angle_units, 'degree')
 
         self._current_frame = 0
 
@@ -709,7 +694,7 @@ class NCDFReader(base.ReaderBase):
         try:
             return self._read_frame(self._current_frame + 1)
         except IndexError:
-            raise IOError
+            raise_from(IOError, None)
 
     def _get_dt(self):
         t1 = self.trjfile.variables['time'][1]
@@ -784,9 +769,7 @@ class NCDFWriter(base.WriterBase):
     dt : float (optional)
         timestep
     convert_units : bool (optional)
-        ``True``: units are converted to the AMBER base format; ``None``
-        selects the value of :data:`MDAnalysis.core.flags`
-        ['convert_lengths'] (see :ref:`flags-label`).
+        ``True``: units are converted to the AMBER base format; [``True``]
     velocities : bool (optional)
         Write velocities into the trajectory [``False``]
     forces : bool (optional)
@@ -872,14 +855,12 @@ class NCDFWriter(base.WriterBase):
                  step=1,
                  dt=1.0,
                  remarks=None,
-                 convert_units=None,
+                 convert_units=True,
                  **kwargs):
         self.filename = filename
         if n_atoms == 0:
             raise ValueError("NCDFWriter: no atoms in output trajectory")
         self.n_atoms = n_atoms
-        if convert_units is None:
-            convert_units = flags['convert_lengths']
         # convert length and time to base units on the fly?
         self.convert_units = convert_units
 
@@ -888,7 +869,6 @@ class NCDFWriter(base.WriterBase):
         self.dt = dt
         self.remarks = remarks or "AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"
 
-        self.ts = None  # when/why would this be assigned??
         self._first_frame = True  # signals to open trajectory
         self.trjfile = None  # open on first write with _init_netcdf()
         self.periodic = None  # detect on first write
@@ -991,39 +971,48 @@ class NCDFWriter(base.WriterBase):
         self._first_frame = False
         self.trjfile = ncfile
 
-    def is_periodic(self, ts=None):
-        """Test if `Timestep` contains a periodic trajectory.
+    def is_periodic(self, ts):
+        """Test if timestep ``ts`` contains a periodic box.
 
         Parameters
         ----------
         ts : :class:`Timestep`
              :class:`Timestep` instance containing coordinates to
-             be written to trajectory file; default is the current
-             timestep
+             be written to trajectory file
 
         Returns
         -------
         bool
             Return ``True`` if `ts` contains a valid simulation box
         """
-        ts = ts if ts is not None else self.ts
         return np.all(ts.dimensions > 0)
 
-    def write_next_timestep(self, ts=None):
-        """write a new timestep to the trj file
+    def _write_next_frame(self, ag):
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------
-        ts : :class:`Timestep`
-             :class:`Timestep` instance containing coordinates to
-             be written to trajectory file; default is the current
-             timestep
+        ag : AtomGroup or Universe
+
+
+        .. deprecated:: 1.0.0
+           Deprecated using Timestep. To be removed in version 2.0.
+        .. versionchanged:: 1.0.0
+           Added ability to use either AtomGroup or Universe.
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
-        if ts is None:
-            ts = self.ts
-        if ts is None:
-            raise IOError(
-                "NCDFWriter: no coordinate data to write to trajectory file")
+        if isinstance(ag, base.Timestep):
+            ts = ag
+        else:
+            try:
+                # Atomgroup?
+                ts = ag.ts
+            except AttributeError:
+                try:
+                    # Universe?
+                    ts = ag.trajectory.ts
+                except AttributeError:
+                    raise TypeError("No Timestep found in ag argument")
 
         if ts.n_atoms != self.n_atoms:
             raise IOError(
@@ -1039,7 +1028,7 @@ class NCDFWriter(base.WriterBase):
         """Write coordinates and unitcell information to NCDF file.
 
         Do not call this method directly; instead use
-        :meth:`write_next_timestep` because some essential setup is done
+        :meth:`write` because some essential setup is done
         there before writing the first frame.
 
         Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.
