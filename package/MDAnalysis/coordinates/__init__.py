@@ -745,3 +745,4 @@ from . import GSD
 from . import null
 from . import NAMDBIN
 from . import FHIAIMS
+from . import RDKit
