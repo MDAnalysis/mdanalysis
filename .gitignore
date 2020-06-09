@@ -39,6 +39,9 @@ authors.py
 # ignore files from tests
 .hypothesis/
 
+# duecredit
+.duecredit.p
+
 # editors and IDEs
 *.sw[a-z]
 *~

@@ -42,7 +42,7 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import hole2
 from MDAnalysis.analysis.hole2.utils import check_and_fix_long_filename
 from MDAnalysis.exceptions import ApplicationError
-from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, PSF, DCD
+from MDAnalysisTests.datafiles import PDB_HOLE, MULTIPDB_HOLE, DCD
 from MDAnalysisTests import executable_not_found
 
 
@@ -58,6 +58,7 @@ def rlimits_missing():
         return True
     return False
 
+
 class TestCheckAndFixLongFilename(object):
 
     max_length = 70
@@ -72,7 +73,9 @@ class TestCheckAndFixLongFilename(object):
         if len(abspath) > self.max_length:
             fixed = check_and_fix_long_filename(abspath)
             assert fixed == self.filename
-    
+
+    @pytest.mark.skipif(os.name == 'nt' and sys.maxsize <= 2**32,
+                        reason="FileNotFoundError on Win 32-bit")
     def test_symlink_dir(self, tmpdir):
         dirname = 'really_'*20 +'long_name'
         short_name = self.filename[-20:]
@@ -85,7 +88,9 @@ class TestCheckAndFixLongFilename(object):
             fixed = check_and_fix_long_filename(path)
             assert os.path.islink(fixed)
             assert fixed.endswith(short_name)
-    
+
+    @pytest.mark.skipif(os.name == 'nt' and sys.maxsize <= 2**32,
+                        reason="OSError: symbolic link privilege not held")
     def test_symlink_file(self, tmpdir):
         long_name = 'a'*10 + self.filename
 
@@ -199,7 +204,8 @@ class TestHole(object):
     def test_output_level(self, tmpdir):
         with tmpdir.as_cwd():
             with pytest.warns(UserWarning) as rec:
-                profiles = hole2.hole(self.filename, random_seed=self.random_seed,
+                profiles = hole2.hole(self.filename,
+                                      random_seed=self.random_seed,
                                       output_level=100)
             assert len(rec) == 1
             assert 'needs to be < 3' in rec[0].message.args[0]
@@ -303,10 +309,12 @@ class TestHoleAnalysis(BaseTestHole):
                                        output_level=100)
                 h.run(start=self.start,
                       stop=self.stop, random_seed=self.random_seed)
-            assert len(rec) == 3
-            assert 'needs to be < 3' in rec[0].message.args[0]
-            assert 'has no dt information' in rec[1].message.args[0]
-            assert 'has no dt information' in rec[2].message.args[0]
+            assert len(rec) == 5
+
+            assert any('needs to be < 3' in r.message.args[0] for r in rec)
+            assert any('has no dt information' in r.message.args[0] for r in rec)  # 2x
+            assert any('Unit cell dimensions not found.' in r.message.args[0] for r in rec)  # 2x
+
             # no profiles
             assert len(h.profiles) == 0
 
@@ -327,7 +335,7 @@ class TestHoleAnalysis(BaseTestHole):
                     line = f.read().split('CPOINT')[1].split('\n')[0]
                 arr = np.array(list(map(float, line.split())))
                 assert_almost_equal(arr, cog)
-    
+
     # plotting
     def test_plot(self, hole, frames, profiles):
         ax = hole.plot(label=True, frames=None, y_shift=1)
@@ -340,7 +348,7 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(x, profile.rxn_coord)
             assert_almost_equal(y, profile.radius + i)
             assert line.get_label() == str(frame)
-    
+
     def test_plot_mean_profile(self, hole, frames, profiles):
         binned, bins = hole.bin_radii(bins=100)
         mean = np.array(list(map(np.mean, binned)))
@@ -350,7 +358,7 @@ class TestHoleAnalysis(BaseTestHole):
         yhigh = list(mean+(2*stds))
 
         ax = hole.plot_mean_profile(bins=100, n_std=2)
-        
+
         # test fillbetween standard deviation
         children = ax.get_children()
         poly = []
@@ -369,7 +377,7 @@ class TestHoleAnalysis(BaseTestHole):
         assert_almost_equal(xl, midpoints)
         assert_almost_equal(yl, mean)
 
-    @pytest.mark.skipif(sys.version_info < (3, 1), 
+    @pytest.mark.skipif(sys.version_info < (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D(self, hole, frames, profiles):
         ax = hole.plot3D(frames=None, r_max=None)
@@ -385,7 +393,7 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(z, profile.radius)
             assert line.get_label() == str(frame)
         
-    @pytest.mark.skipif(sys.version_info < (3, 1), 
+    @pytest.mark.skipif(sys.version_info < (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D_rmax(self, hole, frames, profiles):
         ax = hole.plot3D(r_max=2.5)
@@ -398,11 +406,11 @@ class TestHoleAnalysis(BaseTestHole):
             x, y, z = line.get_data_3d()
             assert_almost_equal(x, profile.rxn_coord)
             assert_almost_equal(np.unique(y), [frame])
-            radius = np.where(profile.radius>2.5, np.nan, profile.radius)
+            radius = np.where(profile.radius > 2.5, np.nan, profile.radius)
             assert_almost_equal(z, radius)
             assert line.get_label() == str(frame)
-    
-    @pytest.mark.skipif(sys.version_info > (3, 1), 
+
+    @pytest.mark.skipif(sys.version_info > (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D(self, hole, frames, profiles):
         ax = hole.plot3D(frames=None, r_max=None)
@@ -416,8 +424,8 @@ class TestHoleAnalysis(BaseTestHole):
             assert_almost_equal(x, profile.rxn_coord)
             assert_almost_equal(np.unique(y), [frame])
             assert line.get_label() == str(frame)
-        
-    @pytest.mark.skipif(sys.version_info > (3, 1), 
+
+    @pytest.mark.skipif(sys.version_info > (3, 1),
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D_rmax(self, hole, frames, profiles):
         ax = hole.plot3D(r_max=2.5)
@@ -441,7 +449,7 @@ class TestHoleAnalysisLong(BaseTestHole):
     rmsd = np.array([6.10501252e+00, 4.88398472e+00, 3.66303524e+00, 2.44202454e+00,
                      1.22100521e+00, 1.67285541e-07, 1.22100162e+00, 2.44202456e+00,
                      3.66303410e+00, 4.88398478e+00, 6.10502262e+00])
-    
+
     @pytest.fixture
     def order_parameter_keys_values(self, hole):
         op = hole.over_order_parameters(self.rmsd, frames=None)
@@ -483,7 +491,7 @@ class TestHoleAnalysisLong(BaseTestHole):
         arr = np.array(list(hole.profiles.values()))
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
-    
+
     def test_over_order_parameters_file(self, hole, tmpdir):
         op = self.rmsd
         with tmpdir.as_cwd():
@@ -491,7 +499,7 @@ class TestHoleAnalysisLong(BaseTestHole):
             profiles = hole.over_order_parameters('rmsd.dat', frames=None)
 
         assert len(op) == len(profiles)
-    
+
         for key, rmsd in zip(profiles.keys(), np.sort(op)):
             assert key == rmsd
 
@@ -499,15 +507,15 @@ class TestHoleAnalysisLong(BaseTestHole):
         arr = np.array(list(hole.profiles.values()))
         for op_prof, arr_prof in zip(profiles.values(), arr[idx]):
             assert op_prof is arr_prof
-    
+
     def test_over_order_parameters_missing_file(self, hole):
         with pytest.raises(ValueError) as exc:
-            prof = hole.over_order_parameters('missing.dat')
+            hole.over_order_parameters('missing.dat')
         assert 'not found' in str(exc.value)
-    
+
     def test_over_order_parameters_invalid_file(self, hole):
         with pytest.raises(ValueError) as exc:
-            prof = hole.over_order_parameters(PDB_HOLE)
+            hole.over_order_parameters(PDB_HOLE)
         assert 'Could not parse' in str(exc.value)
 
     def test_over_order_parameters_frames(self, hole):
@@ -545,7 +553,7 @@ class TestHoleAnalysisLong(BaseTestHole):
                     break
             else:
                 raise AssertionError('Radius not in binned radii')
-    
+
     @pytest.mark.parametrize('midpoint', [1.5, 1.8, 2.0, 2.5])
     def test_bin_radii_range(self, hole, midpoint):
         radii, bins = hole.bin_radii(bins=100, 
@@ -574,7 +582,7 @@ class TestHoleAnalysisLong(BaseTestHole):
                     raise AssertionError('Radius not in binned radii')
             else:
                 assert not any([rad in x for x in radii])
-    
+
     def test_bin_radii_edges(self, hole):
         brange = list(np.linspace(1.0, 2.0, num=101, endpoint=True))
         moved = brange[30:] + brange[10:30] + brange[:10]
@@ -605,7 +613,7 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert_almost_equal(x, profile.rxn_coord)
             assert_almost_equal(y, profile.radius + i)
             assert line.get_label() == str(frame)
-    
+
     @pytest.mark.parametrize('agg', [np.max, np.mean, np.std, np.min])
     def test_plot_order_parameters(self, hole, order_parameter_keys_values,
                                    agg):
@@ -639,7 +647,7 @@ class TestHoleAnalysisLong(BaseTestHole):
             assert_almost_equal(x, profile.rxn_coord)
             assert_almost_equal(np.unique(y), np.array([opx_]))
             assert_almost_equal(z, profile.radius)
-    
+
     @pytest.mark.skipif(sys.version_info > (3, 1), 
                         reason="get_data_3d requires 3.1 or higher")
     def test_plot3D_order_parameters(self, hole, order_parameter_keys_values):
