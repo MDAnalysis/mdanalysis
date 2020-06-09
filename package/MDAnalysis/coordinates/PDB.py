@@ -825,7 +825,7 @@ class PDBWriter(base.WriterBase):
         * :attr:`PDBWriter.timestep` (the underlying trajectory
           :class:`~MDAnalysis.coordinates.base.Timestep`)
 
-        Before calling :meth:`write_next_timestep` this method **must** be
+        Before calling :meth:`_write_next_frame` this method **must** be
         called at least once to enable extracting topology information from the
         current frame.
         """
@@ -864,7 +864,7 @@ class PDBWriter(base.WriterBase):
         # Issue 105: with write() ONLY write a single frame; use
         # write_all_timesteps() to dump everything in one go, or do the
         # traditional loop over frames
-        self.write_next_timestep(self.ts, multiframe=self._multiframe)
+        self._write_next_frame(self.ts, multiframe=self._multiframe)
         self._write_pdb_bonds()
         # END record is written when file is being close()d
 
@@ -907,7 +907,7 @@ class PDBWriter(base.WriterBase):
 
         for framenumber in range(start, len(traj), step):
             traj[framenumber]
-            self.write_next_timestep(self.ts, multiframe=True)
+            self._write_next_frame(self.ts, multiframe=True)
 
         self._write_pdb_bonds()
         self.close()
@@ -915,7 +915,7 @@ class PDBWriter(base.WriterBase):
         # Set the trajectory to the starting position
         traj[start]
 
-    def write_next_timestep(self, ts=None, **kwargs):
+    def _write_next_frame(self, ts=None, **kwargs):
         '''write a new timestep to the PDB file
 
         :Keywords:
@@ -931,6 +931,10 @@ class PDBWriter(base.WriterBase):
            argument, :meth:`PDBWriter._update_frame` *must* be called
            with the :class:`~MDAnalysis.core.groups.AtomGroup.Universe` as
            its argument so that topology information can be gathered.
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         '''
         if ts is None:
             try:

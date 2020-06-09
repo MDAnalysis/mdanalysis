@@ -92,7 +92,7 @@ class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
 
     This class handles integration of XDR based formats into MDAnalysis. The
-    XTC and TRR classes only implement `write_next_timestep` and
+    XTC and TRR classes only implement `_write_next_frame` and
     `_frame_to_ts`.
 
     .. _offsets-label:

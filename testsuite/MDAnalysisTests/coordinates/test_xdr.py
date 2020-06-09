@@ -340,7 +340,7 @@ class _GromacsWriter(object):
         """Test writing Gromacs trajectories (Issue 38)"""
         with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -366,7 +366,7 @@ class _GromacsWriter(object):
         with Writer(outfile, trj.n_atoms, dt=trj.dt) as W:
             # last timestep (so that time != 0) (say it again, just in case...)
             trj[-1]
-            W.write_next_timestep(ts)
+            W.write(universe)
 
         assert_equal(
             ts._pos,
@@ -388,7 +388,7 @@ class TestTRRWriter(_GromacsWriter):
     def test_velocities(self, universe, Writer, outfile):
         with Writer(outfile, universe.atoms.n_atoms, dt=universe.trajectory.dt) as W:
             for ts in universe.trajectory:
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -414,7 +414,7 @@ class TestTRRWriter(_GromacsWriter):
                     ts.has_positions = False
                 if ts.frame % 2 == 0:
                     ts.has_velocities = False
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(GRO, outfile)
         # check that the velocities are identical for each time step, except
@@ -509,7 +509,7 @@ class _GromacsWriterIssue117(object):
         outfile = str(tmpdir.join('xdr-writer-issue117' + self.ext))
         with mda.Writer(outfile, n_atoms=universe.atoms.n_atoms) as W:
             for ts in universe.trajectory:
-                W.write_next_timestep(ts)
+                W.write(universe)
 
         uw = mda.Universe(PRMncdf, outfile)
 

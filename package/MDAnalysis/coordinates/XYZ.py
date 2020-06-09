@@ -89,6 +89,7 @@ import itertools
 import os
 import errno
 import numpy as np
+import warnings
 import logging
 logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
 
@@ -201,6 +202,11 @@ class XYZWriter(base.WriterBase):
         obj : Universe or AtomGroup
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
+
+
+        .. deprecated:: 1.0.0
+           Deprecated the use of Timestep as arguments to write. Use either an
+           AtomGroup or Universe. To be removed in version 2.0.
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write
@@ -210,6 +216,11 @@ class XYZWriter(base.WriterBase):
             atoms = obj.atoms
         except AttributeError:
             if isinstance(obj, base.Timestep):
+                warnings.warn(
+                    'Passing a Timestep to write is deprecated, '
+                    'and will be removed in 2.0; '
+                    'use either an AtomGroup or Universe',
+                    DeprecationWarning)
                 ts = obj
             else:
                 six.raise_from(TypeError("No Timestep found in obj argument"), None)
@@ -228,15 +239,16 @@ class XYZWriter(base.WriterBase):
             # update atom names
             self.atomnames = self._get_atoms_elements_or_names(atoms)
 
-        self.write_next_timestep(ts)
+        self._write_next_frame(ts)
 
-    def write_next_timestep(self, ts=None):
+    def _write_next_frame(self, ts=None):
         """
         Write coordinate information in *ts* to the trajectory
 
         .. versionchanged:: 1.0.0
            Print out :code:`remark` if present, otherwise use generic one 
            (Issue #2692).
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         if ts is None:
             if not hasattr(self, 'ts'):
@@ -255,9 +267,9 @@ class XYZWriter(base.WriterBase):
         else:
             if (not isinstance(self.atomnames, itertools.cycle) and
                 len(self.atomnames) != ts.n_atoms):
-                logger.info('Trying to write a TimeStep with unkown atoms. '
-                            'Expected {}, got {}. Try using "write" if you are '
-                            'using "write_next_timestep" directly'.format(
+                logger.info('Trying to write a TimeStep with unknown atoms. '
+                            'Expected {} atoms, got {}. Try using "write" if you are '
+                            'using "_write_next_frame" directly'.format(
                                 len(self.atomnames), ts.n_atoms))
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 

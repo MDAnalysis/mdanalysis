@@ -215,7 +215,8 @@ Deprecations
   * analysis.density.density_from_Universe() (remove in 2.0)
   * analysis.density.notwithin_coordinates_factory() (remove in 2.0)
   * analysis.density.density_from_PDB and BfactorDensityCreator (remove in 2.0)
-
+  * Writer.write_next_timestep is deprecated, use write() instead (remove in 2.0)
+  * Writer.write(Timestep) is deprecated, use either a Universe or AtomGroup
 
 09/05/19 IAlibay, richardjgowers
 
