@@ -253,6 +253,10 @@ class TestUniverseFromSmiles(object):
             u = mda.Universe.from_smiles("CCO", numConfs=2.1, format='RDKIT')
             assert "non-zero positive integer" in str (e.value)
 
+    def test_coordinates_SMILES(self):
+        u = mda.Universe.from_smiles("CCO", numConfs=2)
+        assert u.trajectory.n_frames == 2
+        
 
 class TestUniverse(object):
     # older tests, still useful
