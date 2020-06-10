@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
-         calcraven, ianmkenney
+         calcraven, ianmkenney, rcrehuet
 
   * 1.0.1
 
@@ -41,10 +41,10 @@ Fixes
   * Fixed performance regression on select_atoms for string selections (#2751)
   * Fixed the DMSParser, allowing the creation of multiple segids sharing
     residues with identical resids (Issue #1387, PR #2872)
+  * Fixed missing space between floats in helanal output files (PR #2733)
 
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
-
 
 Deprecations
   * waterdynamics.HydrogenBondLifetimes will be removed in 2.0.0 and
