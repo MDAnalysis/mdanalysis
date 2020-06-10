@@ -113,7 +113,7 @@ class XDRBaseReader(base.ReaderBase):
     Reader. However, the  next time the trajectory is opened,  the offsets will
     have to be rebuilt again.
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
        XDR offsets read from trajectory if offsets file read-in fails
 
     """
