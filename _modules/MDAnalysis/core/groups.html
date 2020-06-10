@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MDAnalysis.core.groups &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>MDAnalysis.core.groups &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.20.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.20
+                2.0
               </div>
             
           
@@ -977,7 +977,7 @@
 <span class="sd">        .. versionchanged:: 0.20.0 Added ``&#39;molecules&#39;`` and ``&#39;fragments&#39;``</span>
 <span class="sd">            compounds</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
-<span class="sd">        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour</span>
+<span class="sd">        .. versionchanged:: 1.0.0 Removed flags affecting default behaviour</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
 
@@ -1108,7 +1108,7 @@
 <span class="sd">        .. versionchanged:: 0.20.0 Added ``&#39;molecules&#39;`` and ``&#39;fragments&#39;``</span>
 <span class="sd">            compounds</span>
 <span class="sd">        .. versionchanged:: 0.20.0 Added `unwrap` parameter</span>
-<span class="sd">        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour</span>
+<span class="sd">        .. versionchanged:: 1.0.0 Removed flags affecting default behaviour</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="n">unwrap</span><span class="p">)</span>
 
@@ -1282,7 +1282,7 @@
 
 <span class="sd">        .. versionadded:: 0.7.2</span>
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
-<span class="sd">        .. versionchanged:: 0.21.0 Removed flags affecting default behaviour</span>
+<span class="sd">        .. versionchanged:: 1.0.0 Removed flags affecting default behaviour</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atomgroup</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
 
@@ -3218,7 +3218,7 @@
 <span class="sd">            If the :class:`AtomGroup` is not length 2</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -3236,7 +3236,7 @@
 <span class="sd">            If the :class:`AtomGroup` is not length 5</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">5</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -3279,7 +3279,7 @@
 <span class="sd">            No converter was found for the required package</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">converter</span> <span class="o">=</span> <span class="n">get_converter_for</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">converter</span><span class="p">()</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>

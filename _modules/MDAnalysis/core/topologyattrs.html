@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MDAnalysis.core.topologyattrs &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>MDAnalysis.core.topologyattrs &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.20.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.20
+                2.0
               </div>
             
           
@@ -2106,7 +2106,7 @@
 <span class="sd">     - coerces them to tuples of ints (for hashing)</span>
 <span class="sd">     - ensures that first value is less than last (reversibility &amp; hashing)</span>
 
-<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    .. versionadded:: 1.0.0</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
@@ -2130,7 +2130,7 @@
 <span class="k">class</span> <span class="nc">_Connection</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base class for connectivity between atoms</span>
 
-<span class="sd">    .. versionchanged:: 0.21.0</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Added type checking to atom index values.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -2219,7 +2219,7 @@
     <span class="nd">@_check_connection_values</span>
     <span class="k">def</span> <span class="nf">_delete_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">to_check</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -2406,7 +2406,7 @@
 
 <span class="sd">    These indices refer to the atom indices.</span>
 
-<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;ureybradleys&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;ureybradleys&#39;</span>
@@ -2447,7 +2447,7 @@
 <div class="viewcode-block" id="CMaps"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.CMaps">[docs]</a><span class="k">class</span> <span class="nc">CMaps</span><span class="p">(</span><span class="n">_Connection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A connection between five atoms</span>
-<span class="sd">    .. versionadded:: 0.21.0</span>
+<span class="sd">    .. versionadded:: 1.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;cmaps&#39;</span>
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;cmaps&#39;</span>

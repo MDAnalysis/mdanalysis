@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>MDAnalysis.core.universe &mdash; MDAnalysis 0.20.2-dev0 documentation</title>
+  <title>MDAnalysis.core.universe &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -33,7 +33,7 @@
 
     
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within MDAnalysis 0.20.2-dev0 documentation"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
           href="../../../_static/opensearch.xml"/>
 
   
@@ -68,7 +68,7 @@
             
             
               <div class="version">
-                0.20
+                2.0
               </div>
             
           
@@ -631,7 +631,7 @@
 <span class="sd">        .. versionadded:: 0.17.0</span>
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">           The attached Reader when trajectory=True is now a MemoryReader</span>
-<span class="sd">        .. versionchanged:: 0.21.0</span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">           Universes can now be created with 0 atoms</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">n_atoms</span><span class="p">:</span>
@@ -1156,7 +1156,7 @@
 <span class="sd">            None, or an iterable of hashable values with the same length as ``values``</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">TopologyObject</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -1236,7 +1236,7 @@
 <span class="sd">            u2.add_bonds(u.bonds.to_indices())</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">)</span>
@@ -1258,7 +1258,7 @@
 <span class="sd">        guessed : bool or iterable (optional, default False)</span>
 <span class="sd">            bool, or an iterable of hashable values with the same length as ``values``</span>
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
@@ -1280,7 +1280,7 @@
 <span class="sd">            bool, or an iterable of hashable values with the same length as ``values``</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
@@ -1302,7 +1302,7 @@
 <span class="sd">            bool, or an iterable of hashable values with the same length as ``values``</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">types</span><span class="p">,</span>
                                  <span class="n">guessed</span><span class="o">=</span><span class="n">guessed</span><span class="p">)</span></div>
@@ -1320,7 +1320,7 @@
 <span class="sd">            If AtomGroups, TopologyObjects, or a TopologyGroup are passed,</span>
 <span class="sd">            they *must* be from the same Universe.</span>
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
@@ -1374,7 +1374,7 @@
 <span class="sd">            u.delete_bonds(u2.bonds.to_indices())</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;bonds&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;fragments&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
@@ -1391,7 +1391,7 @@
 <span class="sd">            they *must* be from the same Universe.</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
@@ -1407,7 +1407,7 @@
 <span class="sd">            they *must* be from the same Universe.</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
@@ -1423,7 +1423,7 @@
 <span class="sd">            they *must* be from the same Universe.</span>
 
 
-<span class="sd">        .. versionadded:: 0.21.0</span>
+<span class="sd">        .. versionadded:: 1.0.0</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delete_topology_objects</span><span class="p">(</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span></div>
 
