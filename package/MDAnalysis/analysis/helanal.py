@@ -376,28 +376,28 @@ def helanal_trajectory(universe, select="name CA",
 
         #print out rotations across the helix to a file
         with open(twist_filename, "a") as twist_output:
-            print(frame, end='', file=twist_output)
+            print(frame, end=' ', file=twist_output)
             for loc_twist in twist:
-                print(loc_twist, end='', file=twist_output)
+                print(loc_twist, end=' ', file=twist_output)
             print("", file=twist_output)
 
         with open(bend_filename, "a") as bend_output:
-            print(frame, end='', file=bend_output)
+            print(frame, end=' ', file=bend_output)
             for loc_bend in bending_angles:
-                print(loc_bend, end='', file=bend_output)
+                print(loc_bend, end=' ', file=bend_output)
             print("", file=bend_output)
 
         with open(screw_filename, "a") as rot_output:
-            print(frame, end='', file=rot_output)
+            print(frame, end=' ', file=rot_output)
             for rotation in local_screw_angles:
-                print(rotation, end='', file=rot_output)
+                print(rotation, end=' ', file=rot_output)
             print("", file=rot_output)
 
         with open(tilt_filename, "a") as tilt_output:
-            print(frame, end='', file=tilt_output)
+            print(frame, end=' ', file=tilt_output)
             for tilt in local_helix_axes:
                 print(np.rad2deg(mdamath.angle(tilt, ref_axis)),
-                      end='', file=tilt_output)
+                      end=' ', file=tilt_output)
             print("", file=tilt_output)
 
         with open(fitted_tilt_filename, "a") as tilt_output:
@@ -424,21 +424,21 @@ def helanal_trajectory(universe, select="name CA",
         for row in bending_statistics_matrix:
             for col in row:
                 formatted_angle = "{0:6.1f}".format(col[0])
-                print(formatted_angle, end='', file=mat_output)
+                print(formatted_angle, end=' ', file=mat_output)
             print('', file=mat_output)
 
         print('\nSD', file=mat_output)
         for row in bending_statistics_matrix:
             for col in row:
                 formatted_angle = "{0:6.1f}".format(col[1])
-                print(formatted_angle, end='', file=mat_output)
+                print(formatted_angle, end=' ', file=mat_output)
             print('', file=mat_output)
 
         print("\nABDEV", file=mat_output)
         for row in bending_statistics_matrix:
             for col in row:
                 formatted_angle = "{0:6.1f}".format(col[2])
-                print(formatted_angle, end='', file=mat_output)
+                print(formatted_angle, end=' ', file=mat_output)
             print('', file=mat_output)
 
     logger.info("Height: %g  SD: %g  ABDEV: %g  (Angstroem)", height_mean, height_sd, height_abdev)
@@ -473,18 +473,18 @@ def helanal_trajectory(universe, select="name CA",
         if start is None:
             for item in range(4, len(residue_statistics[0]) + 4):
                 output = "{0:8d}".format(item)
-                print(output, end='', file=summary_output)
+                print(output, end=' ', file=summary_output)
         else:
             for item in range(start + 3, len(residue_statistics[0]) + start + 3):
                 output = "{0:8d}".format(item)
-                print(output, end='', file=summary_output)
+                print(output, end=' ', file=summary_output)
         print('', file=summary_output)
 
         for measure, name in zip(residue_statistics, measure_names):
-            print(name, end='', file=summary_output)
+            print(name, end=' ', file=summary_output)
             for residue in measure:
                 output = "{0:8.1f}".format(residue)
-                print(output, end='', file=summary_output)
+                print(output, end=' ', file=summary_output)
             print('', file=summary_output)
 
 
