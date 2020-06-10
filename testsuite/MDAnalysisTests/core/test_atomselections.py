@@ -521,6 +521,9 @@ class TestSelectionsTPR(object):
 
 
 class TestSelectionRDKit(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+        
     def test_aromatic(self):
         smi = "Cc1ccccc1" # toluene
         u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
