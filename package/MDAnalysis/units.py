@@ -169,16 +169,6 @@ References and footnotes
 from __future__ import absolute_import, unicode_literals, division
 from six import raise_from
 
-#: `Avogadro's constant`_ in mol**-1.
-#:
-#: .. deprecated:: 0.9.0
-#:    Use *N_Avogadro* in dict :data:`constants` instead.
-#:
-#: .. versionchanged:: 0.9.0
-#:    Use CODATA 2010 value, which differs from the previously used value
-#:    6.02214179e+23 mol**-1 by -5.00000000e+16 mol**-1.
-N_Avogadro = 6.02214129e+23  # mol**-1
-
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
 #       MUST add an appropriate entry to
