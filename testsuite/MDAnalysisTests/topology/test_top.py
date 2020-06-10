@@ -37,7 +37,7 @@ from MDAnalysisTests.datafiles import (
     PRMErr2,
     PRMErr3,
     PRM_UreyBradley,
-    PRM19SBOPC
+    PRM19SBOPC,
 )
 
 

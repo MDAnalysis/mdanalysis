@@ -431,7 +431,7 @@ class TOPParser(TopologyReaderBase):
         be treated as unknown elements and assigned an empty string value. See
         issues #2306 and #2651 for more details.
 
-        .. versionchanged X.0.0
+        .. versionchanged:: 2.0.0
            Unrecognised elements will now return a empty string. The parser
            will no longer attempt to guess the element by default.
         """
