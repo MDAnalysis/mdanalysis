@@ -549,13 +549,13 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.13.3',
-          'biopython>=1.71',
+          'numpy>=1.13.3,<1.17',
+          'biopython>=1.71,<1.77', # to support Py 2
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
           'six>=1.4.0',
           'mmtf-python>=1.0.0',
-          'joblib>=0.12',
+          'joblib>=0.12,<0.15.0',  # to support Py 2
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
@@ -592,13 +592,11 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          requires=['numpy (>=1.13.3)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
-                    'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
-                    'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)'],
+          python_requires=">=2.7,!=3.0,!=3.1,!=3.2,!=3.3,!=3.4,!=3.5",
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.13.3',
+              'numpy>=1.13.3,<1.17',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or
