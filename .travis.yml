@@ -65,13 +65,6 @@ matrix:
            CONDA_DEPENDENCIES=""
            INSTALL_HOLE="false"
 
-    - env: NAME="python 2.7"
-           PYTHON_VERSION=2.7
-           CODECOV="true"
-           NUMPY_VERSION=1.16
-           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
-
     - env: NAME="asv check"
            PYTHON_VERSION=2.7
            CODECOV="false"
@@ -84,14 +77,6 @@ matrix:
     - os: osx
       env: PYTHON_VERSION=3.6
            NUMPY_VERSION=1.17.3
-
-# macOS Python 2.7 works in principle but times out on Travis CI:
-# Disabled so that the tests can pass.
-#    - os: osx
-#      env: PYTHON_VERSION=2.7
-#           NUMPY_VERSION=1.16
-#           CODECOV="true"
-#           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
            PIP_DEPENDENCIES=""
