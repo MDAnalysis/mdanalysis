@@ -113,15 +113,23 @@ class NAMDBINWriter(base.WriterBase):
         """
         self.filename = util.filename(filename)
 
-    def write(self, obj):
-        """Write obj at current trajectory frame to file.
+    def _write_next_frame(self, obj):
+        """Write information associated with ``obj`` at current frame into trajectory
+
 
         Parameters
         ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep` 
-              write coordinate information associate with `obj`
-        """
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+              write coordinate information associated with `obj`
 
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write` to `_write_next_frame`.
+        .. deprecated:: 1.0.0
+           Passing a Timestep is deprecated for removal in version 2.0
+        """
+        # TODO 2.0: Remove Timestep logic
         if isinstance(obj, base.Timestep):
             n_atoms = obj.n_atoms
             coor = obj.positions.reshape(n_atoms*3)

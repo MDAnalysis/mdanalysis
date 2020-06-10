@@ -664,7 +664,7 @@ class _NCDFWriterTest(object):
 
     def _copy_traj(self, writer, universe):
         for ts in universe.trajectory:
-            writer.write_next_timestep(ts)
+            writer.write(universe)
 
     def _check_new_traj(self, universe, outfile):
         uw = mda.Universe(self.topology, outfile)
@@ -724,7 +724,7 @@ class _NCDFWriterTest(object):
         with mda.Writer(outfile, trr.trajectory.n_atoms,
                         velocities=True, format="ncdf") as W:
             for ts in trr.trajectory:
-                W.write_next_timestep(ts)
+                W.write(trr)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -877,7 +877,7 @@ class TestNCDFWriterUnits(object):
         with mda.Writer(outfile, trr.trajectory.n_atoms, velocities=True,
                         forces=True, format='ncdf') as W:
             for ts in trr.trajectory:
-                W.write_next_timestep(ts)
+                W.write(trr)
 
         with netcdf.netcdf_file(outfile, mode='r') as ncdf:
             unit = ncdf.variables[var].units.decode('utf-8')
@@ -902,11 +902,3 @@ class TestNCDFWriterErrors(object):
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
                 w.write(u.trajectory.ts)
-
-    def test_no_ts(self, outfile):
-        # no ts supplied at any point
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
-        with NCDFWriter(outfile, 100) as w:
-            with pytest.raises(IOError):
-                w.write_next_timestep()

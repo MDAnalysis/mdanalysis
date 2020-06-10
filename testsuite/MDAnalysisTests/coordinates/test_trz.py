@@ -153,7 +153,7 @@ class TestTRZWriter(RefTRZ):
 
     def _copy_traj(self, writer, universe, outfile):
         for ts in universe.trajectory:
-            writer.write_next_timestep(ts)
+            writer.write(universe)
         writer.close()
 
         uw = mda.Universe(TRZ_psf, outfile)

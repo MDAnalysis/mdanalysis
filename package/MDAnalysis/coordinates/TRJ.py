@@ -869,7 +869,6 @@ class NCDFWriter(base.WriterBase):
         self.dt = dt
         self.remarks = remarks or "AMBER NetCDF format (MDAnalysis.coordinates.trj.NCDFWriter)"
 
-        self.ts = None  # when/why would this be assigned??
         self._first_frame = True  # signals to open trajectory
         self.trjfile = None  # open on first write with _init_netcdf()
         self.periodic = None  # detect on first write
@@ -972,39 +971,48 @@ class NCDFWriter(base.WriterBase):
         self._first_frame = False
         self.trjfile = ncfile
 
-    def is_periodic(self, ts=None):
-        """Test if `Timestep` contains a periodic trajectory.
+    def is_periodic(self, ts):
+        """Test if timestep ``ts`` contains a periodic box.
 
         Parameters
         ----------
         ts : :class:`Timestep`
              :class:`Timestep` instance containing coordinates to
-             be written to trajectory file; default is the current
-             timestep
+             be written to trajectory file
 
         Returns
         -------
         bool
             Return ``True`` if `ts` contains a valid simulation box
         """
-        ts = ts if ts is not None else self.ts
         return np.all(ts.dimensions > 0)
 
-    def write_next_timestep(self, ts=None):
-        """write a new timestep to the trj file
+    def _write_next_frame(self, ag):
+        """Write information associated with ``ag`` at current frame into trajectory
 
         Parameters
         ----------
-        ts : :class:`Timestep`
-             :class:`Timestep` instance containing coordinates to
-             be written to trajectory file; default is the current
-             timestep
+        ag : AtomGroup or Universe
+
+
+        .. deprecated:: 1.0.0
+           Deprecated using Timestep. To be removed in version 2.0.
+        .. versionchanged:: 1.0.0
+           Added ability to use either AtomGroup or Universe.
+           Renamed from `write_next_timestep` to `_write_next_frame`.
         """
-        if ts is None:
-            ts = self.ts
-        if ts is None:
-            raise IOError(
-                "NCDFWriter: no coordinate data to write to trajectory file")
+        if isinstance(ag, base.Timestep):
+            ts = ag
+        else:
+            try:
+                # Atomgroup?
+                ts = ag.ts
+            except AttributeError:
+                try:
+                    # Universe?
+                    ts = ag.trajectory.ts
+                except AttributeError:
+                    raise TypeError("No Timestep found in ag argument")
 
         if ts.n_atoms != self.n_atoms:
             raise IOError(
@@ -1020,7 +1028,7 @@ class NCDFWriter(base.WriterBase):
         """Write coordinates and unitcell information to NCDF file.
 
         Do not call this method directly; instead use
-        :meth:`write_next_timestep` because some essential setup is done
+        :meth:`write` because some essential setup is done
         there before writing the first frame.
 
         Based on Joshua Adelman's `netcdf4storage.py`_ in `Issue 109`_.

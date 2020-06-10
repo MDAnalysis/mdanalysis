@@ -458,7 +458,7 @@ def alignto(mobile, reference, select=None, weights=None,
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
        Added *match_atoms* keyword to toggle atom matching.
 
     .. versionchanged:: 0.8
@@ -803,7 +803,7 @@ class AverageStructure(AnalysisBase):
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
 
         .. versionchanged:: 1.0.0
            Support for the ``start``, ``stop``, and ``step`` keywords has been

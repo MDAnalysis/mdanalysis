@@ -19,7 +19,7 @@ env:
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
     - BUILD_DOCS=false
     - CODECOV=false
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
@@ -41,7 +41,6 @@ env:
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.13.3
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
@@ -65,13 +64,6 @@ matrix:
            CONDA_DEPENDENCIES=""
            INSTALL_HOLE="false"
 
-    - env: NAME="python 2.7"
-           PYTHON_VERSION=2.7
-           CODECOV="true"
-           NUMPY_VERSION=1.16
-           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
-
     - env: NAME="asv check"
            PYTHON_VERSION=2.7
            CODECOV="false"
@@ -84,14 +76,6 @@ matrix:
     - os: osx
       env: PYTHON_VERSION=3.6
            NUMPY_VERSION=1.17.3
-
-# macOS Python 2.7 works in principle but times out on Travis CI:
-# Disabled so that the tests can pass.
-#    - os: osx
-#      env: PYTHON_VERSION=2.7
-#           NUMPY_VERSION=1.16
-#           CODECOV="true"
-#           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
            PIP_DEPENDENCIES=""

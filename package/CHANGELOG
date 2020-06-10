@@ -13,16 +13,30 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+??/??/?? richardjgowers
+
+  * 2.0.0
+
+Fixes
+
+Enhancements
+
+Deprecations
+* Dropped Python 2 support
+
+
+06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
          wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150,
          tylerjereddy, Marcello-Sega
 
-  * 0.21.0
+  * 1.0.0
 
 Fixes
+  * MOL2Writer now accepts both Universes and AtomgGroups (Issue #2717)
+  * Use user-provided `remark` in `XYZWriter` (Issue #2692)
   * Added more informative error messages about topology attributes
     (Issue #2565)
   * Made NoDataError a subclass of ValueError *and* AttributeError
@@ -213,7 +227,8 @@ Deprecations
   * analysis.density.density_from_Universe() (remove in 2.0)
   * analysis.density.notwithin_coordinates_factory() (remove in 2.0)
   * analysis.density.density_from_PDB and BfactorDensityCreator (remove in 2.0)
-
+  * Writer.write_next_timestep is deprecated, use write() instead (remove in 2.0)
+  * Writer.write(Timestep) is deprecated, use either a Universe or AtomGroup
 
 09/05/19 IAlibay, richardjgowers
 

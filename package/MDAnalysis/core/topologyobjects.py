@@ -337,7 +337,7 @@ class UreyBradley(TopologyObject):
     ``!=`` operators. A UreyBradley angle is equal to another if the same atom
     numbers are involved.
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     btype = 'ureybradley'
 
@@ -369,7 +369,7 @@ class CMap(TopologyObject):
     Coupled-torsion correction map term between five 
     :class:`~MDAnalysis.core.groups.Atom` instances.
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     btype = 'cmap'
 
@@ -568,7 +568,7 @@ class TopologyGroup(object):
     .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
-    .. versionchanged::0.21.0
+    .. versionchanged::1.0.0
        ``type``, ``guessed``, and ``order`` are no longer reshaped to arrays
        with an extra dimension
     """
