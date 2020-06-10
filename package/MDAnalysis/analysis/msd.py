@@ -36,7 +36,7 @@ which particles move and has its roots in the study of Brownian motion.
 For a full explanation of the theory behind MSDs and the subsequent 
 calculation of self-diffusivities the reader is directed to [Maginn2019]_. 
 MSDs can be computed from the following expression, known as the 
-_Einstein_ _formula_:
+**Einstein formula**:
 
 .. math::
 
@@ -56,7 +56,9 @@ The computation of the MSD in this way can be computationally intensive due to
 its :math:`N^2` scaling with respect to :math:`\tau_{max}`. An algorithm to 
 compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier 
 Transform is known and can be accessed by setting ``fft=True`` [Calandri2011]_ 
-[Buyl2018]_.
+[Buyl2018]_. The FFT-based approach requires that the
+`tidynamics <https://github.com/pdebuyl-lab/tidynamics>`_ package is 
+installed; otherwise the code will raise an :exc:`ImportError`.
 
 Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to
 the normal MDAnalysis citations.
