@@ -254,6 +254,9 @@ also recognized when they are compressed with :program:`gzip` or
    | NAMD          | coor,     |  r/w  | NAMD binary file format for coordinates              |
    |               | namdbin   |       | :mod:`MDAnalysis.coordinates.NAMDBIN`                |
    +---------------+-----------+-------+------------------------------------------------------+
+   | FHIAIMS       | in        |  r/w  | FHI-AIMS file format for coordinates                 |
+   |               |           |       | :mod:`MDAnalysis.coordinates.FHIAIMS`                |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -619,14 +622,12 @@ Typically, many methods and attributes are overriden.
 
 Signature::
 
-   W = TrajectoryWriter(filename,n_atoms,**kwargs)
-   W.write_next_timestep(Timestep)
+   with TrajectoryWriter(filename, n_atoms, **kwargs) as w:
+       w.write(Universe)    # write a whole universe
 
 or::
 
-   W.write(AtomGroup)   # write a selection
-   W.write(Universe)    # write a whole universe
-   W.write(Timestep)    # same as write_next_timestep()
+   w.write(AtomGroup)  # write a selection of Atoms from Universe
 
 
 Methods
@@ -636,8 +637,6 @@ Methods
      opens *filename* and writes header if required by format
  ``write(obj)``
      write Timestep data in *obj*
- ``write_next_timestep([timestep])``
-     write data in *timestep* to trajectory file
  ``convert_dimensions_to_unitcell(timestep)``
      take the dimensions from the timestep and convert to the native
      unitcell representation of the format
@@ -741,3 +740,4 @@ from . import MMTF
 from . import GSD
 from . import null
 from . import NAMDBIN
+from . import FHIAIMS

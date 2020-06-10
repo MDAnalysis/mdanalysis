@@ -177,7 +177,10 @@ _PARSER_HINTS = {}
 _SELECTION_WRITERS = {}
 _CONVERTERS = {}
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS = {}
+_TOPOLOGY_ATTRS = {}  # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
+_TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
+
 
 # Storing anchor universes for unpickling groups
 import weakref
