@@ -134,7 +134,6 @@ Data
 
 .. autodata:: constants
 .. autodata:: lengthUnit_factor
-.. autodata:: N_Avogadro
 .. autodata:: water
 .. autodata:: densityUnit_factor
 .. autodata:: timeUnit_factor
