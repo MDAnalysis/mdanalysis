@@ -60,7 +60,6 @@ Amber keywords are turned into the following attributes:
 
 TODO:
   Add support for Chamber-style topologies
-  Add support for storing atomic numbers
   More stringent tests
 
 .. Note::
@@ -73,7 +72,7 @@ TODO:
    conversion of a CHARMM topology to an AMBER one) are not currently
    supported. Support will likely be added in future MDAnalysis releases.
 
-   As of version X.0.0, elements are no longer guessed if ATOMIC_NUMBER records
+   As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records
    are missing. In those scenarios, if elements are necessary, users will have
    to invoke the element guessers after parsing the topology file. Please see
    :mod:`MDAnalysis.topology.guessers` for more details.
@@ -165,7 +164,7 @@ class TOPParser(TopologyReaderBase):
       parses bonds, angles, dihedrals, and impropers
     .. versionchanged:: 1.0.0
       warns users that chamber-style topologies are not currently supported
-    .. versionchanged:: X.0.0
+    .. versionchanged:: 2.0.0
       no longer guesses elements if missing
     """
     format = ['TOP', 'PRMTOP', 'PARM7']

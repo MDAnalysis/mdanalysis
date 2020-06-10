@@ -13,16 +13,18 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers
+??/??/?? richardjgowers, IAlibay
 
   * 2.0.0
 
 Fixes
+  * TOPParser no longer guesses elements when missing atomic number records
+    (Issues #2449, #2651)
 
 Enhancements
 
 Deprecations
-* Dropped Python 2 support
+  * Dropped Python 2 support
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
