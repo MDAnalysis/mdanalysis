@@ -354,7 +354,7 @@ class EinsteinMSD(AnalysisBase):
             self._atoms.positions[:, self._dim]
 
     def _conclude(self):
-        if self.fft == True:
+       if self.fft:
             self._conclude_fft()
         else:
             self._conclude_simple()
