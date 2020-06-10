@@ -285,8 +285,7 @@ class EinsteinMSD(AnalysisBase):
 
         # local
         self._atoms = self.u.select_atoms(self.select)
-        self._n_particles = len(self._atoms)
-        self._n_frames = None  # this is set in the baseclass in _prepare
+        self.n_particles = len(self._atoms)
         self._position_array = None
 
         # result
@@ -295,11 +294,10 @@ class EinsteinMSD(AnalysisBase):
 
     def _prepare(self):
         # self.n_frames only available here
-        self._n_frames = self.n_frames
         # these need to be zeroed prior to each run() call
-        self.msds_by_particle = np.zeros((self._n_frames, self._n_particles))
+        self.msds_by_particle = np.zeros((self.n_frames, self.n_particles))
         self._position_array = np.zeros(
-            (self._n_frames, self._n_particles, self.dim_fac))
+            (self.n_frames, self.n_particles, self.dim_fac))
         # self.timeseries not set here
 
     def _parse_msd_type(self):
@@ -413,7 +411,7 @@ class EinsteinMSD(AnalysisBase):
 
         reshape_positions = self._position_array[:, :, :].astype(
             np.float64)
-        for n in range(self._n_particles):
+        for n in range(self.n_particles):
             self.msds_by_particle[:, n] = tidynamics.msd(
                 reshape_positions[:, n, :])
         self.timeseries = self.msds_by_particle.mean(axis=1, dtype=np.float64)
