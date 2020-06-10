@@ -223,6 +223,7 @@ from __future__ import division, absolute_import
 
 import numpy as np
 import logging
+from six import raise_from
 from ..due import due, Doi
 from .base import AnalysisBase
 
@@ -401,7 +402,7 @@ class EinsteinMSD(AnalysisBase):
         try:
             import tidynamics
         except ImportError:
-            ("""ERROR --- tidynamics was not found!
+            raise_from(ImportError("""ERROR --- tidynamics was not found!
 
                 tidynamics is required to compute an FFT based MSD (default)
 
@@ -409,7 +410,7 @@ class EinsteinMSD(AnalysisBase):
                     
                     pip install tidynamics
                     
-                or set fft=False""")
+                or set fft=False"""), None,)
 
         reshape_positions = self._position_array[:, :, :].astype(
             np.float64)
