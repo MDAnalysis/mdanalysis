@@ -19,7 +19,7 @@ env:
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
     # Set default python version to avoid repetition later
-    - PYTHON_VERSION=3.5
+    - PYTHON_VERSION=3.6
     - BUILD_DOCS=false
     - CODECOV=false
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
@@ -41,7 +41,6 @@ env:
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.13.3
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
