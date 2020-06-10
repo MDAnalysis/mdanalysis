@@ -171,7 +171,8 @@ def test_simple_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
     m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
     m_simple.run(start=10, stop=1000, step=10)
     poly = characteristic_poly(NSTEP, dim_factor)
-    assert_almost_equal(m_simple.timeseries, poly[10:1000:10], decimal=4)
+    # polynomial must take offset start into account
+    assert_almost_equal(m_simple.timeseries, poly[0:990:10], decimal=4)
 
 
 @pytest.mark.parametrize("dim, dim_factor", \
@@ -196,7 +197,8 @@ def test_fft_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
     m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
     m_simple.run(start=10, stop=1000, step=10)
     poly = characteristic_poly(NSTEP, dim_factor)
-    assert_almost_equal(m_simple.timeseries, poly[10:1000:10], decimal=3)
+    # polynomial must take offset start into account
+    assert_almost_equal(m_simple.timeseries, poly[0:990:10], decimal=3)
 
 
 def test_random_walk_u_simple(random_walk_u):
