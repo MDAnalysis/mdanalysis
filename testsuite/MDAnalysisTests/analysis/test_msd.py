@@ -168,9 +168,8 @@ def test_simple_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
 def test_simple_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
     # testing the "simple" algorithm on constant velocity trajectory
     # test start stop step is working correctly
-    m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False, start=10, \
-         stop=1000, step=10)
-    m_simple.run()
+    m_simple = MSD(step_traj, 'all', msd_type=dim, fft=False)
+    m_simple.run(start=10, stop=1000, step=10)
     poly = characteristic_poly(NSTEP, dim_factor)
     assert_almost_equal(m_simple.timeseries, poly[10:1000:10], decimal=4)
 
@@ -194,9 +193,8 @@ def test_fft_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
 def test_fft_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
     # testing the fft algorithm on constant velocity trajectory
     # test start stop step is working correctly
-    m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True, start=10, \
-         stop=1000, step=10)
-    m_simple.run()
+    m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
+    m_simple.run(start=10, stop=1000, step=10)
     poly = characteristic_poly(NSTEP, dim_factor)
     assert_almost_equal(m_simple.timeseries, poly[10:1000:10], decimal=3)
 
