@@ -318,14 +318,13 @@ class TextIOPickable(io.TextIOWrapper):
     def __setstate__(self, args):
         name = args[1]
         raw_class = args[2]
-        # raw_class is used for further expansion this functionality to 
-        # GZip files, which also requires a text wrapper. 
+        # raw_class is used for further expansion this functionality to
+        # GZip files, which also requires a text wrapper.
         raw = raw_class(name)
         super().__init__(raw)
         self.seek(args[0])
 
-# not as comprehensive as built-in open func--no need for other args
-# only should be used for 'reading' modes
+
 def pickle_open(name, mode='rt'):
     """Open file and return a stream with pickle function implemented.
 
@@ -346,6 +345,10 @@ def pickle_open(name, mode='rt'):
     See Also
     --------
     :func:`anyopen`
+
+    Warning
+    -------
+    Should be only used with read mode.
     """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') files can be pickled.")
