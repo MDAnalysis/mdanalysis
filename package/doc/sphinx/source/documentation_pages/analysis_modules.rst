@@ -101,13 +101,23 @@ Polymers
 Structure
 =========
 
+Macromolecules
+--------------
+
 .. toctree::
    :maxdepth: 1
 
    analysis/gnm
    analysis/helanal
-   analysis/rdf
    analysis/dihedrals
+
+Liquids
+-------
+
+.. toctree::
+   :maxdepth: 1
+      
+   analysis/rdf
    analysis/msd
 
 Volumetric analysis
