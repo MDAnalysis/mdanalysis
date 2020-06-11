@@ -411,7 +411,7 @@ class EinsteinMSD(AnalysisBase):
 
                     pip install tidynamics
 
-                or set fft=False"""), None,)
+                or set fft=False""")
 
         reshape_positions = self._position_array[:, :, :].astype(
             np.float64)
