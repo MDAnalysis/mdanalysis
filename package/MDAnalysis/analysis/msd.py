@@ -188,7 +188,7 @@ these methods are beyond the scope of this module.
 
 
 Note also that computation of MSDs is highly memory intensive. If this is
-proving a problem, judicious use of the ``start``, ``stop``, ``step`` indexing is required.
+proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords to control which frames are incorporated may be required.
 
 References
 ----------
