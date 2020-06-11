@@ -23,7 +23,6 @@
 from __future__ import print_function, division, absolute_import
 
 
-from six.moves import zip
 import numpy as np
 import pytest
 import sys
