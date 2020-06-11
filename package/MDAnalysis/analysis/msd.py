@@ -220,11 +220,8 @@ Classes
 
 """
 
-from __future__ import division, absolute_import
-
 import numpy as np
 import logging
-from six import raise_from
 from ..due import due, Doi
 from .base import AnalysisBase
 
@@ -331,7 +328,7 @@ class EinsteinMSD(AnalysisBase):
         except KeyError:
             raise ValueError(
                 'invalid msd_type: {} specified, please specify one of xyz, '
-                 'xy, xz, yz, x, y, z'.format(self.msd_type))
+                'xy, xz, yz, x, y, z'.format(self.msd_type))
 
         self.dim_fac = len(self._dim)
 
@@ -351,8 +348,8 @@ class EinsteinMSD(AnalysisBase):
         """
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] = \
-            self._atoms.positions[:, self._dim]
+        self._position_array[self._frame_index] =
+        self._atoms.positions[:, self._dim]
 
     def _conclude(self):
         if self.fft:

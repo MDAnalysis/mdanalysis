@@ -22,14 +22,11 @@
 #
 # This module written by Hugo MacDermott-Opeskin 2020
 
-from __future__ import division, absolute_import, print_function
-
 
 import MDAnalysis as mda
 from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 
-from numpy.testing import (assert_array_less,
-                           assert_almost_equal, assert_equal)
+from numpy.testing import (assert_almost_equal, assert_equal)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
