@@ -51,3 +51,19 @@ def test_offset(f):
     f.readline()
     f_pickled = pickle.loads(pickle.dumps(f))
     assert_equal(f.tell(), f_pickled.tell())
+
+
+@pytest.fixture(params=[
+    # filename mode
+    (PDB, 'w'),
+    (PDB, 'x'),
+    (PDB, 'a'),
+])
+def unpickable_f(request):
+    filename, mode = request.param
+    return filename, mode
+def test_unpickable_open_mode(unpickable_f):
+    filename, mode = unpickable_f
+    with pytest.raises(ValueError):
+        util.pickle_open(filename, mode)
+
