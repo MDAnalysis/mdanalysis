@@ -105,9 +105,9 @@ def vector_of_best_fit(coordinates):
 
 def local_screw_angles(global_axis, ref_axis, helix_directions):
     """
-    Cylindrical azimuth angles between the local direction vectors
-    to the plane of global_axis and the vector perpendicular to both
-    global_axis and ref_axis, from (-pi, pi].
+    Cylindrical azimuth angles between the local direction vectors,
+    as projected onto the cross-section of the helix, from (-pi, pi].
+    The origin (angle=0) is set to the plane of global_axis and ref_axis.
 
     Parameters
     ----------
@@ -126,6 +126,7 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
     :class:`numpy.ndarray` of shape (N,)
         Array of screw angles.
     """
+    global_axis = np.asarray(global_axis)
     # normal to the plane of `ref_axis` & `global_axis`
     perp = np.cross(ref_axis, global_axis)
     if not np.any(perp):  # zero when ref_axis, global_axis parallel
@@ -137,22 +138,23 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
     # normal for angle to plane of perp and global_axis
     ortho = np.cross(-perp, global_axis)
 
+    # project helix_directions onto global to remove contribution
+    norm_global_sq = np.dot(global_axis, global_axis)
+    mag_g = np.matmul(global_axis, helix_directions.T)/norm_global_sq
+    # projection onto global_axis
+    proj_g = mag_g.reshape(-1, 1) @ global_axis.reshape(1, -1)
+    # projection onto plane w/o global_axis contribution
+    proj_plane = helix_directions - proj_g
+
+    # angles from projection to perp
     refs = np.array([perp, ortho])  # (2, 3)
-    norms = np.outer(mdamath.pnorm(refs), mdamath.pnorm(helix_directions))
-    cos = cos_perp, cos_ortho = np.matmul(refs, helix_directions.T)/norms
+    norms = _, ortho_norm = np.outer(mdamath.pnorm(refs), 
+                                     mdamath.pnorm(proj_plane))
+    cos = cos_perp, cos_ortho = np.matmul(refs, proj_plane.T)/norms
     to_perp, to_ortho = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
-
-    # angles to plane in (-pi, pi]
-    q1 = (cos_perp >= 0) & (cos_ortho >= 0)
-    q2 = (cos_perp < 0) & (cos_ortho >= 0)
-    q3 = (cos_perp < 0) & (cos_ortho < 0)
-    q4 = (cos_perp >= 0) & (cos_ortho < 0)
-
-    to_ortho[q1 | q4] *= -1
-    to_ortho += np.pi/2
-    to_ortho[q3] -= 2*np.pi
+    to_ortho[ortho_norm == 0] = 0  # ?
+    to_ortho[cos_perp < 0] *= -1
     to_ortho[to_ortho == -np.pi] = np.pi  # leave 180 alone
-
     return np.rad2deg(to_ortho)
 
 

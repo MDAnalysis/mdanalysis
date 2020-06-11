@@ -105,35 +105,71 @@ def read_bending_matrix(fn):
     return data
 
 
-def test_local_screw_angles_planecircle():
+def test_local_screw_angles_plane_circle():
     """
     Test the trivial case of a circle in the xy-plane.
-    The global axis is the x-axis and ref axis is the z-axis, 
+    The global axis is the x-axis and ref axis is the y-axis, 
     so angles should be calculated to the xy-plane.
     """
-    angdeg = np.arange(0, 360, 12, dtype=int)
-    angrad = np.deg2rad(angdeg)
-    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad])
-    screw = hel.local_screw_angles([1, 0, 0], [0, 0, 1], xyz)
+    angdeg = np.arange(0, 360, 12, dtype=np.int)
+    angrad = np.deg2rad(angdeg, dtype=np.float64)
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad], 
+                   dtype=np.float64)
+    xyz[15, 1] = 0  # because np.sin(np.deg2rad(180)) = 1e-16 ?!
+    screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
     correct = np.zeros_like(angdeg)
     correct[(angdeg > 180)] = 180
     assert_almost_equal(screw, correct)
 
+def test_local_screw_angles_ortho_circle():
+    """
+    Test the trivial case of a circle in the xy-plane.
+    The global axis is the x-axis and ref axis is the z-axis, 
+    so angles should be calculated to the xz-plane.
+    """
+    angdeg = np.arange(0, 360, 12, dtype=np.int)
+    angrad = np.deg2rad(angdeg, dtype=np.float64)
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad], 
+                   dtype=np.float64)
+    xyz[15, 1] = 0  # because np.sin(np.deg2rad(180)) = 1e-16 ?!
+    screw = hel.local_screw_angles([1, 0, 0], [0, 0, 1], xyz)
+    correct = np.zeros_like(angdeg)
+    correct[(angdeg < 180)] = 90
+    correct[(angdeg > 180)] = -90
+    correct[0] = correct[15] = 0
+    assert_almost_equal(screw, correct)
 
-def test_local_screw_angles_orthocircle():
+
+def test_local_screw_angles_around_circle():
     """
     Test an orthogonal circle in the xz-plane.
-    The global axis is the y-axis and ref axis is the z-axis, 
+    The global axis is the y-axis and ref axis is the x-axis, 
     so angles should be calculated to the xy-plane.
     """
     # circle in xz-plane
     angdeg = np.arange(0, 360, 12, dtype=int)
     angrad = np.deg2rad(angdeg)
     xyz = np.array([[np.cos(a), 0, np.sin(a)] for a in angrad])
-    screw = hel.local_screw_angles([0, -1, 0], [0, 0, 1], xyz)
+    screw = hel.local_screw_angles([0, 1, 0], [1, 0, 0], xyz)
     angdeg[-14:] = -angdeg[1:15][::-1]
     angdeg[-15] = 180
-    # normal to the plane: [0, 0, -1]
+    assert_almost_equal(screw, angdeg)
+
+def test_local_screw_angles_around_circle_rising():
+    """
+    Test a circle in the xz-plane, rising on the y-axis.
+    The global axis is the y-axis and ref axis is the x-axis, 
+    so angles should be calculated to the xy-plane.
+    The y-axis contribution should be removed so angles should
+    be to the circle.
+    """
+    # circle in xz-plane
+    angdeg = np.arange(0, 360, 12, dtype=int)
+    angrad = np.deg2rad(angdeg)
+    xyz = np.array([[np.cos(a), i, np.sin(a)] for i, a in enumerate(angrad)])
+    screw = hel.local_screw_angles([0, 1, 0], [1, 0, 0], xyz)
+    angdeg[-14:] = -angdeg[1:15][::-1]
+    angdeg[-15] = 180
     assert_almost_equal(screw, angdeg)
 
 
@@ -142,11 +178,11 @@ def test_local_screw_angles_parallel_axes():
     Test that if global_axis and ref_axis are parallel, it
     picks another one instead. global_axis is the x-axis,
     so the eventual replacement ref_axis should be the z-axis,
-    so angles should be calculated to the xy-plane.
+    so angles should be calculated to the xz-plane.
     """
     xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     angles = hel.local_screw_angles([1, 0, 0], [-1, 0, 0], xyz)
-    assert_almost_equal(angles, [0, 0, 90])
+    assert_almost_equal(angles, [0, 90, 0])
 
 
 @pytest.fixture()
@@ -170,17 +206,24 @@ def zigzag():
 
 @pytest.mark.parametrize('ref_axis,screw_angles', [
     # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]
-    ([0, 0, 1], [-90, 90]),  # calculated to y-z plane
-    ([1, 0, 0], [-90, 90]),  # calculated to y-z plane
-    ([-1, 0, 0], [90, -90]),  # calculated to y-z plane upside down
-    ([0, 1, 0], [0, 180]),  # calculated to x-z plane
-    ([0, -1, 0], [180, 0]),  # calculated to x-z plane upside down
-    ([1, 1, 0], [-45, 135]),  # calculated to diagonal xy-z plane
-    ([-1, 1, 0], [45, -135]),  # calculated to diagonal xz-z plane other way
-    ([1, -1, 0], [-135, 45]),  # calculated to diagonal xz-z plane other way
-    ([-1, -1, 0], [135, -45]),  # calculated to diagonal xz-z plane other way
-    ([1, 1, 1], [-45, 135]),  # calculated to diagonal xyz-z plane
-    ([1, 1, -1], [-45, 135]),  # calculated to diagonal xyz-z plane
+    # global axis is z-axis
+    ([0, 0, 1], [180, 0]),  # calculated to x-z plane
+    ([1, 0, 0], [180, 0]),  # calculated to x-z plane
+    ([-1, 0, 0], [0, 180]),  # calculated to x-z plane upside down
+    ([0, 1, 0], [90, -90]),  # calculated to y-z plane
+    ([0, -1, 0], [-90, 90]),  # calculated to x-z plane upside down
+    # calculated to diagonal xy-z plane rotating around
+    ([1, 1, 0], [135, -45]),
+    ([-1, 1, 0], [45, -135]),
+    ([1, -1, 0], [-135, 45]),
+    ([-1, -1, 0], [-45, 135]),
+    # calculated to diagonal xyz-z plane w/o z contribution
+    ([1, 1, 1], [135, -45]),
+    ([1, 1, -1], [135, -45]),
+    ([1, -1, 1], [-135, 45]),
+    ([-1, 1, 1], [45, -135]),
+    ([-1, -1, 1], [-45, 135]),
+    ([-1, -1, -1], [-45, 135]),
 ])
 def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     properties = hel.helix_analysis(zigzag.atoms.positions,
@@ -281,14 +324,14 @@ def test_helix_analysis_square_oct():
 
     # calculated to the x-y plane
     # all input vectors (loc_rot) are in y-z plane
-    screw = [90, 0, -90,  # square
-             167,  # transition
-             135, 90, 45, 0, -45, -90, -135,  # octagon
-             -167]*n_rep
+    screw = [0, 90, 180,  # square
+             -77.236,  # transition
+             -45, 0, 45, 90, 135, 180, -135,  # octagon
+             -102.764]*n_rep
 
     # not quite 0, comes out as 1.32e-06
-    assert_allclose(properties['local_screw_angles'], screw[:-2],
-                    rtol=5e-3, atol=1e-5)
+    assert_almost_equal(properties['local_screw_angles'], screw[:-2],
+                        decimal=3)
 
 
 class TestHELANAL(object):
@@ -386,17 +429,24 @@ class TestHELANAL(object):
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
         # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]
-        ([0, 0, 1], [-90, 90]),  # calculated to y-z plane
-        ([1, 0, 0], [-90, 90]),  # calculated to y-z plane
-        ([-1, 0, 0], [90, -90]),  # calculated to y-z plane upside down
-        ([0, 1, 0], [0, 180]),  # calculated to x-z plane
-        ([0, -1, 0], [180, 0]),  # calculated to x-z plane upside down
-        ([1, 1, 0], [-45, 135]),  # calculated to diagonal xy-z plane
-        ([-1, 1, 0], [45, -135]),  # calculated to diagonal xz-z plane other way
-        ([1, -1, 0], [-135, 45]),  # calculated to diagonal xz-z plane other way
-        ([-1, -1, 0], [135, -45]),  # calculated to diagonal xz-z plane other way
-        ([1, 1, 1], [-45, 135]),  # calculated to diagonal xyz-z plane
-        ([1, 1, -1], [-45, 135]),  # calculated to diagonal xyz-z plane
+        # global axis is z-axis
+        ([0, 0, 1], [180, 0]),  # calculated to x-z plane
+        ([1, 0, 0], [180, 0]),  # calculated to x-z plane
+        ([-1, 0, 0], [0, 180]),  # calculated to x-z plane upside down
+        ([0, 1, 0], [90, -90]),  # calculated to y-z plane
+        ([0, -1, 0], [-90, 90]),  # calculated to x-z plane upside down
+        # calculated to diagonal xy-z plane rotating around
+        ([1, 1, 0], [135, -45]),
+        ([-1, 1, 0], [45, -135]),
+        ([1, -1, 0], [-135, 45]),
+        ([-1, -1, 0], [-45, 135]),
+        # calculated to diagonal xyz-z plane w/o z contribution
+        ([1, 1, 1], [135, -45]),
+        ([1, 1, -1], [135, -45]),
+        ([1, -1, 1], [-135, 45]),
+        ([-1, 1, 1], [45, -135]),
+        ([-1, -1, 1], [-45, 135]),
+        ([-1, -1, -1], [-45, 135]),
     ])
     def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
         ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
