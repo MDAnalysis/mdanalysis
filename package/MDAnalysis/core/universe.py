@@ -1327,6 +1327,8 @@ class Universe(object):
         >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
         >>> u
         <Universe with 9 atoms>
+        >>> u.trajectory
+        <RDKitReader with 10 frames of 9 atoms>
         """
         try:
             from rdkit import Chem

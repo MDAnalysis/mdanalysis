@@ -32,7 +32,14 @@ into a MDAnalysis Universe. Convert it back to a :class:`rdkit.Chem.rdchem.Mol` 
 Example
 -------
 
-TODO
+>>> from rdkit import Chem
+>>> import MDAnalysis as mda
+>>> mol = Chem.MolFromMol2File("docking_poses.mol2", removeHs=False)
+>>> u = mda.Universe(mol)
+>>> u
+<Universe with 42 atoms>
+>>> u.trajectory
+<RDKitReader with 10 frames of 42 atoms>
 
 
 Classes
