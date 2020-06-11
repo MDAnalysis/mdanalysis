@@ -12,12 +12,15 @@ os:
 
 env:
   global:
-    - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
+    # - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
+    - secure: "mKoNL4VnpsU/O0urv/M5rA5fPgphLTBgh50ZYgKzJQg3sUTM83MHCf8OCV6z+f2kVfpayrxhrpd/eDKLeH1JRIX/UXWMxDRovLKPN3FYdrDc8ksqRxXUPn+qMdXJYJPlGwTHSqFYc6OYrZxBM6BqwaDt2HUKy0TlpC3u1Val8laX//Aq+V6FhKlQJMzeoMlX3PK30YbIGXSonP1ER2c2KMvtt0bBxIM8LD1Rj+j59dvv+H07sOTbSD1in6wLg4wV5u9CtYduqRDZh4hrM4kAymTQG97b49ACQIzrU2StuF96+iurFsIjBS06myQxsHq1syiXEpwbT5m53EhITZv01bccKP/LOxJf/WRMCOvhCgsxOJaHQIkVkPeHzaAn7ri+MFu1ZhceqLA80dT7V1jBMx3Kqgcdy0A6xSUhKTg9QR0FRRrYoGURxjDmu8Q7kMQ3wq3oaSxvv6IFgePreWge7lv5P1kMjduaxyM9gPTrTlM0SZrawkoG0UrQ5oAhC8Xj5LjlQpUQ+A9sALgkfD15vhMBcM2uvbubNAFGpVGg1SRav7OEqwuDule7NBEAZFdbgXEnSWLUsDpb7e/FSuGwaomnZCPXdzg3lxz5KW5I2sqUMaf/bVg9ba05+n+JYXS5KuLkSnglcM+AZ7ecqPjhTyZnX4RFeP97Pd7EwQSH+pg="
     - GH_DOC_BRANCH=develop
     - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
+    - GH_REPOSITORY=github.com/lilyminium/mdanalysis.git
     - GIT_CI_USER=TravisCI
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
+    - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
     # Set default python version to avoid repetition later
     - PYTHON_VERSION=3.6
     - BUILD_DOCS=false
@@ -38,11 +41,11 @@ env:
 
   matrix:
     # Run a coverage test for most versions
-    - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    # - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    # - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    # - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.13.3
-    - NUMPY_VERSION=dev  EVENT_TYPE="cron"
+    # - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 matrix:
   fast_finish: true
@@ -56,35 +59,35 @@ matrix:
            INSTALL_HOLE="false"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme"
 
-    - env: NAME="Lint"
-           PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-           MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
-           SETUP_CMD=""
-           BUILD_CMD=""
-           CONDA_DEPENDENCIES=""
-           INSTALL_HOLE="false"
+  #   - env: NAME="Lint"
+  #          PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
+  #          MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
+  #          SETUP_CMD=""
+  #          BUILD_CMD=""
+  #          CONDA_DEPENDENCIES=""
+  #          INSTALL_HOLE="false"
 
-    - env: NAME="asv check"
-           PYTHON_VERSION=2.7
-           CODECOV="false"
-           MAIN_CMD=""
-           SETUP_CMD=""
-           NUMPY_VERSION=1.16
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
-           ASV_CHECK="true"
+  #   - env: NAME="asv check"
+  #          PYTHON_VERSION=2.7
+  #          CODECOV="false"
+  #          MAIN_CMD=""
+  #          SETUP_CMD=""
+  #          NUMPY_VERSION=1.16
+  #          PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+  #          ASV_CHECK="true"
 
-    - os: osx
-      env: PYTHON_VERSION=3.6
-           NUMPY_VERSION=1.17.3
+  #   - os: osx
+  #     env: PYTHON_VERSION=3.6
+  #          NUMPY_VERSION=1.17.3
 
-    - env: NAME='minimal'
-           PIP_DEPENDENCIES=""
-           CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
-           INSTALL_HOLE="false"
-           CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+  #   - env: NAME='minimal'
+  #          PIP_DEPENDENCIES=""
+  #          CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
+  #          INSTALL_HOLE="false"
+  #          CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
-  allow_failures:
-    - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
+  # allow_failures:
+  #   - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
 
 before_install:
   # Workaround for Travis CI macOS bug (https://github.com/travis-ci/travis-ci/issues/6307)
@@ -131,6 +134,8 @@ after_success:
       codecov; \
     fi
   # can't use test here since this leads to travis fails even though the build passes
-  - if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
-            bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs.sh;
+  # if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
+  - |
+    if [[ ${BUILD_DOCS} == "true" ]]; then
+        bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs_via_travis.sh;
     fi

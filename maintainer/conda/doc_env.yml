@@ -1,0 +1,8 @@
+name: mda-docs
+channels:
+  - conda-forge
+dependencies:
+  - sphinx==1.8.5
+  - pip:
+      - sphinx_rtd_theme
+      - sphinx-sitemap
