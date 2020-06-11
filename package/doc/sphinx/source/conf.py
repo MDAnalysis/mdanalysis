@@ -15,6 +15,7 @@ import sys
 import os
 import platform
 import datetime
+import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
 
@@ -123,7 +124,7 @@ autoclass_content = 'both'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'msmb_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -156,8 +157,15 @@ html_theme_options = {
     'titles_only': False,
 }
 
+html_context = {
+    'versions_json_url': 'https://lilyminium.github.io/mdanalysis/versions.json'
+}
+
 # Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = ['_themes',]
+html_theme_path = [
+    msmb_theme.get_html_theme_path(),
+    sphinx_rtd_theme.get_html_theme_path()
+]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
