@@ -13,13 +13,16 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers
+??/??/?? richardjgowers, IAlibay
 
   * 2.0.0
 
 Fixes
 
 Enhancements
+
+Changes
+  * Removes deprecated ProgressMeter (Issue #2739)
 
 Deprecations
 * Dropped Python 2 support
