@@ -265,9 +265,11 @@ def filename(name, ext=None, keep=False):
 
 
 class FileIOPickable(io.FileIO):
-    def __init__(self, name):
-        super().__init__(name)
+    """Stream for read a file
 
+    Picklable FiloIO class that only support read mode.
+
+    """
     def __getstate__(self):
         return self.tell(), self.name
 
@@ -278,6 +280,13 @@ class FileIOPickable(io.FileIO):
 
 
 class TextIOPickable(io.TextIOWrapper):
+    """Character and line based layer over a pickable FileIO based object.
+
+    Example
+    -------
+        file = FileIOPickable('filename')
+        text_wrapped = TextIOPickable(file)
+    """
     def __init__(self, buffer):
         super().__init__(buffer)
         self.buffer_class = buffer.__class__
