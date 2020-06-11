@@ -449,14 +449,13 @@ Classes
    :inherited-members:
 
 """
-from __future__ import print_function, division, absolute_import
 
+import MDAnalysis.analysis.hydrogenbonds
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
-import MDAnalysis.analysis.hbonds
-from six.moves import range, zip_longest
 import logging
 import warnings
 import numpy as np
+from itertools import zip_longest
 
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
@@ -640,11 +639,11 @@ class HydrogenBondLifetimes(object):
 
     def run(self, **kwargs):
         """Analyze trajectory and produce timeseries"""
-        h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
-                                                                 self.selection1,
-                                                                 self.selection2,
-                                                                 distance=3.5,
-                                                                 angle=120.0)
+        h_list = MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis(self.universe,
+                                                                        self.selection1,
+                                                                        self.selection2,
+                                                                        d_h_cutoff=3.5,
+                                                                        d_h_a_angle_cutoff=120.0)
         h_list.run(**kwargs)
         self.timeseries = self._getGraphics(h_list.timeseries, self.t0,
                                             self.tf, self.dtmax)

@@ -55,10 +55,6 @@ and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
             Calculates the continuous or intermittent survival probability
             of an atom group in a region of interest.
 
-        * :class:`MDAnalysis.analysis.hbonds.hbond_analysis`
-            Calculates the continuous or intermittent hydrogen bond
-            lifetime.
-
 .. rubric:: References
 
 .. [Gu2019] Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)
@@ -68,7 +64,6 @@ and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
 
 """
 
-from __future__ import absolute_import, division
 import numpy as np
 from copy import deepcopy
 

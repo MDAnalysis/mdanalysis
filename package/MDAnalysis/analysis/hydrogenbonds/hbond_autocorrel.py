@@ -21,8 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hbonds.hbond_autocorrel`
-====================================================================================
+Hydrogen bond autocorrelation --- :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel`
+===========================================================================================
 
 :Author: Richard J. Gowers
 :Year: 2014
@@ -204,10 +204,6 @@ Classes
 
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-from six import raise_from
-
 import numpy as np
 import scipy.optimize
 
@@ -220,7 +216,7 @@ from MDAnalysis.core.groups import requires
 from MDAnalysis.due import due, Doi
 due.cite(Doi("10.1063/1.4922445"),
          description="Hydrogen bonding autocorrelation time",
-         path='MDAnalysis.analysis.hbonds.hbond_autocorrel',
+         path='MDAnalysis.analysis.hydrogenbonds.hbond_autocorrel',
 )
 del Doi
 
@@ -302,16 +298,12 @@ class HydrogenBondAutoCorrel(object):
                  nsamples=50,  # number of different points to sample in a run
                  pbc=True):
 
-        #warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
-        #              "which has .autocorrelation function",
-        #              category=DeprecationWarning)
-
         self.u = universe
         # check that slicing is possible
         try:
             self.u.trajectory[0]
         except Exception:
-            raise_from(ValueError("Trajectory must support slicing"), None)
+            raise ValueError("Trajectory must support slicing") from None
 
         self.h = hydrogens
         self.a = acceptors

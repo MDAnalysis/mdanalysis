@@ -1,5 +1,4 @@
-from __future__ import print_function, absolute_import
-from six import StringIO
+from io import StringIO
 from collections import defaultdict
 
 from numpy.testing import (
@@ -7,16 +6,17 @@ from numpy.testing import (
 import pytest
 
 import MDAnalysis
-import MDAnalysis.analysis.hbonds
-from MDAnalysis.analysis.hbonds.wbridge_analysis import WaterBridgeAnalysis
+from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import WaterBridgeAnalysis
+
 
 def test_import_from_hbonds():
     try:
-        from MDAnalysis.analysis.hbonds import WaterBridgeAnalysis
+        from MDAnalysis.analysis.hydrogenbonds import WaterBridgeAnalysis
     except ImportError:
         raise AssertionError("Issue #2064 not fixed: "
                              "importing WaterBridgeAnalysis from "
-                             "MDAnalysis.analysis.hbonds failed.'")
+                             "MDAnalysis.analysis.hydrogenbonds failed.'")
+
 
 class TestWaterBridgeAnalysis(object):
     @staticmethod
