@@ -296,7 +296,29 @@ class TextIOPickable(io.TextIOWrapper):
 
 # not as comprehensive as built-in open func--no need for other args
 # only should be used for 'reading' modes
-def pickle_open(name, mode):
+def pickle_open(name, mode='rt'):
+    """Open file and return a stream with pickle function implemented.
+
+    Parameters
+    ----------
+    name : str;
+        a filename given a text or byte string.
+    mode: {'r', 'rt', 'rb'} (optional)
+        'r':  open for reading in text mode; 
+        'rt': read in text mode (default);
+        'rb': read in binary mode;
+        raise ValueError with other modes.
+
+    Returns
+    -------
+    stream-like object
+
+    See Also
+    --------
+    :func:`anyopen`
+    """
+    if mode not in {'r', 'rt', 'rb'}:
+        raise ValueError("Only read mode ('r', 'rt', 'rb') file can be pickled.")
     buffer = FileIOPickable(name)
     if mode == 'rb':
         return buffer
