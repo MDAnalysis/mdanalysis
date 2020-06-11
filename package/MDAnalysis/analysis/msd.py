@@ -413,8 +413,7 @@ class EinsteinMSD(AnalysisBase):
 
                 or set fft=False""")
 
-        reshape_positions = self._position_array[:, :, :].astype(
-            np.float64)
+        positions = self._position_array.astype(np.float64)
         for n in range(self.n_particles):
             self.msds_by_particle[:, n] = tidynamics.msd(
                 reshape_positions[:, n, :])
