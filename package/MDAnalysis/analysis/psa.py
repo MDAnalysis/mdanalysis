@@ -1680,7 +1680,7 @@ class PSAnalysis(object):
         dist_matrix_clus
           clustered distance matrix (reordered)
 
-        .. versionchanged:: 0.21.0
+        .. versionchanged:: 1.0.0
             :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
             changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
             :attr:`label2` due to upstream deprecation (see #2493)
@@ -1807,7 +1807,7 @@ class PSAnalysis(object):
 
         .. _seaborn: https://seaborn.pydata.org/
 
-        .. versionchanged:: 0.21.0
+        .. versionchanged:: 1.0.0
             :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
             changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
             :attr:`label2` due to upstream deprecation (see #2493)

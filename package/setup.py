@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.20.2-dev0"
+RELEASE = "2.0.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -261,7 +261,8 @@ def extensions(config):
     use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
-    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops']
+    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+                          '-fsigned-zeros']  # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])

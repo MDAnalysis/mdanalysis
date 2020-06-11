@@ -276,7 +276,7 @@ def get_converter_for(format):
         If no appropriate parser could be found.
 
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     try:
         writer = _CONVERTERS[format]
