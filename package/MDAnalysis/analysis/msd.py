@@ -265,7 +265,7 @@ class EinsteinMSD(AnalysisBase):
         ----------
         u : Universe
             An MDAnalysis :class:`Universe`.
-        selection : str
+        select : str
             An MDAnalysis selection string. Defaults to `None` in which case
             all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
