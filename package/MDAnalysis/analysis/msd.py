@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-# This module written by Hugo MacDermott-Opeskin 2020
 
 r"""
 Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
@@ -250,7 +249,7 @@ class EinsteinMSD(AnalysisBase):
     msd_per_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     n_frames : int
-        Number of frames in trajectory.
+        Number of frames included in the analysis.
     n_particles : int
         Number of particles MSD was calculated over.
 
