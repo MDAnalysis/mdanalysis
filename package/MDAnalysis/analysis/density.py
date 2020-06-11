@@ -147,6 +147,7 @@ instance, which is derived from a :class:`gridData.core.Grid`. A
 .. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html
 
 """
+from __future__ import absolute_import
 from six import raise_from, string_types
 
 import numpy as np
