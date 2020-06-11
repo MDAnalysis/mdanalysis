@@ -403,7 +403,7 @@ class EinsteinMSD(AnalysisBase):
         try:
             import tidynamics
         except ImportError:
-            raise_from(ImportError("""ERROR --- tidynamics was not found!
+            raise ImportError("""ERROR --- tidynamics was not found!
 
                 tidynamics is required to compute an FFT based MSD (default)
 
