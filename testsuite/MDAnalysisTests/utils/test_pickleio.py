@@ -22,23 +22,15 @@
 #
 from __future__ import absolute_import
 
-from os.path import abspath, basename, dirname, expanduser, normpath, relpath, split, splitext
-
-import six
-from six.moves import range, cStringIO, StringIO
-
 import pytest
-import numpy as np
-from numpy.testing import assert_equal, assert_almost_equal, assert_array_almost_equal
+from numpy.testing import assert_equal
 
-
-import MDAnalysis
 import MDAnalysis.lib.util as util
 from MDAnalysis.tests.datafiles import PDB
 
-import os
 import pickle
 import sys
+
 
 @pytest.fixture(params=[
     # filename mode
@@ -50,15 +42,17 @@ def f(request):
     filename, mode = request.param
     return util.pickle_open(filename, mode)
 
+
 @pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
                      working in python 2")
 def test_iopickle(f):
     f_pickled = pickle.loads(pickle.dumps(f))
     assert_equal(f.readline(), f_pickled.readline())
 
+
 @pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
                      working in python 2")
 def test_offset(f):
     f.readline()
     f_pickled = pickle.loads(pickle.dumps(f))
-    assert_equal(f.tell(),f_pickled.tell())
+    assert_equal(f.tell(), f_pickled.tell())

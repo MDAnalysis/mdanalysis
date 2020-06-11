@@ -26,9 +26,7 @@ import sys
 import multiprocessing
 import numpy as np
 import pytest
-import pickle
 
-import MDAnalysis as mda
 from MDAnalysis.lib.util import pickle_open
 from MDAnalysisTests.datafiles import (
     PDB
@@ -36,8 +34,10 @@ from MDAnalysisTests.datafiles import (
 
 from numpy.testing import assert_equal
 
+
 def textio_line(file, i):
     return file.readlines()[i]
+
 
 @pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
                    working in python 2")
@@ -48,6 +48,6 @@ def test_multiprocess_fileio():
     PDB_file.close()
     PDB_file = pickle_open(PDB)
     res = np.array([p.apply(textio_line, args=(PDB_file, i))
-                for i in range(4)])
+                    for i in range(4)])
     p.close()
     assert_equal(res, ref)
