@@ -249,7 +249,7 @@ class EinsteinMSD(AnalysisBase):
     dim_fac : int
         Dimensionality :math:`d` of the MSD.
     timeseries : :class:`numpy.ndarray`
-        The averaged MSD with respect to lag-time.
+        The averaged MSD over all the particles with respect to lag-time.
     msd_per_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     n_frames : int
@@ -265,8 +265,8 @@ class EinsteinMSD(AnalysisBase):
         ----------
         u : Universe
             An MDAnalysis :class:`Universe`.
-        selection : str
-            An MDAnalysis selection string. Defaults to `None` in which case
+        select : str
+            A selection string. Defaults to `None` in which case
             all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
             Desired dimensions to be included in the MSD. Defaults to 'xyz'.
