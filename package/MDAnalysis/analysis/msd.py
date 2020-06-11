@@ -211,11 +211,12 @@ References
 
 
 
-Classes and Functions
----------------------
+Classes
+-------
 
 .. autoclass:: EinsteinMSD
     :members:
+    :inherited-members:
 
 """
 
