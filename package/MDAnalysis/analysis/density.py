@@ -376,8 +376,8 @@ class DensityAnalysis(AnalysisBase):
         if self._gridcenter is not None:
             # Issue 2372: padding is ignored, defaults to 2.0 therefore warn
             if self._padding > 0:
-                msg = ("Box padding (currently set at {0}) "
-                       "is not used in user defined grids.".format(self._padding))
+                msg = (f"Box padding (currently set at {self._padding}) "
+                       f"is not used in user defined grids.")
                 warnings.warn(msg)
                 logger.warning(msg)
             # Generate a copy of smin/smax from coords to later check if the
@@ -689,10 +689,12 @@ class Density(Grid):
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
                 except KeyError as err:
-                    errmsg = f"Unit {value} of type {unit_type} is not recognized."
+                    errmsg = (f"Unit {value} of type {unit_type} is not "
+                              f"recognized.")
                     raise ValueError(errmsg) from err
         except AttributeError as err:
-            errmsg = '"unit" must be a dictionary with keys "length" and "density.'
+            errmsg = ('"unit" must be a dictionary with keys "length" and '
+                      '"density."')
             logger.fatal(errmsg)
             raise ValueError(errmsg) from err
         # need at least length and density (can be None)
