@@ -22,7 +22,6 @@
 #
 
 from __future__ import absolute_import
-import sys
 import multiprocessing
 import numpy as np
 import pytest
@@ -39,8 +38,6 @@ def textio_line(file, i):
     return file.readlines()[i]
 
 
-@pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
-                   working in python 2")
 def test_multiprocess_fileio():
     p = multiprocessing.Pool(2)
     PDB_file = pickle_open(PDB)

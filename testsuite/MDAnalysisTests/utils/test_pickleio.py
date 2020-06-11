@@ -29,7 +29,6 @@ import MDAnalysis.lib.util as util
 from MDAnalysis.tests.datafiles import PDB
 
 import pickle
-import sys
 
 
 @pytest.fixture(params=[
@@ -43,15 +42,11 @@ def f(request):
     return util.pickle_open(filename, mode)
 
 
-@pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
-                     working in python 2")
 def test_iopickle(f):
     f_pickled = pickle.loads(pickle.dumps(f))
     assert_equal(f.readline(), f_pickled.readline())
 
 
-@pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
-                     working in python 2")
 def test_offset(f):
     f.readline()
     f_pickled = pickle.loads(pickle.dumps(f))
