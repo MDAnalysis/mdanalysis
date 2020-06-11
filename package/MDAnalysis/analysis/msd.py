@@ -162,8 +162,8 @@ is used to demonstrate selection of a MSD segment.
     start_time = 20
     start_index = int(start_time/timestep)
     end_time = 60
-    linear_model = lr(lagtimes[start_index:end_index], \
-    msd[start_index:end_index])
+    linear_model = linregress(lagtimes[start_index:end_index],
+    				  		  msd[start_index:end_index])
     slope = linear_model.slope
     error = linear_model.rvalue
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
