@@ -331,7 +331,7 @@ class EinsteinMSD(AnalysisBase):
         except KeyError:
             raise ValueError(
                 'invalid msd_type: {} specified, please specify one of xyz, '
-                 xy, xz, yz, x, y, z'.format(self.msd_type))
+                 'xy, xz, yz, x, y, z'.format(self.msd_type))
 
         self.dim_fac = len(self._dim)
 
