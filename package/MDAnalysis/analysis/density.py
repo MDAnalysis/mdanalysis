@@ -354,7 +354,8 @@ class DensityAnalysis(AnalysisBase):
 
 
     .. versionadded:: 1.0.0
-
+    .. versionchanged:: 2.0.0
+       :func:`_set_user_grid` is now a method of :class:`DensityAnalysis`.
     """
     def __init__(self, atomgroup, delta=1.0,
                  metadata=None, padding=2.0,
@@ -384,8 +385,9 @@ class DensityAnalysis(AnalysisBase):
             smin = np.min(coord, axis=0)
             smax = np.max(coord, axis=0)
             # Overwrite smin/smax with user defined values
-            smin, smax = _set_user_grid(self._gridcenter, self._xdim,
-                                        self._ydim, self._zdim, smin, smax)
+            smin, smax = self._set_user_grid(self._gridcenter, self._xdim,
+                                             self._ydim, self._zdim, smin,
+                                             smax)
         else:
             # Make the box bigger to avoid as much as possible 'outlier'. This
             # is important if the sites are defined at a high density: in this
@@ -427,6 +429,64 @@ class DensityAnalysis(AnalysisBase):
                           parameters={'isDensity': False})
         density.make_density()
         self.density = density
+
+    @staticmethod
+    def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
+        """Helper function to set the grid dimensions to user defined values
+
+        Parameters
+        ----------
+        gridcenter : numpy ndarray, float32
+                3 element ndarray containing the x, y and z coordinates of the
+                grid box center
+        xdim : float
+                Box edge length in the x dimension
+        ydim : float
+                Box edge length in the y dimension
+        zdim : float
+                Box edge length in the y dimension
+        smin : numpy ndarray, float32
+                Minimum x,y,z coordinates for the input selection
+        smax : numpy ndarray, float32
+                Maximum x,y,z coordinates for the input selection
+
+        Returns
+        -------
+        umin : numpy ndarray, float32
+                Minimum x,y,z coordinates of the user defined grid
+        umax : numpy ndarray, float32
+                Maximum x,y,z coordinates of the user defined grid
+
+
+        .. versionchanged:: 2.0.0
+           Now a staticmethod of :class:`DensityAnalysis`.
+        """
+        # Check user inputs
+        try:
+            gridcenter = np.asarray(gridcenter, dtype=np.float32)
+        except ValueError:
+            raise_from(ValueError("Non-number values assigned to gridcenter"),
+                       None)
+        if gridcenter.shape != (3,):
+            raise ValueError("gridcenter must be a 3D coordinate")
+        try:
+            xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
+        except ValueError:
+            raise_from(ValueError("xdim, ydim, and zdim must be numbers"),
+                       None)
+
+        # Set min/max by shifting by half the edge length of each dimension
+        umin = gridcenter - xyzdim/2
+        umax = gridcenter + xyzdim/2
+
+        # Here we test if coords of selection fall outside of the defined grid
+        # if this happens, we warn users they may want to resize their grids
+        if any(smin < umin) or any(smax > umax):
+            msg = ("Atom selection does not fit grid --- "
+                   "you may want to define a larger box")
+            warnings.warn(msg)
+            logger.warning(msg)
+        return umin, umax
 
     # _reduce is not strictly necessary for the serial version but is necessary for
     # pmda-style parallelism (see #2542)
@@ -758,55 +818,3 @@ class Density(Grid):
         else:
             grid_type = 'histogram'
         return '<Density ' + grid_type + ' with ' + str(self.grid.shape) + ' bins>'
-
-
-def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
-    """Helper function to set the grid dimensions to user defined values
-
-    Parameters
-    ----------
-    gridcenter : numpy ndarray, float32
-            3 element ndarray containing the x, y and z coordinates of the grid
-            box center
-    xdim : float
-            Box edge length in the x dimension
-    ydim : float
-            Box edge length in the y dimension
-    zdim : float
-            Box edge length in the y dimension
-    smin : numpy ndarray, float32
-            Minimum x,y,z coordinates for the input selection
-    smax : numpy ndarray, float32
-            Maximum x,y,z coordinates for the input selection
-
-    Returns
-    -------
-    umin : numpy ndarray, float32
-            Minimum x,y,z coordinates of the user defined grid
-    umax : numpy ndarray, float32
-            Maximum x,y,z coordinates of the user defined grid
-    """
-    # Check user inputs
-    try:
-        gridcenter = np.asarray(gridcenter, dtype=np.float32)
-    except ValueError:
-        raise_from(ValueError("Non-number values assigned to gridcenter"), None)
-    if gridcenter.shape != (3,):
-        raise ValueError("gridcenter must be a 3D coordinate")
-    try:
-        xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
-    except ValueError:
-        raise_from(ValueError("xdim, ydim, and zdim must be numbers"), None)
-
-    # Set min/max by shifting by half the edge length of each dimension
-    umin = gridcenter - xyzdim/2
-    umax = gridcenter + xyzdim/2
-
-    # Here we test if coords of selection fall outside of the defined grid
-    # if this happens, we warn users they may want to resize their grids
-    if any(smin < umin) or any(smax > umax):
-        msg = ("Atom selection does not fit grid --- "
-               "you may want to define a larger box")
-        warnings.warn(msg)
-        logger.warning(msg)
-    return umin, umax
