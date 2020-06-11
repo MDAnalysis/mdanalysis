@@ -158,7 +158,7 @@ is used to demonstrate selection of a MSD segment.
 
 .. code-block:: python
 
-    from scipy.stats import linregress as lr
+    from scipy.stats import linregress
     start_time = 20
     start_index = int(start_time/timestep)
     end_time = 60
