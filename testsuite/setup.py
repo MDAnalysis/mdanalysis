@@ -185,6 +185,7 @@ if __name__ == '__main__':
               'hypothesis',
               'psutil>=4.0.2',
               'mock>=2.0.0',  # replace with unittest.mock in python 3 only version
+              'tidynamics>=1.0.0'
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)
