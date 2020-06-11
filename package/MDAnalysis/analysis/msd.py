@@ -415,6 +415,5 @@ class EinsteinMSD(AnalysisBase):
 
         positions = self._position_array.astype(np.float64)
         for n in range(self.n_particles):
-            self.msds_by_particle[:, n] = tidynamics.msd(
-                reshape_positions[:, n, :])
+            self.msds_by_particle[:, n] = tidynamics.msd(positions[:, n])
         self.timeseries = self.msds_by_particle.mean(axis=1, dtype=np.float64)
