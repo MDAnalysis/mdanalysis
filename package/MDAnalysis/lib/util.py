@@ -279,6 +279,27 @@ class FileIOPickable(io.FileIO):
         self.seek(args[0])
 
 
+class BufferIOPickable(io.BufferedReader):
+    """A pickable buffer for a readable FilIO object
+
+    Wrap raw FileIOPickable inside
+
+    """
+    def __init__(self, raw):
+        super().__init__(raw)
+        self.raw_class = raw.__class__
+
+    def __getstate__(self):
+        return self.tell(), self.name, self.raw_class
+
+    def __setstate__(self, args):
+        name = args[1]
+        raw_class = args[2]
+        raw = raw_class(name)
+        super().__init__(raw)
+        self.seek(args[0])
+
+
 class TextIOPickable(io.TextIOWrapper):
     """Character and line based layer over a pickable FileIO based object.
 
@@ -287,20 +308,20 @@ class TextIOPickable(io.TextIOWrapper):
         file = FileIOPickable('filename')
         text_wrapped = TextIOPickable(file)
     """
-    def __init__(self, buffer):
-        super().__init__(buffer)
-        self.buffer_class = buffer.__class__
+    def __init__(self, raw):
+        super().__init__(raw)
+        self.raw_class = raw.__class__
 
     def __getstate__(self):
-        return self.tell(), self.name, self.buffer_class
+        return self.tell(), self.name, self.raw_class
 
     def __setstate__(self, args):
         name = args[1]
-        buffer_class = args[2]
-        # buffer_class is used for further expansion this functionality to 
+        raw_class = args[2]
+        # raw_class is used for further expansion this functionality to 
         # GZip files, which also requires a text wrapper. 
-        buffer = buffer_class(name)
-        super().__init__(buffer)
+        raw = raw_class(name)
+        super().__init__(raw)
         self.seek(args[0])
 
 # not as comprehensive as built-in open func--no need for other args
@@ -313,7 +334,7 @@ def pickle_open(name, mode='rt'):
     name : str;
         a filename given a text or byte string.
     mode: {'r', 'rt', 'rb'} (optional)
-        'r':  open for reading in text mode; 
+        'r':  open for reading in text mode;
         'rt': read in text mode (default);
         'rb': read in binary mode;
         raise ValueError with other modes.
@@ -327,12 +348,12 @@ def pickle_open(name, mode='rt'):
     :func:`anyopen`
     """
     if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') file can be pickled.")
-    buffer = FileIOPickable(name)
+        raise ValueError("Only read mode ('r', 'rt', 'rb') files can be pickled.")
+    raw = FileIOPickable(name)
     if mode == 'rb':
-        return buffer
+        return BufferIOPickable(raw)
     elif mode == 'rt' or mode == 'r':
-        return TextIOPickable(buffer)
+        return TextIOPickable(raw)
 
 
 @contextmanager
