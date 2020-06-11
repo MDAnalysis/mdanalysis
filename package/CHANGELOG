@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers
+??/??/?? richardjgowers, hmacdope
 
   * 2.0.0
 
 Fixes
 
 Enhancements
+  * Added computation of Mean Squared Displacements (#2438, PR #2619)
 
 Deprecations
 * Dropped Python 2 support
@@ -110,7 +111,6 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
-  * Added computation of Mean Squared Displacements (#2438, PR #2619)
   * Added support for FHI-AIMS input files (PR #2705)
   * vastly improved support for 32-bit Windows (PR #2696)
   * Added methods to compute the root-mean-square-inner-product of subspaces 

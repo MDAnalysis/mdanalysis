@@ -30,34 +30,34 @@ Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`
 :Year: 2020
 :Copyright: GNU Public License v2
 
-This module implements the calculation of Mean Squared Displacements (MSDs) 
-by the Einstein relation. MSDs can be used to characterize the speed at 
-which particles move and has its roots in the study of Brownian motion. 
-For a full explanation of the theory behind MSDs and the subsequent 
-calculation of self-diffusivities the reader is directed to [Maginn2019]_. 
-MSDs can be computed from the following expression, known as the 
+This module implements the calculation of Mean Squared Displacements (MSDs)
+by the Einstein relation. MSDs can be used to characterize the speed at
+which particles move and has its roots in the study of Brownian motion.
+For a full explanation of the theory behind MSDs and the subsequent
+calculation of self-diffusivities the reader is directed to [Maginn2019]_.
+MSDs can be computed from the following expression, known as the
 **Einstein formula**:
 
 .. math::
 
-   MSD(r_{d}) = \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d} 
+   MSD(r_{d}) = \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d}
     - r_{d}(t_0)|^2 \bigg{\rangle}_{t_{0}}
 
-where :math:`N` is the number of equivalent particles the MSD is calculated 
-over, :math:`r` are their coordinates and :math:`d` the desired dimensionality 
-of the MSD. Note that while the definition of the MSD is universal, there are 
-many practical considerations to computing the MSD that vary between 
-implementations. In this module, we compute a "windowed" MSD, where the MSD 
-is averaged over all possible lag-times :math:`\tau \le \tau_{max}`, 
-where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing 
+where :math:`N` is the number of equivalent particles the MSD is calculated
+over, :math:`r` are their coordinates and :math:`d` the desired dimensionality
+of the MSD. Note that while the definition of the MSD is universal, there are
+many practical considerations to computing the MSD that vary between
+implementations. In this module, we compute a "windowed" MSD, where the MSD
+is averaged over all possible lag-times :math:`\tau \le \tau_{max}`,
+where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing
 the number of samples.
 
-The computation of the MSD in this way can be computationally intensive due to 
-its :math:`N^2` scaling with respect to :math:`\tau_{max}`. An algorithm to 
-compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier 
-Transform is known and can be accessed by setting ``fft=True`` [Calandri2011]_ 
+The computation of the MSD in this way can be computationally intensive due to
+its :math:`N^2` scaling with respect to :math:`\tau_{max}`. An algorithm to
+compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier
+Transform is known and can be accessed by setting ``fft=True`` [Calandri2011]_
 [Buyl2018]_. The FFT-based approach requires that the
-`tidynamics <https://github.com/pdebuyl-lab/tidynamics>`_ package is 
+`tidynamics <https://github.com/pdebuyl-lab/tidynamics>`_ package is
 installed; otherwise the code will raise an :exc:`ImportError`.
 
 Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to
@@ -79,7 +79,7 @@ First load all modules and test data
     from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO
 
 Given a universe containing trajectory data we can extract the MSD
-analysis by using the class :class:`EinsteinMSD` 
+analysis by using the class :class:`EinsteinMSD`
 
 .. code-block:: python
 
@@ -100,15 +100,15 @@ Visual inspection of the MSD is important, so let's take a look at it with a
 
     import matplotlib.pyplot as plt
     nframes = MSD.n_frames
-    timestep = 1 # this needs to be the actual time between frames 
+    timestep = 1 # this needs to be the actual time between frames
     lagtimes = np.arange(nframes)*timestep # make the lag-time axis
     fig = plt.figure()
     ax = plt.axes()
     # plot the actual MSD
-    ax.plot(lagtimes, msd, lc="black", ls="-", label=r'3D random walk') 
+    ax.plot(lagtimes, msd, lc="black", ls="-", label=r'3D random walk')
     exact = lagtimes*6
     # plot the exact result
-    ax.plot(lagtimes, exact, lc="black", ls="--", label=r'$y=2 D\tau$') 
+    ax.plot(lagtimes, exact, lc="black", ls="--", label=r'$y=2 D\tau$')
     plt.show()
 
 This gives us the plot of the MSD with respect to lag-time (:math:`\tau`).
@@ -116,22 +116,22 @@ We can see that the MSD is approximately linear with respect to :math:`\tau`.
 This is a numerical example of a known theoretical result that the MSD of a
 random walk is linear with respect to lag-time, with a slope of :math:`2d`.
 In this expression :math:`d` is the dimensionality of the MSD. For our 3D MSD,
-this is 3. For comparison we have plotted the line :math:`y=6\tau` to which an 
+this is 3. For comparison we have plotted the line :math:`y=6\tau` to which an
 ensemble of 3D random walks should converge.
 
-.. _figure-msd: 
-  
-.. figure:: /images/msd_demo_plot.png 
-    :scale: 100 % 
-    :alt: MSD plot 
+.. _figure-msd:
 
-Note that a segment of the MSD is required to be linear to accurately 
-determine self-diffusivity. This linear segment represents the so called 
-"middle" of the MSD plot, where ballistic trajectories at short time-lags are 
-excluded along with poorly averaged data at long time-lags. We can select the 
-"middle" of the MSD by indexing the MSD and the time-lags. Appropriately  
-linear segments of the MSD can be confirmed with a log-log plot as is often 
-reccomended [Maginn2019]_ where the "middle" segment can be identified as 
+.. figure:: /images/msd_demo_plot.png
+    :scale: 100 %
+    :alt: MSD plot
+
+Note that a segment of the MSD is required to be linear to accurately
+determine self-diffusivity. This linear segment represents the so called
+"middle" of the MSD plot, where ballistic trajectories at short time-lags are
+excluded along with poorly averaged data at long time-lags. We can select the
+"middle" of the MSD by indexing the MSD and the time-lags. Appropriately
+linear segments of the MSD can be confirmed with a log-log plot as is often
+reccomended [Maginn2019]_ where the "middle" segment can be identified as
 having a slope of 1.
 
 .. code-block:: python
@@ -139,7 +139,7 @@ having a slope of 1.
     plt.loglog(lagtimes, msd)
     plt.show()
 
-Now that we have identified what segment of our MSD to analyse, let's compute 
+Now that we have identified what segment of our MSD to analyse, let's compute
 a self-diffusivity.
 
 Computing Self-Diffusivity
@@ -148,12 +148,12 @@ Self-diffusivity is closely related to the MSD.
 
 .. math::
 
-   D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d}) 
+   D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d})
 
-From the MSD, self-diffusivities :math:`D` with the desired dimensionality 
-:math:`d` can be computed by fitting the MSD with respect to the lag-time to 
-a linear model. An example of this is shown below, using the MSD computed in 
-the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60` 
+From the MSD, self-diffusivities :math:`D` with the desired dimensionality
+:math:`d` can be computed by fitting the MSD with respect to the lag-time to
+a linear model. An example of this is shown below, using the MSD computed in
+the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60`
 is used to demonstrate selection of a MSD segment.
 
 .. code-block:: python
@@ -167,7 +167,7 @@ is used to demonstrate selection of a MSD segment.
     slope = linear_model.slope
     error = linear_model.rvalue
     # dim_fac is 3 as we computed a 3D msd with 'xyz'
-    D = slope * 1/(2*MSD.dim_fac) 
+    D = slope * 1/(2*MSD.dim_fac)
 
 We have now computed a self-diffusivity!
 
@@ -176,37 +176,37 @@ Notes
 _____
 
 There are several factors that must be taken into account when setting up and
-processing trajectories for computation of self-diffusivities. 
-These include specific instructions around simulation settings, using 
-unwrapped trajectories and maintaining a relatively small elapsed time between 
-saved frames. Additionally, corrections for finite size effects are sometimes 
+processing trajectories for computation of self-diffusivities.
+These include specific instructions around simulation settings, using
+unwrapped trajectories and maintaining a relatively small elapsed time between
+saved frames. Additionally, corrections for finite size effects are sometimes
 employed along with various means of estimating errors [Yeh2004]_ [Bulow2020]_.
-The reader is directed to the following review, which describes many of the 
-common pitfalls [Maginn2019]_. There are other ways to compute 
-self-diffusivity, such as from a Green-Kubo integral. At this point in time, 
+The reader is directed to the following review, which describes many of the
+common pitfalls [Maginn2019]_. There are other ways to compute
+self-diffusivity, such as from a Green-Kubo integral. At this point in time,
 these methods are beyond the scope of this module.
 
 
-Note also that computation of MSDs is highly memory intensive. If this is 
+Note also that computation of MSDs is highly memory intensive. If this is
 proving a problem, judicious use of the ``start``, ``stop``, ``step`` indexing is required.
 
 References
 ----------
 
-.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R., 
-                Elliott, J. R. Best Practices for Computing Transport 
-                Properties 1. Self-Diffusivity and Viscosity from Equilibrium 
-                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci. 
+.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R.,
+                Elliott, J. R. Best Practices for Computing Transport
+                Properties 1. Self-Diffusivity and Viscosity from Equilibrium
+                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci.
                 2019, 1 (1).
 
 .. [Yeh2004] Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion
-                Coefficients and Viscosities from Molecular Dynamics 
-                Simulations with Periodic Boundary Conditions. 
+                Coefficients and Viscosities from Molecular Dynamics
+                Simulations with Periodic Boundary Conditions.
                 J. Phys. Chem. B 2004, 108 (40), 15873–15879.
-                
-.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic 
-                Errors in Diffusion Coefficients from Long-Time Molecular 
-                Dynamics Simulations at Constant Pressure. 2020. 
+
+.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic
+                Errors in Diffusion Coefficients from Long-Time Molecular
+                Dynamics Simulations at Constant Pressure. 2020.
                 arXiv:2003.09205 [Cond-Mat, Physics:Physics].
 
 
@@ -265,12 +265,12 @@ class EinsteinMSD(AnalysisBase):
         u : Universe
             An MDAnalysis :class:`Universe`.
         selection : str
-            An MDAnalysis selection string. Defaults to `None` in which case 
+            An MDAnalysis selection string. Defaults to `None` in which case
             all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
             Desired dimensions to be included in the MSD. Defaults to 'xyz'.
         fft : bool
-            If ``True``, uses a fast FFT based algorithm for computation of 
+            If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             Defaults to ``True``.
 
@@ -314,7 +314,7 @@ class EinsteinMSD(AnalysisBase):
         Returns
         -------
         self._dim : list
-            Array-like used to slice the positions to obtain desired 
+            Array-like used to slice the positions to obtain desired
             dimensionality
         self.dim_fac : int
             Dimension factor :math:`d` of the MSD.
@@ -345,7 +345,7 @@ class EinsteinMSD(AnalysisBase):
         Returns
         -------
         self._position_array : :class:`numpy.ndarray`
-            Array of particle positions with respect to time 
+            Array of particle positions with respect to time
             shape = (n_frames, n_particles, dim_fac)
         """
         # shape of position array set here, use span in last dimension
@@ -354,7 +354,7 @@ class EinsteinMSD(AnalysisBase):
             self._atoms.positions[:, self._dim]
 
     def _conclude(self):
-       if self.fft:
+        if self.fft:
             self._conclude_fft()
         else:
             self._conclude_simple()
@@ -365,7 +365,7 @@ class EinsteinMSD(AnalysisBase):
         Parameters
         ----------
         self._position_array : :class:`numpy.ndarray`
-            Array of particle positions with respect to time 
+            Array of particle positions with respect to time
             shape (n_frames, n_particles, dim_fac).
 
         Returns
@@ -390,7 +390,7 @@ class EinsteinMSD(AnalysisBase):
         Parameters
         ----------
         self._position_array : :class:`numpy.ndarray`
-            Array of particle positions with respect to time 
+            Array of particle positions with respect to time
             shape (n_frames, n_particles, dim_fac).
 
         Returns
@@ -407,9 +407,9 @@ class EinsteinMSD(AnalysisBase):
                 tidynamics is required to compute an FFT based MSD (default)
 
                 try installing it using pip eg:
-                    
+
                     pip install tidynamics
-                    
+
                 or set fft=False"""), None,)
 
         reshape_positions = self._position_array[:, :, :].astype(
