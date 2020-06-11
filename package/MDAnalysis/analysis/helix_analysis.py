@@ -106,7 +106,8 @@ def vector_of_best_fit(coordinates):
 def local_screw_angles(global_axis, ref_axis, helix_directions):
     """
     Cylindrical azimuth angles between the local direction vectors
-    to the plane of global_axis and ref_axis, from (-pi, pi].
+    to the plane of global_axis and the vector perpendicular to both
+    global_axis and ref_axis, from (-pi, pi].
 
     Parameters
     ----------
@@ -126,27 +127,33 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
         Array of screw angles.
     """
     # normal to the plane of `ref_axis` & `global_axis`
-    plane = np.cross(ref_axis, global_axis)
-    if not np.any(plane):  # zero when ref_axis, global_axis parallel
+    perp = np.cross(ref_axis, global_axis)
+    if not np.any(perp):  # zero when ref_axis, global_axis parallel
         # use random orthogonal vector
         new_ref = [[1, 0, 0], [0, 0, 1]]
-        while not np.any(plane) and new_ref:
-            plane = np.cross(new_ref.pop(), global_axis)
+        while not np.any(perp) and new_ref:
+            perp = np.cross(new_ref.pop(), global_axis)
 
-    # angles to plane normal
-    refs = np.array([plane, global_axis])  # (2, 3)
+    # normal for angle to plane of perp and global_axis
+    ortho = np.cross(-perp, global_axis)
+
+    refs = np.array([perp, ortho])  # (2, 3)
     norms = np.outer(mdamath.pnorm(refs), mdamath.pnorm(helix_directions))
-    cos = np.matmul(refs, helix_directions.T)/norms
-    q2 = (cos[0] <= 0) & (cos[1] < 0)
-    to_plane, to_global = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
+    cos = cos_perp, cos_ortho = np.matmul(refs, helix_directions.T)/norms
+    to_perp, to_ortho = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
 
     # angles to plane in (-pi, pi]
-    to_plane[to_global > np.pi/2] *= -1
-    to_plane -= np.pi/2
-    to_plane[q2] += 2*np.pi
-    to_plane[to_plane == -np.pi] = np.pi  # leave 180 alone
+    q1 = (cos_perp >= 0) & (cos_ortho >= 0)
+    q2 = (cos_perp < 0) & (cos_ortho >= 0)
+    q3 = (cos_perp < 0) & (cos_ortho < 0)
+    q4 = (cos_perp >= 0) & (cos_ortho < 0)
 
-    return np.rad2deg(to_plane)
+    to_ortho[q1 | q4] *= -1
+    to_ortho += np.pi/2
+    to_ortho[q3] -= 2*np.pi
+    to_ortho[to_ortho == -np.pi] = np.pi  # leave 180 alone
+
+    return np.rad2deg(to_ortho)
 
 
 def helix_analysis(positions, ref_axis=[0, 0, 1]):

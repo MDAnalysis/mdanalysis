@@ -25,7 +25,7 @@ import re
 
 import numpy as np
 import pytest
-from numpy.testing import assert_equal, assert_almost_equal
+from numpy.testing import assert_equal, assert_almost_equal, assert_allclose
 
 import MDAnalysis as mda
 from MDAnalysis.analysis import helix_analysis as hel
@@ -106,23 +106,31 @@ def read_bending_matrix(fn):
 
 
 def test_local_screw_angles_planecircle():
-    # circle in xz-plane
+    """
+    Test the trivial case of a circle in the xy-plane.
+    The global axis is the x-axis and ref axis is the z-axis, 
+    so angles should be calculated to the xy-plane.
+    """
     angdeg = np.arange(0, 360, 12, dtype=int)
     angrad = np.deg2rad(angdeg)
     xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad])
-    screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
-    # normal to the plane: [0, 0, -1]
+    screw = hel.local_screw_angles([1, 0, 0], [0, 0, 1], xyz)
     correct = np.zeros_like(angdeg)
-    correct[(angdeg > 90) & (angdeg < 270)] = 180
+    correct[(angdeg > 180)] = 180
     assert_almost_equal(screw, correct)
 
 
 def test_local_screw_angles_orthocircle():
+    """
+    Test an orthogonal circle in the xz-plane.
+    The global axis is the y-axis and ref axis is the z-axis, 
+    so angles should be calculated to the xy-plane.
+    """
     # circle in xz-plane
     angdeg = np.arange(0, 360, 12, dtype=int)
     angrad = np.deg2rad(angdeg)
     xyz = np.array([[np.cos(a), 0, np.sin(a)] for a in angrad])
-    screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
+    screw = hel.local_screw_angles([0, -1, 0], [0, 0, 1], xyz)
     angdeg[-14:] = -angdeg[1:15][::-1]
     angdeg[-15] = 180
     # normal to the plane: [0, 0, -1]
@@ -130,20 +138,26 @@ def test_local_screw_angles_orthocircle():
 
 
 def test_local_screw_angles_parallel_axes():
+    """
+    Test that if global_axis and ref_axis are parallel, it
+    picks another one instead. global_axis is the x-axis,
+    so the eventual replacement ref_axis should be the z-axis,
+    so angles should be calculated to the xy-plane.
+    """
     xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     angles = hel.local_screw_angles([1, 0, 0], [-1, 0, 0], xyz)
-    # new ref should be [0, 0, 1];
-    # plane should be [0, -1, 0];
-    # ortho_plane should be [0, 0, 1]
-    assert_almost_equal(angles, [0, -90, 0])
+    assert_almost_equal(angles, [0, 0, 90])
 
 
 @pytest.fixture()
 def zigzag():
-    #      x    x    x    x    x
-    #     / \  / \  / \  / \  /
-    #   x    x    x    x    x
-
+    """
+    x-axis is from bottom to up in plane of screen
+    z-axis is left to right ->
+         x    x    x    x    x
+        / \  / \  / \  / \  /
+      x    x    x    x    x
+    """
     n_atoms = 100
     u = mda.Universe.empty(100, atom_resindex=np.arange(n_atoms),
                            trajectory=True)
@@ -155,11 +169,18 @@ def zigzag():
 
 
 @pytest.mark.parametrize('ref_axis,screw_angles', [
-    ([0, 0, 1], [0, 0]),
-    ([0, 1, 0], [-90, 90]),
-    ([1, 0, 0], [0, 0]),
-    ([1, 1, 1], [-45, 45]),
-    ([1, 1, 2], [-45, 45]),
+    # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]
+    ([0, 0, 1], [-90, 90]),  # calculated to y-z plane
+    ([1, 0, 0], [-90, 90]),  # calculated to y-z plane
+    ([-1, 0, 0], [90, -90]),  # calculated to y-z plane upside down
+    ([0, 1, 0], [0, 180]),  # calculated to x-z plane
+    ([0, -1, 0], [180, 0]),  # calculated to x-z plane upside down
+    ([1, 1, 0], [-45, 135]),  # calculated to diagonal xy-z plane
+    ([-1, 1, 0], [45, -135]),  # calculated to diagonal xz-z plane other way
+    ([1, -1, 0], [-135, 45]),  # calculated to diagonal xz-z plane other way
+    ([-1, -1, 0], [135, -45]),  # calculated to diagonal xz-z plane other way
+    ([1, 1, 1], [-45, 135]),  # calculated to diagonal xyz-z plane
+    ([1, 1, -1], [-45, 135]),  # calculated to diagonal xyz-z plane
 ])
 def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
     properties = hel.helix_analysis(zigzag.atoms.positions,
@@ -184,9 +205,14 @@ def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
                         screw_angles*49, decimal=4)
 
 
-def test_helix_analysis_square_oct():
+def square_oct(n_rep=10):
+    """
+    square-octagon-square-octagon
+
+    y- and z- coordinates create the square and octogon.
+    x-coordinates increase continuously.
+    """
     # square-octagon-square-octagon
-    n_rep = 10
     sq2 = 0.5 ** 0.5
     square = [(1, 0), (0, 1), (-1, 0), (0, -1)]
     octagon = [(1, 0), (sq2, sq2), (0, 1), (-sq2, sq2),
@@ -197,8 +223,16 @@ def test_helix_analysis_square_oct():
     n_atoms = len(xyz)
     u = mda.Universe.empty(n_atoms, trajectory=True)
     u.load_new(xyz)
+    return u
 
-    properties = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
+
+def test_helix_analysis_square_oct():
+    n_rep = 10
+    u = square_oct(n_rep=n_rep)
+    n_atoms = len(u.atoms)
+
+    properties = hel.helix_analysis(u.atoms.positions,
+                                    ref_axis=[0, 0, 1])
     twist_trans = [102.76438, 32.235607]
     twists = ([90]*2 + twist_trans + [45]*6 + twist_trans[::-1]) * n_rep
     assert_almost_equal(properties['local_twists'], twists[:n_atoms-3],
@@ -217,7 +251,7 @@ def test_helix_analysis_square_oct():
     loc_rot = [[0.,  0.,  1.],
                [0., -1.,  0.],
                [0.,  0., -1.],
-               [0.,  0.97528684,  0.2209424],
+               [0.,  0.97528684,  0.2209424],  # the transition square->oct
                [0.,  0.70710677,  0.70710677],  # 0.5 ** 0.5
                [0.,  0.,  1.],
                [0., -0.70710677,  0.70710677],
@@ -229,7 +263,7 @@ def test_helix_analysis_square_oct():
     assert_almost_equal(properties['local_helix_directions'],
                         loc_rot[:n_atoms-2], decimal=4)
 
-    origins = xyz[1:-1]
+    origins = u.atoms.positions.copy()[1:-1]
     origins[:, 1:] = ([[0.,   0.],  # square
                        [0.,   0.],
                        [0.,  -0.33318555],  # square -> octagon
@@ -245,11 +279,16 @@ def test_helix_analysis_square_oct():
     assert_almost_equal(properties['local_origins'], origins,
                         decimal=4)
 
-    # a bit off-90
-    screw = [180, -89.99, 0, 102.76, 135, 180,
-             -45, -89.99, -45, 0, 135, 102.7644] * n_rep
-    assert_almost_equal(properties['local_screw_angles'], screw[:-2],
-                        decimal=2)
+    # calculated to the x-y plane
+    # all input vectors (loc_rot) are in y-z plane
+    screw = [90, 0, -90,  # square
+             167,  # transition
+             135, 90, 45, 0, -45, -90, -135,  # octagon
+             -167]*n_rep
+
+    # not quite 0, comes out as 1.32e-06
+    assert_allclose(properties['local_screw_angles'], screw[:-2],
+                    rtol=5e-3, atol=1e-5)
 
 
 class TestHELANAL(object):
@@ -346,11 +385,18 @@ class TestHELANAL(object):
         assert 'Splitting into' not in warnmsg
 
     @pytest.mark.parametrize('ref_axis,screw_angles', [
-        ([0, 0, 1], [0, 0]),
-        ([0, 1, 0], [-90, 90]),
-        ([1, 0, 0], [0, 0]),
-        ([1, 1, 1], [-45, 45]),
-        ([1, 1, 2], [-45, 45]),
+        # input vectors zigzag between [-1, 0, 0] and [1, 0, 0]
+        ([0, 0, 1], [-90, 90]),  # calculated to y-z plane
+        ([1, 0, 0], [-90, 90]),  # calculated to y-z plane
+        ([-1, 0, 0], [90, -90]),  # calculated to y-z plane upside down
+        ([0, 1, 0], [0, 180]),  # calculated to x-z plane
+        ([0, -1, 0], [180, 0]),  # calculated to x-z plane upside down
+        ([1, 1, 0], [-45, 135]),  # calculated to diagonal xy-z plane
+        ([-1, 1, 0], [45, -135]),  # calculated to diagonal xz-z plane other way
+        ([1, -1, 0], [-135, 45]),  # calculated to diagonal xz-z plane other way
+        ([-1, -1, 0], [135, -45]),  # calculated to diagonal xz-z plane other way
+        ([1, 1, 1], [-45, 135]),  # calculated to diagonal xyz-z plane
+        ([1, 1, -1], [-45, 135]),  # calculated to diagonal xyz-z plane
     ])
     def test_helanal_zigzag(self, zigzag, ref_axis, screw_angles):
         ha = hel.HELANAL(zigzag, select="all", ref_axis=ref_axis,
