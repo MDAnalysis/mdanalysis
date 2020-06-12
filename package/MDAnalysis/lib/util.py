@@ -264,7 +264,7 @@ def filename(name, ext=None, keep=False):
     return name if isstream(name) else str(name)
 
 
-class FileIOPickable(io.FileIO):
+class FileIOPicklable(io.FileIO):
     """Stream for read a file
 
     Picklable FiloIO class that only support read mode.
@@ -279,10 +279,10 @@ class FileIOPickable(io.FileIO):
         self.seek(args[0])
 
 
-class BufferIOPickable(io.BufferedReader):
-    """A pickable buffer for a readable FilIO object
+class BufferIOPicklable(io.BufferedReader):
+    """A picklable buffer for a readable FilIO object
 
-    Wrap raw FileIOPickable inside
+    Wrap raw FileIOPicklable inside
 
     """
     def __init__(self, raw):
@@ -300,13 +300,13 @@ class BufferIOPickable(io.BufferedReader):
         self.seek(args[0])
 
 
-class TextIOPickable(io.TextIOWrapper):
-    """Character and line based layer over a pickable FileIO based object.
+class TextIOPicklable(io.TextIOWrapper):
+    """Character and line based layer over a picklable FileIO based object.
 
     Example
     -------
-        file = FileIOPickable('filename')
-        text_wrapped = TextIOPickable(file)
+        file = FileIOPicklable('filename')
+        text_wrapped = TextIOPicklable(file)
     """
     def __init__(self, raw):
         super().__init__(raw)
@@ -352,11 +352,11 @@ def pickle_open(name, mode='rt'):
     """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') files can be pickled.")
-    raw = FileIOPickable(name)
+    raw = FileIOPicklable(name)
     if mode == 'rb':
-        return BufferIOPickable(raw)
+        return BufferIOPicklable(raw)
     elif mode == 'rt' or mode == 'r':
-        return TextIOPickable(raw)
+        return TextIOPicklable(raw)
 
 
 @contextmanager
