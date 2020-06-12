@@ -40,7 +40,7 @@ Provide with an interface for pickling read-only IO file object.
 
 """
 import io
-
+import os
 
 class FileIOPicklable(io.FileIO):
     """File object (read-only) that can be pickled.
@@ -146,6 +146,12 @@ class TextIOPicklable(io.TextIOWrapper):
 def pickle_open(name, mode='rt'):
     """Open file and return a stream with pickle function implemented.
 
+    Built-in `io.open` function only returns an unpicklable file object.
+    In order to serialize a `MDAnalysis.core.Universe`, this function can
+    used to open trajectory/topology files--a object composition approach,
+    as opposed to class inheritance, which is more flexible and easier for
+    pickle implementation for new readers.
+
     Note
     ----
     Should be only used with read mode.
@@ -170,9 +176,11 @@ def pickle_open(name, mode='rt'):
     See Also
     --------
     :func:`anyopen`
+    :func:`io.open`
     """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') files can be pickled.")
+    name = os.fspath(name)
     raw = FileIOPicklable(name)
     if mode == 'rb':
         return BufferIOPicklable(raw)
