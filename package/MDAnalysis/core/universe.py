@@ -1292,7 +1292,8 @@ class Universe(object):
     
     @classmethod
     def from_smiles(cls, smiles, sanitize=True, addHs=True, 
-                    generate_coordinates=True, numConfs=1, **kwargs):
+                    generate_coordinates=True, numConfs=1, 
+                    rdkit_kwargs={}, **kwargs):
         """Create a Universe from a SMILES string with rdkit
 
         Parameters
@@ -1313,6 +1314,9 @@ class Universe(object):
         numConfs : int (optional, default 1)
             Number of frames to generate coordinates for. Ignored if
             `generate_coordinates=False`
+
+        rdkit_kwargs : dict (optional)
+            Other arguments passed to the RDKit `EmbedMultipleConfs` function
 
         kwargs : dict
             Parameters passed on Universe creation
@@ -1347,9 +1351,11 @@ class Universe(object):
             if not addHs:
                 raise ValueError("Generating coordinates requires adding "
                 "hydrogens with `addHs=True`")
+            
+            numConfs = rdkit_kwargs.pop("numConfs", numConfs)
             assert (type(numConfs) is int) and (numConfs > 0), ("numConfs must"
             " be a non-zero positive integer instead of {0}".format(numConfs))
-            AllChem.EmbedMultipleConfs(mol, numConfs)
+            AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
 
