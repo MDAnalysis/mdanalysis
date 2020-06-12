@@ -18,6 +18,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * TOPParser no longer guesses elements when missing atomic number records
+    (Issues #2449, #2651)
 
 Enhancements
 
