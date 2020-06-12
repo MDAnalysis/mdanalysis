@@ -272,6 +272,7 @@ class FileIOPicklable(io.FileIO):
     """
     def __getstate__(self):
         return self.name, self.tell()
+
     def __setstate__(self, args):
         name = args[0]
         super().__init__(name)
@@ -354,7 +355,7 @@ def pickle_open(name, mode='rt'):
     raw = FileIOPicklable(name)
     if mode == 'rb':
         return BufferIOPicklable(raw)
-    elif mode == 'rt' or mode == 'r':
+    elif mode in {'r', 'rt'}:
         return TextIOPicklable(raw)
 
 
