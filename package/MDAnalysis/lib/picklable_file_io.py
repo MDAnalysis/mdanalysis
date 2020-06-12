@@ -39,6 +39,8 @@ Provide with an interface for pickling read-only IO file object.
 .. autofunction:: pickle_open
 
 """
+from __future__ import division, absolute_import
+
 import io
 import os
 
