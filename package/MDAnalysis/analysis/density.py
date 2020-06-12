@@ -35,6 +35,12 @@ r"""Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density
 The module provides classes and functions to generate and represent
 volumetric data, in particular densities.
 
+
+.. versionchanged:: 2.0.0
+   Deprecated :func:`density_from_Universe`, :func:`density_from_PDB`, and
+   :func:`Bfactor2RMSF` have now been removed.
+
+
 Generating a density from a MD trajectory
 -----------------------------------------
 
