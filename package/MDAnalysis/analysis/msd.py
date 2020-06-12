@@ -269,6 +269,7 @@ class EinsteinMSD(AnalysisBase):
         fft : bool
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
+            The tidynamics package is required for `fft=True`.
             Defaults to ``True``.
 
 
@@ -303,19 +304,6 @@ class EinsteinMSD(AnalysisBase):
     def _parse_msd_type(self):
         r""" Sets up the desired dimensionality of the MSD.
 
-        Parameters
-        ----------
-        self.msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
-            Dimensions to be included in the MSD.
-
-        Returns
-        -------
-        self._dim : list
-            Array-like used to slice the positions to obtain desired
-            dimensionality
-        self.dim_fac : int
-            Dimension factor :math:`d` of the MSD.
-
         """
         keys = {'x': [0], 'y': [1], 'z': [2], 'xy': [0, 1],
                 'xz': [0, 2], 'yz': [1, 2], 'xyz': [0, 1, 2]}
@@ -334,16 +322,6 @@ class EinsteinMSD(AnalysisBase):
     def _single_frame(self):
         r""" Constructs array of positions for MSD calculation.
 
-        Parameters
-        ----------
-        self.u : :class:`Universe`
-            MDAnalysis Universe
-
-        Returns
-        -------
-        self._position_array : :class:`numpy.ndarray`
-            Array of particle positions with respect to time
-            shape = (n_frames, n_particles, dim_fac)
         """
         # shape of position array set here, use span in last dimension
         # from this point on
@@ -359,17 +337,6 @@ class EinsteinMSD(AnalysisBase):
     def _conclude_simple(self):
         r""" Calculates the MSD via the simple "windowed" algorithm.
 
-        Parameters
-        ----------
-        self._position_array : :class:`numpy.ndarray`
-            Array of particle positions with respect to time
-            shape (n_frames, n_particles, dim_fac).
-
-        Returns
-        -------
-        self.timeseries : :class:`numpy.ndarray`
-            The MSD as a function of lag-time.
-
         """
         lagtimes = np.arange(1, self.n_frames)
         for lag in lagtimes:
@@ -383,17 +350,6 @@ class EinsteinMSD(AnalysisBase):
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
-
-        Parameters
-        ----------
-        self._position_array : :class:`numpy.ndarray`
-            Array of particle positions with respect to time
-            shape (n_frames, n_particles, dim_fac).
-
-        Returns
-        -------
-        self.timeseries : :class:`numpy.ndarray`
-            The MSD as a function of lag-time.
 
         """
         try:
