@@ -239,6 +239,20 @@ del Doi
 
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
+    Parameters
+    ----------
+    u : Universe
+        An MDAnalysis :class:`Universe`.
+    select : str
+        A selection string. Defaults to `None` in which case
+        all atoms are selected.
+    msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
+        Desired dimensions to be included in the MSD. Defaults to 'xyz'.
+    fft : bool
+        If ``True``, uses a fast FFT based algorithm for computation of
+        the MSD. Otherwise, use the simple "windowed" algorithm.
+        The tidynamics package is required for `fft=True`.
+        Defaults to ``True``.
 
     Attributes
     ----------
@@ -270,8 +284,7 @@ class EinsteinMSD(AnalysisBase):
             If ``True``, uses a fast FFT based algorithm for computation of
             the MSD. Otherwise, use the simple "windowed" algorithm.
             The tidynamics package is required for `fft=True`.
-            Defaults to ``True``.
-
+            Defaults to ``True``.    
 
         """
         self.u = u
@@ -325,8 +338,8 @@ class EinsteinMSD(AnalysisBase):
         """
         # shape of position array set here, use span in last dimension
         # from this point on
-        self._position_array[self._frame_index] =
-        self._atoms.positions[:, self._dim]
+        self._position_array[self._frame_index] = (
+        self._atoms.positions[:, self._dim])
 
     def _conclude(self):
         if self.fft:
@@ -340,8 +353,8 @@ class EinsteinMSD(AnalysisBase):
         """
         lagtimes = np.arange(1, self.n_frames)
         for lag in lagtimes:
-            disp = self._position_array[:-lag, :, :] - \
-                self._position_array[lag:, :, :]
+            disp = (self._position_array[:-lag, :, :] - 
+                self._position_array[lag:, :, :])
             sqdist = np.square(disp, dtype=np.float64).sum(
                 axis=-1, dtype=np.float64)  # np.float64 required
             self.msds_by_particle[lag, :] = np.mean(
