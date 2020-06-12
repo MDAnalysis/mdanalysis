@@ -574,7 +574,10 @@ class AltlocSelection(StringSelection):
 
 
 class AromaticSelection(Selection):
-    """Contains all aromatic atoms"""
+    """Select aromatic atoms.
+    
+    Aromaticity is available in the `aromaticities` attribute and is made 
+    available through RDKit"""
     token = 'aromatic'
     field = 'aromaticities'
 

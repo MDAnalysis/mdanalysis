@@ -61,7 +61,10 @@ from . import memory
 
 
 class RDKitReader(memory.MemoryReader):
-    """Coordinate reader for RDKit."""
+    """Coordinate reader for RDKit.
+    
+    .. versionadded:: 1.0.0
+    """
     format = 'RDKIT'
 
     # Structure.coordinates always in Angstrom
@@ -82,6 +85,16 @@ class RDKitReader(memory.MemoryReader):
             return isinstance(thing, Chem.Mol)
 
     def __init__(self, filename, **kwargs):
+        """Read coordinates from an RDKit molecule.
+        Each conformer in the original RDKit molecule will be read as a frame 
+        in the resulting universe.
+
+        Parameters
+        ----------
+
+        filename : rdkit.Chem.rdchem.Mol
+            RDKit molecule
+        """
         n_atoms = filename.GetNumAtoms()
         coordinates = np.array([
             conf.GetPositions() for conf in filename.GetConformers()], 
