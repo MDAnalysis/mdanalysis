@@ -51,4 +51,10 @@ class TestRDKitReader(object):
 
     def test_no_coordinates(self):
         pass
+
+    def test_compare_mol2reader(self, universe):
+        mol2 = mda.Universe(mol2_molecule)
+        assert universe.trajectory.n_frames == mol2.trajectory.n_frames
+        assert_equal(universe.trajectory.ts.positions, 
+                     mol2.trajectory.ts.positions)
         
