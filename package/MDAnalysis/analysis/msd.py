@@ -269,7 +269,7 @@ class EinsteinMSD(AnalysisBase):
 
     """
 
-    def __init__(self, u, select=None, msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u, select, msd_type='xyz', fft=True, **kwargs):
         r"""
         Parameters
         ----------
