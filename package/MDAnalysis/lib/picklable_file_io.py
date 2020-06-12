@@ -66,12 +66,15 @@ class FileIOPicklable(io.FileIO):
     TextIOPicklable
     BufferIOPicklable
     """
+    def __init__(self, name):
+        super().__init__(name, mode='r')
+
     def __getstate__(self):
         return self.name, self.tell()
 
     def __setstate__(self, args):
         name = args[0]
-        super().__init__(name)
+        super().__init__(name, mode='r')
         self.seek(args[1])
 
 
