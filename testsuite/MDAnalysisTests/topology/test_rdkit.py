@@ -132,8 +132,10 @@ class TestRDKitParserMOL2(RDKitParserBase):
         assert_array_equal(expected, top.charges.values)
 
     def test_aromaticity(self, top, filename):
-        expected = np.array([atom.GetIsAromatic() for atom in filename.GetAtoms()])
+        expected = np.array([
+            atom.GetIsAromatic() for atom in filename.GetAtoms()])
         assert_array_equal(expected, top.aromaticities.values)
+
 
 class TestRDKitParserPDB(RDKitParserBase):
     ref_filename = PDB_helix

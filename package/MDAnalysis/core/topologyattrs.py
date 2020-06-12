@@ -1674,7 +1674,7 @@ class Aromaticities(AtomAttr):
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
-        return np.array([False for _ in range(na)], dtype=bool)
+        return np.zeros(na, dtype=bool)
 
 
 class ResidueAttr(TopologyAttr):
