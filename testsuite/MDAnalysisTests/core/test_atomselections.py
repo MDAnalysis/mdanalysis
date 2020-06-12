@@ -523,15 +523,27 @@ class TestSelectionsTPR(object):
 class TestSelectionRDKit(object):
     def setup_class(self):
         pytest.importorskip("rdkit.Chem")
-        
-    def test_aromatic(self):
-        smi = "Cc1ccccc1" # toluene
+
+    @pytest.fixture
+    def u(self):
+        smi = "Cc1cNcc1"
         u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
                                             generate_coordinates=False)
-        arom = u.select_atoms("aromatic")
-        not_arom = u.select_atoms("not aromatic")
-        assert arom.n_atoms == 6
-        assert not_arom.n_atoms == 1
+        return u
+        
+    def test_aromatic(self, u):
+        sel = u.select_atoms("aromatic")
+        assert sel.n_atoms == 5
+
+    def test_not_aromatic(self, u):
+        sel = u.select_atoms("not aromatic")
+        assert sel.n_atoms == 1
+
+    def test_combine_aromatic(self, u):
+        sel = u.select_atoms("type N and aromatic")
+        assert sel.n_atoms == 1
+        sel = u.select_atoms("type C and aromatic")
+        assert sel.n_atoms == 4
 
 
 class TestSelectionsNucleicAcids(object):
