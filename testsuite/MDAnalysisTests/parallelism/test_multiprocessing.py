@@ -40,11 +40,10 @@ def textio_line(file, i):
 
 def test_multiprocess_fileio():
     p = multiprocessing.Pool(2)
-    PDB_file = pickle_open(PDB)
-    ref = PDB_file.readlines()[:4]
-    PDB_file.close()
-    PDB_file = pickle_open(PDB)
-    res = np.array([p.apply(textio_line, args=(PDB_file, i))
+    with pickle_open(PDB) as PDB_file:
+        ref = PDB_file.readlines()[:4]
+    with pickle_open(PDB) as PDB_file:
+        res = np.array([p.apply(textio_line, args=(PDB_file, i))
                     for i in range(4)])
     p.close()
     assert_equal(res, ref)
