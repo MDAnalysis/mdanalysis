@@ -22,15 +22,49 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
+Picklable read-only IO classes
+=============================
+
+Provide with an interface for pickling read-only IO file object.
+
+.. autoclass:: FileIOPicklable
+   :members:
+
+.. autoclass:: BufferIOPicklable
+   :members:
+
+.. autoclass:: TextIOPicklable
+   :members:
+
+.. autofunction:: pickle_open
+
 """
 import io
 
 
 class FileIOPicklable(io.FileIO):
-    """Stream for read a file
+    """File object (read-only) that can be pickled.
 
-    Picklable FiloIO class that only support read mode.
+    This class provides a file-like object (as returned by :func:`open`, namely :class:`io.FileIO`)
+    that, unlike standard Python file objects, can be pickled. Only read mode is supported.
 
+    When the file is pickled, filename and position of the open file handle in the file
+    are saved. On unpickling, the file is opened by filename and the file is
+    seeked to the saved position. This means that for a successful unpickle, the original
+    file still has to be accessible with its filename.
+
+    Example
+    -------
+    ::
+        file = FileIOPicklable('filename')
+        file.readline()
+        file_pickled = pickle.loads(pickle.dumps(file)
+        assert_equal(file.tell(), file_pickled.tell())
+
+    See Also
+    ---------
+    TextIOPicklable
+    BufferIOPicklable
     """
     def __getstate__(self):
         return self.name, self.tell()
@@ -42,10 +76,20 @@ class FileIOPicklable(io.FileIO):
 
 
 class BufferIOPicklable(io.BufferedReader):
-    """A picklable buffer for a readable FilIO object
+    """A picklable buffer object for read-only FilIO object.
 
-    Wrap raw FileIOPicklable inside
+    This class provides a buffered :class:`io.BufferedReader` object that can be pickled. Note that this only works in reda mode.
 
+    Example
+    -------
+    ::
+        file = FileIOPicklable('filename')
+        buffer_wrapped = BufferIOPicklable(file)
+
+    See Also
+    ---------
+    FileIOPicklable
+    TextIOPicklable
     """
     def __init__(self, raw):
         super().__init__(raw)
@@ -63,12 +107,21 @@ class BufferIOPicklable(io.BufferedReader):
 
 
 class TextIOPicklable(io.TextIOWrapper):
-    """Character and line based layer over a picklable FileIO based object.
+    """Character and line based picklable file-like object.
+
+    This class provides a file-like :class:`io.TextIOWrapper` object that can
+    be pickled. Note that this only works in read mode.
 
     Example
     -------
+    ::
         file = FileIOPicklable('filename')
         text_wrapped = TextIOPicklable(file)
+
+    See Also
+    ---------
+    FileIOPicklable
+    BufferIOPicklable
     """
     def __init__(self, raw):
         super().__init__(raw)
@@ -90,6 +143,10 @@ class TextIOPicklable(io.TextIOWrapper):
 def pickle_open(name, mode='rt'):
     """Open file and return a stream with pickle function implemented.
 
+    Note
+    ----
+    Should be only used with read mode.
+
     Parameters
     ----------
     name : str;
@@ -98,7 +155,10 @@ def pickle_open(name, mode='rt'):
         'r':  open for reading in text mode;
         'rt': read in text mode (default);
         'rb': read in binary mode;
-        raise ValueError with other modes.
+
+    Raises
+    ------
+    ValueError : if `mode` is not one of the allowed read modes
 
     Returns
     -------
@@ -107,10 +167,6 @@ def pickle_open(name, mode='rt'):
     See Also
     --------
     :func:`anyopen`
-
-    Warning
-    -------
-    Should be only used with read mode.
     """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') files can be pickled.")
