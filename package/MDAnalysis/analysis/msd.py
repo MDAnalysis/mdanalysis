@@ -352,14 +352,12 @@ class EinsteinMSD(AnalysisBase):
 
         """
         lagtimes = np.arange(1, self.n_frames)
+        positions = self._position_array.astype(np.float64)
         for lag in lagtimes:
-            disp = (self._position_array[:-lag, :, :] - 
-                self._position_array[lag:, :, :])
-            sqdist = np.square(disp, dtype=np.float64).sum(
-                axis=-1, dtype=np.float64)  # np.float64 required
-            self.msds_by_particle[lag, :] = np.mean(
-                sqdist, axis=0, dtype=np.float64)
-        self.timeseries = self.msds_by_particle.mean(axis=1, dtype=np.float64)
+            disp = positions[:-lag, :, :] - positions[lag:, :, :]
+            sqdist = np.square(disp).sum(axis=-1) 
+            self.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
+        self.timeseries = self.msds_by_particle.mean(axis=1)
 
     def _conclude_fft(self):  # with FFT, np.float64 bit prescision required.
         r""" Calculates the MSD via the FCA fast correlation algorithm.
