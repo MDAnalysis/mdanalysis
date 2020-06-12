@@ -26,7 +26,7 @@ import multiprocessing
 import numpy as np
 import pytest
 
-from MDAnalysis.lib.util import pickle_open
+from MDAnalysis.lib.picklable_file_io import pickle_open
 from MDAnalysisTests.datafiles import (
     PDB
 )

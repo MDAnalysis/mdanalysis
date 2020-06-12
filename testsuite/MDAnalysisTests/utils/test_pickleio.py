@@ -25,7 +25,7 @@ from __future__ import absolute_import
 import pytest
 from numpy.testing import assert_equal
 
-import MDAnalysis.lib.util as util
+from MDAnalysis.lib.picklable_file_io import pickle_open
 from MDAnalysis.tests.datafiles import PDB
 
 import pickle
@@ -39,7 +39,7 @@ import pickle
 ])
 def f(request):
     filename, mode = request.param
-    return util.pickle_open(filename, mode)
+    return pickle_open(filename, mode)
 
 
 def test_iopickle(f):
@@ -67,4 +67,4 @@ def unpicklable_f(request):
 def test_unpicklable_open_mode(unpicklable_f):
     filename, mode = unpicklable_f
     with pytest.raises(ValueError):
-        util.pickle_open(filename, mode)
+        pickle_open(filename, mode)
