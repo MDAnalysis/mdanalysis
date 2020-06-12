@@ -267,9 +267,13 @@ DIHEDRALS_WITHOUT_HYDROGEN</td>
 <p>The Amber charge is converted to electron charges as used in
 MDAnalysis and other packages. To get back Amber charges, multiply
 by 18.2223.</p>
-<p class="last">Chamber-style Amber topologies (i.e. topologies generated via parmed
-conversion of a CHARMM topology to an AMBER one) are not currently supported.
-Support will likely be added in future MDAnalysis releases.</p>
+<p>Chamber-style Amber topologies (i.e. topologies generated via parmed
+conversion of a CHARMM topology to an AMBER one) are not currently
+supported. Support will likely be added in future MDAnalysis releases.</p>
+<p class="last">As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records
+are missing. In those scenarios, if elements are necessary, users will have
+to invoke the element guessers after parsing the topology file. Please see
+<a class="reference internal" href="guessers.html#module-MDAnalysis.topology.guessers" title="MDAnalysis.topology.guessers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a> for more details.</p>
 </div>
 <div class="section" id="classes">
 <h2>5.20.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
@@ -288,16 +292,13 @@ Support will likely be added in future MDAnalysis releases.</p>
 - Bonds
 - Angles
 - Dihedrals (inc. impropers)</p>
-<dl class="docutils">
-<dt>Guesses the following attributes:</dt>
-<dd><ul class="first last simple">
-<li>Elements (if not included in topology)</li>
-</ul>
-</dd>
-</dl>
 <p>The format is defined in <a class="reference external" href="http://ambermd.org/formats.html#topology">PARM parameter/topology file
 specification</a>.  The reader tries to detect if it is a newer
 (AMBER 12?) file format by looking for the flag “ATOMIC_NUMBER”.</p>
+<p class="rubric">Notes</p>
+<p>Elements are obtained from the atomic numbers (if present). If a given
+input atomic number does not belong to an element (usually either -1 or 0),
+the element will be assigned an empty record.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.6: </span>parses both amber10 and amber12 formats</p>
 </div>
@@ -305,7 +306,10 @@ specification</a>.  The reader tries to detect if it is a newer
 <p><span class="versionmodified">Changed in version 0.19.0: </span>parses bonds, angles, dihedrals, and impropers</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>warns users that chamber-style topologies are not current supported</p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span>warns users that chamber-style topologies are not currently supported</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>no longer guesses elements if missing</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.TOPParser.TOPParser.close">
@@ -710,9 +714,13 @@ as defined in the parm7 file</p>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If the record contains atomic numbers &lt;= 0, these will be treated as
-dummy elements and an attempt will be made to guess the element based
-on atom type. See issue #2306 for more details.</p>
+<p>If the record contains unknown atomic numbers (e.g. &lt;= 0), these will
+be treated as unknown elements and assigned an empty string value. See
+issues #2306 and #2651 for more details.</p>
+<div class="last versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Unrecognised elements will now return a empty string. The parser
+will no longer attempt to guess the element by default.</p>
+</div>
 </div>
 </dd></dl>
 

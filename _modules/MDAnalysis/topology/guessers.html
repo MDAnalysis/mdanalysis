@@ -202,6 +202,74 @@
 <span class="sd">In general `guess_atom_X` returns the guessed value for a single value,</span>
 <span class="sd">while `guess_Xs` will work on an array of many atoms.</span>
 
+
+<span class="sd">Example uses of guessers</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">Guessing elements from atom names</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Currently, it is possible to guess elements from atom names using</span>
+<span class="sd">:func:`guess_atom_element` (or the synonymous :func:`guess_atom_type`). This can</span>
+<span class="sd">be done in the following manner::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.topology.guessers import guess_atom_element</span>
+<span class="sd">  from MDAnalysisTests.datafiles import PRM7</span>
+
+<span class="sd">  u = mda.Universe(PRM7)</span>
+
+<span class="sd">  print(u.atoms.names[1])  # returns the atom name H1</span>
+
+<span class="sd">  element = guess_atom_element(u.atoms.names[1])</span>
+
+<span class="sd">  print(element)  # returns element H</span>
+
+<span class="sd">In the above example, we take an atom named H1 and use</span>
+<span class="sd">:func:`guess_atom_element` to guess the element hydrogen (i.e. H). It is</span>
+<span class="sd">important to note that element guessing is not always accurate. Indeed in cases</span>
+<span class="sd">where the atom type is not recognised, we may end up with the wrong element.</span>
+<span class="sd">For example::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.topology.guessers import guess_atom_element</span>
+<span class="sd">  from MDAnalysisTests.datafiles import PRM19SBOPC</span>
+
+<span class="sd">  u = mda.Universe(PRM19SBOPC)</span>
+
+<span class="sd">  print(u.atoms.names[-1])  # returns the atom name EPW</span>
+
+<span class="sd">  element = guess_atom_element(u.atoms.names[-1])</span>
+
+<span class="sd">  print(element)  # returns element P</span>
+
+<span class="sd">Here we find that virtual site atom &#39;EPW&#39; was given the element P, which</span>
+<span class="sd">would not be an expected result. We therefore always recommend that users</span>
+<span class="sd">carefully check the outcomes of any guessers.</span>
+
+<span class="sd">In some cases, one may want to guess elements for an entire universe and add</span>
+<span class="sd">this guess as a topology attribute. This can be done using :func:`guess_types`</span>
+<span class="sd">in the following manner::</span>
+
+<span class="sd">  import MDAnalysis as mda</span>
+<span class="sd">  from MDAnalysis.topology.guessers import guess_types</span>
+<span class="sd">  from MDAnalysisTests.datafiles import PRM7</span>
+
+<span class="sd">  u = mda.Universe(PRM7)</span>
+
+<span class="sd">  guessed_elements = guess_types(u.atoms.names)</span>
+
+<span class="sd">  u.add_TopologyAttr(&#39;elements&#39;, guessed_elements)</span>
+
+<span class="sd">  print(u.atoms.elements)  # returns an array of guessed elements</span>
+
+<span class="sd">More information on adding topology attributes can found in the `user guide`_.</span>
+
+
+<span class="sd">.. Links</span>
+
+<span class="sd">.. _user guide: https://www.mdanalysis.org/UserGuide/examples/constructing_universe.html#Adding-topology-attributes</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
