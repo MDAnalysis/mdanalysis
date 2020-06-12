@@ -271,12 +271,11 @@ class FileIOPicklable(io.FileIO):
 
     """
     def __getstate__(self):
-        return self.tell(), self.name
-
+        return self.name, self.tell()
     def __setstate__(self, args):
-        name = args[1]
+        name = args[0]
         super().__init__(name)
-        self.seek(args[0])
+        self.seek(args[1])
 
 
 class BufferIOPicklable(io.BufferedReader):
@@ -290,14 +289,14 @@ class BufferIOPicklable(io.BufferedReader):
         self.raw_class = raw.__class__
 
     def __getstate__(self):
-        return self.tell(), self.name, self.raw_class
+        return self.raw_class, self.name, self.tell()
 
     def __setstate__(self, args):
+        raw_class = args[0]
         name = args[1]
-        raw_class = args[2]
         raw = raw_class(name)
         super().__init__(raw)
-        self.seek(args[0])
+        self.seek(args[2])
 
 
 class TextIOPicklable(io.TextIOWrapper):
@@ -313,16 +312,16 @@ class TextIOPicklable(io.TextIOWrapper):
         self.raw_class = raw.__class__
 
     def __getstate__(self):
-        return self.tell(), self.name, self.raw_class
+        return self.raw_class, self.name, self.tell()
 
     def __setstate__(self, args):
+        raw_class = args[0]
         name = args[1]
-        raw_class = args[2]
         # raw_class is used for further expansion this functionality to
         # GZip files, which also requires a text wrapper.
         raw = raw_class(name)
         super().__init__(raw)
-        self.seek(args[0])
+        self.seek(args[2])
 
 
 def pickle_open(name, mode='rt'):
