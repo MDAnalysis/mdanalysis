@@ -169,9 +169,6 @@ Function reference
 .. All functions are included via automodule :members:.
 
 """
-from __future__ import print_function, division, absolute_import
-from six.moves import range, zip
-
 import warnings
 import logging
 
