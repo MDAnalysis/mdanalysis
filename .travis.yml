@@ -58,18 +58,17 @@ matrix:
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-           MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
+           MAIN_CMD="pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests"
            SETUP_CMD=""
            BUILD_CMD=""
            CONDA_DEPENDENCIES=""
            INSTALL_HOLE="false"
 
     - env: NAME="asv check"
-           PYTHON_VERSION=2.7
+           PYTHON_VERSION=3.6
            CODECOV="false"
            MAIN_CMD=""
            SETUP_CMD=""
-           NUMPY_VERSION=1.16
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
            ASV_CHECK="true"
 
