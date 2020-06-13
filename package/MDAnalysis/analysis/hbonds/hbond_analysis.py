@@ -897,8 +897,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             read every `step` between `start` (included) and `stop` (excluded),
             ``None`` selects 1. [``None``]
         verbose : bool (optional)
-             toggle progress meter output :class:`~MDAnalysis.lib.log.ProgressMeter`
-             [``True``]
+             toggle progress meter output
+             :class:`~MDAnalysis.lib.log.ProgressBar` [``True``]
         debug : bool (optional)
              enable detailed logging of debugging information; this can create
              *very big* log files so it is disabled (``False``) by default; setting
