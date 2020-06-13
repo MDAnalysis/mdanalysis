@@ -98,7 +98,7 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
     except KeyError as exc:
         errmsg = (f"Function {funcname} not available with backend {backend} "
                   f"try one of: {_distances.keys()}")
-        raise ValueError(errmsg) from exc
+        raise ValueError(errmsg) from None
     return func(*args, **kwargs)
 
 # serial versions are always available (and are typically used within
