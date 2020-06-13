@@ -180,6 +180,7 @@ Data format checks
    close it.
 """
 import sys
+import six
 
 __docformat__ = "restructuredtext en"
 
@@ -435,7 +436,7 @@ def _get_stream(filename, openfunction=open, mode='r'):
         # case we have to ignore the error and return None. Second is when openfunction can't open the file because
         # either the file isn't there or the permissions don't allow access.
         if errno.errorcode[err.errno] in ['ENOENT', 'EACCES']:
-            raise sys.exc_info()[0](sys.exc_info()[1]) from err
+            raise sys.exc_info()[1] from err
         return None
     if mode.startswith('r'):
         # additional check for reading (eg can we uncompress) --- is this needed?
