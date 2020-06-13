@@ -213,6 +213,12 @@ class DensityAnalysis(AnalysisBase):
             User defined z dimension box edge in ångström; ignored if
             gridcenter is "None".
 
+    Returns
+    -------
+    :class:`Density`
+            A :class:`Density` instance containing a physical density of units
+            :math:`Angstrom^{-3}`.
+
     See Also
     --------
     pmda.density.DensityAnalysis for a parallel version
