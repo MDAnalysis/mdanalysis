@@ -867,7 +867,7 @@ and added <em>kwargs</em> so that it can be used instead of
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS">
-<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('OG1', 'OG', 'NE2', 'SG', 'OC1', 'OE1', 'OD1', 'OW', 'ND1', 'OC2', 'OH2', 'SD', 'OH', 'OE2', 'O', 'OD2'), 'GLYCAM06': ('N', 'SM', 'O2', 'OY', 'OS', 'OW', 'OH', 'NT', 'O'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_ACCEPTORS</code><em class="property"> = {'CHARMM27': ('O', 'SG', 'OD1', 'SD', 'OH', 'OE1', 'OW', 'OD2', 'OH2', 'OG1', 'OC2', 'OC1', 'ND1', 'OE2', 'OG', 'NE2'), 'GLYCAM06': ('O', 'OS', 'SM', 'OH', 'N', 'OW', 'OY', 'NT', 'O2'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_ACCEPTORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default atom names that are treated as hydrogen <em>acceptors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>acceptors</cite> to add a list of additional acceptor names.</p>
@@ -875,7 +875,7 @@ use the keyword <cite>acceptors</cite> to add a list of additional acceptor name
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS">
-<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('OG1', 'N', 'NH1', 'NE2', 'OG', 'SG', 'NE', 'NH2', 'OW', 'NE1', 'OH2', 'OH', 'ND2', 'NZ', 'ND1'), 'GLYCAM06': ('N', 'N3', 'OW', 'OH', 'NT'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
+<code class="descname">DEFAULT_DONORS</code><em class="property"> = {'CHARMM27': ('ND2', 'SG', 'OH', 'NE', 'NH2', 'N', 'OW', 'NE1', 'OH2', 'OG1', 'NH1', 'NZ', 'ND1', 'OG', 'NE2'), 'GLYCAM06': ('OH', 'N', 'OW', 'NT', 'N3'), 'other': ()}</em><a class="headerlink" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis.DEFAULT_DONORS" title="Permalink to this definition">¶</a></dt>
 <dd><p>default heavy atom names whose hydrogens are treated as <em>donors</em>
 (see <a class="reference internal" href="#default-atom-names-for-hydrogen-bonding-analysis"><span class="std std-ref">Default heavy atom names for CHARMM27 force field.</span></a>);
 use the keyword <cite>donors</cite> to add a list of additional donor names.</p>
@@ -1001,8 +1001,8 @@ the trajectory (if supported) [<code class="docutils literal notranslate"><span 
 <li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – last trajectory frame for analysis, <code class="docutils literal notranslate"><span class="pre">None</span></code> is the last one [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – read every <cite>step</cite> between <cite>start</cite> (included) and <cite>stop</cite> (excluded),
 <code class="docutils literal notranslate"><span class="pre">None</span></code> selects 1. [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output <a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressMeter" title="MDAnalysis.lib.log.ProgressMeter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressMeter</span></code></a>
-[<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – toggle progress meter output
+<a class="reference internal" href="../lib/log.html#MDAnalysis.lib.log.ProgressBar" title="MDAnalysis.lib.log.ProgressBar"><code class="xref py py-class docutils literal notranslate"><span class="pre">ProgressBar</span></code></a> [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>debug</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – enable detailed logging of debugging information; this can create
 <em>very big</em> log files so it is disabled (<code class="docutils literal notranslate"><span class="pre">False</span></code>) by default; setting
 <cite>debug</cite> toggles the debug status for <a class="reference internal" href="#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a>,
