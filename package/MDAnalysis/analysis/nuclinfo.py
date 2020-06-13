@@ -105,7 +105,6 @@ Dihedral angles
 """
 import numpy as np
 from math import pi, sin, cos, atan2, sqrt, pow
-from six import raise_from
 
 from MDAnalysis.lib import mdamath
 

@@ -243,7 +243,7 @@ class PersistenceLength(AnalysisBase):
         try:
             self.results
         except AttributeError as exc:
-            raise NoDataError("Use the run method first") as exc
+            raise NoDataError("Use the run method first") from exc
         self.x = np.arange(len(self.results)) * self.lb
 
         self.lp = fit_exponential_decay(self.x, self.results)
