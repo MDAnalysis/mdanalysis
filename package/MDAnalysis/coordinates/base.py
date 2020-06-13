@@ -197,10 +197,6 @@ writers share.
    :members:
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import range
-
 import numpy as np
 import numbers
 import copy
@@ -526,33 +522,26 @@ class Timestep(object):
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
-        except Exception:
-            six.raise_from(
-                TypeError(
-                    "Selection type must be compatible with slicing"
-                    " the coordinates"
-                    ),
-                None)
+        except Exception as exc:
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
         try:
             vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
-        except Exception:
-            six.raise_from(
-                TypeError("Selection type must be compatible with slicing"
-                          " the coordinates"),
-                None)
+        except Exception as exc:
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
         try:
             force = self.forces[sel, :]
         except NoDataError:
             force = None
-        except Exception:
-            six.raise_from(
-                TypeError(
-                    "Selection type must be compatible with slicing"
-                    " the coordinates"
-                    ),
-                None)
+        except Exception as exc:
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
 
         new_TS = self.__class__.from_coordinates(
             positions=pos,
@@ -1392,7 +1381,7 @@ class _Readermeta(type):
                     _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 
-class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
+class ProtoReader(IOBase, metaclass=_Readermeta):
     """Base class for Readers, without a :meth:`__del__` method.
 
     Extends :class:`IOBase` with most attributes and methods of a generic
@@ -1449,7 +1438,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             ts = self._read_next_timestep()
         except (EOFError, IOError):
             self.rewind()
-            six.raise_from(StopIteration, None)
+            raise StopIteration from None
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
@@ -1632,12 +1621,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             for i in range(start, stop, step):
                 yield self._read_frame_with_aux(i)
             self.rewind()
-        except TypeError:  # if _read_frame not implemented
-            six.raise_from(
-                TypeError(
-                    "{0} does not support slicing."
-                    "".format(self.__class__.__name__)),
-                None)
+        except TypeError as exc:  # if _read_frame not implemented
+            errmsg = f"{self.__class__.__name__} does not support slicing."
+            raise TypeError(errmsg) from None
 
     def check_slice_indices(self, start, stop, step):
         """Check frame indices are valid and clip to fit trajectory.
@@ -2055,12 +2041,10 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         try:
             self.transformations = transformations
-        except ValueError:
-            six.raise_from(
-                ValueError(
-                    "Can't add transformations again. "
-                    "Please create new Universe object"),
-                None)
+        except ValueError as exc:
+            errmsg = ("Can't add transformations again. Please create a new "
+                      "Universe object")
+            raise ValueError(errmsg) from None
         else:
             self.ts = self._apply_transformations(self.ts)
 
@@ -2178,15 +2162,15 @@ class _Writermeta(type):
                     _MULTIFRAME_WRITERS[f] = cls
 
 
-class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
+class WriterBase(IOBase, metaclass=_Writermeta):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
 
 
-    .. deprecated:: 1.0.0
-       :func:`write_next_timestep` has been deprecated, please use
+    .. versionchanged:: 2.0.0
+       Deprecated :func:`write_next_timestep` has now been removed, please use
        :func:`write` instead.
     """
 
@@ -2218,37 +2202,11 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         when setting up the trajectory.
 
 
-        .. deprecated:: 1.0.0
-           Deprecated the use of Timestep as arguments to write.  Use either
-           an AtomGroup or Universe. To be removed in version 2.0.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument to write has now been
+           removed. Use AtomGroup or Universe as an input instead.
         """
-        if isinstance(obj, Timestep):
-            warnings.warn(
-                'Passing a Timestep to write is deprecated, '
-                'and will be removed in 2.0; '
-                'use either an AtomGroup or Universe',
-                DeprecationWarning)
-
         return self._write_next_frame(obj)
-
-    def write_next_timestep(self, obj):
-        """Write current timestep, using the supplied ``obj``.
-
-        Parameters
-        ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
-            write coordinate information associated with ``obj``
-
-
-        .. deprecated:: 1.0.0
-           Deprecated, use write() instead
-        """
-        warnings.warn(
-            'Writer.write_next_timestep is deprecated, '
-            'and will be removed in 2.0; '
-            'use Writer.write()',
-            DeprecationWarning)
-        return self.write(obj)
 
     def __del__(self):
         self.close()
@@ -2439,7 +2397,7 @@ class _Convertermeta(type):
                 f = f.upper()
                 _CONVERTERS[f] = cls
 
-class ConverterBase(six.with_metaclass(_Convertermeta, IOBase)):
+class ConverterBase(IOBase, metaclass=_Convertermeta):
     """Base class for converting to other libraries.
     """
 

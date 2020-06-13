@@ -19,8 +19,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import itertools
 import pytest
 
@@ -41,24 +39,6 @@ known_ts_haters = [
     mda.coordinates.LAMMPS.DATAWriter,
     mda.coordinates.CRD.CRDWriter,
 ]
-
-
-@pytest.mark.parametrize('writer', [w for w in writers
-                                    if not w in known_ts_haters])
-def test_ts_deprecated(writer, tmpdir):
-    u = mda.Universe.empty(10, trajectory=True)
-
-    if writer == mda.coordinates.chemfiles.ChemfilesWriter:
-        # chemfiles Writer exists but doesn't work without chemfiles
-        if not mda.coordinates.chemfiles.check_chemfiles_version():
-            pytest.skip("Chemfiles not available")
-        fn = str(tmpdir.join('out.xtc'))
-    else:
-        fn = str(tmpdir.join('out.traj'))
-
-    with writer(fn, n_atoms=u.atoms.n_atoms) as w:
-        with pytest.warns(DeprecationWarning):
-            w.write(u.trajectory.ts)
 
 
 @pytest.mark.parametrize('writer', writers)

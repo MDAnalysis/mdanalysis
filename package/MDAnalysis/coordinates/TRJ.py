@@ -149,10 +149,6 @@ AMBER ASCII trajectories are recognised by the suffix '.trj',
 .. _MDAnalysis mailinglist: https://groups.google.com/group/mdnalysis-discussion
 
 """
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
-from six import raise_from
-
 import scipy.io.netcdf
 import numpy as np
 import warnings
@@ -488,11 +484,11 @@ class NCDFReader(base.ReaderBase):
                           "Conventions)".format(self.filename))
                 logger.fatal(errmsg)
                 raise TypeError(errmsg)
-        except AttributeError:
+        except AttributeError as exc:
             errmsg = "NCDF trajectory {0} is missing Conventions".format(
                       self.filename)
             logger.fatal(errmsg)
-            raise_from(ValueError(errmsg), None)
+            raise ValueError(errmsg) from None
 
         # AMBER NetCDF files should also have a ConventionVersion
         try:
@@ -503,10 +499,10 @@ class NCDFReader(base.ReaderBase):
                          ConventionVersion, self.version))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
-        except AttributeError:
+        except AttributeError as exc:
             errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
                       self.filename)
-            raise_from(ValueError(errmsg), None)
+            raise ValueError(errmsg) from None
 
         # The AMBER NetCDF standard enforces 64 bit offsets
         if not self.trjfile.version_byte == 2:
@@ -523,9 +519,9 @@ class NCDFReader(base.ReaderBase):
             if not self.trjfile.dimensions['spatial'] == 3:
                 errmsg = "Incorrect spatial value for NCDF trajectory file"
                 raise TypeError(errmsg)
-        except KeyError:
+        except KeyError as exc:
             errmsg = "NCDF trajectory does not contain spatial dimension"
-            raise_from(ValueError(errmsg), None)
+            raise ValueError(errmsg) from None
 
         # AMBER NetCDF specs require program and programVersion. Warn users
         # if those attributes do not exist
@@ -544,10 +540,10 @@ class NCDFReader(base.ReaderBase):
                           "Note: n_atoms can be None and then the ncdf value "
                           "is used!".format(n_atoms, self.n_atoms))
                 raise ValueError(errmsg)
-        except KeyError:
+        except KeyError as exc:
             errmsg = ("NCDF trajectory {0} does not contain atom "
                       "information".format(self.filename))
-            raise_from(ValueError(errmsg), None)
+            raise ValueError(errmsg) from None
 
         try:
             self.n_frames = self.trjfile.dimensions['frame']
@@ -558,13 +554,10 @@ class NCDFReader(base.ReaderBase):
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
                 self.n_frames = self.trjfile.variables['time'].shape[0]
-        except KeyError:
-            raise_from(
-                ValueError(
-                    ("NCDF trajectory {0} does not contain frame "
-                     "information").format(self.filename)
-                    ),
-                None)
+        except KeyError as exc:
+            errmsg = (f"NCDF trajectory {self.filename} does not contain "
+                      f"frame information")
+            raise ValueError(errmsg) from None
 
         try:
             self.remarks = self.trjfile.title
@@ -693,8 +686,8 @@ class NCDFReader(base.ReaderBase):
             ts = self.ts
         try:
             return self._read_frame(self._current_frame + 1)
-        except IndexError:
-            raise_from(IOError, None)
+        except IndexError as exc:
+            raise IOError from None
 
     def _get_dt(self):
         t1 = self.trjfile.variables['time'][1]
@@ -995,24 +988,23 @@ class NCDFWriter(base.WriterBase):
         ag : AtomGroup or Universe
 
 
-        .. deprecated:: 1.0.0
-           Deprecated using Timestep. To be removed in version 2.0.
         .. versionchanged:: 1.0.0
            Added ability to use either AtomGroup or Universe.
            Renamed from `write_next_timestep` to `_write_next_frame`.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
-        if isinstance(ag, base.Timestep):
-            ts = ag
-        else:
+        try:
+            # Atomgroup?
+            ts = ag.ts
+        except AttributeError:
             try:
-                # Atomgroup?
-                ts = ag.ts
-            except AttributeError:
-                try:
-                    # Universe?
-                    ts = ag.trajectory.ts
-                except AttributeError:
-                    raise TypeError("No Timestep found in ag argument")
+                # Universe?
+                ts = ag.trajectory.ts
+            except AttributeError as exc:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
 
         if ts.n_atoms != self.n_atoms:
             raise IOError(

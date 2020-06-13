@@ -31,8 +31,6 @@ See Also
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.coordinates.XDR: BaseReader/Writer for XDR based formats
 """
-from __future__ import absolute_import
-
 from . import base
 from .XDR import XDRBaseReader, XDRBaseWriter
 from ..lib.formats.libmdaxdr import XTCFile
@@ -84,23 +82,22 @@ class XTCWriter(XDRBaseWriter):
         The normal write() method takes a more general input
 
 
-        .. deprecated:: 1.0.0
-           Deprecated using Timestep. To be removed in version 2.0.
         .. versionchanged:: 1.0.0
            Added ability to use either AtomGroup or Universe.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
-        if isinstance(ag, base.Timestep):
-            ts = ag
-        else:
+        try:
+            # Atomgroup?
+            ts = ag.ts
+        except AttributeError:
             try:
-                # Atomgroup?
-                ts = ag.ts
-            except AttributeError:
-                try:
-                    # Universe?
-                    ts = ag.trajectory.ts
-                except AttributeError:
-                    raise TypeError("No Timestep found in ag argument")
+                # Universe?
+                ts = ag.trajectory.ts
+            except AttributeError as exc:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
 
         xyz = ts.positions.copy()
         time = ts.time

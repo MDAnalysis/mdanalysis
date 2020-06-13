@@ -81,10 +81,6 @@ Classes
 -------
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range, zip
-
 import itertools
 import os
 import errno
@@ -168,7 +164,7 @@ class XYZWriter(base.WriterBase):
         if atoms is None:
             return itertools.cycle(('X',))
         # Single atom name provided
-        elif isinstance(atoms, six.string_types):
+        elif isinstance(atoms, str):
             return itertools.cycle((atoms,))
         # List of atom names providded
         elif isinstance(atoms, list):
@@ -204,9 +200,9 @@ class XYZWriter(base.WriterBase):
             :class:`~MDAnalysis.core.universe.Universe` to write.
 
 
-        .. deprecated:: 1.0.0
-           Deprecated the use of Timestep as arguments to write. Use either an
-           AtomGroup or Universe. To be removed in version 2.0.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write
@@ -214,16 +210,9 @@ class XYZWriter(base.WriterBase):
         # but this is not tested.)
         try:
             atoms = obj.atoms
-        except AttributeError:
-            if isinstance(obj, base.Timestep):
-                warnings.warn(
-                    'Passing a Timestep to write is deprecated, '
-                    'and will be removed in 2.0; '
-                    'use either an AtomGroup or Universe',
-                    DeprecationWarning)
-                ts = obj
-            else:
-                six.raise_from(TypeError("No Timestep found in obj argument"), None)
+        except AttributeError as exc:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
         else:
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -413,7 +402,7 @@ class XYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            six.raise_from(EOFError(err), None)
+            raise EOFError(err) from None
 
     def _reopen(self):
         self.close()

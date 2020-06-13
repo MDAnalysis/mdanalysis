@@ -38,11 +38,7 @@ Classes
 .. autoclass:: ChemfilesWriter
 
 """
-from __future__ import absolute_import, division
-from __future__ import print_function, unicode_literals
-
 import numpy as np
-from six import string_types
 from distutils.version import LooseVersion
 import warnings
 
@@ -261,7 +257,7 @@ class ChemfilesWriter(base.WriterBase):
         self._file = chemfiles.Trajectory(self.filename, mode, chemfiles_format)
         self._closed = False
         if topology is not None:
-            if isinstance(topology, string_types):
+            if isinstance(topology, str):
                 self._file.set_topology(topology)
             else:
                 topology = self._topology_to_chemfiles(topology, n_atoms)
@@ -274,7 +270,8 @@ class ChemfilesWriter(base.WriterBase):
             self._closed = True
 
     def _write_next_frame(self, obj):
-        """Write information associated with ``obj`` at current frame into trajectory.
+        """Write information associated with ``obj`` at current frame into
+        trajectory.
 
         Topology for the output is taken from the `obj` or default to the value
         of the `topology` keyword supplied to the :class:`ChemfilesWriter`
@@ -289,8 +286,12 @@ class ChemfilesWriter(base.WriterBase):
         obj : AtomGroup or Universe
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
+
+
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
-        # TODO 2.0: Remove timestep logic
         if hasattr(obj, "atoms"):
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -304,11 +305,8 @@ class ChemfilesWriter(base.WriterBase):
                 # For Universe only --- get everything
                 ts = obj.trajectory.ts
         else:
-            if isinstance(obj, base.Timestep):
-                ts = obj
-                topology = None
-            else:
-                raise TypeError("No Timestep found in obj argument")
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
 
         frame = self._timestep_to_chemfiles(ts)
         frame.topology = self._topology_to_chemfiles(obj, len(frame.atoms))
