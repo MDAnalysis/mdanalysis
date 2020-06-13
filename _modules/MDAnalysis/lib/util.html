@@ -407,7 +407,7 @@
 
 
 
-<div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
 
 <span class="sd">    Parameters</span>
@@ -440,7 +440,7 @@
     <span class="k">return</span> <span class="n">name</span> <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.openany">[docs]</a><span class="nd">@contextmanager</span>
+<div class="viewcode-block" id="openany"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.openany">[docs]</a><span class="nd">@contextmanager</span>
 <span class="k">def</span> <span class="nf">openany</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Context manager for :func:`anyopen`.</span>
 
@@ -510,7 +510,7 @@
     <span class="n">bz2_open</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span>
 
 
-<div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
 
 <span class="sd">    `datasource` can be a filename or a stream (see :func:`isstream`). By</span>
@@ -631,7 +631,7 @@
     <span class="k">return</span> <span class="n">stream</span>
 
 
-<div class="viewcode-block" id="greedy_splitext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.greedy_splitext">[docs]</a><span class="k">def</span> <span class="nf">greedy_splitext</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="greedy_splitext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.greedy_splitext">[docs]</a><span class="k">def</span> <span class="nf">greedy_splitext</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Split extension in path *p* at the left-most separator.</span>
 
 <span class="sd">    Extensions are taken to be separated from the filename with the</span>
@@ -665,12 +665,12 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">root</span><span class="p">),</span> <span class="n">extension</span></div>
 
 
-<div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<div class="viewcode-block" id="hasmethod"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.hasmethod">[docs]</a><span class="k">def</span> <span class="nf">hasmethod</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return ``True`` if object *obj* contains the method *m*.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="ow">and</span> <span class="n">callable</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">m</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="isstream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.isstream">[docs]</a><span class="k">def</span> <span class="nf">isstream</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Detect if `obj` is a stream.</span>
 
 <span class="sd">    We consider anything a stream that has the methods</span>
@@ -714,7 +714,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">alternative_results</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="which"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
+<div class="viewcode-block" id="which"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.which">[docs]</a><span class="k">def</span> <span class="nf">which</span><span class="p">(</span><span class="n">program</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Determine full path of executable `program` on :envvar:`PATH`.</span>
 
 <span class="sd">    (Jay at http://stackoverflow.com/questions/377017/test-if-executable-exists-in-python)</span>
@@ -747,7 +747,7 @@
     <span class="k">return</span> <span class="kc">None</span></div>
 
 
-<div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
+<div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
 <span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Stream that also provides a (fake) name.</span>
 
@@ -847,7 +847,7 @@
         <span class="k">if</span> <span class="n">reset</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
 
-<div class="viewcode-block" id="NamedStream.reset"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.reset"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Move to the beginning of the stream&quot;&quot;&quot;</span>
         <span class="c1"># try to rewind</span>
         <span class="k">try</span><span class="p">:</span>
@@ -892,7 +892,7 @@
 
     <span class="c1"># override more IOBase methods, as these are provided by IOBase and are not</span>
     <span class="c1"># caught with __getattr__ (ugly...)</span>
-<div class="viewcode-block" id="NamedStream.close"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.close"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Reset or close the stream.</span>
 
 <span class="sd">        If :attr:`NamedStream.close_stream` is set to ``False`` (the default)</span>
@@ -926,7 +926,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">closed</span>
 
-<div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.seek"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Change the stream position to the given byte `offset` .</span>
 
 <span class="sd">        Parameters</span>
@@ -955,14 +955,14 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">whence</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NamedStream.tell"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.tell"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the current stream position.&quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.truncate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">size</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.truncate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.truncate">[docs]</a>    <span class="k">def</span> <span class="nf">truncate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">size</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Truncate the stream&#39;s size to `size`.</span>
 
 <span class="sd">        Parameters</span>
@@ -977,7 +977,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">truncate</span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NamedStream.seekable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.seekable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream supports random access.</span>
 
 <span class="sd">        If ``False``, :meth:`seek`, :meth:`tell` and :meth:`truncate` will</span>
@@ -989,7 +989,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">seekable</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.readable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.readable">[docs]</a>    <span class="k">def</span> <span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.readable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.readable">[docs]</a>    <span class="k">def</span> <span class="nf">readable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be read from.</span>
 
 <span class="sd">        If ``False``, :meth:`read` will raise :exc:`IOError`.</span>
@@ -999,7 +999,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">readable</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.writable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.writable">[docs]</a>    <span class="k">def</span> <span class="nf">writable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.writable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.writable">[docs]</a>    <span class="k">def</span> <span class="nf">writable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return ``True`` if the stream can be written to.</span>
 
 <span class="sd">        If ``False``, :meth:`write` will raise :exc:`IOError`.</span>
@@ -1009,7 +1009,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">writable</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.flush"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.flush"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Flush the write buffers of the stream if applicable.</span>
 
 <span class="sd">        This does nothing for read-only and non-blocking streams. For file</span>
@@ -1021,7 +1021,7 @@
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="NamedStream.fileno"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.fileno"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the underlying file descriptor (an integer) of the stream if it exists.</span>
 
 <span class="sd">        An :exc:`IOError` is raised if the IO object does not use a file descriptor.</span>
@@ -1034,7 +1034,7 @@
                 <span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;This NamedStream does not use a file descriptor.&quot;</span><span class="p">),</span>
                 <span class="kc">None</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="NamedStream.readline"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.NamedStream.readline">[docs]</a>    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="NamedStream.readline"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream.readline">[docs]</a>    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
@@ -1078,7 +1078,7 @@
         <span class="k">return</span> <span class="s2">&quot;&lt;NamedStream(</span><span class="si">{0}</span><span class="s2">, </span><span class="si">{1}</span><span class="s2">)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stream</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="realpath"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.realpath">[docs]</a><span class="k">def</span> <span class="nf">realpath</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Join all args and return the real path, rooted at ``/``.</span>
 
 <span class="sd">    Expands &#39;~&#39;, &#39;~user&#39;, and environment variables such as :envvar:`$HOME`.</span>
@@ -1090,7 +1090,7 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expandvars</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))))</span></div>
 
 
-<div class="viewcode-block" id="get_ext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.get_ext">[docs]</a><span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="get_ext"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.get_ext">[docs]</a><span class="k">def</span> <span class="nf">get_ext</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the lower-cased extension of `filename` without a leading dot.</span>
 
 <span class="sd">    Parameters</span>
@@ -1110,7 +1110,7 @@
     <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="check_compressed_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.check_compressed_format">[docs]</a><span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
+<div class="viewcode-block" id="check_compressed_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_compressed_format">[docs]</a><span class="k">def</span> <span class="nf">check_compressed_format</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">ext</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check if this is a supported gzipped/bzip2ed file format and return UPPERCASE format.</span>
 
 <span class="sd">    Parameters</span>
@@ -1146,7 +1146,7 @@
     <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="format_from_filename_extension"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.format_from_filename_extension">[docs]</a><span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="format_from_filename_extension"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.format_from_filename_extension">[docs]</a><span class="k">def</span> <span class="nf">format_from_filename_extension</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Guess file format from the file extension.</span>
 
 <span class="sd">    Parameters</span>
@@ -1174,7 +1174,7 @@
     <span class="k">return</span> <span class="nb">format</span></div>
 
 
-<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="guess_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.guess_format">[docs]</a><span class="k">def</span> <span class="nf">guess_format</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the format of `filename`</span>
 
 <span class="sd">    The current heuristic simply looks at the filename extension and can work</span>
@@ -1222,7 +1222,7 @@
     <span class="k">return</span> <span class="nb">format</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="iterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.iterable">[docs]</a><span class="k">def</span> <span class="nf">iterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="iterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.iterable">[docs]</a><span class="k">def</span> <span class="nf">iterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns ``True`` if `obj` can be iterated over and is *not* a  string</span>
 <span class="sd">    nor a :class:`NamedStream`&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">,</span> <span class="n">NamedStream</span><span class="p">)):</span>
@@ -1237,7 +1237,7 @@
     <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="asiterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.asiterable">[docs]</a><span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+<div class="viewcode-block" id="asiterable"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.asiterable">[docs]</a><span class="k">def</span> <span class="nf">asiterable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Returns `obj` so that it can be iterated over.</span>
 
 <span class="sd">    A string is *not* detected as and iterable and is wrapped into a :class:`list`</span>
@@ -1311,7 +1311,7 @@
         <span class="k">return</span> <span class="s2">&quot;FixedcolumnEntry(</span><span class="si">{0:d}</span><span class="s2">,</span><span class="si">{1:d}</span><span class="s2">,</span><span class="si">{2!r}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">typespecifier</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="FORTRANReader"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader">[docs]</a><span class="k">class</span> <span class="nc">FORTRANReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader">[docs]</a><span class="k">class</span> <span class="nc">FORTRANReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;FORTRANReader provides a method to parse FORTRAN formatted lines in a file.</span>
 
 <span class="sd">    The contents of lines in a file can be parsed according to FORTRAN format</span>
@@ -1361,7 +1361,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">start</span> <span class="o">+=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;totallength&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="FORTRANReader.read"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader.read"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse `line` according to the format string and return list of values.</span>
 
 <span class="sd">        Values are converted to Python types according to the format specifier.</span>
@@ -1386,7 +1386,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">entries</span><span class="p">]</span></div>
 
-<div class="viewcode-block" id="FORTRANReader.number_of_matches"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader.number_of_matches">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader.number_of_matches"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.number_of_matches">[docs]</a>    <span class="k">def</span> <span class="nf">number_of_matches</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return how many format entries could be populated with legal values.&quot;&quot;&quot;</span>
         <span class="c1"># not optimal, I suppose...</span>
         <span class="n">matches</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1398,7 +1398,7 @@
                 <span class="k">pass</span>
         <span class="k">return</span> <span class="n">matches</span></div>
 
-<div class="viewcode-block" id="FORTRANReader.parse_FORTRAN_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.FORTRANReader.parse_FORTRAN_format">[docs]</a>    <span class="k">def</span> <span class="nf">parse_FORTRAN_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_descriptor</span><span class="p">):</span>
+<div class="viewcode-block" id="FORTRANReader.parse_FORTRAN_format"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.FORTRANReader.parse_FORTRAN_format">[docs]</a>    <span class="k">def</span> <span class="nf">parse_FORTRAN_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edit_descriptor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse the descriptor.</span>
 
 
@@ -1455,7 +1455,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span></div>
 
 
-<div class="viewcode-block" id="fixedwidth_bins"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.fixedwidth_bins">[docs]</a><span class="k">def</span> <span class="nf">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">):</span>
+<div class="viewcode-block" id="fixedwidth_bins"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.fixedwidth_bins">[docs]</a><span class="k">def</span> <span class="nf">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return bins of width `delta` that cover `xmin`, `xmax` (or a larger range).</span>
 
 <span class="sd">    The bin parameters are computed such that the bin size `delta` is</span>
@@ -1499,7 +1499,7 @@
     <span class="n">dx</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">*</span> <span class="n">_delta</span> <span class="o">-</span> <span class="n">_length</span><span class="p">)</span>  <span class="c1"># add half of the excess to each end</span>
     <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Nbins&#39;</span><span class="p">:</span> <span class="n">N</span><span class="p">,</span> <span class="s1">&#39;delta&#39;</span><span class="p">:</span> <span class="n">_delta</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="n">_xmin</span> <span class="o">-</span> <span class="n">dx</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="n">_xmax</span> <span class="o">+</span> <span class="n">dx</span><span class="p">}</span></div>
 
-<div class="viewcode-block" id="get_weights"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.get_weights">[docs]</a><span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+<div class="viewcode-block" id="get_weights"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.get_weights">[docs]</a><span class="k">def</span> <span class="nf">get_weights</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check that a `weights` argument is compatible with `atoms`.</span>
 
 <span class="sd">    Parameters</span>
@@ -1587,7 +1587,7 @@
 <span class="n">inverse_aa_codes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">alternative_inverse_aa_codes</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="convert_aa_code"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.convert_aa_code">[docs]</a><span class="k">def</span> <span class="nf">convert_aa_code</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="convert_aa_code"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.convert_aa_code">[docs]</a><span class="k">def</span> <span class="nf">convert_aa_code</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Converts between 3-letter and 1-letter amino acid codes.</span>
 
 <span class="sd">    Parameters</span>
@@ -1642,7 +1642,7 @@
 
 
 <span class="c1"># from GromacsWrapper cbook.IndexBuilder</span>
-<div class="viewcode-block" id="parse_residue"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.parse_residue">[docs]</a><span class="k">def</span> <span class="nf">parse_residue</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_residue"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.parse_residue">[docs]</a><span class="k">def</span> <span class="nf">parse_residue</span><span class="p">(</span><span class="n">residue</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Process residue string.</span>
 
 <span class="sd">    Parameters</span>
@@ -1684,7 +1684,7 @@
     <span class="k">return</span> <span class="p">(</span><span class="n">resname</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">atomname</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="conv_float"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.conv_float">[docs]</a><span class="k">def</span> <span class="nf">conv_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<div class="viewcode-block" id="conv_float"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.conv_float">[docs]</a><span class="k">def</span> <span class="nf">conv_float</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Convert an object `s` to float if possible.</span>
 
 <span class="sd">    Function to be passed into :func:`map` or a list comprehension. If</span>
@@ -1697,7 +1697,7 @@
         <span class="k">return</span> <span class="n">s</span></div>
 
 
-<div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="cached"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.cached">[docs]</a><span class="k">def</span> <span class="nf">cached</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Cache a property within a class.</span>
 
 <span class="sd">    Requires the Class to have a cache dict called ``_cache``.</span>
@@ -1738,7 +1738,7 @@
     <span class="k">return</span> <span class="n">cached_lookup</span></div>
 
 
-<div class="viewcode-block" id="unique_rows"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.unique_rows">[docs]</a><span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="unique_rows"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.unique_rows">[docs]</a><span class="k">def</span> <span class="nf">unique_rows</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the unique rows of an array.</span>
 
 <span class="sd">    Arguments</span>
@@ -1794,7 +1794,7 @@
         <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="blocks_of"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.blocks_of">[docs]</a><span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+<div class="viewcode-block" id="blocks_of"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.blocks_of">[docs]</a><span class="k">def</span> <span class="nf">blocks_of</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extract a view of ``(n, m)`` blocks along the diagonal of the array `a`.</span>
 
 <span class="sd">    Parameters</span>
@@ -1864,7 +1864,7 @@
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">,</span> <span class="n">new_strides</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class to allow storing attributes in new namespace. &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># a.this causes a __getattr__ call for key = &#39;this&#39;</span>
@@ -1895,7 +1895,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="ltruncate_int"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.ltruncate_int">[docs]</a><span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
+<div class="viewcode-block" id="ltruncate_int"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.ltruncate_int">[docs]</a><span class="k">def</span> <span class="nf">ltruncate_int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ndigits</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Truncate an integer, retaining least significant digits</span>
 
 <span class="sd">    Parameters</span>
@@ -1920,7 +1920,7 @@
     <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)[</span><span class="o">-</span><span class="n">ndigits</span><span class="p">:])</span></div>
 
 
-<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
+<div class="viewcode-block" id="flatten_dict"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.flatten_dict">[docs]</a><span class="k">def</span> <span class="nf">flatten_dict</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">parent_key</span><span class="o">=</span><span class="nb">tuple</span><span class="p">()):</span>
     <span class="sd">&quot;&quot;&quot;Flatten a nested dict `d` into a shallow dict with tuples as keys.</span>
 
 <span class="sd">    Parameters</span>
@@ -1952,7 +1952,7 @@
     <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">items</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="static_variables"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.static_variables">[docs]</a><span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="static_variables"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.static_variables">[docs]</a><span class="k">def</span> <span class="nf">static_variables</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator equipping functions or methods with static variables.</span>
 
 <span class="sd">    Static variables are declared and initialized by supplying keyword arguments</span>
@@ -1997,7 +1997,7 @@
 <span class="c1"># method. Of course, as it is generally the case with Python warnings, this is</span>
 <span class="c1"># *not threadsafe*.</span>
 
-<div class="viewcode-block" id="warn_if_not_unique"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.warn_if_not_unique">[docs]</a><span class="nd">@static_variables</span><span class="p">(</span><span class="n">warned</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="viewcode-block" id="warn_if_not_unique"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.warn_if_not_unique">[docs]</a><span class="nd">@static_variables</span><span class="p">(</span><span class="n">warned</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">warn_if_not_unique</span><span class="p">(</span><span class="n">groupmethod</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator triggering a :class:`~MDAnalysis.exceptions.DuplicateWarning`</span>
 <span class="sd">    if the underlying group is not unique.</span>
@@ -2052,7 +2052,7 @@
     <span class="k">return</span> <span class="n">wrapper</span></div>
 
 
-<div class="viewcode-block" id="check_coords"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.check_coords">[docs]</a><span class="k">def</span> <span class="nf">check_coords</span><span class="p">(</span><span class="o">*</span><span class="n">coord_names</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
+<div class="viewcode-block" id="check_coords"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_coords">[docs]</a><span class="k">def</span> <span class="nf">check_coords</span><span class="p">(</span><span class="o">*</span><span class="n">coord_names</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Decorator for automated coordinate array checking.</span>
 
 <span class="sd">    This decorator is intended for use especially in</span>
@@ -2260,7 +2260,7 @@
     <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">name</span>
     <span class="k">return</span> <span class="n">func</span>
 
-<div class="viewcode-block" id="_Deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density._Deprecate">[docs]</a><span class="k">class</span> <span class="nc">_Deprecate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="_Deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util._Deprecate">[docs]</a><span class="k">class</span> <span class="nc">_Deprecate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Decorator class to deprecate old functions.</span>
 
@@ -2355,7 +2355,7 @@
             <span class="n">newfunc</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">newfunc</span></div>
 
-<div class="viewcode-block" id="deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.deprecate">[docs]</a><span class="k">def</span> <span class="nf">deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.deprecate">[docs]</a><span class="k">def</span> <span class="nf">deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Issues a DeprecationWarning, adds warning to `old_name`&#39;s</span>
 <span class="sd">    docstring, rebinds ``old_name.__name__`` and returns the new</span>
 <span class="sd">    function object.</span>
@@ -2451,7 +2451,7 @@
 <span class="c1">#</span>
 <span class="c1">#------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="dedent_docstring"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.dedent_docstring">[docs]</a><span class="k">def</span> <span class="nf">dedent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<div class="viewcode-block" id="dedent_docstring"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.dedent_docstring">[docs]</a><span class="k">def</span> <span class="nf">dedent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Dedent typical python doc string.</span>
 
 <span class="sd">    Parameters</span>
@@ -2480,7 +2480,7 @@
     <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">dedent</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
 
 
-<div class="viewcode-block" id="check_box"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.analysis.density.check_box">[docs]</a><span class="k">def</span> <span class="nf">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
+<div class="viewcode-block" id="check_box"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.check_box">[docs]</a><span class="k">def</span> <span class="nf">check_box</span><span class="p">(</span><span class="n">box</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Take a box input and deduce what type of system it represents based on</span>
 <span class="sd">    the shape of the array and whether all angles are 90 degrees.</span>
 
