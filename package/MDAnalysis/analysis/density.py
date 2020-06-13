@@ -107,6 +107,8 @@ atomgroup.
       After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is
       stored in the :attr:`density` attribute as a :class:`Density` instance.
 
+   .. automethod:: _set_user_grid
+
 
 Density object
 --------------
