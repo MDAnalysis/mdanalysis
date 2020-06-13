@@ -191,8 +191,7 @@ from MDAnalysis.lib import NeighborSearch as NS
 from MDAnalysis import NoDataError, MissingDataWarning
 from .. import units
 from ..lib import distances
-from MDAnalysis.lib.log import ProgressBar 
-from MDAnalysis.lib.log import ProgressMeter   # remove in 2.0
+from MDAnalysis.lib.log import ProgressBar
 from MDAnalysis.lib.util import deprecate
 
 from .base import AnalysisBase

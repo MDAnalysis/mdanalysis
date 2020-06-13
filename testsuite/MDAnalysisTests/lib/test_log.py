@@ -25,31 +25,8 @@ from __future__ import absolute_import
 import warnings
 import pytest
 
-from MDAnalysis.lib.log import ProgressMeter, ProgressBar
+from MDAnalysis.lib.log import ProgressBar
 
-
-class TestProgressMeter(object):
-
-    def test_deprecated(self, capsys):
-        with warnings.catch_warnings(record=True) as w:
-            # Cause all warnings to always be triggered.
-            warnings.simplefilter("always")
-            # Trigger a warning.
-            pm = ProgressMeter(10)
-            # Verify the warning
-            assert len(w) == 1
-            assert issubclass(w[-1].category, DeprecationWarning)
-            assert "MDAnalysis.lib.log.ProgressBar" in str(w[-1].message)
-
-    def test_output(self, capsys):
-        pm = ProgressMeter(10, interval=1)
-        for i in range(10):
-            pm.echo(i)
-        out, err = capsys.readouterr()
-        expected = 'Step    10/10 [100.0%]'
-        actual = err.strip().split('\r')[-1]
-        assert actual == expected
-    
 
 class TestProgressBar(object):
 
