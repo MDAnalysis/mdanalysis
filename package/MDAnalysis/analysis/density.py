@@ -170,11 +170,6 @@ removed in 2.0.0.
 .. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html
 
 """
-
-from __future__ import print_function, division, absolute_import
-from six.moves import range, zip
-from six import raise_from, string_types
-
 import numpy as np
 import sys
 import os
@@ -612,9 +607,10 @@ class Density(Grid):
         length_unit = 'Angstrom'
 
         parameters = kwargs.pop('parameters', {})
-        if len(args) > 0 and isinstance(args[0], string_types) or isinstance(kwargs.get('grid', None), string_types):
-            # try to be smart: when reading from a file then it is likely that this
-            # is a density
+        if (len(args) > 0 and isinstance(args[0], str) or
+            isinstance(kwargs.get('grid', None), str)):
+            # try to be smart: when reading from a file then it is likely that
+            # this is a density
             parameters.setdefault('isDensity', True)
         else:
             parameters.setdefault('isDensity', False)
@@ -656,15 +652,14 @@ class Density(Grid):
                 try:
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
-                except KeyError:
-                    raise_from(
-                        ValueError('Unit ' + str(value) + ' of type ' + str(unit_type) + ' is not recognized.'),
-                        None,
-                        )
-        except AttributeError:
+                except KeyError as exc:
+                    errmsg = (f"Unit {value} of type {unit_type} is not "
+                              f"recognized.")
+                    raise ValueError(errmsg) from exc
+        except AttributeError as exc:
             errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
-            raise_from(ValueError(errmsg), None)
+            raise ValueError(errmsg) from exc
         # need at least length and density (can be None)
         if 'length' not in self.units:
             raise ValueError('"unit" must contain a unit for "length".')
@@ -772,11 +767,10 @@ class Density(Grid):
         try:
             self.grid *= units.get_conversion_factor('density',
                                                      self.units['density'], unit)
-        except KeyError:
-            raise_from(
-                ValueError("The name of the unit ({0!r} supplied) must be one of:\n{1!r}".format(unit, units.conversion_factor['density'].keys())),
-                None,
-                )
+        except KeyError as exc:
+            errmsg = (f"The name of the unit ({unit} supplied) must be one "
+                      f"of:\n{units.conversion_factor['density'].keys()}")
+            raise ValueError(errmsg) from exc
         self.units['density'] = unit
 
     def __repr__(self):
@@ -816,14 +810,14 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     # Check user inputs
     try:
         gridcenter = np.asarray(gridcenter, dtype=np.float32)
-    except ValueError:
-        raise_from(ValueError("Non-number values assigned to gridcenter"), None)
+    except ValueError as exc:
+        raise ValueError("Non-number values assigned to gridcenter") from exc
     if gridcenter.shape != (3,):
         raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
-    except ValueError:
-        raise_from(ValueError("xdim, ydim, and zdim must be numbers"), None)
+    except ValueError as exc:
+        raise ValueError("xdim, ydim, and zdim must be numbers") from exc
 
     # Set min/max by shifting by half the edge length of each dimension
     umin = gridcenter - xyzdim/2

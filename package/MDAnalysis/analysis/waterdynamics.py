@@ -449,11 +449,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import print_function, division, absolute_import
-
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 import MDAnalysis.analysis.hbonds
-from six.moves import range, zip_longest
+from itertools import zip_longest
 import logging
 import warnings
 import numpy as np

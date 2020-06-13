@@ -204,10 +204,6 @@ Classes
 
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-from six import raise_from
-
 import numpy as np
 import scipy.optimize
 
@@ -310,8 +306,8 @@ class HydrogenBondAutoCorrel(object):
         # check that slicing is possible
         try:
             self.u.trajectory[0]
-        except Exception:
-            raise_from(ValueError("Trajectory must support slicing"), None)
+        except Exception as exc:
+            raise ValueError("Trajectory must support slicing") from exc
 
         self.h = hydrogens
         self.a = acceptors

@@ -132,11 +132,6 @@ Analysis classes
       giving RMSFs for each of the given atoms.
 
 """
-from __future__ import division, absolute_import
-
-from six.moves import zip
-from six import raise_from, string_types
-
 import numpy as np
 
 import logging
@@ -278,30 +273,25 @@ def process_selection(select):
     :func:`fasta2select` based on a ClustalW_ or STAMP_ sequence alignment.
     """
 
-    if isinstance(select, string_types):
+    if isinstance(select, str):
         select = {'reference': str(select), 'mobile': str(select)}
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
-        except IndexError:
-            raise_from(IndexError(
+        except IndexError as exc:
+            raise IndexError(
                 "select must contain two selection strings "
-                "(reference, mobile)"),
-                None,
-                )
+                "(reference, mobile)") from exc
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
             select['mobile']
             select['reference']
-        except KeyError:
-            raise_from(
-                KeyError(
+        except KeyError as exc:
+            raise KeyError(
                     "select dictionary must contain entries for keys "
                     "'mobile' and 'reference'."
-                    ),
-                None,
-                )
+                    ) from exc
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])

@@ -181,9 +181,6 @@ References
    `10.1016/0022-2836(78)90408-4 <https://doi.org/10.1016/0022-2836(78)90408-4>`_
 
 """
-from __future__ import absolute_import
-from six.moves import zip, range
-
 import numpy as np
 import matplotlib.pyplot as plt
 
