@@ -281,7 +281,7 @@ def process_selection(select):
         except IndexError as exc:
             raise IndexError(
                 "select must contain two selection strings "
-                "(reference, mobile)") from exc
+                "(reference, mobile)") from None
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
@@ -291,7 +291,7 @@ def process_selection(select):
             raise KeyError(
                     "select dictionary must contain entries for keys "
                     "'mobile' and 'reference'."
-                    ) from exc
+                    ) from None
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])

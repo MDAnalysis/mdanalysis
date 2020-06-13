@@ -655,11 +655,11 @@ class Density(Grid):
                 except KeyError as exc:
                     errmsg = (f"Unit {value} of type {unit_type} is not "
                               f"recognized.")
-                    raise ValueError(errmsg) from exc
+                    raise ValueError(errmsg) from None
         except AttributeError as exc:
             errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
-            raise ValueError(errmsg) from exc
+            raise ValueError(errmsg) from None
         # need at least length and density (can be None)
         if 'length' not in self.units:
             raise ValueError('"unit" must contain a unit for "length".')
@@ -770,7 +770,7 @@ class Density(Grid):
         except KeyError as exc:
             errmsg = (f"The name of the unit ({unit} supplied) must be one "
                       f"of:\n{units.conversion_factor['density'].keys()}")
-            raise ValueError(errmsg) from exc
+            raise ValueError(errmsg) from None
         self.units['density'] = unit
 
     def __repr__(self):
@@ -811,13 +811,13 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     try:
         gridcenter = np.asarray(gridcenter, dtype=np.float32)
     except ValueError as exc:
-        raise ValueError("Non-number values assigned to gridcenter") from exc
+        raise ValueError("Non-number values assigned to gridcenter") from None
     if gridcenter.shape != (3,):
         raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
     except ValueError as exc:
-        raise ValueError("xdim, ydim, and zdim must be numbers") from exc
+        raise ValueError("xdim, ydim, and zdim must be numbers") from None
 
     # Set min/max by shifting by half the edge length of each dimension
     umin = gridcenter - xyzdim/2

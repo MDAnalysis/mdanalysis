@@ -711,7 +711,7 @@ def hydroxyl(universe, seg, i):
     except ValueError as exc:
         errmsg = (f"Resid {i} does not contain atoms C1', C2', O2', H2' but "
                   f"atoms {list(h.atoms)}")
-        raise ValueError(errmsg) from exc
+        raise ValueError(errmsg) from None
 
     return hydr
 

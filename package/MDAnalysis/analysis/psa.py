@@ -258,7 +258,7 @@ def get_path_metric_func(name):
     except KeyError as key:
         errmsg = (f'Path metric "{key}" not found. Valid selections: '
                   f'{" ".join(n for n in path_metrics.keys())}')
-        raise KeyError(errmsg) from key
+        raise KeyError(errmsg) from None
 
 
 def sqnorm(v, axis=None):
@@ -1823,7 +1823,7 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-                ) from exc
+                ) from None
 
         if self.D is None:
             raise ValueError(
@@ -1937,7 +1937,7 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-                ) from exc
+                ) from None
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 

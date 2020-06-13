@@ -533,7 +533,7 @@ def create_vmd_surface(sphpdb='hole.sph',
     except subprocess.CalledProcessError as err:
         os.unlink(tmp_sos)
         logger.fatal("sph_process failed ({0})".format(err.returncode))
-        raise OSError("sph_process failed") from err
+        raise OSError(err.returncode, "sph_process failed") from None
     except:
         os.unlink(tmp_sos)
         raise
@@ -551,7 +551,7 @@ def create_vmd_surface(sphpdb='hole.sph',
                 stderr=FNULL)
     except subprocess.CalledProcessError as err:
         logger.fatal("sos_triangle failed ({0})".format(err.returncode))
-        raise OSError("sos_triangle failed") from err
+        raise OSError(err.returncode, "sos_triangle failed") from None
     finally:
         os.unlink(tmp_sos)
 
