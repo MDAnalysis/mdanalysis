@@ -1,3 +1,12 @@
+# Adapted from mdtraj/devtools/travis-ci/update_versions_json.py by Robert T McGibbon
+# by Lily Wang, 2020
+# 
+# This script is called by deploy_docs_via_travis.sh to update versions.json
+# and re-write the following redirect stubs:
+# index.html (-> latest release)
+# latest.html (-> latest release)
+# dev.html (-> dev docs)
+
 import json
 import os
 
