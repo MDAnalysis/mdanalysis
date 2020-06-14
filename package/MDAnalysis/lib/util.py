@@ -851,7 +851,7 @@ class NamedStream(io.IOBase, PathLike):
         """
         try:
             return self.stream.fileno()
-        except AttributeError as exc:
+        except AttributeError:
             # IOBase.fileno does not raise IOError as advertised so we do this here
             errmsg = "This NamedStream does not use a file descriptor."
             raise IOError(errmsg) from None
@@ -959,7 +959,7 @@ def check_compressed_format(root, ext):
     if ext.lower() in ("bz2", "gz"):
         try:
             root, ext = get_ext(root)
-        except Exception as exc:
+        except Exception:
             errmsg = f"Cannot determine coordinate format for '{root}.{ext}'"
             raise TypeError(errmsg) from None
 
@@ -984,7 +984,7 @@ def format_from_filename_extension(filename):
     """
     try:
         root, ext = get_ext(filename)
-    except Exception as exc:
+    except Exception:
         errmsg = (f"Cannot determine file format for file '{filename}'.\n"
                   f"           You can set the format explicitly with "
                   f"'Universe(..., format=FORMAT)'.")
@@ -1024,7 +1024,7 @@ def guess_format(filename):
         # perhaps StringIO or open stream
         try:
             format = format_from_filename_extension(filename.name)
-        except AttributeError as exc:
+        except AttributeError:
             # format is None so we need to complain:
             errmsg = (f"guess_format requires an explicit format specifier "
                       f"for stream {filename}")
@@ -1114,7 +1114,7 @@ class FixedcolumnEntry(object):
         """Read the entry from `line` and convert to appropriate type."""
         try:
             return self.convertor(line[self.start:self.stop])
-        except ValueError as exc:
+        except ValueError:
             errmsg = (f"{self}: Failed to read&convert "
                       f"{line[self.start:self.stop]}")
             raise ValueError(errmsg) from None
@@ -1350,7 +1350,7 @@ def get_weights(atoms, weights):
     if not iterable(weights) and weights == "mass":
         try:
             weights = atoms.masses
-        except AttributeError as exc:
+        except AttributeError:
             errmsg = "weights='mass' selected but atoms.masses is missing"
             raise TypeError(errmsg) from None
 
@@ -1431,7 +1431,7 @@ def convert_aa_code(x):
 
     try:
         return d[x.upper()]
-    except KeyError as exc:
+    except KeyError:
         errmsg = (f"No conversion for {x} found (1 letter -> 3 letter or 3/4 "
                   f"letter -> 1 letter)")
         raise ValueError(errmsg) from None
@@ -1683,7 +1683,7 @@ class Namespace(dict):
         # a.this causes a __getattr__ call for key = 'this'
         try:
             return dict.__getitem__(self, key)
-        except KeyError as exc:
+        except KeyError:
             errmsg = f'"{key}" is not known in the namespace.'
             raise AttributeError(errmsg) from None
 
@@ -1693,7 +1693,7 @@ class Namespace(dict):
     def __delattr__(self, key):
         try:
             dict.__delitem__(self, key)
-        except KeyError as exc:
+        except KeyError:
             errmsg = f'"{key}" is not known in the namespace.'
             raise AttributeError(errmsg) from None
 
@@ -2000,7 +2000,7 @@ def check_coords(*coord_names, **options):
                                      "".format(fname, argname, coords.shape))
             try:
                 coords = coords.astype(np.float32, order='C', copy=enforce_copy)
-            except ValueError as exc:
+            except ValueError:
                 errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
                           f"float32, got {coords.dtype}.")
                 raise TypeError(errmsg) from None

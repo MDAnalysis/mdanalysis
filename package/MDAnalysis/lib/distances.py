@@ -95,7 +95,7 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
     backend = backend.lower()
     try:
         func = getattr(_distances[backend], funcname)
-    except KeyError as exc:
+    except KeyError:
         errmsg = (f"Function {funcname} not available with backend {backend} "
                   f"try one of: {_distances.keys()}")
         raise ValueError(errmsg) from None
