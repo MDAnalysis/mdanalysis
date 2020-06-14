@@ -2,23 +2,29 @@ import json
 import os
 
 try:
-    from urllib.request import urlopen
+    from urllib.request import Request, urlopen
 except ImportError:
-    from urllib2 import urlopen
+    from urllib2 import Request, urlopen
 
-URL = "https://www.mdanalysis.org/mdanalysis/"
+# ========= WRITE JSON =========
+URL = "https://mdanalysis.github.io/mdanalysis/"
 
 VERSION = os.environ['VERSION']
 url = os.path.join(URL, 'versions.json')
+
 try:
-    data = urlopen(url).read().decode()
-    versions = json.loads(data)
-except:
+    page = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+    data = urlopen(page).read().decode()
+except Exception as e:
+    print(e)
     try:
         with open('versions.json', 'r') as f:
             versions = json.loads(f)
-    except:
+    except IOError as e:
+        print(e)
         versions = []
+else:
+    versions = json.loads(data)
 
 existing = [item['version'] for item in versions]
 already_exists = VERSION in existing
@@ -39,3 +45,40 @@ if not already_exists:
 with open("versions.json", 'w') as f:
     json.dump(versions, f, indent=2)
 
+# ========= WRITE HTML STUBS =========
+REDIRECT = """
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Redirecting to {url}</title>
+<meta http-equiv="refresh" content="0; URL={url}">
+<link rel="canonical" href="{url}">
+"""
+
+for ver in versions[::-1]:
+    if ver['latest']:
+        latest_url = ver['url']
+        break
+else:
+    try:
+        latest_url = versions[-1]['url']
+    except IndexError:
+        latest_url = URL
+
+for ver in versions[::-1]:
+    if 'dev' in ver['version']:
+        dev_url = ver['url']
+        break
+else:
+    try:
+        dev_url = versions[-1]['url']
+    except IndexError:
+        dev_url = URL
+
+with open('index.html', 'w') as f:
+    f.write(REDIRECT.format(url=latest_url))
+
+with open('latest.html', 'w') as f:
+    f.write(REDIRECT.format(url=latest_url))
+
+with open('dev.html', 'w') as f:
+    f.write(REDIRECT.format(url=dev_url))

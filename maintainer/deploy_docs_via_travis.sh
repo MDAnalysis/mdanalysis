@@ -63,6 +63,7 @@ git add .nojekyll
 
 python ${MAINTAIN_DIR}/update_versions_json.py
 git add versions.json
+git add *.html
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
