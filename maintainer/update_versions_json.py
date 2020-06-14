@@ -1,5 +1,7 @@
-# Adapted from mdtraj/devtools/travis-ci/update_versions_json.py by Robert T McGibbon
-# by Lily Wang, 2020
+# Adapted from mdtraj/devtools/travis-ci/update_versions_json.py, 
+# by Robert T McGibbon, under the LGPLv2.1 license
+# Similarly by the terms of LGPL this is also in the public domain
+# Lily Wang, 2020
 # 
 # This script is called by deploy_docs_via_travis.sh to update versions.json
 # and re-write the following redirect stubs:

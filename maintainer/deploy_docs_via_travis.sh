@@ -55,9 +55,6 @@ git reset upstream/gh-pages
 touch .
 touch .nojekyll
 
-echo $VERSION
-echo "ls *"
-ls *
 git add -A ${VERSION}/
 git add .nojekyll
 
@@ -67,7 +64,7 @@ git add *.html
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
-git diff-index --quiet HEAD -- || git commit -m "rebuilt html docs from branch ${GH_DOC_BRANCH} with sphinx at ${rev}"
+git diff-index --quiet HEAD -- || git commit -m "rebuilt html docs for version ${VERSION} from branch ${GH_DOC_BRANCH} with sphinx at ${rev}"
 git push -q upstream HEAD:gh-pages
 
 

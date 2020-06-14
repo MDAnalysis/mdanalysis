@@ -47,7 +47,7 @@ mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?
 #       are served from https://www.mdanalysis.org/docs/ and the sitemap.xml
 #       is manually fixed when deploying the release docs with the
 #       maintainer/deploy_master_docs.sh script
-site_url = "https://www.mdanalysis.org/mdanalysis/"
+site_url = "https://docs.mdanalysis.org/"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
