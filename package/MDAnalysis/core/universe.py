@@ -53,10 +53,6 @@ Functions
 .. autofunction:: Merge
 
 """
-from __future__ import absolute_import
-from six.moves import range
-import six
-
 import errno
 import numpy as np
 import logging
@@ -129,7 +125,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
         if (err.errno is not None and
             errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
             # Runs if the error is propagated due to no permission / file not found
-            six.reraise(*sys.exc_info())
+            raise sys.exc_info()[1] from err
         else:
             # Runs when the parser fails
             raise IOError("Failed to load from the topology file {0}"
@@ -829,17 +825,17 @@ class Universe(object):
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
         """
-        if isinstance(topologyattr, six.string_types):
+        if isinstance(topologyattr, str):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                six.raise_from(ValueError(
+                errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
                     "To raise an issue go to: http://issues.mdanalysis.org"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
-                    None)
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys()))))
+                raise ValueError(errmsg) from None
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,
