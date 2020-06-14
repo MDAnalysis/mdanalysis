@@ -19,8 +19,6 @@ coordinates/core (all others).  They are declared here to avoid
 circular imports.
 
 """
-from six import raise_from
-
 import copy
 import inspect
 
