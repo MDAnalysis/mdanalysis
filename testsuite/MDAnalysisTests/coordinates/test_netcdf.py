@@ -31,7 +31,7 @@ from numpy.testing import (
     assert_equal,
     assert_almost_equal
 )
-from MDAnalysis.coordinates.TRJ import NCDFReader
+from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
@@ -822,7 +822,7 @@ class TestNCDFWriterVelsForces(object):
         should be in universe
         """
         outfile = str(tmpdir) + 'ncdf-write-vels-force.ncdf'
-        with mda.Writer(outfile,
+        with NCDFWriter(outfile,
                         n_atoms=self.n_atoms,
                         velocities=vel,
                         forces=force) as w:

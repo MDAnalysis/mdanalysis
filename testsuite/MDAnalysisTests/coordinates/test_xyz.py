@@ -26,6 +26,7 @@ import MDAnalysis as mda
 import numpy as np
 from numpy.testing import (
     assert_almost_equal,
+    assert_equal,
 )
 
 from MDAnalysis.coordinates.XYZ import XYZWriter
@@ -149,39 +150,21 @@ class TestXYZWriterNames(object):
         return str(tmpdir.join('/outfile.xyz'))
 
     def test_no_names(self, outfile):
+        """Atoms should all be named 'X'"""
         u = make_Universe(trajectory=True)
+        
+        wmsg = "does not have atom elements or names"
 
-        w = XYZWriter(outfile)
-        w.write(u.trajectory.ts)
-        w.close()
+        with pytest.warns(UserWarning, match=wmsg):
+            w = XYZWriter(outfile)
+            w.write(u)
+            w.close()
 
         u2 = mda.Universe(outfile)
         assert all(u2.atoms.names == 'X')
 
-    def test_single_name(self, outfile):
-        u = make_Universe(trajectory=True)
-
-        w = XYZWriter(outfile, atoms='ABC')
-        w.write(u.trajectory.ts)
-        w.close()
-
-        u2 = mda.Universe(outfile)
-        assert all(u2.atoms.names == 'ABC')
-
-    def test_list_names(self, outfile):
-        u = make_Universe(trajectory=True)
-
-        names = ['A', 'B', 'C', 'D', 'E'] * 25
-
-        w = XYZWriter(outfile, atoms=names)
-        w.write(u.trajectory.ts)
-        w.close()
-
-        u2 = mda.Universe(outfile)
-        assert all(u2.atoms.names == names)
-
     @pytest.mark.parametrize("attr", ["elements", "names"])
-    def test_elements_and_names(self, outfile, attr):
+    def test_elements_or_names(self, outfile, attr):
 
         u = mda.Universe.empty(n_atoms=5, trajectory=True)
 
@@ -194,3 +177,16 @@ class TestXYZWriterNames(object):
             names = ''.join(l.split()[0].strip() for l in r.readlines()[2:-1])
 
         assert names[:-1].lower() == 'testing'
+
+    def test_elements_and_names(self, outfile):
+        """Should always default to elements over names"""
+        u = mda.Universe.empty(n_atoms=5, trajectory=True)
+
+        u.add_TopologyAttr('elements', values=['Te', 'S', 'Ti', 'N', 'Ga'])
+        u.add_TopologyAttr('names', values=['A', 'B', 'C', 'D', 'E'])
+
+        with mda.Writer(outfile) as w:
+            w.write(u)
+
+        u2 = mda.Universe(outfile)
+        assert_equal(u2.atoms.names, u.atoms.elements)

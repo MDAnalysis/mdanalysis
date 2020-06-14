@@ -102,11 +102,33 @@ class XYZWriter(base.WriterBase):
     The XYZ file format is not formally defined. This writer follows
     the VMD implementation for the molfile `xyzplugin`_.
 
-    .. _xyzplugin:
-       http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
-    .. versionchanged: 1.0.0
-       Use elements attribute instead of names attribute, if present
+    Notes
+    -----
+    By default, the XYZ writer will attempt to use the input :class:`AtomGroup`
+    or :class:`Universe` `elements` record to assign atom names in the XYZ
+    file. If the `elements` record is missing, then the `name` record will be
+    used. In the event that neither of these are available, the atoms will all
+    be named `X`. Please see, the `User Guide`_ for more information on how to
+    add topology attributes if you wish to add your own elements / atom names
+    to a :class:`Universe`.
+
+
+    .. Links
+
+    .. _xyzplugin:
+           http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+    .. _User Guide:
+           https://userguide.mdanalysis.org/examples/constructing_universe.html#Adding-topology-attributes
+
+
+    .. versionchanged:: 1.0.0
+       Use elements attribute instead of names attribute, if present.
+    .. versionchanged:: 2.0.0
+       Support for passing timestep to the writer was deprecated in 1.0 and
+       has now been removed. As a consequence, custom names can no longer be
+       passed to the writer, these should be added to the :class:`Universe`,
+       or :class:`AtomGroup` before invoking the writer.
     """
 
     format = 'XYZ'
@@ -114,7 +136,7 @@ class XYZWriter(base.WriterBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=True,
+    def __init__(self, filename, n_atoms=None, convert_units=True,
                  remark=None, **kwargs):
         """Initialize the XYZ trajectory writer
 
@@ -129,15 +151,6 @@ class XYZWriter(base.WriterBase):
             and that this file is used to store several different models
             instead of a single trajectory. If a number is provided each
             written TimeStep has to contain the same number of atoms.
-        atoms: str | list (optional)
-            Provide atom names: This can be a list of names or an
-            :class:`AtomGroup`.  If none is provided, atoms will
-            be called 'X' in the output. These atom names will be
-            used when a trajectory is written from raw
-            :class:`Timestep` objects which do not contain atom
-            information. If you write a :class:`AtomGroup` with
-            :meth:`XYZWriter.write` then atom information is taken
-            at each step and *atoms* is ignored.
         convert_units : bool (optional)
             convert quantities to default MDAnalysis units of Angstrom upon
             writing  [``True``]
@@ -145,38 +158,35 @@ class XYZWriter(base.WriterBase):
             single line of text ("molecule name"). By default writes MDAnalysis
             version and frame
 
+
         .. versionchanged:: 1.0.0
            Removed :code:`default_remark` variable (Issue #2692).
+        .. versionchanged:: 2.0.0
+           Due to the removal of timestep as an input for writing, the atoms
+           parameter is no longer relevant and has been removed. If passing
+           an empty universe, please use `add_TopologyAttr` to add in the
+           required elements or names.
         """
         self.filename = filename
         self.remark = remark
         self.n_atoms = n_atoms
         self.convert_units = convert_units
 
-        self.atomnames = self._get_atoms_elements_or_names(atoms)
-
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atoms_elements_or_names(self, atoms):
         """Return a list of atom elements (if present) or fallback to atom names"""
-        # Default case
-        if atoms is None:
-            return itertools.cycle(('X',))
-        # Single atom name provided
-        elif isinstance(atoms, str):
-            return itertools.cycle((atoms,))
-        # List of atom names providded
-        elif isinstance(atoms, list):
-            return atoms
-        # AtomGroup or Universe, grab the names else default
-        # (AtomGroup.atoms just returns AtomGroup)
         try:
             return atoms.atoms.elements
         except (AttributeError, NoDataError):
             try:
                 return atoms.atoms.names
             except (AttributeError, NoDataError):
+                wmsg = ("Input AtomGroup or Universe does not have atom "
+                        "elements or names attributes, writer will default "
+                        "atom names to 'X'")
+                warnings.warn(wmsg)
                 return itertools.cycle(('X',))
 
     def close(self):
