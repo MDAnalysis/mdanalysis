@@ -196,7 +196,7 @@ class TestTRZWriter2(object):
     def test_writer_trz_from_other(self, u, tmpdir):
         outfile = os.path.join(str(tmpdir), 'trz-writer-2.trz')
         with mda.coordinates.TRZ.TRZWriter(outfile, len(u.atoms)) as W:
-            W.write(u.trajectory.ts)
+            W.write(u)
             W.close()
 
             u2 = mda.Universe(two_water_gro, outfile)

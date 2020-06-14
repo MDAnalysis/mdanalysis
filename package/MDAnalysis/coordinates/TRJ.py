@@ -484,7 +484,7 @@ class NCDFReader(base.ReaderBase):
                           "Conventions)".format(self.filename))
                 logger.fatal(errmsg)
                 raise TypeError(errmsg)
-        except AttributeError as exc:
+        except AttributeError:
             errmsg = "NCDF trajectory {0} is missing Conventions".format(
                       self.filename)
             logger.fatal(errmsg)
@@ -499,7 +499,7 @@ class NCDFReader(base.ReaderBase):
                          ConventionVersion, self.version))
                 warnings.warn(wmsg)
                 logger.warning(wmsg)
-        except AttributeError as exc:
+        except AttributeError:
             errmsg = "NCDF trajectory {0} is missing ConventionVersion".format(
                       self.filename)
             raise ValueError(errmsg) from None
@@ -519,7 +519,7 @@ class NCDFReader(base.ReaderBase):
             if not self.trjfile.dimensions['spatial'] == 3:
                 errmsg = "Incorrect spatial value for NCDF trajectory file"
                 raise TypeError(errmsg)
-        except KeyError as exc:
+        except KeyError:
             errmsg = "NCDF trajectory does not contain spatial dimension"
             raise ValueError(errmsg) from None
 
@@ -540,7 +540,7 @@ class NCDFReader(base.ReaderBase):
                           "Note: n_atoms can be None and then the ncdf value "
                           "is used!".format(n_atoms, self.n_atoms))
                 raise ValueError(errmsg)
-        except KeyError as exc:
+        except KeyError:
             errmsg = ("NCDF trajectory {0} does not contain atom "
                       "information".format(self.filename))
             raise ValueError(errmsg) from None
@@ -554,7 +554,7 @@ class NCDFReader(base.ReaderBase):
             # the number of frames from somewhere such as the time variable:
             if self.n_frames is None:
                 self.n_frames = self.trjfile.variables['time'].shape[0]
-        except KeyError as exc:
+        except KeyError:
             errmsg = (f"NCDF trajectory {self.filename} does not contain "
                       f"frame information")
             raise ValueError(errmsg) from None
@@ -686,7 +686,7 @@ class NCDFReader(base.ReaderBase):
             ts = self.ts
         try:
             return self._read_frame(self._current_frame + 1)
-        except IndexError as exc:
+        except IndexError:
             raise IOError from None
 
     def _get_dt(self):
@@ -1002,7 +1002,7 @@ class NCDFWriter(base.WriterBase):
             try:
                 # Universe?
                 ts = ag.trajectory.ts
-            except AttributeError as exc:
+            except AttributeError:
                 errmsg = "Input obj is neither an AtomGroup or Universe"
                 raise TypeError(errmsg) from None
 

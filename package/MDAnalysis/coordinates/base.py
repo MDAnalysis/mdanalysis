@@ -522,7 +522,7 @@ class Timestep(object):
         except NoDataError:
             # It's cool if there's no Data, we'll live
             pos = None
-        except Exception as exc:
+        except Exception:
             errmsg = ("Selection type must be compatible with slicing the "
                       "coordinates")
             raise TypeError(errmsg) from None
@@ -530,7 +530,7 @@ class Timestep(object):
             vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
-        except Exception as exc:
+        except Exception:
             errmsg = ("Selection type must be compatible with slicing the "
                       "coordinates")
             raise TypeError(errmsg) from None
@@ -538,7 +538,7 @@ class Timestep(object):
             force = self.forces[sel, :]
         except NoDataError:
             force = None
-        except Exception as exc:
+        except Exception:
             errmsg = ("Selection type must be compatible with slicing the "
                       "coordinates")
             raise TypeError(errmsg) from None
@@ -1621,7 +1621,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
             for i in range(start, stop, step):
                 yield self._read_frame_with_aux(i)
             self.rewind()
-        except TypeError as exc:  # if _read_frame not implemented
+        except TypeError:  # if _read_frame not implemented
             errmsg = f"{self.__class__.__name__} does not support slicing."
             raise TypeError(errmsg) from None
 
@@ -2041,7 +2041,7 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         try:
             self.transformations = transformations
-        except ValueError as exc:
+        except ValueError:
             errmsg = ("Can't add transformations again. Please create a new "
                       "Universe object")
             raise ValueError(errmsg) from None

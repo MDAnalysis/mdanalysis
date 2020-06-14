@@ -280,7 +280,7 @@ class FHIAIMSWriter(base.WriterBase):
             # make sure to use atoms (Issue 46)
             ag = obj.atoms
             # can write from selection == Universe (Issue 49)
-        except AttributeError as exc:
+        except AttributeError:
             errmsg = "Input obj is neither an AtomGroup or Universe"
             raise TypeError(errmsg) from None
 

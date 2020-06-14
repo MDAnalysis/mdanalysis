@@ -82,7 +82,7 @@ class TRRWriter(XDRBaseWriter):
             try:
                 # special case: can supply a Universe, too...
                 ts = ag.trajectory.ts
-            except AttributeError as exc:
+            except AttributeError:
                 errmsg = "Input obj is neither an AtomGroup or Universe"
                 raise TypeError(errmsg) from None
 

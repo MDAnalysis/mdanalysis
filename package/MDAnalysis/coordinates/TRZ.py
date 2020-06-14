@@ -264,7 +264,7 @@ class TRZReader(base.ReaderBase):
                 ts._forces[:, 0] = data['fx']
                 ts._forces[:, 1] = data['fy']
                 ts._forces[:, 2] = data['fz']
-        except IndexError as exc: # Raises indexerror if data has no data (EOF)
+        except IndexError: # Raises indexerror if data has no data (EOF)
             raise IOError from None
         else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
@@ -539,7 +539,7 @@ class TRZWriter(base.WriterBase):
         except AttributeError:  # universe?
             try:
                 ts = obj.trajectory.ts
-            except AttributeError as exc:
+            except AttributeError:
                 errmsg = "Input obj is neither an AtomGroup or Universe"
                 raise TypeError(errmsg) from None
 

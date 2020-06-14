@@ -210,7 +210,7 @@ class XYZWriter(base.WriterBase):
         # but this is not tested.)
         try:
             atoms = obj.atoms
-        except AttributeError as exc:
+        except AttributeError:
             errmsg = "Input obj is neither an AtomGroup or Universe"
             raise TypeError(errmsg) from None
         else:
