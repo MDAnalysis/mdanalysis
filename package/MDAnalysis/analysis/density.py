@@ -652,11 +652,11 @@ class Density(Grid):
                 try:
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
-                except KeyError as exc:
+                except KeyError:
                     errmsg = (f"Unit {value} of type {unit_type} is not "
                               f"recognized.")
                     raise ValueError(errmsg) from None
-        except AttributeError as exc:
+        except AttributeError:
             errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
             raise ValueError(errmsg) from None
@@ -767,7 +767,7 @@ class Density(Grid):
         try:
             self.grid *= units.get_conversion_factor('density',
                                                      self.units['density'], unit)
-        except KeyError as exc:
+        except KeyError:
             errmsg = (f"The name of the unit ({unit} supplied) must be one "
                       f"of:\n{units.conversion_factor['density'].keys()}")
             raise ValueError(errmsg) from None
@@ -810,13 +810,13 @@ def _set_user_grid(gridcenter, xdim, ydim, zdim, smin, smax):
     # Check user inputs
     try:
         gridcenter = np.asarray(gridcenter, dtype=np.float32)
-    except ValueError as exc:
+    except ValueError:
         raise ValueError("Non-number values assigned to gridcenter") from None
     if gridcenter.shape != (3,):
         raise ValueError("gridcenter must be a 3D coordinate")
     try:
         xyzdim = np.array([xdim, ydim, zdim], dtype=np.float32)
-    except ValueError as exc:
+    except ValueError:
         raise ValueError("xdim, ydim, and zdim must be numbers") from None
 
     # Set min/max by shifting by half the edge length of each dimension

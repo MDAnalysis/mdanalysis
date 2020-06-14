@@ -278,7 +278,7 @@ def process_selection(select):
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
-        except IndexError as exc:
+        except IndexError:
             raise IndexError(
                 "select must contain two selection strings "
                 "(reference, mobile)") from None
@@ -287,7 +287,7 @@ def process_selection(select):
         try:
             select['mobile']
             select['reference']
-        except KeyError as exc:
+        except KeyError:
             raise KeyError(
                     "select dictionary must contain entries for keys "
                     "'mobile' and 'reference'."

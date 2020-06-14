@@ -1807,7 +1807,7 @@ class PSAnalysis(object):
 
         try:
             import seaborn as sns
-        except ImportError as exc:
+        except ImportError:
             raise ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
@@ -1921,7 +1921,7 @@ class PSAnalysis(object):
         from matplotlib.pyplot import figure, savefig, tight_layout, clf, show
         try:
             import seaborn as sns
-        except ImportError as exc:
+        except ImportError:
             raise ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
