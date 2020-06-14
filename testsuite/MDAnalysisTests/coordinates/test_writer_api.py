@@ -50,8 +50,6 @@ def test_ts_error(writer, tmpdir):
         if not mda.coordinates.chemfiles.check_chemfiles_version():
             pytest.skip("Chemfiles not available")
         fn = str(tmpdir.join('out.xtc'))
-    elif writer == mda.coordinates.MOL2.MOL2Writer:
-        pytest.skip("MOL2 only writes MOL2 back out")
     elif writer == mda.coordinates.LAMMPS.DATAWriter:
         pytest.skip("DATAWriter requires integer atom types")
     else:
