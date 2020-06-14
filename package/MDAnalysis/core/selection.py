@@ -542,6 +542,21 @@ class AtomNameSelection(StringSelection):
     token = 'name'
     field = 'names'
 
+    def apply(self, group):
+        # rather than work on group.names, cheat and look at the lookup table
+        nmattr = group.universe._topology.names
+
+        matches = []  # list of passing indices
+        # iterate through set of known atom names, check which pass
+        for nm, ix in nmattr.namedict.items():
+            if any(fnmatch.fnmatch(nm, val) for val in self.values):
+                matches.append(ix)
+
+        # atomname indices for members of this group
+        nmidx = nmattr.nmidx[group.ix]
+
+        return group[np.in1d(nmidx, matches)].unique
+
 
 class AtomTypeSelection(StringSelection):
     """Select atoms based on 'types' attribute"""
