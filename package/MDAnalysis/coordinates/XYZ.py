@@ -105,13 +105,15 @@ class XYZWriter(base.WriterBase):
 
     Notes
     -----
-    By default, the XYZ writer will attempt to use the input :class:`AtomGroup`
-    or :class:`Universe` `elements` record to assign atom names in the XYZ
-    file. If the `elements` record is missing, then the `name` record will be
-    used. In the event that neither of these are available, the atoms will all
-    be named `X`. Please see, the `User Guide`_ for more information on how to
-    add topology attributes if you wish to add your own elements / atom names
-    to a :class:`Universe`.
+    By default, the XYZ writer will attempt to use the input
+    :class:`~MDAnalysis.core.groups.AtomGroup` or
+    :class:`~MDAnalysis.core.universe.Universe` ``elements`` record to assign
+    atom names in the XYZ file. If the ``elements`` record is missing, then
+    the ``name`` record will be used. In the event that neither of these are
+    available, the atoms will all be named ``X``. Please see, the
+    `User Guide`_ for more information on how to add topology attributes if
+    you wish to add your own elements / atom names to a
+    :class:`~MDAnalysis.core.universe.Universe`.
 
 
     .. Links
@@ -127,8 +129,9 @@ class XYZWriter(base.WriterBase):
     .. versionchanged:: 2.0.0
        Support for passing timestep to the writer was deprecated in 1.0 and
        has now been removed. As a consequence, custom names can no longer be
-       passed to the writer, these should be added to the :class:`Universe`,
-       or :class:`AtomGroup` before invoking the writer.
+       passed to the writer, these should be added to the
+       :class:`~MDAnalysis.core.universe.Universe`, or
+       :class:`~MDAnalysis.core.groups.AtomGroup` before invoking the writer.
     """
 
     format = 'XYZ'
@@ -164,7 +167,7 @@ class XYZWriter(base.WriterBase):
         .. versionchanged:: 2.0.0
            Due to the removal of timestep as an input for writing, the atoms
            parameter is no longer relevant and has been removed. If passing
-           an empty universe, please use `add_TopologyAttr` to add in the
+           an empty universe, please use ``add_TopologyAttr`` to add in the
            required elements or names.
         """
         self.filename = filename
