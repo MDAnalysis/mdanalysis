@@ -364,7 +364,7 @@ def test_write_unitcell_triclinic(ref, tmpdir):
     with tmpdir.as_cwd():
         with u.trajectory.OtherWriter(outfile) as w:
             for ts in u.trajectory:
-                w.write(ts)
+                w.write(u)
 
         w = mda.Universe(ref.topology, outfile)
         for ts_orig, ts_copy in zip(u.trajectory, w.trajectory):
@@ -381,7 +381,7 @@ def ncdf2dcd(tmpdir_factory):
     ncdf = mda.Universe(PRMncdf, NCDF)
     with mda.Writer(testfile, n_atoms=ncdf.atoms.n_atoms) as w:
         for ts in ncdf.trajectory:
-            w.write(ts)
+            w.write(ncdf)
     return ncdf, mda.Universe(PRMncdf, testfile)
 
 

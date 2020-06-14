@@ -513,63 +513,58 @@ class BaseWriterTest(object):
         return make_Universe(['resids', 'resnames'],
                              trajectory=True)
 
-    def test_write_trajectory_timestep(self,ref, reader, tmpdir):
-        outfile = 'write-timestep-test.' + ref.ext
-        with tmpdir.as_cwd():
-            with ref.writer(outfile, reader.n_atoms) as W:
-                for ts in reader:
-                    W.write(ts)
-            self._check_copy(outfile, ref, reader)
+    @staticmethod
+    @pytest.fixture()
+    def universe(ref):
+        return mda.Universe(ref.topology, ref.trajectory)
 
-    def test_write_different_box(self, ref, reader, tmpdir):
+    def test_write_different_box(self, ref, universe, tmpdir):
         if ref.changing_dimensions:
             outfile = 'write-dimensions-test' + ref.ext
             with tmpdir.as_cwd():
-                with ref.writer(outfile, reader.n_atoms) as W:
-                    for ts in reader:
-                        ts.dimensions[:3] += 1
-                        W.write(ts)
+                with ref.writer(outfile, universe.atoms.n_atoms) as W:
+                    for ts in universe.trajectory:
+                        universe.dimensions[:3] += 1
+                        W.write(universe)
 
                 written = ref.reader(outfile)
 
-                for ts_ref, ts_w in zip(reader, written):
-                    ts_ref.dimensions[:3] += 1
-                    assert_array_almost_equal(ts_ref.dimensions,
+                for ts_ref, ts_w in zip(universe.trajectory, written):
+                    universe.dimensions[:3] += 1
+                    assert_array_almost_equal(universe.dimensions,
                                               ts_w.dimensions,
                                               decimal=ref.prec)
 
-    def test_write_trajectory_atomgroup(self, ref,reader, tmpdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
+    def test_write_trajectory_atomgroup(self, ref,reader, universe, tmpdir):
         outfile = 'write-atoms-test.' + ref.ext
         with tmpdir.as_cwd():
-            with ref.writer(outfile, uni.atoms.n_atoms) as w:
-                for ts in uni.trajectory:
-                    w.write(uni.atoms)
+            with ref.writer(outfile, universe.atoms.n_atoms) as w:
+                for ts in universe.trajectory:
+                    w.write(universe.atoms)
             self._check_copy(outfile, ref, reader)
 
-    def test_write_trajectory_universe(self, ref, reader, tmpdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
+    def test_write_trajectory_universe(self, ref, reader, universe, tmpdir):
         outfile = 'write-uni-test.' + ref.ext
         with tmpdir.as_cwd():
-            with ref.writer(outfile, uni.atoms.n_atoms) as w:
-                for ts in uni.trajectory:
-                    w.write(uni)
+            with ref.writer(outfile, universe.atoms.n_atoms) as w:
+                for ts in universe.trajectory:
+                    w.write(universe)
             self._check_copy(outfile, ref, reader)
 
-    def test_write_selection(self, ref, reader, u_no_resnames, u_no_resids, u_no_names, tmpdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
+    def test_write_selection(self, ref, reader, universe, u_no_resnames,
+                             u_no_resids, u_no_names, tmpdir):
         sel_str = 'resid 1'
-        sel = uni.select_atoms(sel_str)
+        sel = universe.select_atoms(sel_str)
         outfile = 'write-selection-test.' + ref.ext
 
 
         with tmpdir.as_cwd():
             with ref.writer(outfile, sel.n_atoms) as W:
-                for ts in uni.trajectory:
+                for ts in universe.trajectory:
                     W.write(sel.atoms)
 
             copy = ref.reader(outfile)
-            for orig_ts, copy_ts in zip(uni.trajectory, copy):
+            for orig_ts, copy_ts in zip(universe.trajectory, copy):
                 assert_array_almost_equal(
                     copy_ts._pos, sel.atoms.positions, ref.prec,
                     err_msg="coordinate mismatch between original and written "
@@ -598,14 +593,14 @@ class BaseWriterTest(object):
                 with pytest.raises(TypeError):
                     ref.writer('foo')
 
-    def test_write_not_changing_ts(self, ref, reader, tmpdir):
+    def test_write_not_changing_ts(self, ref, universe, tmpdir):
         outfile = 'write-not-changing-ts.' + ref.ext
-        ts = reader.ts.copy()
-        copy_ts = ts.copy()
+
+        copy_ts = universe.trajectory.ts.copy()
         with tmpdir.as_cwd():
             with ref.writer(outfile, n_atoms=5) as W:
-                W.write(ts)
-                assert_timestep_almost_equal(copy_ts, ts)
+                W.write(universe)
+                assert_timestep_almost_equal(copy_ts, universe.trajectory.ts)
 
 
 class BaseTimestepTest(object):
