@@ -530,9 +530,9 @@ class StringSelection(Selection):
 
     @return_empty_on_apply
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=bool)
+        mask = np.zeros(len(group), dtype=np.bool)
+        values = getattr(group, self.field)
         for val in self.values:
-            values = getattr(group, self.field)
             mask |= [fnmatch.fnmatch(x, val) for x in values]
         return group[mask].unique
 
