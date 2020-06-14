@@ -239,6 +239,7 @@ del Doi
 
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
+    
     Parameters
     ----------
     u : Universe
