@@ -96,8 +96,6 @@ More information on adding topology attributes can found in the `user guide`_.
 .. _user guide: https://www.mdanalysis.org/UserGuide/examples/constructing_universe.html#Adding-topology-attributes
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 import warnings
 import re

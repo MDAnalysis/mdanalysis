@@ -88,10 +88,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-
-from six.moves import range, zip
-from six import raise_from
 import numpy as np
 import itertools
 
@@ -258,11 +254,9 @@ class TOPParser(TopologyReaderBase):
                     try:
                         next_section = line.split("%FLAG")[1].strip()
                     except IndexError:
-                        raise_from(
-                            IndexError((
-                                "%FLAG section not found, formatting error "
-                                "for PARM7 file {0} ").format(self.filename)),
-                                None)
+                        errmsg = (f"%FLAG section not found, formatting error "
+                                  f"for PARM7 file {self.filename} ")
+                        raise IndexError(errmsg) from None
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])

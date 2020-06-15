@@ -31,10 +31,6 @@ Class definitions for the TPRParser
 ===================================
 
 """
-from __future__ import absolute_import
-
-from six.moves import range
-
 from collections import namedtuple
 
 TpxHeader = namedtuple(

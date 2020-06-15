@@ -45,7 +45,6 @@ The raw tables are stored in the strings
 .. autodata:: TABLE_MASSES
 .. autodata:: TABLE_VDWRADII
 """
-from __future__ import absolute_import
 
 
 def kv2dict(s, convertor=str):

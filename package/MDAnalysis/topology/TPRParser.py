@@ -146,7 +146,6 @@ has not been solved. Versions prior to Gromacs 4.0.x are not supported.
 .. _`Issue 2428`: https://github.com/MDAnalysis/mdanalysis/issues/2428
 
 """
-from __future__ import absolute_import
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 
