@@ -52,13 +52,15 @@ import os
 class FileIOPicklable(io.FileIO):
     """File object (read-only) that can be pickled.
 
-    This class provides a file-like object (as returned by :func:`open`, namely :class:`io.FileIO`)
-    that, unlike standard Python file objects, can be pickled. Only read mode is supported.
+    This class provides a file-like object (as returned by :func:`open`,
+    namely :class:`io.FileIO`) that, unlike standard Python file objects,
+    can be pickled. Only read mode is supported.
 
-    When the file is pickled, filename and position of the open file handle in the file
-    are saved. On unpickling, the file is opened by filename and the file is
-    seeked to the saved position. This means that for a successful unpickle, the original
-    file still has to be accessible with its filename.
+    When the file is pickled, filename and position of the open file handle in
+    the file are saved. On unpickling, the file is opened by filename,
+    and the file is seeked to the saved position.
+    This means that for a successful unpickle, the original file still has to
+    be accessible with its filename.
 
     Example
     -------
@@ -91,8 +93,9 @@ class FileIOPicklable(io.FileIO):
 class BufferIOPicklable(io.BufferedReader):
     """A picklable buffer object for read-only FilIO object.
 
-    This class provides a buffered :class:`io.BufferedReader` object that can be pickled.
-    Note that this only works in reda mode.
+    This class provides a buffered :class:`io.BufferedReader`
+    that can be pickled.
+    Note that this only works in read mode.
 
     Example
     -------
@@ -165,7 +168,7 @@ def pickle_open(name, mode='rt'):
 
     This function return either BufferIOPicklable or TextIOPicklable wrapped
     FileIOPicklable object given different reading mode. It can be used as a
-    context manager, and replace the built-in `io.open` function in reading mode
+    context manager, and replace the built-in `io.open` function in read mode
     that only returns an unpicklable file object.
     In order to serialize a `MDAnalysis.core.Universe`, this function can
     used to open trajectory/topology files--a object composition approach,
@@ -202,7 +205,8 @@ def pickle_open(name, mode='rt'):
     .. versionadded:: 2.0.0
     """
     if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') files can be pickled.")
+        raise ValueError("Only read mode ('r', 'rt', 'rb') \
+                         files can be pickled.")
     name = os.fspath(name)
     raw = FileIOPicklable(name)
     if mode == 'rb':

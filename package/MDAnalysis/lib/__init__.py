@@ -41,4 +41,6 @@ from . import NeighborSearch
 from . import formats
 from . import pkdtree
 from . import nsgrid
-from .picklable_file_io import FileIOPicklable, BufferIOPicklable, TextIOPicklable
+from .picklable_file_io import FileIOPicklable, BufferIOPicklable, \
+                               TextIOPicklable
+

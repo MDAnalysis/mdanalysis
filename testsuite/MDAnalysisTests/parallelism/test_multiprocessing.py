@@ -44,6 +44,6 @@ def test_multiprocess_fileio():
         ref = PDB_file.readlines()[:4]
     with pickle_open(PDB) as PDB_file:
         res = np.array([p.apply(textio_line, args=(PDB_file, i))
-                    for i in range(4)])
+                        for i in range(4)])
     p.close()
     assert_equal(res, ref)
