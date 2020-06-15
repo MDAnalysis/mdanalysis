@@ -43,10 +43,12 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
-# NOTE: This sitemap is only correct for the DEVELOPMENT doccs. The RELEASE docs
-#       are served from https://www.mdanalysis.org/docs/ and the sitemap.xml
-#       is manually fixed when deploying the release docs with the
-#       maintainer/deploy_master_docs.sh script
+# This sitemap is correct both for the development and release docs, which
+# are both served from docs.mdanalysis.org/$version .
+# The docs used to be available automatically at mdanalysis.org/mdanalysis;
+# they are now at docs.mdanalysis.org/, which requires a CNAME DNS record
+# pointing to mdanalysis.github.io. To change this URL you should change/delete
+# the CNAME record for "docs" and update the URL in GitHub settings
 site_url = "https://docs.mdanalysis.org/"
 
 # Add any paths that contain templates here, relative to this directory.
@@ -159,7 +161,7 @@ html_theme_options = {
 }
 
 html_context = {
-    'versions_json_url': 'https://mdanalysis.github.io/mdanalysis/versions.json'
+    'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
 }
 
 # Add any paths that contain custom themes here, relative to this directory.

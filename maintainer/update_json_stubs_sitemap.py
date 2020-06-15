@@ -23,7 +23,7 @@ URL = os.environ['URL']
 VERSION = os.environ['VERSION']
 
 
-def get_web_file(filename, callback):
+def get_web_file(filename, callback, default):
     url = os.path.join(URL, filename)
     try:
         page = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
@@ -35,14 +35,14 @@ def get_web_file(filename, callback):
                 return callback(f)
         except IOError as e:
             print(e)
-            versions = []
+            return default
     else:
         return callback(data)
 
 
 # ========= WRITE JSON =========
 # Update $root/versions.json with links to the right version
-versions = get_web_file('versions.json', json.loads)
+versions = get_web_file('versions.json', json.loads, [])
 existing = [item['version'] for item in versions]
 already_exists = VERSION in existing
 
@@ -117,7 +117,8 @@ ET.register_namespace('xhtml', "http://www.w3.org/1999/xhtml")
 # bigroot = ET.Element("urlset")
 # bigroot.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
 # for ver in versions:
-#     tree = get_web_file(ver['version']+'/sitemap.xml', ET.fromstring)
+#     tree = get_web_file(ver['version']+'/sitemap.xml', ET.fromstring,
+#                         ET.fromstring(''))
 #     root = tree.getroot()
 #     bigroot.extend(root.getchildren())
 # ET.ElementTree(bigroot).write('sitemap.xml',

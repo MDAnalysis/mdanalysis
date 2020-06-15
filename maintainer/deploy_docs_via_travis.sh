@@ -55,7 +55,7 @@ git reset upstream/gh-pages
 
 # for dev, latest, home redirects
 mkdir dev latest
-export URL="https://mdanalysis.github.io/mdanalysis/"
+export URL="https://docs.mdanalysis.org"
 python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
 touch .
 touch .nojekyll
