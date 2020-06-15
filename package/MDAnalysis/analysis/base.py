@@ -28,9 +28,6 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import range, zip
 import inspect
 import logging
 import itertools
@@ -248,7 +245,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         if trajectory is None:
             # all possible places to find trajectory
-            for arg in itertools.chain(args, six.itervalues(kwargs)):
+            for arg in itertools.chain(args, kwargs.values()):
                 if isinstance(arg, AtomGroup):
                     trajectory = arg.universe.trajectory
                     break
@@ -342,14 +339,14 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         # pylint: disable=deprecated-method
         argspec = inspect.getargspec(function)
 
-    for base_kw in six.iterkeys(base_kwargs):
+    for base_kw in base_kwargs.keys():
         if base_kw in argspec.args:
             raise ValueError(
                 "argument name '{}' clashes with AnalysisBase argument."
                 "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
 
     base_args = {}
-    for argname, default in six.iteritems(base_kwargs):
+    for argname, default in base_kwargs.items():
         base_args[argname] = kwargs.pop(argname, default)
 
     return base_args, kwargs

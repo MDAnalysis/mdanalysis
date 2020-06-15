@@ -155,8 +155,6 @@ instance, which is derived from a :class:`gridData.core.Grid`. A
 .. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 import sys
 import os
@@ -658,9 +656,10 @@ class Density(Grid):
         length_unit = 'Angstrom'
 
         parameters = kwargs.pop('parameters', {})
-        if len(args) > 0 and isinstance(args[0], str) or isinstance(kwargs.get('grid', None), str):
-            # try to be smart: when reading from a file then it is likely that this
-            # is a density
+        if (len(args) > 0 and isinstance(args[0], str) or
+            isinstance(kwargs.get('grid', None), str)):
+            # try to be smart: when reading from a file then it is likely that
+            # this is a density
             parameters.setdefault('isDensity', True)
         else:
             parameters.setdefault('isDensity', False)
@@ -702,15 +701,14 @@ class Density(Grid):
                 try:
                     units.conversion_factor[unit_type][value]
                     self.units[unit_type] = value
-                except KeyError as err:
+                except KeyError:
                     errmsg = (f"Unit {value} of type {unit_type} is not "
                               f"recognized.")
-                    raise ValueError(errmsg) from err
-        except AttributeError as err:
-            errmsg = ('"unit" must be a dictionary with keys "length" and '
-                      '"density."')
+                    raise ValueError(errmsg) from None
+        except AttributeError:
+            errmsg = '"unit" must be a dictionary with keys "length" and "density.'
             logger.fatal(errmsg)
-            raise ValueError(errmsg) from err
+            raise ValueError(errmsg) from None
         # need at least length and density (can be None)
         if 'length' not in self.units:
             raise ValueError('"unit" must contain a unit for "length".')
@@ -818,10 +816,10 @@ class Density(Grid):
         try:
             self.grid *= units.get_conversion_factor('density',
                                                      self.units['density'], unit)
-        except KeyError as err:
-            errmsg = (f"The name of unit ({unit} supplied) must be one of "
-                      f"{units.conversion_factor['density'].keys()}")
-            raise ValueError(errmsg) from err
+        except KeyError:
+            errmsg = (f"The name of the unit ({unit} supplied) must be one "
+                      f"of:\n{units.conversion_factor['density'].keys()}")
+            raise ValueError(errmsg) from None
         self.units['density'] = unit
 
     def __repr__(self):

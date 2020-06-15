@@ -510,10 +510,10 @@ def alignto(mobile, reference, select=None, weights=None,
         try:
             # treat subselection as AtomGroup
             mobile_atoms = subselection.atoms
-        except AttributeError as exc:
+        except AttributeError:
             err = ("subselection must be a selection string, an"
                    " AtomGroup or Universe or None")
-            raise TypeError(err) from exc
+            raise TypeError(err) from None
 
 
     # _fit_to DOES subtract center of mass, will provide proper min_rmsd
@@ -1341,12 +1341,12 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
         else:
             try:
                 mass_mismatches = (np.absolute(ag1.masses - ag2.masses) > tol_mass)
-            except ValueError as exc:
+            except ValueError:
                 errmsg = ("Failed to find matching atoms: len(reference) = {}, len(mobile) = {} "
                           "Try to improve your selections for mobile and reference.").format(
                             ag1.n_atoms, ag2.n_atoms)
                 logger.error(errmsg)
-                raise SelectionError(errmsg) from exc
+                raise SelectionError(errmsg) from None
 
             if np.any(mass_mismatches):
                 # Test 2 failed.

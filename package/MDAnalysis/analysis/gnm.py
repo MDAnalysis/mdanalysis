@@ -85,10 +85,6 @@ directly needed to perform the analysis.
    removed un-unsed function :func:`backup_file`
 
 """
-
-from __future__ import print_function, division, absolute_import
-from six.moves import range
-
 import itertools
 
 import numpy as np
