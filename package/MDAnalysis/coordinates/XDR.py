@@ -33,8 +33,6 @@ MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
 """
-from __future__ import absolute_import
-import six
 
 import errno
 import numpy as np
@@ -83,7 +81,7 @@ def read_numpy_offsets(filename):
 
     """
     try:
-        return {k: v for k, v in six.iteritems(np.load(filename))}
+        return {k: v for k, v in np.load(filename).items()}
     except IOError:
         warnings.warn("Failed to load offsets file {}\n".format(filename))
         return False
