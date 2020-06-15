@@ -72,5 +72,5 @@ def unpicklable_f(request):
 
 def test_unpicklable_open_mode(unpicklable_f):
     filename, mode = unpicklable_f
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match=r"Only read mode *"):
         pickle_open(filename, mode)
