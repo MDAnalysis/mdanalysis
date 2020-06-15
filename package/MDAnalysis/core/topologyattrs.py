@@ -484,6 +484,8 @@ class Atomnames(AtomAttr):
     transplants = defaultdict(list)
 
     def __init__(self, vals, guessed=False):
+        self._guessed = guessed
+      
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
