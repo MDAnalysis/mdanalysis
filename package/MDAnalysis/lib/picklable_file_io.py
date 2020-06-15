@@ -64,16 +64,16 @@ class FileIOPicklable(io.FileIO):
 
     Parameters
     ----------
-    name : str;
+    name : str
         a filename given a text or byte string.
 
     Example
     -------
-    ::
-        file = FileIOPicklable('filename')
-        file.readline()
-        file_pickled = pickle.loads(pickle.dumps(file)
-        assert_equal(file.tell(), file_pickled.tell())
+
+    >>> file = FileIOPicklable('filename')
+    >>> file.readline()
+    >>> file_pickled = pickle.loads(pickle.dumps(file)
+    >>> assert_equal(file.tell(), file_pickled.tell())
 
     See Also
     ---------
@@ -104,13 +104,13 @@ class BufferIOPicklable(io.BufferedReader):
 
     Parameters
     ----------
-    raw : FileIO object;
+    raw : FileIO object
 
     Example
     -------
-    ::
-        file = FileIOPicklable('filename')
-        buffer_wrapped = BufferIOPicklable(file)
+
+    >>> file = FileIOPicklable('filename')
+    >>> buffer_wrapped = BufferIOPicklable(file)
 
     See Also
     ---------
@@ -143,13 +143,13 @@ class TextIOPicklable(io.TextIOWrapper):
 
     Parameters
     ----------
-    raw : FileIO object;
+    raw : FileIO object
 
     Example
     -------
-    ::
-        file = FileIOPicklable('filename')
-        text_wrapped = TextIOPicklable(file)
+
+    >>> file = FileIOPicklable('filename')
+    >>> text_wrapped = TextIOPicklable(file)
 
     See Also
     ---------
@@ -194,7 +194,7 @@ def pickle_open(name, mode='rt'):
 
     Parameters
     ----------
-    name : str;
+    name : str
         a filename given a text or byte string.
     mode: {'r', 'rt', 'rb'} (optional)
         'r':  open for reading in text mode;
@@ -203,25 +203,31 @@ def pickle_open(name, mode='rt'):
 
     Returns
     -------
-    stream-like object
+    stream-like object: BufferIOPicklable or TextIOPicklable
+        when mode is 'r' or 'rt', returns TextIOPicklable;
+        when mode is 'rb', returns BufferIOPicklable
 
     Raises
     ------
-    ValueError : if `mode` is not one of the allowed read modes
+    ValueError
+        if `mode` is not one of the allowed read modes
 
     Examples
     -------
-    ::
-       with pickle_open('filename') as f:
-            line = f.readline()
+    open as context manager::
 
-       f = pickle_open('filename')
-       line = f.readline()
-       f.close()
+    >>>   with pickle_open('filename') as f:
+    >>>     line = f.readline()
+
+    open as function::
+
+    >>>   f = pickle_open('filename')
+    >>>   line = f.readline()
+    >>>   f.close()
 
     See Also
     --------
-    :func:`anyopen`
+    :func:`MDAnalysis.lib.util.anyopen`
     :func:`io.open`
 
 
