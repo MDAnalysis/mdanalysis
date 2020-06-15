@@ -128,7 +128,7 @@ to find uncovered code.
 
 .. |devdocs| image:: https://img.shields.io/badge/docs-development-yellow.svg
    :alt: Documentation (development version)
-   :target: https://www.mdanalysis.org/mdanalysis/
+   :target: https://docs.mdanalysis.org/dev
 
 .. |numfocus| image:: https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
    :alt: Powered by NumFOCUS
