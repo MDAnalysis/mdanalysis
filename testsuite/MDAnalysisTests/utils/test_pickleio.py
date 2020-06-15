@@ -55,7 +55,7 @@ def test_offset(f):
 
 def test_context_manager_pickle():
     with pickle_open(PDB) as file:
-        file_pickled  = pickle.loads(pickle.dumps(file))
+        file_pickled = pickle.loads(pickle.dumps(file))
         assert_equal(file.readline(), file_pickled.readline())
 
 
