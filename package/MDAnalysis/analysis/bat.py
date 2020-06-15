@@ -122,7 +122,7 @@ References
    doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
 
 """
-from __future__ import absolute_import
+from __future__ import absolute_import, division
 # from six.moves import zip, range
 
 import numpy as np
