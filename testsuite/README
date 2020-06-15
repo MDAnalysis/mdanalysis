@@ -50,7 +50,7 @@ Help is also available through the mailing list at https://groups.google.com/gro
 
 .. |devdocs| image:: https://img.shields.io/badge/docs-development-yellow.svg
    :alt: Documentation (development version)
-   :target: https://www.mdanalysis.org/mdanalysis/
+   :target: https://docs.mdanalysis.org/dev/
 	     
 .. |developergroup| image:: https://img.shields.io/badge/Google%20Group-Developers-lightgrey.svg
    :alt: Developer Google Group
