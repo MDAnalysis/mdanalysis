@@ -90,7 +90,6 @@ especially as we are directly using this framework (imported from numpy).
 .. _Gromacs: http://www.gromacs.org
 
 """
-from __future__ import absolute_import
 import logging
 
 import pytest

@@ -165,9 +165,6 @@ References and footnotes
 
 """
 
-from __future__ import absolute_import, unicode_literals, division
-from six import raise_from
-
 #
 # NOTE: Whenever a constant is added to the constants dict, you also
 #       MUST add an appropriate entry to
@@ -354,22 +351,16 @@ def convert(x, u1, u2):
     try:
         ut1 = unit_types[u1]
     except KeyError:
-        raise_from(
-            ValueError(
-                ("unit '{0}' not recognized.\n"
-                 "It must be one of {1}.").format(u1, ", ".join(unit_types))
-                ),
-            None)
+        errmsg = (f"unit '{u1}' not recognized.\n"
+                  f"It must be one of {', '.join(unit_types)}.")
+        raise ValueError(errmsg) from None
                   
     try:
         ut2 = unit_types[u2]
     except KeyError:
-        raise_from(
-            ValueError(
-                ("unit '{0}' not recognized.\n"
-                 "It must be one of {1}.").format(u2, ", ".join(unit_types))
-                ),
-            None)
+        errsmg = (f"unit '{u2}' not recognized.\n"
+                  f"It must be one of {', '.join(unit_types)}.")
+        raise ValueError(errmsg) from None
     if ut1 != ut2:
         raise ValueError("Cannot convert between unit types "
                          "{0} --> {1}".format(u1, u2))
