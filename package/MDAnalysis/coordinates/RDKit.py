@@ -54,6 +54,7 @@ Classes
 
 """
 from __future__ import absolute_import
+import warnings
 
 import numpy as np
 
@@ -100,6 +101,7 @@ class RDKitReader(memory.MemoryReader):
             conf.GetPositions() for conf in filename.GetConformers()], 
             dtype=np.float32)
         if coordinates.size == 0:
+            warnings.warn("No coordinates found in the RDKit molecule")
             coordinates = np.empty((1,n_atoms,3), dtype=np.float32)
             coordinates[:] = np.nan
         super(RDKitReader, self).__init__(coordinates, order='fac', **kwargs)

@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 from __future__ import absolute_import
+import warnings
 
 import pytest
 import MDAnalysis as mda
@@ -31,7 +32,7 @@ from numpy.testing import (assert_equal,
 from MDAnalysisTests.datafiles import mol2_molecule
 
 Chem = pytest.importorskip("rdkit.Chem")
-
+AllChem = pytest.importorskip("rdkit.Chem.AllChem")
 
 class TestRDKitReader(object):
     @pytest.fixture
@@ -49,8 +50,30 @@ class TestRDKitReader(object):
         assert universe.trajectory.n_frames == 1
         assert_equal(expected, universe.trajectory.coordinate_array)
 
+    def test_multi_coordinates(self):
+        mol = Chem.MolFromSmiles("CCO")
+        mol = Chem.AddHs(mol)
+        cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
+        umol = mda.Universe(mol)
+        assert umol.trajectory.n_frames == 3
+        expected = np.array([
+            conf.GetPositions() for conf in mol.GetConformers()], 
+            dtype=np.float32)
+        assert_equal(expected, umol.trajectory.coordinate_array)
+
     def test_no_coordinates(self):
-        pass
+        with warnings.catch_warnings(record=True) as w:
+            # Cause all warnings to always be triggered.
+            warnings.simplefilter("always")
+            # Trigger a warning.
+            u = mda.Universe.from_smiles("CCO", generate_coordinates=False)
+            # Verify the warning
+            assert len(w) == 1
+            assert "No coordinates found" in str(
+                w[-1].message)
+        expected = np.empty((1,u.atoms.n_atoms,3), dtype=np.float32)
+        expected[:] = np.nan
+        assert_equal(u.trajectory.coordinate_array, expected)
 
     def test_compare_mol2reader(self, universe):
         mol2 = mda.Universe(mol2_molecule)
