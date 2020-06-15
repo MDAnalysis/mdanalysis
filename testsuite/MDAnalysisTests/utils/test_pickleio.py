@@ -53,6 +53,12 @@ def test_offset(f):
     assert_equal(f.tell(), f_pickled.tell())
 
 
+def test_context_manager_pickle():
+    with pickle_open(PDB) as file:
+        file_pickled  = pickle.loads(pickle.dumps(file))
+        assert_equal(file.readline(), file_pickled.readline())
+
+
 @pytest.fixture(params=[
     # filename mode
     (PDB, 'w'),
