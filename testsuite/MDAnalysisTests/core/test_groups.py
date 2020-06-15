@@ -20,10 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, division
-
-from six.moves import range
-
 import itertools
 import numpy as np
 from numpy.testing import (
@@ -32,7 +28,6 @@ from numpy.testing import (
 )
 import pytest
 import operator
-import six
 
 import MDAnalysis as mda
 from MDAnalysis.exceptions import NoDataError
@@ -61,7 +56,7 @@ class TestGroupProperties(object):
     def test_dimensions(self, u, group_dict):
         dimensions = np.arange(6)
 
-        for group in six.itervalues(group_dict):
+        for group in group_dict.values():
             group.dimensions = dimensions.copy()
             assert_array_equal(group.dimensions, dimensions)
             assert_equal(u.dimensions, group.dimensions)

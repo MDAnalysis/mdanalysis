@@ -20,10 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function
-
-
-from six.moves import cPickle
+import pickle
 
 import os
 import subprocess
@@ -275,7 +272,7 @@ class TestUniverse(object):
     def test_pickle_raises_NotImplementedError(self):
         u = mda.Universe(PSF, DCD)
         with pytest.raises(NotImplementedError):
-            cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
+            pickle.dumps(u, protocol = pickle.HIGHEST_PROTOCOL)
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
     def test_set_dimensions(self, dtype):
