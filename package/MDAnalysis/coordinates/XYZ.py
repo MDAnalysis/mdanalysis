@@ -54,7 +54,7 @@ will need to tweak this class.
 XYZ File format
 ---------------
 
-Definiton used by the :class:`XYZReader` and :class:`XYZWriter` (and
+Definition used by the :class:`XYZReader` and :class:`XYZWriter` (and
 the `VMD xyzplugin`_ from whence the definition was taken)::
 
     [ comment line            ] !! NOT IMPLEMENTED !! DO NOT INCLUDE
@@ -81,14 +81,11 @@ Classes
 -------
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range, zip
-
 import itertools
 import os
 import errno
 import numpy as np
+import warnings
 import logging
 logger = logging.getLogger('MDAnalysis.coordinates.XYZ')
 
@@ -105,11 +102,36 @@ class XYZWriter(base.WriterBase):
     The XYZ file format is not formally defined. This writer follows
     the VMD implementation for the molfile `xyzplugin`_.
 
-    .. _xyzplugin:
-       http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
 
-    .. versionchanged: 0.21.0
-       Use elements attribute instead of names attribute, if present
+    Notes
+    -----
+    By default, the XYZ writer will attempt to use the input
+    :class:`~MDAnalysis.core.groups.AtomGroup` or
+    :class:`~MDAnalysis.core.universe.Universe` ``elements`` record to assign
+    atom names in the XYZ file. If the ``elements`` record is missing, then
+    the ``name`` record will be used. In the event that neither of these are
+    available, the atoms will all be named ``X``. Please see, the
+    `User Guide`_ for more information on how to add topology attributes if
+    you wish to add your own elements / atom names to a
+    :class:`~MDAnalysis.core.universe.Universe`.
+
+
+    .. Links
+
+    .. _xyzplugin:
+           http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html
+    .. _User Guide:
+           https://userguide.mdanalysis.org/examples/constructing_universe.html#Adding-topology-attributes
+
+
+    .. versionchanged:: 1.0.0
+       Use elements attribute instead of names attribute, if present.
+    .. versionchanged:: 2.0.0
+       Support for passing timestep to the writer was deprecated in 1.0 and
+       has now been removed. As a consequence, custom names can no longer be
+       passed to the writer, these should be added to the
+       :class:`~MDAnalysis.core.universe.Universe`, or
+       :class:`~MDAnalysis.core.groups.AtomGroup` before invoking the writer.
     """
 
     format = 'XYZ'
@@ -117,7 +139,7 @@ class XYZWriter(base.WriterBase):
     # these are assumed!
     units = {'time': 'ps', 'length': 'Angstrom'}
 
-    def __init__(self, filename, n_atoms=None, atoms=None, convert_units=True,
+    def __init__(self, filename, n_atoms=None, convert_units=True,
                  remark=None, **kwargs):
         """Initialize the XYZ trajectory writer
 
@@ -132,52 +154,42 @@ class XYZWriter(base.WriterBase):
             and that this file is used to store several different models
             instead of a single trajectory. If a number is provided each
             written TimeStep has to contain the same number of atoms.
-        atoms: str | list (optional)
-            Provide atom names: This can be a list of names or an
-            :class:`AtomGroup`.  If none is provided, atoms will
-            be called 'X' in the output. These atom names will be
-            used when a trajectory is written from raw
-            :class:`Timestep` objects which do not contain atom
-            information. If you write a :class:`AtomGroup` with
-            :meth:`XYZWriter.write` then atom information is taken
-            at each step and *atoms* is ignored.
         convert_units : bool (optional)
             convert quantities to default MDAnalysis units of Angstrom upon
             writing  [``True``]
         remark: str (optional)
             single line of text ("molecule name"). By default writes MDAnalysis
-            version
+            version and frame
+
+
+        .. versionchanged:: 1.0.0
+           Removed :code:`default_remark` variable (Issue #2692).
+        .. versionchanged:: 2.0.0
+           Due to the removal of timestep as an input for writing, the atoms
+           parameter is no longer relevant and has been removed. If passing
+           an empty universe, please use ``add_TopologyAttr`` to add in the
+           required elements or names.
         """
         self.filename = filename
+        self.remark = remark
         self.n_atoms = n_atoms
         self.convert_units = convert_units
 
-        self.atomnames = self._get_atoms_elements_or_names(atoms)
-        default_remark = "Written by {0} (release {1})".format(
-            self.__class__.__name__, __version__)
-        self.remark = default_remark if remark is None else remark
         # can also be gz, bz2
         self._xyz = util.anyopen(self.filename, 'wt')
 
     def _get_atoms_elements_or_names(self, atoms):
         """Return a list of atom elements (if present) or fallback to atom names"""
-        # Default case
-        if atoms is None:
-            return itertools.cycle(('X',))
-        # Single atom name provided
-        elif isinstance(atoms, six.string_types):
-            return itertools.cycle((atoms,))
-        # List of atom names providded
-        elif isinstance(atoms, list):
-            return atoms
-        # AtomGroup or Universe, grab the names else default
-        # (AtomGroup.atoms just returns AtomGroup)
         try:
             return atoms.atoms.elements
         except (AttributeError, NoDataError):
             try:
                 return atoms.atoms.names
             except (AttributeError, NoDataError):
+                wmsg = ("Input AtomGroup or Universe does not have atom "
+                        "elements or names attributes, writer will default "
+                        "atom names to 'X'")
+                warnings.warn(wmsg)
                 return itertools.cycle(('X',))
 
     def close(self):
@@ -190,8 +202,8 @@ class XYZWriter(base.WriterBase):
     def write(self, obj):
         """Write object `obj` at current trajectory frame to file.
 
-        Atom elements (or names) in the output are taken from the `obj` or default
-        to the value of the `atoms` keyword supplied to the
+        Atom elements (or names) in the output are taken from the `obj` or
+        default to the value of the `atoms` keyword supplied to the
         :class:`XYZWriter` constructor.
 
         Parameters
@@ -199,6 +211,11 @@ class XYZWriter(base.WriterBase):
         obj : Universe or AtomGroup
             The :class:`~MDAnalysis.core.groups.AtomGroup` or
             :class:`~MDAnalysis.core.universe.Universe` to write.
+
+
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
         # prepare the Timestep and extract atom names if possible
         # (The way it is written it should be possible to write
@@ -207,10 +224,8 @@ class XYZWriter(base.WriterBase):
         try:
             atoms = obj.atoms
         except AttributeError:
-            if isinstance(obj, base.Timestep):
-                ts = obj
-            else:
-                six.raise_from(TypeError("No Timestep found in obj argument"), None)
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
         else:
             if hasattr(obj, 'universe'):
                 # For AtomGroup and children (Residue, ResidueGroup, Segment)
@@ -226,10 +241,17 @@ class XYZWriter(base.WriterBase):
             # update atom names
             self.atomnames = self._get_atoms_elements_or_names(atoms)
 
-        self.write_next_timestep(ts)
+        self._write_next_frame(ts)
 
-    def write_next_timestep(self, ts=None):
-        """Write coordinate information in *ts* to the trajectory"""
+    def _write_next_frame(self, ts=None):
+        """
+        Write coordinate information in *ts* to the trajectory
+
+        .. versionchanged:: 1.0.0
+           Print out :code:`remark` if present, otherwise use generic one 
+           (Issue #2692).
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        """
         if ts is None:
             if not hasattr(self, 'ts'):
                 raise NoDataError('XYZWriter: no coordinate data to write to '
@@ -247,9 +269,9 @@ class XYZWriter(base.WriterBase):
         else:
             if (not isinstance(self.atomnames, itertools.cycle) and
                 len(self.atomnames) != ts.n_atoms):
-                logger.info('Trying to write a TimeStep with unkown atoms. '
-                            'Expected {}, got {}. Try using "write" if you are '
-                            'using "write_next_timestep" directly'.format(
+                logger.info('Trying to write a TimeStep with unknown atoms. '
+                            'Expected {} atoms, got {}. Try using "write" if you are '
+                            'using "_write_next_frame" directly'.format(
                                 len(self.atomnames), ts.n_atoms))
                 self.atomnames = np.array([self.atomnames[0]] * ts.n_atoms)
 
@@ -259,8 +281,19 @@ class XYZWriter(base.WriterBase):
         else:
             coordinates = ts.positions
 
+        # Write number of atoms
         self._xyz.write("{0:d}\n".format(ts.n_atoms))
-        self._xyz.write("frame {0}\n".format(ts.frame))
+
+        # Write remark
+        if self.remark is None:
+            remark = "frame {} | Written by MDAnalysis {} (release {})\n".format(
+                ts.frame, self.__class__.__name__, __version__)
+
+            self._xyz.write(remark)
+        else:
+            self._xyz.write(self.remark.strip() + "\n")
+
+        # Write content
         for atom, (x, y, z) in zip(self.atomnames, coordinates):
             self._xyz.write("{0!s:>8}  {1:10.5f} {2:10.5f} {3:10.5f}\n"
                             "".format(atom, x, y, z))
@@ -382,7 +415,7 @@ class XYZReader(base.ReaderBase):
             ts.frame += 1
             return ts
         except (ValueError, IndexError) as err:
-            six.raise_from(EOFError(err), None)
+            raise EOFError(err) from None
 
     def _reopen(self):
         self.close()

@@ -29,7 +29,7 @@
 :Year: 2020
 :Copyright: GNU Public License v2
 
-.. versionadded:: 0.21.0
+.. versionadded:: 1.0.0
 
 This module is primarily for internal use by other analysis modules. It
 provides functionality for calculating the time autocorrelation function

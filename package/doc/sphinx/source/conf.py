@@ -15,6 +15,7 @@ import sys
 import os
 import platform
 import datetime
+import msmb_theme  # for little versions pop-up
 # https://sphinx-rtd-theme.readthedocs.io/en/stable/
 import sphinx_rtd_theme
 
@@ -42,11 +43,13 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx',
 mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML'
 
 # for sitemap with https://github.com/jdillard/sphinx-sitemap
-# NOTE: This sitemap is only correct for the DEVELOPMENT doccs. The RELEASE docs
-#       are served from https://www.mdanalysis.org/docs/ and the sitemap.xml
-#       is manually fixed when deploying the release docs with the
-#       maintainer/deploy_master_docs.sh script
-site_url = "https://www.mdanalysis.org/mdanalysis/"
+# This sitemap is correct both for the development and release docs, which
+# are both served from docs.mdanalysis.org/$version .
+# The docs used to be available automatically at mdanalysis.org/mdanalysis;
+# they are now at docs.mdanalysis.org/, which requires a CNAME DNS record
+# pointing to mdanalysis.github.io. To change this URL you should change/delete
+# the CNAME record for "docs" and update the URL in GitHub settings
+site_url = "https://docs.mdanalysis.org/"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -78,7 +81,8 @@ copyright = u'2005-{}, '.format(now.year) + authors
 # Dynamically calculate the version
 packageversion = __import__('MDAnalysis').__version__
 # The short X.Y version.
-version = '.'.join(packageversion.split('.')[:2])
+# version = '.'.join(packageversion.split('.')[:2])
+version = packageversion  # needed for right sitemap.xml URLs
 # The full version, including alpha/beta/rc tags.
 release = packageversion
 
@@ -116,14 +120,14 @@ pygments_style = 'default'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-#to include decorated objects like __init__
+# to include decorated objects like __init__
 autoclass_content = 'both'
 
 # -- Options for HTML output ---------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'msmb_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -139,7 +143,7 @@ html_theme = 'sphinx_rtd_theme'
 color = {'orange': '#FF9200',
          'gray': '#808080',
          'white': '#FFFFFF',
-         'black': '#000000',}
+         'black': '#000000', }
 
 html_theme_options = {
     'canonical_url': '',
@@ -156,8 +160,15 @@ html_theme_options = {
     'titles_only': False,
 }
 
+html_context = {
+    'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
+}
+
 # Add any paths that contain custom themes here, relative to this directory.
-# html_theme_path = ['_themes',]
+html_theme_path = [
+    msmb_theme.get_html_theme_path(),
+    sphinx_rtd_theme.get_html_theme_path()
+]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -246,8 +257,8 @@ htmlhelp_basename = 'MDAnalysisdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('MDAnalysis.tex', u'MDAnalysis Documentation',
-   authors, 'manual'),
+    ('MDAnalysis.tex', u'MDAnalysis Documentation',
+     authors, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

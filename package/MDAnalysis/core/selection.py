@@ -38,10 +38,6 @@ This is all invisible to the user through the
 :class:`~MDAnalysis.core.groups.AtomGroup`.
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import zip
-
 import collections
 import re
 import fnmatch
@@ -126,7 +122,7 @@ class _Operationmeta(type):
             pass
 
 
-class LogicOperation(six.with_metaclass(_Operationmeta, object)):
+class LogicOperation(object, metaclass=_Operationmeta):
     def __init__(self, lsel, rsel):
         self.rsel = rsel
         self.lsel = lsel
@@ -170,7 +166,7 @@ class _Selectionmeta(type):
             pass
 
 
-class Selection(six.with_metaclass(_Selectionmeta, object)):
+class Selection(object, metaclass=_Selectionmeta):
     pass
 
 
@@ -495,9 +491,8 @@ class SelgroupSelection(Selection):
         try:
             self.grp = parser.selgroups[grpname]
         except KeyError:
-            six.raise_from(
-                ValueError("Failed to find group: {0}".format(grpname)),
-                None)
+            errmsg = f"Failed to find group: {grpname}"
+            raise ValueError(errmsg) from None
 
     def apply(self, group):
         mask = np.in1d(group.indices, self.grp.indices)
@@ -642,8 +637,9 @@ class ResidSelection(Selection):
             # if no icodes and icodes are part of selection, cause a fuss
             if (any(v[1] for v in self.uppers) or
                 any(v[1] for v in self.lowers)):
-                six.raise_from(ValueError("Selection specified icodes, while the "
-                                 "topology doesn't have any."), None)
+                errmsg = ("Selection specified icodes, while the topology "
+                          "doesn't have any.")
+                raise ValueError(errmsg) from None
 
         if not icodes is None:
             mask = self._sel_with_icodes(vals, icodes)
@@ -731,8 +727,8 @@ class RangeSelection(Selection):
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match("(\d+)[:-](\d+)", val)
                 if not selrange:
-                    six.raise_from(ValueError(
-                        "Failed to parse number: {0}".format(val)), None)
+                    errmsg = f"Failed to parse number: {val}"
+                    raise ValueError(errmsg) from None
                 lower, upper = np.int64(selrange.groups())
 
             lowers.append(lower)
@@ -1002,10 +998,9 @@ class PropertySelection(Selection):
         try:
             self.operator = self.ops[oper]
         except KeyError:
-            six.raise_from(ValueError(
-                "Invalid operator : '{0}' Use one of : '{1}'"
-                "".format(oper, self.ops.keys())),
-                None)
+            errmsg = (f"Invalid operator : '{oper}' Use one of : "
+                      f"'{self.ops.keys()}'")
+            raise ValueError(errmsg) from None
         self.value = float(value)
 
     def apply(self, group):
@@ -1017,9 +1012,8 @@ class PropertySelection(Selection):
             elif self.prop == 'charge':
                 values = group.charges
             else:
-                six.raise_from(SelectionError(
-                    "Expected one of : {0}"
-                    "".format(['x', 'y', 'z', 'mass', 'charge'])), None)
+                errmsg = f"Expected one of {['x', 'y', 'z', 'mass', 'charge']}"
+                raise SelectionError(errmsg) from None
         else:
             values = group.positions[:, col]
 
@@ -1200,13 +1194,11 @@ class SelectionParser(object):
         try:
             return _SELECTIONDICT[op](self, self.tokens)
         except KeyError:
-            six.raise_from(
-                SelectionError("Unknown selection token: '{0}'".format(op)),
-                None)
+            errmsg = f"Unknown selection token: '{op}'"
+            raise SelectionError(errmsg) from None
         except ValueError as e:
-            six.raise_from(
-                SelectionError("Selection failed: '{0}'".format(e)),
-                None)
+            errmsg = f"Selection failed: '{e}'"
+            raise SelectionError(errmsg) from None
 
 
 # The module level instance

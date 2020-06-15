@@ -622,14 +622,12 @@ Typically, many methods and attributes are overriden.
 
 Signature::
 
-   W = TrajectoryWriter(filename,n_atoms,**kwargs)
-   W.write_next_timestep(Timestep)
+   with TrajectoryWriter(filename, n_atoms, **kwargs) as w:
+       w.write(Universe)    # write a whole universe
 
 or::
 
-   W.write(AtomGroup)   # write a selection
-   W.write(Universe)    # write a whole universe
-   W.write(Timestep)    # same as write_next_timestep()
+   w.write(AtomGroup)  # write a selection of Atoms from Universe
 
 
 Methods
@@ -639,8 +637,6 @@ Methods
      opens *filename* and writes header if required by format
  ``write(obj)``
      write Timestep data in *obj*
- ``write_next_timestep([timestep])``
-     write data in *timestep* to trajectory file
  ``convert_dimensions_to_unitcell(timestep)``
      take the dimensions from the timestep and convert to the native
      unitcell representation of the format
