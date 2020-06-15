@@ -1335,14 +1335,16 @@ class Universe(object):
                                          params=AllChem.ETKDGv3()))
         >>> u.trajectory
         <RDKitReader with 1 frames of 9 atoms>
+
+        .. versionadded:: 1.0.0
         """
         try:
             from rdkit import Chem
             from rdkit.Chem import AllChem
         except ImportError as e:
-            six.raise_from(ImportError(
+            raise ImportError(
                 "Creating a Universe from a SMILES string requires RDKit but " 
-                "it does not appear to be installed"), e)
+                "it does not appear to be installed") from e
 
         mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
         if mol is None:
@@ -1355,8 +1357,9 @@ class Universe(object):
                 "hydrogens with `addHs=True`")
             
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
-            assert (type(numConfs) is int) and (numConfs > 0), ("numConfs must"
-            " be a non-zero positive integer instead of {0}".format(numConfs))
+            if not (type(numConfs) is int and numConfs > 0):
+                raise SyntaxError("numConfs must be a non-zero positive "
+                "integer instead of {0}".format(numConfs))
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)

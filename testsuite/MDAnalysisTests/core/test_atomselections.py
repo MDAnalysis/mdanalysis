@@ -527,19 +527,15 @@ class TestSelectionRDKit(object):
                                             generate_coordinates=False)
         return u
         
-    def test_aromatic(self, u):
-        sel = u.select_atoms("aromatic")
-        assert sel.n_atoms == 5
-
-    def test_not_aromatic(self, u):
-        sel = u.select_atoms("not aromatic")
-        assert sel.n_atoms == 1
-
-    def test_combine_aromatic(self, u):
-        sel = u.select_atoms("type N and aromatic")
-        assert sel.n_atoms == 1
-        sel = u.select_atoms("type C and aromatic")
-        assert sel.n_atoms == 4
+    @pytest.mark.parametrize("sel_str, n_atoms", [
+        ("aromatic", 5),
+        ("not aromatic", 1),
+        ("type N and aromatic", 1),
+        ("type C and aromatic", 4),
+    ])
+    def test_selection(self, u, sel_str, n_atoms):
+        sel = u.select_atoms(sel_str)
+        assert sel.n_atoms == n_atoms
 
 
 class TestSelectionsNucleicAcids(object):

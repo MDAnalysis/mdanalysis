@@ -35,30 +35,27 @@ AllChem = pytest.importorskip("rdkit.Chem.AllChem")
 
 class TestRDKitReader(object):
     @pytest.fixture
-    def mol(self):
+    def mol2_mol(self):
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
     @pytest.fixture
-    def universe(self, mol):
-        return mda.Universe(mol)
-
-    def test_coordinates(self, mol, universe):
-        expected = np.array([
-            conf.GetPositions() for conf in mol.GetConformers()], 
-            dtype=np.float32)
-        assert universe.trajectory.n_frames == 1
-        assert_equal(expected, universe.trajectory.coordinate_array)
-
-    def test_multi_coordinates(self):
+    def smiles_mol(self):
         mol = Chem.MolFromSmiles("CCO")
         mol = Chem.AddHs(mol)
         cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
-        umol = mda.Universe(mol)
-        assert umol.trajectory.n_frames == 3
+        return mol
+
+    @pytest.mark.parametrize("rdmol, n_frames", [
+        (mol2_mol, 1),
+        (smiles_mol, 3),
+    ])
+    def test_coordinates(self, rdmol, n_frames):
+        universe = mda.Universe(rdmol)
+        assert universe.trajectory.n_frames == n_frames
         expected = np.array([
-            conf.GetPositions() for conf in mol.GetConformers()], 
+            conf.GetPositions() for conf in rdmol.GetConformers()], 
             dtype=np.float32)
-        assert_equal(expected, umol.trajectory.coordinate_array)
+        assert_equal(expected, universe.trajectory.coordinate_array)
 
     def test_no_coordinates(self):
         with warnings.catch_warnings(record=True) as w:
@@ -74,7 +71,8 @@ class TestRDKitReader(object):
         expected[:] = np.nan
         assert_equal(u.trajectory.coordinate_array, expected)
 
-    def test_compare_mol2reader(self, universe):
+    def test_compare_mol2reader(self, mol2_mol):
+        universe = mda.Universe(mol2_mol)
         mol2 = mda.Universe(mol2_molecule)
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
         assert_equal(universe.trajectory.ts.positions, 

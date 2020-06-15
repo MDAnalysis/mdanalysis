@@ -243,14 +243,35 @@ class TestUniverseFromSmiles(object):
             assert "requires adding hydrogens" in str (e.value)
 
     def test_generate_coordinates_numConfs(self):
-        with pytest.raises(AssertionError) as e:
+        with pytest.raises(SyntaxError) as e:
             u = mda.Universe.from_smiles("CCO", numConfs=0, format='RDKIT')
             assert "non-zero positive integer" in str (e.value)
-        with pytest.raises(AssertionError) as e:
+        with pytest.raises(SyntaxError) as e:
             u = mda.Universe.from_smiles("CCO", numConfs=2.1, format='RDKIT')
             assert "non-zero positive integer" in str (e.value)
 
-    def test_coordinates_SMILES(self):
+    def test_rdkit_kwargs(self):
+        # test for bad kwarg:
+        # Unfortunately, exceptions from Boost cannot be passed to python,
+        # we cannot `from Boost.Python import ArgumentError` and use it with 
+        # pytest.raises(ArgumentError), so "this is the way"
+        try:
+            u = mda.Universe.from_smiles("CCO", rdkit_kwargs=dict(abc=42))
+        except Exception as e:
+            assert "did not match C++ signature" in str(e)
+        else:
+            raise AssertionError("RDKit should have raised an ArgumentError "
+                                 "from Boost")
+        # good kwarg
+        u1 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=42))
+        u2 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=51))
+        with pytest.raises(AssertionError) as e:
+            assert_equal(u1.trajectory.coordinate_array, 
+                         u2.trajectory.coordinate_array)
+            assert "Mismatched elements: 15 / 15 (100%)" in str(e.value)
+
+
+    def test_coordinates(self):
         u = mda.Universe.from_smiles("C", numConfs=2, 
                                      rdkit_kwargs=dict(randomSeed=42))
         assert u.trajectory.n_frames == 2
