@@ -46,8 +46,8 @@ class TestRDKitReader(object):
         return mol
 
     @pytest.mark.parametrize("rdmol, n_frames", [
-        (mol2_mol, 1),
-        (smiles_mol, 3),
+        (mol2_mol(), 1),
+        (smiles_mol(), 3),
     ])
     def test_coordinates(self, rdmol, n_frames):
         universe = mda.Universe(rdmol)
