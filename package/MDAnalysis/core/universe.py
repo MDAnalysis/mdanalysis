@@ -1325,22 +1325,28 @@ class Universe(object):
         -------
         :class:`~MDAnalysis.core.Universe`
 
-        Example
-        -------
+        Examples
+        --------
         To create a Universe with 10 conformers of ethanol ::
         >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
         >>> u
         <Universe with 9 atoms>
         >>> u.trajectory
         <RDKitReader with 10 frames of 9 atoms>
+
+        To use a different conformer generation algorithm, like ETKDGv3 ::
+        >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
+                                         params=AllChem.ETKDGv3()))
+        >>> u.trajectory
+        <RDKitReader with 1 frames of 9 atoms>
         """
         try:
             from rdkit import Chem
             from rdkit.Chem import AllChem
         except ImportError as e:
-            raise ImportError(
+            six.raise_from(ImportError(
                 "Creating a Universe from a SMILES string requires RDKit but " 
-                "it does not appear to be installed: {0}".format(e))
+                "it does not appear to be installed"), e)
 
         mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
         if mol is None:
