@@ -73,7 +73,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.20.2-dev0"
+RELEASE = "2.0.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -103,6 +103,9 @@ except ImportError:
         sys.exit(1)
     cython_linetrace = False
 
+def abspath(file):
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        file)
 
 class Config(object):
     """Config wrapper class to get build options
@@ -122,6 +125,7 @@ class Config(object):
     """
 
     def __init__(self, fname='setup.cfg'):
+        fname = abspath(fname)
         if os.path.exists(fname):
             self.config = configparser.SafeConfigParser()
             self.config.read(fname)
@@ -152,9 +156,10 @@ class MDAExtension(Extension, object):
     # This is accomplished by passing the get_numpy_include function
     #  as one of the include_dirs. This derived Extension class takes
     #  care of calling it when needed.
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        super(MDAExtension, self).__init__(*args, **kwargs)
+        sources = [abspath(s) for s in sources]
+        super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
     def include_dirs(self):
@@ -163,7 +168,8 @@ class MDAExtension(Extension, object):
                 try:
                     self._mda_include_dirs.append(item()) #The numpy callable
                 except TypeError:
-                    self._mda_include_dirs.append(item)
+                    item = abspath(item)
+                    self._mda_include_dirs.append((item))
         return self._mda_include_dirs
 
     @include_dirs.setter
@@ -261,7 +267,8 @@ def extensions(config):
     use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
-    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops']
+    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+                          '-fsigned-zeros']  # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
@@ -458,7 +465,7 @@ def dynamic_author_list():
     "Chronological list of authors" title.
     """
     authors = []
-    with codecs.open('AUTHORS', encoding='utf-8') as infile:
+    with codecs.open(abspath('AUTHORS'), encoding='utf-8') as infile:
         # An author is a bullet point under the title "Chronological list of
         # authors". We first want move the cursor down to the title of
         # interest.
@@ -497,7 +504,7 @@ def dynamic_author_list():
                + authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
-    out_path = 'MDAnalysis/authors.py'
+    out_path = abspath('MDAnalysis/authors.py')
     with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
         # Write the header
         header = '''\
@@ -521,7 +528,7 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    with open("SUMMARY.txt") as summary:
+    with open(abspath('SUMMARY.txt')) as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
         'Development Status :: 4 - Beta',
@@ -558,6 +565,7 @@ if __name__ == '__main__':
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
+          'tidynamics>=1.0.0',
           'tqdm>=4.43.0',
     ]
     if not os.name == 'nt':

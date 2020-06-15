@@ -306,6 +306,13 @@ class MOL2Writer(base.WriterBase):
         ----------
         obj : AtomGroup or Universe
         """
+        # Issue 2717
+        try:
+            obj = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         traj = obj.universe.trajectory
         ts = traj.ts
 
@@ -373,21 +380,16 @@ class MOL2Writer(base.WriterBase):
         molecule[1] = molecule_1_store
         return return_val
 
-    def write(self, obj):
+    def _write_next_frame(self, obj):
         """Write a new frame to the MOL2 file.
 
         Parameters
         ----------
         obj : AtomGroup or Universe
-        """
-        self.write_next_timestep(obj)
 
-    def write_next_timestep(self, obj):
-        """Write a new frame to the MOL2 file.
 
-        Parameters
-        ----------
-        obj : AtomGroup or Universe
+        .. versionchanged:: 1.0.0
+            Renamed from `write_next_timestep` to `_write_next_frame`.
         """
         block = self.encode_block(obj)
         self.file.writelines(block)

@@ -92,7 +92,7 @@ class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
 
     This class handles integration of XDR based formats into MDAnalysis. The
-    XTC and TRR classes only implement `write_next_timestep` and
+    XTC and TRR classes only implement `_write_next_frame` and
     `_frame_to_ts`.
 
     .. _offsets-label:
@@ -113,7 +113,7 @@ class XDRBaseReader(base.ReaderBase):
     Reader. However, the  next time the trajectory is opened,  the offsets will
     have to be rebuilt again.
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
        XDR offsets read from trajectory if offsets file read-in fails
 
     """

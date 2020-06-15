@@ -28,7 +28,7 @@
 :Year: 2019
 :Copyright: GNU Public License v3
 
-.. versionadded:: 0.21.0
+.. versionadded:: 1.0.0
 
 This module provides methods to find and analyse hydrogen bonds in a Universe.
 
@@ -166,8 +166,6 @@ The class and its methods
 .. autoclass:: HydrogenBondAnalysis
    :members:
 """
-from __future__ import absolute_import, division
-
 import warnings
 import numpy as np
 

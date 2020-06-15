@@ -31,8 +31,6 @@ an ensemble of structures.
 
 .. versionadded:: 0.16.0
 """
-from __future__ import division, absolute_import
-
 import numpy as np
 
 def ml_covariance_estimator(coordinates, reference_coordinates=None):

@@ -20,11 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import MDAnalysis as mda
 import numpy as np
 import sys
-from six.moves import zip
 
 from scipy.io import netcdf
 
@@ -33,7 +31,7 @@ from numpy.testing import (
     assert_equal,
     assert_almost_equal
 )
-from MDAnalysis.coordinates.TRJ import NCDFReader
+from MDAnalysis.coordinates.TRJ import NCDFReader, NCDFWriter
 
 from MDAnalysisTests.datafiles import (PFncdf_Top, PFncdf_Trj,
                                        GRO, TRR, XYZ_mini,
@@ -664,7 +662,7 @@ class _NCDFWriterTest(object):
 
     def _copy_traj(self, writer, universe):
         for ts in universe.trajectory:
-            writer.write_next_timestep(ts)
+            writer.write(universe)
 
     def _check_new_traj(self, universe, outfile):
         uw = mda.Universe(self.topology, outfile)
@@ -724,7 +722,7 @@ class _NCDFWriterTest(object):
         with mda.Writer(outfile, trr.trajectory.n_atoms,
                         velocities=True, format="ncdf") as W:
             for ts in trr.trajectory:
-                W.write_next_timestep(ts)
+                W.write(trr)
 
         uw = mda.Universe(GRO, outfile)
 
@@ -793,26 +791,23 @@ class TestNCDFWriterVelsForces(object):
     n_atoms = 3
 
     @pytest.fixture()
-    def ts1(self):
-        ts = mda.coordinates.TRJ.Timestep(self.n_atoms, velocities=True,
-                                          forces=True)
-        ts._pos[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms, 3)
-        ts._velocities[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms,
-                                                                3) + 100
-        ts._forces[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms,
-                                                            3) + 200
-        return ts
+    def u1(self):
+        u = make_Universe(size=(self.n_atoms, 1, 1), trajectory=True,
+                          velocities=True, forces=True)
+        # Memory reader so changes should be in-place
+        u.atoms.velocities += 100
+        u.atoms.forces += 200
+        return u
 
     @pytest.fixture()
-    def ts2(self):
-        ts = mda.coordinates.TRJ.Timestep(self.n_atoms, velocities=True,
-                                          forces=True)
-        ts._pos[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms, 3) + 300
-        ts._velocities[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms,
-                                                                3) + 400
-        ts._forces[:] = np.arange(self.n_atoms * 3).reshape(self.n_atoms,
-                                                            3) + 500
-        return ts
+    def u2(self):
+        u = make_Universe(size=(self.n_atoms, 1, 1), trajectory=True,
+                          velocities=True, forces=True)
+        # Memory reader so changes should be in-place
+        u.atoms.positions += 300
+        u.atoms.velocities += 400
+        u.atoms.forces += 500
+        return u
 
     @pytest.mark.parametrize('pos, vel, force', (
             (True, False, False),
@@ -820,23 +815,29 @@ class TestNCDFWriterVelsForces(object):
             (True, False, True),
             (True, True, True),
     ))
-    def test_write_ts(self, pos, vel, force, tmpdir, ts1, ts2):
-        """Write the two reference timesteps, then open them up and check values
+    def test_write_u(self, pos, vel, force, tmpdir, u1, u2):
+        """Write the two reference universes, then open them up and check values
 
         pos vel and force are bools which define whether these properties
-        should be in TS
-
+        should be in universe
         """
         outfile = str(tmpdir) + 'ncdf-write-vels-force.ncdf'
-        with mda.Writer(outfile,
+        with NCDFWriter(outfile,
                         n_atoms=self.n_atoms,
                         velocities=vel,
                         forces=force) as w:
-            w.write(ts1)
-            w.write(ts2)
+            w.write(u1)
+            w.write(u2)
+
+        # test that the two reference states differ
+        for ts1, ts2 in zip(u1.trajectory, u2.trajectory):
+            assert_almost_equal(ts1._pos + 300, ts2._pos)
+            assert_almost_equal(ts1._velocities + 300, ts2._velocities)
+            assert_almost_equal(ts1._forces + 300, ts2._forces)
 
         u = mda.Universe(self.top, outfile)
-        for ts, ref_ts in zip(u.trajectory, [ts1, ts2]):
+        # check the trajectory contents match reference universes
+        for ts, ref_ts in zip(u.trajectory, [u1.trajectory.ts, u2.trajectory.ts]):
             if pos:
                 assert_almost_equal(ts._pos, ref_ts._pos, self.prec)
             else:
@@ -877,7 +878,7 @@ class TestNCDFWriterUnits(object):
         with mda.Writer(outfile, trr.trajectory.n_atoms, velocities=True,
                         forces=True, format='ncdf') as W:
             for ts in trr.trajectory:
-                W.write_next_timestep(ts)
+                W.write(trr)
 
         with netcdf.netcdf_file(outfile, mode='r') as ncdf:
             unit = ncdf.variables[var].units.decode('utf-8')
@@ -901,12 +902,4 @@ class TestNCDFWriterErrors(object):
         with NCDFWriter(outfile, 100) as w:
             u = make_Universe(trajectory=True)
             with pytest.raises(IOError):
-                w.write(u.trajectory.ts)
-
-    def test_no_ts(self, outfile):
-        # no ts supplied at any point
-        from MDAnalysis.coordinates.TRJ import NCDFWriter
-
-        with NCDFWriter(outfile, 100) as w:
-            with pytest.raises(IOError):
-                w.write_next_timestep()
+                w.write(u)

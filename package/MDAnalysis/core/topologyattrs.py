@@ -31,10 +31,6 @@ parsers.
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import zip, range
-
 import Bio.Seq
 import Bio.SeqRecord
 from collections import defaultdict
@@ -56,7 +52,7 @@ from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
                      check_pbc_and_unwrap)
-from .. import _TOPOLOGY_ATTRS
+from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
 def _check_length(func):
@@ -170,16 +166,27 @@ class _TopologyAttrMeta(type):
     # register TopologyAttrs
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
-        for attr in ['attrname', 'singular']:
-            try:
-                attrname = classdict[attr]
-            except KeyError:
-                pass
-            else:
-                _TOPOLOGY_ATTRS[attrname] = cls
+        attrname = classdict.get('attrname')
+        singular = classdict.get('singular', attrname)
+
+        if attrname is None:
+            attrname = singular
+
+        if singular:
+            _TOPOLOGY_ATTRS[singular] = _TOPOLOGY_ATTRS[attrname] = cls
+            _singular = singular.lower().replace('_', '')
+            _attrname = attrname.lower().replace('_', '')
+            _TOPOLOGY_ATTRNAMES[_singular] = singular
+            _TOPOLOGY_ATTRNAMES[_attrname] = attrname
+
+            for clstype, transplants in cls.transplants.items():
+                for name, method in transplants:
+                    _TOPOLOGY_TRANSPLANTS[name] = [attrname, method, clstype]
+                    clean = name.lower().replace('_', '')
+                    _TOPOLOGY_ATTRNAMES[clean] = name
 
 
-class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
+class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     """Base class for Topology attributes.
 
     Note
@@ -1819,9 +1826,9 @@ class Resnames(ResidueAttr):
             sequence = "".join([convert_aa_code(r)
                                 for r in self.residues.resnames])
         except KeyError as err:
-            six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
-                                      "does not have a IUPAC protein 1-letter "
-                                      "character".format(err.message)), None)
+            errmsg = (f"AtomGroup contains a residue name '{err.message}' that"
+                      f" does not have a IUPAC protein 1-letter character")
+            raise ValueError(errmsg) from None
         if format == "string":
             return sequence
         seq = Bio.Seq.Seq(sequence)
@@ -1932,7 +1939,7 @@ def _check_connection_values(func):
      - coerces them to tuples of ints (for hashing)
      - ensures that first value is less than last (reversibility & hashing)
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
 
     """
     @functools.wraps(func)
@@ -1956,7 +1963,7 @@ def _check_connection_values(func):
 class _Connection(AtomAttr):
     """Base class for connectivity between atoms
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
         Added type checking to atom index values.
     """
 
@@ -2045,7 +2052,7 @@ class _Connection(AtomAttr):
     @_check_connection_values
     def _delete_bonds(self, values):
         """
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
 
         to_check = set(values)
@@ -2232,7 +2239,7 @@ class UreyBradleys(_Connection):
 
     These indices refer to the atom indices.
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     attrname = 'ureybradleys'
     singular = 'ureybradleys'
@@ -2273,7 +2280,7 @@ class Impropers(_Connection):
 class CMaps(_Connection):
     """
     A connection between five atoms
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     attrname = 'cmaps'
     singular = 'cmaps'

@@ -84,10 +84,6 @@ Classes
    :members:
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range
-
 import sys
 import warnings
 import numpy as np
@@ -269,7 +265,7 @@ class TRZReader(base.ReaderBase):
                 ts._forces[:, 1] = data['fy']
                 ts._forces[:, 2] = data['fz']
         except IndexError: # Raises indexerror if data has no data (EOF)
-            six.raise_from(IOError, None)
+            raise IOError from None
         else:
             # Convert things read into MDAnalysis' native formats (nm -> angstroms)
             if self.convert_units:
@@ -370,16 +366,9 @@ class TRZReader(base.ReaderBase):
 
         .. versionadded:: 0.9.0
         """
-        # On python 2, seek has issues with long int. This is solve in python 3
-        # where there is no longer a distinction between int and long int.
-        if six.PY2:
-            framesize = long(self._dtype.itemsize)
-            seeksize = framesize * nframes
-            maxi_l = long(sys.maxint)
-        else:
-            framesize = self._dtype.itemsize
-            seeksize = framesize * nframes
-            maxi_l = seeksize + 1
+        framesize = self._dtype.itemsize
+        seeksize = framesize * nframes
+        maxi_l = seeksize + 1
 
         if seeksize > maxi_l:
             # Workaround for seek not liking long ints
@@ -530,10 +519,33 @@ class TRZWriter(base.WriterBase):
         out['nrec'] = 10
         out.tofile(self.trzfile)
 
-    def write_next_timestep(self, ts):
+    def _write_next_frame(self, obj):
+        """Write information associated with ``obj`` at current frame into trajectory
+
+        Parameters
+        ----------
+        ag : AtomGroup or Universe
+
+
+        .. versionchanged:: 1.0.0
+           Renamed from `write_next_timestep` to `_write_next_frame`.
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
+        """
         # Check size of ts is same as initial
-        if not ts.n_atoms == self.n_atoms:
-            raise ValueError("Number of atoms in ts different to initialisation")
+        try:  # atomgroup?
+            ts = obj.ts
+        except AttributeError:  # universe?
+            try:
+                ts = obj.trajectory.ts
+            except AttributeError:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
+
+        if not obj.atoms.n_atoms == self.n_atoms:
+            errmsg = "Number of atoms in ts different to initialisation"
+            raise ValueError(errmsg)
 
         # Gather data, faking it when unavailable
         data = {}

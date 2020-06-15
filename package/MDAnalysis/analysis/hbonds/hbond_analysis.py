@@ -383,10 +383,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
        default values for different force fields.
 
-    .. versionchanged:: 0.21.0
-        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
-
     .. versionchanged:: 1.0.0
+        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
        ``save_table()`` method has been removed. You can use ``np.save()`` or
        ``cPickle.dump()`` on :attr:`HydrogenBondAnalysis.table` instead.
     """
@@ -899,8 +897,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             read every `step` between `start` (included) and `stop` (excluded),
             ``None`` selects 1. [``None``]
         verbose : bool (optional)
-             toggle progress meter output :class:`~MDAnalysis.lib.log.ProgressMeter`
-             [``True``]
+             toggle progress meter output
+             :class:`~MDAnalysis.lib.log.ProgressBar` [``True``]
         debug : bool (optional)
              enable detailed logging of debugging information; this can create
              *very big* log files so it is disabled (``False``) by default; setting

@@ -28,13 +28,12 @@ A tool to compute mass and charge density profiles along the three
 cartesian axes of the simulation cell. Works only for orthorombic,
 fixed volume cells (thus for simulations in canonical NVT ensemble).
 """
-from __future__ import division, absolute_import
-
 import os.path as path
 
 import numpy as np
 
 from MDAnalysis.analysis.base import AnalysisBase
+
 
 class LinearDensity(AnalysisBase):
     """Linear density profile

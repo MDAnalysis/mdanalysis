@@ -183,14 +183,9 @@ normal users.
 .. autofunction:: get_matching_atoms
 
 """
-from __future__ import division, absolute_import
-
 import os.path
 import warnings
 import logging
-
-from six.moves import range, zip, zip_longest
-from six import raise_from, string_types
 
 import numpy as np
 
@@ -458,7 +453,7 @@ def alignto(mobile, reference, select=None, weights=None,
     .. _ClustalW: http://www.clustal.org/
     .. _STAMP: http://www.compbio.dundee.ac.uk/manuals/stamp.4.2/
 
-    .. versionchanged:: 0.21.0
+    .. versionchanged:: 1.0.0
        Added *match_atoms* keyword to toggle atom matching.
 
     .. versionchanged:: 0.8
@@ -508,7 +503,7 @@ def alignto(mobile, reference, select=None, weights=None,
     if subselection is None:
         # mobile_atoms is Universe
         mobile_atoms = mobile.universe.atoms
-    elif isinstance(subselection, string_types):
+    elif isinstance(subselection, str):
         # select mobile_atoms from string
         mobile_atoms = mobile.select_atoms(subselection)
     else:
@@ -516,12 +511,10 @@ def alignto(mobile, reference, select=None, weights=None,
             # treat subselection as AtomGroup
             mobile_atoms = subselection.atoms
         except AttributeError:
-            raise_from(
-                TypeError(
-                    "subselection must be a selection string, an"
-                    " AtomGroup or Universe or None"
-                    ),
-                None)
+            err = ("subselection must be a selection string, an"
+                   " AtomGroup or Universe or None")
+            raise TypeError(err) from None
+
 
     # _fit_to DOES subtract center of mass, will provide proper min_rmsd
     mobile_atoms, new_rmsd = _fit_to(mobile_coordinates, ref_coordinates,
@@ -803,7 +796,7 @@ class AverageStructure(AnalysisBase):
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
 
         .. versionchanged:: 1.0.0
            Support for the ``start``, ``stop``, and ``step`` keywords has been
@@ -1353,7 +1346,7 @@ def get_matching_atoms(ag1, ag2, tol_mass=0.1, strict=False, match_atoms=True):
                           "Try to improve your selections for mobile and reference.").format(
                             ag1.n_atoms, ag2.n_atoms)
                 logger.error(errmsg)
-                raise_from(SelectionError(errmsg), None)
+                raise SelectionError(errmsg) from None
 
             if np.any(mass_mismatches):
                 # Test 2 failed.
