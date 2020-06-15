@@ -358,7 +358,7 @@ def convert(x, u1, u2):
     try:
         ut2 = unit_types[u2]
     except KeyError:
-        errsmg = (f"unit '{u2}' not recognized.\n"
+        errmsg = (f"unit '{u2}' not recognized.\n"
                   f"It must be one of {', '.join(unit_types)}.")
         raise ValueError(errmsg) from None
     if ut1 != ut2:
