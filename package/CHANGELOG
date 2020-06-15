@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay
+??/??/?? richardjgowers, IAlibay, hmacdope
 
   * 2.0.0
 
@@ -22,6 +22,7 @@ Fixes
     (Issues #2449, #2651)
 
 Enhancements
+  * Added computation of Mean Squared Displacements (#2438, PR #2619)
 
 Changes
   * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)

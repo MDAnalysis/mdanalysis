@@ -559,6 +559,7 @@ if __name__ == '__main__':
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
           'mock',
+          'tidynamics>=1.0.0',
           'tqdm>=4.43.0',
     ]
     if not os.name == 'nt':
