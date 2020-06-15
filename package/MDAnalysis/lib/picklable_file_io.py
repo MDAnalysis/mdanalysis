@@ -26,7 +26,7 @@ Picklable read-only I/O classes
 ===============================
 
 Provide with an interface for pickling read-only IO file object.
-These classes are used for further pickling `mda.core.Universe`
+These classes are used for further pickling :class:`mda.core.Universe`
 in a object composition approach.
 
 .. autoclass:: FileIOPicklable
@@ -61,6 +61,11 @@ class FileIOPicklable(io.FileIO):
     and the file is seeked to the saved position.
     This means that for a successful unpickle, the original file still has to
     be accessible with its filename.
+
+    Parameters
+    ----------
+    name : str;
+        a filename given a text or byte string.
 
     Example
     -------
@@ -97,6 +102,10 @@ class BufferIOPicklable(io.BufferedReader):
     that can be pickled.
     Note that this only works in read mode.
 
+    Parameters
+    ----------
+    raw : FileIO object;
+
     Example
     -------
     ::
@@ -131,6 +140,10 @@ class TextIOPicklable(io.TextIOWrapper):
 
     This class provides a file-like :class:`io.TextIOWrapper` object that can
     be pickled. Note that this only works in read mode.
+
+    Parameters
+    ----------
+    raw : FileIO object;
 
     Example
     -------
@@ -168,9 +181,9 @@ def pickle_open(name, mode='rt'):
 
     This function return either BufferIOPicklable or TextIOPicklable wrapped
     FileIOPicklable object given different reading mode. It can be used as a
-    context manager, and replace the built-in `io.open` function in read mode
-    that only returns an unpicklable file object.
-    In order to serialize a `MDAnalysis.core.Universe`, this function can
+    context manager, and replace the built-in :func:`open` function
+    in read mode that only returns an unpicklable file object.
+    In order to serialize a :class:`MDAnalysis.core.Universe`, this function can
     used to open trajectory/topology files--a object composition approach,
     as opposed to class inheritance, which is more flexible and easier for
     pickle implementation for new readers.
