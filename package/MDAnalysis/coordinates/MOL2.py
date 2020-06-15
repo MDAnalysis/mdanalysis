@@ -307,7 +307,12 @@ class MOL2Writer(base.WriterBase):
         obj : AtomGroup or Universe
         """
         # Issue 2717
-        obj = obj.atoms
+        try:
+            obj = obj.atoms
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         traj = obj.universe.trajectory
         ts = traj.ts
 

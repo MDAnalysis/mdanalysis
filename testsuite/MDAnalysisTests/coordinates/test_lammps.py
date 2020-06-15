@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-from six.moves import zip
-
 import bz2
 import gzip
 import os
@@ -300,7 +297,7 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
                         n_atoms=u.atoms.n_atoms,
                         format=self.format) as w:
             for ts in u.trajectory[:n_frames]:
-                w.write(ts)
+                w.write(u)
 
         short = mda.Universe(self.topology, outfile)
         assert_equal(short.trajectory.n_frames, n_frames,
@@ -323,7 +320,7 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
         with u.trajectory.OtherWriter(outfile) as w:
             for ts in u.trajectory[::-1]:
                 times.append(ts.time)
-                w.write(ts)
+                w.write(u)
         # note: the reversed trajectory records times in increasing
         #       steps, and NOT reversed, i.e. the time markers are not
         #       attached to their frames. This could be considered a bug

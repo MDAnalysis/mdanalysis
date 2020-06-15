@@ -20,10 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
-from six.moves import zip
 import MDAnalysis as mda
 import os
 
@@ -196,7 +193,7 @@ class TestTRZWriter2(object):
     def test_writer_trz_from_other(self, u, tmpdir):
         outfile = os.path.join(str(tmpdir), 'trz-writer-2.trz')
         with mda.coordinates.TRZ.TRZWriter(outfile, len(u.atoms)) as W:
-            W.write(u.trajectory.ts)
+            W.write(u)
             W.close()
 
             u2 = mda.Universe(two_water_gro, outfile)

@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function, division
-from six.moves import zip, range
 import numpy as np
 
 import MDAnalysis as mda
@@ -364,7 +362,7 @@ def test_write_unitcell_triclinic(ref, tmpdir):
     with tmpdir.as_cwd():
         with u.trajectory.OtherWriter(outfile) as w:
             for ts in u.trajectory:
-                w.write(ts)
+                w.write(u)
 
         w = mda.Universe(ref.topology, outfile)
         for ts_orig, ts_copy in zip(u.trajectory, w.trajectory):
@@ -381,7 +379,7 @@ def ncdf2dcd(tmpdir_factory):
     ncdf = mda.Universe(PRMncdf, NCDF)
     with mda.Writer(testfile, n_atoms=ncdf.atoms.n_atoms) as w:
         for ts in ncdf.trajectory:
-            w.write(ts)
+            w.write(ncdf)
     return ncdf, mda.Universe(PRMncdf, testfile)
 
 

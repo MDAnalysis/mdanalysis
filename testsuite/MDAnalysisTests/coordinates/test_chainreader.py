@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-from six.moves import zip
-
 import numpy as np
 import os
 
@@ -257,7 +254,7 @@ def build_trajectories(folder, sequences, fmt='xtc'):
                 ts.dimensions = [10, 10, 10, 90, 90, 90]
                 # The time is set from the user input
                 ts.time = time
-                out_traj.write(ts)
+                out_traj.write(u)
     return utop, fnames
 
 

@@ -36,4 +36,4 @@ def universe():
 def test_NullWriter(universe):
     with mda.Writer(None, n_atoms=universe.atoms.n_atoms) as W:
         for ts in universe.trajectory:
-            W.write(ts)
+            W.write(universe)

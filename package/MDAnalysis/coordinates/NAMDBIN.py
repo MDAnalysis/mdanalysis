@@ -40,8 +40,6 @@ Classes
    :members:
 
 """
-from __future__ import absolute_import
-
 from struct import pack
 import numpy as np
 
@@ -114,31 +112,30 @@ class NAMDBINWriter(base.WriterBase):
         self.filename = util.filename(filename)
 
     def _write_next_frame(self, obj):
-        """Write information associated with ``obj`` at current frame into trajectory
+        """Write information associated with ``obj`` at current frame into
+        trajectory
 
 
         Parameters
         ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or
+              :class:`~MDAnalysis.core.universe.Universe`
               write coordinate information associated with `obj`
-
 
 
         .. versionchanged:: 1.0.0
            Renamed from `write` to `_write_next_frame`.
-        .. deprecated:: 1.0.0
-           Passing a Timestep is deprecated for removal in version 2.0
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
-        # TODO 2.0: Remove Timestep logic
-        if isinstance(obj, base.Timestep):
-            n_atoms = obj.n_atoms
-            coor = obj.positions.reshape(n_atoms*3)
-        elif hasattr(obj, 'atoms'):  # AtomGroup or Universe
+        if hasattr(obj, 'atoms'):  # AtomGroup or Universe
             atoms = obj.atoms
             n_atoms = len(atoms)
             coor = atoms.positions.reshape(n_atoms*3)
         else:
-            raise TypeError
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
 
         with util.openany(self.filename, 'wb') as namdbin:
             # Write NUMATOMS
