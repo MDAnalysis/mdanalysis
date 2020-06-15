@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.coordinates.GRO &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.coordinates.GRO</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.coordinates.GRO</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">GRO file format --- :mod:`MDAnalysis.coordinates.GRO`</span>
+<span class="sd">======================================================</span>
+
+<span class="sd">Classes to read and write Gromacs_ GRO_ coordinate files; see the notes on the</span>
+<span class="sd">`GRO format`_ which includes a conversion routine for the box.</span>
+
+
+<span class="sd">Writing GRO files</span>
+<span class="sd">-----------------</span>
+
+<span class="sd">By default any written GRO files will renumber the atom ids to move sequentially</span>
+<span class="sd">from 1.  This can be disabled, and instead the original atom ids kept, by</span>
+<span class="sd">using the `reindex=False` keyword argument.  This is useful when writing a</span>
+<span class="sd">subsection of a larger Universe while wanting to preserve the original</span>
+<span class="sd">identities of atoms.</span>
+
+<span class="sd">For example::</span>
+
+<span class="sd">   &gt;&gt;&gt; u = mda.Universe()`</span>
+
+<span class="sd">   &gt;&gt;&gt; u.atoms.write(&#39;out.gro&#39;, reindex=False)</span>
+
+<span class="sd">   # OR</span>
+<span class="sd">   &gt;&gt;&gt; with mda.Writer(&#39;out.gro&#39;, reindex=False) as w:</span>
+<span class="sd">   ...     w.write(u.atoms)</span>
+
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: Timestep</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: GROReader</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: GROWriter</span>
+<span class="sd">   :members:</span>
+
+
+<span class="sd">Developer notes: ``GROWriter`` format strings</span>
+<span class="sd">---------------------------------------------</span>
+
+<span class="sd">The :class:`GROWriter` class has a :attr:`GROWriter.fmt` attribute, which is a dictionary of different</span>
+<span class="sd">strings for writing lines in ``.gro`` files.  These are as follows:</span>
+
+<span class="sd">``n_atoms``</span>
+<span class="sd">  For the first line of the gro file, supply the number of atoms in the system.</span>
+<span class="sd">  E.g.::</span>
+
+<span class="sd">      fmt[&#39;n_atoms&#39;].format(42)</span>
+
+<span class="sd">``xyz``</span>
+<span class="sd">  An atom line without velocities.  Requires that the &#39;resid&#39;, &#39;resname&#39;,</span>
+<span class="sd">  &#39;name&#39;, &#39;index&#39; and &#39;pos&#39; keys be supplied.</span>
+<span class="sd">  E.g.::</span>
+
+<span class="sd">     fmt[&#39;xyz&#39;].format(resid=1, resname=&#39;SOL&#39;, name=&#39;OW2&#39;, index=2, pos=(0.0, 1.0, 2.0))</span>
+
+<span class="sd">``xyz_v``</span>
+<span class="sd">  As above, but with velocities.  Needs an additional keyword &#39;vel&#39;.</span>
+
+<span class="sd">``box_orthorhombic``</span>
+<span class="sd">  The final line of the gro file which gives box dimensions.  Requires</span>
+<span class="sd">  the box keyword to be given, which should be the three cartesian dimensions.</span>
+<span class="sd">  E.g.::</span>
+
+<span class="sd">     fmt[&#39;box_orthorhombic&#39;].format(box=(10.0, 10.0, 10.0))</span>
+
+<span class="sd">``box_triclinic``</span>
+<span class="sd">  As above, but for a non orthorhombic box. Requires the box keyword, but this</span>
+<span class="sd">  time as a length 9 vector.  This is a flattened version of the (3,3) triclinic</span>
+<span class="sd">  vector representation of the unit cell.  The rearrangement into the odd</span>
+<span class="sd">  gromacs order is done automatically.</span>
+
+
+<span class="sd">.. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">.. _GRO: http://manual.gromacs.org/current/online/gro.html</span>
+<span class="sd">.. _GRO format: http://chembytes.wikidot.com/g-grofile</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+<span class="kn">from</span> <span class="nn">.core</span> <span class="kn">import</span> <span class="n">triclinic_box</span><span class="p">,</span> <span class="n">triclinic_vectors</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+
+
+<div class="viewcode-block" id="Timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.Timestep">[docs]</a><span class="k">class</span> <span class="nc">Timestep</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">Timestep</span><span class="p">):</span>
+    <span class="n">_ts_order_x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+    <span class="n">_ts_order_y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+    <span class="n">_ts_order_z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;unitcell dimensions (A, B, C, alpha, beta, gamma)</span>
+
+<span class="sd">        GRO::</span>
+
+<span class="sd">          8.00170   8.00170   5.65806   0.00000   0.00000   0.00000   0.00000   4.00085   4.00085</span>
+
+<span class="sd">        PDB::</span>
+
+<span class="sd">          CRYST1   80.017   80.017   80.017  60.00  60.00  90.00 P 1           1</span>
+
+<span class="sd">        XTC: c.trajectory.ts._unitcell::</span>
+
+<span class="sd">          array([[ 80.00515747,   0.        ,   0.        ],</span>
+<span class="sd">                 [  0.        ,  80.00515747,   0.        ],</span>
+<span class="sd">                 [ 40.00257874,  40.00257874,  56.57218552]], dtype=float32)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># unit cell line (from http://manual.gromacs.org/current/online/gro.html)</span>
+        <span class="c1"># v1(x) v2(y) v3(z) v1(y) v1(z) v2(x) v2(z) v3(x) v3(y)</span>
+        <span class="c1"># 0     1     2      3     4     5     6    7     8</span>
+        <span class="c1"># This information now stored as _ts_order_x/y/z to keep DRY</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_x</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_y</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_z</span><span class="p">]</span>  <span class="c1"># this ordering is correct! (checked it, OB)</span>
+        <span class="k">return</span> <span class="n">triclinic_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+
+    <span class="nd">@dimensions</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">triclinic_vectors</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_x</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_y</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts_order_z</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GROReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROReader">[docs]</a><span class="k">class</span> <span class="nc">GROReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reader for the Gromacs GRO structure format.</span>
+
+<span class="sd">    .. note::</span>
+<span class="sd">       This Reader will only read the first frame present in a file.</span>
+
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;GRO&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">}</span>
+    <span class="n">_Timestep</span> <span class="o">=</span> <span class="n">Timestep</span>
+
+    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">grofile</span><span class="p">:</span>
+            <span class="c1"># Read first two lines to get number of atoms</span>
+            <span class="n">grofile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">grofile</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+            <span class="c1"># Always try, and maybe add them later</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">False</span>
+
+            <span class="c1"># and the third line to get the spacing between coords (cs)</span>
+            <span class="c1"># (dependent upon the GRO file precision)</span>
+            <span class="n">first_atomline</span> <span class="o">=</span> <span class="n">grofile</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">cs</span> <span class="o">=</span> <span class="n">first_atomline</span><span class="p">[</span><span class="mi">25</span><span class="p">:]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">first_atomline</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">velocities</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">first_atomline</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># Remember that we got this error</span>
+                <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="k">for</span> <span class="n">pos</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grofile</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># 2 header lines, 1 box line at end</span>
+                <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="n">n_atoms</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="c1"># Try to parse floats with 5 digits if no spaces between values...</span>
+                        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(\d+\.\d</span><span class="si">{5}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
+                    <span class="k">break</span>
+
+                <span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">velocities</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="p">[</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="n">i</span><span class="p">:</span><span class="mi">20</span> <span class="o">+</span> <span class="n">cs</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)]</span>
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="c1"># Remember that we got this error</span>
+                    <span class="n">missed_vel</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">velocities</span><span class="p">):</span>
+            <span class="n">ts</span><span class="o">.</span><span class="n">velocities</span> <span class="o">=</span> <span class="n">velocities</span>
+            <span class="k">if</span> <span class="n">missed_vel</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Not all velocities were present.  &quot;</span>
+                              <span class="s2">&quot;Unset velocities set to zero.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0-based frame number</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="c1"># special case: a b c --&gt; (a 0 0) (b 0 0) (c 0 0)</span>
+            <span class="c1"># see Timestep.dimensions() above for format (!)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">unitcell</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>  <span class="c1"># fill all</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># or maybe raise an error for wrong format??</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;GRO unitcell has neither 3 nor 9 entries --- might be wrong.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="nb">len</span><span class="p">(</span><span class="n">unitcell</span><span class="p">)]</span> <span class="o">=</span> <span class="n">unitcell</span>  <span class="c1"># fill linearly ... not sure about this</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>  <span class="c1"># in-place !</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">)</span>  <span class="c1"># in-place ! (all are lengths)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">has_velocities</span><span class="p">:</span>
+                <span class="c1"># converts nm/ps to A/ps units</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_velocities</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GROReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a CRDWriter for *filename*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename: str</span>
+<span class="sd">            filename of the output GRO file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`GROWriter`</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">n_atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">n_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
+        <span class="k">return</span> <span class="n">GROWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GROWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROWriter">[docs]</a><span class="k">class</span> <span class="nc">GROWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;GRO Writer that conforms to the Trajectory API.</span>
+
+<span class="sd">    Will attempt to write the following information from the topology:</span>
+<span class="sd">     - atom name (defaults to &#39;X&#39;)</span>
+<span class="sd">     - resnames (defaults to &#39;UNK&#39;)</span>
+<span class="sd">     - resids (defaults to &#39;1&#39;)</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    The precision is hard coded to three decimal places</span>
+
+
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       Now strictly writes positions with 3dp precision.</span>
+<span class="sd">       and velocities with 4dp.</span>
+<span class="sd">       Removed the `convert_dimensions_to_unitcell` method,</span>
+<span class="sd">       use `Timestep.triclinic_dimensions` instead.</span>
+<span class="sd">       Now now writes velocities where possible.</span>
+<span class="sd">    .. versionchanged:: 0.18.0</span>
+<span class="sd">       Added `reindex` keyword argument to allow original atom</span>
+<span class="sd">       ids to be kept.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;GRO&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;nm&#39;</span><span class="p">,</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span> <span class="s1">&#39;nm/ps&#39;</span><span class="p">}</span>
+    <span class="n">gro_coor_limits</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;min&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">999.9995</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span> <span class="mf">9999.9995</span><span class="p">}</span>
+
+    <span class="c1">#: format strings for the GRO file (all include newline); precision</span>
+    <span class="c1">#: of 3 decimal places is hard-coded here.</span>
+    <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;n_atoms&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>  <span class="c1"># number of atoms</span>
+        <span class="c1"># coordinates output format, see http://chembytes.wikidot.com/g-grofile</span>
+        <span class="s1">&#39;xyz&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{resid:&gt;5d}{resname:&lt;5.5s}{name:&gt;5.5s}{index:&gt;5d}{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="c1"># unitcell</span>
+        <span class="s1">&#39;box_orthorhombic&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{box[0]:10.5f}</span><span class="s2"> </span><span class="si">{box[1]:9.5f}</span><span class="s2"> </span><span class="si">{box[2]:9.5f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="s1">&#39;box_triclinic&#39;</span><span class="p">:</span> <span class="s2">&quot;</span><span class="si">{box[0]:10.5f}</span><span class="s2"> </span><span class="si">{box[4]:9.5f}</span><span class="s2"> </span><span class="si">{box[8]:9.5f}</span><span class="s2"> </span><span class="si">{box[1]:9.5f}</span><span class="s2"> </span><span class="si">{box[2]:9.5f}</span><span class="s2"> </span><span class="si">{box[3]:9.5f}</span><span class="s2"> </span><span class="si">{box[5]:9.5f}</span><span class="s2"> </span><span class="si">{box[6]:9.5f}</span><span class="s2"> </span><span class="si">{box[7]:9.5f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">}</span>
+    <span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz_v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{vel[0]:8.4f}{vel[1]:8.4f}{vel[2]:8.4f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">n_atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up a GROWriter with a precision of 3 decimal places.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            output filename</span>
+<span class="sd">        n_atoms : int (optional)</span>
+<span class="sd">            number of atoms</span>
+<span class="sd">        convert_units : bool (optional)</span>
+<span class="sd">            units are converted to the MDAnalysis base format; [``True``]</span>
+<span class="sd">        reindex : bool (optional)</span>
+<span class="sd">            By default, all the atoms were reindexed to have a atom id starting</span>
+<span class="sd">            from 1. [``True``] However, this behaviour can be turned off by</span>
+<span class="sd">            specifying `reindex` ``=False``.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        To use the reindex keyword, user can follow the two examples given</span>
+<span class="sd">        below.::</span>
+
+<span class="sd">           u = mda.Universe()</span>
+
+<span class="sd">        Usage 1::</span>
+
+<span class="sd">           u.atoms.write(&#39;out.gro&#39;, reindex=False)</span>
+
+<span class="sd">        Usage 2::</span>
+
+<span class="sd">           with mda.Writer(&#39;out.gro&#39;, reindex=False) as w:</span>
+<span class="sd">               w.write(u.atoms)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;gro&#39;</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="n">n_atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reindex</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;reindex&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c1"># convert length and time to base units</span>
+
+<div class="viewcode-block" id="GROWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GRO.html#MDAnalysis.coordinates.GRO.GROWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        obj : AtomGroup or Universe</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The GRO format only allows 5 digits for *resid* and *atom</span>
+<span class="sd">        number*. If these numbers become larger than 99,999 then this</span>
+<span class="sd">        routine will chop off the leading digits.</span>
+
+
+<span class="sd">        .. versionchanged:: 0.7.6</span>
+<span class="sd">           *resName* and *atomName* are truncated to a maximum of 5 characters</span>
+<span class="sd">        .. versionchanged:: 0.16.0</span>
+<span class="sd">           `frame` kwarg has been removed</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           Deprecated support for calling with Timestep has nwo been removed.</span>
+<span class="sd">           Use AtomGroup or Universe as an input instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># write() method that complies with the Trajectory API</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># make sure to use atoms (Issue 46)</span>
+            <span class="n">ag</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
+            <span class="c1"># can write from selection == Universe (Issue 49)</span>
+
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">velocities</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">velocities</span>
+        <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
+            <span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">has_velocities</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Check for topology information</span>
+        <span class="n">missing_topology</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">names</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))</span>
+            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resnames</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resnames</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+            <span class="n">resnames</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;UNK&#39;</span><span class="p">,))</span>
+            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;resnames&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resids</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">resids</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+            <span class="n">resids</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+            <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;resids&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">reindex</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">atom_indices</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">ids</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+                <span class="n">atom_indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;ids&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atom_indices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">missing_topology</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Supplied AtomGroup was missing the following attributes: &quot;</span>
+                <span class="s2">&quot;</span><span class="si">{miss}</span><span class="s2">. These will be written with default values. &quot;</span>
+                <span class="s2">&quot;Alternatively these can be supplied as keyword arguments.&quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">)))</span>
+
+        <span class="n">positions</span> <span class="o">=</span> <span class="n">ag</span><span class="o">.</span><span class="n">positions</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="c1"># Convert back to nm from Angstroms,</span>
+            <span class="c1"># Not inplace because AtomGroup is not a copy</span>
+            <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">positions</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">has_velocities</span><span class="p">:</span>
+                <span class="n">velocities</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_velocities_to_native</span><span class="p">(</span><span class="n">velocities</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># check if any coordinates are illegal</span>
+        <span class="c1"># (checks the coordinates in native nm!)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_valid_coordinates</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gro_coor_limits</span><span class="p">,</span> <span class="n">positions</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;GRO files must have coordinate values between &quot;</span>
+                             <span class="s2">&quot;</span><span class="si">{0:.3f}</span><span class="s2"> and </span><span class="si">{1:.3f}</span><span class="s2"> nm: No file was written.&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gro_coor_limits</span><span class="p">[</span><span class="s2">&quot;min&quot;</span><span class="p">],</span>
+                                       <span class="bp">self</span><span class="o">.</span><span class="n">gro_coor_limits</span><span class="p">[</span><span class="s2">&quot;max&quot;</span><span class="p">]))</span>
+
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_gro</span><span class="p">:</span>
+            <span class="c1"># Header</span>
+            <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Written by MDAnalysis</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;n_atoms&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
+
+            <span class="c1"># Atom descriptions and coords</span>
+            <span class="c1"># Dont use enumerate here,</span>
+            <span class="c1"># all attributes could be infinite cycles!</span>
+            <span class="k">for</span> <span class="n">atom_index</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                    <span class="nb">range</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+                <span class="n">truncated_atom_index</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ltruncate_int</span><span class="p">(</span><span class="n">atom_indices</span><span class="p">[</span><span class="n">atom_index</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="n">truncated_resid</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">ltruncate_int</span><span class="p">(</span><span class="n">resid</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">has_velocities</span><span class="p">:</span>
+                    <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz_v&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">resid</span><span class="o">=</span><span class="n">truncated_resid</span><span class="p">,</span>
+                        <span class="n">resname</span><span class="o">=</span><span class="n">resname</span><span class="p">,</span>
+                        <span class="n">index</span><span class="o">=</span><span class="n">truncated_atom_index</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">pos</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="n">atom_index</span><span class="p">],</span>
+                        <span class="n">vel</span><span class="o">=</span><span class="n">velocities</span><span class="p">[</span><span class="n">atom_index</span><span class="p">],</span>
+                    <span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">resid</span><span class="o">=</span><span class="n">truncated_resid</span><span class="p">,</span>
+                        <span class="n">resname</span><span class="o">=</span><span class="n">resname</span><span class="p">,</span>
+                        <span class="n">index</span><span class="o">=</span><span class="n">truncated_atom_index</span><span class="p">,</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">pos</span><span class="o">=</span><span class="n">positions</span><span class="p">[</span><span class="n">atom_index</span><span class="p">]</span>
+                    <span class="p">))</span>
+
+            <span class="c1"># Footer: box dimensions</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:],</span> <span class="p">[</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">]):</span>
+                <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span>
+                    <span class="n">ag</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="c1"># orthorhombic cell, only lengths along axes needed in gro</span>
+                <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_orthorhombic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="k">try</span><span class="p">:</span>  <span class="c1"># for AtomGroup/Universe</span>
+                    <span class="n">tri_dims</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">coord</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
+                <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># for Timestep</span>
+                    <span class="n">tri_dims</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
+
+                <span class="c1"># full output</span>
+                <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">tri_dims</span><span class="o">.</span><span class="n">flatten</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="n">output_gro</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;box_triclinic&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

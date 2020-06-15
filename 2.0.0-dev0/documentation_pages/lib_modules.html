@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>13. Library functions — MDAnalysis.lib &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="13.2.1. Fast distance array computation — MDAnalysis.lib.distances" href="lib/distances.html" />
+    <link rel="prev" title="12.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D" href="visualization/streamlines_3D.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">13.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-modules">13.2. List of modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lib/distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/correlations.html">13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#low-level-file-formats">13.3. Low level file formats</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lib/formats/libmdaxdr.html">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lib/formats/libdcd.html">13.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/documentation_pages/lib_modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-MDAnalysis.lib">
+<span id="library-functions-mdanalysis-lib"></span><span id="lib"></span><h1>13. Library functions — <a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><a class="headerlink" href="#module-MDAnalysis.lib" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> contains code that is independent of the
+specific MDAnalysis framework, such as fast calculators for distances
+or simple logging support. Modules do not depend on other code inside
+MDAnalysis except in <a class="reference internal" href="#module-MDAnalysis.lib" title="MDAnalysis.lib: ``lib`` collects independent code for re-use in MDAnalysis"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> itself (and possibly in
+<a class="reference internal" href="exceptions.html#module-MDAnalysis.exceptions" title="MDAnalysis.exceptions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a>) and thus can be easily imported
+elsewhere.</p>
+<div class="section" id="overview">
+<h2>13.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="lib/distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a> contains many high performance maths
+functions. Most of them have the keyword <em>backend</em> that allows one to
+either select serial (single threaded) code (<code class="docutils literal notranslate"><span class="pre">backend=&quot;serial</span></code>) or
+to use parallelized versions (e.g. <code class="docutils literal notranslate"><span class="pre">backend=&quot;OpenMP&quot;</span></code> for OpenMP
+parallelism).</p>
+<p><a class="reference internal" href="lib/transformations.html#module-MDAnalysis.lib.transformations" title="MDAnalysis.lib.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a> contains a multitude of
+matrix operations for manipulating coordinate data.</p>
+<p><a class="reference internal" href="lib/qcprot.html#module-MDAnalysis.lib.qcprot" title="MDAnalysis.lib.qcprot"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a> contains a fast implementation of
+superposition by minimizing the RMSD.</p>
+<p><a class="reference internal" href="lib/util.html#module-MDAnalysis.lib.util" title="MDAnalysis.lib.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a> contains various file and string utility
+functions whereas mathematical functions are to be found in
+<a class="reference internal" href="lib/mdamath.html#module-MDAnalysis.lib.mdamath" title="MDAnalysis.lib.mdamath"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a>.</p>
+<p>A number of modules are concerned with finding
+neighbors. <a class="reference internal" href="lib/NeighborSearch.html#module-MDAnalysis.lib.NeighborSearch" title="MDAnalysis.lib.NeighborSearch"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a> contains high-level
+classes to do neighbor searches with MDAnalysis
+objects. <a class="reference internal" href="lib/nsgrid.html#module-MDAnalysis.lib.nsgrid" title="MDAnalysis.lib.nsgrid"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a> contains a fast implementation
+of grid neighbor search whereas <a class="reference internal" href="lib/pkdtree.html#module-MDAnalysis.lib.pkdtree" title="MDAnalysis.lib.pkdtree"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a> uses
+KDTrees (with periodic images) for neighbor searching. Some of the
+functions in <a class="reference internal" href="lib/distances.html#module-MDAnalysis.lib.distances" title="MDAnalysis.lib.distances"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a> user either of these
+algorithms to speed up distance calculations.</p>
+</div>
+<div class="section" id="list-of-modules">
+<h2>13.2. List of modules<a class="headerlink" href="#list-of-modules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lib/distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/correlations.html">13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="low-level-file-formats">
+<h2>13.3. Low level file formats<a class="headerlink" href="#low-level-file-formats" title="Permalink to this headline">¶</a></h2>
+<p>The modules in <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats</span></code> contain code to access various file
+formats in a way that is <em>independent from other MDAnalysis functionality</em>
+(i.e., they do not use any classes from <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core</span></code> or
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code>). This low-level code is used in the
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code> module but can also be re-used by other
+Python-based projects.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="lib/formats/libmdaxdr.html">13.3.1. Low-level Gromacs XDR trajectory reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libmdaxdr</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="lib/formats/libdcd.html">13.3.2. Low level DCD  trajectory reading - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.formats.libdcd</span></code></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="lib/distances.html" class="btn btn-neutral float-right" title="13.2.1. Fast distance array computation — MDAnalysis.lib.distances" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="visualization/streamlines_3D.html" class="btn btn-neutral float-left" title="12.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

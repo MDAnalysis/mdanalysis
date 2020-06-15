@@ -1,0 +1,375 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>12.1.2. Streamplots (3D) — MDAnalysis.visualization.streamlines_3D &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="13. Library functions — MDAnalysis.lib" href="../lib_modules.html" />
+    <link rel="prev" title="12.1.1. Streamplots (2D) — MDAnalysis.visualization.streamlines" href="streamlines.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../visualization_modules.html#visualization-of-lipid-flow">12.1. Visualization of Lipid Flow</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="streamlines.html">12.1.1. Streamplots (2D)  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">12.1.2. Streamplots (3D) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../visualization_modules.html">12. Visualization modules</a> &raquo;</li>
+        
+      <li>12.1.2. Streamplots (3D) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/visualization/streamlines_3D.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.visualization.streamlines_3D"></span><div class="section" id="streamplots-3d-mdanalysis-visualization-streamlines-3d">
+<h1>12.1.2. Streamplots (3D) — <a class="reference internal" href="#module-MDAnalysis.visualization.streamlines_3D" title="MDAnalysis.visualization.streamlines_3D"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines_3D</span></code></a><a class="headerlink" href="#streamplots-3d-mdanalysis-visualization-streamlines-3d" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Authors:</th><td class="field-body">Tyler Reddy and Matthieu Chavent</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2014</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Citation:</th><td class="field-body"><a class="reference internal" href="streamlines.html#chavent2014" id="id1">[Chavent2014]</a></td>
+</tr>
+</tbody>
+</table>
+<p>The <a class="reference internal" href="#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d" title="MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d"><code class="xref py py-func docutils literal notranslate"><span class="pre">generate_streamlines_3d()</span></code></a> function can generate a 3D flow field from
+a MD trajectory, for instance, lipid molecules in a virus capsid. It can make
+use of multiple cores to perform the analyis in parallel (using
+<a class="reference external" href="https://docs.python.org/3/library/multiprocessing.html#module-multiprocessing" title="(in Python v3.8)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">multiprocessing</span></code></a>).</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="streamlines.html#module-MDAnalysis.visualization.streamlines" title="MDAnalysis.visualization.streamlines"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines</span></code></a></dt>
+<dd>streamplots in 2D</dd>
+</dl>
+</div>
+<dl class="function">
+<dt id="MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">
+<code class="descclassname">MDAnalysis.visualization.streamlines_3D.</code><code class="descname">generate_streamlines_3d</code><span class="sig-paren">(</span><em>topology_file_path</em>, <em>trajectory_file_path</em>, <em>grid_spacing</em>, <em>MDA_selection</em>, <em>start_frame</em>, <em>end_frame</em>, <em>xmin</em>, <em>xmax</em>, <em>ymin</em>, <em>ymax</em>, <em>zmin</em>, <em>zmax</em>, <em>maximum_delta_magnitude=2.0</em>, <em>num_cores='maximum'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/visualization/streamlines_3D.html#generate_streamlines_3d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Produce the x, y and z components of a 3D streamplot data set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>topology_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Absolute path to the topology file</li>
+<li><strong>trajectory_file_path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Absolute path to the trajectory file. It will normally be desirable
+to filter the trajectory with a tool such as GROMACS
+<strong class="program">g_filter</strong> (see <a class="reference internal" href="streamlines.html#chavent2014" id="id2">[Chavent2014]</a>)</li>
+<li><strong>grid_spacing</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – The spacing between grid lines (angstroms)</li>
+<li><strong>MDA_selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – MDAnalysis selection string</li>
+<li><strong>start_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – First frame number to parse</li>
+<li><strong>end_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Last frame number to parse</li>
+<li><strong>xmin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Minimum coordinate boundary for x-axis (angstroms)</li>
+<li><strong>xmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum coordinate boundary for x-axis (angstroms)</li>
+<li><strong>ymin</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Minimum coordinate boundary for y-axis (angstroms)</li>
+<li><strong>ymax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Maximum coordinate boundary for y-axis (angstroms)</li>
+<li><strong>maximum_delta_magnitude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Absolute value of the largest displacement tolerated for the
+centroid of a group of particles ( angstroms). Values above this
+displacement will not count in the streamplot (treated as
+excessively large displacements crossing the periodic boundary)</li>
+<li><strong>num_cores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> or </em><em>'maximum'</em><em> (</em><em>optional</em><em>)</em>) – The number of cores to use. (Default ‘maximum’ uses all available
+cores)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>dx_array</strong> (<em>array of floats</em>) – An array object containing the displacements in the x direction</li>
+<li><strong>dy_array</strong> (<em>array of floats</em>) – An array object containing the displacements in the y direction</li>
+<li><strong>dz_array</strong> (<em>array of floats</em>) – An array object containing the displacements in the z direction</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>Generate 3D streamlines and visualize in <a class="reference external" href="http://docs.enthought.com/mayavi/mayavi/">mayavi</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.visualization.streamlines_3D</span>
+
+<span class="kn">import</span> <span class="nn">mayavi</span><span class="o">,</span> <span class="nn">mayavi.mlab</span>
+
+<span class="c1"># assign coordinate system limits and grid spacing:</span>
+<span class="n">x_lower</span><span class="p">,</span><span class="n">x_upper</span> <span class="o">=</span> <span class="o">-</span><span class="mf">8.73</span><span class="p">,</span> <span class="mf">1225.96</span>
+<span class="n">y_lower</span><span class="p">,</span><span class="n">y_upper</span> <span class="o">=</span> <span class="o">-</span><span class="mf">12.58</span><span class="p">,</span> <span class="mf">1224.34</span>
+<span class="n">z_lower</span><span class="p">,</span><span class="n">z_upper</span> <span class="o">=</span> <span class="o">-</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span>
+<span class="n">grid_spacing_value</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">visualization</span><span class="o">.</span><span class="n">streamlines_3D</span><span class="o">.</span><span class="n">generate_streamlines_3d</span><span class="p">(</span>
+                <span class="s1">&#39;testing.gro&#39;</span><span class="p">,</span> <span class="s1">&#39;testing_filtered.xtc&#39;</span><span class="p">,</span>
+                 <span class="n">xmin</span><span class="o">=</span><span class="n">x_lower</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">x_upper</span><span class="p">,</span>
+                 <span class="n">ymin</span><span class="o">=</span><span class="n">y_lower</span><span class="p">,</span> <span class="n">ymax</span><span class="o">=</span><span class="n">y_upper</span><span class="p">,</span>
+                 <span class="n">zmin</span><span class="o">=</span><span class="n">z_lower</span><span class="p">,</span> <span class="n">zmax</span><span class="o">=</span><span class="n">z_upper</span><span class="p">,</span>
+                 <span class="n">grid_spacing</span><span class="o">=</span><span class="n">grid_spacing_value</span><span class="p">,</span> <span class="n">MDA_selection</span> <span class="o">=</span> <span class="s1">&#39;name PO4&#39;</span><span class="p">,</span>
+                 <span class="n">start_frame</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">end_frame</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">num_cores</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">)</span>
+
+<span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">x_lower</span><span class="p">:</span><span class="n">x_upper</span><span class="p">:</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span>
+                  <span class="n">y_lower</span><span class="p">:</span><span class="n">y_upper</span><span class="p">:</span><span class="n">y1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">,</span>
+                  <span class="n">z_lower</span><span class="p">:</span><span class="n">z_upper</span><span class="p">:</span><span class="n">z1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">1</span><span class="n">j</span><span class="p">]</span>
+
+<span class="c1"># plot with mayavi:</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">mayavi</span><span class="o">.</span><span class="n">mlab</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">bgcolor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">800</span><span class="p">,</span> <span class="mi">800</span><span class="p">),</span> <span class="n">fgcolor</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">z_value</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">z_lower</span><span class="p">,</span> <span class="n">z_upper</span><span class="p">,</span> <span class="n">grid_spacing_value</span><span class="p">):</span>
+    <span class="n">st</span> <span class="o">=</span> <span class="n">mayavi</span><span class="o">.</span><span class="n">mlab</span><span class="o">.</span><span class="n">flow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">line_width</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                          <span class="n">seedtype</span><span class="o">=</span><span class="s1">&#39;plane&#39;</span><span class="p">,</span> <span class="n">integration_direction</span><span class="o">=</span><span class="s1">&#39;both&#39;</span><span class="p">)</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">streamline_type</span> <span class="o">=</span> <span class="s1">&#39;tube&#39;</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">tube_filter</span><span class="o">.</span><span class="n">radius</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">seed</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">x_lower</span><span class="p">,</span>  <span class="n">y_upper</span><span class="p">,</span>   <span class="n">z_value</span><span class="p">])</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">seed</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">point1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">x_upper</span><span class="p">,</span> <span class="n">y_upper</span><span class="p">,</span>  <span class="n">z_value</span><span class="p">])</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">seed</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">point2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="n">x_lower</span><span class="p">,</span> <span class="n">y_lower</span><span class="p">,</span>  <span class="n">z_value</span><span class="p">])</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">seed</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">resolution</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">x1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">seed</span><span class="o">.</span><span class="n">widget</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">mayavi</span><span class="o">.</span><span class="n">mlab</span><span class="o">.</span><span class="n">axes</span><span class="p">(</span><span class="n">extent</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1200</span><span class="p">,</span> <span class="o">-</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">])</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">scene</span><span class="o">.</span><span class="n">z_plus_view</span><span class="p">()</span>
+<span class="n">mayavi</span><span class="o">.</span><span class="n">mlab</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;test_streamplot_3D.png&#39;</span><span class="p">)</span>
+<span class="c1"># more compelling examples can be produced for vesicles and other spherical systems</span>
+</pre></div>
+</div>
+<img alt="../../_images/test_streamplot_3D.png" src="../../_images/test_streamplot_3D.png" />
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="streamlines.html#MDAnalysis.visualization.streamlines.generate_streamlines" title="MDAnalysis.visualization.streamlines.generate_streamlines"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.visualization.streamlines.generate_streamlines()</span></code></a></p>
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../lib_modules.html" class="btn btn-neutral float-right" title="13. Library functions — MDAnalysis.lib" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="streamlines.html" class="btn btn-neutral float-left" title="12.1.1. Streamplots (2D) — MDAnalysis.visualization.streamlines" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

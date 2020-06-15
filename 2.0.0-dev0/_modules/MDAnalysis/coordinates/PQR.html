@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.coordinates.PQR &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.coordinates.PQR</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.coordinates.PQR</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PQR file format --- :mod:`MDAnalysis.coordinates.PQR`</span>
+<span class="sd">=====================================================</span>
+
+<span class="sd">Read atoms with charges from a PQR_ file (as written by PDB2PQR_). The</span>
+<span class="sd">following is adopted from the description of the PQR_ format as used by APBS_:</span>
+
+<span class="sd">*MDAnalysis* reads very loosely-formatted PQR files: all fields are</span>
+<span class="sd">**whitespace-delimited** rather than the strict column formatting mandated</span>
+<span class="sd">by the PDB_ format. This more liberal formatting allows coordinates</span>
+<span class="sd">which are larger/smaller than ±999 Å.</span>
+
+<span class="sd">MDAnalysis reads data on a per-line basis from PQR files using the following format::</span>
+
+<span class="sd">   recordName serial atomName residueName chainID residueNumber X Y Z charge radius</span>
+
+<span class="sd">If this fails it is assumed that the *chainID* was omitted and the shorter</span>
+<span class="sd">format is read::</span>
+
+<span class="sd">   recordName serial atomName residueName residueNumber X Y Z charge radius</span>
+
+<span class="sd">Anything else will raise a :exc:`ValueError`.</span>
+
+<span class="sd">The whitespace is the most important feature of this format: fields</span>
+<span class="sd">*must* be separated by at least one space or tab character. The fields</span>
+<span class="sd">are:</span>
+
+<span class="sd">*recordName*</span>
+<span class="sd">    A string which specifies the type of PQR entry and should either be ATOM or</span>
+<span class="sd">    HETATM.</span>
+<span class="sd">*serial*</span>
+<span class="sd">    An integer which provides the atom index (but note that MDAnalysis renumbers</span>
+<span class="sd">    atoms so one cannot rely on the *serial*)</span>
+<span class="sd">*atomName*</span>
+<span class="sd">    A string which provides the atom name.</span>
+<span class="sd">*residueName*</span>
+<span class="sd">    A string which provides the residue name.</span>
+<span class="sd">*chainID*</span>
+<span class="sd">    An optional string which provides the chain ID of the atom.</span>
+<span class="sd">*residueNumber*</span>
+<span class="sd">    An integer which provides the residue index.</span>
+<span class="sd">*X Y Z*</span>
+<span class="sd">    Three floats which provide the atomic coordiantes.</span>
+<span class="sd">*charge*</span>
+<span class="sd">    A float which provides the atomic charge (in electrons).</span>
+<span class="sd">*radius*</span>
+<span class="sd">    A float which provides the atomic radius (in Å).</span>
+
+<span class="sd">Clearly, this format can deviate wildly from PDB_ due to the use of whitespaces</span>
+<span class="sd">rather than specific column widths and alignments. This deviation can be</span>
+<span class="sd">particularly significant when large coordinate values are used.</span>
+
+<span class="sd">Output should look like this (although the only real requirement is</span>
+<span class="sd">*whitespace* separation between *all* entries). The chainID is optional</span>
+<span class="sd">and can be omitted::</span>
+
+<span class="sd">  ATOM      1  N    MET     1     -11.921   26.307   10.410 -0.3000 1.8500</span>
+<span class="sd">  ATOM     36  NH1  ARG     2      -6.545   25.499    3.854 -0.8000 1.8500</span>
+<span class="sd">  ATOM     37 HH11  ARG     2      -6.042   25.480    4.723  0.4600 0.2245</span>
+
+
+<span class="sd">.. Warning:: Fields *must be white-space separated* or data are read</span>
+<span class="sd">             incorrectly. PDB formatted files are *not* guaranteed to be</span>
+<span class="sd">             white-space separated so extra care should be taken when quickly</span>
+<span class="sd">             converting PDB files into PQR files using simple scripts.</span>
+
+<span class="sd">For example, PQR files created with PDB2PQR_ and the `--whitespace`</span>
+<span class="sd">option are guaranteed to conform to the above format::</span>
+
+<span class="sd">   pdb2pqr --ff=charmm --whitespace 4ake.pdb 4ake.pqr</span>
+
+<span class="sd">.. _PQR:     https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html</span>
+<span class="sd">.. _APBS:    https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/index.html</span>
+<span class="sd">.. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html</span>
+<span class="sd">.. _PDB:     http://www.wwpdb.org/documentation/file-format</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+
+
+<div class="viewcode-block" id="PQRReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader">[docs]</a><span class="k">class</span> <span class="nc">PQRReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">SingleFrameReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read a PQR_ file into MDAnalysis.</span>
+
+<span class="sd">    .. _PQR:</span>
+<span class="sd">        https://apbs-pdb2pqr.readthedocs.io/en/latest/formats/pqr.html</span>
+
+<span class="sd">    .. versionchanged:: 0.11.0</span>
+<span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PQR&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="c1"># how to slice fields[x:y] to grab coordinates</span>
+    <span class="n">_SLICE_INDICES</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ORIGINAL&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span>
+        <span class="s1">&#39;NO_CHAINID&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">),</span>
+        <span class="s1">&#39;GROMACS&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_read_first_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..topology.PQRParser</span> <span class="kn">import</span> <span class="n">PQRParser</span>
+        <span class="n">flavour</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">unitcell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">pqrfile</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">pqrfile</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;ATOM&#39;</span><span class="p">,</span> <span class="s1">&#39;HETATM&#39;</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">flavour</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">flavour</span> <span class="o">=</span> <span class="n">PQRParser</span><span class="o">.</span><span class="n">guess_flavour</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SLICE_INDICES</span><span class="p">[</span><span class="n">flavour</span><span class="p">]</span>
+
+                    <span class="n">fields</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="c1"># convert all entries at the end once for optimal speed</span>
+                    <span class="n">coords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fields</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="o">.</span><span class="n">from_coordinates</span><span class="p">(</span>
+            <span class="n">coords</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">unitcell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 0-based frame number</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="c1"># in-place !</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_pos</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_from_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">_unitcell</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+
+<div class="viewcode-block" id="PQRReader.Writer"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRReader.Writer">[docs]</a>    <span class="k">def</span> <span class="nf">Writer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a PQRWriter for *filename*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">            filename of the output PQR file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`PQRWriter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PQRWriter</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="PQRWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRWriter">[docs]</a><span class="k">class</span> <span class="nc">PQRWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Write a single coordinate frame in whitespace-separated PQR format.</span>
+
+<span class="sd">    Charges (&quot;Q&quot;) are taken from the</span>
+<span class="sd">    :attr:`MDAnalysis.core.groups.Atom.charge` attribute while</span>
+<span class="sd">    radii are obtaine from the</span>
+<span class="sd">    :attr:`MDAnalysis.core.groups.Atom.radius` attribute.</span>
+
+<span class="sd">    * If the segid is &#39;SYSTEM&#39; then it will be set to the empty</span>
+<span class="sd">      string. Otherwise the first letter will be used as the chain ID.</span>
+<span class="sd">    * The serial number always starts at 1 and increments sequentially</span>
+<span class="sd">      for the atoms.</span>
+
+<span class="sd">    The output format is similar to ``pdb2pqr --whitespace``.</span>
+
+<span class="sd">    .. versionadded:: 0.9.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;PQR&#39;</span>
+    <span class="n">units</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">}</span>
+
+    <span class="c1"># serial, atomName, residueName, chainID, residueNumber, XYZ, charge, radius</span>
+    <span class="n">fmt_ATOM</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATOM </span><span class="si">{serial:6d}</span><span class="s2"> </span><span class="si">{name:&lt;4}</span><span class="s2">  </span><span class="si">{resname:&lt;3}</span><span class="s2"> </span><span class="si">{chainid:1.1}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; </span><span class="si">{resid:4d}</span><span class="s2">   </span><span class="si">{pos[0]:-8.3f}</span><span class="s2"> </span><span class="si">{pos[1]:-8.3f}</span><span class="s2">&quot;</span>
+                <span class="s2">&quot; </span><span class="si">{pos[2]:-8.3f}</span><span class="s2"> </span><span class="si">{charge:-7.4f}</span><span class="s2"> </span><span class="si">{radius:6.4f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fmt_remark</span> <span class="o">=</span> <span class="s2">&quot;REMARK   </span><span class="si">{0}</span><span class="s2"> </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">convert_units</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up a PQRWriter with full whitespace separation.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        filename : str</span>
+<span class="sd">             output filename</span>
+<span class="sd">        convert_units: bool (optional)</span>
+<span class="sd">            units are converted to the MDAnalysis base format; [``True``]</span>
+<span class="sd">        remarks : str (optional)</span>
+<span class="sd">             remark lines (list of strings) or single string to be added to the</span>
+<span class="sd">             top of the PQR file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">filename</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="s1">&#39;pqr&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span> <span class="o">=</span> <span class="n">convert_units</span>  <span class="c1"># convert length and time to base units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remarks</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;remarks&#39;</span><span class="p">,</span> <span class="s2">&quot;PQR file written by MDAnalysis&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PQRWriter.write"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PQR.html#MDAnalysis.coordinates.PQR.PQRWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="n">frame</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write selection at current trajectory frame to file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        selection : AtomGroup or Universe</span>
+<span class="sd">            MDAnalysis AtomGroup or Universe</span>
+<span class="sd">        frame : int (optional)</span>
+<span class="sd">            optionally move to frame index `frame`; by default, write the</span>
+<span class="sd">            current frame</span>
+
+
+<span class="sd">        .. versionchanged:: 0.11.0</span>
+<span class="sd">           Frames now 0-based instead of 1-based</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># write() method that complies with the Trajectory API</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">universe</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;Input obj is neither an AtomGroup or Universe&quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>  <span class="c1"># advance to frame</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">frame</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># should catch cases when we are analyzing a single frame(?)</span>
+
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">selection</span><span class="o">.</span><span class="n">atoms</span>  <span class="c1"># make sure to use atoms (Issue 46)</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">positions</span>  <span class="c1"># can write from selection == Universe (Issue 49)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>  <span class="c1"># inplace because coordinates is already a copy</span>
+
+        <span class="c1"># Check atom attributes</span>
+        <span class="c1"># required:</span>
+        <span class="c1"># - name</span>
+        <span class="c1"># - resname</span>
+        <span class="c1"># - chainid</span>
+        <span class="c1"># - resid</span>
+        <span class="c1"># - position</span>
+        <span class="c1"># - charge</span>
+        <span class="c1"># - radius</span>
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">missing_topology</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">dflt</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;X&#39;</span><span class="p">,))),</span>
+                <span class="p">(</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39;UNK&#39;</span><span class="p">,))),</span>
+                <span class="p">(</span><span class="s1">&#39;resids&#39;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span>
+                <span class="p">(</span><span class="s1">&#39;charges&#39;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="mf">0.0</span><span class="p">,))),</span>
+                <span class="p">(</span><span class="s1">&#39;radii&#39;</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="mf">1.0</span><span class="p">,))),</span>
+        <span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">dflt</span>
+                <span class="n">missing_topology</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="c1"># chainids require special handling</span>
+        <span class="c1"># try chainids, then segids</span>
+        <span class="c1"># if neither, use &#39; &#39;</span>
+        <span class="c1"># if &#39;SYSTEM&#39;, use &#39; &#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">chainids</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">segids</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;chainids&#39;</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="ow">or</span> <span class="nb">all</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;SYSTEM&#39;</span><span class="p">):</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">((</span><span class="s1">&#39; &#39;</span><span class="p">,))</span>
+
+        <span class="k">if</span> <span class="s1">&#39;charges&#39;</span> <span class="ow">in</span> <span class="n">missing_topology</span><span class="p">:</span>
+            <span class="n">total_charge</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">total_charge</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">total_charge</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">missing_topology</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;Supplied AtomGroup was missing the following attributes: &quot;</span>
+                <span class="s2">&quot;</span><span class="si">{miss}</span><span class="s2">. These will be written with default values. &quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">miss</span><span class="o">=</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_topology</span><span class="p">)))</span>
+
+        <span class="k">with</span> <span class="n">util</span><span class="o">.</span><span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">pqrfile</span><span class="p">:</span>
+            <span class="c1"># Header / Remarks</span>
+            <span class="c1"># The *remarknumber* is typically 1 but :program:`pdb2pgr`</span>
+            <span class="c1"># also uses 6 for the total charge and 5 for warnings.</span>
+            <span class="k">for</span> <span class="n">rem</span> <span class="ow">in</span> <span class="n">util</span><span class="o">.</span><span class="n">asiterable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">remarks</span><span class="p">):</span>
+                <span class="n">pqrfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_remark</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rem</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">pqrfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_remark</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;Input: frame </span><span class="si">{0}</span><span class="s2"> of </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">),</span>
+                <span class="mi">5</span><span class="p">))</span>
+            <span class="n">pqrfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_remark</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;total charge: </span><span class="si">{0:+8.4f}</span><span class="s2"> e&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">total_charge</span><span class="p">),</span> <span class="mi">6</span><span class="p">))</span>
+
+            <span class="c1"># Atom descriptions and coords</span>
+            <span class="k">for</span> <span class="n">atom_index</span><span class="p">,</span> <span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">resname</span><span class="p">,</span> <span class="n">chainid</span><span class="p">,</span> <span class="n">resid</span><span class="p">,</span> <span class="n">charge</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+                        <span class="n">coordinates</span><span class="p">,</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resnames&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;chainids&#39;</span><span class="p">],</span>
+                        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resids&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;charges&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;radii&#39;</span><span class="p">]),</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># pad so that only 4-letter atoms are left-aligned</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">name</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="k">else</span> <span class="n">name</span>
+
+                <span class="n">pqrfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt_ATOM</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">serial</span><span class="o">=</span><span class="n">atom_index</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">resname</span><span class="o">=</span><span class="n">resname</span><span class="p">,</span>
+                    <span class="n">chainid</span><span class="o">=</span><span class="n">chainid</span><span class="p">,</span> <span class="n">resid</span><span class="o">=</span><span class="n">resid</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">charge</span><span class="o">=</span><span class="n">charge</span><span class="p">,</span>
+                    <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">))</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

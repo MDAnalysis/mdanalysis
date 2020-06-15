@@ -1,0 +1,618 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.msd &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.msd</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.msd</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Mean Squared Displacement --- :mod:`MDAnalysis.analysis.msd`</span>
+<span class="sd">==============================================================</span>
+
+<span class="sd">:Authors: Hugo MacDermott-Opeskin</span>
+<span class="sd">:Year: 2020</span>
+<span class="sd">:Copyright: GNU Public License v2</span>
+
+<span class="sd">This module implements the calculation of Mean Squared Displacements (MSDs)</span>
+<span class="sd">by the Einstein relation. MSDs can be used to characterize the speed at</span>
+<span class="sd">which particles move and has its roots in the study of Brownian motion.</span>
+<span class="sd">For a full explanation of the theory behind MSDs and the subsequent</span>
+<span class="sd">calculation of self-diffusivities the reader is directed to [Maginn2019]_.</span>
+<span class="sd">MSDs can be computed from the following expression, known as the</span>
+<span class="sd">**Einstein formula**:</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">   MSD(r_{d}) = \bigg{\langle} \frac{1}{N} \sum_{i=1}^{N} |r_{d}</span>
+<span class="sd">    - r_{d}(t_0)|^2 \bigg{\rangle}_{t_{0}}</span>
+
+<span class="sd">where :math:`N` is the number of equivalent particles the MSD is calculated</span>
+<span class="sd">over, :math:`r` are their coordinates and :math:`d` the desired dimensionality</span>
+<span class="sd">of the MSD. Note that while the definition of the MSD is universal, there are</span>
+<span class="sd">many practical considerations to computing the MSD that vary between</span>
+<span class="sd">implementations. In this module, we compute a &quot;windowed&quot; MSD, where the MSD</span>
+<span class="sd">is averaged over all possible lag-times :math:`\tau \le \tau_{max}`,</span>
+<span class="sd">where :math:`\tau_{max}` is the length of the trajectory, thereby maximizing</span>
+<span class="sd">the number of samples.</span>
+
+<span class="sd">The computation of the MSD in this way can be computationally intensive due to</span>
+<span class="sd">its :math:`N^2` scaling with respect to :math:`\tau_{max}`. An algorithm to</span>
+<span class="sd">compute the MSD with :math:`N log(N)` scaling based on a Fast Fourier</span>
+<span class="sd">Transform is known and can be accessed by setting ``fft=True`` [Calandri2011]_</span>
+<span class="sd">[Buyl2018]_. The FFT-based approach requires that the</span>
+<span class="sd">`tidynamics &lt;https://github.com/pdebuyl-lab/tidynamics&gt;`_ package is</span>
+<span class="sd">installed; otherwise the code will raise an :exc:`ImportError`.</span>
+
+<span class="sd">Please cite [Calandri2011]_ [Buyl2018]_ if you use this module in addition to</span>
+<span class="sd">the normal MDAnalysis citations.</span>
+
+<span class="sd">Computing an MSD</span>
+<span class="sd">----------------</span>
+<span class="sd">This example computes a 3D MSD for the movement of 100 particles undergoing a</span>
+<span class="sd">random walk. Files provided as part of the MDAnalysis test suite are used</span>
+<span class="sd">(in the variables :data:`~MDAnalysis.tests.datafiles.RANDOM_WALK` and</span>
+<span class="sd">:data:`~MDAnalysis.tests.datafiles.RANDOM_WALK_TOPO`)</span>
+
+<span class="sd">First load all modules and test data</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    import MDAnalysis.analysis.msd as msd</span>
+<span class="sd">    from MDAnalysis.tests.datafiles import RANDOM_WALK, RANDOM_WALK_TOPO</span>
+
+<span class="sd">Given a universe containing trajectory data we can extract the MSD</span>
+<span class="sd">analysis by using the class :class:`EinsteinMSD`</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)</span>
+<span class="sd">    MSD = msd.EinsteinMSD(u, &#39;all&#39;, msd_type=&#39;xyz&#39;, fft=True)</span>
+<span class="sd">    MSD.run()</span>
+
+<span class="sd">The MSD can then be accessed as</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    msd =  MSD.timeseries</span>
+
+<span class="sd">Visual inspection of the MSD is important, so let&#39;s take a look at it with a</span>
+<span class="sd"> simple plot.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    import matplotlib.pyplot as plt</span>
+<span class="sd">    nframes = MSD.n_frames</span>
+<span class="sd">    timestep = 1 # this needs to be the actual time between frames</span>
+<span class="sd">    lagtimes = np.arange(nframes)*timestep # make the lag-time axis</span>
+<span class="sd">    fig = plt.figure()</span>
+<span class="sd">    ax = plt.axes()</span>
+<span class="sd">    # plot the actual MSD</span>
+<span class="sd">    ax.plot(lagtimes, msd, lc=&quot;black&quot;, ls=&quot;-&quot;, label=r&#39;3D random walk&#39;)</span>
+<span class="sd">    exact = lagtimes*6</span>
+<span class="sd">    # plot the exact result</span>
+<span class="sd">    ax.plot(lagtimes, exact, lc=&quot;black&quot;, ls=&quot;--&quot;, label=r&#39;$y=2 D\tau$&#39;)</span>
+<span class="sd">    plt.show()</span>
+
+<span class="sd">This gives us the plot of the MSD with respect to lag-time (:math:`\tau`).</span>
+<span class="sd">We can see that the MSD is approximately linear with respect to :math:`\tau`.</span>
+<span class="sd">This is a numerical example of a known theoretical result that the MSD of a</span>
+<span class="sd">random walk is linear with respect to lag-time, with a slope of :math:`2d`.</span>
+<span class="sd">In this expression :math:`d` is the dimensionality of the MSD. For our 3D MSD,</span>
+<span class="sd">this is 3. For comparison we have plotted the line :math:`y=6\tau` to which an</span>
+<span class="sd">ensemble of 3D random walks should converge.</span>
+
+<span class="sd">.. _figure-msd:</span>
+
+<span class="sd">.. figure:: /images/msd_demo_plot.png</span>
+<span class="sd">    :scale: 100 %</span>
+<span class="sd">    :alt: MSD plot</span>
+
+<span class="sd">Note that a segment of the MSD is required to be linear to accurately</span>
+<span class="sd">determine self-diffusivity. This linear segment represents the so called</span>
+<span class="sd">&quot;middle&quot; of the MSD plot, where ballistic trajectories at short time-lags are</span>
+<span class="sd">excluded along with poorly averaged data at long time-lags. We can select the</span>
+<span class="sd">&quot;middle&quot; of the MSD by indexing the MSD and the time-lags. Appropriately</span>
+<span class="sd">linear segments of the MSD can be confirmed with a log-log plot as is often</span>
+<span class="sd">reccomended [Maginn2019]_ where the &quot;middle&quot; segment can be identified as</span>
+<span class="sd">having a slope of 1.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    plt.loglog(lagtimes, msd)</span>
+<span class="sd">    plt.show()</span>
+
+<span class="sd">Now that we have identified what segment of our MSD to analyse, let&#39;s compute</span>
+<span class="sd">a self-diffusivity.</span>
+
+<span class="sd">Computing Self-Diffusivity</span>
+<span class="sd">--------------------------------</span>
+<span class="sd">Self-diffusivity is closely related to the MSD.</span>
+
+<span class="sd">.. math::</span>
+
+<span class="sd">   D_d = \frac{1}{2d} \lim_{t \to \infty} \frac{d}{dt} MSD(r_{d})</span>
+
+<span class="sd">From the MSD, self-diffusivities :math:`D` with the desired dimensionality</span>
+<span class="sd">:math:`d` can be computed by fitting the MSD with respect to the lag-time to</span>
+<span class="sd">a linear model. An example of this is shown below, using the MSD computed in</span>
+<span class="sd">the example above. The segment between :math:`\tau = 20` and :math:`\tau = 60`</span>
+<span class="sd">is used to demonstrate selection of a MSD segment.</span>
+
+<span class="sd">.. code-block:: python</span>
+
+<span class="sd">    from scipy.stats import linregress</span>
+<span class="sd">    start_time = 20</span>
+<span class="sd">    start_index = int(start_time/timestep)</span>
+<span class="sd">    end_time = 60</span>
+<span class="sd">    linear_model = linregress(lagtimes[start_index:end_index],</span>
+<span class="sd">    				  		  msd[start_index:end_index])</span>
+<span class="sd">    slope = linear_model.slope</span>
+<span class="sd">    error = linear_model.rvalue</span>
+<span class="sd">    # dim_fac is 3 as we computed a 3D msd with &#39;xyz&#39;</span>
+<span class="sd">    D = slope * 1/(2*MSD.dim_fac)</span>
+
+<span class="sd">We have now computed a self-diffusivity!</span>
+
+
+<span class="sd">Notes</span>
+<span class="sd">_____</span>
+
+<span class="sd">There are several factors that must be taken into account when setting up and</span>
+<span class="sd">processing trajectories for computation of self-diffusivities.</span>
+<span class="sd">These include specific instructions around simulation settings, using</span>
+<span class="sd">unwrapped trajectories and maintaining a relatively small elapsed time between</span>
+<span class="sd">saved frames. Additionally, corrections for finite size effects are sometimes</span>
+<span class="sd">employed along with various means of estimating errors [Yeh2004]_ [Bulow2020]_.</span>
+<span class="sd">The reader is directed to the following review, which describes many of the</span>
+<span class="sd">common pitfalls [Maginn2019]_. There are other ways to compute</span>
+<span class="sd">self-diffusivity, such as from a Green-Kubo integral. At this point in time,</span>
+<span class="sd">these methods are beyond the scope of this module.</span>
+
+
+<span class="sd">Note also that computation of MSDs is highly memory intensive. If this is</span>
+<span class="sd">proving a problem, judicious use of the ``start``, ``stop``, ``step`` keywords to control which frames are incorporated may be required.</span>
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+
+<span class="sd">.. [Maginn2019] Maginn, E. J., Messerly, R. A., Carlson, D. J.; Roe, D. R.,</span>
+<span class="sd">                Elliott, J. R. Best Practices for Computing Transport</span>
+<span class="sd">                Properties 1. Self-Diffusivity and Viscosity from Equilibrium</span>
+<span class="sd">                Molecular Dynamics [Article v1.0]. Living J. Comput. Mol. Sci.</span>
+<span class="sd">                2019, 1 (1).</span>
+
+<span class="sd">.. [Yeh2004] Yeh, I. C.; Hummer, G. System-Size Dependence of Diffusion</span>
+<span class="sd">                Coefficients and Viscosities from Molecular Dynamics</span>
+<span class="sd">                Simulations with Periodic Boundary Conditions.</span>
+<span class="sd">                J. Phys. Chem. B 2004, 108 (40), 15873–15879.</span>
+
+<span class="sd">.. [Bulow2020] von Bülow, S.; Bullerjahn, J. T.; Hummer, G. Systematic</span>
+<span class="sd">                Errors in Diffusion Coefficients from Long-Time Molecular</span>
+<span class="sd">                Dynamics Simulations at Constant Pressure. 2020.</span>
+<span class="sd">                arXiv:2003.09205 [Cond-Mat, Physics:Physics].</span>
+
+
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: EinsteinMSD</span>
+<span class="sd">    :members:</span>
+<span class="sd">    :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.msd&#39;</span><span class="p">)</span>
+
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.21105/joss.00877&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Mean Squared Displacements with tidynamics&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">due</span><span class="o">.</span><span class="n">cite</span><span class="p">(</span><span class="n">Doi</span><span class="p">(</span><span class="s2">&quot;10.1051/sfn/201112010&quot;</span><span class="p">),</span>
+         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;FCA fast correlation algorithm&quot;</span><span class="p">,</span>
+         <span class="n">path</span><span class="o">=</span><span class="s2">&quot;MDAnalysis.analysis.msd&quot;</span><span class="p">,</span>
+         <span class="n">cite_module</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">Doi</span>
+
+
+<div class="viewcode-block" id="EinsteinMSD"><a class="viewcode-back" href="../../../documentation_pages/analysis/msd.html#MDAnalysis.analysis.msd.EinsteinMSD">[docs]</a><span class="k">class</span> <span class="nc">EinsteinMSD</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class to calculate Mean Squared Displacement by the Einstein relation.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u : Universe</span>
+<span class="sd">        An MDAnalysis :class:`Universe`.</span>
+<span class="sd">    select : str</span>
+<span class="sd">        A selection string. Defaults to `None` in which case</span>
+<span class="sd">        all atoms are selected.</span>
+<span class="sd">    msd_type : {&#39;xyz&#39;, &#39;xy&#39;, &#39;yz&#39;, &#39;xz&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;}</span>
+<span class="sd">        Desired dimensions to be included in the MSD. Defaults to &#39;xyz&#39;.</span>
+<span class="sd">    fft : bool</span>
+<span class="sd">        If ``True``, uses a fast FFT based algorithm for computation of</span>
+<span class="sd">        the MSD. Otherwise, use the simple &quot;windowed&quot; algorithm.</span>
+<span class="sd">        The tidynamics package is required for `fft=True`.</span>
+<span class="sd">        Defaults to ``True``.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dim_fac : int</span>
+<span class="sd">        Dimensionality :math:`d` of the MSD.</span>
+<span class="sd">    timeseries : :class:`numpy.ndarray`</span>
+<span class="sd">        The averaged MSD over all the particles with respect to lag-time.</span>
+<span class="sd">    msd_per_particle : :class:`numpy.ndarray`</span>
+<span class="sd">        The MSD of each individual particle with respect to lag-time.</span>
+<span class="sd">    n_frames : int</span>
+<span class="sd">        Number of frames included in the analysis.</span>
+<span class="sd">    n_particles : int</span>
+<span class="sd">        Number of particles MSD was calculated over.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : Universe</span>
+<span class="sd">            An MDAnalysis :class:`Universe`.</span>
+<span class="sd">        select : str</span>
+<span class="sd">            A selection string. Defaults to `None` in which case</span>
+<span class="sd">            all atoms are selected.</span>
+<span class="sd">        msd_type : {&#39;xyz&#39;, &#39;xy&#39;, &#39;yz&#39;, &#39;xz&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;}</span>
+<span class="sd">            Desired dimensions to be included in the MSD. Defaults to &#39;xyz&#39;.</span>
+<span class="sd">        fft : bool</span>
+<span class="sd">            If ``True``, uses a fast FFT based algorithm for computation of</span>
+<span class="sd">            the MSD. Otherwise, use the simple &quot;windowed&quot; algorithm.</span>
+<span class="sd">            The tidynamics package is required for `fft=True`.</span>
+<span class="sd">            Defaults to ``True``.    </span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">EinsteinMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span> <span class="o">=</span> <span class="n">msd_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parse_msd_type</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fft</span> <span class="o">=</span> <span class="n">fft</span>
+
+        <span class="c1"># local</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># self.n_frames only available here</span>
+        <span class="c1"># these need to be zeroed prior to each run() call</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dim_fac</span><span class="p">))</span>
+        <span class="c1"># self.timeseries not set here</span>
+
+    <span class="k">def</span> <span class="nf">_parse_msd_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Sets up the desired dimensionality of the MSD.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;xy&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="s1">&#39;xz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;yz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;xyz&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;invalid msd_type: </span><span class="si">{}</span><span class="s1"> specified, please specify one of xyz, &#39;</span>
+                <span class="s1">&#39;xy, xz, yz, x, y, z&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msd_type</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dim_fac</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dim</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Constructs array of positions for MSD calculation.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># shape of position array set here, use span in last dimension</span>
+        <span class="c1"># from this point on</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fft</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_fft</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_conclude_simple</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_conclude_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates the MSD via the simple &quot;windowed&quot; algorithm.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">lagtimes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+        <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lagtimes</span><span class="p">:</span>
+            <span class="n">disp</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="n">lag</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">positions</span><span class="p">[</span><span class="n">lag</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
+            <span class="n">sqdist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[</span><span class="n">lag</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sqdist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_conclude_fft</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># with FFT, np.float64 bit prescision required.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculates the MSD via the FCA fast correlation algorithm.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">tidynamics</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;ERROR --- tidynamics was not found!</span>
+
+<span class="s2">                tidynamics is required to compute an FFT based MSD (default)</span>
+
+<span class="s2">                try installing it using pip eg:</span>
+
+<span class="s2">                    pip install tidynamics</span>
+
+<span class="s2">                or set fft=False&quot;&quot;&quot;</span><span class="p">)</span>
+
+        <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[:,</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">tidynamics</span><span class="o">.</span><span class="n">msd</span><span class="p">(</span>
+                <span class="n">positions</span><span class="p">[:,</span> <span class="n">n</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

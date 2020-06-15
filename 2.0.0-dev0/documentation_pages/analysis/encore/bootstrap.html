@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4.2.6.1.6. bootstrap procedures — MDAnalysis.analysis.ensemble.bootstrap &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="4.2.6.1.7. Utility functions for ENCORE" href="utils.html" />
+    <link rel="prev" title="4.2.6.1.5. Covariance calculation — encore.covariance" href="covariance.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../analysis_modules.html">4. Analysis modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../align.html">4.2.1. Coordinate fitting and alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../contacts.html">4.2.2. Native contacts analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.contacts</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../distances.html">4.2.3. Distance analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../rms.html">4.2.4. Calculating root mean square quantities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../psa.html">4.2.5. Calculating path similarity — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code></a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../encore.html#modules">4.2.6.1. Modules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../encore.html#references">4.2.6.2. References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#polymers">4.6. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#structure">4.7. Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../analysis_modules.html#data">4.11. Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
+        
+          <li><a href="../encore.html">4.2.6. ENCORE Ensemble Similarity Calculations — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.encore</span></code></a> &raquo;</li>
+        
+      <li>4.2.6.1.6. bootstrap procedures — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.ensemble.bootstrap</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/documentation_pages/analysis/encore/bootstrap.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.analysis.encore.bootstrap"></span><div class="section" id="bootstrap-procedures-mdanalysis-analysis-ensemble-bootstrap">
+<h1>4.2.6.1.6. bootstrap procedures — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.ensemble.bootstrap</span></code><a class="headerlink" href="#bootstrap-procedures-mdanalysis-analysis-ensemble-bootstrap" title="Permalink to this headline">¶</a></h1>
+<p>The module contains functions for bootstrapping either ensembles (Universe
+objects) or distance matrices, by resampling with replacement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.16.0.</span></p>
+</div>
+<dl class="function">
+<dt id="MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix">
+<code class="descclassname">MDAnalysis.analysis.encore.bootstrap.</code><code class="descname">bootstrapped_matrix</code><span class="sig-paren">(</span><em>matrix</em>, <em>ensemble_assignment</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#bootstrapped_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.bootstrapped_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bootstrap an input square matrix. The resulting matrix will have the same
+shape as the original one, but the order of its elements will be drawn
+(with repetition). Separately bootstraps each ensemble.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a>) – similarity/dissimilarity matrix</li>
+<li><strong>ensemble_assignment</strong> (<em>numpy.array</em>) – array of ensemble assignments. This array must be matrix.size long.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>this_m</strong> – bootstrapped similarity/dissimilarity matrix</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix">encore.utils.TriangularMatrix</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples">
+<code class="descclassname">MDAnalysis.analysis.encore.bootstrap.</code><code class="descname">get_distance_matrix_bootstrap_samples</code><span class="sig-paren">(</span><em>distance_matrix</em>, <em>ensemble_assignment</em>, <em>samples=100</em>, <em>ncores=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#get_distance_matrix_bootstrap_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.get_distance_matrix_bootstrap_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates distance matrices corresponding to bootstrapped ensembles, by
+resampling with replacement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>distance_matrix</strong> (<a class="reference internal" href="utils.html#MDAnalysis.analysis.encore.utils.TriangularMatrix" title="MDAnalysis.analysis.encore.utils.TriangularMatrix"><em>encore.utils.TriangularMatrix</em></a>) – Conformational distance matrix</li>
+<li><strong>ensemble_assignment</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Mapping from frames to which ensemble they are from (necessary because
+ensembles are bootstrapped independently)</li>
+<li><strong>samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – How many bootstrap samples to create.</li>
+<li><strong>ncores</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Maximum number of cores to be used (default is 1)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>confdistmatrix</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of encore.utils.TriangularMatrix</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples">
+<code class="descclassname">MDAnalysis.analysis.encore.bootstrap.</code><code class="descname">get_ensemble_bootstrap_samples</code><span class="sig-paren">(</span><em>ensemble</em>, <em>samples=100</em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/MDAnalysis/analysis/encore/bootstrap.html#get_ensemble_bootstrap_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.encore.bootstrap.get_ensemble_bootstrap_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a bootstrapped ensemble by resampling with replacement.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>ensemble</strong> (<em>MDAnalysis.Universe</em>) – Conformational distance matrix</li>
+<li><strong>samples</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – How many bootstrap samples to create.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list of MDAnalysis.Universe objects</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="utils.html" class="btn btn-neutral float-right" title="4.2.6.1.7. Utility functions for ENCORE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="covariance.html" class="btn btn-neutral float-left" title="4.2.6.1.5. Covariance calculation — encore.covariance" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
