@@ -79,7 +79,8 @@ copyright = u'2005-{}, '.format(now.year) + authors
 # Dynamically calculate the version
 packageversion = __import__('MDAnalysis').__version__
 # The short X.Y version.
-version = '.'.join(packageversion.split('.')[:2])
+# version = '.'.join(packageversion.split('.')[:2])
+version = packageversion  # needed for right sitemap.xml URLs
 # The full version, including alpha/beta/rc tags.
 release = packageversion
 
@@ -117,7 +118,7 @@ pygments_style = 'default'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
-#to include decorated objects like __init__
+# to include decorated objects like __init__
 autoclass_content = 'both'
 
 # -- Options for HTML output ---------------------------------------------------
@@ -140,7 +141,7 @@ html_theme = 'msmb_theme'
 color = {'orange': '#FF9200',
          'gray': '#808080',
          'white': '#FFFFFF',
-         'black': '#000000',}
+         'black': '#000000', }
 
 html_theme_options = {
     'canonical_url': '',
@@ -254,8 +255,8 @@ htmlhelp_basename = 'MDAnalysisdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('MDAnalysis.tex', u'MDAnalysis Documentation',
-   authors, 'manual'),
+    ('MDAnalysis.tex', u'MDAnalysis Documentation',
+     authors, 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
