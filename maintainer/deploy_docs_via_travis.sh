@@ -15,6 +15,7 @@
 #  GIT_CI_EMAIL      email of the user to push docs as
 #  MDA_DOCDIR        path to the docdir from top of repo
 #  MAINTAIN_DIR      path to maintainer/
+#  VERSION           version of MDAnalysis
 #
 # NOTE: If any of these environment variables are not set or 
 #       empty then the script will exit with and error (-o nounset).
@@ -52,15 +53,17 @@ git remote add upstream "https://${GH_TOKEN}@${GH_REPOSITORY}"
 git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
 git reset upstream/gh-pages
 
+# for dev, latest, home redirects
+mkdir dev latest
+export URL="https://mdanalysis.github.io/mdanalysis/"
+python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
 touch .
 touch .nojekyll
 
 git add -A ${VERSION}/
-git add .nojekyll
-
-python ${MAINTAIN_DIR}/update_versions_json.py
-git add versions.json
-git add *.html
+git add .nojekyll versions.json
+git add index.html dev latest
+git add *.xml
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
