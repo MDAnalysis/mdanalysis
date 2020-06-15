@@ -209,6 +209,16 @@ def pickle_open(name, mode='rt'):
     ------
     ValueError : if `mode` is not one of the allowed read modes
 
+    Examples
+    -------
+    ::
+       with pickle_open('filename') as f:
+            line = f.readline()
+
+       f = pickle_open('filename')
+       line = f.readline()
+       f.close()
+
     See Also
     --------
     :func:`anyopen`
