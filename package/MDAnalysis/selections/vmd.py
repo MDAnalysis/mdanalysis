@@ -47,9 +47,8 @@ In the VMD_ GUI the macro "mdanalysis001" appears in the
    :inherited-members:
 
 """
-from __future__ import absolute_import
-
 from . import base
+
 
 class SelectionWriter(base.SelectionWriterBase):
     format = "VMD"

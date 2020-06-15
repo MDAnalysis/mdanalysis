@@ -56,8 +56,6 @@ See `MDAnalysis.transformations.translate` for a simple example.
 
 """
 
-from __future__ import absolute_import
-
 from .translate import translate, center_in_box
 from .rotate import rotateby
 from .positionaveraging import PositionAverager
