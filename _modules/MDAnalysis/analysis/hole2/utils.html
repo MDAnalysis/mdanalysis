@@ -208,15 +208,11 @@
 
 <span class="sd">Helper functions used in :mod:`MDAnalysis.analysis.hole2.hole`</span>
 <span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">six</span>
 <span class="kn">import</span> <span class="nn">errno</span>
 
 <span class="kn">from</span> <span class="nn">...lib</span> <span class="kn">import</span> <span class="n">util</span>
@@ -712,7 +708,7 @@
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmp_sos</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s2">&quot;sph_process failed (</span><span class="si">{0}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">returncode</span><span class="p">))</span>
-        <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">OSError</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="s2">&quot;sph_process failed&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="s2">&quot;sph_process failed&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmp_sos</span><span class="p">)</span>
         <span class="k">raise</span>
@@ -730,7 +726,7 @@
                 <span class="n">stderr</span><span class="o">=</span><span class="n">FNULL</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="s2">&quot;sos_triangle failed (</span><span class="si">{0}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">returncode</span><span class="p">))</span>
-        <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">OSError</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="s2">&quot;sos_triangle failed&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">returncode</span><span class="p">,</span> <span class="s2">&quot;sos_triangle failed&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">tmp_sos</span><span class="p">)</span>
 

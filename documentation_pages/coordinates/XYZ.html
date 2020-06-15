@@ -343,10 +343,30 @@ the reader instance is used</li>
 
 <dl class="class">
 <dt id="MDAnalysis.coordinates.XYZ.XYZWriter">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XYZ.</code><code class="descname">XYZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>atoms=None</em>, <em>convert_units=True</em>, <em>remark=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.XYZ.</code><code class="descname">XYZWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>n_atoms=None</em>, <em>convert_units=True</em>, <em>remark=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes an XYZ file</p>
 <p>The XYZ file format is not formally defined. This writer follows
 the VMD implementation for the molfile <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/plugins/molfile/xyzplugin.html">xyzplugin</a>.</p>
+<p class="rubric">Notes</p>
+<p>By default, the XYZ writer will attempt to use the input
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> <code class="docutils literal notranslate"><span class="pre">elements</span></code> record to assign
+atom names in the XYZ file. If the <code class="docutils literal notranslate"><span class="pre">elements</span></code> record is missing, then
+the <code class="docutils literal notranslate"><span class="pre">name</span></code> record will be used. In the event that neither of these are
+available, the atoms will all be named <code class="docutils literal notranslate"><span class="pre">X</span></code>. Please see, the
+<a class="reference external" href="https://userguide.mdanalysis.org/examples/constructing_universe.html#Adding-topology-attributes">User Guide</a> for more information on how to add topology attributes if
+you wish to add your own elements / atom names to a
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Use elements attribute instead of names attribute, if present.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Support for passing timestep to the writer was deprecated in 1.0 and
+has now been removed. As a consequence, custom names can no longer be
+passed to the writer, these should be added to the
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>, or
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> before invoking the writer.</p>
+</div>
 <p>Initialize the XYZ trajectory writer</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -360,24 +380,24 @@ compressed.</li>
 and that this file is used to store several different models
 instead of a single trajectory. If a number is provided each
 written TimeStep has to contain the same number of atoms.</li>
-<li><strong>atoms</strong> (<em>str | list</em><em> (</em><em>optional</em><em>)</em>) – Provide atom names: This can be a list of names or an
-<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.  If none is provided, atoms will
-be called ‘X’ in the output. These atom names will be
-used when a trajectory is written from raw
-<code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code> objects which do not contain atom
-information. If you write a <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> with
-<a class="reference internal" href="#MDAnalysis.coordinates.XYZ.XYZWriter.write" title="MDAnalysis.coordinates.XYZ.XYZWriter.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">XYZWriter.write()</span></code></a> then atom information is taken
-at each step and <em>atoms</em> is ignored.</li>
 <li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert quantities to default MDAnalysis units of Angstrom upon
 writing  [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>remark</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – single line of text (“molecule name”). By default writes MDAnalysis
 version and frame</li>
-<li><strong>versionchanged:</strong> (<em>.</em>) – 1.0.0: Removed <code class="code docutils literal notranslate"><span class="pre">default_remark</span></code> variable (Issue #2692).</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Removed <code class="code docutils literal notranslate"><span class="pre">default_remark</span></code> variable (Issue #2692).</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Due to the removal of timestep as an input for writing, the atoms
+parameter is no longer relevant and has been removed. If passing
+an empty universe, please use <code class="docutils literal notranslate"><span class="pre">add_TopologyAttr</span></code> to add in the
+required elements or names.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.XYZ.XYZWriter.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/XYZ.html#XYZWriter.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.XYZ.XYZWriter.close" title="Permalink to this definition">¶</a></dt>
@@ -400,9 +420,9 @@ default to the value of the <cite>atoms</cite> keyword supplied to the
 </tr>
 </tbody>
 </table>
-<div class="deprecated">
-<p><span class="versionmodified">Deprecated since version 1.0.0: </span>Deprecated the use of Timestep as arguments to write. Use either an
-AtomGroup or Universe. To be removed in version 2.0.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Deprecated support for Timestep argument has now been removed.
+Use AtomGroup or Universe as an input instead.</p>
 </div>
 </dd></dl>
 

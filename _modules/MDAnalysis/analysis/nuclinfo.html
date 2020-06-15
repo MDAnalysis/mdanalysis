@@ -278,11 +278,8 @@
 <span class="sd">.. autofunction:: pseudo_dihe_baseflip</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">atan2</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="nb">pow</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
 
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">mdamath</span>
 
@@ -887,14 +884,9 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">hydr</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">dihedral</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="o">%</span> <span class="mi">360</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="n">raise_from</span><span class="p">(</span>
-            <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="p">(</span>
-                    <span class="s2">&quot;Resid </span><span class="si">{0}</span><span class="s2"> does not contain atoms C1&#39;, C2&#39;, O2&#39;, H2&#39; &quot;</span>
-                    <span class="s2">&quot;but atoms </span><span class="si">{1}</span><span class="s2">&quot;</span>
-                    <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
-                <span class="p">),</span>
-            <span class="kc">None</span><span class="p">)</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Resid </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> does not contain atoms C1&#39;, C2&#39;, O2&#39;, H2&#39; but &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;atoms </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
     <span class="k">return</span> <span class="n">hydr</span></div>
 

@@ -203,9 +203,6 @@
 <span class="sd">classes.</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -423,7 +420,7 @@
 
         <span class="k">if</span> <span class="n">trajectory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># all possible places to find trajectory</span>
-            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">):</span>
                     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span>
                     <span class="k">break</span>
@@ -517,14 +514,14 @@
         <span class="c1"># pylint: disable=deprecated-method</span>
         <span class="n">argspec</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">function</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">base_kw</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iterkeys</span><span class="p">(</span><span class="n">base_kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">base_kw</span> <span class="ow">in</span> <span class="n">base_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
         <span class="k">if</span> <span class="n">base_kw</span> <span class="ow">in</span> <span class="n">argspec</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;argument name &#39;</span><span class="si">{}</span><span class="s2">&#39; clashes with AnalysisBase argument.&quot;</span>
                 <span class="s2">&quot;Now allowed are: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base_kw</span><span class="p">,</span> <span class="n">base_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
 
     <span class="n">base_args</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">for</span> <span class="n">argname</span><span class="p">,</span> <span class="n">default</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">base_kwargs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">argname</span><span class="p">,</span> <span class="n">default</span> <span class="ow">in</span> <span class="n">base_kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="n">base_args</span><span class="p">[</span><span class="n">argname</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">argname</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">base_args</span><span class="p">,</span> <span class="n">kwargs</span>

@@ -263,10 +263,6 @@
 <span class="sd">   at.level.plural  # Returns AtomGroup class</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
-
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -295,16 +291,10 @@
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="c1"># doesn&#39;t provide as nice an error message as before as only hash of universe is stored</span>
         <span class="c1"># maybe if we pickled the filename too we could do better...</span>
-        <span class="n">raise_from</span><span class="p">(</span>
-            <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Couldn&#39;t find a suitable Universe to unpickle AtomGroup onto &quot;</span>
-                <span class="s2">&quot;with Universe hash &#39;</span><span class="si">{}</span><span class="s2">&#39;.  Available hashes: </span><span class="si">{}</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">uhash</span><span class="p">,</span>
-                    <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
-                <span class="p">)</span>
-            <span class="p">),</span>
-            <span class="kc">None</span><span class="p">)</span>
+        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find a suitable Universe to unpickle AtomGroup &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;onto with Universe hash &#39;</span><span class="si">{</span><span class="n">uhash</span><span class="si">}</span><span class="s2">&#39;. Availble hashes: &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
     <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
 
 
@@ -499,12 +489,10 @@
                         <span class="n">u</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">universe</span>
                         <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">raise_from</span><span class="p">(</span>
-                        <span class="ne">TypeError</span><span class="p">(</span>
-                            <span class="s2">&quot;No universe, or universe-containing &quot;</span>
-                            <span class="s2">&quot;object passed to the initialization of &quot;</span>
-                            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)),</span>
-                        <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;No universe, or universe-containing object &quot;</span>
+                        <span class="sa">f</span><span class="s2">&quot;passed to the initialization of </span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">_classes</span><span class="p">[</span><span class="bp">cls</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
@@ -514,12 +502,11 @@
                                   <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">mro</span><span class="p">()</span>
                                   <span class="k">if</span> <span class="n">parent</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">_class_bases</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Attempted to instantiate class &#39;</span><span class="si">{}</span><span class="s2">&#39; but &quot;</span>
-                                     <span class="s2">&quot;none of its parents are known to the &quot;</span>
-                                     <span class="s2">&quot;universe. Currently possible parent &quot;</span>
-                                     <span class="s2">&quot;classes are: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                                                              <span class="nb">str</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">_class_bases</span><span class="o">.</span><span class="n">keys</span><span class="p">())))),</span>
-                           <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Attempted to instantiate class &#39;</span><span class="si">{</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">&#39; &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;but none of its parents are known to the universe.&quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot; Currently possible parent classes are: &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">_class_bases</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
             <span class="n">newcls</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">_classes</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_cls</span><span class="o">.</span><span class="n">_mix</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="n">newcls</span><span class="p">)</span>
 
@@ -685,12 +672,12 @@
                 <span class="n">ix</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">args</span>
         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span>  <span class="c1"># couldn&#39;t find ix/universe</span>
                 <span class="ne">TypeError</span><span class="p">):</span>  <span class="c1"># couldn&#39;t iterate the object we got</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="s2">&quot;Can only initialise a Group from an iterable of Atom/Residue/&quot;</span>
                 <span class="s2">&quot;Segment objects eg: AtomGroup([Atom1, Atom2, Atom3]) &quot;</span>
                 <span class="s2">&quot;or an iterable of indices and a Universe reference &quot;</span>
-                <span class="s2">&quot;eg: AtomGroup([0, 5, 7, 8], u).&quot;</span><span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+                <span class="s2">&quot;eg: AtomGroup([0, 5, 7, 8], u).&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="c1"># indices for the objects I hold</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">intp</span><span class="p">)</span>
@@ -1011,14 +998,16 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">molnums</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;: &quot;</span>
-                                       <span class="s2">&quot;No molecule information in topology.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;: No molecule &quot;</span>
+                          <span class="s2">&quot;information in topology.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;fragments&#39;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">fragindices</span>
             <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;: &quot;</span>
-                                       <span class="s2">&quot;No bond information in topology.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;: No bond &quot;</span>
+                          <span class="s2">&quot;information in topology.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition: </span><span class="si">{}</span><span class="se">\n</span><span class="s2">Please use&quot;</span>
                              <span class="s2">&quot; one of &#39;group&#39;, &#39;residues&#39;, &#39;segments&#39;, &quot;</span>
@@ -1196,7 +1185,7 @@
 
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">string_types</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">attribute_values</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span> <span class="n">attribute</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">attribute_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">attribute</span><span class="p">)</span>
@@ -1217,18 +1206,16 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">molnums</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span>
-                    <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;: &quot;</span>
-                                <span class="s2">&quot;No molecule information in topology.&quot;</span><span class="p">),</span>
-                    <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;: No molecule &quot;</span>
+                          <span class="s2">&quot;information in topology.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">elif</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;fragments&#39;</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">fragindices</span>
             <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span>
-                    <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;: &quot;</span>
-                                <span class="s2">&quot;No bond information in topology.&quot;</span><span class="p">),</span>
-                    <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;: No bond &quot;</span>
+                          <span class="s2">&quot;information in topology.&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unrecognized compound definition: &#39;</span><span class="si">{}</span><span class="s2">&#39;. Please &quot;</span>
                              <span class="s2">&quot;use one of &#39;group&#39;, &#39;residues&#39;, &#39;segments&#39;, &quot;</span>
@@ -1705,16 +1692,16 @@
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">molnums</span>
                     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                        <span class="n">raise_from</span><span class="p">(</span><span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;, &quot;</span>
-                                               <span class="s2">&quot;this requires molnums.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;, this &quot;</span>
+                                  <span class="s2">&quot;requires molnums.&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
                 <span class="k">else</span><span class="p">:</span>  <span class="c1"># comp == &#39;fragments&#39;</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">fragindices</span>
                     <span class="k">except</span> <span class="n">NoDataError</span><span class="p">:</span>
-                        <span class="n">raise_from</span><span class="p">(</span>
-                            <span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;, &quot;</span>
-                                        <span class="s2">&quot;this requires bonds.&quot;</span><span class="p">),</span>
-                            <span class="kc">None</span><span class="p">)</span>
+                        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;fragments&#39;, this &quot;</span>
+                                  <span class="s2">&quot;requires bonds.&quot;</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
                 <span class="c1"># compute required shifts:</span>
                 <span class="k">if</span> <span class="n">ctr</span> <span class="o">==</span> <span class="s1">&#39;com&#39;</span><span class="p">:</span>
@@ -1869,8 +1856,9 @@
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">compound_indices</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">molnums</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                    <span class="n">raise_from</span><span class="p">(</span><span class="n">NoDataError</span><span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;, this &quot;</span>
-                                           <span class="s2">&quot;requires molnums.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                    <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Cannot use compound=&#39;molecules&#39;, this &quot;</span>
+                              <span class="s2">&quot;requires molnums.&quot;</span><span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">NoDataError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
             <span class="c1"># Now process every compound:</span>
             <span class="n">unique_compound_indices</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">compound_indices</span><span class="p">)</span>
             <span class="n">positions</span> <span class="o">=</span> <span class="n">unique_atoms</span><span class="o">.</span><span class="n">positions</span>
@@ -1963,7 +1951,7 @@
 
         <span class="n">res</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="p">(</span><span class="n">string_types</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">)):</span>
             <span class="n">attr</span> <span class="o">=</span> <span class="n">topattrs</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topattrs</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
                 <span class="n">attr</span> <span class="o">=</span> <span class="n">topattrs</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
@@ -2509,11 +2497,11 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">r_ix</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">resindex</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">new</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can only set AtomGroup residues to Residue &quot;</span>
-                                     <span class="s2">&quot;or ResidueGroup not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                         <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">new</span>
-                                                   <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Residue</span><span class="p">))</span>
-                                     <span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Can only set AtomGroup residues to Residue &quot;</span>
+                          <span class="s2">&quot;or ResidueGroup not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                          <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">new</span>
+                                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Residue</span><span class="p">))))</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r_ix</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">r_ix</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incorrect size: </span><span class="si">{}</span><span class="s2"> for AtomGroup of size: </span><span class="si">{}</span><span class="s2">&quot;</span>
                              <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
@@ -3073,18 +3061,13 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">levelindices</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">accessors</span><span class="p">[</span><span class="n">level</span><span class="p">])</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;This universe does not have </span><span class="si">{}</span><span class="s1"> &#39;</span>
-                                      <span class="s1">&#39;information. Maybe it is not provided in the &#39;</span>
-                                      <span class="s1">&#39;topology format in use.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">)),</span>
-                       <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s1">&#39;This universe does not have </span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s1"> information. Maybe&#39;</span>
+                      <span class="sa">f</span><span class="s1">&#39; it is not provided in the topology format in use.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">raise_from</span><span class="p">(</span>
-                <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="p">(</span>
-                        <span class="s2">&quot;level = &#39;</span><span class="si">{0}</span><span class="s2">&#39; not supported, &quot;</span>
-                        <span class="s2">&quot;must be one of </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">accessors</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                <span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;level = &#39;</span><span class="si">{</span><span class="n">level</span><span class="si">}</span><span class="s2">&#39; not supported, must be one of &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">accessors</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="p">[</span><span class="n">levelindices</span> <span class="o">==</span> <span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span>
                 <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">levelindices</span><span class="p">)]</span></div>
@@ -3517,15 +3500,11 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">s_ix</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">segindex</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">new</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-                <span class="n">raise_from</span><span class="p">(</span>
-                    <span class="ne">TypeError</span><span class="p">(</span>
-                        <span class="s2">&quot;Can only set ResidueGroup segments to Segment &quot;</span>
-                        <span class="s2">&quot;or SegmentGroup, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Can only set ResidueGroup segments to Segment &quot;</span>
+                          <span class="s2">&quot;or SegmentGroup, not </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">new</span>
-                                      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Segment</span><span class="p">))</span>
-                        <span class="p">)</span>
-                    <span class="p">),</span>
-                    <span class="kc">None</span><span class="p">)</span>
+                                      <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Segment</span><span class="p">))))</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s_ix</span><span class="p">,</span> <span class="n">itertools</span><span class="o">.</span><span class="n">cycle</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_ix</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Incorrect size: </span><span class="si">{}</span><span class="s2"> for ResidueGroup of size: </span><span class="si">{}</span><span class="s2">&quot;</span>
                              <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)))</span>
