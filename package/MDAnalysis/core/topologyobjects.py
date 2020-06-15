@@ -28,10 +28,6 @@ Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 The building blocks for MDAnalysis' description of topology
 
 """
-from __future__ import print_function, absolute_import, division
-
-from six.moves import zip
-from six import raise_from
 import numbers
 import numpy as np
 import functools
@@ -864,11 +860,9 @@ class TopologyGroup(object):
             return self._ags[2]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise_from(
-                IndexError(
-                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
-                        self.btype, nvert)),
-                None)
+            errmsg = (f"TopologyGroup of {self.btype}s only has {nvert} "
+                      f"vertical AtomGroups")
+            raise IndexError(errmsg) from None
 
     @property
     def atom4(self):
@@ -877,11 +871,9 @@ class TopologyGroup(object):
             return self._ags[3]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise_from(
-                IndexError(
-                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
-                        self.btype, nvert)),
-                None)
+            errmsg = (f"TopologyGroup of {self.btype}s only has {nvert} "
+                      f"vertical AtomGroups")
+            raise IndexError(errmsg) from None
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations

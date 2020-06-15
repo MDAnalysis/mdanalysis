@@ -106,11 +106,7 @@ lines in ``.in`` files.  These are as follows:
 .. _FHI-AIMS format: https://doi.org/10.6084/m9.figshare.12413477.v1
 
 """
-from __future__ import absolute_import
-
 import re
-from six.moves import range, zip
-from six import raise_from
 
 import itertools
 import warnings
@@ -273,32 +269,33 @@ class FHIAIMSWriter(base.WriterBase):
         Parameters
         -----------
         obj : AtomGroup or Universe
+
+
+        .. versionchanged:: 2.0.0
+           Support for deprecated Timestep argument has now been removed.
+           Use AtomGroup or Universe as an input instead.
         """
         # write() method that complies with the Trajectory API
-        # TODO 2.0: Remove timestep logic
         try:
             # make sure to use atoms (Issue 46)
-            ag_or_ts = obj.atoms
+            ag = obj.atoms
             # can write from selection == Universe (Issue 49)
         except AttributeError:
-            if isinstance(obj, base.Timestep):
-                ag_or_ts = obj.copy()
-            else:
-                raise_from(
-                    TypeError("No Timestep found in obj argument"), None)
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
 
         # Check for topology information
         missing_topology = []
         try:
-            names = ag_or_ts.names
+            names = ag.names
         except (AttributeError, NoDataError):
             names = itertools.cycle(('X',))
             missing_topology.append('names')
 
         try:
-            atom_indices = ag_or_ts.ids
+            atom_indices = ag.ids
         except (AttributeError, NoDataError):
-            atom_indices = range(1, ag_or_ts.n_atoms+1)
+            atom_indices = range(1, ag.n_atoms+1)
             missing_topology.append('ids')
 
         if missing_topology:
@@ -307,9 +304,9 @@ class FHIAIMSWriter(base.WriterBase):
                 "{miss}. These will be written with default values. "
                 "".format(miss=', '.join(missing_topology)))
 
-        positions = ag_or_ts.positions
+        positions = ag.positions
         try:
-            velocities = ag_or_ts.velocities
+            velocities = ag.velocities
             has_velocities = True
         except (AttributeError, NoDataError):
             has_velocities = False
@@ -329,7 +326,7 @@ class FHIAIMSWriter(base.WriterBase):
             # Dont use enumerate here,
             # all attributes could be infinite cycles!
             for atom_index, name in zip(
-                    range(ag_or_ts.n_atoms), names):
+                    range(ag.n_atoms), names):
                 output_fhiaims.write(self.fmt['xyz'].format(
                     pos=positions[atom_index],
                     name=name))

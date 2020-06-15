@@ -31,10 +31,6 @@ parsers.
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import zip, range
-
 import Bio.Seq
 import Bio.SeqRecord
 from collections import defaultdict
@@ -190,7 +186,7 @@ class _TopologyAttrMeta(type):
                     _TOPOLOGY_ATTRNAMES[clean] = name
 
 
-class TopologyAttr(six.with_metaclass(_TopologyAttrMeta, object)):
+class TopologyAttr(object, metaclass=_TopologyAttrMeta):
     """Base class for Topology attributes.
 
     Note
@@ -1818,9 +1814,9 @@ class Resnames(ResidueAttr):
             sequence = "".join([convert_aa_code(r)
                                 for r in self.residues.resnames])
         except KeyError as err:
-            six.raise_from(ValueError("AtomGroup contains a residue name '{0}' that "
-                                      "does not have a IUPAC protein 1-letter "
-                                      "character".format(err.message)), None)
+            errmsg = (f"AtomGroup contains a residue name '{err.message}' that"
+                      f" does not have a IUPAC protein 1-letter character")
+            raise ValueError(errmsg) from None
         if format == "string":
             return sequence
         seq = Bio.Seq.Seq(sequence)

@@ -19,8 +19,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import itertools
 import pytest
 
@@ -43,9 +41,8 @@ known_ts_haters = [
 ]
 
 
-@pytest.mark.parametrize('writer', [w for w in writers
-                                    if not w in known_ts_haters])
-def test_ts_deprecated(writer, tmpdir):
+@pytest.mark.parametrize('writer', writers)
+def test_ts_error(writer, tmpdir):
     u = mda.Universe.empty(10, trajectory=True)
 
     if writer == mda.coordinates.chemfiles.ChemfilesWriter:
@@ -53,11 +50,19 @@ def test_ts_deprecated(writer, tmpdir):
         if not mda.coordinates.chemfiles.check_chemfiles_version():
             pytest.skip("Chemfiles not available")
         fn = str(tmpdir.join('out.xtc'))
+    elif writer == mda.coordinates.LAMMPS.DATAWriter:
+        pytest.skip("DATAWriter requires integer atom types")
     else:
         fn = str(tmpdir.join('out.traj'))
 
-    with writer(fn, n_atoms=u.atoms.n_atoms) as w:
-        with pytest.warns(DeprecationWarning):
+    if (writer == mda.coordinates.PDB.PDBWriter or
+        writer == mda.coordinates.PDB.MultiPDBWriter):
+        errmsg = "PDBWriter cannot write Timestep objects directly"
+    else:
+        errmsg = "neither an AtomGroup or Universe"
+
+    with pytest.raises(TypeError, match=errmsg):
+        with writer(fn, n_atoms=u.atoms.n_atoms) as w:
             w.write(u.trajectory.ts)
 
 
@@ -99,4 +104,3 @@ def test_write_with_universe(writer, tmpdir):
 
     with writer(fn, n_atoms=10) as w:
         w.write(u)
-
