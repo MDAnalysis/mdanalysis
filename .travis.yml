@@ -36,6 +36,7 @@ env:
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
+    - MPLBACKEND=agg
 
   matrix:
     # Run a coverage test for most versions

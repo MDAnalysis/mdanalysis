@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/20 orbeckst, VOD555, lilyminium
+??/??/20 richardjgowers, IAlibay, hmacdope, orbeckst, VOD555, lilyminium
 
   * 1.0.1
 
 Fixes
   * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
+  * Testsuite does not use any more matplotlib.use('agg') (#2191)
   * rdf.InterRDF_s density keyword documented and now gives correct results for
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
