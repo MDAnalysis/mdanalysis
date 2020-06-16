@@ -93,6 +93,7 @@ class TestAtomAttr(TopologyAttrMixin):
 
     """
     values = np.array([7, 3, 69, 9993, 84, 194, 263, 501, 109, 5873])
+    single_value = 567
     attrclass = tpattrs.AtomAttr
 
     def test_set_atom_VE(self):
@@ -112,7 +113,7 @@ class TestAtomAttr(TopologyAttrMixin):
     def test_set_atoms_singular(self, attr):
         # set len 2 Group to len 1 value
         dg = DummyGroup([3, 7])
-        attr.set_atoms(dg, 567)
+        attr.set_atoms(dg, self.single_value)
         assert_equal(attr.get_atoms(dg), np.array([567, 567]))
 
     def test_set_atoms_plural(self, attr):
@@ -175,6 +176,7 @@ class TestIndicesClasses(object):
 class TestAtomnames(TestAtomAttr):
     values = np.array(['O', 'C', 'CA', 'N', 'CB', 'CG', 'CD', 'NA', 'CL', 'OW'],
                       dtype=np.object)
+    single_value = 'Ca2'
     attrclass = tpattrs.Atomnames
 
 
