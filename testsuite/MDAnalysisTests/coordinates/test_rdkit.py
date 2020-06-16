@@ -33,18 +33,16 @@ from MDAnalysisTests.datafiles import mol2_molecule
 Chem = pytest.importorskip("rdkit.Chem")
 AllChem = pytest.importorskip("rdkit.Chem.AllChem")
 
+def mol2_mol():
+    return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
+
+def smiles_mol():
+    mol = Chem.MolFromSmiles("CCO")
+    mol = Chem.AddHs(mol)
+    cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
+    return mol
+
 class TestRDKitReader(object):
-    @pytest.fixture
-    def mol2_mol(self):
-        return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
-
-    @pytest.fixture
-    def smiles_mol(self):
-        mol = Chem.MolFromSmiles("CCO")
-        mol = Chem.AddHs(mol)
-        cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
-        return mol
-
     @pytest.mark.parametrize("rdmol, n_frames", [
         (mol2_mol(), 1),
         (smiles_mol(), 3),
@@ -71,8 +69,8 @@ class TestRDKitReader(object):
         expected[:] = np.nan
         assert_equal(u.trajectory.coordinate_array, expected)
 
-    def test_compare_mol2reader(self, mol2_mol):
-        universe = mda.Universe(mol2_mol)
+    def test_compare_mol2reader(self):
+        universe = mda.Universe(mol2_mol())
         mol2 = mda.Universe(mol2_molecule)
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
         assert_equal(universe.trajectory.ts.positions, 
