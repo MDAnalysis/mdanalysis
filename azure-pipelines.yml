@@ -19,6 +19,8 @@ jobs:
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
   pool:
     vmImage: 'VS2017-Win2016'
+  variables:
+    MPLBACKEND: agg    
   strategy:
     maxParallel: 4
     matrix:

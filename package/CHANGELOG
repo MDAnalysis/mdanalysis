@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst
 
   * 2.0.0
 
 Fixes
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
+  * Testsuite does not any more matplotlib.use('agg') (#2191)
 
 Enhancements
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
