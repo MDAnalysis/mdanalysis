@@ -180,7 +180,6 @@ Data format checks
    close it.
 """
 import sys
-import six
 
 __docformat__ = "restructuredtext en"
 
