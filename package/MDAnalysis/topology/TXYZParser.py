@@ -43,11 +43,8 @@ Classes
 
 """
 
-from __future__ import absolute_import
-
 import itertools
 import numpy as np
-from six.moves import zip
 
 from . import guessers
 from ..lib.util import openany

@@ -22,10 +22,9 @@
 #
 
 # Test the selection exporters in MDAnalysis.selections
-from __future__ import absolute_import
 # use StringIO and NamedStream to write to memory instead to temp files
 import pytest
-from six.moves import StringIO
+from io import StringIO
 
 import re
 

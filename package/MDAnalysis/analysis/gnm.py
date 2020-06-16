@@ -85,10 +85,6 @@ directly needed to perform the analysis.
    removed un-unsed function :func:`backup_file`
 
 """
-
-from __future__ import print_function, division, absolute_import
-from six.moves import range
-
 import itertools
 
 import numpy as np
@@ -395,10 +391,8 @@ class closeContactGNMAnalysis(GNMAnalysis):
     .. deprecated:: 0.16.0
        Instead of ``MassWeight=True`` use ``weights="size"``.
 
-    .. versionchanged:: 0.21.0
-       MassWeight option (see above deprecation entry).
-
     .. versionchanged:: 1.0.0
+       MassWeight option (see above deprecation entry).
        Changed `selection` keyword to `select`
     """
 

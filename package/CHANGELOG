@@ -13,15 +13,55 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-mm/dd/yy richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst
+
+  * 2.0.0
+
+Fixes
+  * TOPParser no longer guesses elements when missing atomic number records
+    (Issues #2449, #2651)
+  * Testsuite does not any more matplotlib.use('agg') (#2191)
+
+Enhancements
+  * Added computation of Mean Squared Displacements (#2438, PR #2619)
+
+Changes
+  * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)
+  * Removes; deprecated support for using Writer.write(Timestep), deprecated
+    Writer.write_next_timestep, use write() instead. (Issue #2739)
+  * Removes deprecated density_from_Universe, density_from_PDB, Bfactor2RMSF,
+    and notwithin_coordinates_factory from MDAnalysis.analysis.density
+    (Issue #2739)
+  * Removes deprecated ProgressMeter (Issue #2739)
+  * Removes deprecated MDAnalysis.units.N_Avogadro (PR #2737)
+  * Dropped Python 2 support
+
+Deprecations
+
+
+06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
          Yuan-Yu, xiki-tempula, HTian1997, Iv-Hristov, hmacdope, AnshulAngaria,
          ss62171, Luthaf, yuxuanzhuang, abhishandy, mlnance, shfrz, orbeckst,
-         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix
+         wvandertoorn, cbouy, AmeyaHarmalkar, Oscuro-Phoenix, andrrizzi, WG150,
+         tylerjereddy, Marcello-Sega
 
-  * 0.21.0
+  * 1.0.0
 
 Fixes
+  * MOL2Writer now accepts both Universes and AtomgGroups (Issue #2717)
+  * Use user-provided `remark` in `XYZWriter` (Issue #2692)
+  * Added more informative error messages about topology attributes
+    (Issue #2565)
+  * Made NoDataError a subclass of ValueError *and* AttributeError
+    (Issue #2635)
+  * Fixed select_atoms("around 0.0 ...") selections and capped_distance 
+    causing a segfault (Issue #2656 PR #2665)
+  * `PDBWriter` writes unitary `CRYST1` record (cubic box with sides of 1 Å)
+    when `u.dimensions` is `None` or `np.zeros(6)` (Issue #2679, PR #2685)
+  * Ensures principal_axes() returns axes with the right hand convention (Issue #2637)
+  * Fixed retrieval of auxiliary information after getting the last timestep
+    of the trajectory (Issue #2674, PR #2683).
   * n_components correctly selects PCA components (Issue #2623)
   * Use internal residue indices instead of resids for similarity and connectivity
     selections (Issues #2669 and #2672, PR #2673)
@@ -84,6 +124,8 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
+  * Added support for FHI-AIMS input files (PR #2705)
+  * vastly improved support for 32-bit Windows (PR #2696)
   * Added methods to compute the root-mean-square-inner-product of subspaces 
     and the cumulative overlap of a vector in a subspace for PCA (PR #2613)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
@@ -130,6 +172,18 @@ Enhancements
     the capability to allow intermittent behaviour (PR #2256)
 
 Changes
+  * Unused `MDAnalysis.lib.mdamath._angle` has been removed (Issue #2650)
+  * Refactored dihedral selections and Ramachandran.__init__ to speed up 
+    dihedral selections for faster tests (Issue #2671, PR #2706)
+  * Removes the deprecated `t0`, `tf`, and `dtmax` from
+    :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
+    `tau_max` keywords should be passed to
+    :meth:`Waterdynamics.SurvivalProbability.run`. Furthermore, the `stop`
+    keyword is now exclusive instead of inclusive (Issue #2524).
+  * :meth:`align.fasta2select` now writes `alnfilename` and `treefilename` to
+    the current working directory (Issue #2701)
+  * Removes duplicate `NUMBER_TO_ELEMENTS` table from topology._elements,
+    `Z2SYMB` from topology.tables should now be used instead (Issue #2699)
   * Deprecated :class:`ProgressMeter` and replaced it with :class:`ProgressBar` using
     the tqdm package (Issue #928, PR #2617). Also fixes issue #2504.
   * Removed `details` from `ClusteringMethod`s (Issue #2575, PR #2620)
@@ -187,7 +241,8 @@ Deprecations
   * analysis.density.density_from_Universe() (remove in 2.0)
   * analysis.density.notwithin_coordinates_factory() (remove in 2.0)
   * analysis.density.density_from_PDB and BfactorDensityCreator (remove in 2.0)
-
+  * Writer.write_next_timestep is deprecated, use write() instead (remove in 2.0)
+  * Writer.write(Timestep) is deprecated, use either a Universe or AtomGroup
 
 09/05/19 IAlibay, richardjgowers
 

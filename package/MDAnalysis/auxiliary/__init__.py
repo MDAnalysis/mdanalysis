@@ -517,8 +517,6 @@ following (these may be overwritten by subclasses as appropriate):
 
 """
 
-from __future__ import absolute_import
-
 # registry of auxiliary readers
 _AUXREADERS = {}
 

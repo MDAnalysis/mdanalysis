@@ -149,7 +149,6 @@ the OPLS/AA force field.
    doi:10.1016/j.jmb.2009.09.009
 
 """
-from __future__ import absolute_import
 
 __all__ = ['Universe', 'as_Universe', 'Writer', 'fetch_mmtf',
            'AtomGroup', 'ResidueGroup', 'SegmentGroup']
@@ -177,7 +176,10 @@ _PARSER_HINTS = {}
 _SELECTION_WRITERS = {}
 _CONVERTERS = {}
 # Registry of TopologyAttributes
-_TOPOLOGY_ATTRS = {}
+_TOPOLOGY_ATTRS = {}  # {attrname: cls}
+_TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
+_TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
+
 
 # Storing anchor universes for unpickling groups
 import weakref

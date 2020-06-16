@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import MDAnalysis as mda
 import pytest
 
@@ -36,4 +34,4 @@ def universe():
 def test_NullWriter(universe):
     with mda.Writer(None, n_atoms=universe.atoms.n_atoms) as W:
         for ts in universe.trajectory:
-            W.write(ts)
+            W.write(universe)

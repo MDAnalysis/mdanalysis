@@ -116,9 +116,6 @@ Functions
 .. autofunction:: helanal_main
 
 """
-from __future__ import print_function, division, absolute_import
-from six.moves import range, zip
-
 import os
 
 import numpy as np

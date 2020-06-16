@@ -201,9 +201,6 @@ Classes
    :members:
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-
 import os
 import errno
 import warnings

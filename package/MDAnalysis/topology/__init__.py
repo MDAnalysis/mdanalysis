@@ -47,14 +47,14 @@ the attributes they provide.
    ================= ========== ================= ===================================================
    Name              extension  attributes        remarks
    ================= ========== ================= ===================================================
-   CHARMM/XPLOR PSF  psf        resnames,         :mod:`MDAnalysis.topology.PSFParser`
-                                names, types,
+   CHARMM/XPLOR PSF  psf        resnames,         CHARMM_/XPLOR/NAMD_ topology format;
+                                names, types,     :mod:`MDAnalysis.topology.PSFParser`
                                 charges,
                                 bonds, angles,
                                 dihedrals,
                                 impropers
 
-   CHARMM CARD [#a]_ crd        names,            "CARD" coordinate output from CHARMM; deals with
+   CHARMM CARD [#a]_ crd        names,            "CARD" coordinate output from CHARMM_; deals with
                                 tempfactors,      either standard or EXTended format;
                                 resnames,         :mod:`MDAnalysis.topology.CRDParser`
 
@@ -68,19 +68,19 @@ the attributes they provide.
                                 resnames,
                                 segids,
 
-   XPDB [#a]_        pdb        As PDB except     Extended PDB format (can use 5-digit residue
-                                icodes            numbers). To use, specify the format "XPBD"
-                                                  explicitly:
+   XPDB [#a]_        pdb        As PDB except     Extended PDB format as used by e.g., NAMD_
+                                icodes            (can use 5-digit residue numbers). To use, specify
+                                                  the format "XPBD" explicitly:
                                                   ``Universe(..., topology_format="XPDB")``.
                                                   Module :mod:`MDAnalysis.coordinates.PDB`
 
    PQR [#a]_         pqr        names, charges,   PDB-like but whitespace-separated files with charge
-                                types,            and radius information;
+                                types,            and radius information as used by, e.g., APBS_.
                                 radii, resids,    :mod:`MDAnalysis.topology.PQRParser`
                                 resnames, icodes,
                                 segids
 
-   PDBQT [#a]_       pdbqt      names, types,     file format used by AutoDock with atom types and
+   PDBQT [#a]_       pdbqt      names, types,     file format used by AutoDock_ with atom types and
                                 altLocs, charges, partial charges. Module:
                                 resnames,         :mod:`MDAnalysis.topology.PDBQTParser`
                                 resids,
@@ -89,27 +89,27 @@ the attributes they provide.
                                 tempfactors,
                                 segids,
 
-   GROMOS96 [#a]_    gro        names, resids,    GROMOS96 coordinate file;
+   GROMOS96 [#a]_    gro        names, resids,    GROMOS96 coordinate file (used e.g., by Gromacs_)
                                 resnames,         :mod:`MDAnalysis.topology.GROParser`
 
-   AMBER             top,       names, charges    simple AMBER format reader (only supports a subset
+   Amber             top,       names, charges    simple Amber_ format reader (only supports a subset
                      prmtop,    type_indices,     of flags);
                      parm7      types,            :mod:`MDAnalysis.topology.TOPParser`
                                 resnames,
 
-   DESRES [#a]_      dms        names, numbers,   DESRES molecular sturcture reader (only supports
-                                masses, charges,  the atom and bond records);
+   DESRES [#a]_      dms        names, numbers,   DESRES molecular structure reader (only supports
+                                masses, charges,  the atom and bond records) as used by Desmond_ and Anton;
                                 chainids, resids, :mod:`MDAnalysis.topology.DMSParser`
                                 resnames, segids,
                                 radii,
 
-   TPR [#b]_         tpr        names, types,     Gromacs portable run input reader (limited
+   TPR [#b]_         tpr        names, types,     Gromacs_ portable run input reader (limited
                                 resids, resnames, experimental support for some of the more recent
                                 charges, bonds,   versions of the file format);
                                 masses, moltypes, :mod:`MDAnalysis.topology.TPRParser`
                                 molnums
-   
-   ITP               itp        names, types,     Gromacs include topology file;
+
+   ITP               itp        names, types,     Gromacs_ include topology file;
                                 resids, resnames, :mod:`MDAnalysis.topology.ITPParser`
                                 charges, bonds,
                                 masses, segids,
@@ -121,28 +121,28 @@ the attributes they provide.
                                 charges, bonds,
                                 resnames,
 
-   LAMMPS [#a]_      data       ids, types,       LAMMPS Data file parser
+   LAMMPS [#a]_      data       ids, types,       LAMMPS_ Data file parser
                                 masses, charges,  :mod:`MDAnalysis.topology.LAMMPSParser`
                                 resids, bonds,
                                 angles, dihedrals
 
-   LAMMPS [#a]_      lammpsdump id, masses        LAMMPS ascii dump file reader
+   LAMMPS [#a]_      lammpsdump id, masses        LAMMPS_ ascii dump file reader
                                                   :mod:`MDAnalysis.topology.LAMMPSParser`
 
    XYZ [#a]_         xyz        names             XYZ File Parser.  Reads only the labels from atoms
                                                   and constructs minimal topology data.
                                                   :mod:`MDAnalysis.topology.XYZParser`
 
-   TXYZ [#a]_        txyz,      names, atomids,   Tinker XYZ File Parser. Reads atom labels, numbers
+   TXYZ [#a]_        txyz,      names, atomids,   Tinker_ XYZ File Parser. Reads atom labels, numbers
                      arc        masses, types,    and connectivity; masses are guessed from atoms names.
                                 bonds             :mod:`MDAnalysis.topology.TXYZParser`
 
-   GAMESS [#a]_      gms,       names,            GAMESS output parser. Read only atoms of assembly
+   GAMESS [#a]_      gms,       names,            GAMESS_ output parser. Read only atoms of assembly
                      log        atomic charges,   section (atom, elems and coords) and construct
                                                   topology.
                                                   :mod:`MDAnalysis.topology.GMSParser`
 
-   DL_Poly [#a]_     config,    ids, names        DL_Poly CONFIG or HISTORY file.  Reads only the
+   DL_POLY [#a]_     config,    ids, names        `DL_POLY`_ CONFIG or HISTORY file.  Reads only the
                      history                      atom names. If atoms are written out of order, will
                                                   correct the order.
                                                   :mod:`MDAnalysis.topology.DLPolyParser`
@@ -152,19 +152,23 @@ the attributes they provide.
                                 bonds, angles,    angles, and dihedrals.
                                 dihedrals         :mod:`MDAnalysis.topology.HoomdXMLParser`
 
-   GSD [#a]_         gsd        types, charges,   GSD topology file.  Reads atom types,
+   GSD [#a]_         gsd        types, charges,   HOOMD_ GSD topology file.  Reads atom types,
                                 radii, masses     masses, and charges if possible. Also reads bonds,
                                 bonds, angles,    angles, and dihedrals.
                                 dihedrals         :mod:`MDAnalysis.topology.GSDParser`
 
-   Macromolecular    mmtf       altLocs,          `Macromolecular Transmission Format (MMTF)`_.
-   transmission                 bfactors, bonds,  An efficient compact format for biomolecular
-   format                       charges, masses,  structures.
+   MMTF [#a]_        mmtf       altLocs,          `Macromolecular Transmission Format (MMTF)`_. An
+                                bfactors, bonds,  efficient compact format for biomolecular
+                                charges, masses,  structures.
                                 names,
                                 occupancies,
                                 types, icodes,
                                 resnames, resids,
                                 segids, models
+
+   FHIAIMS [#a]_     in         names             `FHI-AIMS`_ File Parser.  Reads only the labels from
+                                                  atoms and constructs minimal topology data.
+                                                  :mod:`MDAnalysis.topology.FHIAIMSParser`
    ================= ========== ================= ===================================================
 
 .. [#a] This format can also be used to provide *coordinates* so that
@@ -183,8 +187,23 @@ Note
 :ref:`Coordinates` with the :ref:`Supported coordinate formats`
 
 
+.. _CHARMM: https://www.charmm.org/charmm/
 .. _HOOMD XML: http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html
+.. _HOOMD: http://glotzerlab.engin.umich.edu/hoomd-blue/
+.. _NAMD: http://www.ks.uiuc.edu/Research/namd/
+.. _LAMMPS: https://lammps.sandia.gov/
+.. _Gromacs: http://www.gromacs.org/
+.. _Amber: http://ambermd.org/
+.. _Desmond: https://www.deshawresearch.com/resources_desmond.html
+.. _Tinker: https://dasher.wustl.edu/tinker/
+.. _DL_POLY: https://www.scd.stfc.ac.uk/Pages/DL_POLY.aspx
+.. _AutoDock: http://autodock.scripps.edu/
+.. _APBS: https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/
 .. _Macromolecular Transmission Format (MMTF): https://mmtf.rcsb.org/
+.. _FHI-AIMS: https://aimsclub.fhi-berlin.mpg.de/
+.. _GAMESS: https://www.msg.chem.iastate.edu/gamess/
+
+
 .. _topology-parsers-developer-notes:
 
 
@@ -283,7 +302,6 @@ four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.
 
 """
-from __future__ import absolute_import
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
@@ -313,3 +331,4 @@ from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
 from . import ParmEdParser
+from . import FHIAIMSParser

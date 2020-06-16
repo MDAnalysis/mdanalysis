@@ -23,8 +23,6 @@
 """Tests for MDAnalysis.core.topologyattrs objects.
 
 """
-from __future__ import division, absolute_import
-
 import numpy as np
 
 from numpy.testing import (
@@ -32,7 +30,7 @@ from numpy.testing import (
     assert_almost_equal,
 )
 import pytest
-from MDAnalysisTests.datafiles import PSF, DCD
+from MDAnalysisTests.datafiles import PSF, DCD, PDB_CHECK_RIGHTHAND_PA
 from MDAnalysisTests import make_Universe, no_deprecated_call
 
 import MDAnalysis as mda
@@ -334,6 +332,14 @@ class TestAttr(object):
                       [1.53389276e-03, 4.41386224e-02, 9.99024239e-01],
                       [1.20986911e-02, 9.98951474e-01, -4.41539838e-02],
                       [-9.99925632e-01, 1.21546132e-02, 9.98264877e-04]]))
+
+    @pytest.fixture()
+    def universe_pa(self):
+        return mda.Universe(PDB_CHECK_RIGHTHAND_PA)
+
+    def test_principal_axes_handedness(self, universe_pa):
+        e_vec = universe_pa.atoms.principal_axes()
+        assert_almost_equal(np.dot(np.cross(e_vec[0], e_vec[1]), e_vec[2]), 1.0)
 
     def test_align_principal_axes_with_self(self, ag):
         pa = ag.principal_axes()

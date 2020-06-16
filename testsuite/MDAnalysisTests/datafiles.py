@@ -35,7 +35,6 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-from __future__ import absolute_import
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
@@ -103,6 +102,7 @@ __all__ = [
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PRM_UreyBradley", # prmtop from ParmEd test files with Urey-Bradley angles
     "PRM7_ala2", "RST7_ala2",  # prmtop and rst files from ParmEd example files
+    "PRM19SBOPC", #  prmtop w/ ff19SB CMAP terms and OPC water (Issue #2449)
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -186,7 +186,10 @@ __all__ = [
     "GMX_DIR", # GROMACS directory
     "GMX_TOP_BAD", # file with an #include that doesn't exist
     "ITP_no_endif", # file missing an #endif
-    "PDB_CRYOEM_BOX" #Issue 2599
+    "PDB_CRYOEM_BOX", # Issue 2599, Issue #2679, PR #2685
+    "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
+    "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
+    "FHIAIMS", # to test FHIAIMS coordinate files
 ]
 
 from pkg_resources import resource_filename
@@ -273,6 +276,8 @@ PDB_conect2TER = resource_filename(__name__, 'data/CONECT2TER.pdb')
 PDB_singleconect = resource_filename(__name__, 'data/SINGLECONECT.pdb')
 PDB_icodes = resource_filename(__name__, 'data/1osm.pdb.gz')
 PDB_CRYOEM_BOX = resource_filename(__name__, 'data/5a7u.pdb')
+PDB_CHECK_RIGHTHAND_PA = resource_filename(__name__, 'data/6msm.pdb.bz2')
+FHIAIMS = resource_filename(__name__, 'data/fhiaims.in')
 
 GRO = resource_filename(__name__, 'data/adk_oplsaa.gro')
 GRO_velocity = resource_filename(__name__, 'data/sample_velocity_file.gro')
@@ -386,6 +391,8 @@ PRM_UreyBradley = resource_filename(__name__, 'data/Amber/parmed_fad.prmtop')
 PRM7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.parm7')
 RST7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.rst7')
 
+PRM19SBOPC = resource_filename(__name__, 'data/Amber/ala.ff19SB.OPC.parm7.bz2')
+
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')
 
@@ -484,6 +491,7 @@ MMTF = resource_filename(__name__, 'data/173D.mmtf')
 MMTF_gz = resource_filename(__name__, 'data/5KIH.mmtf.gz')
 MMTF_skinny = resource_filename(__name__, 'data/1ubq-less-optional.mmtf')
 MMTF_skinny2 = resource_filename(__name__, 'data/3NJW-onlyrequired.mmtf')
+MMTF_NOCRYST = resource_filename(__name__, "data/6QYR.mmtf.gz")
 
 ALIGN_BOUND = resource_filename(__name__, 'data/analysis/align_bound.pdb.gz')
 ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz')

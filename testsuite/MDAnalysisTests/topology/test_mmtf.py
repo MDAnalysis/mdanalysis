@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import pytest
 from numpy.testing import assert_equal
 import mmtf

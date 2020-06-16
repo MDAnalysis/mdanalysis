@@ -27,9 +27,75 @@ Guessing unknown Topology information --- :mod:`MDAnalysis.topology.guessers`
 In general `guess_atom_X` returns the guessed value for a single value,
 while `guess_Xs` will work on an array of many atoms.
 
-"""
-from __future__ import absolute_import
 
+Example uses of guessers
+------------------------
+
+Guessing elements from atom names
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Currently, it is possible to guess elements from atom names using
+:func:`guess_atom_element` (or the synonymous :func:`guess_atom_type`). This can
+be done in the following manner::
+
+  import MDAnalysis as mda
+  from MDAnalysis.topology.guessers import guess_atom_element
+  from MDAnalysisTests.datafiles import PRM7
+
+  u = mda.Universe(PRM7)
+
+  print(u.atoms.names[1])  # returns the atom name H1
+
+  element = guess_atom_element(u.atoms.names[1])
+
+  print(element)  # returns element H
+
+In the above example, we take an atom named H1 and use
+:func:`guess_atom_element` to guess the element hydrogen (i.e. H). It is
+important to note that element guessing is not always accurate. Indeed in cases
+where the atom type is not recognised, we may end up with the wrong element.
+For example::
+
+  import MDAnalysis as mda
+  from MDAnalysis.topology.guessers import guess_atom_element
+  from MDAnalysisTests.datafiles import PRM19SBOPC
+
+  u = mda.Universe(PRM19SBOPC)
+
+  print(u.atoms.names[-1])  # returns the atom name EPW
+
+  element = guess_atom_element(u.atoms.names[-1])
+
+  print(element)  # returns element P
+
+Here we find that virtual site atom 'EPW' was given the element P, which
+would not be an expected result. We therefore always recommend that users
+carefully check the outcomes of any guessers.
+
+In some cases, one may want to guess elements for an entire universe and add
+this guess as a topology attribute. This can be done using :func:`guess_types`
+in the following manner::
+
+  import MDAnalysis as mda
+  from MDAnalysis.topology.guessers import guess_types
+  from MDAnalysisTests.datafiles import PRM7
+
+  u = mda.Universe(PRM7)
+
+  guessed_elements = guess_types(u.atoms.names)
+
+  u.add_TopologyAttr('elements', guessed_elements)
+
+  print(u.atoms.elements)  # returns an array of guessed elements
+
+More information on adding topology attributes can found in the `user guide`_.
+
+
+.. Links
+
+.. _user guide: https://www.mdanalysis.org/UserGuide/examples/constructing_universe.html#Adding-topology-attributes
+
+"""
 import numpy as np
 import warnings
 import re

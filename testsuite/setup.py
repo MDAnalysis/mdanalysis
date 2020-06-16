@@ -88,7 +88,7 @@ if sys.version_info[:2] < (2, 7):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-    RELEASE = "0.20.2-dev0"
+    RELEASE = "2.0.0-dev0"
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
@@ -185,6 +185,7 @@ if __name__ == '__main__':
               'hypothesis',
               'psutil>=4.0.2',
               'mock>=2.0.0',  # replace with unittest.mock in python 3 only version
+              'tidynamics>=1.0.0'
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

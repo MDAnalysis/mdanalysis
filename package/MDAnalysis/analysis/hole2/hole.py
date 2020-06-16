@@ -119,12 +119,6 @@ Functions and classes
    :members:
 
 """
-
-from __future__ import absolute_import, division
-
-from six.moves import zip, cPickle
-import six
-
 import os
 import errno
 import tempfile
@@ -1081,7 +1075,7 @@ class HoleAnalysis(AnalysisBase):
         """
         if not self.profiles:
             raise ValueError('No profiles available. Try calling run()')
-        if isinstance(order_parameters, six.string_types):
+        if isinstance(order_parameters, str):
             try:
                 order_parameters = np.loadtxt(order_parameters)
             except IOError:

@@ -32,11 +32,8 @@ returned.
 .. autoclass:: PositionAverager
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 import warnings
-
 
 
 class PositionAverager(object):  
