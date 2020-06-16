@@ -215,10 +215,6 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
-
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">numbers</span>
 <span class="kn">import</span> <span class="nn">math</span>
@@ -411,7 +407,7 @@
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="AuxReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader">[docs]</a><span class="k">class</span> <span class="nc">AuxReader</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_AuxReaderMeta</span><span class="p">)):</span>
+<div class="viewcode-block" id="AuxReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader">[docs]</a><span class="k">class</span> <span class="nc">AuxReader</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_AuxReaderMeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Base class for auxiliary readers.</span>
 
 <span class="sd">    Allows iteration over a set of data from a trajectory, additional</span>

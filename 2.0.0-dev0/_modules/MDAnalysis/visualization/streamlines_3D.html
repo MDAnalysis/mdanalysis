@@ -219,10 +219,6 @@
 <span class="sd">.. autofunction:: generate_streamlines_3d</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
-
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -443,7 +439,7 @@
 <span class="sd">        corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,</span>
 <span class="sd">        store a key/value pair for the centroid of the particles that fall within the cube.&quot;&quot;&quot;</span>
         <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">dictionary_cube_data_this_core</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">index_list_in_cube</span> <span class="o">=</span> <span class="n">point_in_cube</span><span class="p">(</span><span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;vertex_list&#39;</span><span class="p">],</span>
                                                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid&#39;</span><span class="p">])</span>
             <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;start_frame_index_list_in_cube&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index_list_in_cube</span>
@@ -458,7 +454,7 @@
     <span class="k">def</span> <span class="nf">update_dictionary_end_frame</span><span class="p">(</span><span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Update the cube dictionary objects again as appropriate for the second and final frame.&quot;&quot;&quot;</span>
         <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">dictionary_cube_data_this_core</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c1"># if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0</span>
             <span class="k">if</span> <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid_of_particles_first_frame&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;empty&#39;</span><span class="p">:</span>
                 <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>

@@ -219,10 +219,6 @@
 <span class="sd">   :inherited-members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
-
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
@@ -456,10 +452,9 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">()</span>
             <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-                <span class="n">err</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not valid PSF file&quot;</span>
-                       <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="n">err</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> is not valid PSF file&quot;</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
-                <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">err</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">vals</span> <span class="o">=</span> <span class="n">set_type</span><span class="p">(</span><span class="n">atom_parser</span><span class="p">(</span><span class="n">line</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>

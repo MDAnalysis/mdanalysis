@@ -287,9 +287,6 @@
 <span class="sd">    1   BENZENE 1   PERM    0   ****    ****    0   ROOT</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
-
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
@@ -395,9 +392,9 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frames</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">IOError</span><span class="p">(</span><span class="s2">&quot;Invalid frame </span><span class="si">{0}</span><span class="s2"> for trajectory with length </span><span class="si">{1}</span><span class="s2">&quot;</span>
-                          <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">))),</span>
-                       <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid frame </span><span class="si">{</span><span class="n">frame</span><span class="si">}</span><span class="s2"> for trajectory with length &quot;</span>
+                      <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="n">sections</span><span class="p">,</span> <span class="n">coords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_block</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
 
@@ -495,9 +492,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">molecule</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;molecule&#39;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="n">raise_from</span><span class="p">(</span><span class="ne">NotImplementedError</span><span class="p">(</span>
-                <span class="s2">&quot;MOL2Writer cannot currently write non MOL2 data&quot;</span><span class="p">),</span>
-                <span class="kc">None</span><span class="p">)</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s2">&quot;MOL2Writer cannot currently write non MOL2 data&quot;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
         <span class="c1"># Need to remap atom indices to 1 based in this selection</span>
         <span class="n">mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">)}</span>

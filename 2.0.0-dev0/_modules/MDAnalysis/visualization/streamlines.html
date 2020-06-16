@@ -218,10 +218,6 @@
 <span class="sd">.. autofunction:: generate_streamlines</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
-<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
-
 <span class="kn">import</span> <span class="nn">multiprocessing</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -231,14 +227,12 @@
     <span class="kn">import</span> <span class="nn">matplotlib</span>
     <span class="kn">import</span> <span class="nn">matplotlib.path</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">raise_from</span><span class="p">(</span>
-        <span class="ne">ImportError</span><span class="p">((</span>
+    <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
             <span class="s1">&#39;2d streamplot module requires: matplotlib.path for its &#39;</span>
             <span class="s1">&#39;path.Path.contains_points method. The installation &#39;</span>
             <span class="s1">&#39;instructions for the matplotlib module can be found here: &#39;</span>
             <span class="s1">&#39;http://matplotlib.org/faq/installing_faq.html?highlight=install&#39;</span>
-            <span class="p">)),</span>
-        <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
 
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 

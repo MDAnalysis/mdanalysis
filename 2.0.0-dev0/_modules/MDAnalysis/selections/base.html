@@ -215,15 +215,11 @@
 <span class="sd">.. autofunction:: join</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
-
-<span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
-
 <span class="kn">import</span> <span class="nn">os.path</span>
 
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_SELECTION_WRITERS</span>
+
 
 <div class="viewcode-block" id="join"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.join">[docs]</a><span class="k">def</span> <span class="nf">join</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a list from sequence.</span>
@@ -253,7 +249,7 @@
                 <span class="n">_SELECTION_WRITERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
 
 
-<div class="viewcode-block" id="SelectionWriterBase"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase">[docs]</a><span class="k">class</span> <span class="nc">SelectionWriterBase</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Selectionmeta</span><span class="p">)):</span>
+<div class="viewcode-block" id="SelectionWriterBase"><a class="viewcode-back" href="../../../documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase">[docs]</a><span class="k">class</span> <span class="nc">SelectionWriterBase</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">_Selectionmeta</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Export a selection in MDAnalysis to a format usable in an external package.</span>
 
 <span class="sd">    The :class:`SelectionWriterBase` writes a selection string to a file</span>
