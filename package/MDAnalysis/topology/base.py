@@ -36,10 +36,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import zip
-# While reduce is a built-in in python 2, it is not in python 3
 from functools import reduce
 
 import itertools
@@ -95,7 +91,7 @@ class _Topologymeta(type):
                 if '_format_hint' in classdict:
                     _PARSER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
-class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
+class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
     """Base class for topology readers
 
     Parameters

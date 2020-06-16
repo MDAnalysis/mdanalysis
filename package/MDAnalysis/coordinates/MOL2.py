@@ -111,9 +111,6 @@ MOL2 format notes
     1   BENZENE 1   PERM    0   ****    ****    0   ROOT
 
 """
-from __future__ import absolute_import
-from six import raise_from
-
 import numpy as np
 
 from . import base
@@ -219,9 +216,9 @@ class MOL2Reader(base.ReaderBase):
         try:
             block = self.frames[frame]
         except IndexError:
-            raise_from(IOError("Invalid frame {0} for trajectory with length {1}"
-                          "".format(frame, len(self))),
-                       None)
+            errmsg = (f"Invalid frame {frame} for trajectory with length "
+                      f"{len(self)}")
+            raise IOError(errmsg) from None
 
         sections, coords = self.parse_block(block)
 
@@ -319,9 +316,8 @@ class MOL2Writer(base.WriterBase):
         try:
             molecule = ts.data['molecule']
         except KeyError:
-            raise_from(NotImplementedError(
-                "MOL2Writer cannot currently write non MOL2 data"),
-                None)
+            errmsg = "MOL2Writer cannot currently write non MOL2 data"
+            raise NotImplementedError(errmsg) from None
 
         # Need to remap atom indices to 1 based in this selection
         mapping = {a: i for i, a in enumerate(obj.atoms, start=1)}
