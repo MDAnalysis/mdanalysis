@@ -35,7 +35,6 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-from __future__ import absolute_import
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
