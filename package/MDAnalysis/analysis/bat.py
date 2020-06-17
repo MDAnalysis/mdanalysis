@@ -497,7 +497,7 @@ class BAT(AnalysisBase):
               r01*(vu*sn_ang*cs_tor + vp*sn_ang*sn_tor - v21*cs_ang)
         return XYZ
 
-    def getAtomGroup(self):
-        """Returns the atomgroup
-        """
+    @property
+    def atoms(self):
+        """The atomgroup for which BAT are computed (read-only property)"""
         return self._ag
