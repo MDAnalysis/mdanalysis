@@ -40,9 +40,9 @@ Helper functions for common mathematical operations
 .. autofunction:: find_fragments
 
 .. versionadded:: 0.11.0
+.. versionchanged: 1.0.0
+   Unused function :func:`_angle()` has now been removed.
 """
-from __future__ import division, absolute_import
-from six.moves import zip
 import numpy as np
 
 from ..exceptions import NoDataError
@@ -144,20 +144,6 @@ def dihedral(ab, bc, cd):
     """
     x = angle(normal(ab, bc), normal(bc, cd))
     return (x if stp(ab, bc, cd) <= 0.0 else -x)
-
-
-def _angle(a, b):
-    """Angle between two vectors *a* and *b* in degrees.
-
-    If one of the lengths is 0 then the angle is returned as 0
-    (instead of `nan`).
-    """
-    # This function has different limits than angle?
-
-    angle = np.arccos(np.dot(a, b) / (norm(a) * norm(b)))
-    if np.isnan(angle):
-        return 0.0
-    return np.rad2deg(angle)
 
 
 def sarrus_det(matrix):

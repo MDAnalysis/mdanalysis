@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
 import MDAnalysis as mda
 import os
 import pytest
@@ -33,7 +32,7 @@ from numpy.testing import (
 from MDAnalysisTests.coordinates.reference import RefAdKSmall
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.datafiles import PQR
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 
 
 class TestPQRReader(_SingleFrameReader):

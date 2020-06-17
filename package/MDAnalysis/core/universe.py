@@ -53,10 +53,6 @@ Functions
 .. autofunction:: Merge
 
 """
-from __future__ import absolute_import
-from six.moves import range
-import six
-
 import errno
 import numpy as np
 import logging
@@ -129,7 +125,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
         if (err.errno is not None and
             errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
             # Runs if the error is propagated due to no permission / file not found
-            six.reraise(*sys.exc_info())
+            raise sys.exc_info()[1] from err
         else:
             # Runs when the parser fails
             raise IOError("Failed to load from the topology file {0}"
@@ -456,7 +452,7 @@ class Universe(object):
         .. versionadded:: 0.17.0
         .. versionchanged:: 0.19.0
            The attached Reader when trajectory=True is now a MemoryReader
-        .. versionchanged:: 0.21.0
+        .. versionchanged:: 1.0.0
            Universes can now be created with 0 atoms
         """
         if not n_atoms:
@@ -829,17 +825,17 @@ class Universe(object):
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
         """
-        if isinstance(topologyattr, six.string_types):
+        if isinstance(topologyattr, str):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                six.raise_from(ValueError(
+                errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
                     "To raise an issue go to: http://issues.mdanalysis.org"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
-                    None)
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys()))))
+                raise ValueError(errmsg) from None
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,
@@ -981,7 +977,7 @@ class Universe(object):
             None, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         if all(isinstance(x, TopologyObject) for x in values):
             try:
@@ -1061,7 +1057,7 @@ class Universe(object):
             u2.add_bonds(u.bonds.to_indices())
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
@@ -1083,7 +1079,7 @@ class Universe(object):
         guessed : bool or iterable (optional, default False)
             bool, or an iterable of hashable values with the same length as ``values``
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('angles', values, types=types,
                                  guessed=guessed)
@@ -1105,7 +1101,7 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('dihedrals', values, types=types,
                                  guessed=guessed)
@@ -1127,7 +1123,7 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('impropers', values, types=types,
                                  guessed=guessed)
@@ -1145,7 +1141,7 @@ class Universe(object):
             If AtomGroups, TopologyObjects, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         indices = []
         for x in values:
@@ -1199,7 +1195,7 @@ class Universe(object):
             u.delete_bonds(u2.bonds.to_indices())
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
         self._cache.pop('fragments', None)
@@ -1216,7 +1212,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('angles', values)
 
@@ -1232,7 +1228,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('dihedrals', values)
 
@@ -1248,7 +1244,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('impropers', values)
 

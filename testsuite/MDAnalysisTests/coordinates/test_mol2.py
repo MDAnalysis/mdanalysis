@@ -20,15 +20,13 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
-from six.moves import range
 
 import os
 from numpy.testing import (
     assert_equal, assert_array_equal,
     assert_array_almost_equal, TestCase,
+    assert_almost_equal
 )
 
 from MDAnalysisTests.datafiles import (
@@ -37,16 +35,12 @@ from MDAnalysisTests.datafiles import (
 )
 from MDAnalysis import Universe
 import MDAnalysis as mda
-from MDAnalysisTests import tempdir, make_Universe
+from MDAnalysisTests import make_Universe
 
 
-class TestMol2(TestCase):
-    def setUp(self):
-        self.tempdir = tempdir.TempDir()
-        self.outfile = os.path.join(self.tempdir.name, 'test.mol2')
-
-    def tearDown(self):
-        del self.tempdir
+class TestMol2(object):
+    def setup_method(self):
+        self.outfile = 'test.mol2'
 
     def test_read(self):
         u = Universe(mol2_molecules)
@@ -61,35 +55,38 @@ class TestMol2(TestCase):
         assert_equal(len(u.atoms), 297)
         assert_equal(u.trajectory.n_frames, 1)
 
-    def test_write(self):
+    def test_write(self, tmpdir):
         ref = Universe(mol2_molecules)
-        ref.atoms.write(self.outfile)
-        u = Universe(self.outfile)
-        assert_equal(len(u.atoms), len(ref.atoms))
-        assert_equal(len(u.trajectory), 1)
-        assert_array_equal(u.atoms.positions, ref.atoms.positions)
+        with tmpdir.as_cwd():
+            ref.atoms.write(self.outfile)
+            u = Universe(self.outfile)
+            assert_equal(len(u.atoms), len(ref.atoms))
+            assert_equal(len(u.trajectory), 1)
+            assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
-    def test_write_selection(self):
+    def test_write_selection(self, tmpdir):
         ref = Universe(mol2_molecule)
         gr0 = ref.select_atoms("name C*")
-        gr0.write(self.outfile)
-        u = Universe(self.outfile)
-        gr1 = u.select_atoms("name C*")
-        assert_equal(len(gr0), len(gr1))
+        with tmpdir.as_cwd():
+            gr0.write(self.outfile)
+            u = Universe(self.outfile)
+            gr1 = u.select_atoms("name C*")
+            assert_equal(len(gr0), len(gr1))
 
-    def test_write_in_loop(self):
+    def test_write_in_loop(self, tmpdir):
         ref = Universe(mol2_molecules)
 
-        with mda.Writer(self.outfile) as W:
-            for ts in ref.trajectory:
-                W.write(ref.atoms)
-        u = Universe(self.outfile)
-        assert_equal(len(u.atoms), len(ref.atoms))
-        assert_equal(len(u.trajectory), len(ref.trajectory))
-        assert_array_equal(u.atoms.positions, ref.atoms.positions)
-        u.trajectory[199]
-        ref.trajectory[199]
-        assert_array_equal(u.atoms.positions, ref.atoms.positions)
+        with tmpdir.as_cwd():
+            with mda.Writer(self.outfile) as W:
+                for ts in ref.trajectory:
+                    W.write(ref.atoms)
+            u = Universe(self.outfile)
+            assert_equal(len(u.atoms), len(ref.atoms))
+            assert_equal(len(u.trajectory), len(ref.trajectory))
+            assert_array_equal(u.atoms.positions, ref.atoms.positions)
+            u.trajectory[199]
+            ref.trajectory[199]
+            assert_array_equal(u.atoms.positions, ref.atoms.positions)
 
     def test_broken_molecule(self):
         with pytest.raises(ValueError):
@@ -165,22 +162,45 @@ class TestMOL2NoSubstructure(object):
         u = mda.Universe(mol2_zinc)
         assert len(u.atoms) == self.n_atoms
 
-    def test_write_nostructure(self):
-        mytempdir = tempdir.TempDir()
-        outfile = os.path.join(mytempdir.name, 'test.mol2')
+    def test_write_nostructure(self, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test.mol2'
 
-        u = mda.Universe(mol2_zinc)
+            u = mda.Universe(mol2_zinc)
+            with mda.Writer(outfile) as W:
+                W.write(u.atoms)
+
+            u2 = mda.Universe(outfile)
+
+            assert len(u.atoms) == len(u2.atoms)
+
+
+def test_mol2_write_NIE(tmpdir):
+    with tmpdir.as_cwd():
+        outfile = os.path.join('test.mol2')
+        u = make_Universe(trajectory=True)
+        with pytest.raises(NotImplementedError):
+            u.atoms.write(outfile)
+
+def test_mol2_multi_write(tmpdir):
+    # see: gh-2678
+    with tmpdir.as_cwd():
+        u = mda.Universe(mol2_molecules)
+        u.atoms[:4].write('group1.mol2')
+        u.atoms[:4].write('group1.mol2')
+
+
+def test_mol2_universe_write(tmpdir):
+    # see Issue 2717
+    with tmpdir.as_cwd():
+        outfile = 'test.mol2'
+
+        u = mda.Universe(mol2_comments_header)
+
         with mda.Writer(outfile) as W:
-            W.write(u.atoms)
+            W.write(u)
 
         u2 = mda.Universe(outfile)
 
-        assert len(u.atoms) == len(u2.atoms)
-
-
-def test_mol2_write_NIE():
-    mytempdir = tempdir.TempDir()
-    outfile = os.path.join(mytempdir.name, 'test.mol2')
-    u = make_Universe(trajectory=True)
-    with pytest.raises(NotImplementedError):
-        u.atoms.write(outfile)
+        assert_almost_equal(u.atoms.positions, u2.atoms.positions)
+        assert_almost_equal(u.dimensions, u2.dimensions)

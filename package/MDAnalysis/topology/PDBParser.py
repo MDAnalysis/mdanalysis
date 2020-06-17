@@ -60,12 +60,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, print_function
-
 import numpy as np
 import warnings
 
-from six.moves import range
 from .guessers import guess_masses, guess_types
 from .tables import SYMB2Z
 from ..lib import util
@@ -90,16 +87,19 @@ from ..core.topologyattrs import (
     Tempfactors,
 )
 
+
 def float_or_default(val, default):
     try:
         return float(val)
     except ValueError:
         return default
 
+
 DIGITS_UPPER = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 DIGITS_LOWER = DIGITS_UPPER.lower()
 DIGITS_UPPER_VALUES = dict([pair for pair in zip(DIGITS_UPPER, range(36))])
 DIGITS_LOWER_VALUES = dict([pair for pair in zip(DIGITS_LOWER, range(36))])
+
 
 def decode_pure(digits_values, s):
     """Decodes the string s using the digit, value associations for each
@@ -224,7 +224,7 @@ class PDBParser(TopologyReaderBase):
 
         self._wrapped_serials = False  # did serials go over 100k?
         last_wrapped_serial = 100000  # if serials wrap, start from here
-        with util.openany(self.filename ) as f:
+        with util.openany(self.filename) as f:
             for line in f:
                 line = line.strip()  # Remove extra spaces
                 if not line:  # Skip line if empty
@@ -269,7 +269,6 @@ class PDBParser(TopologyReaderBase):
                     warnings.warn("PDB file is missing resid information.  "
                                   "Defaulted to '1'")
                     resid = 1
-                    icode = ''
                 finally:
                     resids.append(resid)
                     icodes.append(line[26:27].strip())
@@ -327,7 +326,7 @@ class PDBParser(TopologyReaderBase):
         else:
             warnings.warn("Element information is absent or missing for a few "
                           "atoms. Elements attributes will not be populated.")
-        
+
         # Residue level stuff from here
         resids = np.array(resids, dtype=np.int32)
         resnames = np.array(resnames, dtype=object)
@@ -346,7 +345,7 @@ class PDBParser(TopologyReaderBase):
         attrs.append(ICodes(icodes))
         attrs.append(Resnames(resnames))
 
-        if any(segids) and not any(val == None for val in segids):
+        if any(segids) and not any(val is None for val in segids):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))

@@ -19,8 +19,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import numpy as np
 import pytest
 
@@ -29,7 +27,7 @@ from MDAnalysis.coordinates.chemfiles import (
     ChemfilesReader, ChemfilesWriter, check_chemfiles_version,
 )
 
-from MDAnalysisTests import datafiles, tempdir
+from MDAnalysisTests import datafiles
 from MDAnalysisTests.coordinates.base import (
     MultiframeReaderTest, BaseWriterTest, BaseReference
 )
@@ -113,15 +111,16 @@ class TestChemfiles(object):
         for ts in u.trajectory:
             assert ts.n_atoms == 18364
 
-    def test_changing_system_size(self):
-        outfile = tempdir.TempDir().name + "chemfiles-changing-size.xyz"
-        with open(outfile, "w") as fd:
-            fd.write(VARYING_XYZ)
+    def test_changing_system_size(self, tmpdir):
+        outfile = "chemfiles-changing-size.xyz"
+        with tmpdir.as_cwd():
+            with open(outfile, "w") as fd:
+                fd.write(VARYING_XYZ)
 
-        u = mda.Universe(outfile, format="chemfiles", topology_format="XYZ")
+            u = mda.Universe(outfile, format="chemfiles", topology_format="XYZ")
 
-        with pytest.raises(IOError):
-            u.trajectory._read_next_timestep()
+            with pytest.raises(IOError):
+                u.trajectory._read_next_timestep()
 
     def test_wrong_open_mode(self):
         with pytest.raises(IOError):
@@ -150,32 +149,35 @@ class TestChemfiles(object):
         for bond in check.bonds:
             assert (bond.atoms[0].ix, bond.atoms[1].ix) in bonds
 
-    def test_write_topology(self):
+    def test_write_topology(self, tmpdir):
         u = mda.Universe(datafiles.CONECT)
-        outfile = tempdir.TempDir().name + "chemfiles-write-topology.pdb"
-        with ChemfilesWriter(outfile) as writer:
-            writer.write(u)
-        self.check_topology(datafiles.CONECT, outfile)
+        outfile = "chemfiles-write-topology.pdb"
+        with tmpdir.as_cwd():
+            with ChemfilesWriter(outfile) as writer:
+                writer.write(u)
+            self.check_topology(datafiles.CONECT, outfile)
 
-        # Manually setting the topology when creating the ChemfilesWriter
-        # (1) from an object
-        with ChemfilesWriter(outfile, topology=u) as writer:
-            writer.write_next_timestep(u.trajectory.ts)
-        self.check_topology(datafiles.CONECT, outfile)
+            # Manually setting the topology when creating the ChemfilesWriter
+            # (1) from an object
+            with ChemfilesWriter(outfile, topology=u) as writer:
+                writer.write(u)
+            self.check_topology(datafiles.CONECT, outfile)
 
-        # (2) from a file
-        with ChemfilesWriter(outfile, topology=datafiles.CONECT) as writer:
-            writer.write_next_timestep(u.trajectory.ts)
-        # FIXME: this does not work, since chemfiles also insert the bonds
-        # which are implicit in PDB format (between standard residues), while
-        # MDAnalysis only read the explicit CONNECT records.
+            # (2) from a file
+            with ChemfilesWriter(outfile, topology=datafiles.CONECT) as writer:
+                writer.write(u)
+            # FIXME: this does not work, since chemfiles also insert the bonds
+            # which are implicit in PDB format (between standard residues), while
+            # MDAnalysis only read the explicit CONNECT records.
 
-        # self.check_topology(datafiles.CONECT, outfile)
+            # self.check_topology(datafiles.CONECT, outfile)
 
-    def test_write_velocities(self):
-        ts = mda.coordinates.base.Timestep(4, velocities=True)
+    def test_write_velocities(self, tmpdir):
+        u = mda.Universe.empty(4, trajectory=True)
+        u.add_TopologyAttr('type', values=['H', 'H', 'H', 'H'])
+
+        ts = u.trajectory.ts
         ts.dimensions = [20, 30, 41, 90, 90, 90]
-
         ts.positions = [
             [1, 1, 1],
             [2, 2, 2],
@@ -189,20 +191,14 @@ class TestChemfiles(object):
             [40, 40, 40],
         ]
 
-        u = mda.Universe.empty(4)
-        u.add_TopologyAttr('type')
-        u.atoms[0].type = "H"
-        u.atoms[1].type = "H"
-        u.atoms[2].type = "H"
-        u.atoms[3].type = "H"
+        outfile = "chemfiles-write-velocities.lmp"
+        with tmpdir.as_cwd():
+            with ChemfilesWriter(outfile, topology=u, chemfiles_format='LAMMPS Data') as writer:
+                writer.write(u)
 
-        outfile = tempdir.TempDir().name + "chemfiles-write-velocities.lmp"
-        with ChemfilesWriter(outfile, topology=u, chemfiles_format='LAMMPS Data') as writer:
-            writer.write_next_timestep(ts)
-
-        with open(outfile) as file:
-            content = file.read()
-            assert content == EXPECTED_LAMMPS_DATA
+            with open(outfile) as file:
+                content = file.read()
+                assert content == EXPECTED_LAMMPS_DATA
 
 
 VARYING_XYZ = """2

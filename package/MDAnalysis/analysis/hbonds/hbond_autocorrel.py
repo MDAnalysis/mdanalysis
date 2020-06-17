@@ -204,10 +204,6 @@ Classes
 
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-from six import raise_from
-
 import numpy as np
 import scipy.optimize
 
@@ -301,12 +297,17 @@ class HydrogenBondAutoCorrel(object):
                  nruns=1,  # number of times to iterate through the trajectory
                  nsamples=50,  # number of different points to sample in a run
                  pbc=True):
+
+        #warnings.warn("This class is deprecated, use analysis.hbonds.HydrogenBondAnalysis "
+        #              "which has .autocorrelation function",
+        #              category=DeprecationWarning)
+
         self.u = universe
         # check that slicing is possible
         try:
             self.u.trajectory[0]
         except Exception:
-            raise_from(ValueError("Trajectory must support slicing"), None)
+            raise ValueError("Trajectory must support slicing") from None
 
         self.h = hydrogens
         self.a = acceptors

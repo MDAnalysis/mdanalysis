@@ -20,18 +20,15 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
-
-from __future__ import absolute_import, division
-
 import numpy as np
 import MDAnalysis
 from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis
 from MDAnalysis.exceptions import NoDataError
 
 import pytest
-from numpy.testing import assert_allclose, assert_equal, assert_array_almost_equal, assert_array_equal, \
-    assert_almost_equal
+from numpy.testing import (assert_allclose, assert_equal,
+                           assert_array_almost_equal, assert_array_equal,
+                           assert_almost_equal)
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
 
@@ -78,7 +75,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         ref_counts = np.array([3, 2, 4, 4, 4, 4, 3, 2, 3, 3])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.timesteps, ref_times)
+        assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):
@@ -99,7 +96,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
 
         # count_by_ids() returns raw counts
         # convert to fraction of time that bond was observed
-        counts = unique_hbonds[:, 3] / len(h.timesteps)
+        counts = unique_hbonds[:, 3] / len(h.times)
 
         assert_allclose(counts, ref_counts)
 
@@ -207,7 +204,7 @@ class TestHydrogenBondAnalysisMock(object):
         ref_counts = np.array([1, 0, 1])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.timesteps, ref_times)
+        assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
 
@@ -352,7 +349,7 @@ class TestHydrogenBondAnalysisTIP3PStartStep(object):
         ref_counts = np.array([2, 4, 4, 2, 3])
 
         counts = h.count_by_time()
-        assert_array_almost_equal(h.timesteps, ref_times)
+        assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
     def test_count_by_type(self, h):

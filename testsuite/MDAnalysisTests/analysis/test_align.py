@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, division, print_function
 from contextlib import contextmanager
 
 import MDAnalysis as mda
@@ -30,8 +29,9 @@ import os
 import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
-from MDAnalysisTests import executable_not_found, tempdir
-from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
+from MDAnalysisTests import executable_not_found
+from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
+                                       ALIGN_UNBOUND)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -235,8 +235,8 @@ class TestAlign(object):
         rmsd_weights = align.alignto(universe, reference, weights=weights)
         assert_almost_equal(rmsd[1], rmsd_weights[1], 6)
 
-    def test_AlignTraj_outfile_default(self, universe, reference):
-        with tempdir.in_tempdir():
+    def test_AlignTraj_outfile_default(self, universe, reference, tmpdir):
+        with tmpdir.as_cwd():
             reference.trajectory[-1]
             x = align.AlignTraj(universe, reference)
             try:
@@ -255,7 +255,7 @@ class TestAlign(object):
                         n_atoms=fitted.atoms.n_atoms) as w:
             w.write(fitted.atoms)
 
-        with tempdir.in_tempdir():
+        with tmpdir.as_cwd():
             align.AlignTraj(fitted, reference)
 
             # we are careful now. The default does nothing
@@ -470,25 +470,29 @@ class TestAlignmentProcessing(object):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
-        assert len(
-            sel['reference']) == 30623, "selection string has unexpected length"
+        assert len(sel['reference']) == 30623, ("selection string has"
+                                                "unexpected length")
         assert len(
             sel['mobile']) == 30623, "selection string has unexpected length"
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_file(self, tmpdir):
-        sel = align.fasta2select(self.seq, is_aligned=False,
-                                 alnfilename=None, treefilename=None)
-        assert len(
-            sel['reference']) == 23080, "selection string has unexpected length"
-        assert len(
-            sel['mobile']) == 23090, "selection string has unexpected length"
+        """test align.fasta2select() on a non-aligned FASTA with default
+        filenames"""
+        with tmpdir.as_cwd():
+            sel = align.fasta2select(self.seq, is_aligned=False,
+                                     alnfilename=None, treefilename=None)
+            assert len(sel['reference']) == 23080, ("selection string has"
+                                                    "unexpected length")
+            assert len(sel['mobile']) == 23090, ("selection string has"
+                                                 "unexpected length")
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
-        """MDAnalysis.analysis.align: test fasta2select() with ClustalW (Issue 113)"""
+        """MDAnalysis.analysis.align: test fasta2select() with ClustalW
+        (Issue 113)"""
         alnfile = str(tmpdir.join('alignmentprocessing.aln'))
         treefile = str(tmpdir.join('alignmentprocessing.dnd'))
         sel = align.fasta2select(self.seq, is_aligned=False,
@@ -496,10 +500,11 @@ class TestAlignmentProcessing(object):
         # numbers computed from alignment with clustalw 2.1 on Mac OS X
         # [orbeckst] length of the output strings, not residues or anything
         # real...
-        assert len(
-            sel['reference']) == 23080, "selection string has unexpected length"
+        assert len(sel['reference']) == 23080, ("selection string has"
+                                                "unexpected length")
         assert len(
             sel['mobile']) == 23090, "selection string has unexpected length"
+
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)

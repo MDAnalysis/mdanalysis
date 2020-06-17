@@ -201,9 +201,6 @@ Classes
    :members:
 
 """
-from __future__ import division, absolute_import
-from six.moves import zip
-
 import os
 import errno
 import warnings
@@ -373,10 +370,12 @@ class Contacts(AnalysisBase):
     .. versionchanged:: 1.0.0
        ``save()`` method has been removed. Use ``np.savetxt()`` on
        :attr:`Contacts.timeseries` instead.
+    .. versionchanged:: 1.0.0
+        added ``pbc`` attribute to calculate distances using PBC.
 
     """
     def __init__(self, u, select, refgroup, method="hard_cut", radius=4.5,
-                 kwargs=None, **basekwargs):
+                 pbc=True, kwargs=None, **basekwargs):
         """
         Parameters
         ----------
@@ -392,6 +391,9 @@ class Contacts(AnalysisBase):
         method : string | callable (optional)
             Can either be one of ``['hard_cut' , 'soft_cut', 'radius_cut']`` or a callable
             with call signature ``func(r, r0, **kwargs)`` (the "Contacts API").
+        pbc : bool (optional)
+            Uses periodic boundary conditions to calculate distances if set to ``True``; the
+            default is ``True``.
         kwargs : dict, optional
             dictionary of additional kwargs passed to `method`. Check
             respective functions for reasonable values.
@@ -424,30 +426,40 @@ class Contacts(AnalysisBase):
         self.select = select
         self.grA = u.select_atoms(select[0])
         self.grB = u.select_atoms(select[1])
-
+        self.pbc = pbc
+        
         # contacts formed in reference
         self.r0 = []
         self.initial_contacts = []
 
+        #get dimension of box if pbc set to True
+        if self.pbc:
+            self._get_box = lambda ts: ts.dimensions
+        else:
+            self._get_box = lambda ts: None
+
         if isinstance(refgroup[0], AtomGroup):
             refA, refB = refgroup
-            self.r0.append(distance_array(refA.positions, refB.positions))
+            self.r0.append(distance_array(refA.positions, refB.positions,
+                                            box=self._get_box(refA.universe)))
             self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
+
         else:
             for refA, refB in refgroup:
-                self.r0.append(distance_array(refA.positions, refB.positions))
-                self.initial_contacts.append(contact_matrix(self.r0[-1],
-                                                            radius))
+                self.r0.append(distance_array(refA.positions, refB.positions,
+                                                box=self._get_box(refA.universe)))
+                self.initial_contacts.append(contact_matrix(self.r0[-1], radius))
 
     def _prepare(self):
         self.timeseries = np.empty((self.n_frames, len(self.r0)+1))
 
     def _single_frame(self):
         self.timeseries[self._frame_index][0] = self._ts.frame
-
+        
         # compute distance array for a frame
-        d = distance_array(self.grA.positions, self.grB.positions)
-
+        d = distance_array(self.grA.positions, self.grB.positions,
+                            box=self._get_box(self._ts))
+        
         for i, (initial_contacts, r0) in enumerate(zip(self.initial_contacts,
                                                        self.r0), 1):
             # select only the contacts that were formed in the reference state

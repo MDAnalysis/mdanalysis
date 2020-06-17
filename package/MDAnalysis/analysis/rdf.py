@@ -105,13 +105,11 @@ atom ``B[0]``.
 .. - Coordination number
 
 """
-from __future__ import division, absolute_import
 import numpy as np
 
 from ..lib.util import blocks_of
 from ..lib import distances
 from .base import AnalysisBase
-from six.moves import zip, range
 
 
 class InterRDF(AnalysisBase):

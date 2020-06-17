@@ -28,9 +28,6 @@ A collection of useful building blocks for creating Analysis
 classes.
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import range, zip
 import inspect
 import logging
 import itertools
@@ -89,6 +86,13 @@ class AnalysisBase(object):
        na = NewAnalysis(u.select_atoms('name CA'), 35).run(start=10, stop=20)
        print(na.result)
 
+    Attributes
+    ----------
+    times: np.ndarray
+        array of Timestep times. Only exists after calling run()
+    frames: np.ndarray
+        array of Timestep frame indices. Only exists after calling run()
+
     """
 
     def __init__(self, trajectory, verbose=False, **kwargs):
@@ -124,6 +128,11 @@ class AnalysisBase(object):
             stop frame of analysis
         step : int, optional
             number of frames to skip between each analysed frame
+
+
+        .. versionchanged:: 1.0.0
+            Added .frames and .times arrays as attributes
+
         """
         self._trajectory = trajectory
         start, stop, step = trajectory.check_slice_indices(start, stop, step)
@@ -131,6 +140,8 @@ class AnalysisBase(object):
         self.stop = stop
         self.step = step
         self.n_frames = len(range(start, stop, step))
+        self.frames = np.zeros(self.n_frames, dtype=int)
+        self.times = np.zeros(self.n_frames)
 
     def _single_frame(self):
         """Calculate data from a single frame of trajectory
@@ -141,14 +152,14 @@ class AnalysisBase(object):
 
     def _prepare(self):
         """Set things up before the analysis loop begins"""
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def _conclude(self):
         """Finalise the results you've gathered.
 
         Called at the end of the run() method to finish everything up.
         """
-        pass # pylint: disable=unnecessary-pass
+        pass  # pylint: disable=unnecessary-pass
 
     def run(self, start=None, stop=None, step=None, verbose=None):
         """Perform the calculation
@@ -166,7 +177,8 @@ class AnalysisBase(object):
         """
         logger.info("Choosing frames to analyze")
         # if verbose unchanged, use class default
-        verbose = getattr(self, '_verbose', False) if verbose is None else verbose
+        verbose = getattr(self, '_verbose',
+                          False) if verbose is None else verbose
 
         self._setup_frames(self._trajectory, start, stop, step)
         logger.info("Starting preparation")
@@ -176,6 +188,8 @@ class AnalysisBase(object):
                 verbose=verbose)):
             self._frame_index = i
             self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
             # logger.info("--> Doing frame {} of {}".format(i+1, self.n_frames))
             self._single_frame()
         logger.info("Finishing up")
@@ -231,7 +245,7 @@ class AnalysisFromFunction(AnalysisBase):
 
         if trajectory is None:
             # all possible places to find trajectory
-            for arg in itertools.chain(args, six.itervalues(kwargs)):
+            for arg in itertools.chain(args, kwargs.values()):
                 if isinstance(arg, AtomGroup):
                     trajectory = arg.universe.trajectory
                     break
@@ -325,14 +339,14 @@ def _filter_baseanalysis_kwargs(function, kwargs):
         # pylint: disable=deprecated-method
         argspec = inspect.getargspec(function)
 
-    for base_kw in six.iterkeys(base_kwargs):
+    for base_kw in base_kwargs.keys():
         if base_kw in argspec.args:
             raise ValueError(
                 "argument name '{}' clashes with AnalysisBase argument."
                 "Now allowed are: {}".format(base_kw, base_kwargs.keys()))
 
     base_args = {}
-    for argname, default in six.iteritems(base_kwargs):
+    for argname, default in base_kwargs.items():
         base_args[argname] = kwargs.pop(argname, default)
 
     return base_args, kwargs

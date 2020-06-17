@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import print_function, division, absolute_import
-
 import MDAnalysis as mda
 import pytest
 from MDAnalysis.analysis import contacts
@@ -37,12 +35,12 @@ import numpy as np
 from MDAnalysisTests.datafiles import (
     PSF,
     DCD,
+    TPR,
+    XTC,
     contacts_villin_folded,
     contacts_villin_unfolded,
     contacts_file
 )
-
-from MDAnalysisTests import tempdir
 
 
 def test_soft_cut_q():
@@ -217,7 +215,6 @@ class TestContacts(object):
         results = soft_cut(f, u, sel, sel)
         assert_almost_equal(q.timeseries[:, 1], results[:, 1])
 
-
     def test_villin_unfolded(self):
         # both folded
         f = mda.Universe(contacts_villin_folded)
@@ -302,6 +299,23 @@ class TestContacts(object):
         with pytest.raises(ValueError):
             self._run_Contacts(universe, method=2, stop=2)
 
+    @pytest.mark.parametrize("pbc,expected", [
+    (True, [1., 0.43138152, 0.3989021, 0.43824337, 0.41948765,
+            0.42223239, 0.41354071, 0.43641354, 0.41216834, 0.38334858]),
+    (False, [1., 0.42327791, 0.39192399, 0.40950119, 0.40902613,
+             0.42470309, 0.41140143, 0.42897862, 0.41472684, 0.38574822])
+    ])
+    def test_distance_box(self, pbc, expected):
+        u = mda.Universe(TPR, XTC)
+        sel_basic = "(resname ARG LYS)"
+        sel_acidic = "(resname ASP GLU)"
+        acidic = u.select_atoms(sel_acidic)
+        basic = u.select_atoms(sel_basic)
+        
+        r = contacts.Contacts(u, select=(sel_acidic, sel_basic),
+                        refgroup=(acidic, basic), radius=6.0, pbc=pbc)
+        r.run()
+        assert_array_almost_equal(r.timeseries[:, 1], expected)
 
 def test_q1q2():
     u = mda.Universe(PSF, DCD)

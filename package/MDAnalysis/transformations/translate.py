@@ -36,9 +36,6 @@ or defined by centering an AtomGroup in the unit cell using the function
 
 
 """
-from __future__ import absolute_import, division
-from six import raise_from
-
 import numpy as np
 from functools import partial
 
@@ -127,11 +124,10 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
             raise ValueError('{} is not a valid argument for center'.format(center))
     except AttributeError:
         if center == 'mass':
-            raise_from(
-                AttributeError('{} is not an AtomGroup object with masses'.format(ag)),
-                None)
+            errmsg = f'{ag} is not an AtomGroup object with masses'
+            raise AttributeError(errmsg) from None
         else:
-            raise_from(ValueError('{} is not an AtomGroup object'.format(ag)), None)
+            raise ValueError(f'{ag} is not an AtomGroup object') from None
 
     def wrapped(ts):
         if point is None:

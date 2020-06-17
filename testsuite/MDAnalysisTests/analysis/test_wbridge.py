@@ -1,5 +1,4 @@
-from __future__ import print_function, absolute_import
-from six import StringIO
+from io import StringIO
 from collections import defaultdict
 
 from numpy.testing import (

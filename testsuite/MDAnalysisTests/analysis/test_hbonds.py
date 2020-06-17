@@ -21,10 +21,6 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 # Note: to be removed with MDAnalysis.analysis.hbonds.hbond_analysis in 2.0
-
-from __future__ import print_function, absolute_import
-
-
 import MDAnalysis
 import MDAnalysis.analysis.hbonds
 import itertools
@@ -38,7 +34,7 @@ from numpy.testing import (
 import numpy as np
 
 
-from six import StringIO
+from io import StringIO
 
 from MDAnalysisTests.datafiles import PDB_helix, GRO, XTC, waterPSF, waterDCD
 
@@ -398,6 +394,39 @@ class TestHydrogenBondAnalysisTIP3P(object):
         # https://github.com/MDAnalysis/mdanalysis/issues/801)
         for name, ref in reference_table.items():
             assert_array_equal(h.table.field(name), ref, err_msg="resname for {0} do not match (Issue #801)")
+
+
+class TestHydrogenBondAnalysisAutocorrelation(object):
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        return MDAnalysis.Universe(waterPSF, waterDCD)
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def selection():
+        return "byres name OH2"
+
+    def test_HydrogenBondLifetimes(self, universe, selection):
+        hbonds = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe,
+                                                                selection,
+                                                                selection,
+                                                                distance=3.5,
+                                                                angle=120.0)
+        hbonds.run(start=0, stop=4)
+        hbonds.autocorrelation(tau_max=3)
+        assert_almost_equal(hbonds.acf_timeseries[3], 0.75)
+
+    def test_HydrogenBondLifetimes_growing_continuous(self, universe, selection):
+        hbonds = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(universe,
+                                                                selection,
+                                                                selection,
+                                                                distance=3.5,
+                                                                angle=120.0)
+        hbonds.run(start=0, stop=9)
+        hbonds.autocorrelation(tau_max=5)
+        assert all([frame >= framePlus1 for frame, framePlus1 in zip(hbonds.acf_timeseries, hbonds.acf_timeseries[1:])])
+
 
 
 class TestHydrogenBondAnalysisTIP3PHeavyPBC(object):

@@ -39,10 +39,6 @@ Base classes for deriving all auxiliary data readers. See the API in :mod:`MDAna
 
 """
 
-from __future__ import division, absolute_import
-import six
-from six.moves import range
-
 import os
 import numbers
 import math
@@ -235,7 +231,7 @@ class AuxStep(object):
         return np.full_like(self.data, np.nan)
 
 
-class AuxReader(six.with_metaclass(_AuxReaderMeta)):
+class AuxReader(metaclass=_AuxReaderMeta):
     """ Base class for auxiliary readers.
 
     Allows iteration over a set of data from a trajectory, additional
@@ -420,9 +416,13 @@ class AuxReader(six.with_metaclass(_AuxReaderMeta)):
         # following frame. Move to right position if not.
         frame_for_step = self.step_to_frame(self.step, ts)
         frame_for_next_step = self.step_to_frame(self.step+1, ts)
-        if (frame_for_step is not None and frame_for_next_step is not None
-                and not (frame_for_step < ts.frame <= frame_for_next_step)):
-            self.move_to_ts(ts)
+        if frame_for_step is not None:
+            if frame_for_next_step is None:
+                # self.step is the last auxiliary step in memory.
+                if frame_for_step >= ts.frame:
+                    self.move_to_ts(ts)
+            elif not (frame_for_step < ts.frame <= frame_for_next_step):
+                self.move_to_ts(ts)
 
         self._reset_frame_data() # clear previous frame data
         # read through all the steps 'assigned' to ts.frame + add to frame_data

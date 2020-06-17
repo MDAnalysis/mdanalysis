@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
 from numpy.testing import assert_equal
 import functools
@@ -55,7 +53,7 @@ class TPRAttrs(ParserBase):
     def test_molnums(self, top):
         molnums = top.molnums.values
         assert_equal(molnums, self.ref_molnums)
-        assert molnums.dtype == np.int64
+        assert molnums.dtype == np.intp
 
 
 class TestTPR(TPRAttrs):
