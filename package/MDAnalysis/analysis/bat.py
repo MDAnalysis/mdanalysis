@@ -225,7 +225,7 @@ def _find_torsions(root, atoms):
 class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
-    BAT coordinates will be computed for the group of atoms and all frames
+    Bond-Angle-Torisions (BAT) internal coordinates will be computed for the group of atoms and all frames
     in the trajectory belonging to `ag'.`
 
     """
