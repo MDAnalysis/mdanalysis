@@ -156,6 +156,16 @@ class OrOperation(LogicOperation):
 
         return group.universe.atoms[idx]
 
+def return_empty_on_apply(func):
+    """
+    Decorator to return empty AtomGroups from the apply() function
+    without evaluating it
+    """
+    def apply(self, group):
+        if len(group) == 0:
+            return group
+        return func(self, group)
+    return apply
 
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
@@ -163,6 +173,11 @@ class _Selectionmeta(type):
         try:
             _SELECTIONDICT[classdict['token']] = cls
         except KeyError:
+            pass
+        
+        try:
+            cls.apply = return_empty_on_apply(cls.apply)
+        except AttributeError:
             pass
 
 

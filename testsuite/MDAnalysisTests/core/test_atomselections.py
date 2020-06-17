@@ -1126,6 +1126,19 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
 
     assert len(sel.atoms) == n_atoms
 
+@pytest.mark.parametrize('selection', [
+    'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
+    'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
+    'index 0', 'index 1', 'bynum 1-10',
+    'segid SYSTEM', 'resid 163', 'resid 1-10', 'resnum 2',
+    'around 10 resid 1', 'point 0 0 0 10', 'sphzone 10 resid 1',
+    'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
+    'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
+    'byres index 0', 'same resid as index 0',
+])
+def test_selections_on_empty_group(u_pdb_icodes, selection):
+    ag = u_pdb_icodes.atoms[[]].select_atoms(selection)
+    assert len(ag) == 0
 
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
