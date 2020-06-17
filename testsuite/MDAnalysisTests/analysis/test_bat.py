@@ -72,3 +72,12 @@ class TestBAT(object):
         assert_almost_equal(XYZ, selected_residues.positions, 5,
             err_msg="error: Reconstructed Cartesian coordinates " + \
                     "don't match original")
+
+    def test_bat_nc_IO(self, selected_residues, bat):
+        R = BAT(selected_residues)
+        R.run()
+        R.save_bat('test_bat_IO.nc')
+        R2 = BAT(selected_residues, bat_nc='test_bat_IO.nc')
+        test_bat = R2.bat
+        assert_almost_equal(bat, test_bat, 5,
+            err_msg="error: Loaded BAT coordinates should match test values")
