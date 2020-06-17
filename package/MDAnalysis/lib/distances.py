@@ -66,10 +66,6 @@ Functions
 .. autofunction:: augment_coordinates(coordinates, box, r)
 .. autofunction:: undo_augment(results, translation, nreal)
 """
-from __future__ import division, absolute_import
-from six.moves import range
-from six import raise_from
-
 import numpy as np
 from numpy.lib.utils import deprecate
 
@@ -100,11 +96,9 @@ def _run(funcname, args=None, kwargs=None, backend="serial"):
     try:
         func = getattr(_distances[backend], funcname)
     except KeyError:
-        raise_from(
-            ValueError(
-                "Function {0} not available with backend {1}; try one "
-                "of: {2}".format(funcname, backend, _distances.keys())),
-            None)
+        errmsg = (f"Function {funcname} not available with backend {backend} "
+                  f"try one of: {_distances.keys()}")
+        raise ValueError(errmsg) from None
     return func(*args, **kwargs)
 
 # serial versions are always available (and are typically used within
