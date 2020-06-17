@@ -232,7 +232,7 @@ class BAT(AnalysisBase):
     @due.dcite(Doi("10.1002/jcc.26036"),
         description="Bond-Angle-Torsions Coordinate Transformation",
         path="MDAnalysis.analysis.bat.BAT")
-    def __init__(self, ag, initial_atom=None, bat_nc=None, **kwargs):
+    def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
         ----------
         ag : AtomGroup or Universe
@@ -247,8 +247,10 @@ class BAT(AnalysisBase):
             The atom whose Cartesian coordinates define the translation
             of the molecule. If not specified, the heaviest terminal atom
             will be selected.
-        bat_nc : str
+        filename : str
             File name of a netCDF4 file containing a saved bat attribute.
+            If filename is not None, the data will be loaded from this file
+            instead of being recalculated using the run() method.
 
         Raises
         ------
@@ -320,8 +322,8 @@ class BAT(AnalysisBase):
         self._ag3 = mda.AtomGroup([ag[2] for ag in self._torsions])
         self._ag4 = mda.AtomGroup([ag[3] for ag in self._torsions])
 
-        if bat_nc is not None:
-            self.load_bat(bat_nc)
+        if filename is not None:
+            self.load_bat(filename)
 
     def _prepare(self):
         self.bat = []
