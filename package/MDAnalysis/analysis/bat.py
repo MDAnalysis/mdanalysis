@@ -100,7 +100,7 @@ included within the test data files::
    # should be zero.
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
-After R.run(), the coordinates can be accessed with :attr:`R.bat`.
+After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with :attr:`R.bat<BAT.bat>`.
 
 :attr:`R.bat` is a list of numpy arrays. Each list element corresponds
 to a frame in the trajectory. Each numpy array has the shape (3N,). 
