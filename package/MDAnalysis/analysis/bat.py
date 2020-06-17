@@ -103,17 +103,18 @@ included within the test data files::
 After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with :attr:`R.bat<BAT.bat>`.
 
 :attr:`R.bat` is a list of numpy arrays. Each list element corresponds
-to a frame in the trajectory. Each numpy array has the shape (3N,). 
+to a frame in the trajectory. Each numpy array has the shape (3N,).
 The first six elements in each array correspond to external degrees of freedom.
 The first three are the center of mass of the initial atom. The next three
 specify the external angles according to the axis-angle convention:
 :math:`phi`, the polar angle, :math:`theta`, the azimuthal angle, and
 :math:`omega`, a third angle that describes the rotation of the third atom
 about the axis. The next three degrees of freedom are internal degrees of
-freedom for the root atoms: r01, the distance between atoms 0 and 1, r12,
-the distance between atoms 1 and 2, and a012, the angle between the three atoms.
-The rest of the array consists of all the other bond distances, all the other
-bond angles, and then all the other torsion angles.
+freedom for the root atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
+:math:`r_{12}`, the distance between atoms 1 and 2, and :math:`a_{012}`,
+the angle between the three atoms. The rest of the array consists of all
+the other bond distances, all the other bond angles, and then all the other
+torsion angles.
 
 
 References
@@ -136,8 +137,6 @@ References
    doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
 
 """
-from __future__ import absolute_import, division
-
 import numpy as np
 from netCDF4 import Dataset
 import warnings
