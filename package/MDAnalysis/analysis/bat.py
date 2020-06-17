@@ -50,7 +50,7 @@ the correlation between the torsion angles.
 
 Each molecule also has six external coordinates that define its translation and
 rotation in space. The three Cartesian coordinates of the first atom are the
-molecule's translational degrees of freedom. Rotational degreres of freedom are
+molecule's translational degrees of freedom. Rotational degrees of freedom are
 specified by the axis-angle convention. The rotation axis is a normalized vector
 pointing from the first to second atom. It is described by the polar angle,
 :math:`phi`, and azimuthal angle, :math:`theta`. :math:`omega` is a third angle
@@ -92,6 +92,7 @@ included within the test data files::
    R.run()
 
    # Reconstruct Cartesian coordinates from BAT coordinates
+   # of the first frame
    bat = R.bat[0]
    XYZ = R.Cartesian(bat)
 
@@ -100,6 +101,19 @@ included within the test data files::
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
 After R.run(), the coordinates can be accessed with :attr:`R.bat`.
+
+:attr:`R.bat` is a list of numpy arrays. Each list element corresponds
+to a frame in the trajectory. Each numpy array has the shape (3N,). 
+The first six elements in each array correspond to external degrees of freedom.
+The first three are the center of mass of the initial atom. The next three
+specify the external angles according to the axis-angle convention:
+:math:`phi`, the polar angle, :math:`theta`, the azimuthal angle, and
+:math:`omega`, a third angle that describes the rotation of the third atom
+about the axis. The next three degrees of freedom are internal degrees of
+freedom for the root atoms: r01, the distance between atoms 0 and 1, r12,
+the distance between atoms 1 and 2, and a012, the angle between the three atoms.
+The rest of the array consists of all the other bond distances, all the other
+bond angles, and then all the other torsion angles.
 
 
 References
