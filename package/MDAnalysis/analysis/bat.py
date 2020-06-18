@@ -447,7 +447,7 @@ class BAT(AnalysisBase):
             self._ts = ts
             self.frames[i] = ts.frame
             self.times[i] = ts.time
-            if (R.bat[i,:3] != self._root[0].position).any():
+            if (self.bat[i,:3] != self._root[0].position).any():
                 raise ValueError('Position of initial atom in file ' + \
                     'inconsistent with current trajectory.')
         return self

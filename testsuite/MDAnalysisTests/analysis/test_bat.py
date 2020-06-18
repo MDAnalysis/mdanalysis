@@ -68,7 +68,6 @@ class TestBAT(object):
     def test_reconstruction(self, selected_residues, bat):
         R = BAT(selected_residues)
         XYZ = R.Cartesian(bat[0])
-
         assert_almost_equal(XYZ, selected_residues.positions, 5,
             err_msg="error: Reconstructed Cartesian coordinates " + \
                     "don't match original")
