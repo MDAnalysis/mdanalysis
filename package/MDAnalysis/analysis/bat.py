@@ -5,7 +5,7 @@
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
 # (see the file AUTHORS for the full list of names)
 #
-# Released under the GNU Public Licence, v21 or any higher version
+# Released under the GNU Public Licence, v2 or any higher version
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -35,7 +35,7 @@ for a given set of atoms or residues. This coordinate system is designed
 to be complete, non-redundant, and minimize correlations between degrees
 of freedom. Complete and non-redundant means that for N atoms there will
 be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
-minimized by using improper torsions described in [Hikiri2016]_.
+minimized by using improper torsions, as described in [Hikiri2016]_.
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -53,7 +53,7 @@ rotation in space. The three Cartesian coordinates of the first atom are the
 molecule's translational degrees of freedom. Rotational degrees of freedom are
 specified by the axis-angle convention. The rotation axis is a normalized vector
 pointing from the first to second atom. It is described by the polar angle,
-:math:`phi`, and azimuthal angle, :math:`theta`. :math:`omega` is a third angle
+:math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
 that describes the rotation of the third atom about the axis.
 
 This module was adapted from AlGDock [Minh2020]_.
@@ -72,9 +72,10 @@ Example applications
 
 The :class:`~MDAnalysis.analysis.bat.BAT` class defines bond-angle-torsion
 coordinates based on the topology of an atom group and interconverts between
-Cartesian and BAT coordinate systems. For example, we can determine internal
-coordinates for residues 5-10 of adenylate kinase (AdK). The trajectory is
-included within the test data files::
+Cartesian and BAT coordinate systems.
+
+For example, we can determine internal coordinates for residues 5-10
+of adenylate kinase (AdK). The trajectory is included within the test data files::
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import PSF, DCD
@@ -91,6 +92,11 @@ included within the test data files::
    # Calculate BAT coordinates for a trajectory
    R.run()
 
+After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
+:attr:`R.bat<BAT.bat>`.
+
+Reconstruct Cartesian coordinates for the first frame::
+
    # Reconstruct Cartesian coordinates from BAT coordinates
    # of the first frame
    XYZ = R.Cartesian(R.bat[0,:])
@@ -99,6 +105,8 @@ included within the test data files::
    # should be zero.
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
+Store data to the disk and load it again::
+
    # BAT coordinates can be saved to disk in the numpy binary format
    R.save('test.npy')
 
@@ -106,12 +114,9 @@ included within the test data files::
    # instead of using the run() method.
    Rnew = BAT(selected_residues, filename = 'test.npy')
 
-   # The difference between the BAT coordinates before disk IO
+   # The difference between the BAT coordinates before disk I/O
    # should be zero
    print(np.sum(np.abs(Rnew.bat - R.bat)>1E-6))
-
-After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
-:attr:`R.bat<BAT.bat>`.
 
 
 Analysis classes
@@ -127,8 +132,8 @@ Analysis classes
         a frame in the trajectory. In each column, the first six elements
         describe external degrees of freedom. The first three are the center
         of mass of the initial atom. The next three specify the  external angles
-        according to the axis-angle convention: :math:`phi`, the polar angle,
-        :math:`theta`, the azimuthal angle, and :math:`omega`, a third angle
+        according to the axis-angle convention: :math:`\phi`, the polar angle,
+        :math:`\theta`, the azimuthal angle, and :math:`\omega`, a third angle
         that describes the rotation of the third atom about the axis. The next
         three degrees of freedom are internal degrees of freedom for the root
         atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
@@ -251,7 +256,7 @@ class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
     Bond-Angle-Torsions (BAT) internal coordinates will be computed for
-    the group of atoms and all frame in the trajectory belonging to `ag'.`
+    the group of atoms and all frame in the trajectory belonging to `ag`.
 
     """
     @due.dcite(Doi("10.1002/jcc.26036"),
@@ -268,21 +273,21 @@ class BAT(AnalysisBase):
             ag must only include one molecule.
             If a trajectory is associated with the atoms then the computation
             iterates over the trajectory.
-        initial_atom : Atom
+        initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
             The atom whose Cartesian coordinates define the translation
             of the molecule. If not specified, the heaviest terminal atom
             will be selected.
         filename : str
-            File name of a netCDF4 file containing a saved bat attribute.
+            Name of a numpy binary file containing a saved bat array.
             If filename is not None, the data will be loaded from this file
             instead of being recalculated using the run() method.
 
         Raises
         ------
         AttributeError
-            If ag does not contain a bonds attribute
+            If `ag` does not contain a bonds attribute
         ValueError
-            If ag contains more than one molecule
+            If `ag` contains more than one molecule
 
         """
         super(BAT, self).__init__(ag.universe.trajectory, **kwargs)
@@ -464,16 +469,19 @@ class BAT(AnalysisBase):
     def Cartesian(self, bat):
         """Conversion of a single frame from BAT to Cartesian coordinates
 
+        One application of this function is to determine the new
+        Cartesian coordinates after modifying a specific torsion angle.
+
         Parameters
         ----------
-        bat : np.array
+        bat : numpy.ndarray
             an array with dimensions (3N,) with external then internal
             degrees of freedom based on the root atoms, followed by the bond,
             angle, and (proper and improper) torsion coordinates.
 
         Returns
         -------
-        XYZ : np.array
+        XYZ : numpy.ndarray
             an array with dimensions (N,3) with Cartesian coordinates. The first
             dimension has the same ordering as the AtomGroup used to initialize
             the class. The molecule will be whole opposed to wrapped around a
