@@ -1140,6 +1140,12 @@ def test_selections_on_empty_group(u_pdb_icodes, selection):
     ag = u_pdb_icodes.atoms[[]].select_atoms(selection)
     assert len(ag) == 0
 
+def test_empty_yet_global(u_pdb_icodes):
+    # slight exception to above test, an empty AG can return something if 'global' used
+    ag = u_pdb_icodes.atoms[[]].select_atoms('global name O')
+
+    assert len(ag) == 185  # len(u_pdb_icodes.select_atoms('name O'))
+
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
     with pytest.raises(TypeError):
