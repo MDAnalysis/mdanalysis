@@ -76,7 +76,7 @@ class TestBAT(object):
     def test_bat_IO(self, selected_residues, bat):
         R = BAT(selected_residues)
         R.run()
-        R.save_bat('test_bat_IO.npy')
+        R.save('test_bat_IO.npy')
         R2 = BAT(selected_residues, filename='test_bat_IO.npy')
         test_bat = R2.bat
         assert_almost_equal(bat, test_bat, 5,

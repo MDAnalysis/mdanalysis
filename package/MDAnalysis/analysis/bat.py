@@ -100,7 +100,7 @@ included within the test data files::
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
    # BAT coordinates can be saved to disk in the numpy binary format
-   R.save_bat('test.npy')
+   R.save('test.npy')
 
    # The BAT coordinates in a new BAT instance can be loaded from disk
    # instead of using the run() method.
@@ -108,23 +108,34 @@ included within the test data files::
 
    # The difference between the BAT coordinates before disk IO
    # should be zero
-   print(np.sum(np.abs(Rnew.bat - R.bat)>1E-6))    
+   print(np.sum(np.abs(Rnew.bat - R.bat)>1E-6))
 
 After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
 :attr:`R.bat<BAT.bat>`.
 
-:attr:`R.bat<BAT.bat>` is a numpy array with the shape (nframes, 3N). Each row
-corresponds to to a frame in the trajectory. In each column, the first six
-elements describe external degrees of freedom. The first three are the center of
-mass of the initial atom. The next three specify the external angles according
-to the axis-angle convention: :math:`phi`, the polar angle, :math:`theta`,
-the azimuthal angle, and :math:`omega`, a third angle that describes the
-rotation of the third atom about the axis. The next three degrees of freedom
-are internal degrees of freedom for the root atoms: :math:`r_{01}`, the distance
-between atoms 0 and 1, :math:`r_{12}`, the distance between atoms 1 and 2, and
-:math:`a_{012}`, the angle between the three atoms. The rest of the array
-consists of all the other bond distances, all the other bond angles, and then
-all the other torsion angles.
+
+Analysis classes
+----------------
+ .. autoclass:: BAT
+    :members:
+    :inherited-members:
+
+    .. attribute:: bat
+
+        Contains the time series of the Bond-Angle-Torsion coordinates as a
+        (nframes, 3N) :class:`numpy.ndarray` array. Each row corresponds to
+        a frame in the trajectory. In each column, the first six elements
+        describe external degrees of freedom. The first three are the center
+        of mass of the initial atom. The next three specify the  external angles
+        according to the axis-angle convention: :math:`phi`, the polar angle,
+        :math:`theta`, the azimuthal angle, and :math:`omega`, a third angle
+        that describes the rotation of the third atom about the axis. The next
+        three degrees of freedom are internal degrees of freedom for the root
+        atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
+        :math:`r_{12}`, the distance between atoms 1 and 2,
+        and :math:`a_{012}`, the angle between the three atoms.
+        The rest of the array consists of all the other bond distances,
+        all the other bond angles, and then all the other torsion angles.
 
 
 References
@@ -147,17 +158,20 @@ References
    doi:`10.1002/jcc.26036 <https://doi.org/10.1002/jcc.26036>`_
 
 """
-import numpy as np
-from netCDF4 import Dataset
+import logging
 import warnings
 
+import numpy as np
+
 import MDAnalysis as mda
-from MDAnalysis.analysis.base import AnalysisBase
+from .base import AnalysisBase
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
 
 from ..due import due, Doi
+
+logger = logging.getLogger(__name__)
 
 
 def _sort_atoms_by_mass(atoms, reverse=False):
@@ -178,6 +192,7 @@ def _sort_atoms_by_mass(atoms, reverse=False):
         Sorted list
     """
     return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
+
 
 def _find_torsions(root, atoms):
     """Constructs a list of torsion angles
@@ -221,13 +236,13 @@ def _find_torsions(root, atoms):
                         # which extends the loop
                         selected_atoms.append(a0)
                         torsionAdded = True
-                        break # out of the a3 loop
-                    break # out of the a2 loop
+                        break  # out of the a3 loop
+                    break  # out of the a2 loop
         if torsionAdded is False:
             print('Selected atoms:')
-            print([a.index+1 for a in selected_atoms])
+            print([a.index + 1 for a in selected_atoms])
             print('Torsions found:')
-            print([list(t.indices+1) for t in torsions])
+            print([list(t.indices + 1) for t in torsions])
             raise ValueError('Additional torsions not found.')
     return torsions
 
@@ -240,8 +255,8 @@ class BAT(AnalysisBase):
 
     """
     @due.dcite(Doi("10.1002/jcc.26036"),
-        description="Bond-Angle-Torsions Coordinate Transformation",
-        path="MDAnalysis.analysis.bat.BAT")
+               description="Bond-Angle-Torsions Coordinate Transformation",
+               path="MDAnalysis.analysis.bat.BAT")
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
         r"""Parameters
         ----------
@@ -315,17 +330,17 @@ class BAT(AnalysisBase):
         # Get indices of the root and torsion atoms
         # in a Cartesian positions array that matches the AtomGroup
         self._root_XYZ_inds = [(self._ag.indices==a.index).nonzero()[0][0] \
-          for a in self._root]
+            for a in self._root]
         self._torsion_XYZ_inds = [[(self._ag.indices==a.index).nonzero()[0][0] \
-          for a in t] for t in self._torsions]
+            for a in t] for t in self._torsions]
 
         # The primary torsion is the first torsion on the list
         # with the same central atoms
         prior_atoms = [sorted([a1, a2]) for (a0, a1, a2, a3) in self._torsions]
         self._primary_torsion_indices = [prior_atoms.index(prior_atoms[n]) \
-          for n in range(len(prior_atoms))]
+            for n in range(len(prior_atoms))]
         self._unique_primary_torsion_indices = \
-          list(set(self._primary_torsion_indices))
+            list(set(self._primary_torsion_indices))
 
         self._ag1 = mda.AtomGroup([ag[0] for ag in self._torsions])
         self._ag2 = mda.AtomGroup([ag[1] for ag in self._torsions])
@@ -333,7 +348,7 @@ class BAT(AnalysisBase):
         self._ag4 = mda.AtomGroup([ag[3] for ag in self._torsions])
 
         if filename is not None:
-            self.load_bat(filename)
+            self.load(filename)
 
     def _prepare(self):
         self.bat = np.zeros((self.n_frames, 3*self._ag.n_atoms), \
@@ -355,9 +370,10 @@ class BAT(AnalysisBase):
                              v01))  # Distance between first two root atoms
         r12 = np.sqrt(np.sum(v21 *
                              v21))  # Distance between second two root atoms
+        # Angle between root atoms
         a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
-          np.sqrt(np.sum(v01*v01)*np.sum(v21*v21))))) # Angle between root atoms
-        # Exernal coordinates
+                             np.sqrt(np.sum(v01*v01)*np.sum(v21*v21)))))
+        # External coordinates
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
         theta = np.arccos(e[2])  # Azimuthal angle
@@ -396,13 +412,52 @@ class BAT(AnalysisBase):
         self.bat[self._frame_index,:] = \
             np.concatenate((root_based, bonds, angles, torsions))
 
-    def load_bat(self, filename):
+    def load(self, filename, start=None, stop=None, step=None):
         """Loads the bat trajectory from a file in numpy binary format
+
+        Parameters
+        ----------
+        filename : str
+            name of numpy binary file
+        start : int, optional
+            start frame of analysis
+        stop : int, optional
+            stop frame of analysis
+        step : int, optional
+            number of frames to skip between each analysed frame
+
+        See Also
+        --------
+        save: Saves the bat trajectory in a file in numpy binary format
         """
+        logger.info("Choosing frames")
+        self._setup_frames(self._trajectory, start, stop, step)
+
+        logger.info("Loading file")
         self.bat = np.load(filename)
 
-    def save_bat(self, filename):
+        # Check array dimensions
+        if self.bat.shape!=(self.n_frames, 3*self._ag.n_atoms):
+          raise ValueError('Dimensions of array in loaded file, ' + \
+              f'({bat.shape[0]},{bat.shape[1]}), differ from required' + \
+              f'dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
+        # Check position of initial atom
+        for i, ts in enumerate(self._trajectory[self.start:self.stop:self.step]):
+            self._frame_index = i
+            self._ts = ts
+            self.frames[i] = ts.frame
+            self.times[i] = ts.time
+            if (R.bat[i,:3] != self._root[0].position).any():
+                raise ValueError('Position of initial atom in file ' + \
+                    'inconsistent with current trajectory.')
+        return self
+
+    def save(self, filename):
         """Saves the bat trajectory in a file in numpy binary format
+
+        See Also
+        --------
+        load: Loads the bat trajectory from a file in numpy binary format
         """
         np.save(filename, self.bat)
 
