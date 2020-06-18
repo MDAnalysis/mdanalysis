@@ -93,28 +93,38 @@ included within the test data files::
 
    # Reconstruct Cartesian coordinates from BAT coordinates
    # of the first frame
-   bat = R.bat[0]
-   XYZ = R.Cartesian(bat)
+   XYZ = R.Cartesian(R.bat[0,:])
 
    # The difference between the original and reconstructed coordinates
    # should be zero.
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
-After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with :attr:`R.bat<BAT.bat>`.
+   # BAT coordinates can be saved to disk in the numpy binary format
+   R.save_bat('test.npy')
 
-:attr:`R.bat` is a list of numpy arrays. Each list element corresponds
-to a frame in the trajectory. Each numpy array has the shape (3N,).
-The first six elements in each array correspond to external degrees of freedom.
-The first three are the center of mass of the initial atom. The next three
-specify the external angles according to the axis-angle convention:
-:math:`phi`, the polar angle, :math:`theta`, the azimuthal angle, and
-:math:`omega`, a third angle that describes the rotation of the third atom
-about the axis. The next three degrees of freedom are internal degrees of
-freedom for the root atoms: :math:`r_{01}`, the distance between atoms 0 and 1,
-:math:`r_{12}`, the distance between atoms 1 and 2, and :math:`a_{012}`,
-the angle between the three atoms. The rest of the array consists of all
-the other bond distances, all the other bond angles, and then all the other
-torsion angles.
+   # The BAT coordinates in a new BAT instance can be loaded from disk
+   # instead of using the run() method.
+   Rnew = BAT(selected_residues, filename = 'test.npy')
+
+   # The difference between the BAT coordinates before disk IO
+   # should be zero
+   print(np.sum(np.abs(Rnew.bat - R.bat)>1E-6))    
+
+After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
+:attr:`R.bat<BAT.bat>`.
+
+:attr:`R.bat<BAT.bat>` is a numpy array with the shape (nframes, 3N). Each row
+corresponds to to a frame in the trajectory. In each column, the first six
+elements describe external degrees of freedom. The first three are the center of
+mass of the initial atom. The next three specify the external angles according
+to the axis-angle convention: :math:`phi`, the polar angle, :math:`theta`,
+the azimuthal angle, and :math:`omega`, a third angle that describes the
+rotation of the third atom about the axis. The next three degrees of freedom
+are internal degrees of freedom for the root atoms: :math:`r_{01}`, the distance
+between atoms 0 and 1, :math:`r_{12}`, the distance between atoms 1 and 2, and
+:math:`a_{012}`, the angle between the three atoms. The rest of the array
+consists of all the other bond distances, all the other bond angles, and then
+all the other torsion angles.
 
 
 References
@@ -225,8 +235,8 @@ def _find_torsions(root, atoms):
 class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
-    Bond-Angle-Torisions (BAT) internal coordinates will be computed for the group of atoms and all frames
-    in the trajectory belonging to `ag'.`
+    Bond-Angle-Torsions (BAT) internal coordinates will be computed for
+    the group of atoms and all frame in the trajectory belonging to `ag'.`
 
     """
     @due.dcite(Doi("10.1002/jcc.26036"),
@@ -326,7 +336,8 @@ class BAT(AnalysisBase):
             self.load_bat(filename)
 
     def _prepare(self):
-        self.bat = []
+        self.bat = np.zeros((self.n_frames, 3*self._ag.n_atoms), \
+            dtype=np.float64)
 
     def _single_frame(self):
         # Calculate coordinates based on the root atoms
@@ -382,26 +393,18 @@ class BAT(AnalysisBase):
         # Wrap torsions to between -np.pi and np.pi
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
-        self.bat.append(np.concatenate((root_based, bonds, angles, torsions)))
+        self.bat[self._frame_index,:] = \
+            np.concatenate((root_based, bonds, angles, torsions))
 
-    def load_bat(self, FN):
-        """Loads the bat trajectory from a netcdf file
+    def load_bat(self, filename):
+        """Loads the bat trajectory from a file in numpy binary format
         """
-        nc_F = Dataset(FN,'r')
-        self.bat = list(np.array(nc_F.variables['bat']))
-        nc_F.close()
+        self.bat = np.load(filename)
 
-    def save_bat(self, FN):
-        """Saves the bat trajectory to a netcdf file
+    def save_bat(self, filename):
+        """Saves the bat trajectory in a file in numpy binary format
         """
-        bat = np.array(self.bat)
-
-        nc_F = Dataset(FN,'w')
-        frames = nc_F.createDimension("frames", bat.shape[0])
-        dims = nc_F.createDimension("dims", bat.shape[1])
-        bat_in_F = nc_F.createVariable("bat", "f4", ("frames","dims"))
-        bat_in_F[:] = bat
-        nc_F.close()
+        np.save(filename, self.bat)
 
     def Cartesian(self, bat):
         """Conversion of a single frame from BAT to Cartesian coordinates
