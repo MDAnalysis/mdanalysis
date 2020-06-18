@@ -161,6 +161,7 @@ def return_empty_on_apply(func):
     Decorator to return empty AtomGroups from the apply() function
     without evaluating it
     """
+    @functools.wraps(func)
     def apply(self, group):
         if len(group) == 0:
             return group
@@ -174,11 +175,13 @@ class _Selectionmeta(type):
             _SELECTIONDICT[classdict['token']] = cls
         except KeyError:
             pass
-        
-        try:
-            cls.apply = return_empty_on_apply(cls.apply)
-        except AttributeError:
-            pass
+
+        # GlobalSelections can return something even if empty AG
+        if not cls.__name__ == 'GlobalSelection':
+            try:
+                cls.apply = return_empty_on_apply(cls.apply)
+            except AttributeError:
+                pass
 
 
 class Selection(object, metaclass=_Selectionmeta):
