@@ -6,10 +6,14 @@
 # (see the file AUTHORS for the full list of names)
 #
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Released under the GNU Public Licence, v2 or any higher version
 =======
 # Released under the GNU Public Licence, v21 or any higher version
 >>>>>>> Adding bat back
+=======
+# Released under the GNU Public Licence, v2 or any higher version
+>>>>>>> Revert "Removing bat.py for easier rebase."
 #
 # Please cite your use of MDAnalysis in published work:
 #
@@ -32,10 +36,14 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 :Copyright: GNU Public License, v2 or any higher version
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 .. versionadded:: 2.0.0
 =======
 .. versionadded:: 1.0.0
 >>>>>>> Adding bat back
+=======
+.. versionadded:: 1.0.0
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
 This module contains classes for interconverting between Cartesian and an
 internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,
@@ -44,10 +52,14 @@ to be complete, non-redundant, and minimize correlations between degrees
 of freedom. Complete and non-redundant means that for N atoms there will
 be 3N Cartesian coordinates and 3N BAT coordinates. Correlations are
 <<<<<<< HEAD
+<<<<<<< HEAD
 minimized by using improper torsions, as described in [Hikiri2016]_.
 =======
 minimized by using improper torsions described in [Hikiri2016]_.
 >>>>>>> Adding bat back
+=======
+minimized by using improper torsions, as described in [Hikiri2016]_.
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
 More specifically, bond refers to the bond length, or distance between
 a pair of bonded atoms. Angle refers to the bond angle, the angle between
@@ -66,10 +78,14 @@ molecule's translational degrees of freedom. Rotational degrees of freedom are
 specified by the axis-angle convention. The rotation axis is a normalized vector
 pointing from the first to second atom. It is described by the polar angle,
 <<<<<<< HEAD
+<<<<<<< HEAD
 :math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
 =======
 :math:`phi`, and azimuthal angle, :math:`theta`. :math:`omega` is a third angle
 >>>>>>> Adding bat back
+=======
+:math:`\phi`, and azimuthal angle, :math:`\theta`. :math:`\omega` is a third angle
+>>>>>>> Revert "Removing bat.py for easier rebase."
 that describes the rotation of the third atom about the axis.
 
 This module was adapted from AlGDock [Minh2020]_.
@@ -89,15 +105,21 @@ Example applications
 The :class:`~MDAnalysis.analysis.bat.BAT` class defines bond-angle-torsion
 coordinates based on the topology of an atom group and interconverts between
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 Cartesian and BAT coordinate systems.
 
 For example, we can determine internal coordinates for residues 5-10
 of adenylate kinase (AdK). The trajectory is included within the test data files::
+<<<<<<< HEAD
 =======
 Cartesian and BAT coordinate systems. For example, we can determine internal
 coordinates for residues 5-10 of adenylate kinase (AdK). The trajectory is
 included within the test data files::
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
    import MDAnalysis as mda
    from MDAnalysisTests.datafiles import PSF, DCD
@@ -115,6 +137,9 @@ included within the test data files::
    R.run()
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
 :attr:`R.bat<BAT.bat>`. The following code snippets assume that the previous
 snippet has been executed.
@@ -124,18 +149,24 @@ Reconstruct Cartesian coordinates for the first frame::
    # Reconstruct Cartesian coordinates from BAT coordinates
    # of the first frame
    XYZ = R.Cartesian(R.bat[0,:])
+<<<<<<< HEAD
 =======
    # Reconstruct Cartesian coordinates from BAT coordinates
    # of the first frame
    bat = R.bat[0]
    XYZ = R.Cartesian(bat)
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
    # The difference between the original and reconstructed coordinates
    # should be zero.
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 Change a single torsion angle by :math:`\pi`::
 
    bat = R.bat[0,:]
@@ -181,6 +212,7 @@ Analysis classes
         and :math:`a_{012}`, the angle between the three atoms.
         The rest of the array consists of all the other bond distances,
         all the other bond angles, and then all the other torsion angles.
+<<<<<<< HEAD
 =======
 After R.run(), the coordinates can be accessed with :attr:`R.bat`.
 
@@ -197,6 +229,8 @@ the distance between atoms 1 and 2, and a012, the angle between the three atoms.
 The rest of the array consists of all the other bond distances, all the other
 bond angles, and then all the other torsion angles.
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
 
 References
@@ -220,6 +254,9 @@ References
 
 """
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 import logging
 import warnings
 
@@ -227,6 +264,7 @@ import numpy as np
 
 import MDAnalysis as mda
 from .base import AnalysisBase
+<<<<<<< HEAD
 =======
 from __future__ import absolute_import, division
 
@@ -237,6 +275,8 @@ import warnings
 import MDAnalysis as mda
 from MDAnalysis.analysis.base import AnalysisBase
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
 from MDAnalysis.lib.distances import calc_bonds, calc_angles, calc_dihedrals
 from MDAnalysis.lib.mdamath import make_whole
@@ -244,10 +284,15 @@ from MDAnalysis.lib.mdamath import make_whole
 from ..due import due, Doi
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 logger = logging.getLogger(__name__)
 
 =======
 >>>>>>> Adding bat back
+=======
+logger = logging.getLogger(__name__)
+
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
 def _sort_atoms_by_mass(atoms, reverse=False):
     r"""Sorts a list of atoms by name and then by index
@@ -269,9 +314,13 @@ def _sort_atoms_by_mass(atoms, reverse=False):
     return sorted(atoms, key=lambda a: (a.mass, a.index), reverse=reverse)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 >>>>>>> Adding bat back
+=======
+
+>>>>>>> Revert "Removing bat.py for easier rebase."
 def _find_torsions(root, atoms):
     """Constructs a list of torsion angles
 
@@ -315,6 +364,9 @@ def _find_torsions(root, atoms):
                         selected_atoms.append(a0)
                         torsionAdded = True
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
                         break  # out of the a3 loop
                     break  # out of the a2 loop
         if torsionAdded is False:
@@ -322,6 +374,7 @@ def _find_torsions(root, atoms):
             print([a.index + 1 for a in selected_atoms])
             print('Torsions found:')
             print([list(t.indices + 1) for t in torsions])
+<<<<<<< HEAD
 =======
                         break # out of the a3 loop
                     break # out of the a2 loop
@@ -331,6 +384,8 @@ def _find_torsions(root, atoms):
             print('Torsions found:')
             print([list(t.indices+1) for t in torsions])
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
             raise ValueError('Additional torsions not found.')
     return torsions
 
@@ -339,6 +394,9 @@ class BAT(AnalysisBase):
     """Calculate BAT coordinates for the specified AtomGroup.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
     Bond-Angle-Torsions (BAT) internal coordinates will be computed for
     the group of atoms and all frame in the trajectory belonging to `ag`.
 
@@ -347,6 +405,7 @@ class BAT(AnalysisBase):
                description="Bond-Angle-Torsions Coordinate Transformation",
                path="MDAnalysis.analysis.bat.BAT")
     def __init__(self, ag, initial_atom=None, filename=None, **kwargs):
+<<<<<<< HEAD
 =======
     BAT coordinates will be computed for the group of atoms and all frames
     in the trajectory belonging to `ag'.`
@@ -357,6 +416,8 @@ class BAT(AnalysisBase):
         path="MDAnalysis.analysis.bat.BAT")
     def __init__(self, ag, initial_atom=None, bat_nc=None, **kwargs):
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         r"""Parameters
         ----------
         ag : AtomGroup or Universe
@@ -368,6 +429,9 @@ class BAT(AnalysisBase):
             If a trajectory is associated with the atoms then the computation
             iterates over the trajectory.
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
             The atom whose Cartesian coordinates define the translation
             of the molecule. If not specified, the heaviest terminal atom
@@ -376,6 +440,7 @@ class BAT(AnalysisBase):
             Name of a numpy binary file containing a saved bat array.
             If filename is not None, the data will be loaded from this file
             instead of being recalculated using the run() method.
+<<<<<<< HEAD
 =======
         initial_atom : Atom
             The atom whose Cartesian coordinates define the translation
@@ -384,10 +449,13 @@ class BAT(AnalysisBase):
         bat_nc : str
             File name of a netCDF4 file containing a saved bat attribute.
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
         Raises
         ------
         AttributeError
+<<<<<<< HEAD
 <<<<<<< HEAD
             If `ag` does not contain a bonds attribute
         ValueError
@@ -397,6 +465,11 @@ class BAT(AnalysisBase):
         ValueError
             If ag contains more than one molecule
 >>>>>>> Adding bat back
+=======
+            If `ag` does not contain a bonds attribute
+        ValueError
+            If `ag` contains more than one molecule
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
         """
         super(BAT, self).__init__(ag.universe.trajectory, **kwargs)
@@ -445,6 +518,7 @@ class BAT(AnalysisBase):
         # in a Cartesian positions array that matches the AtomGroup
         self._root_XYZ_inds = [(self._ag.indices==a.index).nonzero()[0][0] \
 <<<<<<< HEAD
+<<<<<<< HEAD
             for a in self._root]
         self._torsion_XYZ_inds = [[(self._ag.indices==a.index).nonzero()[0][0] \
             for a in t] for t in self._torsions]
@@ -453,11 +527,17 @@ class BAT(AnalysisBase):
         self._torsion_XYZ_inds = [[(self._ag.indices==a.index).nonzero()[0][0] \
           for a in t] for t in self._torsions]
 >>>>>>> Adding bat back
+=======
+            for a in self._root]
+        self._torsion_XYZ_inds = [[(self._ag.indices==a.index).nonzero()[0][0] \
+            for a in t] for t in self._torsions]
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
         # The primary torsion is the first torsion on the list
         # with the same central atoms
         prior_atoms = [sorted([a1, a2]) for (a0, a1, a2, a3) in self._torsions]
         self._primary_torsion_indices = [prior_atoms.index(prior_atoms[n]) \
+<<<<<<< HEAD
 <<<<<<< HEAD
             for n in range(len(prior_atoms))]
         self._unique_primary_torsion_indices = \
@@ -467,6 +547,11 @@ class BAT(AnalysisBase):
         self._unique_primary_torsion_indices = \
           list(set(self._primary_torsion_indices))
 >>>>>>> Adding bat back
+=======
+            for n in range(len(prior_atoms))]
+        self._unique_primary_torsion_indices = \
+            list(set(self._primary_torsion_indices))
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
         self._ag1 = mda.AtomGroup([ag[0] for ag in self._torsions])
         self._ag2 = mda.AtomGroup([ag[1] for ag in self._torsions])
@@ -474,12 +559,16 @@ class BAT(AnalysisBase):
         self._ag4 = mda.AtomGroup([ag[3] for ag in self._torsions])
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         if filename is not None:
             self.load(filename)
 
     def _prepare(self):
         self.bat = np.zeros((self.n_frames, 3*self._ag.n_atoms), \
             dtype=np.float64)
+<<<<<<< HEAD
 =======
         if bat_nc is not None:
             self.load_bat(bat_nc)
@@ -487,6 +576,8 @@ class BAT(AnalysisBase):
     def _prepare(self):
         self.bat = []
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
     def _single_frame(self):
         # Calculate coordinates based on the root atoms
@@ -505,15 +596,21 @@ class BAT(AnalysisBase):
         r12 = np.sqrt(np.sum(v21 *
                              v21))  # Distance between second two root atoms
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         # Angle between root atoms
         a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
                              np.sqrt(np.sum(v01*v01)*np.sum(v21*v21)))))
         # External coordinates
+<<<<<<< HEAD
 =======
         a012 = np.arccos(max(-1.,min(1.,np.sum(v01*v21)/\
           np.sqrt(np.sum(v01*v01)*np.sum(v21*v21))))) # Angle between root atoms
         # Exernal coordinates
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         e = v01 / r01
         phi = np.arctan2(e[1], e[0])  # Polar angle
         theta = np.arccos(e[2])  # Azimuthal angle
@@ -550,6 +647,9 @@ class BAT(AnalysisBase):
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         self.bat[self._frame_index,:] = \
             np.concatenate((root_based, bonds, angles, torsions))
 
@@ -601,6 +701,7 @@ class BAT(AnalysisBase):
         load: Loads the bat trajectory from a file in numpy binary format
         """
         np.save(filename, self.bat)
+<<<<<<< HEAD
 =======
         self.bat.append(np.concatenate((root_based, bonds, angles, torsions)))
 
@@ -623,22 +724,30 @@ class BAT(AnalysisBase):
         bat_in_F[:] = bat
         nc_F.close()
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
 
     def Cartesian(self, bat):
         """Conversion of a single frame from BAT to Cartesian coordinates
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
         One application of this function is to determine the new
         Cartesian coordinates after modifying a specific torsion angle.
 
         Parameters
         ----------
         bat : numpy.ndarray
+<<<<<<< HEAD
 =======
         Parameters
         ----------
         bat : np.array
 >>>>>>> Adding bat back
+=======
+>>>>>>> Revert "Removing bat.py for easier rebase."
             an array with dimensions (3N,) with external then internal
             degrees of freedom based on the root atoms, followed by the bond,
             angle, and (proper and improper) torsion coordinates.
@@ -646,10 +755,14 @@ class BAT(AnalysisBase):
         Returns
         -------
 <<<<<<< HEAD
+<<<<<<< HEAD
         XYZ : numpy.ndarray
 =======
         XYZ : np.array
 >>>>>>> Adding bat back
+=======
+        XYZ : numpy.ndarray
+>>>>>>> Revert "Removing bat.py for easier rebase."
             an array with dimensions (N,3) with Cartesian coordinates. The first
             dimension has the same ordering as the AtomGroup used to initialize
             the class. The molecule will be whole opposed to wrapped around a
@@ -722,6 +835,7 @@ class BAT(AnalysisBase):
             vp = np.cross(v32, v21)
             cs = np.sum(v21 * v32)
 <<<<<<< HEAD
+<<<<<<< HEAD
 
             sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
 =======
@@ -730,6 +844,10 @@ class BAT(AnalysisBase):
 
             sn = np.sqrt(max(1.0 - cs * cs, 0.0000000001))
 >>>>>>> Adding bat back
+=======
+
+            sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
+>>>>>>> Revert "Removing bat.py for easier rebase."
             vp = vp / sn
             vu = np.cross(vp, v21)
 
@@ -737,6 +855,7 @@ class BAT(AnalysisBase):
               r01*(vu*sn_ang*cs_tor + vp*sn_ang*sn_tor - v21*cs_ang)
         return XYZ
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     @property
     def atoms(self):
@@ -746,4 +865,9 @@ class BAT(AnalysisBase):
         """Returns the atomgroup
         """
 >>>>>>> Adding bat back
+=======
+    @property
+    def atoms(self):
+        """The atomgroup for which BAT are computed (read-only property)"""
+>>>>>>> Revert "Removing bat.py for easier rebase."
         return self._ag
