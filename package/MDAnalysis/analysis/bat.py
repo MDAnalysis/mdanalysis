@@ -102,9 +102,8 @@ Reconstruct Cartesian coordinates for the first frame::
    # of the first frame
    XYZ = R.Cartesian(R.bat[0,:])
 
-   # The difference between the original and reconstructed coordinates
-   # should be zero.
-   print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
+   # The original and reconstructed Cartesian coordinates should all be close
+   print(np.allclose(XYZ, selected_residues.positions, atol=1e-6))
 
 Change a single torsion angle by :math:`\pi`::
 
@@ -122,11 +121,10 @@ Store data to the disk and load it again::
 
    # The BAT coordinates in a new BAT instance can be loaded from disk
    # instead of using the run() method.
-   Rnew = BAT(selected_residues, filename = 'test.npy')
+   Rnew = BAT(selected_residues, filename='test.npy')
 
-   # The difference between the BAT coordinates before disk I/O
-   # should be zero
-   print(np.sum(np.abs(Rnew.bat - R.bat)>1E-6))
+   # The BAT coordinates before and after disk I/O should be close
+   print(np.allclose(Rnew.bat, R.bat))
 
 
 Analysis classes
@@ -277,11 +275,11 @@ class BAT(AnalysisBase):
         ----------
         ag : AtomGroup or Universe
             Group of atoms for which the BAT coordinates are calculated.
-            ag must have a bonds attribute. If not available,
-            bonds may be guessed using
+            `ag` must have a bonds attribute.
+            If unavailable, bonds may be guessed using
             :meth:`AtomGroup.guess_bonds <MDAnalysis.core.groups.AtomGroup.guess_bonds>`.
-            ag must only include one molecule.
-            If a trajectory is associated with the atoms then the computation
+            `ag` must only include one molecule.
+            If a trajectory is associated with the atoms, then the computation
             iterates over the trajectory.
         initial_atom : :class:`Atom <MDAnalysis.core.groups.Atom>`
             The atom whose Cartesian coordinates define the translation
@@ -289,7 +287,7 @@ class BAT(AnalysisBase):
             will be selected.
         filename : str
             Name of a numpy binary file containing a saved bat array.
-            If filename is not None, the data will be loaded from this file
+            If filename is not ``None``, the data will be loaded from this file
             instead of being recalculated using the run() method.
 
         Raises
@@ -424,7 +422,7 @@ class BAT(AnalysisBase):
         # Wrap torsions to between -np.pi and np.pi
         torsions = ((torsions + np.pi) % (2 * np.pi)) - np.pi
 
-        self.bat[self._frame_index,:] = \
+        self.bat[self._frame_index, :] = \
             np.concatenate((root_based, bonds, angles, torsions))
 
     def load(self, filename, start=None, stop=None, step=None):
@@ -457,14 +455,9 @@ class BAT(AnalysisBase):
               f'({self.bat.shape[0]},{self.bat.shape[1]}), differ from ' + \
               f'required dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
         # Check position of initial atom
-        for i, ts in enumerate(self._trajectory[self.start:self.stop:self.step]):
-            self._frame_index = i
-            self._ts = ts
-            self.frames[i] = ts.frame
-            self.times[i] = ts.time
-            if (self.bat[i,:3] != self._root[0].position).any():
-                raise ValueError('Position of initial atom in file ' + \
-                    'inconsistent with current trajectory.')
+        if (self.bat[0,:3] != self._root[0].position).any():
+            raise ValueError('Position of initial atom in file ' + \
+                'inconsistent with current trajectory in starting frame.')
         return self
 
     def save(self, filename):
@@ -476,7 +469,7 @@ class BAT(AnalysisBase):
         """
         np.save(filename, self.bat)
 
-    def Cartesian(self, bat):
+    def Cartesian(self, bat_frame):
         """Conversion of a single frame from BAT to Cartesian coordinates
 
         One application of this function is to determine the new
@@ -484,7 +477,7 @@ class BAT(AnalysisBase):
 
         Parameters
         ----------
-        bat : numpy.ndarray
+        bat_frame : numpy.ndarray
             an array with dimensions (3N,) with external then internal
             degrees of freedom based on the root atoms, followed by the bond,
             angle, and (proper and improper) torsion coordinates.
@@ -498,13 +491,13 @@ class BAT(AnalysisBase):
             periodic boundary.
         """
         # Split the bat vector into more convenient variables
-        origin = bat[:3]
-        (phi, theta, omega) = bat[3:6]
-        (r01, r12, a012) = bat[6:9]
+        origin = bat_frame[:3]
+        (phi, theta, omega) = bat_frame[3:6]
+        (r01, r12, a012) = bat_frame[6:9]
         n_torsions = (self._ag.n_atoms - 3)
-        bonds = bat[9:n_torsions + 9]
-        angles = bat[n_torsions + 9:2 * n_torsions + 9]
-        torsions = bat[2 * n_torsions + 9:]
+        bonds = bat_frame[9:n_torsions + 9]
+        angles = bat_frame[n_torsions + 9:2 * n_torsions + 9]
+        torsions = bat_frame[2 * n_torsions + 9:]
         # When appropriate, convert improper to proper torsions
         shift = torsions[self._primary_torsion_indices]
         shift[self._unique_primary_torsion_indices] = 0.
