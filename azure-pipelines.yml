@@ -36,15 +36,7 @@ jobs:
       architecture: $(PYTHON_ARCH)
   - script: python -m pip install --upgrade pip setuptools wheel
     displayName: 'Install tools'
-  - script: >-
-      python -m pip install
-      cython
-      matplotlib
-      numpy
-      pytest
-      pytest-xdist
-      scikit-learn
-      scipy
+  - script: python -m pip install -r maintainer\envs\minimal_requirements.txt
     displayName: 'Install dependencies'
   - powershell: |
       cd package

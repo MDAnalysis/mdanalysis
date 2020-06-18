@@ -1,0 +1,17 @@
+biopython
+codecov
+cython
+duecredit
+griddataformats
+gsd==1.9.3
+hypothesis
+matplotlib
+mmtf-python
+mock
+networkx
+numpy
+parmed
+psutil
+pytest-cov
+pytest
+scipy

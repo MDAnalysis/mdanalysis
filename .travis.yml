@@ -21,6 +21,7 @@ env:
     - MAINTAIN_DIR=${TRAVIS_BUILD_DIR}/maintainer
     # Set default python version to avoid repetition later
     - PYTHON_VERSION=3.6
+    - CONDA_ENVIRONMENT=${MAINTAIN_DIR}/envs/environment.yml
     - BUILD_DOCS=false
     - CODECOV=false
     - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
@@ -28,11 +29,7 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0"
-    - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="duecredit parmed"
     - NUMPY_VERSION=stable
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
@@ -56,14 +53,13 @@ matrix:
            BUILD_DOCS=true
            BUILD_CMD="cd ${TRAVIS_BUILD_DIR}/package && python setup.py build_ext --inplace"
            INSTALL_HOLE="false"
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
 
     - env: NAME="Lint"
            PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
            MAIN_CMD="pylint --py3k package/MDAnalysis && pylint --py3k testsuite/MDAnalysisTests"
            SETUP_CMD=""
            BUILD_CMD=""
-           CONDA_DEPENDENCIES=""
+           CONDA_ENVIRONMENT=""
            INSTALL_HOLE="false"
 
     - env: NAME="asv check"
@@ -71,7 +67,7 @@ matrix:
            CODECOV="false"
            MAIN_CMD=""
            SETUP_CMD=""
-           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+           PIP_DEPENDENCIES="setuptools<45.0.0"
            ASV_CHECK="true"
 
     - os: osx
@@ -79,8 +75,7 @@ matrix:
            NUMPY_VERSION=1.17.3
 
     - env: NAME='minimal'
-           PIP_DEPENDENCIES=""
-           CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
+           CONDA_ENVIRONMENT=${MAINTAIN_DIR}/envs/minimal_environment.yml
            INSTALL_HOLE="false"
            CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 

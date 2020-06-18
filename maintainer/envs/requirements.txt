@@ -1,8 +1,11 @@
 biopython
+chemfiles
+clustalw==2.1
 codecov
 cython
+duecredit
 griddataformats
-gsd
+gsd==1.9.3
 hypothesis
 joblib>=0.12
 matplotlib
@@ -11,9 +14,10 @@ mock
 msmb_theme==1.2.0
 netcdf4
 networkx
-numpy
+numpy>=1.17.3
 parmed
 psutil
+pytest-cov
 pytest
 scikit-learn
 scipy
@@ -21,4 +25,5 @@ seaborn>=0.7.0,<=0.9
 sphinx==1.8.5
 sphinx_rtd_theme
 sphinx_sitemap
-tqdm
+tidynamics>=1.0.0
+tqdm>=4.43.0

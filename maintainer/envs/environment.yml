@@ -1,0 +1,35 @@
+
+name: mdanalysis
+channels:
+  - biobuilds
+  - conda-forge
+  - defaults
+dependencies:
+  - biopython
+  - chemfiles
+  - clustalw==2.1
+  - codecov
+  - cython
+  - griddataformats
+  - gsd==1.9.3
+  - hypothesis
+  - joblib>=0.12
+  - matplotlib
+  - mmtf-python
+  - mock
+  - netcdf4
+  - networkx
+  - numpy>=1.17.3
+  - psutil
+  - scikit-learn
+  - scipy
+  - seaborn>=0.7.0,<0.9
+  - sphinx==1.8.5
+  - tidynamics>=1.0.0
+  - tqdm>=4.43.0
+  - pip:
+      - duecredit
+      - msmb_theme==1.2.0
+      - parmed
+      - sphinx_rtd_theme
+      - sphinx-sitemap
