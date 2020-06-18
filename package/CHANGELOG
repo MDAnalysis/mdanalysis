@@ -13,7 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, daveminh
 
   * 2.0.0
 
@@ -24,6 +24,7 @@ Fixes
 
 Enhancements
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
+  * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
 
 Changes
   * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)
@@ -55,7 +56,7 @@ Fixes
     (Issue #2565)
   * Made NoDataError a subclass of ValueError *and* AttributeError
     (Issue #2635)
-  * Fixed select_atoms("around 0.0 ...") selections and capped_distance 
+  * Fixed select_atoms("around 0.0 ...") selections and capped_distance
     causing a segfault (Issue #2656 PR #2665)
   * `PDBWriter` writes unitary `CRYST1` record (cubic box with sides of 1 Å)
     when `u.dimensions` is `None` or `np.zeros(6)` (Issue #2679, PR #2685)
@@ -65,7 +66,7 @@ Fixes
   * n_components correctly selects PCA components (Issue #2623)
   * Use internal residue indices instead of resids for similarity and connectivity
     selections (Issues #2669 and #2672, PR #2673)
-  * Checks for cryo-em 1 A^3 default CRYST1 record, 
+  * Checks for cryo-em 1 A^3 default CRYST1 record,
     disabling setting of box dimensions if found (Issue #2599)
   * mdamath.angles now returns np.pi instead of -np.pi in cases of
     lower bound roundoff errors. (Issue #2632, PR #2634)
@@ -126,7 +127,7 @@ Fixes
 Enhancements
   * Added support for FHI-AIMS input files (PR #2705)
   * vastly improved support for 32-bit Windows (PR #2696)
-  * Added methods to compute the root-mean-square-inner-product of subspaces 
+  * Added methods to compute the root-mean-square-inner-product of subspaces
     and the cumulative overlap of a vector in a subspace for PCA (PR #2613)
   * Added .frames and .times arrays to AnalysisBase (Issue #2661)
   * Added elements attribute to PDBParser (Issue #2553, #2647)
@@ -173,7 +174,7 @@ Enhancements
 
 Changes
   * Unused `MDAnalysis.lib.mdamath._angle` has been removed (Issue #2650)
-  * Refactored dihedral selections and Ramachandran.__init__ to speed up 
+  * Refactored dihedral selections and Ramachandran.__init__ to speed up
     dihedral selections for faster tests (Issue #2671, PR #2706)
   * Removes the deprecated `t0`, `tf`, and `dtmax` from
     :class:Waterdynamics.SurvivalProbability. Instead the `start`, `stop` and
