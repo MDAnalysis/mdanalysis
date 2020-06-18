@@ -27,13 +27,8 @@ from numpy.testing import assert_equal, assert_almost_equal
 import pytest
 
 import MDAnalysis as mda
-<<<<<<< HEAD
-from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini)
-from MDAnalysisTests.datafiles import (BATArray)
-=======
 from MDAnalysisTests.datafiles import (PSF, DCD, mol2_comments_header, XYZ_mini,
                                        BATArray)
->>>>>>> 7b0112a66845418a7f24c352aa6a4ce213b39668
 from MDAnalysis.analysis.bat import BAT
 
 
