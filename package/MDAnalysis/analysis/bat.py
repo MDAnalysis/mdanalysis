@@ -27,7 +27,7 @@ r"""Bond-Angle-Torsion coordinates analysis --- :mod:`MDAnalysis.analysis.bat`
 :Year: 2020
 :Copyright: GNU Public License, v2 or any higher version
 
-.. versionadded:: 1.0.0
+.. versionadded:: 2.0.0
 
 This module contains classes for interconverting between Cartesian and an
 internal coordinate system, Bond-Angle-Torsion (BAT) coordinates [Chang2003]_,
