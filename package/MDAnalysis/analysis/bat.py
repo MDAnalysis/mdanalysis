@@ -93,7 +93,8 @@ of adenylate kinase (AdK). The trajectory is included within the test data files
    R.run()
 
 After :meth:`R.run()<BAT.run>`, the coordinates can be accessed with
-:attr:`R.bat<BAT.bat>`.
+:attr:`R.bat<BAT.bat>`. The following code snippets assume that the previous
+snippet has been executed.
 
 Reconstruct Cartesian coordinates for the first frame::
 
@@ -104,6 +105,15 @@ Reconstruct Cartesian coordinates for the first frame::
    # The difference between the original and reconstructed coordinates
    # should be zero.
    print(np.sum(np.abs(XYZ - selected_residues.positions)>1E-6))
+
+Change a single torsion angle by :math:`\pi`::
+
+   bat = R.bat[0,:]
+   bat[bat.shape[0]-12] += np.pi
+   XYZ = R.Cartesian(bat)
+
+   # A good number of Cartesian coordinates should have been modified
+   np.sum((XYZ - selected_residues.positions)>1E-5)
 
 Store data to the disk and load it again::
 
