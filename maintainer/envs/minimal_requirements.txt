@@ -12,6 +12,7 @@ networkx
 numpy
 parmed
 psutil
-pytest-cov
 pytest
+pytest-cov
+pytest-xdist
 scipy

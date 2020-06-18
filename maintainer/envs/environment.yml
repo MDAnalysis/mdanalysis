@@ -21,6 +21,9 @@ dependencies:
   - networkx
   - numpy>=1.17.3
   - psutil
+  - pytest
+  - pytest-cov
+  - pytest-xdist
   - scikit-learn
   - scipy
   - seaborn>=0.7.0,<0.9

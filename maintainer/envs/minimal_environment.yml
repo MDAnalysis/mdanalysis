@@ -17,6 +17,9 @@ dependencies:
   - networkx
   - numpy>=1.17.3
   - psutil
+  - pytest
+  - pytest-cov
+  - pytest-xdist
   - scipy
   - sphinx==1.8.5
   - tidynamics>=1.0.0
