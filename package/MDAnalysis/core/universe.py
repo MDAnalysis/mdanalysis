@@ -1323,18 +1323,21 @@ class Universe(object):
 
         Examples
         --------
-        To create a Universe with 10 conformers of ethanol ::
+        To create a Universe with 10 conformers of ethanol:
+
         >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
         >>> u
         <Universe with 9 atoms>
         >>> u.trajectory
         <RDKitReader with 10 frames of 9 atoms>
 
-        To use a different conformer generation algorithm, like ETKDGv3 ::
+        To use a different conformer generation algorithm, like ETKDGv3:
+
         >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
                                          params=AllChem.ETKDGv3()))
         >>> u.trajectory
         <RDKitReader with 1 frames of 9 atoms>
+
 
         .. versionadded:: 1.0.0
         """

@@ -24,7 +24,7 @@
 import warnings
 import pytest
 import numpy as np
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_equal
 
 import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
@@ -104,7 +104,7 @@ class TestRDKitParserMOL2(RDKitParserBase):
         expected = np.array([
             a.GetDoubleProp('_GasteigerCharge') for a in 
             filename_gasteiger.GetAtoms()], dtype=np.float32)
-        assert_array_equal(expected, top_gas_tripos.charges.values)
+        assert_equal(expected, top_gas_tripos.charges.values)
 
     def test_multiple_charge_props_warning(self):
         with warnings.catch_warnings(record=True) as w:
@@ -122,18 +122,18 @@ class TestRDKitParserMOL2(RDKitParserBase):
         expected = np.array([
             a.GetDoubleProp('_GasteigerCharge') for a in 
             filename_gasteiger.GetAtoms()], dtype=np.float32)
-        assert_array_equal(expected, top_gasteiger.charges.values)
+        assert_equal(expected, top_gasteiger.charges.values)
 
     def test_tripos_charges(self, top, filename):
         expected = np.array([
             a.GetDoubleProp('_TriposPartialCharge') for a in filename.GetAtoms()
             ], dtype=np.float32)
-        assert_array_equal(expected, top.charges.values)
+        assert_equal(expected, top.charges.values)
 
     def test_aromaticity(self, top, filename):
         expected = np.array([
             atom.GetIsAromatic() for atom in filename.GetAtoms()])
-        assert_array_equal(expected, top.aromaticities.values)
+        assert_equal(expected, top.aromaticities.values)
 
 
 class TestRDKitParserPDB(RDKitParserBase):

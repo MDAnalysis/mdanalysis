@@ -288,7 +288,6 @@ class TestUniverseFromSmiles(object):
             [ 1.0077721 , -0.10363862, -0.41727486]]], dtype=np.float32)
         assert_almost_equal(u.trajectory.coordinate_array, expected)
 
-        
 
 class TestUniverse(object):
     # older tests, still useful

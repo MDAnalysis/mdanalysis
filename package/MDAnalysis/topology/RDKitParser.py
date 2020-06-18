@@ -75,7 +75,7 @@ class RDKitParser(TopologyReaderBase):
     """
     For RDKit structures
 
-    Create the following Attributes:
+    Creates the following Attributes:
      - Atomids
      - Atomnames
      - Aromaticities
