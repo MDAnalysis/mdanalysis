@@ -454,8 +454,8 @@ class BAT(AnalysisBase):
         # Check array dimensions
         if self.bat.shape!=(self.n_frames, 3*self._ag.n_atoms):
           raise ValueError('Dimensions of array in loaded file, ' + \
-              f'({bat.shape[0]},{bat.shape[1]}), differ from required' + \
-              f'dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
+              f'({self.bat.shape[0]},{self.bat.shape[1]}), differ from ' + \
+              f'required dimensions of ({self.n_frames, 3*self._ag.n_atoms})')
         # Check position of initial atom
         for i, ts in enumerate(self._trajectory[self.start:self.stop:self.step]):
             self._frame_index = i
@@ -563,10 +563,8 @@ class BAT(AnalysisBase):
 
             vp = np.cross(v32, v21)
             cs = np.sum(v21 * v32)
-            if abs(cs) > 1:
-                print('cos ', cs)
 
-            sn = np.sqrt(max(1.0 - cs * cs, 0.0000000001))
+            sn = max(np.sqrt(1.0 - cs * cs), 0.0000000001)
             vp = vp / sn
             vu = np.cross(vp, v21)
 
