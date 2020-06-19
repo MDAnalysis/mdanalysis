@@ -747,6 +747,21 @@
     <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;altLocs&#39;</span></div>
 
 
+<div class="viewcode-block" id="AromaticSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AromaticSelection">[docs]</a><span class="k">class</span> <span class="nc">AromaticSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select aromatic atoms.</span>
+<span class="sd">    </span>
+<span class="sd">    Aromaticity is available in the `aromaticities` attribute and is made </span>
+<span class="sd">    available through RDKit&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;aromatic&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;aromaticities&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">aromaticities</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
 <div class="viewcode-block" id="ResidSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
 

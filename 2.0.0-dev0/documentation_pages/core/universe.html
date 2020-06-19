@@ -767,6 +767,56 @@ positions for the atoms and a mass attribute:</p>
 </div>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="MDAnalysis.core.universe.Universe.from_smiles">
+<em class="property">classmethod </em><code class="descname">from_smiles</code><span class="sig-paren">(</span><em>smiles</em>, <em>sanitize=True</em>, <em>addHs=True</em>, <em>generate_coordinates=True</em>, <em>numConfs=1</em>, <em>rdkit_kwargs={}</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.from_smiles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.from_smiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Universe from a SMILES string with rdkit</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>smiles</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – SMILES string</li>
+<li><strong>sanitize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Toggle the sanitization of the molecule</li>
+<li><strong>addHs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Add all necessary hydrogens to the molecule</li>
+<li><strong>generate_coordinates</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>, </em><em>default True</em><em>)</em>) – Generate 3D coordinates using RDKit’s <cite>AllChem.EmbedMultipleConfs</cite>
+function. Requires adding hydrogens with the <cite>addHs</cite> parameter</li>
+<li><strong>numConfs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>, </em><em>default 1</em><em>)</em>) – Number of frames to generate coordinates for. Ignored if
+<cite>generate_coordinates=False</cite></li>
+<li><strong>rdkit_kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a><em> (</em><em>optional</em><em>)</em>) – Other arguments passed to the RDKit <cite>EmbedMultipleConfs</cite> function</li>
+<li><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – Parameters passed on Universe creation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<p>To create a Universe with 10 conformers of ethanol:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span>
+<span class="go">&lt;Universe with 9 atoms&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+<span class="go">&lt;RDKitReader with 10 frames of 9 atoms&gt;</span>
+</pre></div>
+</div>
+<p>To use a different conformer generation algorithm, like ETKDGv3:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="o">.</span><span class="n">from_smiles</span><span class="p">(</span><span class="s1">&#39;CCO&#39;</span><span class="p">,</span> <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span>
+<span class="go">                                 params=AllChem.ETKDGv3()))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span>
+<span class="go">&lt;RDKitReader with 1 frames of 9 atoms&gt;</span>
+</pre></div>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="MDAnalysis.core.universe.Universe.impropers">
 <code class="descname">impropers</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.impropers" title="Permalink to this definition">¶</a></dt>

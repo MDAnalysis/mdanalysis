@@ -1463,7 +1463,88 @@
             <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">fragdict</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">fraginfo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">fragdict</span></div>
+        <span class="k">return</span> <span class="n">fragdict</span>
+    
+<div class="viewcode-block" id="Universe.from_smiles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.from_smiles">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_smiles</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">addHs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+                    <span class="n">generate_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+                    <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Universe from a SMILES string with rdkit</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        smiles : str</span>
+<span class="sd">            SMILES string</span>
+
+<span class="sd">        sanitize : bool (optional, default True)</span>
+<span class="sd">            Toggle the sanitization of the molecule</span>
+
+<span class="sd">        addHs : bool (optional, default True)</span>
+<span class="sd">            Add all necessary hydrogens to the molecule</span>
+
+<span class="sd">        generate_coordinates : bool (optional, default True)</span>
+<span class="sd">            Generate 3D coordinates using RDKit&#39;s `AllChem.EmbedMultipleConfs`</span>
+<span class="sd">            function. Requires adding hydrogens with the `addHs` parameter</span>
+
+<span class="sd">        numConfs : int (optional, default 1)</span>
+<span class="sd">            Number of frames to generate coordinates for. Ignored if</span>
+<span class="sd">            `generate_coordinates=False`</span>
+
+<span class="sd">        rdkit_kwargs : dict (optional)</span>
+<span class="sd">            Other arguments passed to the RDKit `EmbedMultipleConfs` function</span>
+
+<span class="sd">        kwargs : dict</span>
+<span class="sd">            Parameters passed on Universe creation</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`~MDAnalysis.core.Universe`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        To create a Universe with 10 conformers of ethanol:</span>
+
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe.from_smiles(&#39;CCO&#39;, numConfs=10)</span>
+<span class="sd">        &gt;&gt;&gt; u</span>
+<span class="sd">        &lt;Universe with 9 atoms&gt;</span>
+<span class="sd">        &gt;&gt;&gt; u.trajectory</span>
+<span class="sd">        &lt;RDKitReader with 10 frames of 9 atoms&gt;</span>
+
+<span class="sd">        To use a different conformer generation algorithm, like ETKDGv3:</span>
+
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe.from_smiles(&#39;CCO&#39;, rdkit_kwargs=dict(</span>
+<span class="sd">                                         params=AllChem.ETKDGv3()))</span>
+<span class="sd">        &gt;&gt;&gt; u.trajectory</span>
+<span class="sd">        &lt;RDKitReader with 1 frames of 9 atoms&gt;</span>
+
+
+<span class="sd">        .. versionadded:: 2.0.0</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+            <span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+                <span class="s2">&quot;Creating a Universe from a SMILES string requires RDKit but &quot;</span> 
+                <span class="s2">&quot;it does not appear to be installed&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
+
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="n">sanitize</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Error while parsing SMILES </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">smiles</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">addHs</span><span class="p">:</span>
+            <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">AddHs</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">generate_coordinates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">addHs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Generating coordinates requires adding &quot;</span>
+                <span class="s2">&quot;hydrogens with `addHs=True`&quot;</span><span class="p">)</span>
+            
+            <span class="n">numConfs</span> <span class="o">=</span> <span class="n">rdkit_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;numConfs&quot;</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">numConfs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">numConfs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;numConfs must be a non-zero positive &quot;</span>
+                <span class="s2">&quot;integer instead of </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">numConfs</span><span class="p">))</span>
+            <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMultipleConfs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">,</span> <span class="o">**</span><span class="n">rdkit_kwargs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># TODO: what is the point of this function???</span>
