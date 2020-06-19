@@ -22,11 +22,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """
-Picklable read-only I/O classes
-===============================
+Picklable read-only I/O classes --- :mod:`MDAnalysis.lib.picklable_file_io`
+===========================================================================
 
 Provide with an interface for pickling read-only IO file object.
-These classes are used for further pickling :class:`mda.core.Universe`
+These classes are used for further pickling :class:`MDAnalysis.core.universe`
 in a object composition approach.
 
 .. autoclass:: FileIOPicklable
@@ -67,11 +67,12 @@ class FileIOPicklable(io.FileIO):
 
     Example
     -------
+    ::
 
-    >>> file = FileIOPicklable('filename')
-    >>> file.readline()
-    >>> file_pickled = pickle.loads(pickle.dumps(file)
-    >>> assert_equal(file.tell(), file_pickled.tell())
+        file = FileIOPicklable('filename')
+        file.readline()
+        file_pickled = pickle.loads(pickle.dumps(file)
+        assert_equal(file.tell(), file_pickled.tell())
 
     See Also
     ---------
@@ -106,9 +107,10 @@ class BufferIOPicklable(io.BufferedReader):
 
     Example
     -------
+    ::
 
-    >>> file = FileIOPicklable('filename')
-    >>> buffer_wrapped = BufferIOPicklable(file)
+        file = FileIOPicklable('filename')
+        buffer_wrapped = BufferIOPicklable(file)
 
     See Also
     ---------
@@ -145,9 +147,10 @@ class TextIOPicklable(io.TextIOWrapper):
 
     Example
     -------
+    ::
 
-    >>> file = FileIOPicklable('filename')
-    >>> text_wrapped = TextIOPicklable(file)
+        file = FileIOPicklable('filename')
+        text_wrapped = TextIOPicklable(file)
 
     See Also
     ---------
@@ -214,14 +217,14 @@ def pickle_open(name, mode='rt'):
     -------
     open as context manager::
 
-    >>>   with pickle_open('filename') as f:
-    >>>     line = f.readline()
+        with pickle_open('filename') as f:
+            line = f.readline()
 
     open as function::
 
-    >>>   f = pickle_open('filename')
-    >>>   line = f.readline()
-    >>>   f.close()
+        f = pickle_open('filename')
+        line = f.readline()
+        f.close()
 
     See Also
     --------
