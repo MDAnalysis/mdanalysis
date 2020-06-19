@@ -140,11 +140,7 @@ Classes
     http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
 
 """
-from __future__ import absolute_import
-
-from six.moves import range, zip
-from six import raise_from, StringIO, BytesIO
-
+from io import StringIO, BytesIO
 import os
 import errno
 import itertools
@@ -394,7 +390,7 @@ class PDBReader(base.ReaderBase):
             start = self._start_offsets[frame]
             stop = self._stop_offsets[frame]
         except IndexError:  # out of range of known frames
-            raise_from(IOError, None)
+            raise IOError from None
 
         pos = 0
         occupancy = np.ones(self.n_atoms)
@@ -940,12 +936,9 @@ class PDBWriter(base.WriterBase):
             try:
                 ts = self.ts
             except AttributeError:
-                raise_from(
-                    NoDataError(
-                        "PBDWriter: no coordinate data to write to "
-                        "trajectory file"
-                        ),
-                    None)
+                errmsg = ("PBDWriter: no coordinate data to write to "
+                          "trajectory file")
+                raise NoDataError(errmsg) from None
         self._check_pdb_coordinates()
         self._write_timestep(ts, **kwargs)
 

@@ -116,11 +116,11 @@ to find uncovered code.
 
 .. |usergroup| image:: https://img.shields.io/badge/Google%20Group-Users-lightgrey.svg
    :alt: User Google Group
-   :target: http://users.mdanalysis.org
+   :target: https://groups.google.com/group/mdnalysis-discussion
 
 .. |developergroup| image:: https://img.shields.io/badge/Google%20Group-Developers-lightgrey.svg
    :alt: Developer Google Group
-   :target: http://developers.mdanalysis.org
+   :target: https://groups.google.com/group/mdnalysis-devel
 
 .. |docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
    :alt: Documentation (latest release)

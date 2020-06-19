@@ -34,9 +34,8 @@ atoms of each molecule so that bons don't split over images.
 
 """
 
-from __future__ import absolute_import
-
 from ..lib._cutil import make_whole
+
 
 def wrap(ag, compound='atoms'):
     """

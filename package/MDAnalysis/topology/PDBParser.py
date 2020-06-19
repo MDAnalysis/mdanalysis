@@ -60,12 +60,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, print_function
-
 import numpy as np
 import warnings
 
-from six.moves import range
 from .guessers import guess_masses, guess_types
 from .tables import SYMB2Z
 from ..lib import util

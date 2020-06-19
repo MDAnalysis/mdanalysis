@@ -47,8 +47,6 @@ Classes
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 
 """
-from __future__ import absolute_import
-
 import numpy as np
 
 from . import guessers
