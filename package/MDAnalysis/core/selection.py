@@ -580,8 +580,7 @@ class AromaticSelection(Selection):
         pass
 
     def apply(self, group):
-        mask = getattr(group, self.field, mask)
-        return group[mask].unique
+        return group[group.aromaticities].unique
 
 
 class ResidSelection(Selection):
