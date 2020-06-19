@@ -64,7 +64,7 @@ from . import memory
 class RDKitReader(memory.MemoryReader):
     """Coordinate reader for RDKit.
     
-    .. versionadded:: 1.0.0
+    .. versionadded:: 2.0.0
     """
     format = 'RDKIT'
 
@@ -73,10 +73,7 @@ class RDKitReader(memory.MemoryReader):
 
     @staticmethod
     def _format_hint(thing):
-        """Can this reader read *thing*?
-
-        .. versionadded:: 1.0.0
-        """
+        """Can this reader read *thing*?"""
         try:
             from rdkit import Chem
         except ImportError:

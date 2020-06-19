@@ -96,16 +96,15 @@ class RDKitParser(TopologyReaderBase):
      - ChainIDs
      - Occupancies
      - Tempfactors
-     
+    
+
+    .. versionadded:: 2.0.0
     """
     format = 'RDKIT'
 
     @staticmethod
     def _format_hint(thing):
-        """Can this Parser read object *thing*?
-
-        .. versionadded:: 1.0.0
-        """
+        """Can this Parser read object *thing*?"""
         try:
             from rdkit import Chem
         except ImportError:  # if no rdkit, probably not rdkit

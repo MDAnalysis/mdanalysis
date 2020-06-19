@@ -1339,7 +1339,7 @@ class Universe(object):
         <RDKitReader with 1 frames of 9 atoms>
 
 
-        .. versionadded:: 1.0.0
+        .. versionadded:: 2.0.0
         """
         try:
             from rdkit import Chem
