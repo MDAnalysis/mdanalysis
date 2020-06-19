@@ -25,9 +25,8 @@ from __future__ import absolute_import
 import pytest
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib.picklable_file_io import pickle_open
+from MDAnalysis.lib.picklable_file_io import pickle_open, FileIOPicklable
 from MDAnalysis.tests.datafiles import PDB
-
 import pickle
 
 
@@ -59,6 +58,12 @@ def test_context_manager_pickle():
         assert_equal(file.readline(), file_pickled.readline())
 
 
+def test_fileio_pickle():
+    raw_io = FileIOPicklable(PDB)
+    raw_io_pickled = pickle.loads(pickle.dumps(raw_io))
+    assert_equal(raw_io.readline(), raw_io_pickled.readline())
+
+
 @pytest.fixture(params=[
     # filename mode
     (PDB, 'w'),
@@ -74,3 +79,10 @@ def test_unpicklable_open_mode(unpicklable_f):
     filename, mode = unpicklable_f
     with pytest.raises(ValueError, match=r"Only read mode *"):
         pickle_open(filename, mode)
+
+
+def test_pickle_seek_fail():
+    with pickle_open(PDB) as file:
+        file.__next__()
+        with pytest.raises(OSError, match=r"telling position disabled by *"):
+            file_pickled = pickle.loads(pickle.dumps(file))
