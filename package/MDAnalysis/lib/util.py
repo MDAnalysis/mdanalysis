@@ -179,7 +179,6 @@ Data format checks
    underlying stream and ``NamedStream.close(force=True)`` will also
    close it.
 """
-from __future__ import division, absolute_import
 import six
 from six.moves import range, map
 import sys

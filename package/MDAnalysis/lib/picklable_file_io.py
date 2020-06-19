@@ -43,8 +43,6 @@ in a object composition approach.
 
 .. versionadded:: 2.0.0
 """
-from __future__ import division, absolute_import
-
 import io
 import os
 
@@ -183,8 +181,8 @@ def pickle_open(name, mode='rt'):
     FileIOPicklable object given different reading mode. It can be used as a
     context manager, and replace the built-in :func:`open` function
     in read mode that only returns an unpicklable file object.
-    In order to serialize a :class:`MDAnalysis.core.Universe`, this function can
-    used to open trajectory/topology files--a object composition approach,
+    In order to serialize a :class:`MDAnalysis.core.Universe`, this function
+    can used to open trajectory/topology files--a object composition approach,
     as opposed to class inheritance, which is more flexible and easier for
     pickle implementation for new readers.
 
