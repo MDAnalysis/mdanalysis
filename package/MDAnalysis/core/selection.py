@@ -176,13 +176,6 @@ class _Selectionmeta(type):
         except KeyError:
             pass
 
-        # GlobalSelections can return something even if empty AG
-        if not cls.__name__ == 'GlobalSelection':
-            try:
-                cls.apply = return_empty_on_apply(cls.apply)
-            except AttributeError:
-                pass
-
 
 class Selection(object, metaclass=_Selectionmeta):
     pass
@@ -276,6 +269,7 @@ class AroundSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
@@ -304,6 +298,7 @@ class SphericalLayerSelection(DistanceSelection):
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
     
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
@@ -329,6 +324,7 @@ class SphericalZoneSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
@@ -345,6 +341,7 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(Selection):
+    @return_empty_on_apply
     def apply(self, group):
         sel = self.sel.apply(group)
 
@@ -438,6 +435,7 @@ class PointSelection(DistanceSelection):
         self.ref = np.array([x, y, z], dtype=np.float32)
         self.cutoff = float(tokens.popleft())
 
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         box = self.validate_dimensions(group.dimensions)
@@ -530,6 +528,7 @@ class StringSelection(Selection):
 
         self.values = vals
 
+    @return_empty_on_apply
     def apply(self, group):
         mask = np.zeros(len(group), dtype=np.bool)
         for val in self.values:
