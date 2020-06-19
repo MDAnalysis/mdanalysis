@@ -24,7 +24,6 @@
 Useful functions for running tests
 
 """
-from __future__ import absolute_import
 
 try:
     import __builtin__
@@ -44,6 +43,7 @@ import warnings
 import pytest
 
 from numpy.testing import assert_warns
+
 
 def block_import(package):
     """Block import of a given package

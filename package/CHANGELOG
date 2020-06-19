@@ -13,13 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope, cbouy
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy
 
   * 2.0.0
 
 Fixes
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
+  * Testsuite does not any more matplotlib.use('agg') (#2191)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from 

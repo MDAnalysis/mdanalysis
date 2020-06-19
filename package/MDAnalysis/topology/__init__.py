@@ -302,7 +302,6 @@ four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.
 
 """
-from __future__ import absolute_import
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',

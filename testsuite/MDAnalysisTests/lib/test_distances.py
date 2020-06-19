@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
-from __future__ import division, absolute_import
 import pytest
 import numpy as np
 from numpy.testing import assert_equal, assert_almost_equal
