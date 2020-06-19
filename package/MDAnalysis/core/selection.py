@@ -580,7 +580,6 @@ class AromaticSelection(Selection):
         pass
 
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
         mask = getattr(group, self.field, mask)
         return group[mask].unique
 
