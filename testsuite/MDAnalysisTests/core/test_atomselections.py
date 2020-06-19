@@ -516,6 +516,28 @@ class TestSelectionsTPR(object):
         assert_equal(sel.ids, np.array(reference, dtype=np.int32))
 
 
+class TestSelectionRDKit(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+
+    @pytest.fixture
+    def u(self):
+        smi = "Cc1cNcc1"
+        u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
+                                            generate_coordinates=False)
+        return u
+        
+    @pytest.mark.parametrize("sel_str, n_atoms", [
+        ("aromatic", 5),
+        ("not aromatic", 1),
+        ("type N and aromatic", 1),
+        ("type C and aromatic", 4),
+    ])
+    def test_selection(self, u, sel_str, n_atoms):
+        sel = u.select_atoms(sel_str)
+        assert sel.n_atoms == n_atoms
+
+
 class TestSelectionsNucleicAcids(object):
     @pytest.fixture(scope='class')
     def universe(self):

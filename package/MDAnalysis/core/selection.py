@@ -568,6 +568,21 @@ class AltlocSelection(StringSelection):
     field = 'altLocs'
 
 
+class AromaticSelection(Selection):
+    """Select aromatic atoms.
+    
+    Aromaticity is available in the `aromaticities` attribute and is made 
+    available through RDKit"""
+    token = 'aromatic'
+    field = 'aromaticities'
+
+    def __init__(self, parser, tokens):
+        pass
+
+    def apply(self, group):
+        return group[group.aromaticities].unique
+
+
 class ResidSelection(Selection):
     """Select atoms based on numerical fields
 
