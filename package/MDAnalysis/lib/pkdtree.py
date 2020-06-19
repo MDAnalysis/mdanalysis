@@ -28,8 +28,6 @@ This module contains a class to allow searches on a KDTree involving periodic
 boundary conditions.
 """
 
-from __future__ import absolute_import
-
 import itertools
 import numpy as np
 from scipy.spatial import cKDTree

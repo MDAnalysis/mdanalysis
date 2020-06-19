@@ -41,8 +41,6 @@ interest to developers.
    .. automethod:: _chained_iterator
 
 """
-from __future__ import absolute_import
-
 import warnings
 
 import os.path

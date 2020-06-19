@@ -1,6 +1,5 @@
 import MDAnalysis as mda
 import numpy as np
-from six.moves import range
 
 
 def create_test_trj(uni, fname):
