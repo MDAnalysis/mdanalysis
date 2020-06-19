@@ -59,7 +59,25 @@ import warnings
 import numpy as np
 
 from . import memory
+from . import base
 
+try:
+    from rdkit import Chem
+except ImportError:
+    pass
+else:
+    RDBONDTYPE = {
+        'AROMATIC': Chem.BondType.AROMATIC,
+        'SINGLE': Chem.BondType.SINGLE,
+        'DOUBLE': Chem.BondType.DOUBLE,
+        'TRIPLE': Chem.BondType.TRIPLE,
+    }
+    RDBONDORDER = {
+        1: Chem.BondType.SINGLE,
+        1.5: Chem.BondType.AROMATIC,
+        2: Chem.BondType.DOUBLE,
+        3: Chem.BondType.TRIPLE,
+    }
 
 class RDKitReader(memory.MemoryReader):
     """Coordinate reader for RDKit.
@@ -102,3 +120,62 @@ class RDKitReader(memory.MemoryReader):
             coordinates = np.empty((1,n_atoms,3), dtype=np.float32)
             coordinates[:] = np.nan
         super(RDKitReader, self).__init__(coordinates, order='fac', **kwargs)
+
+
+class RDKitConverter(base.ConverterBase):
+    """Convert MDAnalysis AtomGroup or Universe to `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ :class:`rdkit.Chem.rdchem.Mol`.
+
+    Example
+    -------
+
+    .. code-block:: python
+
+        import MDAnalysis as mda
+        from MDAnalysis.tests.datafiles import PDB_full
+        u = mda.Universe(PDB_full)
+        mol = u.select_atoms('resname DMS').convert_to('RDKIT')
+    
+
+    .. versionadded:: 2.X.X
+    """
+
+    lib = 'RDKIT'
+    units = {'time': None, 'length': 'Angstrom'}
+
+    def convert(self, obj):
+        """Write selection at current trajectory frame to :class:`~rdkit.Chem.rdchem.Mol`.
+
+        Parameters
+        -----------
+        obj : AtomGroup or Universe or :class:`Timestep`
+        """
+        try:
+            from rdkit import Chem
+        except ImportError:
+            raise ImportError('RDKit is required for RDKitConverter but '
+                              'is not installed. Try installing it with \n'
+                              'conda install -c conda-forge rdkit')
+        try:
+            # make sure to use atoms (Issue 46)
+            ag_or_ts = obj.atoms
+        except AttributeError as e:
+            if isinstance(obj, base.Timestep):
+                ag_or_ts = obj.copy()
+            else:
+                raise TypeError("No Timestep found in obj argument") from e
+
+        mol = Chem.RWMol()
+        atom_mapper = {}
+        for atom in ag_or_ts:
+            rdatom = Chem.Atom(atom.element)
+            index = mol.AddAtom(rdatom)
+            atom_mapper[atom.ix] = index
+
+        for bond in ag_or_ts.bonds:
+            bond_indices = [atom_mapper[i] for i in bond.indices]
+            bond_type = RDBONDTYPE.get(bond.type.upper(), RDBONDORDER.get(
+                bond.order, Chem.BondType.SINGLE))
+            mol.AddBond(*bond_indices, bond_type)
+
+        Chem.SanitizeMol(mol)
+        return mol
