@@ -61,11 +61,8 @@ from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 def _check_dtype(func):
     def _attr_dtype(values):
-        # quasi len measurement
-        # strings, floats, ints are len 0, ie not iterable
-        # other iterables are just len'd
+        # check dtype of values array
         dtypes = ['int8','int16','int32','int64']
-        #print(values.dtype)
         try:
             if values.dtype in dtypes:
                 return "yes"
