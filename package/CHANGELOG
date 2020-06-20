@@ -44,6 +44,7 @@ Deprecations
   * 1.0.0
 
 Fixes
+  * Fixed issue #2764
   * MOL2Writer now accepts both Universes and AtomgGroups (Issue #2717)
   * Use user-provided `remark` in `XYZWriter` (Issue #2692)
   * Added more informative error messages about topology attributes
