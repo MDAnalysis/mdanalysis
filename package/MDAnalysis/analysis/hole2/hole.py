@@ -342,7 +342,7 @@ def hole(pdbfile,
     Notes
     -----
     - HOLE is very picky and does not read all DCD-like formats [#HOLEDCD]_.
-      If in doubt, look into the `logfile` for error diagnostics.
+      If in doubt, look into the `outfile` for error diagnostics.
 
 
     .. versionadded:: 1.0
