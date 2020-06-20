@@ -28,7 +28,7 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python mock biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
