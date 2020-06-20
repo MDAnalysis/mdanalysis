@@ -20,12 +20,13 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+import pickle
+
 import pytest
 from numpy.testing import assert_equal
 
 from MDAnalysis.lib.picklable_file_io import pickle_open, FileIOPicklable
 from MDAnalysis.tests.datafiles import PDB
-import pickle
 
 
 @pytest.fixture(params=[

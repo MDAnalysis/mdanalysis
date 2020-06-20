@@ -69,10 +69,11 @@ class FileIOPicklable(io.FileIO):
     -------
     ::
 
-        file = FileIOPicklable('filename')
-        file.readline()
-        file_pickled = pickle.loads(pickle.dumps(file)
-        assert_equal(file.tell(), file_pickled.tell())
+        >>> file = FileIOPicklable(PDB)
+        >>> file.readline()
+        >>> file_pickled = pickle.loads(pickle.dumps(file))
+        >>> print(file.tell(), file_pickled.tell())
+            55 55
 
     See Also
     ---------
@@ -95,7 +96,7 @@ class FileIOPicklable(io.FileIO):
 
 
 class BufferIOPicklable(io.BufferedReader):
-    """A picklable buffer object for read-only FilIO object.
+    """A picklable buffer object for read-only FileIO object.
 
     This class provides a buffered :class:`io.BufferedReader`
     that can be pickled.
@@ -180,12 +181,12 @@ class TextIOPicklable(io.TextIOWrapper):
 def pickle_open(name, mode='rt'):
     """Open file and return a stream with pickle function implemented.
 
-    This function return either BufferIOPicklable or TextIOPicklable wrapped
+    This function returns either BufferIOPicklable or TextIOPicklable wrapped
     FileIOPicklable object given different reading mode. It can be used as a
     context manager, and replace the built-in :func:`open` function
     in read mode that only returns an unpicklable file object.
     In order to serialize a :class:`MDAnalysis.core.Universe`, this function
-    can used to open trajectory/topology files--a object composition approach,
+    can used to open trajectory/topology files--an object composition approach,
     as opposed to class inheritance, which is more flexible and easier for
     pickle implementation for new readers.
 
