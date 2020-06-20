@@ -28,6 +28,7 @@ Enhancements
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
 
 Changes
+  * Changes development status from Beta to Mature (Issue #2773)
   * Removes deprecated MDAnalysis.analysis.hole, please use
     MDAnalysis.analysis.hole2.hole instead (Issue #2739)
   * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)
