@@ -18,6 +18,7 @@ The rules for this file:
   * 1.0.1
 
 Fixes
+  * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
 
 
