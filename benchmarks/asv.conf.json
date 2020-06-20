@@ -35,7 +35,6 @@
 	    "pytest": [],
 	    "nose": [],
 	    "psutil": [],
-	    "mock": [],
         "MDAnalysisTests": [],
     },
     // The directory (relative to the current directory) that benchmarks are

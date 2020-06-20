@@ -60,19 +60,13 @@ try:
     if sys.version_info >= (3, 7):
         import duecredit
     else:
-        from mock import patch
-        if sys.version_info <= (2, ):
-            from contextlib import nested
-            with nested(patch('os.fork'), patch('os.popen')) \
-                 as (os_dot_fork, os_dot_popen):
+        from unittest.mock import patch
+        if not os.name == 'nt':
+            with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
                 import duecredit
         else:
-            if not os.name == 'nt':
-                with patch('os.fork') as os_dot_fork, patch('os.popen') as os_dot_popen:
-                    import duecredit
-            else:
-                # Windows doesn't have os.fork
-                import duecredit
+            # Windows doesn't have os.fork
+            import duecredit
 
     from duecredit import due, BibTeX, Doi, Url
     if 'due' in locals() and not hasattr(due, 'cite'):
