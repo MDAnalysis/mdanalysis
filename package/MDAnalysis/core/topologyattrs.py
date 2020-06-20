@@ -59,6 +59,37 @@ from .groups import (ComponentBase, GroupBase,
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
+def _check_dtype(func):
+    def _attr_dtype(values):
+        # quasi len measurement
+        # strings, floats, ints are len 0, ie not iterable
+        # other iterables are just len'd
+        dtypes = ['int8','int16','int32','int64']
+        #print(values.dtype)
+        try:
+            if values.dtype in dtypes:
+                return "yes"
+            else:
+                return "no"  
+        except:
+            return "no"
+
+    @functools.wraps(func)
+    def wrapper(attr, group, values):
+        val_dtype = _attr_dtype(values)
+        print(val_dtype)
+        if val_dtype == "no":
+            raise ValueError("Array Inputs of int8, int16,int32,int64 datatypes are only allowed")
+
+
+        
+        # if everything went OK, continue with the function
+        return func(attr, group, values)
+        
+    return wrapper
+    
+    
+
 def _check_length(func):
     """Wrapper which checks the length of inputs to set_X
 
@@ -87,6 +118,8 @@ def _check_length(func):
                           "Length {group}: {lengroup}, length of supplied values: {lenvalues}.")
     # Eg "Setting AtomGroup masses with wrong sized array. Length AtomGroup: 100, length of
     # supplied values: 50."
+
+
 
     def _attr_len(values):
         # quasi len measurement
@@ -435,6 +468,7 @@ class AtomAttr(TopologyAttr):
         return self.values[ag.ix]
 
     @_check_length
+    @_check_dtype
     def set_atoms(self, ag, values):
         self.values[ag.ix] = values
 
@@ -515,6 +549,7 @@ class Atomnames(AtomAttr):
         return np.array(['' for _ in range(na)], dtype=object)
 
     @_check_length
+    @_check_dtype
     def set_atoms(self, ag, values):
         newnames = []
 
