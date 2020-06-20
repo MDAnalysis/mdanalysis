@@ -31,7 +31,6 @@
         "Cython": [],
         "numpy": [],
         "scipy": [],
-	    "six": [],
 	    "pytest": [],
 	    "nose": [],
 	    "psutil": [],
