@@ -26,7 +26,7 @@ import os
 import warnings
 import re
 import textwrap
-from mock import Mock, patch
+from unittest.mock import Mock, patch
 import sys
 
 import numpy as np

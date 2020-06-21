@@ -28,8 +28,7 @@ from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
 import pytest
 import numpy as np
-from mock import patch
-from mock import Mock
+from unittest.mock import patch, Mock
 from numpy.testing import assert_almost_equal, assert_equal
 
 SELECTION1 = "byres name OH2"
