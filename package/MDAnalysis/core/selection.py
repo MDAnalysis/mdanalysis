@@ -530,21 +530,8 @@ class StringSelection(Selection):
 
     @return_empty_on_apply
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
-        values = getattr(group, self.field)
-        for val in self.values:
-            mask |= [fnmatch.fnmatch(x, val) for x in values]
-        return group[mask].unique
-
-
-class AtomNameSelection(StringSelection):
-    """Select atoms based on 'names' attribute"""
-    token = 'name'
-    field = 'names'
-
-    def apply(self, group):
         # rather than work on group.names, cheat and look at the lookup table
-        nmattr = group.universe._topology.names
+        nmattr = getattr(group.universe._topology, self.field)
 
         matches = []  # list of passing indices
         # iterate through set of known atom names, check which pass
@@ -556,6 +543,12 @@ class AtomNameSelection(StringSelection):
         nmidx = nmattr.nmidx[group.ix]
 
         return group[np.in1d(nmidx, matches)].unique
+
+
+class AtomNameSelection(StringSelection):
+    """Select atoms based on 'names' attribute"""
+    token = 'name'
+    field = 'names'
 
 
 class AtomTypeSelection(StringSelection):
@@ -576,13 +569,30 @@ class AtomICodeSelection(StringSelection):
     field = 'icodes'
 
 
-class ResidueNameSelection(StringSelection):
+class _ResidueStringSelection(StringSelection):
+    def apply(self, group):
+        # rather than work on group.names, cheat and look at the lookup table
+        nmattr = getattr(group.universe._topology, self.field)
+
+        matches = []  # list of passing indices
+        # iterate through set of known atom names, check which pass
+        for nm, ix in nmattr.namedict.items():
+            if any(fnmatch.fnmatch(nm, val) for val in self.values):
+                matches.append(ix)
+
+        # atomname indices for members of this group
+        nmidx = nmattr.nmidx[group.resindices]
+
+        return group[np.in1d(nmidx, matches)].unique    
+
+
+class ResidueNameSelection(_ResidueStringSelection):
     """Select atoms based on 'resnames' attribute"""
     token = 'resname'
     field = 'resnames'
 
 
-class MoleculeTypeSelection(StringSelection):
+class MoleculeTypeSelection(_ResidueStringSelection):
     """Select atoms based on 'moltypes' attribute"""
     token = 'moltype'
     field = 'moltypes'
@@ -592,6 +602,21 @@ class SegmentNameSelection(StringSelection):
     """Select atoms based on 'segids' attribute"""
     token = 'segid'
     field = 'segids'
+
+    def apply(self, group):
+        # rather than work on group.names, cheat and look at the lookup table
+        nmattr = group.universe._topology.segids
+
+        matches = []  # list of passing indices
+        # iterate through set of known atom names, check which pass
+        for nm, ix in nmattr.namedict.items():
+            if any(fnmatch.fnmatch(nm, val) for val in self.values):
+                matches.append(ix)
+
+        # atomname indices for members of this group
+        nmidx = nmattr.nmidx[group.segindices]
+
+        return group[np.in1d(nmidx, matches)].unique    
 
 
 class AltlocSelection(StringSelection):

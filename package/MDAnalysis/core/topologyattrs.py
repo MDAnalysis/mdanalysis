@@ -473,16 +473,7 @@ class Atomids(AtomAttr):
         return np.arange(1, na + 1)
 
 
-# TODO: update docs to property doc
-class Atomnames(AtomAttr):
-    """Name for each atom.
-    """
-    attrname = 'names'
-    singular = 'name'
-    per_object = 'atom'
-    dtype = object
-    transplants = defaultdict(list)
-
+class _AtomStringAttr(AtomAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
       
@@ -537,6 +528,17 @@ class Atomnames(AtomAttr):
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
         self.values = self.name_lookup[self.nmidx]
+
+
+# TODO: update docs to property doc
+class Atomnames(_AtomStringAttr):
+    """Name for each atom.
+    """
+    attrname = 'names'
+    singular = 'name'
+    per_object = 'atom'
+    dtype = object
+    transplants = defaultdict(list)
 
     def phi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
         """Select AtomGroup corresponding to the phi protein backbone dihedral
@@ -1009,20 +1011,16 @@ class Atomnames(AtomAttr):
 
 
 # TODO: update docs to property doc
-class Atomtypes(AtomAttr):
+class Atomtypes(_AtomStringAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
     per_object = 'atom'
     dtype = object
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
-
 
 # TODO: update docs to property doc
-class Elements(AtomAttr):
+class Elements(_AtomStringAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
@@ -1046,7 +1044,7 @@ class Radii(AtomAttr):
         return np.zeros(na)
 
 
-class RecordTypes(AtomAttr):
+class RecordTypes(_AtomStringAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
@@ -1064,7 +1062,7 @@ class RecordTypes(AtomAttr):
         return np.array(['ATOM'] * na, dtype=object)
 
 
-class ChainIDs(AtomAttr):
+class ChainIDs(_AtomStringAttr):
     """ChainID per atom
 
     Note
@@ -1075,10 +1073,6 @@ class ChainIDs(AtomAttr):
     singular = 'chainID'
     per_object = 'atom'
     dtype = object
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
 
 
 class Tempfactors(AtomAttr):
@@ -1625,7 +1619,7 @@ class Occupancies(AtomAttr):
 
 
 # TODO: update docs to property doc
-class AltLocs(AtomAttr):
+class AltLocs(_AtomStringAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
     singular = 'altLoc'
@@ -1778,8 +1772,65 @@ class Resids(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
+class _ResidueStringAttr(ResidueAttr):
+    def __init__(self, vals, guessed=False):
+        self._guessed = guessed
+      
+        self.namedict = dict()  # maps str to nmidx
+        name_lookup = []  # maps idx to str
+        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
+
+        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
+        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
+
+        for i, val in enumerate(vals):
+            try:
+                self.nmidx[i] = self.namedict[val]
+            except KeyError:
+                nextidx = len(self.namedict)
+                self.namedict[val] = nextidx
+                name_lookup.append(val)
+
+                self.nmidx[i] = nextidx
+
+        self.name_lookup = np.array(name_lookup, dtype=object)
+        self.values = self.name_lookup[self.nmidx]    
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
+
+    @_check_length
+    def set_residues(self, rg, values):
+        newnames = []
+
+        # two possibilities, either single value given, or one per Atom
+        if isinstance(values, str):
+            try:
+                newidx = self.namedict[values]
+            except KeyError:
+                newidx = len(self.namedict)
+                self.namedict[values] = newidx
+                newnames.append(values)
+        else:
+            newidx = np.zeros_like(values, dtype=int)
+            for i, val in enumerate(values):
+                try:
+                    newidx[i] = self.namedict[val]
+                except KeyError:
+                    nextidx = len(self.namedict)
+                    self.namedict[val] = nextidx
+                    newnames.append(val)
+                    newidx[i] = nextidx
+
+        self.nmidx[rg.ix] = newidx  # newidx either single value or same size array
+        if newnames:
+            self.name_lookup = np.concatenate([self.name_lookup, newnames])
+        self.values = self.name_lookup[self.nmidx]    
+
+
 # TODO: update docs to property doc
-class Resnames(ResidueAttr):
+class Resnames(_ResidueStringAttr):
     attrname = 'resnames'
     singular = 'resname'
     transplants = defaultdict(list)
@@ -1898,18 +1949,14 @@ class Resnums(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class ICodes(ResidueAttr):
+class ICodes(_ResidueStringAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
     dtype = object
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
 
-
-class Moltypes(ResidueAttr):
+class Moltypes(_ResidueStringAttr):
     """Name of the molecule type
 
     Two molecules that share a molecule type share a common template topology.
@@ -1961,8 +2008,65 @@ class SegmentAttr(TopologyAttr):
         self.values[sg.ix] = values
 
 
+class _SegmentStringAttr(SegmentAttr):
+    def __init__(self, vals, guessed=False):
+        self._guessed = guessed
+      
+        self.namedict = dict()  # maps str to nmidx
+        name_lookup = []  # maps idx to str
+        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
+
+        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
+        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
+
+        for i, val in enumerate(vals):
+            try:
+                self.nmidx[i] = self.namedict[val]
+            except KeyError:
+                nextidx = len(self.namedict)
+                self.namedict[val] = nextidx
+                name_lookup.append(val)
+
+                self.nmidx[i] = nextidx
+
+        self.name_lookup = np.array(name_lookup, dtype=object)
+        self.values = self.name_lookup[self.nmidx]    
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
+
+    @_check_length
+    def set_segments(self, sg, values):
+        newnames = []
+
+        # two possibilities, either single value given, or one per Atom
+        if isinstance(values, str):
+            try:
+                newidx = self.namedict[values]
+            except KeyError:
+                newidx = len(self.namedict)
+                self.namedict[values] = newidx
+                newnames.append(values)
+        else:
+            newidx = np.zeros_like(values, dtype=int)
+            for i, val in enumerate(values):
+                try:
+                    newidx[i] = self.namedict[val]
+                except KeyError:
+                    nextidx = len(self.namedict)
+                    self.namedict[val] = nextidx
+                    newnames.append(val)
+                    newidx[i] = nextidx
+
+        self.nmidx[sg.ix] = newidx  # newidx either single value or same size array
+        if newnames:
+            self.name_lookup = np.concatenate([self.name_lookup, newnames])
+        self.values = self.name_lookup[self.nmidx]    
+
+        
 # TODO: update docs to property doc
-class Segids(SegmentAttr):
+class Segids(_SegmentStringAttr):
     attrname = 'segids'
     singular = 'segid'
     transplants = defaultdict(list)
