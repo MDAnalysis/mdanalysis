@@ -10,7 +10,7 @@ cache:
 environment:
     global:
         CONDA_CHANNELS: conda-forge
-        CONDA_DEPENDENCIES: pip setuptools wheel cython mock six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov chemfiles tqdm
+        CONDA_DEPENDENCIES: pip setuptools wheel cython six biopython networkx joblib matplotlib scipy vs2015_runtime pytest mmtf-python GridDataFormats hypothesis pytest-cov codecov chemfiles tqdm tidynamics>=1.0.0 rdkit
         PIP_DEPENDENCIES: gsd==1.9.3 duecredit parmed
         DEBUG: "False"
         MINGW_64: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
@@ -21,7 +21,8 @@ environment:
         # Temporarily fall back to default MINICONDA_VERSION in ci-helpers until https://github.com/MDAnalysis/mdanalysis/issues/2311
         # is fixed in ci-helpers https://github.com/astropy/ci-helpers/issues/406
         # MINICONDA_VERSION: "latest"
-
+        MPLBACKEND: "agg"
+        
     matrix:
         - PYTHON_VERSION: 3.6
           PYTHON_ARCH: 64

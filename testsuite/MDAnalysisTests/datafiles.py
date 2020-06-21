@@ -35,7 +35,6 @@ Note that the files are actually located in a separate package,
 
  from MDAnalysisTestData.datafiles import *
 """
-from __future__ import absolute_import
 
 __all__ = [
     "PSF", "DCD", "CRD",  # CHARMM (AdK example, DIMS trajectory from JMB 2009 paper)
@@ -103,6 +102,7 @@ __all__ = [
     "PRMErr1", "PRMErr2", "PRMErr3", # Amber TOP files to check raised errors
     "PRM_UreyBradley", # prmtop from ParmEd test files with Urey-Bradley angles
     "PRM7_ala2", "RST7_ala2",  # prmtop and rst files from ParmEd example files
+    "PRM19SBOPC", #  prmtop w/ ff19SB CMAP terms and OPC water (Issue #2449)
     "PQR",  # PQR v1
     "PQR_icodes",  # PQR v2 with icodes
     "PDBQT_input",  # PDBQT
@@ -190,6 +190,7 @@ __all__ = [
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
+    "SDF_molecule" # MDL SDFile for rdkit 
 ]
 
 from pkg_resources import resource_filename
@@ -391,6 +392,8 @@ PRM_UreyBradley = resource_filename(__name__, 'data/Amber/parmed_fad.prmtop')
 PRM7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.parm7')
 RST7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.rst7')
 
+PRM19SBOPC = resource_filename(__name__, 'data/Amber/ala.ff19SB.OPC.parm7.bz2')
+
 PQR = resource_filename(__name__, 'data/adk_open.pqr')
 PQR_icodes = resource_filename(__name__, 'data/1A2C.pqr')
 
@@ -517,6 +520,8 @@ GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')
 ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
+
+SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 # This should be the last line: clean up namespace
 del resource_filename

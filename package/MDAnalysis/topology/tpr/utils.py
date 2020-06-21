@@ -46,9 +46,6 @@ Then compose the stuffs in the format :class:`MDAnalysis.Universe` reads in.
 
 The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
-from __future__ import absolute_import
-
-from six.moves import range
 import numpy as np
 import xdrlib
 import struct

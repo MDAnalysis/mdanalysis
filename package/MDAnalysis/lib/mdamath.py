@@ -43,8 +43,6 @@ Helper functions for common mathematical operations
 .. versionchanged: 1.0.0
    Unused function :func:`_angle()` has now been removed.
 """
-from __future__ import division, absolute_import
-from six.moves import zip
 import numpy as np
 
 from ..exceptions import NoDataError

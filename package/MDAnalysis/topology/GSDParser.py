@@ -51,8 +51,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import
-
 import os
 import gsd.hoomd
 import numpy as np

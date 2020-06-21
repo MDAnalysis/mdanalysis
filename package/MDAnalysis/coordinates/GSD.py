@@ -45,9 +45,6 @@ Classes
    :inherited-members:
 
 """
-from __future__ import absolute_import, division
-from six import raise_from
-
 import numpy as np
 import os
 import gsd.hoomd
@@ -103,7 +100,7 @@ class GSDReader(base.ReaderBase):
         try :
             myframe = self._file[frame]
         except IndexError:
-            raise_from(IOError, None)
+            raise IOError from None
 
         # set frame number
         self._frame = frame

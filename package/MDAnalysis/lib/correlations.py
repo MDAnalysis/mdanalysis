@@ -68,7 +68,6 @@ and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.
 
 """
 
-from __future__ import absolute_import, division
 import numpy as np
 from copy import deepcopy
 

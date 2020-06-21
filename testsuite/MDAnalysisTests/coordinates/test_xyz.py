@@ -20,15 +20,13 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import pytest
-from six.moves import zip
 
 import MDAnalysis as mda
 import numpy as np
 from numpy.testing import (
     assert_almost_equal,
+    assert_equal,
 )
 
 from MDAnalysis.coordinates.XYZ import XYZWriter
@@ -72,39 +70,38 @@ class TestXYZWriter(BaseWriterTest):
     def ref():
         return XYZReference()
 
-    def test_write_selection(self, ref, reader, tmpdir):
-        uni = mda.Universe(ref.topology, ref.trajectory)
+    def test_write_selection(self, ref, universe, reader, tmpdir):
         sel_str = 'name CA'
-        sel = uni.select_atoms(sel_str)
+        sel = universe.select_atoms(sel_str)
         outfile = 'write-selection-test' + ref.ext
 
         with tmpdir.as_cwd():
             with ref.writer(outfile, sel.n_atoms) as W:
-                for ts in uni.trajectory:
+                for ts in universe.trajectory:
                     W.write(sel.atoms)
 
             copy = ref.reader(outfile)
-            for orig_ts, copy_ts in zip(uni.trajectory, copy):
+            for orig_ts, copy_ts in zip(universe.trajectory, copy):
                 assert_almost_equal(
                     copy_ts._pos, sel.atoms.positions, ref.prec,
                     err_msg="coordinate mismatch between original and written "
                             "trajectory at frame {} (orig) vs {} (copy)".format(
                         orig_ts.frame, copy_ts.frame))
 
-    def test_write_different_models_in_trajectory(self, ref, reader, tmpdir):
+    def test_write_different_models_in_trajectory(self, ref, universe, tmpdir):
         outfile = 'write-models-in-trajectory' + ref.ext
         # n_atoms should match for each TimeStep if it was specified
         with tmpdir.as_cwd():
             with ref.writer(outfile, n_atoms=4) as w:
                 with pytest.raises(ValueError):
-                    w.write(reader.ts)
+                    w.write(universe)
 
-    def test_no_conversion(self, ref, reader, tmpdir):
+    def test_no_conversion(self, ref, universe, reader, tmpdir):
         outfile = 'write-no-conversion' + ref.ext
         with tmpdir.as_cwd():
             with ref.writer(outfile, convert_units=False) as w:
-                for ts in reader:
-                    w.write(ts)
+                for ts in universe.trajectory:
+                    w.write(universe)
             self._check_copy(outfile, ref, reader)
 
     @pytest.mark.parametrize("remarkout, remarkin", 
@@ -114,12 +111,11 @@ class TestXYZWriter(BaseWriterTest):
             [None, "frame 0 | Written by MDAnalysis XYZWriter (release {0})".format(__version__)],
         ]
     )
-    def test_remark(self, remarkout, remarkin, ref, tmpdir):
-        u = mda.Universe(ref.topology, ref.trajectory)
+    def test_remark(self, universe, remarkout, remarkin, ref, tmpdir):
         outfile = "write-remark.xyz"
 
         with tmpdir.as_cwd():
-            u.atoms.write(outfile, remark=remarkout)
+            universe.atoms.write(outfile, remark=remarkout)
 
             with open(outfile, "r") as xyzout:
                 lines = xyzout.readlines()
@@ -154,39 +150,21 @@ class TestXYZWriterNames(object):
         return str(tmpdir.join('/outfile.xyz'))
 
     def test_no_names(self, outfile):
+        """Atoms should all be named 'X'"""
         u = make_Universe(trajectory=True)
+        
+        wmsg = "does not have atom elements or names"
 
-        w = XYZWriter(outfile)
-        w.write(u.trajectory.ts)
-        w.close()
+        with pytest.warns(UserWarning, match=wmsg):
+            w = XYZWriter(outfile)
+            w.write(u)
+            w.close()
 
         u2 = mda.Universe(outfile)
         assert all(u2.atoms.names == 'X')
 
-    def test_single_name(self, outfile):
-        u = make_Universe(trajectory=True)
-
-        w = XYZWriter(outfile, atoms='ABC')
-        w.write(u.trajectory.ts)
-        w.close()
-
-        u2 = mda.Universe(outfile)
-        assert all(u2.atoms.names == 'ABC')
-
-    def test_list_names(self, outfile):
-        u = make_Universe(trajectory=True)
-
-        names = ['A', 'B', 'C', 'D', 'E'] * 25
-
-        w = XYZWriter(outfile, atoms=names)
-        w.write(u.trajectory.ts)
-        w.close()
-
-        u2 = mda.Universe(outfile)
-        assert all(u2.atoms.names == names)
-
     @pytest.mark.parametrize("attr", ["elements", "names"])
-    def test_elements_and_names(self, outfile, attr):
+    def test_elements_or_names(self, outfile, attr):
 
         u = mda.Universe.empty(n_atoms=5, trajectory=True)
 
@@ -199,3 +177,16 @@ class TestXYZWriterNames(object):
             names = ''.join(l.split()[0].strip() for l in r.readlines()[2:-1])
 
         assert names[:-1].lower() == 'testing'
+
+    def test_elements_and_names(self, outfile):
+        """Should always default to elements over names"""
+        u = mda.Universe.empty(n_atoms=5, trajectory=True)
+
+        u.add_TopologyAttr('elements', values=['Te', 'S', 'Ti', 'N', 'Ga'])
+        u.add_TopologyAttr('names', values=['A', 'B', 'C', 'D', 'E'])
+
+        with mda.Writer(outfile) as w:
+            w.write(u)
+
+        u2 = mda.Universe(outfile)
+        assert_equal(u2.atoms.names, u.atoms.elements)

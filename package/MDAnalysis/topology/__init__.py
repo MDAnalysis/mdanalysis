@@ -302,12 +302,12 @@ four atoms need not be sequentially bonded, and are instead often all bonded
 to the second atom.
 
 """
-from __future__ import absolute_import
 
 __all__ = ['core', 'PSFParser', 'PDBParser', 'PQRParser', 'GROParser',
            'CRDParser', 'TOPParser', 'PDBQTParser', 'TPRParser',
            'LAMMPSParser', 'XYZParser', 'GMSParser', 'DLPolyParser',
-           'HoomdXMLParser','GSDParser', 'ITPParser', 'ParmEdParser']
+           'HoomdXMLParser','GSDParser', 'ITPParser', 'ParmEdParser', 
+           'RDKitParser']
 
 from . import core
 from . import PSFParser
@@ -332,4 +332,5 @@ from . import GSDParser
 from . import MinimalParser
 from . import ITPParser
 from . import ParmEdParser
+from . import RDKitParser
 from . import FHIAIMSParser

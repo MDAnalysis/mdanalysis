@@ -20,11 +20,8 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
 import pytest
-from mock import patch
-from six.moves import zip, range
+from unittest.mock import patch
 
 import errno
 import numpy as np
@@ -579,9 +576,9 @@ class TestXTCWriter_2(BaseWriterTest):
         n_atoms = 40
         with tmpdir.as_cwd():
             with ref.writer(out, n_atoms, precision=5) as w:
-                ts = Timestep(n_atoms=n_atoms)
-                ts.positions = np.random.random(size=(n_atoms, 3))
-                w.write(ts)
+                u = make_Universe(size=(n_atoms, 1, 1), trajectory=True)
+                u.trajectory.ts.positions = np.random.random(size=(n_atoms, 3))
+                w.write(u)
             xtc = mda.lib.formats.libmdaxdr.XTCFile(out)
             frame = xtc.read()
             assert_equal(len(xtc), 1)
@@ -635,14 +632,14 @@ class TestTRRWriter_2(BaseWriterTest):
         return TRRReference()
 
     # tests writing and reading in one!
-    def test_lambda(self, ref, reader, tmpdir):
+    def test_lambda(self, ref, universe, tmpdir):
         outfile = 'write-lambda-test' + ref.ext
 
         with tmpdir.as_cwd():
-            with ref.writer(outfile, reader.n_atoms) as W:
-                for i, ts in enumerate(reader):
-                    ts.data['lambda'] = i / float(reader.n_frames)
-                    W.write(ts)
+            with ref.writer(outfile, universe.trajectory.n_atoms) as W:
+                for i, ts in enumerate(universe.trajectory):
+                    ts.data['lambda'] = i / float(universe.trajectory.n_frames)
+                    W.write(universe)
 
             reader = ref.reader(outfile)
             for i, ts in enumerate(reader):

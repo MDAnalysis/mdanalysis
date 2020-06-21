@@ -149,7 +149,6 @@ the OPLS/AA force field.
    doi:10.1016/j.jmb.2009.09.009
 
 """
-from __future__ import absolute_import
 
 __all__ = ['Universe', 'as_Universe', 'Writer', 'fetch_mmtf',
            'AtomGroup', 'ResidueGroup', 'SegmentGroup']
