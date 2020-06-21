@@ -37,6 +37,7 @@ Changes
   * Changes development status from Beta to Mature (Issue #2773)
   * Removes deprecated MDAnalysis.analysis.hole, please use
     MDAnalysis.analysis.hole2.hole instead (Issue #2739)
+  * Replaces use of mock in favour of unittest.mock (Issue #2777)
   * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)
   * Removes; deprecated support for using Writer.write(Timestep), deprecated
     Writer.write_next_timestep, use write() instead. (Issue #2739)

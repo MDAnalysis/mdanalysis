@@ -7,7 +7,6 @@ hypothesis
 joblib>=0.12
 matplotlib
 mmtf-python
-mock
 msmb_theme==1.2.0
 netcdf4
 networkx
