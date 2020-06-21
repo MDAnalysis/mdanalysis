@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, yuxuanzhuang
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, yuxuanzhuang
 
   * 2.0.0
 
@@ -24,6 +24,12 @@ Fixes
   * Testsuite does not any more matplotlib.use('agg') (#2191)
 
 Enhancements
+  * Added the RDKitParser which creates a `core.topology.Topology` object from 
+    an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates 
+    from RDKit conformers (Issue #2468, PR #2707)
+  * Added the `Aromaticities` topology attribute, and the `aromatic` selection 
+    token (Issue #2468, PR #2707)
+  * Added the `from_smiles` classmethod to the Universe (Issue #2468, PR #2707)
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
   * Added lib.pickle_file_io module for pickling file handlers. (PR #2723)
 
