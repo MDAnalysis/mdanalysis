@@ -564,7 +564,6 @@ if __name__ == '__main__':
           'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
-          'tidynamics>=1.0.0',
           'tqdm>=4.43.0',
     ]
     if not os.name == 'nt':
@@ -619,6 +618,7 @@ if __name__ == '__main__':
                               # plotting in PSA
                   'sklearn',  # For clustering and dimensionality reduction
                               # functionality in encore
+                  'tidynamics>=1.0.0', # For MSD analysis method
               ],
           },
           test_suite="MDAnalysisTests",
