@@ -28,7 +28,7 @@ from numpy.testing import (assert_almost_equal, assert_equal)
 import numpy as np
 
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
-from MDAnalysisTests.util import block_import
+from MDAnalysisTests.util import block_import, import_not_available
 
 import pytest
 from importlib import import_module
@@ -145,16 +145,7 @@ class TestMSDSimple(object):
         assert_almost_equal(norm, val, decimal=5)
 
 
-def import_check(module):
-    try:
-        test = import_module(module)
-    except ImportError:
-        return True
-    else:
-        return False
-
-
-@pytest.mark.skipif(import_check("tidynamics"),
+@pytest.mark.skipif(import_not_available("tidynamics"),
                     reason="Test skipped because tidynamics not found")
 class TestMSDFFT(object):
 
