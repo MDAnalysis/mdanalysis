@@ -103,6 +103,12 @@ class TestMSDSimple(object):
         # test some basic size and shape things
         assert_equal(msd.n_particles, 10)
 
+    @pytest.mark.parametrize('msdtype', ['foo', 'bar', 'yx', 'zyx'])
+    def test_msdtype_error(self, u, SELECTION, msdtype):
+        errmsg = f"invalid msd_type: {msdtype}"
+        with pytest.raises(ValueError, match=errmsg):
+            m = MSD(u, SELECTION, msd_type=msdtype)
+
     @pytest.mark.parametrize("dim, dim_factor", [
         ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
         ('z', 1)
