@@ -32,6 +32,8 @@ from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
 
 import pytest
 
+pytest.importorskip('tidynamics')
+
 
 @pytest.fixture(scope='module')
 def SELECTION():
@@ -158,7 +160,6 @@ def test_simple_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
     poly = characteristic_poly(NSTEP, dim_factor)
     assert_almost_equal(m_simple.timeseries, poly, decimal=4)
 
-
 @pytest.mark.parametrize("dim, dim_factor", \
 [('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
 def test_simple_start_stop_step_all_dims(step_traj, NSTEP, dim, dim_factor):
@@ -184,7 +185,6 @@ def test_fft_step_traj_all_dims(step_traj, NSTEP, dim, dim_factor):
     poly = characteristic_poly(NSTEP, dim_factor)
     # this was relaxed from decimal=4 for numpy=1.13 test
     assert_almost_equal(m_simple.timeseries, poly, decimal=3)
-
 
 @pytest.mark.parametrize("dim, dim_factor", \
 [('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
