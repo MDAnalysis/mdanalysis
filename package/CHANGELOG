@@ -13,11 +13,13 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium
 
   * 2.0.0
 
 Fixes
+  * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
+    error (Issue #2765)
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
   * Testsuite does not any more matplotlib.use('agg') (#2191)
@@ -32,6 +34,9 @@ Enhancements
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
 
 Changes
+  * Changes development status from Beta to Mature (Issue #2773)
+  * Removes deprecated MDAnalysis.analysis.hole, please use
+    MDAnalysis.analysis.hole2.hole instead (Issue #2739)
   * Replaces use of mock in favour of unittest.mock (Issue #2777)
   * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)
   * Removes; deprecated support for using Writer.write(Timestep), deprecated
