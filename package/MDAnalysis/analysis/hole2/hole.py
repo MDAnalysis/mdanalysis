@@ -118,6 +118,37 @@ Functions and classes
 .. autoclass:: HoleAnalysis
    :members:
 
+
+References
+----------
+
+.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.
+               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
+               DOI: 10.1016/S0006-3495(93)81293-1
+.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
+               HOLE: A program for the analysis of the pore dimensions of ion channel
+               structural models. J.Mol.Graph., 14:354–360, 1996.
+               DOI: 10.1016/S0263-7855(97)00009-X
+               URL http://www.holeprogram.org/
+.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
+               Flexible gates generate occluded intermediates in the transport cycle
+               of LacY. J Mol Biol, 426:735–751, 2014.
+               DOI: 10.1016/j.jmb.2013.10.024
+
+.. Footnotes
+
+.. [#HOLEDCD] PDB files are not the only files that :program:`hole` can
+              read. In principle, it is also able to read CHARMM DCD
+              trajectories and generate a hole profile for each frame. However,
+              native support for DCD in :program:`hole` is patchy and not every
+              DCD is recognized. In particular, At the moment, DCDs generated
+              with MDAnalysis are not accepted by HOLE. To overcome this
+              PDB / DCD limitation, use :class:`HoleAnalysis` which creates
+              temporary PDB files for each frame of a
+              :class:`~MDAnalysis.core.universe.Universe` or
+              :class:`~MDAnalysis.core.universe.AtomGroup` and runs
+              :func:``hole`` on each of them.
+
 """
 import os
 import errno
@@ -285,13 +316,12 @@ def hole(pdbfile,
     dcd : str, optional
         File name of CHARMM-style DCD trajectory (must be supplied together with a
         matching PDB file `filename`) and then HOLE runs its analysis on
-        each frame. HOLE can *not* read DCD trajectories written by MDAnalysis, 
-        which are NAMD-style.
-        ignored. Note that structural parameters determined for each
-        individual structure are written in a tagged format so that it is
-        possible to extract the information from the text output file using
-        a :program:`grep` command. The reading of the file can be
-        controlled by the ``dcd_step`` keyword and/or setting
+        each frame. HOLE can *not* read DCD trajectories written by MDAnalysis,
+        which are NAMD-style (see Notes). Note that structural parameters
+        determined for each individual structure are written in a tagged
+        format so that it is possible to extract the information from the text
+        output file using a :program:`grep` command. The reading of the file
+        can be controlled by the ``dcd_step`` keyword and/or setting
         ``dcd_iniskip`` to the number of frames to be skipped
         initially.
     dcd_step : int, optional
@@ -307,6 +337,12 @@ def hole(pdbfile,
 
     dict
         A dictionary of :class:`numpy.recarray`\ s, indexed by frame.
+
+
+    Notes
+    -----
+    - HOLE is very picky and does not read all DCD-like formats [#HOLEDCD]_.
+      If in doubt, look into the `outfile` for error diagnostics.
 
 
     .. versionadded:: 1.0

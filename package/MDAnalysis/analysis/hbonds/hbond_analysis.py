@@ -319,10 +319,6 @@ Classes
    .. automethod:: _get_bonded_hydrogens_list
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range, zip
-
 import warnings
 import logging
 from collections import defaultdict
@@ -1252,7 +1248,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # float because of division later
         tsteps = float(len(self.timesteps))
-        for cursor, (key, count) in enumerate(six.iteritems(hbonds)):
+        for cursor, (key, count) in enumerate(hbonds.items()):
             out[cursor] = key + (count / tsteps,)
 
         # return array as recarray
@@ -1310,7 +1306,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         out_nrows = 0
         # count number of timesteps per key to get length of output table
-        for ts_list in six.itervalues(hbonds):
+        for ts_list in hbonds.values():
             out_nrows += len(ts_list)
 
         # build empty output table
@@ -1322,7 +1318,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         out = np.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
-        for (key, times) in six.iteritems(hbonds):
+        for (key, times) in hbonds.items():
             for tstep in times:
                 out[out_row] = key + (tstep,)
                 out_row += 1
