@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>4.4.2. HOLE analysis — MDAnalysis.analysis.hole2 &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>4.4.1. HOLE analysis — MDAnalysis.analysis.hole2 &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -44,8 +44,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.4.3. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
-    <link rel="prev" title="4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — MDAnalysis.analysis.hole" href="hole.html" /> 
+    <link rel="next" title="4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet" href="leaflet.html" />
+    <link rel="prev" title="4.3.4. Water Bridge analysis — MDAnalysis.analysis.hbonds.WaterBridgeAnalysis" href="wbridge_analysis.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -106,13 +106,12 @@
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="hole.html">4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">4.4.2. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#module-MDAnalysis.analysis.hole2.hole">4.4.2.1. Module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#module-MDAnalysis.analysis.hole2.utils">4.4.2.2. Utility functions and templates</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#module-MDAnalysis.analysis.hole2.hole">4.4.1.1. Module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-MDAnalysis.analysis.hole2.utils">4.4.1.2. Utility functions and templates</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="leaflet.html">4.4.3. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="leaflet.html">4.4.2. Leaflet identification — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.leaflet</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
@@ -185,7 +184,7 @@
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
-      <li>4.4.2. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></li>
+      <li>4.4.1. HOLE analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -205,7 +204,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="hole-analysis-mdanalysis-analysis-hole2">
-<h1>4.4.2. HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2" title="Permalink to this headline">¶</a></h1>
+<h1>4.4.1. HOLE analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2</span></code><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -221,17 +220,17 @@
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.0.0.</span></p>
 </div>
-<p>This module provides an updated interface for the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> suite of tools <a class="reference internal" href="hole.html#smart1993" id="id1">[Smart1993]</a>
-<a class="reference internal" href="hole.html#smart1996" id="id2">[Smart1996]</a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="hole.html#stelzl2014" id="id3">[Stelzl2014]</a>
-as a function of time or arbitrary order parameters. It replaces <a class="reference internal" href="hole.html#module-MDAnalysis.analysis.hole" title="MDAnalysis.analysis.hole"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code></a>.</p>
+<p>This module provides an updated interface for the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> suite of tools <a class="reference internal" href="#smart1993" id="id1">[Smart1993]</a>
+<a class="reference internal" href="#smart1996" id="id2">[Smart1996]</a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="#stelzl2014" id="id3">[Stelzl2014]</a>
+as a function of time or arbitrary order parameters. It replaces <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole</span></code>.</p>
 <p><a class="reference external" href="http://www.holeprogram.org">HOLE</a> must be installed separately and can be obtained in binary form
 from <a class="reference external" href="http://www.holeprogram.org/">http://www.holeprogram.org/</a> or as source from
 <a class="reference external" href="https://github.com/osmart/hole2">https://github.com/osmart/hole2</a>. (HOLE is open source and available
 under the Apache v2.0 license.)</p>
 <div class="section" id="module-MDAnalysis.analysis.hole2.hole">
-<span id="module"></span><h2>4.4.2.1. Module<a class="headerlink" href="#module-MDAnalysis.analysis.hole2.hole" title="Permalink to this headline">¶</a></h2>
+<span id="module"></span><h2>4.4.1.1. Module<a class="headerlink" href="#module-MDAnalysis.analysis.hole2.hole" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="hole-analysis-mdanalysis-analysis-hole2-hole">
-<h3>4.4.2.1.1. HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2.hole" title="MDAnalysis.analysis.hole2.hole"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.hole</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-hole" title="Permalink to this headline">¶</a></h3>
+<h3>4.4.1.1.1. HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2.hole" title="MDAnalysis.analysis.hole2.hole"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.hole</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-hole" title="Permalink to this headline">¶</a></h3>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -247,10 +246,10 @@ under the Apache v2.0 license.)</p>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.0.0.</span></p>
 </div>
-<p>This module contains the tools to interface with <a class="reference external" href="http://www.holeprogram.org">HOLE</a> <a class="reference internal" href="hole.html#smart1993" id="id4">[Smart1993]</a>
-<a class="reference internal" href="hole.html#smart1996" id="id5">[Smart1996]</a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="hole.html#stelzl2014" id="id6">[Stelzl2014]</a> .</p>
+<p>This module contains the tools to interface with <a class="reference external" href="http://www.holeprogram.org">HOLE</a> <a class="reference internal" href="#smart1993" id="id4">[Smart1993]</a>
+<a class="reference internal" href="#smart1996" id="id5">[Smart1996]</a> to analyse an ion channel pore or transporter pathway <a class="reference internal" href="#stelzl2014" id="id6">[Stelzl2014]</a> .</p>
 <div class="section" id="using-hole-on-a-pdb-file">
-<h4>4.4.2.1.1.1. Using HOLE on a PDB file<a class="headerlink" href="#using-hole-on-a-pdb-file" title="Permalink to this headline">¶</a></h4>
+<h4>4.4.1.1.1.1. Using HOLE on a PDB file<a class="headerlink" href="#using-hole-on-a-pdb-file" title="Permalink to this headline">¶</a></h4>
 <p>Use the :func:<code class="docutils literal notranslate"><span class="pre">hole</span></code> function to run <a class="reference external" href="http://www.holeprogram.org">HOLE</a> on a single PDB file. For example,
 the code below runs the <a class="reference external" href="http://www.holeprogram.org">HOLE</a> program installed at ‘~/hole2/exe/hole’</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB_HOLE</span>
@@ -286,7 +285,7 @@ delete the files after the function is wrong, set <cite>keep_files=False</cite>.
 mind that if you delete the sphpdb file, you cannot then create a VMD surface.</p>
 </div>
 <div class="section" id="using-hole-on-a-trajectory">
-<h4>4.4.2.1.1.2. Using HOLE on a trajectory<a class="headerlink" href="#using-hole-on-a-trajectory" title="Permalink to this headline">¶</a></h4>
+<h4>4.4.1.1.1.2. Using HOLE on a trajectory<a class="headerlink" href="#using-hole-on-a-trajectory" title="Permalink to this headline">¶</a></h4>
 <p>You can also run HOLE on a trajectory through the <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HoleAnalysis</span></code></a> class.
 This behaves similarly to the <code class="docutils literal notranslate"><span class="pre">hole</span></code> function, although arguments such as <code class="docutils literal notranslate"><span class="pre">cpoint</span></code>
 and <code class="docutils literal notranslate"><span class="pre">cvect</span></code> become runtime arguments for the <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis.run" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">run()</span></code></a> function.</p>
@@ -320,7 +319,7 @@ files when you are finished with the context manager:</p>
 </div>
 </div>
 <div class="section" id="functions-and-classes">
-<h4>4.4.2.1.1.3. Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline">¶</a></h4>
+<h4>4.4.1.1.1.3. Functions and classes<a class="headerlink" href="#functions-and-classes" title="Permalink to this headline">¶</a></h4>
 <dl class="function">
 <dt id="MDAnalysis.analysis.hole2.hole.hole">
 <code class="descclassname">MDAnalysis.analysis.hole2.hole.</code><code class="descname">hole</code><span class="sig-paren">(</span><em>pdbfile, infile_text=None, infile=None, outfile='hole.out', sphpdb_file='hole.sph', vdwradii_file=None, executable='hole', tmpdir='.', sample=0.2, end_radius=22.0, cpoint=None, cvect=None, random_seed=None, ignore_residues=['SOL', 'WAT', 'TIP', 'HOH', 'K  ', 'NA ', 'CL '], output_level=0, dcd=None, dcd_iniskip=0, dcd_step=1, keep_files=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#hole"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hole2.hole.hole" title="Permalink to this definition">¶</a></dt>
@@ -429,12 +428,11 @@ turned off.</li>
 <li><strong>dcd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – File name of CHARMM-style DCD trajectory (must be supplied together with a
 matching PDB file <cite>filename</cite>) and then HOLE runs its analysis on
 each frame. HOLE can <em>not</em> read DCD trajectories written by MDAnalysis,
-which are NAMD-style.
-ignored. Note that structural parameters determined for each
-individual structure are written in a tagged format so that it is
-possible to extract the information from the text output file using
-a <strong class="program">grep</strong> command. The reading of the file can be
-controlled by the <code class="docutils literal notranslate"><span class="pre">dcd_step</span></code> keyword and/or setting
+which are NAMD-style (see Notes). Note that structural parameters
+determined for each individual structure are written in a tagged
+format so that it is possible to extract the information from the text
+output file using a <strong class="program">grep</strong> command. The reading of the file
+can be controlled by the <code class="docutils literal notranslate"><span class="pre">dcd_step</span></code> keyword and/or setting
 <code class="docutils literal notranslate"><span class="pre">dcd_iniskip</span></code> to the number of frames to be skipped
 initially.</li>
 <li><strong>dcd_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – step size for going through the trajectory (skips <code class="docutils literal notranslate"><span class="pre">dcd_step-1</span></code>
@@ -452,6 +450,11 @@ symlinks after running the function. Default: <code class="docutils literal notr
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>HOLE is very picky and does not read all DCD-like formats <a class="footnote-reference" href="#holedcd" id="id7">[1]</a>.
+If in doubt, look into the <cite>outfile</cite> for error diagnostics.</li>
+</ul>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.0.</span></p>
 </div>
@@ -986,6 +989,50 @@ to an integer. Default: <code class="docutils literal notranslate"><span class="
 
 </dd></dl>
 
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="smart1993" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Smart1993]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> O.S. Smart, J.M. Goodfellow and B.A. Wallace.
+The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.
+DOI: 10.1016/S0006-3495(93)81293-1</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="smart1996" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Smart1996]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id5">2</a>)</em> O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.
+HOLE: A program for the analysis of the pore dimensions of ion channel
+structural models. J.Mol.Graph., 14:354–360, 1996.
+DOI: 10.1016/S0263-7855(97)00009-X
+URL <a class="reference external" href="http://www.holeprogram.org/">http://www.holeprogram.org/</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="stelzl2014" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Stelzl2014]</td><td><em>(<a class="fn-backref" href="#id3">1</a>, <a class="fn-backref" href="#id6">2</a>)</em> L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.
+Flexible gates generate occluded intermediates in the transport cycle
+of LacY. J Mol Biol, 426:735–751, 2014.
+DOI: 10.1016/j.jmb.2013.10.024</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="holedcd" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id7">1</a>, <a class="fn-backref" href="#id14">2</a>)</em> PDB files are not the only files that <strong class="program">hole</strong> can
+read. In principle, it is also able to read CHARMM DCD
+trajectories and generate a hole profile for each frame. However,
+native support for DCD in <strong class="program">hole</strong> is patchy and not every
+DCD is recognized. In particular, At the moment, DCDs generated
+with MDAnalysis are not accepted by HOLE. To overcome this
+PDB / DCD limitation, use <a class="reference internal" href="#MDAnalysis.analysis.hole2.hole.HoleAnalysis" title="MDAnalysis.analysis.hole2.hole.HoleAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HoleAnalysis</span></code></a> which creates
+temporary PDB files for each frame of a
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> and runs
+:func:<code class="docutils literal notranslate"><span class="pre">hole</span></code> on each of them.</td></tr>
+</tbody>
+</table>
 <dl class="class">
 <dt>
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hole2.hole.</code><code class="descname">HoleAnalysis</code><span class="sig-paren">(</span><em>universe, select='protein', verbose=False, ignore_residues=['SOL', 'WAT', 'TIP', 'HOH', 'K  ', 'NA ', 'CL '], vdwradii_file=None, executable='hole', sos_triangle='sos_triangle', sph_process='sph_process', tmpdir='.', cpoint=None, cvect=None, sample=0.2, end_radius=22, output_level=0, prefix=None, write_input_files=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hole2/hole.html#HoleAnalysis"><span class="viewcode-link">[source]</span></a></dt>
@@ -1623,12 +1670,11 @@ turned off.</li>
 <li><strong>dcd</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – File name of CHARMM-style DCD trajectory (must be supplied together with a
 matching PDB file <cite>filename</cite>) and then HOLE runs its analysis on
 each frame. HOLE can <em>not</em> read DCD trajectories written by MDAnalysis,
-which are NAMD-style.
-ignored. Note that structural parameters determined for each
-individual structure are written in a tagged format so that it is
-possible to extract the information from the text output file using
-a <strong class="program">grep</strong> command. The reading of the file can be
-controlled by the <code class="docutils literal notranslate"><span class="pre">dcd_step</span></code> keyword and/or setting
+which are NAMD-style (see Notes). Note that structural parameters
+determined for each individual structure are written in a tagged
+format so that it is possible to extract the information from the text
+output file using a <strong class="program">grep</strong> command. The reading of the file
+can be controlled by the <code class="docutils literal notranslate"><span class="pre">dcd_step</span></code> keyword and/or setting
 <code class="docutils literal notranslate"><span class="pre">dcd_iniskip</span></code> to the number of frames to be skipped
 initially.</li>
 <li><strong>dcd_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – step size for going through the trajectory (skips <code class="docutils literal notranslate"><span class="pre">dcd_step-1</span></code>
@@ -1646,6 +1692,11 @@ symlinks after running the function. Default: <code class="docutils literal notr
 </tr>
 </tbody>
 </table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>HOLE is very picky and does not read all DCD-like formats <a class="footnote-reference" href="#holedcd" id="id14">[1]</a>.
+If in doubt, look into the <cite>outfile</cite> for error diagnostics.</li>
+</ul>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 1.0.</span></p>
 </div>
@@ -1655,9 +1706,9 @@ symlinks after running the function. Default: <code class="docutils literal notr
 </div>
 </div>
 <div class="section" id="module-MDAnalysis.analysis.hole2.utils">
-<span id="utility-functions-and-templates"></span><h2>4.4.2.2. Utility functions and templates<a class="headerlink" href="#module-MDAnalysis.analysis.hole2.utils" title="Permalink to this headline">¶</a></h2>
+<span id="utility-functions-and-templates"></span><h2>4.4.1.2. Utility functions and templates<a class="headerlink" href="#module-MDAnalysis.analysis.hole2.utils" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="hole-analysis-mdanalysis-analysis-hole2-helper">
-<h3>4.4.2.2.1. HOLE Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.helper</span></code><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-helper" title="Permalink to this headline">¶</a></h3>
+<h3>4.4.1.2.1. HOLE Analysis — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.helper</span></code><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-helper" title="Permalink to this headline">¶</a></h3>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1820,7 +1871,7 @@ Default: 15</li>
 
 </div>
 <span class="target" id="module-MDAnalysis.analysis.hole2.templates"></span><div class="section" id="hole-analysis-mdanalysis-analysis-hole2-templates">
-<h3>4.4.2.2.2. HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2.templates" title="MDAnalysis.analysis.hole2.templates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.templates</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-templates" title="Permalink to this headline">¶</a></h3>
+<h3>4.4.1.2.2. HOLE Analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.hole2.templates" title="MDAnalysis.analysis.hole2.templates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hole2.templates</span></code></a><a class="headerlink" href="#hole-analysis-mdanalysis-analysis-hole2-templates" title="Permalink to this headline">¶</a></h3>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1866,10 +1917,10 @@ The data file can be written with the convenience function <code class="xref py 
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="leaflet.html" class="btn btn-neutral float-right" title="4.4.3. Leaflet identification — MDAnalysis.analysis.leaflet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="leaflet.html" class="btn btn-neutral float-right" title="4.4.2. Leaflet identification — MDAnalysis.analysis.leaflet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="hole.html" class="btn btn-neutral float-left" title="4.4.1. Generation and Analysis of HOLE pore profiles (Deprecated) — MDAnalysis.analysis.hole" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="wbridge_analysis.html" class="btn btn-neutral float-left" title="4.3.4. Water Bridge analysis — MDAnalysis.analysis.hbonds.WaterBridgeAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

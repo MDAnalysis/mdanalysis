@@ -297,6 +297,37 @@
 <span class="sd">.. autoclass:: HoleAnalysis</span>
 <span class="sd">   :members:</span>
 
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+
+<span class="sd">.. [Smart1993] O.S. Smart, J.M. Goodfellow and B.A. Wallace.</span>
+<span class="sd">               The Pore Dimensions of Gramicidin A. Biophysical Journal 65:2455-2460, 1993.</span>
+<span class="sd">               DOI: 10.1016/S0006-3495(93)81293-1</span>
+<span class="sd">.. [Smart1996] O.S. Smart, J.G. Neduvelil, X. Wang, B.A. Wallace, and M.S.P. Sansom.</span>
+<span class="sd">               HOLE: A program for the analysis of the pore dimensions of ion channel</span>
+<span class="sd">               structural models. J.Mol.Graph., 14:354–360, 1996.</span>
+<span class="sd">               DOI: 10.1016/S0263-7855(97)00009-X</span>
+<span class="sd">               URL http://www.holeprogram.org/</span>
+<span class="sd">.. [Stelzl2014] L. S. Stelzl, P. W. Fowler, M. S. P. Sansom, and O. Beckstein.</span>
+<span class="sd">               Flexible gates generate occluded intermediates in the transport cycle</span>
+<span class="sd">               of LacY. J Mol Biol, 426:735–751, 2014.</span>
+<span class="sd">               DOI: 10.1016/j.jmb.2013.10.024</span>
+
+<span class="sd">.. Footnotes</span>
+
+<span class="sd">.. [#HOLEDCD] PDB files are not the only files that :program:`hole` can</span>
+<span class="sd">              read. In principle, it is also able to read CHARMM DCD</span>
+<span class="sd">              trajectories and generate a hole profile for each frame. However,</span>
+<span class="sd">              native support for DCD in :program:`hole` is patchy and not every</span>
+<span class="sd">              DCD is recognized. In particular, At the moment, DCDs generated</span>
+<span class="sd">              with MDAnalysis are not accepted by HOLE. To overcome this</span>
+<span class="sd">              PDB / DCD limitation, use :class:`HoleAnalysis` which creates</span>
+<span class="sd">              temporary PDB files for each frame of a</span>
+<span class="sd">              :class:`~MDAnalysis.core.universe.Universe` or</span>
+<span class="sd">              :class:`~MDAnalysis.core.universe.AtomGroup` and runs</span>
+<span class="sd">              :func:``hole`` on each of them.</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">errno</span>
@@ -464,13 +495,12 @@
 <span class="sd">    dcd : str, optional</span>
 <span class="sd">        File name of CHARMM-style DCD trajectory (must be supplied together with a</span>
 <span class="sd">        matching PDB file `filename`) and then HOLE runs its analysis on</span>
-<span class="sd">        each frame. HOLE can *not* read DCD trajectories written by MDAnalysis, </span>
-<span class="sd">        which are NAMD-style.</span>
-<span class="sd">        ignored. Note that structural parameters determined for each</span>
-<span class="sd">        individual structure are written in a tagged format so that it is</span>
-<span class="sd">        possible to extract the information from the text output file using</span>
-<span class="sd">        a :program:`grep` command. The reading of the file can be</span>
-<span class="sd">        controlled by the ``dcd_step`` keyword and/or setting</span>
+<span class="sd">        each frame. HOLE can *not* read DCD trajectories written by MDAnalysis,</span>
+<span class="sd">        which are NAMD-style (see Notes). Note that structural parameters</span>
+<span class="sd">        determined for each individual structure are written in a tagged</span>
+<span class="sd">        format so that it is possible to extract the information from the text</span>
+<span class="sd">        output file using a :program:`grep` command. The reading of the file</span>
+<span class="sd">        can be controlled by the ``dcd_step`` keyword and/or setting</span>
 <span class="sd">        ``dcd_iniskip`` to the number of frames to be skipped</span>
 <span class="sd">        initially.</span>
 <span class="sd">    dcd_step : int, optional</span>
@@ -486,6 +516,12 @@
 
 <span class="sd">    dict</span>
 <span class="sd">        A dictionary of :class:`numpy.recarray`\ s, indexed by frame.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - HOLE is very picky and does not read all DCD-like formats [#HOLEDCD]_.</span>
+<span class="sd">      If in doubt, look into the `outfile` for error diagnostics.</span>
 
 
 <span class="sd">    .. versionadded:: 1.0</span>
