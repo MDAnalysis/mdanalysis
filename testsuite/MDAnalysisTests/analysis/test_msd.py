@@ -181,7 +181,8 @@ class TestMSDFFT(object):
 
     @pytest.mark.parametrize("dim", ['xyz', 'xy', 'xz', 'yz', 'x', 'y', 'z'])
     def test_fft_vs_simple_all_dims_per_particle(self, u, SELECTION, dim):
-        # check fft and simple give same result for each particle in each dimension
+        # check fft and simple give same result for each particle in each
+        # dimension
         m_simple = MSD(u, SELECTION, msd_type=dim, fft=False)
         m_simple.run()
         per_particle_simple = m_simple.msds_by_particle
@@ -190,8 +191,10 @@ class TestMSDFFT(object):
         per_particle_fft = m_fft.msds_by_particle
         assert_almost_equal(per_particle_simple, per_particle_fft, decimal=4)
 
-    @pytest.mark.parametrize("dim, dim_factor", \
-    [('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
+    @pytest.mark.parametrize("dim, dim_factor", [
+        ('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
+        ('z', 1)
+    ])
     def test_fft_step_traj_all_dims(self, step_traj, NSTEP, dim, dim_factor):
         # testing the fft algorithm on constant velocity trajectory
         # this should fit the polynomial y=dim_factor*x**2
@@ -204,9 +207,12 @@ class TestMSDFFT(object):
         # this was relaxed from decimal=4 for numpy=1.13 test
         assert_almost_equal(m_simple.timeseries, poly, decimal=3)
 
-    @pytest.mark.parametrize("dim, dim_factor", \
-    [('xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1), ('z', 1)])
-    def test_fft_start_stop_step_all_dims(self, step_traj, NSTEP, dim, dim_factor):
+    @pytest.mark.parametrize("dim, dim_factor", [(
+        'xyz', 3), ('xy', 2), ('xz', 2), ('yz', 2), ('x', 1), ('y', 1),
+        ('z', 1)
+    ])
+    def test_fft_start_stop_step_all_dims(self, step_traj, NSTEP, dim,
+                                          dim_factor):
         # testing the fft algorithm on constant velocity trajectory
         # test start stop step is working correctly
         m_simple = MSD(step_traj, 'all', msd_type=dim, fft=True)
