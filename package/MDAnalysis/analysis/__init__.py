@@ -59,7 +59,7 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.helanal`
     Analysis of helices with the HELANAL_ algorithm.
 
-:mod:`~MDAnalysis.analysis.hole2.hole`
+:mod:`~MDAnalysis.analysis.hole2`
     Run and process output from the :program:`HOLE` program
     to analyze pores, tunnels and cavities in proteins.
 
