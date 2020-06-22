@@ -31,7 +31,8 @@ import numpy as np
 from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
 
 import pytest
-import tidynamics
+
+pytest.importorskip('tidynamics')
 
 
 @pytest.fixture(scope='module')
