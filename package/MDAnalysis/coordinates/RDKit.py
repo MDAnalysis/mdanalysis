@@ -55,9 +55,12 @@ Classes
 """
 
 import warnings
+import re
 
 import numpy as np
 
+from ..exceptions import NoDataError
+from ..topology.guessers import guess_atom_element
 from . import memory
 from . import base
 
@@ -77,6 +80,16 @@ else:
         1.5: Chem.BondType.AROMATIC,
         2: Chem.BondType.DOUBLE,
         3: Chem.BondType.TRIPLE,
+    }
+    RDATTRIBUTES = {
+        "altLoc": "AltLoc",
+        "chainID": "ChainId",
+        "name": "Name",
+        "occupancy": "Occupancy",
+        "resname": "ResidueName",
+        "resid": "ResidueNumber",
+        "segid": "SegmentNumber",
+        "tempfactor": "TempFactor",
     }
 
 class RDKitReader(memory.MemoryReader):
@@ -147,7 +160,7 @@ class RDKitConverter(base.ConverterBase):
 
         Parameters
         -----------
-        obj : AtomGroup or Universe or :class:`Timestep`
+        obj : AtomGroup or Universe
         """
         try:
             from rdkit import Chem
@@ -157,23 +170,69 @@ class RDKitConverter(base.ConverterBase):
                               'conda install -c conda-forge rdkit')
         try:
             # make sure to use atoms (Issue 46)
-            ag_or_ts = obj.atoms
+            ag = obj.atoms
         except AttributeError as e:
-            if isinstance(obj, base.Timestep):
-                ag_or_ts = obj.copy()
-            else:
-                raise TypeError("No Timestep found in obj argument") from e
+            raise TypeError("No `atoms` attribute in object of type {}, "
+                            "please use a valid AtomGroup or Universe".format(
+                            type(obj))) from e
 
         mol = Chem.RWMol()
         atom_mapper = {}
-        for atom in ag_or_ts:
-            rdatom = Chem.Atom(atom.element)
+        for atom in ag:
+            try:
+                element = atom.element
+            except NoDataError:
+                element = guess_atom_element(atom.name)
+            rdatom = Chem.Atom(element)
+            # add properties
+            mi = Chem.AtomPDBResidueInfo()
+            for attr, rdattr in RDATTRIBUTES.items():
+                try: # get value in MDA atom
+                    value = getattr(atom, attr)
+                except AttributeError:
+                    pass
+                else:
+                    if isinstance(value, np.generic):
+                        # convert numpy types to python standard types
+                        value = value.item()
+                    if attr == "segid":
+                        # RDKit needs segid to be an int
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            # convert any string to int
+                            value = int(value, 36)
+                    elif attr == "name":
+                        # RDKit needs the name to be properly formated for a
+                        # PDB file (1 letter elements start at col 14)
+                        name = re.findall('(\D+|\d+)', value)
+                        if len(name) == 2:
+                            symbol, number = name
+                        else:
+                            symbol, number = name[0], ""
+                        value = "{:>2}".format(symbol) + "{:<2}".format(number)
+                    # set attribute value in RDKit MonomerInfo
+                    getattr(mi, "Set%s" % rdattr)(value)
+            rdatom.SetMonomerInfo(mi)
+            # TODO other properties (charges)
             index = mol.AddAtom(rdatom)
+            # map index in universe to index in mol
             atom_mapper[atom.ix] = index
 
-        for bond in ag_or_ts.bonds:
+        try:
+            bonds = ag.bonds
+        except NoDataError:
+            ag.guess_bonds()
+            bonds = ag.bonds
+
+        for bond in bonds:
             bond_indices = [atom_mapper[i] for i in bond.indices]
-            bond_type = RDBONDTYPE.get(bond.type.upper(), RDBONDORDER.get(
+            try:
+                bond_type = bond.type.upper()
+            except AttributeError:
+                # bond type can be a tuple for PDB files
+                bond_type = None
+            bond_type = RDBONDTYPE.get(bond_type, RDBONDORDER.get(
                 bond.order, Chem.BondType.SINGLE))
             mol.AddBond(*bond_indices, bond_type)
 
