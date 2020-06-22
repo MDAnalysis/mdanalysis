@@ -91,16 +91,6 @@ def step_traj_arr(NSTEP):  # constant velocity
     return traj
 
 
-def random_walk_3d(NSTEP):
-    np.random.seed(1)
-    steps = -1 + 2*np.random.randint(0, 2, size=(NSTEP, 3))
-    traj = np.cumsum(steps, axis=0)
-    traj_reshape = traj.reshape([NSTEP, 1, 3])
-    u = mda.Universe.empty(1)
-    u.load_new(traj_reshape)
-    return u, traj
-
-
 def characteristic_poly(n, d):  # polynomial that describes unit step traj MSD
     x = np.arange(0, n)
     y = d*x*x
