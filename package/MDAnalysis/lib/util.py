@@ -203,6 +203,7 @@ import numpy as np
 from numpy.testing import assert_equal
 import inspect
 
+from .picklable_file_io import pickle_open
 from ..exceptions import StreamWarning, DuplicateWarning
 try:
     from ._cutil import unique_int_1d
@@ -390,6 +391,8 @@ def anyopen(datasource, mode='rt', reset=True):
         else:
             stream = None
             filename = datasource
+            if filename.endswith('pdb') or filename.endswith('xyz'):
+                return pickle_open(filename, mode=mode)
             for ext in ('bz2', 'gz', ''):  # file == '' should be last
                 openfunc = handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
