@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-from mock import patch
+from unittest.mock import patch
 
 import errno
 import numpy as np
