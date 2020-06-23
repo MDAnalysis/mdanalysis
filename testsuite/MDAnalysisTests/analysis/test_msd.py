@@ -31,7 +31,6 @@ from MDAnalysisTests.datafiles import PSF, DCD, RANDOM_WALK, RANDOM_WALK_TOPO
 from MDAnalysisTests.util import block_import, import_not_available
 
 import pytest
-from importlib import import_module
 
 
 @pytest.fixture(scope='module')
