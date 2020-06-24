@@ -51,6 +51,7 @@ from gsd import fl
 import gsd.hoomd
 import scipy.io
 
+
 class FileIOPicklable(io.FileIO):
     """File object (read-only) that can be pickled.
 
@@ -93,7 +94,7 @@ class FileIOPicklable(io.FileIO):
     def __getstate__(self):
         try:
             tell = self.tell()
-        except:    
+        except OSError:
             # when tell is disabled by next()
             tell = 0
         return self.name, tell
@@ -137,7 +138,7 @@ class BufferIOPicklable(io.BufferedReader):
     def __getstate__(self):
         try:
             tell = self.tell()
-        except:
+        except OSError:
             tell = 0
         return self.raw_class, self.name, tell
 
@@ -181,9 +182,14 @@ class TextIOPicklable(io.TextIOWrapper):
     def __getstate__(self):
         try:
             tell = self.tell()
-        except:
+        except OSError:
             tell = 0
-        return self.raw_class, self.name, tell
+        try:
+            name = self.name
+        except AttributeError:
+            # This is kind of ugly--BZ2File does not save its name.
+            name = self.buffer._fp.name
+        return self.raw_class, name, tell
 
     def __setstate__(self, args):
         raw_class = args[0]
@@ -196,13 +202,13 @@ class TextIOPicklable(io.TextIOWrapper):
 
 
 class BZ2Picklable(bz2.BZ2File):
-    def __init__(self, name, mode):
+    def __init__(self, name, mode='rb'):
         super().__init__(name, mode)
 
     def __getstate__(self):
         try:
             tell = self.tell()
-        except:
+        except OSError:
             tell = 0
         return self._fp.name, tell
 
@@ -218,9 +224,10 @@ class GzipPicklable(gzip.GzipFile):
     def __getstate__(self):
         try:
             tell = self.tell()
-        except:
+        except OSError:
             tell = 0
         return self.name, tell
+
     def __setstate__(self, args):
         super().__init__(args[0])
         self.seek(args[1])
@@ -229,18 +236,20 @@ class GzipPicklable(gzip.GzipFile):
 class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
     def __getstate__(self):
         return self.file.name, self.file.mode
+
     def __setstate__(self, args):
         gsdfileobj = fl.open(name=args[0],
                              mode=args[1],
                              application='gsd.hoomd ' + gsd.__version__,
                              schema='hoomd',
-                             schema_version=[1,3])
+                             schema_version=[1, 3])
         return self.__init__(gsdfileobj)
 
 
 class NCDFPicklable(scipy.io.netcdf.netcdf_file):
     def __getstate__(self):
         return self.filename, self.use_mmap
+
     def __setstate__(self, args):
         self.__init__(args[0], mmap=args[1])
 
@@ -321,6 +330,7 @@ def bz2_pickle_open(name, mode):
     else:
         return binary_file
 
+
 def gzip_pickle_open(name, mode):
     gz_mode = mode.replace("t", "")
     binary_file = GzipPicklable(name, gz_mode)
@@ -335,7 +345,7 @@ def gsd_pickle_open(name, mode):
                          mode=mode,
                          application='gsd.hoomd ' + gsd.__version__,
                          schema='hoomd',
-                         schema_version=[1,3])
+                         schema_version=[1, 3])
     return GSDPicklable(gsdfileobj)
 
 

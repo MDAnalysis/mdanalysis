@@ -80,8 +80,8 @@ def test_unpicklable_open_mode(unpicklable_f):
         pickle_open(filename, mode)
 
 
-def test_pickle_seek_fail():
+def test_pickle_seek_fallback():
     with pickle_open(PDB) as file:
         file.__next__()
-        with pytest.raises(OSError, match=r"telling position disabled by *"):
-            file_pickled = pickle.loads(pickle.dumps(file))
+        file_pickled = pickle.loads(pickle.dumps(file))
+        assert_equal(file_pickled.tell(), 0)
