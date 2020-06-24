@@ -43,7 +43,6 @@ Also free to ask on the MDAnalysis mailing list for help:
 Google groups forbids any name that contains the string `anal'.)
 """
 
-from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
@@ -56,8 +55,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 7):
-    print('MDAnalysis requires Python 2.7 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 6):
+    print('MDAnalysis requires Python 3.6 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -73,7 +72,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-RELEASE = "0.20.2-dev0"
+RELEASE = "2.0.0-dev0"
 
 is_release = 'dev' not in RELEASE
 
@@ -103,6 +102,9 @@ except ImportError:
         sys.exit(1)
     cython_linetrace = False
 
+def abspath(file):
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                        file)
 
 class Config(object):
     """Config wrapper class to get build options
@@ -122,6 +124,7 @@ class Config(object):
     """
 
     def __init__(self, fname='setup.cfg'):
+        fname = abspath(fname)
         if os.path.exists(fname):
             self.config = configparser.SafeConfigParser()
             self.config.read(fname)
@@ -152,9 +155,10 @@ class MDAExtension(Extension, object):
     # This is accomplished by passing the get_numpy_include function
     #  as one of the include_dirs. This derived Extension class takes
     #  care of calling it when needed.
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, sources, *args, **kwargs):
         self._mda_include_dirs = []
-        super(MDAExtension, self).__init__(*args, **kwargs)
+        sources = [abspath(s) for s in sources]
+        super(MDAExtension, self).__init__(name, sources, *args, **kwargs)
 
     @property
     def include_dirs(self):
@@ -163,7 +167,8 @@ class MDAExtension(Extension, object):
                 try:
                     self._mda_include_dirs.append(item()) #The numpy callable
                 except TypeError:
-                    self._mda_include_dirs.append(item)
+                    item = abspath(item)
+                    self._mda_include_dirs.append((item))
         return self._mda_include_dirs
 
     @include_dirs.setter
@@ -176,14 +181,8 @@ def get_numpy_include():
     # versions.
     # setuptools forgets to unset numpy's setup flag and we get a crippled
     # version of it unless we do it ourselves.
-    try:
-        # Python 3 renamed the ``__builin__`` module into ``builtins``.
-        # Here we import the python 2 or the python 3 version of the module
-        # with the python 3 name. This could be done with ``six`` but that
-        # module may not be installed at that point.
-        import builtins
-    except ImportError:
-        import __builtin__ as builtins
+    import builtins
+
     builtins.__NUMPY_SETUP__ = False
     try:
         import numpy as np
@@ -261,7 +260,8 @@ def extensions(config):
     use_cython = config.get('use_cython', default=not is_release)
     use_openmp = config.get('use_openmp', default=True)
 
-    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops']
+    extra_compile_args = ['-std=c99', '-ffast-math', '-O3', '-funroll-loops',
+                          '-fsigned-zeros']  # see #2722
     define_macros = []
     if config.get('debug_cflags', default=False):
         extra_compile_args.extend(['-Wall', '-pedantic'])
@@ -458,7 +458,7 @@ def dynamic_author_list():
     "Chronological list of authors" title.
     """
     authors = []
-    with codecs.open('AUTHORS', encoding='utf-8') as infile:
+    with codecs.open(abspath('AUTHORS'), encoding='utf-8') as infile:
         # An author is a bullet point under the title "Chronological list of
         # authors". We first want move the cursor down to the title of
         # interest.
@@ -497,7 +497,7 @@ def dynamic_author_list():
                + authors + ['Oliver Beckstein'])
 
     # Write the authors.py file.
-    out_path = 'MDAnalysis/authors.py'
+    out_path = abspath('MDAnalysis/authors.py')
     with codecs.open(out_path, 'w', encoding='utf-8') as outfile:
         # Write the header
         header = '''\
@@ -521,10 +521,10 @@ if __name__ == '__main__':
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    with open("SUMMARY.txt") as summary:
+    with open(abspath('SUMMARY.txt')) as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -532,12 +532,10 @@ if __name__ == '__main__':
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -552,12 +550,11 @@ if __name__ == '__main__':
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
-          'six>=1.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
-          'mock',
+          'tidynamics>=1.0.0',
           'tqdm>=4.43.0',
     ]
     if not os.name == 'nt':

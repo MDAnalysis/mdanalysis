@@ -53,10 +53,6 @@ Functions
 .. autofunction:: Merge
 
 """
-from __future__ import absolute_import
-from six.moves import range
-import six
-
 import errno
 import numpy as np
 import logging
@@ -129,7 +125,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
         if (err.errno is not None and
             errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
             # Runs if the error is propagated due to no permission / file not found
-            six.reraise(*sys.exc_info())
+            raise sys.exc_info()[1] from err
         else:
             # Runs when the parser fails
             raise IOError("Failed to load from the topology file {0}"
@@ -456,7 +452,7 @@ class Universe(object):
         .. versionadded:: 0.17.0
         .. versionchanged:: 0.19.0
            The attached Reader when trajectory=True is now a MemoryReader
-        .. versionchanged:: 0.21.0
+        .. versionchanged:: 1.0.0
            Universes can now be created with 0 atoms
         """
         if not n_atoms:
@@ -829,17 +825,17 @@ class Universe(object):
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
         """
-        if isinstance(topologyattr, six.string_types):
+        if isinstance(topologyattr, str):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                six.raise_from(ValueError(
+                errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
                     "To raise an issue go to: http://issues.mdanalysis.org"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
-                    None)
+                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys()))))
+                raise ValueError(errmsg) from None
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,
@@ -981,7 +977,7 @@ class Universe(object):
             None, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         if all(isinstance(x, TopologyObject) for x in values):
             try:
@@ -1061,7 +1057,7 @@ class Universe(object):
             u2.add_bonds(u.bonds.to_indices())
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
@@ -1083,7 +1079,7 @@ class Universe(object):
         guessed : bool or iterable (optional, default False)
             bool, or an iterable of hashable values with the same length as ``values``
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('angles', values, types=types,
                                  guessed=guessed)
@@ -1105,7 +1101,7 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('dihedrals', values, types=types,
                                  guessed=guessed)
@@ -1127,7 +1123,7 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('impropers', values, types=types,
                                  guessed=guessed)
@@ -1145,7 +1141,7 @@ class Universe(object):
             If AtomGroups, TopologyObjects, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         indices = []
         for x in values:
@@ -1199,7 +1195,7 @@ class Universe(object):
             u.delete_bonds(u2.bonds.to_indices())
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
         self._cache.pop('fragments', None)
@@ -1216,7 +1212,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('angles', values)
 
@@ -1232,7 +1228,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('dihedrals', values)
 
@@ -1248,7 +1244,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('impropers', values)
 
@@ -1289,6 +1285,87 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
+    
+    @classmethod
+    def from_smiles(cls, smiles, sanitize=True, addHs=True, 
+                    generate_coordinates=True, numConfs=1, 
+                    rdkit_kwargs={}, **kwargs):
+        """Create a Universe from a SMILES string with rdkit
+
+        Parameters
+        ----------
+        smiles : str
+            SMILES string
+
+        sanitize : bool (optional, default True)
+            Toggle the sanitization of the molecule
+
+        addHs : bool (optional, default True)
+            Add all necessary hydrogens to the molecule
+
+        generate_coordinates : bool (optional, default True)
+            Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
+            function. Requires adding hydrogens with the `addHs` parameter
+
+        numConfs : int (optional, default 1)
+            Number of frames to generate coordinates for. Ignored if
+            `generate_coordinates=False`
+
+        rdkit_kwargs : dict (optional)
+            Other arguments passed to the RDKit `EmbedMultipleConfs` function
+
+        kwargs : dict
+            Parameters passed on Universe creation
+
+        Returns
+        -------
+        :class:`~MDAnalysis.core.Universe`
+
+        Examples
+        --------
+        To create a Universe with 10 conformers of ethanol:
+
+        >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
+        >>> u
+        <Universe with 9 atoms>
+        >>> u.trajectory
+        <RDKitReader with 10 frames of 9 atoms>
+
+        To use a different conformer generation algorithm, like ETKDGv3:
+
+        >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
+                                         params=AllChem.ETKDGv3()))
+        >>> u.trajectory
+        <RDKitReader with 1 frames of 9 atoms>
+
+
+        .. versionadded:: 2.0.0
+        """
+        try:
+            from rdkit import Chem
+            from rdkit.Chem import AllChem
+        except ImportError as e:
+            raise ImportError(
+                "Creating a Universe from a SMILES string requires RDKit but " 
+                "it does not appear to be installed") from e
+
+        mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+        if mol is None:
+            raise SyntaxError('Error while parsing SMILES {0}'.format(smiles))
+        if addHs:
+            mol = Chem.AddHs(mol)
+        if generate_coordinates:
+            if not addHs:
+                raise ValueError("Generating coordinates requires adding "
+                "hydrogens with `addHs=True`")
+            
+            numConfs = rdkit_kwargs.pop("numConfs", numConfs)
+            if not (type(numConfs) is int and numConfs > 0):
+                raise SyntaxError("numConfs must be a non-zero positive "
+                "integer instead of {0}".format(numConfs))
+            AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
+
+        return cls(mol, **kwargs)
 
 
 # TODO: what is the point of this function???

@@ -38,7 +38,6 @@ available in this case).
    http://autodock.scripps.edu/
 """
 
-from __future__ import absolute_import
 import os
 import errno
 import itertools
@@ -241,7 +240,12 @@ class PDBQTWriter(base.WriterBase):
            Frames now 0-based instead of 1-based
 
         """
-        u = selection.universe
+        try:
+            u = selection.universe
+        except AttributeError:
+            errmsg = "Input obj is neither an AtomGroup or Universe"
+            raise TypeError(errmsg) from None
+
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
