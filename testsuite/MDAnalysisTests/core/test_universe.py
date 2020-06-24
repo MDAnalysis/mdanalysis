@@ -344,10 +344,12 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    def test_pickle_raises_NotImplementedError(self):
+    def test_pickle(self):
         u = mda.Universe(PSF, DCD)
-        with pytest.raises(NotImplementedError):
-            pickle.dumps(u, protocol = pickle.HIGHEST_PROTOCOL)
+        s = pickle.dumps(u, protocol = pickle.HIGHEST_PROTOCOL)
+        new_u = pickle.loads(s)
+        assert_equal(u.atoms.names, new_u.atoms.names)
+
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
     def test_set_dimensions(self, dtype):

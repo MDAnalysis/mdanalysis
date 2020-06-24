@@ -417,6 +417,15 @@ class ChainReader(base.ProtoReader):
         f = k - self._start_frames[i]
         return i, f
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('_ChainReader__chained_trajectories_iter', None)
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.__chained_trajectories_iter = self._chained_iterator()
+
     # methods that can change with the current reader
     def convert_time_from_native(self, t):
         return self.active_reader.convert_time_from_native(t)

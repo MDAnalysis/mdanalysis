@@ -381,6 +381,15 @@ class Timestep(object):
 
         return ts
 
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        state.pop('_reader', None)
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
         # override for other Timesteps
