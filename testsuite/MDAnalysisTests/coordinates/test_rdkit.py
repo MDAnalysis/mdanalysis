@@ -28,7 +28,7 @@ import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
 
-from MDAnalysisTests.datafiles import mol2_molecule
+from MDAnalysisTests.datafiles import mol2_molecule, PDB_full
 
 Chem = pytest.importorskip("rdkit.Chem")
 AllChem = pytest.importorskip("rdkit.Chem.AllChem")
@@ -76,3 +76,41 @@ class TestRDKitReader(object):
         assert_equal(universe.trajectory.ts.positions, 
                      mol2.trajectory.ts.positions)
         
+
+class TestRDKitConverter(object):
+    @pytest.fixture
+    def pdb(self):
+        return mda.Universe(PDB_full)
+
+    @pytest.fixture
+    def mol2(self):
+        return mda.Universe(mol2_molecule)
+
+    @pytest.mark.parametrize("sel_str", [
+        "resid 1",
+        "resname LYS and name NZ",
+        "resid 34 and altloc B",
+    ])
+    def test_monomer_info(self, pdb, sel_str):
+        rdmol = Chem.MolFromPDBFile(PDB_full)
+        sel = pdb.select_atoms(sel_str)
+        umol = sel.convert_to("RDKIT")
+        atom = umol.GetAtomWithIdx(0)
+        mi = atom.GetMonomerInfo()
+        
+        for mda_attr, rd_attr in mda.coordinates.RDKit.RDATTRIBUTES.items():
+            if mda_attr == "occupancy":
+                mda_attr = "occupancie"
+            rd_value = getattr(mi, "Get%s" % rd_attr)()
+            mda_value = getattr(sel, "%ss" % mda_attr)[0]
+            if mda_attr == "name":
+                rd_value = rd_value.strip()
+            elif mda_attr == "segid":
+                rd_value = np.base_repr(rd_value, 36)
+            assert rd_value == mda_value
+
+    def test_identical_topology_mol2(self, mol2):
+        # no chirality check
+        rdmol = mol2_mol()
+        umol = mol2.atoms.convert_to("RDKIT")
+        assert rdmol.HasSubstructMatch(umol) and umol.HasSubstructMatch(rdmol)
