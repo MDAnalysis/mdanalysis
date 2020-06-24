@@ -6,7 +6,8 @@ branches:
   only:
     - master
     - develop
-
+    - serialize_io
+    
 os:
   linux
 
