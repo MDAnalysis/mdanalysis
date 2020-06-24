@@ -25,6 +25,7 @@ Fixes
   * Testsuite does not any more matplotlib.use('agg') (#2191)
 
 Enhancements
+  * Added a wrapper around set_atoms function to check the datatypes of the input values
   * Added the RDKitParser which creates a `core.topology.Topology` object from 
     an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates 
     from RDKit conformers (Issue #2468, PR #2707)
