@@ -90,6 +90,7 @@ def u(request):
         top, trj = request.param
         return mda.Universe(top, trj)
 
+
 # Define target functions here
 # inside test functions doesn't work
 def cog(u, ag, frame_id):
@@ -126,10 +127,11 @@ def test_multiprocess_names(u):
 
     p = multiprocessing.Pool(2)
     res = [p.apply(getnames, args=(u, i))
-                   for i in range(10)]
+           for i in range(10)]
     p.close()
 
     assert_equal(ref, res)
+
 
 @pytest.fixture(params=[
     # formatname, filename
@@ -169,6 +171,7 @@ def ref_reader(request):
     finally:
         # make sure file handle is closed afterwards
         r.close()
+
 
 def test_readers_pickle(ref_reader):
     ps = pickle.dumps(ref_reader)
