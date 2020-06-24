@@ -78,9 +78,12 @@ else:
     RDBONDORDER = {
         1: Chem.BondType.SINGLE,
         1.5: Chem.BondType.AROMATIC,
+        "ar": Chem.BondType.AROMATIC,
         2: Chem.BondType.DOUBLE,
         3: Chem.BondType.TRIPLE,
     }
+    # add string version of the key for each bond
+    RDBONDORDER.update({str(key):value for key,value in RDBONDORDER.items()})
     RDATTRIBUTES = {
         "altLoc": "AltLoc",
         "chainID": "ChainId",
@@ -178,11 +181,14 @@ class RDKitConverter(base.ConverterBase):
 
         mol = Chem.RWMol()
         atom_mapper = {}
+
         for atom in ag:
             try:
                 element = atom.element
             except NoDataError:
-                element = guess_atom_element(atom.name)
+                # guess atom element
+                # capitalize: transform CL to Cl and so on
+                element = guess_atom_element(atom.name).capitalize()
             rdatom = Chem.Atom(element)
             # add properties
             mi = Chem.AtomPDBResidueInfo()
@@ -201,6 +207,7 @@ class RDKitConverter(base.ConverterBase):
                             value = int(value)
                         except ValueError:
                             # convert any string to int
+                            # can be mapped back with np.base_repr(x, 36)
                             value = int(value, 36)
                     elif attr == "name":
                         # RDKit needs the name to be properly formated for a
