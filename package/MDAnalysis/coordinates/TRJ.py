@@ -158,7 +158,7 @@ import logging
 import MDAnalysis
 from . import base
 from ..lib import util
-
+from ..lib.picklable_file_io import ncdf_pickle_open
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 
@@ -469,8 +469,8 @@ class NCDFReader(base.ReaderBase):
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
-        self.trjfile = scipy.io.netcdf.netcdf_file(self.filename,
-                                                   mmap=self._mmap)
+        self.trjfile = ncdf_pickle_open(self.filename,
+                                        mmap=self._mmap)
 
         # AMBER NetCDF files should always have a convention
         try:

@@ -50,6 +50,8 @@ import os
 import gsd.hoomd
 
 from . import base
+from ..lib.picklable_file_io import gsd_pickle_open
+
 
 class GSDReader(base.ReaderBase):
     """Reader for the GSD format.
@@ -80,7 +82,7 @@ class GSDReader(base.ReaderBase):
     def open_trajectory(self) :
         """opens the trajectory file using gsd.hoomd module"""
         self._frame = -1
-        self._file = gsd.hoomd.open(self.filename,mode='rb')
+        self._file = gsd_pickle_open(self.filename,mode='rb')
 
     def close(self):
         """close reader"""
