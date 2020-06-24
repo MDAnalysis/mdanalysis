@@ -61,4 +61,4 @@ jobs:
   - script: |
       curl -s https://codecov.io/bash | bash
     condition: succeeded()
-    displayName: 'Codecov Coverage Data Upload'
+    displayName: 'Codecov Coverage Upload'
