@@ -55,6 +55,35 @@ from .groups import (ComponentBase, GroupBase,
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
+def _check_dtype(func):
+    """
+    wrapper that checks the datatype of values array that is passed in the set_atoms functions.The allowed datatypes are array of integer,string and object datatype are only allowed
+    """
+    def _attr_dtype(values):
+        # check dtype of values array
+        dtypes = ['int8','int16','int32','int64','object','string']
+        try:
+            if values.dtype in dtypes:
+                return True
+            else:
+                return False
+        except:
+            return False
+
+    @functools.wraps(func)
+    def wrapper(attr, group, values):
+        val_dtype = _attr_dtype(values)
+        print(val_dtype)
+        if not val_dtype:
+            raise ValueError("Array Inputs of int8, int16, int32, int64, string, object datatypes are only allowed")
+
+
+
+        # if everything went OK, continue with the function
+        return func(attr, group, values)
+
+    return wrapper    
+
 def _check_length(func):
     """Wrapper which checks the length of inputs to set_X
 
@@ -431,6 +460,7 @@ class AtomAttr(TopologyAttr):
         return self.values[ag.ix]
 
     @_check_length
+    @_check_dtype
     def set_atoms(self, ag, values):
         self.values[ag.ix] = values
 
