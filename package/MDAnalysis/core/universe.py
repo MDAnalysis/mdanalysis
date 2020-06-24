@@ -1285,6 +1285,87 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
+    
+    @classmethod
+    def from_smiles(cls, smiles, sanitize=True, addHs=True, 
+                    generate_coordinates=True, numConfs=1, 
+                    rdkit_kwargs={}, **kwargs):
+        """Create a Universe from a SMILES string with rdkit
+
+        Parameters
+        ----------
+        smiles : str
+            SMILES string
+
+        sanitize : bool (optional, default True)
+            Toggle the sanitization of the molecule
+
+        addHs : bool (optional, default True)
+            Add all necessary hydrogens to the molecule
+
+        generate_coordinates : bool (optional, default True)
+            Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
+            function. Requires adding hydrogens with the `addHs` parameter
+
+        numConfs : int (optional, default 1)
+            Number of frames to generate coordinates for. Ignored if
+            `generate_coordinates=False`
+
+        rdkit_kwargs : dict (optional)
+            Other arguments passed to the RDKit `EmbedMultipleConfs` function
+
+        kwargs : dict
+            Parameters passed on Universe creation
+
+        Returns
+        -------
+        :class:`~MDAnalysis.core.Universe`
+
+        Examples
+        --------
+        To create a Universe with 10 conformers of ethanol:
+
+        >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
+        >>> u
+        <Universe with 9 atoms>
+        >>> u.trajectory
+        <RDKitReader with 10 frames of 9 atoms>
+
+        To use a different conformer generation algorithm, like ETKDGv3:
+
+        >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
+                                         params=AllChem.ETKDGv3()))
+        >>> u.trajectory
+        <RDKitReader with 1 frames of 9 atoms>
+
+
+        .. versionadded:: 2.0.0
+        """
+        try:
+            from rdkit import Chem
+            from rdkit.Chem import AllChem
+        except ImportError as e:
+            raise ImportError(
+                "Creating a Universe from a SMILES string requires RDKit but " 
+                "it does not appear to be installed") from e
+
+        mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+        if mol is None:
+            raise SyntaxError('Error while parsing SMILES {0}'.format(smiles))
+        if addHs:
+            mol = Chem.AddHs(mol)
+        if generate_coordinates:
+            if not addHs:
+                raise ValueError("Generating coordinates requires adding "
+                "hydrogens with `addHs=True`")
+            
+            numConfs = rdkit_kwargs.pop("numConfs", numConfs)
+            if not (type(numConfs) is int and numConfs > 0):
+                raise SyntaxError("numConfs must be a non-zero positive "
+                "integer instead of {0}".format(numConfs))
+            AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
+
+        return cls(mol, **kwargs)
 
 
 # TODO: what is the point of this function???

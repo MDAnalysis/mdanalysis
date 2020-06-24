@@ -24,6 +24,7 @@ import numpy as np
 import pytest
 import sys
 import warnings
+from unittest.mock import Mock, patch
 
 from numpy.testing import assert_equal, assert_almost_equal
 
@@ -33,7 +34,6 @@ import MDAnalysis as mda
 from MDAnalysis.analysis import density
 
 from MDAnalysisTests.datafiles import TPR, XTC, GRO, PDB_full
-from mock import Mock, patch
 from MDAnalysisTests.util import block_import
 
 

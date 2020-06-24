@@ -37,7 +37,7 @@ except ImportError:
 from contextlib import contextmanager
 from functools import wraps
 import importlib
-import mock
+from unittest import mock
 import os
 import warnings
 import pytest

@@ -23,7 +23,7 @@
 import numpy as np
 import pytest
 from numpy.testing import assert_equal
-import mock
+from unittest import mock
 
 
 from MDAnalysisTests.datafiles import PSF, GRO, XTC

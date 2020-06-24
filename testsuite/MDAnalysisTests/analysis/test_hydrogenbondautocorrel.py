@@ -29,7 +29,7 @@ from MDAnalysisTests.datafiles import (
 )
 from numpy.testing import assert_almost_equal
 import numpy as np
-import mock
+from unittest import mock
 import os
 
 import MDAnalysis as mda
