@@ -40,6 +40,8 @@ Example
 <Universe with 42 atoms>
 >>> u.trajectory
 <RDKitReader with 10 frames of 42 atoms>
+>>> u.atoms.convert_to("RDKIT")
+<rdkit.Chem.rdchem.RWMol object at 0x7fcebb958148>
 
 
 Classes
@@ -91,7 +93,7 @@ else:
         "occupancy": "Occupancy",
         "resname": "ResidueName",
         "resid": "ResidueNumber",
-        "segid": "SegmentNumber",
+        "segindex": "SegmentNumber",
         "tempfactor": "TempFactor",
     }
 
@@ -153,7 +155,7 @@ class RDKitConverter(base.ConverterBase):
         mol = u.select_atoms('resname DMS').convert_to('RDKIT')
 
 
-    .. versionadded:: 2.X.X
+    .. versionadded:: 2.0.0
     """
 
     lib = 'RDKIT'
@@ -175,54 +177,41 @@ class RDKitConverter(base.ConverterBase):
         try:
             # make sure to use atoms (Issue 46)
             ag = obj.atoms
-        except AttributeError as e:
+        except AttributeError:
             raise TypeError("No `atoms` attribute in object of type {}, "
                             "please use a valid AtomGroup or Universe".format(
-                                type(obj))) from e
+                                type(obj))) from None
 
         mol = Chem.RWMol()
         atom_mapper = {}
 
-        for atom in ag:
-            try:
-                element = atom.element
-            except NoDataError:
-                # guess atom element
-                # capitalize: transform CL to Cl and so on
-                element = guess_atom_element(atom.name).capitalize()
+        try:
+            elements = ag.elements
+        except NoDataError:
+            raise AttributeError(
+                "The `elements` attribute is required for the RDKitConverter "
+                "but is not present in this AtomGroup. Please refer to the "
+                "documentation to guess elements from other attributes. "
+                "If `types` are present in the AtomGroup, a good starting "
+                "point would be:\n"
+                ">>> from MDAnalysis.topology.guessers import "
+                "guess_atom_element\n"
+                ">>> elements = np.array(["
+                "guess_atom_element(x).capitalize() for x in u.atoms.types"
+                "], dtype=object)\n"
+                ">>> u.add_TopologyAttr('elements', elements)") from None
+
+        for atom, element in zip(ag, elements):
+            # create atom
             rdatom = Chem.Atom(element)
-            # add properties
+            # add PDB-like properties
             mi = Chem.AtomPDBResidueInfo()
             for attr, rdattr in RDATTRIBUTES.items():
-                try:  # get value in MDA atom
-                    value = getattr(atom, attr)
-                except AttributeError:
-                    pass
-                else:
-                    if isinstance(value, np.generic):
-                        # convert numpy types to python standard types
-                        value = value.item()
-                    if attr == "segid":
-                        # RDKit needs segid to be an int
-                        try:
-                            value = int(value)
-                        except ValueError:
-                            # convert any string to int
-                            # can be mapped back with np.base_repr(x, 36)
-                            value = int(value, 36)
-                    elif attr == "name":
-                        # RDKit needs the name to be properly formated for a
-                        # PDB file (1 letter elements start at col 14)
-                        name = re.findall('(\D+|\d+)', value)
-                        if len(name) == 2:
-                            symbol, number = name
-                        else:
-                            symbol, number = name[0], ""
-                        value = "{:>2}".format(symbol) + "{:<2}".format(number)
-                    # set attribute value in RDKit MonomerInfo
-                    getattr(mi, "Set%s" % rdattr)(value)
+                _add_mda_attr_to_rdkit(atom, attr, rdattr, mi)
             rdatom.SetMonomerInfo(mi)
-            # TODO other properties (charges)
+            # other properties
+            # TODO add bfactors, charges, icodes, segids, types
+            # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
             atom_mapper[atom.ix] = index
@@ -230,6 +219,9 @@ class RDKitConverter(base.ConverterBase):
         try:
             bonds = ag.bonds
         except NoDataError:
+            warnings.warn(
+                "No `bonds` attribute in this AtomGroup. Guessing bonds based"
+                "on atoms coordinates")
             ag.guess_bonds()
             bonds = ag.bonds
 
@@ -246,3 +238,41 @@ class RDKitConverter(base.ConverterBase):
 
         Chem.SanitizeMol(mol)
         return mol
+
+
+def _add_mda_attr_to_rdkit(atom, attr, rdattr, mi):
+    """Converts an MDAnalysis atom attribute into the RDKit equivalent and 
+    stores it into an RDKit AtomPDBResidueInfo object.
+
+    Parameters
+    ----------
+
+    atom : MDAnalysis.core.groups.Atom
+        The atom to get the attributes from
+    attr : str
+        Name of the atom attribute in MDAnalysis in the singular form
+    rdattr : str
+        Name of the equivalent attribute in RDKit, as found in the `Set` and 
+        `Get` methods of the `AtomPDBResidueInfo`
+    mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
+        MonomerInfo object containing all the relevant atom attributes
+    """
+    try:  # get value in MDA atom
+        value = getattr(atom, attr)
+    except AttributeError:
+        pass
+    else:
+        if isinstance(value, np.generic):
+            # convert numpy types to python standard types
+            value = value.item()
+        if attr == "name":
+            # RDKit needs the name to be properly formated for a
+            # PDB file (1 letter elements start at col 14)
+            name = re.findall('(\D+|\d+)', value)
+            if len(name) == 2:
+                symbol, number = name
+            else:
+                symbol, number = name[0], ""
+            value = "{:>2}".format(symbol) + "{:<2}".format(number)
+        # set attribute value in RDKit MonomerInfo
+        getattr(mi, "Set%s" % rdattr)(value)
