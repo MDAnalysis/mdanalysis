@@ -166,11 +166,13 @@ The class and its methods
 .. autoclass:: HydrogenBondAnalysis
    :members:
 """
-import warnings
+import logging
+
 import numpy as np
 
 from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
+from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
 
 from ...due import due, Doi
@@ -495,6 +497,71 @@ class HydrogenBondAnalysis(base.AnalysisBase):
     def _conclude(self):
 
         self.hbonds = np.asarray(self.hbonds).T
+
+    def autocorrelation(self, tau_max=20, window_step=1, intermittency=0):
+        """
+        Computes and returns the time-autocorrelation (HydrogenBondLifetimes) of hydrogen bonds.
+
+        Before calling this method, the hydrogen bonds must first be computed with the `run()` function.
+        The same `start`, `stop` and `step` parameters used in finding hydrogen bonds will be used here
+        for calculating hydrogen bond lifetimes. That is, the same frames will be used in the analysis.
+
+        Unique hydrogen bonds are identified using hydrogen-acceptor pairs. This means an acceptor
+        switching to a different hydrogen atom - with the same donor - from one frame to the next
+        is considered a different hydrogen bond.
+
+        Please see :func:`MDAnalysis.lib.correlations.autocorrelation` and
+        :func:`MDAnalysis.lib.correlations.intermittency` functions for more details.
+
+
+        Parameters
+        ----------
+        window_step : int, optional
+            The number of frames between each t(0).
+        tau_max : int, optional
+            Hydrogen bond lifetime is calculated for frames in the range 1 <= `tau` <= `tau_max`
+        intermittency : int, optional
+            The maximum number of consecutive frames for which a bond can disappear but be counted as present if it
+            returns at the next frame. An intermittency of `0` is equivalent to a continuous autocorrelation, which does
+            not allow for hydrogen bond disappearance. For example, for `intermittency=2`, any given hydrogen bond may
+            disappear for up to two consecutive frames yet be treated as being present at all frames.
+            The default is continuous (intermittency=0).
+
+        Returns
+        -------
+        acf_tau_timeseries : list
+            tau from 1 to `tau_max`. Saved in the field acf_tau_timeseries.
+        acf_timeseries : list
+            autcorrelation value for each value of `tau`. Saved in the field acf_timeseries.
+        acf_timeseries_data: list
+            raw datapoints, of hydrogen and acceptor indices, from which the autocorrelation is calculated.
+             Saved in the field acf_timeseries_data.
+        """
+
+        if not hasattr(self, 'hbonds'):
+            logging.error("Autocorrelation analysis of hydrogen bonds cannot be done before the hydrogen bonds are found")
+            logging.error("Autocorrelation: Please use the .run() before calling this function")
+            return
+
+        if self.step != 1:
+            logging.warning("Autocorrelation: ideally autocorrelation function would be carried out on consecutive frames. ")
+            logging.warning("Autocorrelation: if you would like to allow bonds to break and reform, please use 'intermittency'")
+
+        # Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), ..]
+        found_hydrogen_bonds = [set() for _ in self.frames]
+        for frame_index, frame in enumerate(self.frames):
+            for hbond in self.hbonds[self.hbonds[:, 0] == frame]:
+                found_hydrogen_bonds[frame_index].add(frozenset(hbond[2:4]))
+
+        intermittent_hbonds = correct_intermittency(found_hydrogen_bonds, intermittency=intermittency)
+        tau_timeseries, timeseries, timeseries_data = autocorrelation(intermittent_hbonds, tau_max,
+                                                                      window_step=window_step)
+        self.acf_tau_timeseries = tau_timeseries
+        self.acf_timeseries = timeseries
+        # user can investigate the distribution and sample size
+        self.acf_timeseries_data = timeseries_data
+
+        return self
 
     def count_by_time(self):
         """Counts the number of hydrogen bonds per timestep.

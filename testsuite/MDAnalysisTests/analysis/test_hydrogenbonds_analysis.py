@@ -207,6 +207,20 @@ class TestHydrogenBondAnalysisMock(object):
         assert_array_almost_equal(h.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
+    def test_hydrogen_bond_lifetime(self, universe):
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run()
+
+        h.autocorrelation(tau_max=2)
+        assert_array_equal(h.acf_timeseries, [1, 0, 0])
+
+    def test_hydrogen_bond_lifetime_intermittency(self, universe):
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run()
+
+        h.autocorrelation(tau_max=2, intermittency=1)
+        assert_array_equal(h.acf_timeseries, 1)
+
 
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P`, so the

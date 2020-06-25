@@ -223,36 +223,36 @@ def correct_intermittency(list_of_sets, intermittency):
 
     list_of_sets = deepcopy(list_of_sets)
 
-    for i, ids in enumerate(list_of_sets):
+    for i, elements in enumerate(list_of_sets):
         # initially update each frame as seen 0 ago (now)
-        seen_frames_ago = {i: 0 for i in ids}
+        seen_frames_ago = {i: 0 for i in elements}
         for j in range(1, intermittency + 2):
-            for atomid in seen_frames_ago.keys():
+            for element in seen_frames_ago.keys():
                 # no more frames
                 if i + j >= len(list_of_sets):
                     continue
 
-                # if the atom is absent now
-                if not atomid in list_of_sets[i + j]:
+                # if the element is absent now
+                if not element in list_of_sets[i + j]:
                     # increase its absence counter
-                    seen_frames_ago[atomid] += 1
+                    seen_frames_ago[element] += 1
                     continue
 
-                # the atom is found
-                if seen_frames_ago[atomid] == 0:
-                    # the atom was present in the last frame
+                # the element is found
+                if seen_frames_ago[element] == 0:
+                    # the element was present in the last frame
                     continue
 
                 # it was absent more times than allowed
-                if seen_frames_ago[atomid] > intermittency:
+                if seen_frames_ago[element] > intermittency:
                     continue
 
-                # the atom was absent but returned (within <= intermittency_value)
+                # the element was absent but returned (within <= intermittency_value)
                 # add it to the frames where it was absent.
                 # Introduce the corrections.
-                for k in range(seen_frames_ago[atomid], 0, -1):
-                    list_of_sets[i + j - k].add(atomid)
+                for k in range(seen_frames_ago[element], 0, -1):
+                    list_of_sets[i + j - k].add(element)
 
-                seen_frames_ago[atomid] = 0
+                seen_frames_ago[element] = 0
     return list_of_sets
 
