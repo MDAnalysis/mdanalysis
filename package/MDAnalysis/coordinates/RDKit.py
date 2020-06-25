@@ -171,9 +171,9 @@ class RDKitConverter(base.ConverterBase):
         try:
             from rdkit import Chem
         except ImportError:
-            raise ImportError('RDKit is required for RDKitConverter but '
-                              'is not installed. Try installing it with \n'
-                              'conda install -c conda-forge rdkit')
+            raise ImportError("RDKit is required for the RDKitConverter but "
+                              "it's not installed. Try installing it with \n"
+                              "conda install -c conda-forge rdkit")
         try:
             # make sure to use atoms (Issue 46)
             ag = obj.atoms
@@ -181,9 +181,6 @@ class RDKitConverter(base.ConverterBase):
             raise TypeError("No `atoms` attribute in object of type {}, "
                             "please use a valid AtomGroup or Universe".format(
                                 type(obj))) from None
-
-        mol = Chem.RWMol()
-        atom_mapper = {}
 
         try:
             elements = ag.elements
@@ -201,16 +198,31 @@ class RDKitConverter(base.ConverterBase):
                 "], dtype=object)\n"
                 ">>> u.add_TopologyAttr('elements', elements)") from None
 
-        for atom, element in zip(ag, elements):
+        other_attrs = {}
+        for attr in ["bfactors", "charges", "icodes", "segids", "types"]:
+            if hasattr(ag, attr):
+                other_attrs[attr] = getattr(ag, attr)
+
+        mol = Chem.RWMol()
+        atom_mapper = {}
+
+        for i, (atom, element) in enumerate(zip(ag, elements)):
             # create atom
             rdatom = Chem.Atom(element)
+            # disable adding H to the molecule
+            rdatom.SetNoImplicit(True)
             # add PDB-like properties
             mi = Chem.AtomPDBResidueInfo()
             for attr, rdattr in RDATTRIBUTES.items():
                 _add_mda_attr_to_rdkit(atom, attr, rdattr, mi)
             rdatom.SetMonomerInfo(mi)
             # other properties
-            # TODO add bfactors, charges, icodes, segids, types
+            for attr in other_attrs.keys():
+                value = other_attrs[attr][i]
+                if isinstance(value, np.generic):
+                    # convert numpy types to python standard types
+                    value = str(value)
+                rdatom.SetProp("_MDAnalysis_%s" % attr[:-1], value)
             # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
@@ -218,6 +230,9 @@ class RDKitConverter(base.ConverterBase):
 
         try:
             bonds = ag.bonds
+            if (len(bonds) == 0) and (ag.n_atoms > 1):
+                # force guessing bonds
+                raise NoDataError
         except NoDataError:
             warnings.warn(
                 "No `bonds` attribute in this AtomGroup. Guessing bonds based"
@@ -236,7 +251,9 @@ class RDKitConverter(base.ConverterBase):
                 bond.order, Chem.BondType.SINGLE))
             mol.AddBond(*bond_indices, bond_type)
 
+        # sanitization
         Chem.SanitizeMol(mol)
+
         return mol
 
 
