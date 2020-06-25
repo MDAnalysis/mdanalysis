@@ -83,7 +83,7 @@ else:
         3: Chem.BondType.TRIPLE,
     }
     # add string version of the key for each bond
-    RDBONDORDER.update({str(key):value for key,value in RDBONDORDER.items()})
+    RDBONDORDER.update({str(key): value for key, value in RDBONDORDER.items()})
     RDATTRIBUTES = {
         "altLoc": "AltLoc",
         "chainID": "ChainId",
@@ -95,9 +95,10 @@ else:
         "tempfactor": "TempFactor",
     }
 
+
 class RDKitReader(memory.MemoryReader):
     """Coordinate reader for RDKit.
-    
+
     .. versionadded:: 2.0.0
     """
     format = 'RDKIT'
@@ -129,11 +130,11 @@ class RDKitReader(memory.MemoryReader):
         """
         n_atoms = filename.GetNumAtoms()
         coordinates = np.array([
-            conf.GetPositions() for conf in filename.GetConformers()], 
+            conf.GetPositions() for conf in filename.GetConformers()],
             dtype=np.float32)
         if coordinates.size == 0:
             warnings.warn("No coordinates found in the RDKit molecule")
-            coordinates = np.empty((1,n_atoms,3), dtype=np.float32)
+            coordinates = np.empty((1, n_atoms, 3), dtype=np.float32)
             coordinates[:] = np.nan
         super(RDKitReader, self).__init__(coordinates, order='fac', **kwargs)
 
@@ -150,7 +151,7 @@ class RDKitConverter(base.ConverterBase):
         from MDAnalysis.tests.datafiles import PDB_full
         u = mda.Universe(PDB_full)
         mol = u.select_atoms('resname DMS').convert_to('RDKIT')
-    
+
 
     .. versionadded:: 2.X.X
     """
@@ -177,7 +178,7 @@ class RDKitConverter(base.ConverterBase):
         except AttributeError as e:
             raise TypeError("No `atoms` attribute in object of type {}, "
                             "please use a valid AtomGroup or Universe".format(
-                            type(obj))) from e
+                                type(obj))) from e
 
         mol = Chem.RWMol()
         atom_mapper = {}
@@ -193,7 +194,7 @@ class RDKitConverter(base.ConverterBase):
             # add properties
             mi = Chem.AtomPDBResidueInfo()
             for attr, rdattr in RDATTRIBUTES.items():
-                try: # get value in MDA atom
+                try:  # get value in MDA atom
                     value = getattr(atom, attr)
                 except AttributeError:
                     pass
