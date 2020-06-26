@@ -60,6 +60,5 @@ jobs:
     displayName: 'Run MDAnalysis Test Suite'
   - script: |
       curl -s https://codecov.io/bash | bash
-      echo %CODECOV_TOKEN%
     condition: succeeded()
     displayName: 'Codecov Coverage Data Upload'
