@@ -1,0 +1,1687 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Quick start guide &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Frequently asked questions" href="../faq.html" />
+    <link rel="prev" title="Installation" href="../installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick start guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Loading-a-structure-or-trajectory">Loading a structure or trajectory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Working-with-groups-of-atoms">Working with groups of atoms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Selecting-atoms">Selecting atoms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Getting-atom-information-from-AtomGroups">Getting atom information from AtomGroups</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#AtomGroup-positions-and-methods">AtomGroup positions and methods</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Working-with-trajectories">Working with trajectories</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Dynamic-selection">Dynamic selection</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Writing-out-coordinates">Writing out coordinates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Single-frame">Single frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Trajectories">Trajectories</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Analysis">Analysis</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#RMSD">RMSD</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#References">References</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Automatic-citations-with-duecredit">Automatic citations with duecredit</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Quick start guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/quickstart.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
+<script>require=requirejs;</script><div class="section" id="Quick-start-guide">
+<h1>Quick start guide<a class="headerlink" href="#Quick-start-guide" title="Permalink to this headline">¶</a></h1>
+<p>MDAnalysis version: ≥ 0.18.0</p>
+<p>Last updated: November 2019</p>
+<p>This guide is designed as a basic introduction to MDAnalysis to get you up and running. You can see more complex tasks in our <a class="reference external" href="https://mdanalysis.org/UserGuide/examples/README.html">Example notebooks</a>. This page outlines how to:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="#Loading-a-structure-or-trajectory">load a molecular dynamics structure or trajectory</a></p></li>
+<li><p><a class="reference external" href="#Working-with-groups-of-atoms">work with AtomGroups, a central data structure in MDAnalysis</a></p></li>
+<li><p><a class="reference external" href="#Working-with-trajectories">work with a trajectory</a></p></li>
+<li><p><a class="reference external" href="#Writing-out-coordinates">write out coordinates</a></p></li>
+<li><p><a class="reference external" href="#Analysis">use the analysis algorithms in MDAnalysis</a></p></li>
+<li><p><a class="reference external" href="#References">correct and automated citation of MDAnalysis and algorithms</a></p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">GRO</span><span class="p">,</span> <span class="n">XTC</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mda</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Universe with 3341 atoms&gt;
+0.20.1
+</pre></div></div>
+</div>
+<p>This tutorial assumes that you already have MDAnalysis installed. Running the cell above should give something similar to:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;Universe with 3341 atoms&gt;</span>
+<span class="go">0.20.1</span>
+</pre></div>
+</div>
+<p>If you get an error message, you need to install MDAnalysis. If your version is under <code class="docutils literal notranslate"><span class="pre">0.18.0</span></code>, you need to upgrade MDAnalysis. <a class="reference external" href="https://www.mdanalysis.org/UserGuide/installation">Instructions for both are here.</a> After installing, restart this notebook.</p>
+<div class="section" id="Overview">
+<h2>Overview<a class="headerlink" href="#Overview" title="Permalink to this headline">¶</a></h2>
+<p>MDAnalysis is a Python package that provides tools to access and analyse data in molecular dynamics trajectories. Several key data structures form the backbone of MDAnalysis.</p>
+<ul class="simple">
+<li><p>A molecular system consists of particles. A particle is represented as an <code class="docutils literal notranslate"><span class="pre">Atom</span></code> object, even if it is a coarse-grained bead.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Atom</span></code>s are grouped into <a class="reference external" href="https://www.mdanalysis.org/UserGuide/atomgroup">AtomGroup</a>s. The <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> is probably the most important class in MDAnalysis, as almost everything can be accessed through it. See <a class="reference external" href="#Working-with-groups-of-atoms">Working with atoms</a> below.</p></li>
+<li><p>A <code class="docutils literal notranslate"><span class="pre">Universe</span></code> contains all the particles in a molecular system in an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> accessible at the <code class="docutils literal notranslate"><span class="pre">.atoms</span></code> attribute, and combines it with a trajectory at <code class="docutils literal notranslate"><span class="pre">.trajectory</span></code>.</p></li>
+</ul>
+<p>A fundamental concept in MDAnalysis is that at any one time, only one time frame of the trajectory is being accessed. The <code class="docutils literal notranslate"><span class="pre">trajectory</span></code> attribute of a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> is usually a file reader. Think of the trajectory as a function <span class="math notranslate nohighlight">\(X(t)\)</span> of the frame index <span class="math notranslate nohighlight">\(t\)</span> that only makes the data from this specific frame available. This structure is important because it allows MDAnalysis to work with trajectory files too large to fit into the computer’s memory.</p>
+</div>
+<div class="section" id="Loading-a-structure-or-trajectory">
+<h2>Loading a structure or trajectory<a class="headerlink" href="#Loading-a-structure-or-trajectory" title="Permalink to this headline">¶</a></h2>
+<p>Working with MDAnalysis typically starts with loading data into a <code class="docutils literal notranslate"><span class="pre">Universe</span></code>, the central data structure in MDAnalysis. The <a class="reference external" href="https://www.mdanalysis.org/UserGuide/universe">user guide</a> has a complete explanation of ways to create and manipulate a <code class="docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
+<p>The first arguments for creating a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> are topology and trajectory files.</p>
+<ul class="simple">
+<li><p>A <strong>topology file</strong> is always required for loading data into a Universe. A topology file lists atoms, residues, and their connectivity. MDAnalysis accepts the PSF, PDB, CRD, and GRO formats.</p></li>
+<li><p>A topology file can then be followed by <strong>any number of trajectory files</strong>. A trajectory file contains a list of coordinates in the order defined in the topology. If no trajectory files are given, then only a structure is loaded. If multiple trajectory files are given, the trajectories are concatenated in the given order. MDAnalysis accepts single frames (e.g. PDB, CRD, GRO) and timeseries data (e.g. DCD, XTC, TRR, XYZ).</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">psf</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">psf</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="s1">&#39;trajectory&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Universe with 3341 atoms&gt;
+False
+</pre></div></div>
+</div>
+<p>As PSF files don’t contain any coordinate information and no trajectory file has been loaded, the <code class="docutils literal notranslate"><span class="pre">psf</span></code> universe does not contain a trajectory. If the topology file does contain coordinate information, a trajectory of 1 frame is created.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">gro</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gro</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">gro</span><span class="o">.</span><span class="n">trajectory</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Universe with 47681 atoms&gt;
+1
+</pre></div></div>
+</div>
+<p>For the remainder of this guide we will work with the universe <code class="docutils literal notranslate"><span class="pre">u</span></code>, created below. This is a simulation where the enzyme adenylate kinase samples a transition from a closed to an open conformation <a class="reference external" href="https://doi.org/10.1016/j.jmb.2009.09.009">(Beckstein et al., 2009)</a>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Universe with 3341 atoms&gt;
+98
+</pre></div></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>The MDAnalysis test suite is packaged with a bunch of test files and trajectories, which are named after their file format. We are using these files throughout this guide for convenience. To analyse your own files, simply replace the <code class="docutils literal notranslate"><span class="pre">PSF</span></code> and <code class="docutils literal notranslate"><span class="pre">DCD</span></code> above with paths to your own files. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">structure_only</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;my_pdb_file.pdb&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Working-with-groups-of-atoms">
+<h2>Working with groups of atoms<a class="headerlink" href="#Working-with-groups-of-atoms" title="Permalink to this headline">¶</a></h2>
+<p>Most analysis requires creating and working with an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>, a collection of <code class="docutils literal notranslate"><span class="pre">Atom</span></code>s. For convenience, you can also work with chemically meaningful groups of <code class="docutils literal notranslate"><span class="pre">Atoms</span></code> such as a <code class="docutils literal notranslate"><span class="pre">Residue</span></code> or a <code class="docutils literal notranslate"><span class="pre">Segment</span></code>. These come with analogous containers to <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>: <code class="docutils literal notranslate"><span class="pre">ResidueGroup</span></code> and <code class="docutils literal notranslate"><span class="pre">SegmentGroup</span></code>. For instance, the <code class="docutils literal notranslate"><span class="pre">.residues</span></code> attribute of a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> returns a <code class="docutils literal notranslate"><span class="pre">ResidueGroup</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ResidueGroup [&lt;Residue MET, 1&gt;, &lt;Residue ARG, 2&gt;, &lt;Residue ILE, 3&gt;, ..., &lt;Residue ILE, 212&gt;, &lt;Residue LEU, 213&gt;, &lt;Residue GLY, 214&gt;]&gt;
+</pre></div></div>
+</div>
+<div class="section" id="Selecting-atoms">
+<h3>Selecting atoms<a class="headerlink" href="#Selecting-atoms" title="Permalink to this headline">¶</a></h3>
+<p>The easiest way to access the particles of your <code class="docutils literal notranslate"><span class="pre">Universe</span></code> is with the <code class="docutils literal notranslate"><span class="pre">atoms</span></code> attribute:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup with 3341 atoms&gt;
+</pre></div></div>
+</div>
+<p>This returns an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>, which can be thought of as a list of <code class="docutils literal notranslate"><span class="pre">Atom</span></code> objects. Most analysis involves working with groups of atoms in <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>s. <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>s can easily be created by slicing another <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>. For example, the below slice returns the last five atoms.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">last_five</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">last_five</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup [&lt;Atom 3337: HA1 of type 6 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3338: HA2 of type 6 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3339: C of type 32 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3340: OT1 of type 72 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3341: OT2 of type 72 of resname GLY, resid 214 and segid 4AKE&gt;]&gt;
+</pre></div></div>
+</div>
+<p>MDAnalysis supports fancy indexing: passing an array or list of indices to get a new AtomGroup with the atoms at those indices in the old AtomGroup.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">last_five</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup [&lt;Atom 3337: HA1 of type 6 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3340: OT1 of type 72 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3341: OT2 of type 72 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3338: HA2 of type 6 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3340: OT1 of type 72 of resname GLY, resid 214 and segid 4AKE&gt;, &lt;Atom 3337: HA1 of type 6 of resname GLY, resid 214 and segid 4AKE&gt;]&gt;
+</pre></div></div>
+</div>
+<p>MDAnalysis has also implemented a <a class="reference external" href="https://www.mdanalysis.org/UserGuide/selections">powerful atom selection language</a> that is similar to existing languages in <a class="reference external" href="https://www.ks.uiuc.edu/Research/vmd/">VMD</a>, <a class="reference external" href="https://pymol.org/2/">PyMol</a>, and other packages. This is available with the <code class="docutils literal notranslate"><span class="pre">.select_atoms()</span></code> function of an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> or <code class="docutils literal notranslate"><span class="pre">Universe</span></code> instance:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname ASP or resname GLU&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup [&lt;Atom 318: N of type 54 of resname GLU, resid 22 and segid 4AKE&gt;, &lt;Atom 319: HN of type 1 of resname GLU, resid 22 and segid 4AKE&gt;, &lt;Atom 320: CA of type 22 of resname GLU, resid 22 and segid 4AKE&gt;, ..., &lt;Atom 3271: OE2 of type 72 of resname GLU, resid 210 and segid 4AKE&gt;, &lt;Atom 3272: C of type 20 of resname GLU, resid 210 and segid 4AKE&gt;, &lt;Atom 3273: O of type 70 of resname GLU, resid 210 and segid 4AKE&gt;]&gt;
+</pre></div></div>
+</div>
+<p>Numerical ranges can be written as <code class="docutils literal notranslate"><span class="pre">first-last</span></code> or <code class="docutils literal notranslate"><span class="pre">first:last</span></code> where the range is <strong>inclusive</strong>. Note that in slicing, the <code class="docutils literal notranslate"><span class="pre">last</span></code> index is not included.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resid 50-100&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">50</span><span class="p">:</span><span class="mi">100</span><span class="p">]</span><span class="o">.</span><span class="n">n_residues</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+51
+50
+</pre></div></div>
+</div>
+<p>Selections can also be combined with boolean operators, and allow wildcards.</p>
+<p>For example, the command below selects the <span class="math notranslate nohighlight">\(C_{\alpha}\)</span> atoms of glutamic acid and histidine in the first 100 residues of the protein. Glutamic acid is typically named “GLU”, but histidine can be named “HIS”, “HSD”, or “HSE” depending on its protonation state and the force field used.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;(resname GLU or resname HS*) and name CA and (resid 1:100)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup with 6 atoms&gt;
+</pre></div></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>An <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> created from a selection is sorted and duplicate elements are removed. This is not true for an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> produced by slicing. Thus, slicing can be used when the order of atoms is crucial.</p>
+</div>
+<p>The <a class="reference external" href="https://www.mdanalysis.org/UserGuide/atomgroup">user guide</a> has a complete rundown of creating <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>s through indexing, selection language, and set methods.</p>
+</div>
+<div class="section" id="Getting-atom-information-from-AtomGroups">
+<h3>Getting atom information from AtomGroups<a class="headerlink" href="#Getting-atom-information-from-AtomGroups" title="Permalink to this headline">¶</a></h3>
+<p>An <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> can tell you information about the atoms inside it with a number of convenient attributes.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;N&#39; &#39;HT1&#39; &#39;HT2&#39; &#39;HT3&#39; &#39;CA&#39; &#39;HA&#39; &#39;CB&#39; &#39;HB1&#39; &#39;HB2&#39; &#39;CG&#39; &#39;HG1&#39; &#39;HG2&#39; &#39;SD&#39;
+ &#39;CE&#39; &#39;HE1&#39; &#39;HE2&#39; &#39;HE3&#39; &#39;C&#39; &#39;O&#39; &#39;N&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">50</span><span class="p">:</span><span class="mi">70</span><span class="p">]</span><span class="o">.</span><span class="n">masses</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[ 1.008  1.008  1.008 12.011  1.008  1.008 12.011  1.008  1.008  1.008
+ 12.011 15.999 14.007  1.008 12.011  1.008 12.011  1.008 12.011  1.008]
+</pre></div></div>
+</div>
+<p>It also knows which residues and segments the atoms belong to. The <code class="docutils literal notranslate"><span class="pre">.residues</span></code> and <code class="docutils literal notranslate"><span class="pre">.segments</span></code> return a <code class="docutils literal notranslate"><span class="pre">ResidueGroup</span></code> and <code class="docutils literal notranslate"><span class="pre">SegmentGroup</span></code>, respectively.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">residues</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="o">-</span><span class="mi">20</span><span class="p">:]</span><span class="o">.</span><span class="n">segments</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ResidueGroup [&lt;Residue MET, 1&gt;, &lt;Residue ARG, 2&gt;]&gt;
+&lt;SegmentGroup [&lt;Segment 4AKE&gt;]&gt;
+</pre></div></div>
+</div>
+<p>Note that there are no duplicates in the <code class="docutils literal notranslate"><span class="pre">ResidueGroup</span></code> and <code class="docutils literal notranslate"><span class="pre">SegmentGroup</span></code> above. To get residue attributes atom-wise, you can access them directly through <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">resnames</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39;
+ &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;MET&#39; &#39;ARG&#39;]
+</pre></div></div>
+</div>
+<p>You can group atoms together by topology attributes.</p>
+<p>For example, to group atoms with the same residue name and mass together:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">near_met</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not resname MET and (around 2 resname MET)&#39;</span><span class="p">)</span>
+<span class="n">near_met</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;resnames&#39;</span><span class="p">,</span> <span class="s1">&#39;names&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{(&#39;ALA&#39;, &#39;HN&#39;): &lt;AtomGroup with 2 atoms&gt;,
+ (&#39;ALA&#39;, &#39;C&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;ASP&#39;, &#39;N&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;ASP&#39;, &#39;C&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;THR&#39;, &#39;N&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;GLU&#39;, &#39;N&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;ILE&#39;, &#39;C&#39;): &lt;AtomGroup with 2 atoms&gt;,
+ (&#39;LEU&#39;, &#39;N&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;GLN&#39;, &#39;C&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;ASN&#39;, &#39;O&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;LYS&#39;, &#39;N&#39;): &lt;AtomGroup with 1 atom&gt;,
+ (&#39;ARG&#39;, &#39;N&#39;): &lt;AtomGroup with 1 atom&gt;}
+</pre></div></div>
+</div>
+<p>A complete list of topology attributes can be found <a class="reference external" href="https://www.mdanalysis.org/UserGuide/topology_system.html#topology-attributes">in the user guide.</a></p>
+</div>
+<div class="section" id="AtomGroup-positions-and-methods">
+<h3>AtomGroup positions and methods<a class="headerlink" href="#AtomGroup-positions-and-methods" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">.positions</span></code> attribute is probably the most important information you can get from an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>: a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of coordinates, with the shape <code class="docutils literal notranslate"><span class="pre">(n_atoms,</span> <span class="pre">3)</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ca</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resid 1-5 and name CA&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[[11.664622    8.393473   -8.983231  ]
+ [11.414839    5.4344215  -6.5134845 ]
+ [ 8.959755    5.612923   -3.6132305 ]
+ [ 8.290068    3.075991   -0.79665166]
+ [ 5.011126    3.7638984   1.130355  ]]
+(5, 3)
+</pre></div></div>
+</div>
+<p>A number of other quantities have been defined for an AtomGroup, including:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">.center_of_mass()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.center_of_geometry()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.total_mass()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.total_charge()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.radius_of_gyration()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">.bsphere()</span></code> (the bounding sphere of the selection)</p></li>
+</ul>
+<p>See the <a class="reference external" href="https://www.mdanalysis.org/UserGuide/topology_system.html#topology-specific-methods">user guide</a> for a complete list and description of AtomGroup methods.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">ca</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[ 9.06808195  5.25614133 -3.75524844]
+</pre></div></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>The <code class="docutils literal notranslate"><span class="pre">.center_of_mass()</span></code> function, like many of the analysis modules in MDAnalysis, relies on having accurate mass properties available. <a class="reference external" href="https://www.mdanalysis.org/UserGuide/formats/guessing.html#masses">Particle masses may not always be available or accurate!</a></p>
+<p>Currently, MDAnalysis assigns masses to particles based on their element or ‘atom type’, which is guessed from the particle name. If MDAnalysis guesses incorrectly (e.g. a calcium atom called CA is treated as a <span class="math notranslate nohighlight">\(C_{\alpha}\)</span>), the mass of that atom will be inaccurate. If MDAnalysis has no idea what the particle is (e.g. coarse-grained beads), it will raise a warning, and give that particle a mass of 0.</p>
+<p>To be certain that MDAnalysis is using the correct masses, you can set them manually.</p>
+</div>
+<p>MDAnalysis can also create <a class="reference external" href="https://www.mdanalysis.org/UserGuide/topology_system.html#topology-objects">topology geometries</a> such as bonds, angles, dihedral angles, and improper angles from an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>. This <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> has a special requirement: only the atoms involved in the geometry can be in the group. For example, an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> used to create a bond can only have 2 atoms in it; an <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> used to create a dihedral or improper angle must have 4 atoms.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">nhh</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">nhh</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;N&#39; &#39;HT1&#39; &#39;HT2&#39;]
+</pre></div></div>
+</div>
+<p>After a topology object such as an angle is created, the value of the angle (in degrees) can be calculated based on the positions of the atoms.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">angle_nhh</span> <span class="o">=</span> <span class="n">nhh</span><span class="o">.</span><span class="n">angle</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">angle_nhh</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+37.99234750892497
+</pre></div></div>
+</div>
+<p>Note that the order of the atoms matters for angles, dihedrals, and impropers. The value returned for an angle is the angle between first and third atom, with the apex at the second. Fancy indexing is one way to get an ordered AtomGroup.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>   <span class="mi">3</span>
+  <span class="o">/</span>
+ <span class="o">/</span>
+<span class="mi">2</span><span class="o">------</span><span class="mi">1</span>
+</pre></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">hnh</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hnh</span><span class="o">.</span><span class="n">names</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;HT1&#39; &#39;N&#39; &#39;HT2&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">angle_hnh</span> <span class="o">=</span> <span class="n">hnh</span><span class="o">.</span><span class="n">angle</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">angle_hnh</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+106.20364651944931
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Working-with-trajectories">
+<h2>Working with trajectories<a class="headerlink" href="#Working-with-trajectories" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference external" href="https://mdanalysis.org/UserGuide/trajectories/trajectories.html">trajectory of a Universe contains the changing coordinate information</a>. The number of frames in a trajectory is its length:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+98
+</pre></div></div>
+</div>
+<p>The standard way to assess the information of each frame in a trajectory is to iterate over it. When the timestep changes, the universe only contains information associated with that timestep.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[:</span><span class="mi">20</span><span class="p">]:</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span>
+    <span class="n">rgyr</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Frame: </span><span class="si">{:3d}</span><span class="s2">, Time: </span><span class="si">{:4.0f}</span><span class="s2"> ps, Rgyr: </span><span class="si">{:.4f}</span><span class="s2"> A&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">rgyr</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Frame:   0, Time:    1 ps, Rgyr: 16.6690 A
+Frame:   1, Time:    2 ps, Rgyr: 16.6732 A
+Frame:   2, Time:    3 ps, Rgyr: 16.7315 A
+Frame:   3, Time:    4 ps, Rgyr: 16.7223 A
+Frame:   4, Time:    5 ps, Rgyr: 16.7440 A
+Frame:   5, Time:    6 ps, Rgyr: 16.7185 A
+Frame:   6, Time:    7 ps, Rgyr: 16.7741 A
+Frame:   7, Time:    8 ps, Rgyr: 16.7764 A
+Frame:   8, Time:    9 ps, Rgyr: 16.7894 A
+Frame:   9, Time:   10 ps, Rgyr: 16.8289 A
+Frame:  10, Time:   11 ps, Rgyr: 16.8521 A
+Frame:  11, Time:   12 ps, Rgyr: 16.8549 A
+Frame:  12, Time:   13 ps, Rgyr: 16.8723 A
+Frame:  13, Time:   14 ps, Rgyr: 16.9108 A
+Frame:  14, Time:   15 ps, Rgyr: 16.9494 A
+Frame:  15, Time:   16 ps, Rgyr: 16.9810 A
+Frame:  16, Time:   17 ps, Rgyr: 17.0033 A
+Frame:  17, Time:   18 ps, Rgyr: 17.0196 A
+Frame:  18, Time:   19 ps, Rgyr: 17.0784 A
+Frame:  19, Time:   20 ps, Rgyr: 17.1265 A
+</pre></div></div>
+</div>
+<p>After iteration, the trajectory ‘resets’ back to the first frame. Please see <a class="reference external" href="https://mdanalysis.org/UserGuide/trajectories/trajectories.html">the user guide</a> for more information.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+0
+</pre></div></div>
+</div>
+<p>You can set the timestep of the trajectory with the frame index:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">frame</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+10
+</pre></div></div>
+</div>
+<p>This persists until the timestep is next changed.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">frame</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">frame</span>
+<span class="n">time</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span>
+<span class="n">rgyr</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Frame: </span><span class="si">{:3d}</span><span class="s2">, Time: </span><span class="si">{:4.0f}</span><span class="s2"> ps, Rgyr: </span><span class="si">{:.4f}</span><span class="s2"> A&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">rgyr</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Frame:  10, Time:   11 ps, Rgyr: 16.8521 A
+</pre></div></div>
+</div>
+<p>Generally, trajectory analysis first collects frame-wise data in a list.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">rgyr</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">time</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+    <span class="n">rgyr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">protein</span><span class="o">.</span><span class="n">radius_of_gyration</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<p>This can then be converted into other data structures, such as a numpy array or a pandas DataFrame. It can be plotted (as below), or used for further analysis.</p>
+<p>The following section requires the <a class="reference external" href="https://pandas.pydata.org">pandas</a> package (installation: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">pandas</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pandas</span></code>) and <a class="reference external" href="https://matplotlib.org/">matplotlib</a> (installation: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">matplotlib</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">matplotlib</span></code>)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="n">rgyr_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rgyr</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Radius of gyration (A)&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
+<span class="n">rgyr_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Time (ps)&#39;</span>
+
+<span class="n">rgyr_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Radius of gyration (A)</th>
+    </tr>
+    <tr>
+      <th>Time (ps)</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.0</th>
+      <td>16.669018</td>
+    </tr>
+    <tr>
+      <th>2.0</th>
+      <td>16.673217</td>
+    </tr>
+    <tr>
+      <th>3.0</th>
+      <td>16.731454</td>
+    </tr>
+    <tr>
+      <th>4.0</th>
+      <td>16.722283</td>
+    </tr>
+    <tr>
+      <th>5.0</th>
+      <td>16.743961</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+
+<span class="n">rgyr_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Radius of gyration&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x11f2c1f10&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_quickstart_70_1.png" src="../_images/examples_quickstart_70_1.png" />
+</div>
+</div>
+<div class="section" id="Dynamic-selection">
+<h3>Dynamic selection<a class="headerlink" href="#Dynamic-selection" title="Permalink to this headline">¶</a></h3>
+<p>As seen above, coordinates change while iterating over the trajectory. Therefore, properties calculated from the coordinates, such as the radius of gyration, also change.</p>
+<p>Selections are often defined on static properties that do not change when moving through a trajectory. Above, the static selection is all the atoms that are in a protein. You can define the selection once and then recalculate the property of interest for each frame of the trajectory.</p>
+<p>However, some selections contain distance-dependent queries (such as <code class="docutils literal notranslate"><span class="pre">around</span></code> or <code class="docutils literal notranslate"><span class="pre">point</span></code>, <a class="reference external" href="https://www.mdanalysis.org/UserGuide/selections">see selection keywords for more details</a>). In this case, the selection should be updated for each time step using a dynamic selection by setting the keyword <code class="docutils literal notranslate"><span class="pre">updating=True</span></code>. This command gives an <code class="docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code> rather than a static <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">dynamic</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 2 resname ALA&#39;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">dynamic</span><span class="p">))</span>
+<span class="n">dynamic</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;class &#39;MDAnalysis.core.groups.UpdatingAtomGroup&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup with 54 atoms, with selection &#39;around 2 resname ALA&#39; on the entire Universe.&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">static</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;around 2 resname ALA&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">static</span><span class="p">))</span>
+<span class="n">static</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;class &#39;MDAnalysis.core.groups.AtomGroup&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup with 54 atoms&gt;
+</pre></div></div>
+</div>
+<p>When you call the next frame of the universe, the atoms in the dynamic selection are updated, whereas the atoms in the static selection remain the same.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="n">dynamic</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup with 56 atoms, with selection &#39;around 2 resname ALA&#39; on the entire Universe.&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">static</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;AtomGroup with 54 atoms&gt;
+</pre></div></div>
+</div>
+</div>
+</div>
+<div class="section" id="Writing-out-coordinates">
+<h2>Writing out coordinates<a class="headerlink" href="#Writing-out-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>MDAnalysis supports <a class="reference external" href="https://www.mdanalysis.org/UserGuide/reading_and_writing.html#output">writing data out</a> into a range of file formats, including both single frame formats (e.g. PDB, GRO) and trajectory writers (e.g. XTC, DCD, and multi-frame PDB files). The user guide has a <a class="reference external" href="https://mdanalysis.org/UserGuide/formats/index.html">complete list of formats</a>, each with their own <a class="reference external" href="https://mdanalysis.org/UserGuide/formats/format_reference.html">reference pages</a>.</p>
+<div class="section" id="Single-frame">
+<h3>Single frame<a class="headerlink" href="#Single-frame" title="Permalink to this headline">¶</a></h3>
+<p>The most straightforward way to write to a file that can only hold a single frame is to use the <code class="docutils literal notranslate"><span class="pre">write()</span></code> method of any <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>. MDAnalysis uses the file extension to determine the output file format. For instance, to only write out the <span class="math notranslate nohighlight">\(C_{\alpha}\)</span> atoms to a file in GRO format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ca</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+<span class="n">ca</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;calphas.gro&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Trajectories">
+<h3>Trajectories<a class="headerlink" href="#Trajectories" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="https://www.mdanalysis.org/UserGuide/reading_and_writing.html#output">standard way to write out trajectories</a> is to:</p>
+<ol class="arabic simple">
+<li><p>Open a trajectory <code class="docutils literal notranslate"><span class="pre">Writer</span></code> and specify how many atoms a frame will contain</p></li>
+<li><p>Iterate through the trajectory and write coordinates frame-by-frame with <code class="docutils literal notranslate"><span class="pre">Writer.write()</span></code></p></li>
+<li><p>If you do not use the context manager and the <code class="docutils literal notranslate"><span class="pre">with</span></code> statement below, you then need to close the trajectory with <code class="docutils literal notranslate"><span class="pre">.close()</span></code>.</p></li>
+</ol>
+<p>For instance, to write out the <span class="math notranslate nohighlight">\(C_{\alpha}\)</span> atoms to a trajectory in the XTC format:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ca</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">Writer</span><span class="p">(</span><span class="s1">&#39;calphas.xtc&#39;</span><span class="p">,</span> <span class="n">ca</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+        <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ca</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Analysis">
+<h2>Analysis<a class="headerlink" href="#Analysis" title="Permalink to this headline">¶</a></h2>
+<p>MDAnalysis comes with a <a class="reference external" href="https://www.mdanalysis.org/UserGuide/analysis">diverse set of analysis modules</a>, and the building blocks to <a class="reference external" href="https://mdanalysis.org/UserGuide/examples/analysis/custom_trajectory_analysis.html">implement your own</a>.</p>
+<p>The majority of these follow a common interface:</p>
+<ol class="arabic simple">
+<li><p>Initialise the analysis with a <code class="docutils literal notranslate"><span class="pre">Universe</span></code> and other required parameters.</p></li>
+<li><p>Run the analysis with <code class="docutils literal notranslate"><span class="pre">.run()</span></code>. Optional arguments are the <code class="docutils literal notranslate"><span class="pre">start</span></code> frame index, <code class="docutils literal notranslate"><span class="pre">stop</span></code> frame index, <code class="docutils literal notranslate"><span class="pre">step</span></code> size, and toggling <code class="docutils literal notranslate"><span class="pre">verbose</span></code>. The default is to run analysis on the whole trajectory.</p></li>
+<li><p>Results are stored within the class.</p></li>
+<li><p>Often, a function is available to operate on single frames.</p></li>
+</ol>
+<p><strong>However, not all analysis uses this model. It is important to check the documentation for each analysis.</strong> You can also see examples in the <a class="reference external" href="https://www.mdanalysis.org/UserGuide/examples/">Example gallery</a>.</p>
+<p>Below, simple RMSD analysis is shown. The <code class="docutils literal notranslate"><span class="pre">rms</span></code> module follows the interface above.</p>
+<div class="section" id="RMSD">
+<h3>RMSD<a class="headerlink" href="#RMSD" title="Permalink to this headline">¶</a></h3>
+<p>Not all sub-modules of MDAnalysis are imported with <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">MDAnalysis</span></code>. Most analysis modules have to be imported explicitly.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">rms</span>
+</pre></div>
+</div>
+</div>
+<p>MDAnalysis provides a <code class="docutils literal notranslate"><span class="pre">rmsd()</span></code> function for calculating the RMSD between two numpy arrays of coordinates.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bb</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;backbone&#39;</span><span class="p">)</span>
+
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># first frame</span>
+<span class="n">first</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">positions</span>
+
+<span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1">#last frame</span>
+<span class="n">last</span> <span class="o">=</span> <span class="n">bb</span><span class="o">.</span><span class="n">positions</span>
+
+<span class="n">rms</span><span class="o">.</span><span class="n">rmsd</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+6.852774844656239
+</pre></div></div>
+</div>
+<p>An <code class="docutils literal notranslate"><span class="pre">RMSD</span></code> class is also provided to operate on trajectories.</p>
+<p>Below, the <code class="docutils literal notranslate"><span class="pre">RMSD</span></code> class is created.</p>
+<ul class="simple">
+<li><p>The first argument is the <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> or <code class="docutils literal notranslate"><span class="pre">Universe</span></code> for which the RMSD is calculated.</p></li>
+<li><p>As a reference <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code> or <code class="docutils literal notranslate"><span class="pre">Universe</span></code> is not given as the second argument, the default is to align to the current frame of the first argument. Here it is set to the first frame.</p></li>
+<li><p>We choose to align the trajectory over the backbone atoms, and then compute the RMSD for the backbone atoms (<code class="docutils literal notranslate"><span class="pre">select</span></code>).</p></li>
+<li><p>Then, without re-aligning the trajectory, the RMSD is also computed (<code class="docutils literal notranslate"><span class="pre">groupselections</span></code>) for the <span class="math notranslate nohighlight">\(C_{\alpha}\)</span> atoms (<code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">CA</span></code>) and every protein atom (<code class="docutils literal notranslate"><span class="pre">protein</span></code>).</p></li>
+</ul>
+<p>The RMSD is computed when we call <code class="docutils literal notranslate"><span class="pre">.run()</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># set to first frame</span>
+<span class="n">rmsd_analysis</span> <span class="o">=</span> <span class="n">rms</span><span class="o">.</span><span class="n">RMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;backbone&#39;</span><span class="p">,</span> <span class="n">groupselections</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name CA&#39;</span><span class="p">,</span> <span class="s1">&#39;protein&#39;</span><span class="p">])</span>
+<span class="n">rmsd_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;MDAnalysis.analysis.rms.RMSD at 0x11f297210&gt;
+</pre></div></div>
+</div>
+<p>The results are stored in the <code class="docutils literal notranslate"><span class="pre">.rmsd</span></code> attribute. This is an array with the shape <code class="docutils literal notranslate"><span class="pre">(n_frames,</span> <span class="pre">2</span> <span class="pre">+</span> <span class="pre">n_selections)</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">rmsd_analysis</span><span class="o">.</span><span class="n">rmsd</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(98, 5)
+</pre></div></div>
+</div>
+<p>We can interpret this as an array with 98 rows and 5 columns. Each row is the RMSD associated with a frame in the trajectory. The columns are as follows:</p>
+<ol class="arabic simple">
+<li><p>Frame number</p></li>
+<li><p>Time (ps)</p></li>
+<li><p>RMSD (backbone)</p></li>
+<li><p>RMSD (C-alpha)</p></li>
+<li><p>RMSD (protein)</p></li>
+</ol>
+<p>We can turn this into a <code class="docutils literal notranslate"><span class="pre">pandas</span></code> DataFrame and plot the results.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="n">rmsd_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rmsd_analysis</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:],</span>
+                       <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Backbone&#39;</span><span class="p">,</span> <span class="s1">&#39;C-alphas&#39;</span><span class="p">,</span> <span class="s1">&#39;Protein&#39;</span><span class="p">],</span>
+                       <span class="n">index</span><span class="o">=</span><span class="n">rmsd_analysis</span><span class="o">.</span><span class="n">rmsd</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">rmsd_df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;Time (ps)&#39;</span>
+<span class="n">rmsd_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Backbone</th>
+      <th>C-alphas</th>
+      <th>Protein</th>
+    </tr>
+    <tr>
+      <th>Time (ps)</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1.0</th>
+      <td>6.391203e-07</td>
+      <td>4.263638e-08</td>
+      <td>5.443850e-08</td>
+    </tr>
+    <tr>
+      <th>2.0</th>
+      <td>4.636592e-01</td>
+      <td>4.235205e-01</td>
+      <td>6.934167e-01</td>
+    </tr>
+    <tr>
+      <th>3.0</th>
+      <td>6.419340e-01</td>
+      <td>5.939111e-01</td>
+      <td>8.748416e-01</td>
+    </tr>
+    <tr>
+      <th>4.0</th>
+      <td>7.743983e-01</td>
+      <td>7.371346e-01</td>
+      <td>1.052780e+00</td>
+    </tr>
+    <tr>
+      <th>5.0</th>
+      <td>8.588600e-01</td>
+      <td>8.279498e-01</td>
+      <td>1.154986e+00</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">rmsd_df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;RMSD&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[40]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x11fad1e50&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_quickstart_97_1.png" src="../_images/examples_quickstart_97_1.png" />
+</div>
+</div>
+<p>See the <a class="reference external" href="https://mdanalysis.org/UserGuide/examples/README.html">analysis documentation</a> for more information.</p>
+</div>
+</div>
+<div class="section" id="References">
+<h2>References<a class="headerlink" href="#References" title="Permalink to this headline">¶</a></h2>
+<p>When using MDAnalysis in published work, please cite both these papers:</p>
+<ul class="simple">
+<li><ol class="upperalpha simple" start="14">
+<li><p>Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations. <em>J. Comput. Chem.</em> <strong>32</strong> (2011), 2319–2327. doi:<a class="reference external" href="http://dx.doi.org/10.1002/jcc.21787">10.1002/jcc.21787</a></p></li>
+</ol>
+</li>
+<li><p>R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler, D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein. <a class="reference external" href="http://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html">MDAnalysis: A Python package for the rapid analysis of molecular dynamics simulations</a>. In S. Benthall and S. Rostrup, editors, <em>Proceedings of the 15th Python in Science Conference</em>, pages 98-105, Austin, TX, 2016. SciPy.
+doi:<a class="reference external" href="https://doi.org/10.25080/Majora-629e541a-00e">10.25080/Majora-629e541a-00e</a></p></li>
+</ul>
+<p>MDAnalysis includes many algorithms and modules that should also be individually cited. For example, if you use the <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.rms</span></code> or <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.align</span></code> modules, please cite:</p>
+<ul class="simple">
+<li><p>Douglas L. Theobald. Rapid calculation of RMSD using a quaternion-based characteristic polynomial. <em>Acta Crystallographica A</em> <strong>61</strong> (2005), 478-480.</p></li>
+<li><p>Pu Liu, Dmitris K. Agrafiotis, and Douglas L. Theobald. Fast determination of the optimal rotational matrix for macromolecular superpositions. <em>J. Comput. Chem.</em> <strong>31</strong> (2010), 1561–1563.</p></li>
+</ul>
+<p>The primary sources of each module will be in their documentation.</p>
+<div class="section" id="Automatic-citations-with-duecredit">
+<h3>Automatic citations with duecredit<a class="headerlink" href="#Automatic-citations-with-duecredit" title="Permalink to this headline">¶</a></h3>
+<p>Citations can be also be automatically generated using <code class="docutils literal notranslate"><span class="pre">duecredit</span></code>. <a class="reference external" href="https://mdanalysis.org/UserGuide/references.html">Complete installation and usage instructions can be found in the user guide</a>, but it is simple to generate a list of citations for your python script <code class="docutils literal notranslate"><span class="pre">my_script.py</span></code>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> python -m duecredit my_script.py
+</pre></div>
+</div>
+<p>This extracts citations into a hidden file, which can then be exported to different formats. For example, to display them as BibTeX, use the command:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> duecredit summary --format<span class="o">=</span>bibtex
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../faq.html" class="btn btn-neutral float-right" title="Frequently asked questions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,434 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Selection exporters &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Format reference" href="format_reference.html" />
+    <link rel="prev" title="Auxiliary files" href="auxiliary.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Selection exporters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#writing-selections">Writing selections</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-atomgroup">Single AtomGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-selections">Multiple selections</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reading-in-selections">Reading in selections</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Selection exporters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/formats/selection_exporters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="selection-exporters">
+<span id="id1"></span><h1>Selection exporters<a class="headerlink" href="#selection-exporters" title="Permalink to this headline">¶</a></h1>
+<p>Selection exporters allow you to write a selection of atoms to a file that can be read by another program.</p>
+<table class="docutils align-default" id="id2">
+<caption><span class="caption-text">Supported selection exporters</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 10%" />
+<col style="width: 35%" />
+<col style="width: 47%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Program</p></th>
+<th class="head"><p>Extension</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Class</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="http://www.charmm.org">CHARMM</a></p></td>
+<td><p>str</p></td>
+<td><p>CHARMM selection of individual atoms</p></td>
+<td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/selections/charmm.html#MDAnalysis.selections.charmm.SelectionWriter" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.selections.charmm.SelectionWriter</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://www.gromacs.org">Gromacs</a></p></td>
+<td><p>ndx</p></td>
+<td><p>GROMACS index file</p></td>
+<td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/selections/gromacs.html#MDAnalysis.selections.gromacs.SelectionWriter" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.selections.gromacs.SelectionWriter</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="http://wiki.jmol.org/">Jmol</a></p></td>
+<td><p>spt</p></td>
+<td><p>Jmol selection commands</p></td>
+<td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/selections/jmol.html#MDAnalysis.selections.jmol.SelectionWriter" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.selections.jmol.SelectionWriter</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="http://www.pymol.org">PyMol</a></p></td>
+<td><p>pml</p></td>
+<td><p>PyMOL selection string</p></td>
+<td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/selections/pymol.html#MDAnalysis.selections.pymol.SelectionWriter" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.selections.pymol.SelectionWriter</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a></p></td>
+<td><p>vmd</p></td>
+<td><p>VMD macros, available in Representations</p></td>
+<td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/selections/vmd.html#MDAnalysis.selections.vmd.SelectionWriter" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.selections.vmd.SelectionWriter</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="writing-selections">
+<h2>Writing selections<a class="headerlink" href="#writing-selections" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="single-atomgroup">
+<h3>Single AtomGroup<a class="headerlink" href="#single-atomgroup" title="Permalink to this headline">¶</a></h3>
+<p>The typical situation is that one has an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> and wants to work with the
+same selection of atoms in a different package, for example, to
+visualize the atoms in <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB</span>
+
+<span class="gp">In [3]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname ALA&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As with a normal structure file, use <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.write</span></code></a> method with the appropriate file extension.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;ala_selection.vmd&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;alanine&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>In <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a>, sourcing the file <code class="docutils literal notranslate"><span class="pre">ala_selection.vmd</span></code> (written in Tcl) defines the “macro” <code class="docutils literal notranslate"><span class="pre">alanine</span></code> that contains the atom indices to select.</p>
+<div class="highlight-tcl notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> ala_selection.vmd
+<span class="k">set</span> sel <span class="k">[</span><span class="nv">atomselect</span> top alanine<span class="k">]</span>
+</pre></div>
+</div>
+<p>and in the GUI the macro appears in the <span class="menuselection">Graphics ‣
+Representations</span> window in the list <span class="guilabel">Selections: Singlewords</span> as
+“alanine”.</p>
+<p>Names are not always required; if <code class="docutils literal notranslate"><span class="pre">name</span></code> is not passed to  <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.write</span></code></a>, MDAnalysis defaults to “mdanalysis001”, “mdanalysis002”, and so on.</p>
+</div>
+<div class="section" id="multiple-selections">
+<h3>Multiple selections<a class="headerlink" href="#multiple-selections" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.write" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.write</span></code></a> can take additional keyword arguments, including <code class="docutils literal notranslate"><span class="pre">mode</span></code>. The default is <code class="docutils literal notranslate"><span class="pre">mode='w'</span></code>, which will overwrite the provided filename. If <code class="docutils literal notranslate"><span class="pre">mode='a'</span></code>, the selection is appended to the file.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname T*&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;residues.ndx&#39;</span><span class="p">,</span>
+                                   <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TYR_THR&#39;</span><span class="p">,</span>
+                                   <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname GLY&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;residues.ndx&#39;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname PRO&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;residues.ndx&#39;</span><span class="p">,</span>
+                                    <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PRO&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Looking at this GROMACS index file, we see:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> gmx make_ndx -n residues.ndx
+
+<span class="go">Command line:</span>
+<span class="go">gmx make_ndx -n residues.ndx</span>
+
+<span class="go">Going to read 1 old index file(s)</span>
+<span class="go">Counted atom numbers up to 3341 in index file</span>
+
+<span class="go">0 TYR_THR             :   301 atoms</span>
+<span class="go">1 GLY                 :   141 atoms</span>
+<span class="go">2 PRO                 :   140 atoms</span>
+
+<span class="go">nr : group      &#39;!&#39;: not  &#39;name&#39; nr name   &#39;splitch&#39; nr    Enter: list groups</span>
+<span class="go">&#39;a&#39;: atom       &#39;&amp;&#39;: and  &#39;del&#39; nr         &#39;splitres&#39; nr   &#39;l&#39;: list residues</span>
+<span class="go">&#39;t&#39;: atom type  &#39;|&#39;: or   &#39;keep&#39; nr        &#39;splitat&#39; nr    &#39;h&#39;: help</span>
+<span class="go">&#39;r&#39;: residue              &#39;res&#39; nr         &#39;chain&#39; char</span>
+<span class="go">&quot;name&quot;: group             &#39;case&#39;: case sensitive           &#39;q&#39;: save and quit</span>
+<span class="go">&#39;ri&#39;: residue index</span>
+</pre></div>
+</div>
+<p>Alternatively, you can direcly use the selection writer itself as a <a class="reference external" href="https://docs.python.org/3/reference/datamodel.html#context-managers">context manager</a> and write each <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> inside the context. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">gromacs</span><span class="o">.</span><span class="n">SelectionWriter</span><span class="p">(</span><span class="s1">&#39;residues.ndx&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ndx</span><span class="p">:</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname T*&#39;</span><span class="p">),</span>
+              <span class="n">name</span><span class="o">=</span><span class="s1">&#39;TYR_THR&#39;</span><span class="p">)</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname GLY&#39;</span><span class="p">),</span>
+              <span class="n">name</span><span class="o">=</span><span class="s1">&#39;GLY&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And again, you can append to the file with <code class="docutils literal notranslate"><span class="pre">mode='a'</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">mda</span><span class="o">.</span><span class="n">selections</span><span class="o">.</span><span class="n">gromacs</span><span class="o">.</span><span class="n">SelectionWriter</span><span class="p">(</span><span class="s1">&#39;residues.ndx&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">ndx</span><span class="p">:</span>
+    <span class="n">ndx</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname PRO&#39;</span><span class="p">),</span>
+              <span class="n">name</span><span class="o">=</span><span class="s1">&#39;PRO&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="reading-in-selections">
+<h2>Reading in selections<a class="headerlink" href="#reading-in-selections" title="Permalink to this headline">¶</a></h2>
+<p>Currently, MDAnalysis doesn’t support reading in atom selections. However, there are other tools that can read files from other programs, such as <a class="reference external" href="https://gromacswrapper.readthedocs.io/en/latest/">GromacsWrapper</a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="format_reference.html" class="btn btn-neutral float-right" title="Format reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="auxiliary.html" class="btn btn-neutral float-left" title="Auxiliary files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

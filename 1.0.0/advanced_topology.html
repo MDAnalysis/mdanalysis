@@ -1,0 +1,347 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced topology concepts &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Example data" href="datasets.html" />
+    <link rel="prev" title="Standard residues in MDAnalysis selections" href="standard_selections.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Advanced topology concepts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-residue-or-segment-to-a-universe">Adding a Residue or Segment to a Universe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#molecules">Molecules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-custom-topologyattrs">Adding custom TopologyAttrs</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Advanced topology concepts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/advanced_topology.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-topology-concepts">
+<span id="advanced-topology"></span><h1>Advanced topology concepts<a class="headerlink" href="#advanced-topology-concepts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="adding-a-residue-or-segment-to-a-universe">
+<span id="adding-residue"></span><h2>Adding a Residue or Segment to a Universe<a class="headerlink" href="#adding-a-residue-or-segment-to-a-universe" title="Permalink to this headline">¶</a></h2>
+<p>To add a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.Residue" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Residue</span></code></a> or <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.Segment" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Segment</span></code></a> to a topology, use the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Residue" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.add_Residue</span></code></a> or <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_Segment" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.add_Segment</span></code></a> methods.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">segments</span>
+<span class="go">&lt;SegmentGroup with 1 segment&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">segids</span>
+<span class="go">array([&#39;4AKE&#39;], dtype=object)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newseg</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">add_Segment</span><span class="p">(</span><span class="n">segid</span><span class="o">=</span><span class="s1">&#39;X&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">segments</span><span class="o">.</span><span class="n">segids</span>
+<span class="go">array([&#39;4AKE&#39;, &#39;X&#39;], dtype=object)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newseg</span><span class="o">.</span><span class="n">atoms</span>
+<span class="go">&lt;AtomGroup with 0 atoms&gt;</span>
+</pre></div>
+</div>
+<p>To assign the last 100 residues from the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> to this new Segment:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="o">-</span><span class="mi">100</span><span class="p">:]</span><span class="o">.</span><span class="n">segments</span> <span class="o">=</span> <span class="n">newseg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">newseg</span><span class="o">.</span><span class="n">atoms</span>
+<span class="go">&lt;AtomGroup with 1600 atoms&gt;</span>
+</pre></div>
+</div>
+<p>Another example is <a class="reference internal" href="examples/constructing_universe.html#Adding-a-new-segment"><span class="std std-ref">creating custom segments for protein domains</span></a>.</p>
+</div>
+<div class="section" id="molecules">
+<span id="molecule"></span><h2>Molecules<a class="headerlink" href="#molecules" title="Permalink to this headline">¶</a></h2>
+<p>In MDAnalysis, a molecule is a GROMACS-only concept that is relevant in some analysis methods. A group of atoms is considered a “molecule” if it is defined by the <code class="code docutils literal notranslate"><span class="pre">[</span> <span class="pre">moleculetype</span> <span class="pre">]</span></code> section in a <a class="reference external" href="http://manual.gromacs.org/documentation/2019/reference-manual/file-formats.html#top">GROMACS topology</a>. Molecules are only defined if a Universe is created from a GROMACS topology file (i.e. with a .tpr extension). Unlike fragments, they are not accessible directly from atoms.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; tpr = mda.Universe(TPR)
+&gt;&gt;&gt; tpr.atoms.molecules
+Traceback (most recent call last):
+File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+File &quot;MDAnalysis/core/groups.py&quot;, line 2278, in __getattr__
+    cls=self.__class__.__name__, attr=attr))
+AttributeError: AtomGroup has no attribute molecules
+</pre></div>
+</div>
+<p>However, the order (<code class="code docutils literal notranslate"><span class="pre">molnum</span></code>) and name (<code class="code docutils literal notranslate"><span class="pre">moltype</span></code>) of each molecule is accessible as <a class="reference internal" href="topology_system.html#topology-attributes"><span class="std std-ref">topology attributes</span></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tpr</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">molnums</span>
+<span class="go">array([    0,     0,     0, ..., 11086, 11087, 11088])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tpr</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">moltypes</span>
+<span class="go">array([&#39;AKeco&#39;, &#39;AKeco&#39;, &#39;AKeco&#39;, ..., &#39;NA+&#39;, &#39;NA+&#39;, &#39;NA+&#39;], dtype=object)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="adding-custom-topologyattrs">
+<span id="custom-topologyattrs"></span><h2>Adding custom TopologyAttrs<a class="headerlink" href="#adding-custom-topologyattrs" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="datasets.html" class="btn btn-neutral float-right" title="Example data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="standard_selections.html" class="btn btn-neutral float-left" title="Standard residues in MDAnalysis selections" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

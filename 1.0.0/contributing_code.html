@@ -1,0 +1,1018 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Contributing to the main codebase &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing to the user guide" href="contributing_docs.html" />
+    <link rel="prev" title="Contributing to MDAnalysis" href="contributing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contributing to the main codebase</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-code">Working with the code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#forking">Forking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-development-environment">Creating a development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#with-conda">With conda</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#with-pip-and-virtualenv">With pip and virtualenv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#on-a-mac">On a Mac</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#building-mdanalysis">Building MDAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#branches-in-mdanalysis">Branches in MDAnalysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-branch">Creating a branch</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-new-code">Writing new code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#code-formatting-in-python">Code formatting in Python</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modules-and-dependencies">Modules and dependencies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#developing-in-cython">Developing in Cython</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#testing-your-code">Testing your code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documenting-your-code">Documenting your code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-your-code-to-mdanalysis">Adding your code to MDAnalysis</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#committing-your-code">Committing your code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#pushing-your-code-to-github">Pushing your code to GitHub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rebasing-your-code">Rebasing your code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#creating-a-pull-request">Creating a pull request</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#working-with-the-code-documentation">Working with the code documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#building-the-documentation">Building the documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#where-to-write-docstrings">Where to write docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#guidelines-for-writing-docstrings">Guidelines for writing docstrings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#documenting-changes">Documenting changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-docs-for-abstract-base-classes">Writing docs for abstract base classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-your-documentation-to-mdanalysis">Adding your documentation to MDAnalysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewing-the-documentation-interactively">Viewing the documentation interactively</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Contributing to the main codebase</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/contributing_code.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="contributing-to-the-main-codebase">
+<span id="working-with-mdanalysis-code"></span><h1>Contributing to the main codebase<a class="headerlink" href="#contributing-to-the-main-codebase" title="Permalink to this headline">¶</a></h1>
+<p>If you would like to contribute, start by searching through the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues">issues</a> and <span class="xref std std-ref">pull requests</span> to see whether someone else has raised a similar idea or question.</p>
+<p>If you don’t see your idea or problem listed, do one of the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If your contribution is <strong>minor</strong>, such as a typo fix, go ahead and fix it by following the guide below and <a class="reference internal" href="#adding-code-to-mda"><span class="std std-ref">open a pull request</span></a>.</p></li>
+<li><p>If your contribution is <strong>major</strong>, such as a bug fix or a new feature, start by opening an issue first. That way, other people can weigh in on the discussion before you do any work. If you also create a pull request, you should link it to the issue by including the issue number in the pull request’s description.</p></li>
+</ul>
+</div></blockquote>
+<p>Here is an overview of the development workflow for code or inline code documentation, as expanded on throughout the rest of the page.</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference internal" href="#forking-code-repo"><span class="std std-ref">Fork the MDAnalysis repository</span></a> from the mdanalysis account into your own account</p></li>
+<li><p><a class="reference internal" href="#create-virtual-environment"><span class="std std-ref">Set up an isolated virtual environment</span></a> for code development</p></li>
+<li><p><a class="reference internal" href="#build-mdanalysis-develop"><span class="std std-ref">Build development versions</span></a> of MDAnalysis and MDAnalysisTests on your computer into the virtual environment</p></li>
+<li><p><a class="reference internal" href="#create-code-branch"><span class="std std-ref">Create a new branch off the develop branch</span></a></p></li>
+<li><p><span class="xref std std-ref">Add your new feature or bug fix</span> or <a class="reference internal" href="#guidelines-for-docstrings"><span class="std std-ref">add your new documentation</span></a></p></li>
+<li><p><a class="reference internal" href="testing.html#testing"><span class="std std-ref">Add and run tests</span></a> (if adding to the code)</p></li>
+<li><p><a class="reference internal" href="#building-code-documentation"><span class="std std-ref">Build and view the documentation</span></a> (if adding to the docs)</p></li>
+<li><p><a class="reference internal" href="#adding-code-to-mda"><span class="std std-ref">Commit and push your changes, and open a pull request.</span></a></p></li>
+</ol>
+</div></blockquote>
+<div class="section" id="working-with-the-code">
+<h2>Working with the code<a class="headerlink" href="#working-with-the-code" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="forking">
+<span id="forking-code-repo"></span><h3>Forking<a class="headerlink" href="#forking" title="Permalink to this headline">¶</a></h3>
+<p>You will need your <a class="reference external" href="https://help.github.com/en/github/getting-started-with-github/fork-a-repo">own fork</a> to work on the code. Go to the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis">MDAnalysis project page</a> and hit the <span class="guilabel">Fork</span> button. You will
+want to <a class="reference external" href="https://help.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository">clone your fork</a> to your machine:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/your-user-name/mdanalysis.git
+<span class="nb">cd</span> mdanalysis
+git remote add upstream https://github.com/MDAnalysis/mdanalysis
+</pre></div>
+</div>
+<p>This creates the directory <cite>mdanalysis</cite> and connects your repository to
+the upstream (main project) MDAnalysis repository.</p>
+</div>
+<div class="section" id="creating-a-development-environment">
+<span id="create-virtual-environment"></span><h3>Creating a development environment<a class="headerlink" href="#creating-a-development-environment" title="Permalink to this headline">¶</a></h3>
+<p>To change code and test changes, you’ll need to build both <strong>MDAnalysis</strong> and <strong>MDAnalysisTests</strong>
+from source. This requires a Python environment. We highly recommend that you use
+virtual environments. This allows you to have multiple experimental development versions
+of MDAnalysis that do not interfere with each other, or your own stable version.
+Since MDAnalysis is split into the actual package and a test suite, you need to install
+both modules in development mode.</p>
+<p>You can do this either with <a class="reference internal" href="#dev-with-conda"><span class="std std-ref">conda</span></a> or <a class="reference internal" href="#dev-with-pip"><span class="std std-ref">pip</span></a>.</p>
+<div class="section" id="with-conda">
+<span id="dev-with-conda"></span><h4>With conda<a class="headerlink" href="#with-conda" title="Permalink to this headline">¶</a></h4>
+<p>Install either <a class="reference external" href="https://www.anaconda.com/download/">Anaconda</a>
+or <a class="reference external" href="https://conda.io/miniconda.html">miniconda</a>.
+Make sure your conda is up to date:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda update conda
+</pre></div>
+</div>
+</div></blockquote>
+<p>Create a new environment with <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">create</span></code>. This will allow you to change code in
+an isolated environment without touching your base Python installation, and without
+touching existing environments that may have stable versions of MDAnalysis. :</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda create --name mdanalysis-dev
+</pre></div>
+</div>
+</div></blockquote>
+<p>Activate the environment to build MDAnalysis into it:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda activate mdanalysis-dev
+</pre></div>
+</div>
+</div></blockquote>
+<p>To view your environments:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda info -e
+</pre></div>
+</div>
+</div></blockquote>
+<p>To list the packages installed in your current environment:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda list
+</pre></div>
+</div>
+</div></blockquote>
+<p>To return to your root environment:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda deactivate
+</pre></div>
+</div>
+</div></blockquote>
+<p>See the full conda docs <a class="reference external" href="http://conda.pydata.org/docs">here</a>.</p>
+</div>
+<div class="section" id="with-pip-and-virtualenv">
+<span id="dev-with-pip"></span><h4>With pip and virtualenv<a class="headerlink" href="#with-pip-and-virtualenv" title="Permalink to this headline">¶</a></h4>
+<p>Like conda, virtual environments managed with <a class="reference external" href="https://virtualenv.pypa.io/en/latest/">virtualenv</a> allow you to use different versions of Python and Python packages for your different project. Unlike conda, virtualenv is not a general-purpose package manager. Instead, it leverages what is available on your system, and lets you install Python packages using pip.</p>
+<p>To use virtual environments you have to install the virtualenv package first. This can be done with either pip or the package manager of your system:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install virtualenv
+<span class="c1"># or on ubuntu</span>
+sudo apt install virtualenv
+<span class="c1"># or on fedora</span>
+sudo dnf install python-virtualenv
+</pre></div>
+</div>
+</div></blockquote>
+<p>Virtual environments can be created for each project directory.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> my-project/
+virtualenv my-project-env
+</pre></div>
+</div>
+</div></blockquote>
+<p>This will create a new folder <code class="docutils literal notranslate"><span class="pre">my-project-env</span></code>. This folder contains the virtual environment and all packages you have installed in it. To activate it in the current terminal run:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> myproject-env/bin/activate
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now you can install packages via pip without affecting your global environment. The packages that you install when the environment is activated will be available in terminal sessions that have the environment activated. You can deactivate the virtual environment by running:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>deactivate
+</pre></div>
+</div>
+</div></blockquote>
+<p>The <a class="reference external" href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper package</a> makes virtual environments easier to use. It provides some very useful features:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>it organises the virtual environment into a single user-defined directory, so they are not scattered throughout the file system;</p></li>
+<li><p>it defines commands for the easy creation, deletion, and copying of virtual environments;</p></li>
+<li><p>it defines a command to activate a virtual environment using its name;</p></li>
+<li><p>all commands defined by <code class="docutils literal notranslate"><span class="pre">virtualenvwrapper</span></code> have tab-completion for virtual environment names.</p></li>
+</ul>
+</div></blockquote>
+<p>You first need to install <code class="docutils literal notranslate"><span class="pre">virtualenvwrapper</span></code> <em>outside</em> of a virtual environment:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install virtualenvwrapper
+<span class="c1"># or on ubuntu</span>
+sudo apt install virtualenvwrapper
+<span class="c1"># or on fedora</span>
+sudo dnf install python-virtualenvwrapper
+</pre></div>
+</div>
+</div></blockquote>
+<p>Then, you need to load it into your terminal session. Add the following lines in <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code>. They will be executed every time you open a new terminal session:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Decide where to store the virtual environments</span>
+<span class="nb">export</span> <span class="nv">WORKON_HOME</span><span class="o">=</span>~/Envs
+<span class="c1"># Make sure the directory exists</span>
+mkdir -p <span class="si">${</span><span class="nv">WORKON_HOME</span><span class="si">}</span>
+<span class="c1"># Load virtualenvwrapper</span>
+<span class="nb">source</span> /usr/local/bin/virtualenvwrapper.sh
+</pre></div>
+</div>
+</div></blockquote>
+<p>Open a new terminal or run <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">~/.bashrc</span></code> to update your session. You can now create a virtual environment with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkvirtualenv my-project
+</pre></div>
+</div>
+</div></blockquote>
+<p>Regardless of your current working directory, the environment is created in <code class="docutils literal notranslate"><span class="pre">~/Envs/</span></code> and it is now loaded in our terminal session.</p>
+<p>You can load your virtual environments by running <code class="docutils literal notranslate"><span class="pre">workon</span> <span class="pre">my-project</span></code>, and exit them by running <code class="docutils literal notranslate"><span class="pre">deactivate</span></code>.</p>
+<p>Virtual environments, especially with <code class="docutils literal notranslate"><span class="pre">virtualenvwrapper</span></code>, can do much more. For example, you can create virtual environments with different python interpreters with the <code class="docutils literal notranslate"><span class="pre">-p</span></code> flag. The Hitchhiker’s Guide to Python has a good <a class="reference external" href="https://docs.python-guide.org/dev/virtualenvs/">tutorial</a> that gives a more in-depth explanation of virtual environments. The <a class="reference external" href="https://virtualenvwrapper.readthedocs.io/en/latest/">virtualenvwrapper documentation</a> is also a good resource to read.</p>
+</div>
+<div class="section" id="on-a-mac">
+<h4>On a Mac<a class="headerlink" href="#on-a-mac" title="Permalink to this headline">¶</a></h4>
+<p>One more step is often required on macOS, because of the default number of files that a process can open simultaneously is quite low (256). To increase the number of files that can be accessed, run the following command:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">ulimit</span> -n <span class="m">4096</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This sets the number of files to 4096. However, this command only applies to your currently open terminal session. To keep this high limit, add the above line to your <code class="docutils literal notranslate"><span class="pre">~/.profile</span></code>.</p>
+</div>
+</div>
+<div class="section" id="building-mdanalysis">
+<span id="build-mdanalysis-develop"></span><h3>Building MDAnalysis<a class="headerlink" href="#building-mdanalysis" title="Permalink to this headline">¶</a></h3>
+<p>Make sure that you have <a class="reference internal" href="#forking-code-repo"><span class="std std-ref">cloned the repository</span></a>
+and activated your virtual environment. First we need to install dependencies:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if using conda</span>
+conda install -c biobuilds -c conda-forge <span class="se">\</span>
+    pip cython numpy mmtf-python mock six biopython <span class="se">\</span>
+    networkx cython matplotlib scipy griddataformats <span class="se">\</span>
+    hypothesis gsd codecov <span class="s2">&quot;seaborn&gt;=0.7.0,&lt;=0.9&quot;</span> <span class="se">\</span>
+    <span class="nv">clustalw</span><span class="o">=</span><span class="m">2</span>.1 netcdf4 scikit-learn <span class="s2">&quot;joblib&gt;=0.12&quot;</span><span class="se">\</span>
+    psutil pytest
+
+<span class="c1"># if using conda with python 3.7 or 3.8, also run</span>
+conda install -c conda-forge parmed
+
+<span class="c1"># if using conda with other versions of python, also run</span>
+pip install parmed
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># if using pip and virtualenv</span>
+pip install cython numpy mmtf-python mock six biopython <span class="se">\</span>
+    networkx cython matplotlib scipy griddataformats <span class="se">\</span>
+    hypothesis gsd codecov <span class="s2">&quot;seaborn&gt;=0.7.0,&lt;=0.9&quot;</span> <span class="se">\</span>
+    netcdf4 scikit-learn <span class="s2">&quot;joblib&gt;=0.12&quot;</span> parmed psutil pytest
+</pre></div>
+</div>
+</div></blockquote>
+<p>Ensure that you have a working C/C++ compiler (e.g. gcc or clang). You will also need Python ≥ 3.4. We will now install MDAnalysis.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># go to the mdanalysis source directory</span>
+<span class="nb">cd</span> mdanalysis/
+
+<span class="c1"># Build and install the MDAnalysis package</span>
+<span class="nb">cd</span> package/
+pip install -e .
+
+<span class="c1"># Build and install the test suite</span>
+<span class="nb">cd</span> ../testsuite/
+pip install -e .
+</pre></div>
+</div>
+</div></blockquote>
+<p>At this point you should be able to import MDAnalysis from your locally built version. If you are running the development version, this is visible from the version number ending in “-dev0”. For example:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python  <span class="c1"># start an interpreter</span>
+&gt;&gt;&gt; import MDAnalysis as mda
+&gt;&gt;&gt; mda.__version__
+<span class="s1">&#39;0.20.2-dev0&#39;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If your version number does not end in “-dev0”, you may be on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch. In your <code class="docutils literal notranslate"><span class="pre">mdanalysis/</span></code> directory, switch to the <code class="docutils literal notranslate"><span class="pre">develop</span></code> branch:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git checkout develop
+Switched to branch <span class="s1">&#39;develop&#39;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="branches-in-mdanalysis">
+<span id="id1"></span><h3>Branches in MDAnalysis<a class="headerlink" href="#branches-in-mdanalysis" title="Permalink to this headline">¶</a></h3>
+<p>There are two important branches in MDAnalysis:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">master</span></code>: for production-ready code</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">develop</span></code>: for development code</p></li>
+</ul>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">master</span></code> branch is only for stable, production-ready code. Development code should <em>never</em> be committed to this branch. Typically, code is only committed by the release manager, when a release is ready.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">develop</span></code> branch can be considered an “integration” branch for including your code into the next release. Only working, tested code should be committed to this branch. Code contributions (“features”) should branch off <code class="docutils literal notranslate"><span class="pre">develop</span></code> rather than <code class="docutils literal notranslate"><span class="pre">master</span></code>.</p>
+<div class="section" id="creating-a-branch">
+<span id="create-code-branch"></span><h4>Creating a branch<a class="headerlink" href="#creating-a-branch" title="Permalink to this headline">¶</a></h4>
+<p>The develop branch should only contain approved, tested code, so create a
+feature branch for making your changes. For example, to create a branch called
+<code class="docutils literal notranslate"><span class="pre">shiny-new-feature</span></code> from <code class="docutils literal notranslate"><span class="pre">develop</span></code>:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git checkout -b shiny-new-feature develop
+</pre></div>
+</div>
+</div></blockquote>
+<p>This changes your working directory to the <code class="docutils literal notranslate"><span class="pre">shiny-new-feature</span></code> branch.  Keep any
+changes in this branch specific to one bug or feature so it is clear
+what the branch brings to MDAnalysis. You can have many branches with different names
+and switch in between them using the <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">my-branch-name</span></code> command.</p>
+<p>There are several special branch names that you should not use for your feature branches:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">master</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">develop</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">release-*</span></code></p></li>
+</ul>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">release</span></code> branches are used to <a class="reference internal" href="preparing_releases_and_hotfixes.html#preparing-release"><span class="std std-ref">prepare a new production release</span></a> and should be handled by the release manager only.</p>
+</div>
+</div>
+<div class="section" id="writing-new-code">
+<span id="id2"></span><h3>Writing new code<a class="headerlink" href="#writing-new-code" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="code-formatting-in-python">
+<h4>Code formatting in Python<a class="headerlink" href="#code-formatting-in-python" title="Permalink to this headline">¶</a></h4>
+<p>MDAnalysis is a project with a long history and many contributors; it hasn’t used a consistent coding style. Since version 0.11.0, we are trying to update all the code to conform with <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a>. Our strategy is to update the style every time we touch an old function and thus switch to <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a> continuously.</p>
+<dl>
+<dt><strong>Important requirements (from PEP8):</strong></dt><dd><ul>
+<li><p>keep line length to <strong>79 characters or less</strong>; break long lines sensibly</p></li>
+<li><p>indent with <strong>spaces</strong> and use <strong>4 spaces per level</strong></p></li>
+<li><p>naming:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>classes: <cite>CapitalClasses</cite> (i.e. capitalized nouns without spaces)</p></li>
+<li><p>methods and functions: <cite>underscore_methods</cite> (lower case, with underscores for spaces)</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</dd>
+</dl>
+<p>We recommend that you use a Python Integrated Development Environment (IDE) (<a class="reference external" href="https://www.jetbrains.com/pycharm/">PyCharm</a> and others) or external tools like <a class="reference external" href="http://flake8.readthedocs.org/en/latest/">flake8</a> for code linting. For integration of external tools with emacs and vim, check out <a class="reference external" href="https://github.com/jorgenschaefer/elpy">elpy</a> (emacs) and <a class="reference external" href="https://github.com/klen/python-mode">python-mode</a> (vim).</p>
+<p>To apply the code formatting in an automated way, you can also use code formatters. External tools include <a class="reference external" href="https://github.com/hhatto/autopep8">autopep8</a> and <a class="reference external" href="https://github.com/google/yapf">yapf</a>. Most IDEs either have their own code formatter or will work with one of the above through plugins.</p>
+</div>
+<div class="section" id="modules-and-dependencies">
+<h4>Modules and dependencies<a class="headerlink" href="#modules-and-dependencies" title="Permalink to this headline">¶</a></h4>
+<p>MDAnalysis strives to keep dependencies small and lightweight. Code outside the <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code> and <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.visualization</span></code> modules should only rely on the <a class="reference internal" href="module_imports.html#core-module-dependencies"><span class="std std-ref">core dependencies</span></a>, which are always installed. Analysis and visualization modules can use any <a class="reference internal" href="module_imports.html#optional-modules"><span class="std std-ref">any package, but the package is treated as optional</span></a>.</p>
+<p>Imports in the code should follow the <a class="reference internal" href="module_imports.html#general-rules-for-importing"><span class="std std-ref">General rules for importing</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <a class="reference internal" href="module_imports.html#module-imports"><span class="std std-ref">Module imports in MDAnalysis</span></a> for more information.</p>
+</div>
+</div>
+<div class="section" id="developing-in-cython">
+<h4>Developing in Cython<a class="headerlink" href="#developing-in-cython" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> script first looks for the <cite>.c</cite> files included in the standard MDAnalysis distribution. These are not in the GitHub repository, so <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> will use Cython to compile extensions. <cite>.pyx</cite> source files are used instead of <cite>.c</cite> files. From there, <cite>.pyx</cite> files are converted to <cite>.c</cite> files if they are newer than the already present <cite>.c</cite> files or if the <code class="docutils literal notranslate"><span class="pre">--force</span></code> flag is set (i.e. <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">build</span> <span class="pre">--force</span></code>). End users (or developers) should not trigger the <cite>.pyx</cite> to <cite>.c</cite> conversion, since <cite>.c</cite> files delivered with source packages are always up-to-date. However, developers who work on the <cite>.pyx</cite> files will automatically trigger the conversion since <cite>.c</cite> files will then be outdated.</p>
+<p>Place all source files for compiled shared object files into the same directory as the final shared object file.</p>
+<p><cite>.pyx</cite> files and cython-generated <cite>.c</cite> files should be in the same directory as the <cite>.so</cite> files. External dependent C/C++/Fortran libraries should be in dedicated <code class="docutils literal notranslate"><span class="pre">src/</span></code> and <code class="docutils literal notranslate"><span class="pre">include/</span></code> folders. See the following tree as an example:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MDAnalysis</span>
+    <span class="o">|--</span><span class="n">lib</span>
+    <span class="o">|</span>   <span class="o">|--</span> <span class="n">_distances</span><span class="o">.</span><span class="n">so</span>
+    <span class="o">|</span>   <span class="o">|--</span> <span class="n">distances</span><span class="o">.</span><span class="n">pyx</span>
+    <span class="o">|</span>   <span class="o">|--</span> <span class="n">distances</span><span class="o">.</span><span class="n">c</span>
+    <span class="o">|--</span> <span class="n">coordinates</span>
+        <span class="o">|--</span> <span class="n">_dcdmodule</span><span class="o">.</span><span class="n">so</span>
+        <span class="o">|--</span> <span class="n">src</span>
+            <span class="o">|--</span> <span class="n">dcd</span><span class="o">.</span><span class="n">c</span>
+        <span class="o">|--</span> <span class="n">include</span>
+            <span class="o">|--</span> <span class="n">dcd</span><span class="o">.</span><span class="n">h</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="testing-your-code">
+<span id="test-code"></span><h3>Testing your code<a class="headerlink" href="#testing-your-code" title="Permalink to this headline">¶</a></h3>
+<p>MDAnalysis takes testing seriously. All code added to MDAnalysis should have tests to ensure that it works as expected; we aim for 90% coverage. See <a class="reference internal" href="testing.html#testing"><span class="std std-ref">Tests in MDAnalysis</span></a> for more on <a class="reference internal" href="testing.html#write-new-tests"><span class="std std-ref">writing</span></a>, <a class="reference internal" href="testing.html#run-test-suite"><span class="std std-ref">running</span></a>, and interpreting tests.</p>
+</div>
+<div class="section" id="documenting-your-code">
+<h3>Documenting your code<a class="headerlink" href="#documenting-your-code" title="Permalink to this headline">¶</a></h3>
+<p>Changes to the code should be reflected in the ongoing <code class="docutils literal notranslate"><span class="pre">CHANGELOG</span></code>. Add an entry here to document your fix, enhancement, or change. In addition, add your name to the author list. If you are addressing an issue, make sure to include the issue number.</p>
+</div>
+<div class="section" id="adding-your-code-to-mdanalysis">
+<span id="adding-code-to-mda"></span><h3>Adding your code to MDAnalysis<a class="headerlink" href="#adding-your-code-to-mdanalysis" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="committing-your-code">
+<h4>Committing your code<a class="headerlink" href="#committing-your-code" title="Permalink to this headline">¶</a></h4>
+<p>When you are happy with a set of changes and <a class="reference internal" href="#test-code"><span class="std std-ref">all the tests pass</span></a>, it is time to commit. All changes in one revision should have a common theme. If you implemented two rather different things (say, one bug fix and one new feature), then split them into two commits with different messages.</p>
+<p>Once you’ve made changes to files in your local repository, you can see them by typing:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git status
+</pre></div>
+</div>
+</div></blockquote>
+<p>Tell git to track files by typing:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">file</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="n">be</span><span class="o">-</span><span class="n">added</span><span class="o">.</span><span class="n">py</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Doing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code> again should give something like:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># On branch shiny-new-feature</span>
+<span class="c1">#</span>
+<span class="c1">#       modified:   /relative/path/to/file-you-added.py</span>
+<span class="c1">#</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Then commit with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git commit -m
+</pre></div>
+</div>
+</div></blockquote>
+<p>This opens up a message editor.</p>
+<p><em>Always</em> add a descriptive comment for your commit message (feel free to be verbose!):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>use a short (&lt;50 characters) subject line that summarizes the change</p></li>
+<li><p>leave a blank line</p></li>
+<li><p>optionally, add additional more verbose descriptions; paragraphs or bullet lists (with <code class="docutils literal notranslate"><span class="pre">-</span></code> or <code class="docutils literal notranslate"><span class="pre">*</span></code>) are good</p></li>
+<li><p>manually break lines at 80 characters</p></li>
+<li><p>manually indent bullet lists</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <a class="reference external" href="http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html">Tim Pope’s A Note About Git Commit Messages</a> for a rationale for these rules.</p>
+</div>
+</div>
+<div class="section" id="pushing-your-code-to-github">
+<h4>Pushing your code to GitHub<a class="headerlink" href="#pushing-your-code-to-github" title="Permalink to this headline">¶</a></h4>
+<p>When you want your changes to appear publicly on your GitHub page, push your forked feature branch’s commits:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git push origin shiny-new-feature
+</pre></div>
+</div>
+</div></blockquote>
+<p>Here <cite>origin</cite> is the default name given to your remote repository on GitHub. You can see the remote repositories:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git remote -v
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you added the upstream repository as described above you will see something like:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>origin  git@github.com:your-username/mdanalysis.git <span class="o">(</span>fetch<span class="o">)</span>
+origin  git@github.com:your-username/mdanalysis.git <span class="o">(</span>push<span class="o">)</span>
+upstream        git@github.com:MDAnalysis/mdanalysis.git <span class="o">(</span>fetch<span class="o">)</span>
+upstream        git@github.com:MDAnalysis/mdanalysis.git <span class="o">(</span>push<span class="o">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now your code is on GitHub, but it is not yet a part of the MDAnalysis project. For that to happen, a pull request needs to be submitted on GitHub.</p>
+</div>
+<div class="section" id="rebasing-your-code">
+<span id="rebase-code"></span><h4>Rebasing your code<a class="headerlink" href="#rebasing-your-code" title="Permalink to this headline">¶</a></h4>
+<p>Often the upstream MDAnalysis develop branch will be updated while you are working on your own code.
+You will then need to update your own branch with the new code to avoid merge conflicts.
+You need to first retrieve it and then <a class="reference external" href="https://www.atlassian.com/git/tutorials/rewriting-history/git-rebase">rebase</a>
+your branch so that your changes apply to the new code:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git fetch upstream
+git rebase upstream/develop
+</pre></div>
+</div>
+</div></blockquote>
+<p>This will replay your commits on top of the latest development code from MDAnalysis.  If this
+leads to merge conflicts, you must resolve these before submitting your pull
+request.  If you have uncommitted changes, you will need to <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">stash</span></code> them
+prior to updating.  This will effectively store your changes and they can be
+reapplied after updating with <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">stash</span> <span class="pre">apply</span></code>.</p>
+<p>Once rebased, push your changes:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git push -f origin shiny-new-feature
+</pre></div>
+</div>
+</div></blockquote>
+<p>and <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/pulls">create a pull request</a>.</p>
+</div>
+<div class="section" id="creating-a-pull-request">
+<span id="id3"></span><h4>Creating a pull request<a class="headerlink" href="#creating-a-pull-request" title="Permalink to this headline">¶</a></h4>
+<p>The typical approach to adding your code to MDAnalysis is to make a <a class="reference external" href="https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests">pull request</a> on GitHub. Please make sure that your contribution <a class="reference internal" href="#test-code"><span class="std std-ref">passes all tests</span></a>. If there are test failures, you will need to address them before we can review your contribution and eventually merge them. If you have problems with making the tests pass, please ask for help! (You can do this in the comments of the pull request).</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>Navigate to your repository on GitHub</p></li>
+<li><p>Click on the <span class="guilabel">Pull Request</span> button</p></li>
+<li><p>You can then click on <span class="guilabel">Commits</span> and <span class="guilabel">Files Changed</span> to make sure everything looks okay one last time</p></li>
+<li><p>Write a description of your changes and follow the PR checklist</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>check that docs are updated</p></li>
+<li><p>check that tests run</p></li>
+<li><p>check that you’ve updated CHANGELOG</p></li>
+<li><p>reference the issue that you address, if any</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Click <span class="guilabel">Send Pull Request</span>.</p></li>
+</ol>
+</div></blockquote>
+<p>Your pull request is then sent to the repository maintainers. After this, the following happens:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>A <a class="reference internal" href="testing.html#continuous-integration"><span class="std std-ref">suite of tests are run on your code</span></a> with the tools <a class="reference internal" href="testing.html#travis"><span class="std std-ref">Travis</span></a>, <a class="reference internal" href="testing.html#appveyor"><span class="std std-ref">Appveyor</span></a> and <a class="reference internal" href="testing.html#codecov"><span class="std std-ref">Codecov</span></a>. If they fail, please fix your pull request by pushing updates to it.</p></li>
+<li><p>Developers will ask questions and comment in the pull request. You may be asked to make changes.</p></li>
+<li><p>When everything looks good, a core developer will merge your code into the <code class="docutils literal notranslate"><span class="pre">develop</span></code> branch of MDAnalysis. Your code will be in the next release.</p></li>
+</ol>
+</div></blockquote>
+<p>If you need to make changes to your code, you can do so on your local repository as you did before. Committing and pushing the changes will  update your pull request and restart the automated tests.</p>
+</div>
+</div>
+</div>
+<div class="section" id="working-with-the-code-documentation">
+<span id="working-with-mdanalysis-docs"></span><h2>Working with the code documentation<a class="headerlink" href="#working-with-the-code-documentation" title="Permalink to this headline">¶</a></h2>
+<p>MDAnalysis maintains two kinds of documentation:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><a class="reference external" href="https://www.mdanalysis.org/UserGuide/">This user guide</a>: a map of how MDAnalysis works, combined with tutorial-like overviews of specific topics (such as the analyses)</p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/">The documentation generated from the code itself</a>. Largely built from code docstrings, these are meant to provide a clear explanation of the usage of individual classes and functions. They often include technical or historical information such as in which version the function was added, or deprecation notices.</p></li>
+</ol>
+</div></blockquote>
+<p>This guide is for the documentation generated from the code. If you are looking to contribute to the user guide, please see <a class="reference internal" href="contributing_docs.html#working-with-user-guide"><span class="std std-ref">Contributing to the user guide</span></a>.</p>
+<p>MDAnalysis has a lot of documentation in the Python doc strings. The docstrings follow the <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard">Numpy Docstring Standard</a>, which is used widely
+in the Scientific Python community. They are nice to read as normal text and are converted by sphinx to normal ReST through <a class="reference external" href="http://sphinxcontrib-napoleon.readthedocs.org/en/latest/index.html">napoleon</a>.</p>
+<p>This standard specifies the format of
+the different sections of the docstring. See <a class="reference external" href="https://github.com/numpy/numpy/blob/master/doc/HOWTO_DOCUMENT.rst.txt">this document</a>
+for a detailed explanation, or look at some of the existing functions to
+extend it in a similar manner.</p>
+<p>Note that each page of the  <a class="reference external" href="https://www.mdanalysis.org/docs/">online documentation</a> has a link to the <em>Source</em> of the page. You can look at it in order to find out how a particular page has been written in reST and copy the approach for your own documentation.</p>
+<div class="section" id="building-the-documentation">
+<span id="building-code-documentation"></span><h3>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h3>
+<p>The online documentation is generated from the pages in <code class="docutils literal notranslate"><span class="pre">mdanalysis/package/doc/sphinx/source/documentation_pages</span></code>. The documentation for the current release are hosted at www.mdanalysis.org/docs, while the development version is at www.mdanalysis.org/mdanalysis/.</p>
+<p>In order to build the documentation, you must first <a class="reference internal" href="#forking-code-repo"><span class="std std-ref">clone the main MDAnalysis repo</span></a>. <a class="reference internal" href="#create-virtual-environment"><span class="std std-ref">Set up a virtual environment</span></a> in the same way as you would for the code (you can use the same environment as you do for the code). You will need to install several packages for the docs.</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install sphinx sphinx-sitemap sphinx_rtd_theme
+</pre></div>
+</div>
+</div></blockquote>
+<p>In addition, build the development version of MDAnalysis (if you haven’t done this already):</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install -e .
+</pre></div>
+</div>
+</div></blockquote>
+<p>Then, generate the docs with:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py build_sphinx -E
+</pre></div>
+</div>
+</div></blockquote>
+<p>This generates and updates the files in <code class="docutils literal notranslate"><span class="pre">doc/html</span></code>. If the above command fails with an <code class="docutils literal notranslate"><span class="pre">ImportError</span></code>, run</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python setup.py build_ext --inplace
+</pre></div>
+</div>
+</div></blockquote>
+<p>and retry.</p>
+<p>You will then be able to open the home page, <code class="docutils literal notranslate"><span class="pre">doc/html/index.html</span></code>, and look through the docs. In particular, have a look at any pages that you tinkered with. It is typical to go through multiple cycles of fix, rebuild the docs, check and fix again.</p>
+<p>If rebuilding the documentation becomes tedious after a while, install the <a class="reference internal" href="contributing_docs.html#autobuild-sphinx"><span class="std std-ref">sphinx-autobuild</span></a> extension.</p>
+</div>
+<div class="section" id="where-to-write-docstrings">
+<h3>Where to write docstrings<a class="headerlink" href="#where-to-write-docstrings" title="Permalink to this headline">¶</a></h3>
+<p>When writing Python code, you should always add a docstring to each public (visible to users):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>module</p></li>
+<li><p>function</p></li>
+<li><p>class</p></li>
+<li><p>method</p></li>
+</ul>
+</div></blockquote>
+<p>When you add a new module, you should include a docstring with a short sentence describing what the module does, and/or a long document including examples and references.</p>
+</div>
+<div class="section" id="guidelines-for-writing-docstrings">
+<span id="guidelines-for-docstrings"></span><h3>Guidelines for writing docstrings<a class="headerlink" href="#guidelines-for-writing-docstrings" title="Permalink to this headline">¶</a></h3>
+<p>A typical function docstring looks like the following:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Summary line.</span>
+
+<span class="sd">    Extended description of function.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arg1 : int</span>
+<span class="sd">        Description of `arg1`</span>
+<span class="sd">    arg2 : str</span>
+<span class="sd">        Description of `arg2`</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool</span>
+<span class="sd">        Description of return value</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div></blockquote>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The <a class="reference external" href="https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_numpy.html">napoleon documentation</a> has further breakdowns of docstrings at the module, function, class, method, variable, and other levels.</p>
+</div>
+<ul>
+<li><p>When writing reST markup, make sure that there are <strong>at least two blank lines above</strong> the reST after a numpy heading. Otherwise, the Sphinx/napoleon parser does not render correctly.</p>
+<blockquote>
+<div><div class="highlight-RST notranslate"><div class="highlight"><pre><span></span>some more docs bla bla
+
+<span class="gh">Notes</span>
+<span class="gh">-----</span>
+THE NEXT TWO BLANK LINES ARE IMPORTANT.
+
+
+<span class="p">..</span> <span class="ow">versionadded</span><span class="p">::</span> 0.16.0
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>Do not use “Example” or “Examples” as a normal section heading (e.g. in module level docs): <em>only</em> use it as a <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html#docstring-standard">NumPy doc Section</a>. It will not be rendered properly, and will mess up sectioning.</p></li>
+<li><p>When writing multiple common names in one line, Sphinx sometimes tries to reference the first name. In that case, you have to split the names across multiple lines. See below for an example:</p>
+<blockquote>
+<div><div class="highlight-RST notranslate"><div class="highlight"><pre><span></span><span class="gh">Parameters</span>
+<span class="gh">----------</span>
+n_atoms, n_residues : int
+    numbers of atoms/residues
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+<li><p>We are using MathJax with sphinx so you can write LaTeX code in math tags.</p>
+<blockquote>
+<div><p>In blocks, the code below</p>
+<blockquote>
+<div><div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>#&lt;SPACE if there is text above equation&gt;
+<span class="p">..</span> <span class="ow">math</span><span class="p">::</span>
+    e^{i\pi} = -1
+</pre></div>
+</div>
+</div></blockquote>
+<p>renders like so:</p>
+<blockquote>
+<div><div class="math notranslate nohighlight">
+\[e^{i\pi} = -1\]</div>
+</div></blockquote>
+<p>Math directives can also be used inline.</p>
+<blockquote>
+<div><div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>We make use of the identity <span class="na">:math:</span><span class="nv">`e^{i\pi} = -1`</span> to show...
+</pre></div>
+</div>
+</div></blockquote>
+<p>Note that you should <em>always</em> make doc strings with math code <strong>raw</strong> python strings <strong>by prefixing them with the letter “r”</strong>, or else you will get problems with backslashes in unexpected places.</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Apply a rotation matrix *R* to the selection&#39;s coordinates.</span>
+
+<span class="sd">    :math:`\mathsf{R}` is a 3x3 orthogonal matrix that transforms a vector</span>
+<span class="sd">    :math:`\mathbf{x} \rightarrow \mathbf{x}&#39;`:</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">    \mathbf{x}&#39; = \mathsf{R}\mathbf{x}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>See <a class="reference external" href="http://stackoverflow.com/questions/16468397/mathjax-expression-in-sphinx-python-not-rendering-correclty&quot;">Stackoverflow: Mathjax expression in sphinx python not rendering correctly</a> for further discussion.</p>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="documenting-changes">
+<h3>Documenting changes<a class="headerlink" href="#documenting-changes" title="Permalink to this headline">¶</a></h3>
+<p>We use reST constructs to annotate <em>additions</em>, <em>changes</em>, and <em>deprecations</em> to the code so that users can quickly learn from the documentation in which version of MDAnalysis the feature is available.</p>
+<p>A <strong>newly added module/class/method/attribute/function</strong> gets a <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-versionadded">versionadded</a>  directive entry in its primary doc section, as below.</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">versionadded</span><span class="p">::</span> X.Y.Z
+</pre></div>
+</div>
+<p>For parameters and attributes, we typically mention the new entity in a <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-versionchanged">versionchanged</a> section of the function or class (although a <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-versionadded">versionadded</a> would also be acceptable).</p>
+<p><strong>Changes</strong> are indicated with a <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-versionchanged">versionchanged</a> directive</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">versionchanged</span><span class="p">::</span> X.Y.Z
+   Description of the change. Can contain multiple descriptions.
+   Don&#39;t assume that you get nice line breaks or formatting, write your text in
+   full sentences that can be read as a paragraph.
+</pre></div>
+</div>
+<p><strong>Deprecations</strong> (features that are not any longer recommended for use and that will be removed in future releases) are indicated by the <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-deprecated">deprecated</a> directive:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">deprecated</span><span class="p">::</span> X.Y.Z
+   Describe (1) alternatives (what should users rather use) and
+   <span class="m">(2)</span> in which future release the feature will be removed.
+</pre></div>
+</div>
+<p>When a feature is removed, we remove the deprecation notice and add a <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/directives.html#directive-versionchanged">versionchanged</a> to the docs of the enclosing scope. For example, when a parameter of a function is removed, we update the docs of the function. Function/class removal are indicated in the module docs. When we remove a whole module, we typically indicate it in the top-level reST docs that contain the TOC tree that originally included the module.</p>
+</div>
+<div class="section" id="writing-docs-for-abstract-base-classes">
+<h3>Writing docs for abstract base classes<a class="headerlink" href="#writing-docs-for-abstract-base-classes" title="Permalink to this headline">¶</a></h3>
+<p>MDAnalysis contains a number of abstract base classes, such as <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code></a>. Developers who define new base classes, or modify existing ones, should follow these rules:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <em>class docstring</em> needs to contain a list of methods that can be overwritten by inheritance from the base class. Distinguish and document methods as required or optional.</p></li>
+<li><p>The class docstring should contain a minimal example for how to derive this class. This demonstrates best practices, documents ideas and intentions behind the specific choices in the API, helps to promote a unified code base, and is useful for developers as a concise summary of the API.</p></li>
+<li><p>A more detailed description of methods should come in the <em>method docstring</em>, with a note specifying if the method is required or optional to overwrite.</p></li>
+</ul>
+</div></blockquote>
+<p>See the documentation of <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/analysis/base.html#MDAnalysis.analysis.base.AnalysisBase" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.base.AnalysisBase</span></code></a> for an example of this documentation.</p>
+</div>
+<div class="section" id="adding-your-documentation-to-mdanalysis">
+<h3>Adding your documentation to MDAnalysis<a class="headerlink" href="#adding-your-documentation-to-mdanalysis" title="Permalink to this headline">¶</a></h3>
+<p>As with any contribution to an MDAnalysis repository, <a class="reference internal" href="#adding-code-to-mda"><span class="std std-ref">commit and push</span></a> your documentation contributions to GitHub. If <em>any fixes in the restructured text</em> are needed, <em>put them in their own commit</em> (and do not include any generated files under <cite>docs/html</cite>). Try to keep all reST fixes in the one commit. <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span> <span class="pre">FILE</span></code> and <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">--amend</span></code> is your friend when piling more and more small reST fixes onto a single “fixed reST” commit.</p>
+<p>We recommend <a class="reference internal" href="#building-code-documentation"><span class="std std-ref">building the docs locally first</span></a> to preview your changes. Then, <a class="reference internal" href="#id3"><span class="std std-ref">create a pull request</span></a>. All the tests in the MDAnalysis test suite will run, but only one checks that the documents compile correctly.</p>
+</div>
+<div class="section" id="viewing-the-documentation-interactively">
+<h3>Viewing the documentation interactively<a class="headerlink" href="#viewing-the-documentation-interactively" title="Permalink to this headline">¶</a></h3>
+<p>In the Python interpreter one can simply say:</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="n">help</span><span class="p">(</span><span class="n">MDAnalysis</span><span class="p">)</span>
+<span class="n">help</span><span class="p">(</span><span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>In <code class="docutils literal notranslate"><span class="pre">ipython</span></code> one can use the question mark operator:</p>
+<blockquote>
+<div><div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span>MDAnalysis.Universe<span class="o">?</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contributing_docs.html" class="btn btn-neutral float-right" title="Contributing to the user guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="contributing.html" class="btn btn-neutral float-left" title="Contributing to MDAnalysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

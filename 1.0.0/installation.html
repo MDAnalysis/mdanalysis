@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installation &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick start guide" href="examples/quickstart.html" />
+    <link rel="prev" title="Welcome to MDAnalysis User Guide’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#conda">conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pip">pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-versions">Development versions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#testing">Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#additional-datasets">Additional datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<p>The latest versions of <strong>MDAnalysis</strong> can be installed using <cite>conda</cite> or <cite>pip</cite>.
+Currently, the conda releases only support serial calculations.
+If you plan to use the parallel OpenMP algorithms, you need to
+install MDAnalysis with pip and have a working OpenMP installation.</p>
+<p>MDAnalysis has a separate <a class="reference internal" href="datasets.html#mdanalysistests"><span class="std std-ref">test suite</span></a> <strong>MDAnalysisTests</strong> that is required to run the test cases and examples.
+The test files change less frequently, take up around 90 MB of space,
+and are not needed for daily use of MDAnalysis. However, they are often used in examples,
+including many in this User Guide. If you are not interested in developing
+MDAnalysis or using the example files, you most likely don’t need the tests. If you want to
+run examples in the User Guide, install the tests.
+The tests are distributed separately from the main package.</p>
+<div class="section" id="conda">
+<h2>conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h2>
+<p>To install the latest stable version of MDAnalysis via <code class="docutils literal notranslate"><span class="pre">conda</span></code>, use the following command. This installs all dependencies needed for full analysis functionality (excluding external programs such as <a class="reference external" href="http://www.holeprogram.org">HOLE</a>):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge mdanalysis
+</pre></div>
+</div>
+<p>To upgrade:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda update mdanalysis
+</pre></div>
+</div>
+<p>To install the tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge MDAnalysisTests
+</pre></div>
+</div>
+</div>
+<div class="section" id="pip">
+<h2>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h2>
+<p>The following command will install or upgrade the latest stable version of MDAnalysis via <code class="docutils literal notranslate"><span class="pre">pip</span></code>, with core dependencies. This means that some packages required by specific analysis modules will not be installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
+</pre></div>
+</div>
+<p>If you need to install a fully-featured MDAnalysis, add the <code class="docutils literal notranslate"><span class="pre">analysis</span></code> tag. As with <code class="docutils literal notranslate"><span class="pre">conda</span></code>, this will not install external programs such as <a class="reference external" href="http://www.holeprogram.org">HOLE</a>.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
+</pre></div>
+</div>
+<p>To install/upgrade tests:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysisTests
+</pre></div>
+</div>
+</div>
+<div class="section" id="development-versions">
+<h2>Development versions<a class="headerlink" href="#development-versions" title="Permalink to this headline">¶</a></h2>
+<p>To install development versions of MDAnalysis, you can compile it from source.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/MDAnalysis/mdanalysis
+<span class="nb">cd</span> mdanalysis
+pip install -e .
+</pre></div>
+</div>
+<p>In order to install from source, you will need <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and <code class="docutils literal notranslate"><span class="pre">cython</span></code>. See <a class="reference internal" href="contributing_code.html#create-virtual-environment"><span class="std std-ref">Creating a development environment</span></a> for instructions on how to create a full development environment.</p>
+<div class="section" id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h3>
+<p>The tests rely on the <cite>pytest</cite> and <cite>numpy</cite> packages, which must also be installed. Run tests with:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest --disable-pytest-warnings --pyargs MDAnalysisTests
+</pre></div>
+</div>
+<p>All tests should pass (i.e. no FAIL, ERROR); SKIPPED or XFAIL are ok. If anything fails or gives an error,
+<a class="reference external" href="http://users.mdanalysis.org/">ask on the user mailing list</a> or <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues">raise an issue</a>.</p>
+<p>Testing MDAnalysis can take a while, as there are quite a few tests.
+The plugin <a class="reference external" href="https://github.com/pytest-dev/pytest-xdist">pytest-xdist</a> can be used to run tests in parallel.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install pytest-xdist
+pytest --disable-pytest-warnings --pyargs MDAnalysisTests --numprocesses <span class="m">4</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="additional-datasets">
+<h2>Additional datasets<a class="headerlink" href="#additional-datasets" title="Permalink to this headline">¶</a></h2>
+<p><span class="xref std std-ref">MDAnalysisData is an additional package</span> with datasets that can be used in example tutorials. You can install it with <code class="docutils literal notranslate"><span class="pre">conda</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># conda</span>
+conda install -c conda-forge mdanalysisdata
+<span class="c1"># pip</span>
+pip install --upgrade MDAnalysisData
+</pre></div>
+</div>
+<p>This installation does not download all the datasets; instead, the datasets are cached when they are first downloaded using a Python command.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples/quickstart.html" class="btn btn-neutral float-right" title="Quick start guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to MDAnalysis User Guide’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

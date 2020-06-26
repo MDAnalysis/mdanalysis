@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Atom selection language &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The topology system" href="topology_system.html" />
+    <link rel="prev" title="Groups of atoms" href="groups_of_atoms.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Atom selection language</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#selection-keywords">Selection Keywords</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-selections">Simple selections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#boolean">Boolean</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geometric">Geometric</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#similarity-and-connectivity">Similarity and connectivity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#index">Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preexisting-selections-and-modifiers">Preexisting selections and modifiers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dynamic-selections">Dynamic selections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ordered-selections">Ordered selections</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Atom selection language</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/selections.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="atom-selection-language">
+<span id="selections"></span><h1>Atom selection language<a class="headerlink" href="#atom-selection-language" title="Permalink to this headline">¶</a></h1>
+<p>AtomGroups can be created by selecting atoms using the MDAnalysis atom selection language:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+
+<span class="gp">In [3]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="n">ala</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname ALA&#39;</span><span class="p">)</span>
+
+<span class="gp">In [5]: </span><span class="n">ala</span>
+<span class="gh">Out[5]: </span><span class="go">&lt;AtomGroup with 190 atoms&gt;</span>
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> method of a
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> returns an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>. These two methods have different behaviour: while <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.select_atoms</span></code></a> operates on all the atoms in the universe, <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.select_atoms</span></code></a> only operates on the atoms within the original AtomGroup. A single selection phrase always returns an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> with atoms sorted according to their
+index in the topology. This is to ensure that there are not any duplicates,
+which can happen with complicated selections. When order matters, <a class="reference internal" href="#ordered-selections"><span class="std std-ref">you can pass in multiple phrases</span></a>.</p>
+<p>This page documents selection keywords and their arguments. <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> also accepts keywords that modify the behaviour of the selection string and the resulting <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> (documented further down this page). For example, you can:</p>
+<ul class="simple">
+<li><p>Pass in <a class="reference internal" href="#preexisting-selections"><span class="std std-ref">named AtomGroups as arguments</span></a>:</p></li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [6]: </span><span class="n">sph_6</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;sphzone 6 protein&quot;</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;around 3 group sph_6&quot;</span><span class="p">,</span> <span class="n">sph_6</span><span class="o">=</span><span class="n">sph_6</span><span class="p">)</span>
+<span class="gh">Out[7]: </span><span class="go">&lt;AtomGroup with 81 atoms&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Turn off <a class="reference internal" href="#geometric"><span class="std std-ref">periodic boundary conditions for geometric keywords</span></a> with <code class="docutils literal notranslate"><span class="pre">periodic=False</span></code>:</p></li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [8]: </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;around 6 protein&quot;</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gh">Out[8]: </span><span class="go">&lt;AtomGroup with 0 atoms&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Create <a class="reference internal" href="#dynamic-selections"><span class="std std-ref">dynamic UpdatingAtomGroups</span></a> with <code class="docutils literal notranslate"><span class="pre">updating=True</span></code>:</p></li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gh">Out[9]: </span><span class="go">&lt;AtomGroup with 917 atoms, with selection &#39;prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5&#39; on the entire Universe.&gt;</span>
+</pre></div>
+</div>
+<p>It is possible to export selections for external software
+packages with the help of <a class="reference internal" href="formats/selection_exporters.html#selection-exporters"><span class="std std-ref">Selection exporters</span></a>.</p>
+<div class="section" id="selection-keywords">
+<h2>Selection Keywords<a class="headerlink" href="#selection-keywords" title="Permalink to this headline">¶</a></h2>
+<p>The following describes all selection keywords currently understood by the
+selection parser. The following applies to all selections:</p>
+<ul class="simple">
+<li><p>Keywords are case sensitive.</p></li>
+<li><p>Atoms are automatically sequentially ordered in a resulting selection (see
+notes below on <a class="reference internal" href="#ordered-selections"><span class="std std-ref">Ordered selections</span></a> for how to circumvent this if
+necessary).</p></li>
+<li><p>Selections are parsed left to right and parentheses can be used for
+grouping. For example:</p></li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [10]: </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;segid DMPC and not (name H* or type OW)&quot;</span><span class="p">)</span>
+<span class="gh">Out[10]: </span><span class="go">&lt;AtomGroup with 0 atoms&gt;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Currently, wildcards are implemented as a form of pattern
+matching: Using the <code class="docutils literal notranslate"><span class="pre">*</span></code> character in a string such as <code class="docutils literal notranslate"><span class="pre">GL*</span></code> selects
+all strings that start with “GL” such as “GLU”, “GLY”, “GLX29”, “GLN”. Only terminal wildcards (i.e. matching the last part of a name) are currently supported.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Up until version 1.0.0, MDAnalysis will ignore everything after the <code class="docutils literal notranslate"><span class="pre">*</span></code>. <code class="docutils literal notranslate"><span class="pre">u.select_atoms(&quot;resname</span> <span class="pre">*E&quot;)</span></code> will not select atoms whose residue name ends in E, but instead select every atom.</p>
+</div>
+<div class="section" id="simple-selections">
+<h3>Simple selections<a class="headerlink" href="#simple-selections" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>protein</dt><dd><p>Selects atoms that belong to a <a class="reference internal" href="standard_selections.html#protein-selection"><span class="std std-ref">hard-coded set of standard protein residue names</span></a>.</p>
+</dd>
+<dt>backbone</dt><dd><p>Selects the backbone atoms of a hard-coded set of protein residues. These atoms have the names: CA, C, O, N.</p>
+</dd>
+<dt>nucleic</dt><dd><p>Selects atoms that belong to a <a class="reference internal" href="standard_selections.html#nucleic-selection"><span class="std std-ref">hard-coded set of standard nucleic residue names</span></a>.</p>
+</dd>
+<dt>nucleicbackbone</dt><dd><p>Selects the backbone atoms of a hard-coded set of nucleic residues. These atoms have the names: P, O5’, C5’, C3’, O3’</p>
+</dd>
+<dt>nucleicbase</dt><dd><p>Selects the atoms in <a class="reference internal" href="standard_selections.html#nucleobase-selection"><span class="std std-ref">nucleobases</span></a>.</p>
+</dd>
+<dt>nucleicsugar</dt><dd><p>Selects the atoms in nucleic sugars. These have the names: C1’, C2’, C3’, C4’, O2’, O4’, O3’</p>
+</dd>
+<dt>segid <em>seg-name</em></dt><dd><p>select by segid (as given in the topology), e.g. <code class="docutils literal notranslate"><span class="pre">segid</span> <span class="pre">4AKE</span></code> or
+<code class="docutils literal notranslate"><span class="pre">segid</span> <span class="pre">DMPC</span></code></p>
+</dd>
+<dt>resid <em>residue-number-range</em></dt><dd><p><code class="docutils literal notranslate"><span class="pre">resid</span></code> can take a single residue number or a range of numbers, followed
+by insertion codes. A range consists of two selections separated by a colon
+(inclusive) such as <code class="docutils literal notranslate"><span class="pre">resid</span> <span class="pre">1A:1C</span></code>. This selects all residues with <code class="docutils literal notranslate"><span class="pre">resid==1</span></code>
+and <code class="docutils literal notranslate"><span class="pre">icode</span> <span class="pre">in</span> <span class="pre">('A',</span> <span class="pre">'B',</span> <span class="pre">'C')</span></code>.
+A residue number (“resid”) and icode is taken directly from the
+topology. Unlike <code class="docutils literal notranslate"><span class="pre">resnum</span></code>, <code class="docutils literal notranslate"><span class="pre">resid</span></code> is sensitive to insertion codes.</p>
+</dd>
+<dt>resnum <em>residue-number-range</em></dt><dd><p><code class="docutils literal notranslate"><span class="pre">resnum</span></code> can take a single residue number or a range of numbers. A range
+consists of two numbers separated by a colon (inclusive) such
+as <code class="docutils literal notranslate"><span class="pre">resnum</span> <span class="pre">1:5</span></code>. A residue number (“resnum”) is taken directly from the
+topology. Unlike <code class="docutils literal notranslate"><span class="pre">resid</span></code>, <code class="docutils literal notranslate"><span class="pre">resnum</span></code> is insensitive to insertion codes.</p>
+</dd>
+<dt>resname <em>residue-name</em></dt><dd><p>select by residue name, e.g. <code class="docutils literal notranslate"><span class="pre">resname</span> <span class="pre">LYS</span></code></p>
+</dd>
+<dt>name <em>atom-name</em></dt><dd><p>select by atom name (as given in the topology). Often, this is force
+field dependent. Example: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">CA</span></code> (for C-alpha atoms) or <code class="docutils literal notranslate"><span class="pre">name</span>
+<span class="pre">OW</span></code> (for SPC water oxygen)</p>
+</dd>
+<dt>type <em>atom-type</em></dt><dd><p>select by atom type; this is either a string or a number and depends on
+the force field; it is read from the topology file (e.g. the CHARMM PSF
+file contains numeric atom types). This uses the <code class="docutils literal notranslate"><span class="pre">Atom.type</span></code> <a class="reference internal" href="topology_system.html#topology-attributes"><span class="std std-ref">topology attribute</span></a>.</p>
+</dd>
+<dt>atom <em>seg-name residue-number atom-name</em></dt><dd><p>a selector for a single atom consisting of segid resid atomname,
+e.g. <code class="docutils literal notranslate"><span class="pre">DMPC</span> <span class="pre">1</span> <span class="pre">C2</span></code> selects the C2 carbon of the first residue of the
+DMPC segment</p>
+</dd>
+<dt>altloc <em>alternative-location</em></dt><dd><p>a selection for atoms where alternative locations are available, which is
+often the case with high-resolution crystal structures
+e.g. <code class="code docutils literal notranslate"><span class="pre">resid</span> <span class="pre">4</span> <span class="pre">and</span> <span class="pre">resname</span> <span class="pre">ALA</span> <span class="pre">and</span> <span class="pre">altloc</span> <span class="pre">B</span></code> selects only the atoms of ALA-4
+that have an altloc B record.</p>
+</dd>
+<dt>moltype <em>molecule-type</em></dt><dd><p>select by the <code class="docutils literal notranslate"><span class="pre">moltype</span></code> <a class="reference internal" href="topology_system.html#topology-attributes"><span class="std std-ref">topology attribute</span></a>, e.g. <code class="docutils literal notranslate"><span class="pre">moltype</span> <span class="pre">Protein_A</span></code>. At the moment, only the TPR format defines the <code class="docutils literal notranslate"><span class="pre">moltype</span></code>.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="boolean">
+<h3>Boolean<a class="headerlink" href="#boolean" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>not</dt><dd><p>all atoms not in the selection, e.g. <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">protein</span></code> selects all atoms
+that aren’t part of a protein</p>
+</dd>
+<dt>and</dt><dd><p>the intersection of two selections, i.e. the boolean and. e.g. <code class="docutils literal notranslate"><span class="pre">protein</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">resname</span> <span class="pre">ALA</span></code> selects all atoms that belong to a protein but are not in an alanine residue</p>
+</dd>
+<dt>or</dt><dd><p>the union of two selections, i.e. the boolean or. e.g. <code class="docutils literal notranslate"><span class="pre">protein</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">(resname</span> <span class="pre">ALA</span> <span class="pre">or</span> <span class="pre">resname</span> <span class="pre">LYS)</span></code> selects all atoms that belong to a protein, but are not in a lysine or alanine residue</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="geometric">
+<span id="id1"></span><h3>Geometric<a class="headerlink" href="#geometric" title="Permalink to this headline">¶</a></h3>
+<p>The geometric keywords below all implement periodic boundary conditions by default when valid cell dimensions are accessible from the Universe. This can be turned off by passing in the keyword <code class="docutils literal notranslate"><span class="pre">periodic=False</span></code>:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [11]: </span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;around 6 protein&quot;</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gh">Out[11]: </span><span class="go">&lt;AtomGroup with 0 atoms&gt;</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>around <em>distance selection</em></dt><dd><p>selects all atoms a certain cutoff away from another selection,
+e.g. <code class="docutils literal notranslate"><span class="pre">around</span> <span class="pre">3.5</span> <span class="pre">protein</span></code> selects all atoms not belonging to protein
+that are within 3.5 Angstroms from the protein</p>
+</dd>
+<dt>sphzone <em>externalRadius selection</em></dt><dd><p>selects all atoms within a spherical zone centered in the center of
+geometry (COG) of a given selection, e.g. <code class="docutils literal notranslate"><span class="pre">sphzone</span> <span class="pre">6.0</span> <span class="pre">(</span> <span class="pre">protein</span> <span class="pre">and</span> <span class="pre">(</span>
+<span class="pre">resid</span> <span class="pre">130</span> <span class="pre">or</span> <span class="pre">resid</span> <span class="pre">80</span> <span class="pre">)</span> <span class="pre">)</span></code> selects the center of geometry of protein,
+resid 130, resid 80 and creates a sphere of radius 6.0 around the COG.</p>
+</dd>
+<dt>sphlayer <em>innerRadius externalRadius selection</em></dt><dd><p>selects all atoms within a spherical layer centered in the center of
+geometry (COG) of a given selection, e.g., <code class="docutils literal notranslate"><span class="pre">sphlayer</span> <span class="pre">2.4</span> <span class="pre">6.0</span> <span class="pre">(</span> <span class="pre">protein</span>
+<span class="pre">and</span> <span class="pre">(</span> <span class="pre">resid</span> <span class="pre">130</span> <span class="pre">or</span> <span class="pre">resid</span> <span class="pre">80</span> <span class="pre">)</span> <span class="pre">)</span></code> selects the center of geometry of
+protein, resid 130, resid 80 and creates a spherical layer of inner
+radius 2.4 and external radius 6.0 around the COG.</p>
+</dd>
+<dt>cyzone <em>externalRadius zMax zMin selection</em></dt><dd><p>selects all atoms within a cylindric zone centered in the center of
+geometry (COG) of a given selection, e.g. <code class="docutils literal notranslate"><span class="pre">cyzone</span> <span class="pre">15</span> <span class="pre">4</span> <span class="pre">-8</span> <span class="pre">protein</span> <span class="pre">and</span>
+<span class="pre">resid</span> <span class="pre">42</span></code> selects the center of geometry of protein and resid 42, and
+creates a cylinder of external radius 15 centered on the COG. In z, the
+cylinder extends from 4 above the COG to 8 below. Positive values for
+<em>zMin</em>, or negative ones for <em>zMax</em>, are allowed.</p>
+</dd>
+<dt>cylayer <em>innerRadius externalRadius zMax zMin selection</em></dt><dd><p>selects all atoms within a cylindric layer centered in the center of
+geometry (COG) of a given selection, e.g. <code class="docutils literal notranslate"><span class="pre">cylayer</span> <span class="pre">5</span> <span class="pre">10</span> <span class="pre">10</span> <span class="pre">-8</span>
+<span class="pre">protein</span></code> selects the center of geometry of protein, and creates a
+cylindrical layer of inner radius 5, external radius 10 centered on the
+COG. In z, the cylinder extends from 10 above the COG to 8
+below. Positive values for <em>zMin</em>, or negative ones for <em>zMax</em>, are
+allowed.</p>
+</dd>
+<dt>point <em>x y z distance</em></dt><dd><p>selects all atoms within a cutoff of a point in space, make sure
+coordinate is separated by spaces, e.g. <code class="docutils literal notranslate"><span class="pre">point</span> <span class="pre">5.0</span> <span class="pre">5.0</span> <span class="pre">5.0</span> <span class="pre">3.5</span></code>
+selects all atoms within 3.5 Angstroms of the coordinate (5.0, 5.0,
+5.0)</p>
+</dd>
+<dt>prop <em>[abs] property operator value</em></dt><dd><p>selects atoms based on position, using <em>property</em> <strong>x</strong>, <strong>y</strong>, or
+<strong>z</strong> coordinate. Supports the <strong>abs</strong> keyword (for absolute value) and
+the following <em>operators</em>: <strong>&lt;, &gt;, &lt;=, &gt;=, ==, !=</strong>. For example,
+<code class="docutils literal notranslate"><span class="pre">prop</span> <span class="pre">z</span> <span class="pre">&gt;=</span> <span class="pre">5.0</span></code> selects all atoms with z coordinate greater than 5.0;
+<code class="docutils literal notranslate"><span class="pre">prop</span> <span class="pre">abs</span> <span class="pre">z</span> <span class="pre">&lt;=</span> <span class="pre">5.0</span></code> selects all atoms within -5.0 &lt;= z &lt;= 5.0.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="similarity-and-connectivity">
+<h3>Similarity and connectivity<a class="headerlink" href="#similarity-and-connectivity" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>same <em>subkeyword</em> as <em>selection</em></dt><dd><p>selects all atoms that have the same <em>subkeyword</em> value as any atom in
+<em>selection</em>. Allowed <em>subkeyword</em> values are the atom properties: <code class="docutils literal notranslate"><span class="pre">name,</span>
+<span class="pre">type,</span> <span class="pre">resname,</span> <span class="pre">resid,</span> <span class="pre">resnum,</span> <span class="pre">segid,</span> <span class="pre">mass,</span> <span class="pre">charge,</span> <span class="pre">radius,</span> <span class="pre">bfactor</span></code>, the
+groups an atom belong to: <code class="docutils literal notranslate"><span class="pre">residue,</span> <span class="pre">segment,</span> <span class="pre">fragment</span></code>, and the atom
+coordinates <code class="docutils literal notranslate"><span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">z</span></code>. (Note that <code class="docutils literal notranslate"><span class="pre">bfactor</span></code> currently only works for MMTF formats.) e.g. <code class="docutils literal notranslate"><span class="pre">same</span> <span class="pre">charge</span> <span class="pre">as</span> <span class="pre">protein</span></code> selects all atoms that have the same charge as any atom in protein.</p>
+</dd>
+<dt>byres <em>selection</em></dt><dd><p>selects all atoms that are in the same segment and residue as selection,
+e.g. specify the subselection after the byres keyword.  <code class="docutils literal notranslate"><span class="pre">byres</span></code> is a
+shortcut to <code class="docutils literal notranslate"><span class="pre">same</span> <span class="pre">residue</span> <span class="pre">as</span></code></p>
+</dd>
+<dt>bonded <em>selection</em></dt><dd><p>selects all atoms that are bonded to selection
+e.g.: <code class="docutils literal notranslate"><span class="pre">name</span> <span class="pre">H</span> <span class="pre">and</span> <span class="pre">bonded</span> <span class="pre">name</span> <span class="pre">N</span></code> selects only hydrogens bonded to
+nitrogens</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="index">
+<h3>Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h3>
+<dl>
+<dt>index <em>index-range</em></dt><dd><p>selects all atoms within a range of (0-based) inclusive indices,
+e.g. <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">0</span></code> selects the first atom in the universe; <code class="docutils literal notranslate"><span class="pre">index</span> <span class="pre">5:10</span></code>
+selects the 6th through 11th atoms, inclusive. This uses the <code class="docutils literal notranslate"><span class="pre">Atom.index</span></code> <a class="reference internal" href="topology_system.html#topology-attributes"><span class="std std-ref">topology attribute</span></a>.</p>
+</dd>
+<dt>bynum <em>number-range</em></dt><dd><p>selects all atoms within a range of (1-based) inclusive indices,
+e.g. <code class="docutils literal notranslate"><span class="pre">bynum</span> <span class="pre">1</span></code> selects the first atom in the universe; <code class="docutils literal notranslate"><span class="pre">bynum</span> <span class="pre">5:10</span></code>
+selects 5th through 10th atoms, inclusive.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>These are <strong>not</strong> the same as the 1-indexed <code class="docutils literal notranslate"><span class="pre">Atom.id</span></code> <a class="reference internal" href="topology_system.html#topology-attributes"><span class="std std-ref">topology attribute</span></a>. <code class="docutils literal notranslate"><span class="pre">bynum</span></code> simply adds 1 to the 0-indexed <code class="docutils literal notranslate"><span class="pre">Atom.index</span></code>.</p>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="preexisting-selections-and-modifiers">
+<span id="preexisting-selections"></span><h3>Preexisting selections and modifiers<a class="headerlink" href="#preexisting-selections-and-modifiers" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>group <cite>group-name</cite></dt><dd><p>selects the atoms in the <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> passed to the function as an
+argument named <cite>group-name</cite>. Only the atoms common to <cite>group-name</cite> and the
+instance <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> was called
+from will be considered, unless <code class="docutils literal notranslate"><span class="pre">group</span></code> is preceded by the <code class="docutils literal notranslate"><span class="pre">global</span></code>
+keyword. <cite>group-name</cite> will be included in the parsing just by comparison of
+atom indices. This means that it is up to the user to make sure the
+<cite>group-name</cite> group was defined in an appropriate <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>.</p>
+</dd>
+<dt>global <em>selection</em></dt><dd><p>by default, when issuing
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> from an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, selections and subselections
+are returned intersected with the atoms of that instance.  Prefixing a
+selection term with <code class="docutils literal notranslate"><span class="pre">global</span></code> causes its selection to be returned in its
+entirety.  As an example, the <code class="docutils literal notranslate"><span class="pre">global</span></code> keyword allows for
+<code class="docutils literal notranslate"><span class="pre">lipids.select_atoms(&quot;around</span> <span class="pre">10</span> <span class="pre">global</span> <span class="pre">protein&quot;)</span></code> — where <code class="docutils literal notranslate"><span class="pre">lipids</span></code> is
+a group that does not contain any proteins. Were <code class="docutils literal notranslate"><span class="pre">global</span></code> absent, the
+result would be an empty selection since the <code class="docutils literal notranslate"><span class="pre">protein</span></code> subselection would
+itself be empty.  When calling
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> from a
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>, <code class="docutils literal notranslate"><span class="pre">global</span></code> is ignored.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="dynamic-selections">
+<span id="id2"></span><h2>Dynamic selections<a class="headerlink" href="#dynamic-selections" title="Permalink to this headline">¶</a></h2>
+<p>By default <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> returns an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, in which the list of atoms is
+constant across trajectory frame changes. If
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> is invoked with named
+argument <code class="docutils literal notranslate"><span class="pre">updating</span></code> set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> instance will be returned
+instead.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="go"># A dynamic selection of corner atoms:</span>
+<span class="gp">In [12]: </span><span class="n">ag_updating</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="gp">In [13]: </span><span class="n">ag_updating</span>
+<span class="gh">Out[13]: </span><span class="go">&lt;AtomGroup with 917 atoms, with selection &#39;prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5&#39; on the entire Universe.&gt;</span>
+</pre></div>
+</div>
+<p>It behaves just like an <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
+object, with the difference that the selection expressions are re-evaluated
+every time the trajectory frame changes (this happens lazily, only when the
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> object is accessed so that
+there is no redundant updating going on):</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="gh">Out[14]: </span><span class="go">&lt; Timestep 1 with unit cell dimensions [ 0.  0.  0. 90. 90. 90.] &gt;</span>
+
+<span class="gp">In [15]: </span><span class="n">ag_updating</span>
+<span class="gh">Out[15]: </span><span class="go">&lt;AtomGroup with 923 atoms, with selection &#39;prop x &lt; 5 and prop y &lt; 5 and prop z &lt; 5&#39; on the entire Universe.&gt;</span>
+</pre></div>
+</div>
+<p>Using the <code class="docutils literal notranslate"><span class="pre">group</span></code> selection keyword for
+<a class="reference internal" href="#preexisting-selections"><span class="std std-ref">Preexisting selections and modifiers</span></a>, one can
+make updating selections depend on
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, or even other
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a>, instances.
+Likewise, making an updating selection from an already updating group will
+cause later updates to also reflect the updating of the base group:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="n">chained_ag_updating</span> <span class="o">=</span> <span class="n">ag_updating</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1:1000&quot;</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="gp">In [17]: </span><span class="n">chained_ag_updating</span>
+<span class="gh">Out[17]: </span><span class="go">&lt;AtomGroup with 923 atoms, with selection &#39;resid 1:1000&#39; on another AtomGroup.&gt;</span>
+
+<span class="gp">In [18]: </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="gh">Out[18]: </span><span class="go">&lt; Timestep 2 with unit cell dimensions [ 0.  0.  0. 90. 90. 90.] &gt;</span>
+
+<span class="gp">In [19]: </span><span class="n">chained_ag_updating</span>
+<span class="gh">Out[19]: </span><span class="go">&lt;AtomGroup with 921 atoms, with selection &#39;resid 1:1000&#39; on another AtomGroup.&gt;</span>
+</pre></div>
+</div>
+<p>Finally, a non-updating selection or a slicing/addition operation made on an
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.UpdatingAtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code></a> will return a static
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, which will no longer update
+across frames:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [20]: </span><span class="n">static_ag</span> <span class="o">=</span> <span class="n">ag_updating</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 1:1000&quot;</span><span class="p">)</span>
+
+<span class="gp">In [21]: </span><span class="n">static_ag</span>
+<span class="gh">Out[21]: </span><span class="go">&lt;AtomGroup with 921 atoms&gt;</span>
+
+<span class="gp">In [22]: </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="gh">Out[22]: </span><span class="go">&lt; Timestep 3 with unit cell dimensions [ 0.  0.  0. 90. 90. 90.] &gt;</span>
+
+<span class="gp">In [23]: </span><span class="n">static_ag</span>
+<span class="gh">Out[23]: </span><span class="go">&lt;AtomGroup with 921 atoms&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="ordered-selections">
+<span id="id3"></span><h2>Ordered selections<a class="headerlink" href="#ordered-selections" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> sorts the atoms
+in the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> by atom index before
+returning them (this is to eliminate possible duplicates in the
+selection). If the ordering of atoms is crucial (for instance when
+describing angles or dihedrals) or if duplicate atoms are required
+then one has to concatenate multiple AtomGroups, which does not sort
+them.</p>
+<p>The most straightforward way to concatenate two AtomGroups is by using the
+<code class="docutils literal notranslate"><span class="pre">+</span></code> operator:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="n">ordered</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 3 and name CA&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 2 and name CA&quot;</span><span class="p">)</span>
+
+<span class="gp">In [15]: </span><span class="nb">list</span><span class="p">(</span><span class="n">ordered</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go"></span>
+<span class="go">[&lt;Atom 46: CA of type 22 of resname ILE, resid 3 and segid 4AKE&gt;,</span>
+<span class="go"> &lt;Atom 22: CA of type 22 of resname ARG, resid 2 and segid 4AKE&gt;]</span>
+</pre></div>
+</div>
+<p>A shortcut is to provide <em>two or more</em> selections to
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.select_atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a>, which then
+does the concatenation automatically:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="nb">list</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;resid 3 and name CA&quot;</span><span class="p">,</span> <span class="s2">&quot;resid 2 and name CA&quot;</span><span class="p">))</span>
+<span class="gh">Out[16]: </span><span class="go"></span>
+<span class="go">[&lt;Atom 46: CA of type 22 of resname ILE, resid 3 and segid 4AKE&gt;,</span>
+<span class="go"> &lt;Atom 22: CA of type 22 of resname ARG, resid 2 and segid 4AKE&gt;]</span>
+</pre></div>
+</div>
+<p>Just for comparison to show that a single selection string does not
+work as one might expect:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [17]: </span><span class="nb">list</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;(resid 3 or resid 2) and name CA&quot;</span><span class="p">))</span>
+<span class="gh">Out[17]: </span><span class="go"></span>
+<span class="go">[&lt;Atom 22: CA of type 22 of resname ARG, resid 2 and segid 4AKE&gt;,</span>
+<span class="go"> &lt;Atom 46: CA of type 22 of resname ILE, resid 3 and segid 4AKE&gt;]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="topology_system.html" class="btn btn-neutral float-right" title="The topology system" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="groups_of_atoms.html" class="btn btn-neutral float-left" title="Groups of atoms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

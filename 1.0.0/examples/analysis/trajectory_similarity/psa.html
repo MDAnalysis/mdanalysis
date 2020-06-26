@@ -1,0 +1,1003 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Comparing the geometric similarity of trajectories &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Calculating the Harmonic Ensemble Similarity between ensembles" href="harmonic_ensemble_similarity.html" />
+    <link rel="prev" title="Trajectory similarity" href="README.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../README.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../quickstart.html">Quick start guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../constructing_universe.html">Constructing, modifying, and adding to a Universe</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../transformations/README.html">Transformations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../alignment_and_rms/README.html">Alignments and RMS fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../distances_and_contacts/README.html">Distances and contacts</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="README.html">Trajectory similarity</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Comparing the geometric similarity of trajectories</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Loading-files">Loading files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Aligning-trajectories">Aligning trajectories</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Generating-paths">Generating paths</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Hausdorff-method">Hausdorff method</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Discrete-Fréchet-distances">Discrete Fréchet distances</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#References">References</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="harmonic_ensemble_similarity.html">Calculating the Harmonic Ensemble Similarity between ensembles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clustering_ensemble_similarity.html">Calculating the Clustering Ensemble Similarity between ensembles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dimension_reduction_ensemble_similarity.html">Calculating the Dimension Reduction Ensemble Similarity between ensembles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="convergence.html">Evaluating convergence</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../structure/README.html">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reduced_dimensions/README.html">Dimension reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../polymers_and_membranes/README.html">Polymers and membranes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../volumetric/README.html">Volumetric analyses</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../README.html">Examples</a> &raquo;</li>
+        
+          <li><a href="README.html">Trajectory similarity</a> &raquo;</li>
+        
+      <li>Comparing the geometric similarity of trajectories</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/examples/analysis/trajectory_similarity/psa.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
+<script>require=requirejs;</script><div class="section" id="Comparing-the-geometric-similarity-of-trajectories">
+<h1>Comparing the geometric similarity of trajectories<a class="headerlink" href="#Comparing-the-geometric-similarity-of-trajectories" title="Permalink to this headline">¶</a></h1>
+<p>Here we compare the geometric similarity of trajectories using the following path metrics:</p>
+<ul class="simple">
+<li><p>the Hausdorff distance</p></li>
+<li><p>the discrete Fréchet</p></li>
+</ul>
+<p><strong>Last executed:</strong> Feb 06, 2020 with MDAnalysis 0.20.2-dev0</p>
+<p><strong>Last updated:</strong> January 2020</p>
+<p><strong>Minimum version of MDAnalysis:</strong> 0.18.0</p>
+<p><strong>Packages required:</strong></p>
+<ul class="simple">
+<li><p>MDAnalysis (<a class="bibtex reference internal" href="../../../references.html#michaud-agrawal-mdanalysis-2011" id="id1">[MADWB11]</a>, <a class="bibtex reference internal" href="../../../references.html#gowers-mdanalysis-2016" id="id2">[GLB+16]</a>)</p></li>
+<li><p>MDAnalysisTests</p></li>
+</ul>
+<p><strong>Optional packages for visualisation:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://matplotlib.org">matplotlib</a></p></li>
+<li><p><a class="reference external" href="https://seaborn.pydata.org">seaborn</a></p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>The metrics and methods in the <code class="docutils literal notranslate"><span class="pre">psa</span></code> path similarity analysis module are from (<a class="bibtex reference internal" href="../../../references.html#seyler-path-2015" id="id3">[SKTB15]</a>). Please cite them when using the <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.psa</span></code> module in published work.</p>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">,</span> <span class="n">GRO</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span>
+                                        <span class="n">PSF_NAMD_GBIS</span><span class="p">,</span> <span class="n">DCD_NAMD_GBIS</span><span class="p">,</span>
+                                        <span class="n">PDB_small</span><span class="p">,</span> <span class="n">CRD</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">psa</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<div class="section" id="Loading-files">
+<h2>Loading files<a class="headerlink" href="#Loading-files" title="Permalink to this headline">¶</a></h2>
+<p>The test files we will be working with here feature adenylate kinase (AdK), a phosophotransferase enzyme. (<a class="bibtex reference internal" href="../../../references.html#beckstein-zipping-2009" id="id4">[BDPW09]</a>)</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u1</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+<span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD2</span><span class="p">)</span>
+<span class="n">u3</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">GRO</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+<span class="n">u4</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF_NAMD_GBIS</span><span class="p">,</span> <span class="n">DCD_NAMD_GBIS</span><span class="p">)</span>
+<span class="n">u5</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB_small</span><span class="p">,</span> <span class="n">CRD</span><span class="p">,</span> <span class="n">PDB_small</span><span class="p">,</span>
+                  <span class="n">CRD</span><span class="p">,</span> <span class="n">PDB_small</span><span class="p">,</span> <span class="n">CRD</span><span class="p">,</span> <span class="n">PDB_small</span><span class="p">)</span>
+
+<span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB_small</span><span class="p">)</span>
+
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DCD&#39;</span><span class="p">,</span> <span class="s1">&#39;DCD2&#39;</span><span class="p">,</span> <span class="s1">&#39;XTC&#39;</span><span class="p">,</span> <span class="s1">&#39;NAMD&#39;</span><span class="p">,</span> <span class="s1">&#39;mixed&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<p>The trajectories can have different lengths, as seen below.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">u1</span><span class="o">.</span><span class="n">trajectory</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">u2</span><span class="o">.</span><span class="n">trajectory</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">u3</span><span class="o">.</span><span class="n">trajectory</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+98 102 10
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Aligning-trajectories">
+<h2>Aligning trajectories<a class="headerlink" href="#Aligning-trajectories" title="Permalink to this headline">¶</a></h2>
+<p>We set up the PSAnalysis with our list of Universes and labels. While <code class="docutils literal notranslate"><span class="pre">path_select</span></code> determines which atoms to calculate the path similarities for, <code class="docutils literal notranslate"><span class="pre">ref_select</span></code> determines which atoms to use to align each Universe to <code class="docutils literal notranslate"><span class="pre">reference</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">CORE_sel</span> <span class="o">=</span> <span class="s1">&#39;name CA and (resid 1:29 or resid 60:121 or resid 160:214)&#39;</span>
+
+<span class="n">ps</span> <span class="o">=</span> <span class="n">psa</span><span class="o">.</span><span class="n">PSAnalysis</span><span class="p">([</span><span class="n">u1</span><span class="p">,</span> <span class="n">u2</span><span class="p">,</span> <span class="n">u3</span><span class="p">,</span> <span class="n">u4</span><span class="p">,</span> <span class="n">u5</span><span class="p">],</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
+                    <span class="n">reference</span><span class="o">=</span><span class="n">ref</span><span class="p">,</span>
+                    <span class="n">ref_select</span><span class="o">=</span><span class="n">CORE_sel</span><span class="p">,</span>
+                    <span class="n">path_select</span><span class="o">=</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Generating-paths">
+<h2>Generating paths<a class="headerlink" href="#Generating-paths" title="Permalink to this headline">¶</a></h2>
+<p>For each Universe, we will generate a transition path containing each conformation from a trajectory.</p>
+<p>First, we will do a mass-weighted alignment of each trajectory to the reference structure <code class="docutils literal notranslate"><span class="pre">reference</span></code>, along the atoms <code class="docutils literal notranslate"><span class="pre">ref_select</span></code>. To turn off the mass weighting, set <code class="docutils literal notranslate"><span class="pre">weights=None</span></code>. If your trajectories are already aligned, you can skip the alignment with <code class="docutils literal notranslate"><span class="pre">align=False</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">generate_paths</span><span class="p">(</span><span class="n">align</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Hausdorff-method">
+<h2>Hausdorff method<a class="headerlink" href="#Hausdorff-method" title="Permalink to this headline">¶</a></h2>
+<p>Now we can compute the similarity of each path. The default metric is to use the Hausdorff method. <a class="reference external" href="#References">[5]</a> The Hausdorff distance between two conformation transition paths <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\delta_H(P,Q) = \max{(\delta_h(P|Q), \delta_h(Q|P))}\]</div>
+<p><span class="math notranslate nohighlight">\(\delta_h(P|Q)\)</span> is the directed Hausdorff distance from <span class="math notranslate nohighlight">\(P\)</span> to <span class="math notranslate nohighlight">\(Q\)</span>, and is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\delta_h(P|Q) = \max_{p \in P}\min_{q \in Q} d(p,q)\]</div>
+<p>The directed Hausdorff distance of <span class="math notranslate nohighlight">\(P\)</span> to <span class="math notranslate nohighlight">\(Q\)</span> is the distance between the two points, <span class="math notranslate nohighlight">\(p \in P\)</span> and its structural nearest neighbour <span class="math notranslate nohighlight">\(q \in Q\)</span>, for the point <span class="math notranslate nohighlight">\(p\)</span> where the distance is greatest. This is not commutative, i.e. the directed Hausdorff distance from <span class="math notranslate nohighlight">\(Q\)</span> to <span class="math notranslate nohighlight">\(P\)</span> is not the same. (See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html">scipy.spatial.distance.directed_hausdorff</a> for more
+information).</p>
+<p>In MDAnalysis, the Hausdorff distance is the RMSD between a pair of conformations in <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(Q\)</span>, where the one of the conformations in the pair has the least similar nearest neighbour.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;hausdorff&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/lily/anaconda3/envs/mdanalysis/lib/python3.7/site-packages/MDAnalysis/analysis/psa.py:1556: DeprecationWarning: `save_result` is deprecated!
+`save_result` will be removed in release 1.0.0.
+You can save the distance matrix :attr:`D` to a numpy file with ``np.save(filename, PSAnalysis.D)``.
+  self.save_result(filename=filename)
+</pre></div></div>
+</div>
+<p>The distance matrix is saved in <code class="docutils literal notranslate"><span class="pre">ps.D</span></code>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">D</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[ 0.        ,  1.33312648, 22.37206002,  2.04737477,  7.55204678],
+       [ 1.33312648,  0.        , 22.3991666 ,  2.07957562,  7.55032598],
+       [22.37206002, 22.3991666 ,  0.        , 22.42282661, 25.74534554],
+       [ 2.04737477,  2.07957562, 22.42282661,  0.        ,  7.67052252],
+       [ 7.55204678,  7.55032598, 25.74534554,  7.67052252,  0.        ]])
+</pre></div></div>
+</div>
+<div class="section" id="Plotting">
+<h3>Plotting<a class="headerlink" href="#Plotting" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">psa.PSAnalysis</span></code> provides two convenience methods for plotting this data. The first is to plot a heat-map dendrogram from clustering the trajectories based on their path similarity. You can use any clustering method supported by <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html">scipy.cluster.hierarchy.linkage</a>; the default is ‘ward’.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([[ 0.        ,  1.        ,  1.33312648,  2.        ],
+        [ 3.        ,  5.        ,  2.25503365,  3.        ],
+        [ 4.        ,  6.        ,  9.20452463,  4.        ],
+        [ 2.        ,  7.        , 29.13448037,  5.        ]]),
+ {&#39;icoord&#39;: [[35.0, 35.0, 45.0, 45.0],
+   [25.0, 25.0, 40.0, 40.0],
+   [15.0, 15.0, 32.5, 32.5],
+   [5.0, 5.0, 23.75, 23.75]],
+  &#39;dcoord&#39;: [[0.0, 1.3331264831939273, 1.3331264831939273, 0.0],
+   [0.0, 2.2550336453918844, 2.2550336453918844, 1.3331264831939273],
+   [0.0, 9.204524628710315, 9.204524628710315, 2.2550336453918844],
+   [0.0, 29.134480368642226, 29.134480368642226, 9.204524628710315]],
+  &#39;ivl&#39;: [&#39;2&#39;, &#39;4&#39;, &#39;3&#39;, &#39;0&#39;, &#39;1&#39;],
+  &#39;leaves&#39;: [2, 4, 3, 0, 1],
+  &#39;color_list&#39;: [&#39;g&#39;, &#39;g&#39;, &#39;b&#39;, &#39;b&#39;]},
+ array([[ 0.        , 25.74534554, 22.42282661, 22.37206002, 22.3991666 ],
+        [25.74534554,  0.        ,  7.67052252,  7.55204678,  7.55032598],
+        [22.42282661,  7.67052252,  0.        ,  2.04737477,  2.07957562],
+        [22.37206002,  7.55204678,  2.04737477,  0.        ,  1.33312648],
+        [22.3991666 ,  7.55032598,  2.07957562,  1.33312648,  0.        ]]))
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 432x288 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/examples_analysis_trajectory_similarity_psa_20_2.png" src="../../../_images/examples_analysis_trajectory_similarity_psa_20_2.png" />
+</div>
+</div>
+<p>The other is to plot a heatmap annotated with the distance values. Again, the trajectories are displayed in an arrangement that fits the clustering method.</p>
+<div class="admonition note">
+<p class="admonition-title"><strong>Note</strong></p>
+<p>You will need to install the data visualisation library <a class="reference external" href="https://seaborn.pydata.org/installing.html">Seaborn</a> for this function.</p>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">plot_annotated_heatmap</span><span class="p">(</span><span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([[ 0.        ,  1.        ,  1.33312648,  2.        ],
+        [ 3.        ,  5.        ,  2.04737477,  3.        ],
+        [ 4.        ,  6.        ,  7.55032598,  4.        ],
+        [ 2.        ,  7.        , 22.37206002,  5.        ]]),
+ {&#39;icoord&#39;: [[35.0, 35.0, 45.0, 45.0],
+   [25.0, 25.0, 40.0, 40.0],
+   [15.0, 15.0, 32.5, 32.5],
+   [5.0, 5.0, 23.75, 23.75]],
+  &#39;dcoord&#39;: [[0.0, 1.3331264831939273, 1.3331264831939273, 0.0],
+   [0.0, 2.047374774767044, 2.047374774767044, 1.3331264831939273],
+   [0.0, 7.550325981004795, 7.550325981004795, 2.047374774767044],
+   [0.0, 22.372060021101248, 22.372060021101248, 7.550325981004795]],
+  &#39;ivl&#39;: [&#39;2&#39;, &#39;4&#39;, &#39;3&#39;, &#39;0&#39;, &#39;1&#39;],
+  &#39;leaves&#39;: [2, 4, 3, 0, 1],
+  &#39;color_list&#39;: [&#39;g&#39;, &#39;g&#39;, &#39;b&#39;, &#39;b&#39;]},
+ array([[ 0.        , 25.74534554, 22.42282661, 22.37206002, 22.3991666 ],
+        [25.74534554,  0.        ,  7.67052252,  7.55204678,  7.55032598],
+        [22.42282661,  7.67052252,  0.        ,  2.04737477,  2.07957562],
+        [22.37206002,  7.55204678,  2.04737477,  0.        ,  1.33312648],
+        [22.3991666 ,  7.55032598,  2.07957562,  1.33312648,  0.        ]]))
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 432x288 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/examples_analysis_trajectory_similarity_psa_22_2.png" src="../../../_images/examples_analysis_trajectory_similarity_psa_22_2.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Discrete-Fréchet-distances">
+<h2>Discrete Fréchet distances<a class="headerlink" href="#Discrete-Fréchet-distances" title="Permalink to this headline">¶</a></h2>
+<p>The discrete Fréchet distance between two conformation transition paths <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> is:</p>
+<div class="math notranslate nohighlight">
+\[\delta_{dF}(P,Q) = \min_{C \in \Gamma_{P,Q}} \|C\|\]</div>
+<p>where <span class="math notranslate nohighlight">\(C\)</span> is a coupling in the set of all couplings <span class="math notranslate nohighlight">\(\Gamma_{P,Q}\)</span> between <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(Q\)</span>. A coupling <span class="math notranslate nohighlight">\(C(P,Q)\)</span> is a sequence of pairs of conformations in <span class="math notranslate nohighlight">\(P\)</span> and <span class="math notranslate nohighlight">\(Q\)</span>, where the first/last pairs are the first/last points of the respective paths, and for each successive pair, at least one point in <span class="math notranslate nohighlight">\(P\)</span> or <span class="math notranslate nohighlight">\(Q\)</span> must advance to the next frame.</p>
+<div class="math notranslate nohighlight">
+\[C(P,Q) \equiv  (p_{a_1}, q_{b_1}), (p_{a_2}, q_{b_2}), ..., (p_{a_L}, q_{b_L})\]</div>
+<p>The coupling distance <span class="math notranslate nohighlight">\(\|C\|\)</span> is the largest distance between a pair of points in such a sequence.</p>
+<div class="math notranslate nohighlight">
+\[\|C\| \equiv \max_{i=1, ..., L} d(p_{a_i}, q_{b_i})\]</div>
+<p>In MDAnalysis, the discrete Fréchet distance is the lowest possible RMSD between a conformation from <span class="math notranslate nohighlight">\(P\)</span> and a conformation from <span class="math notranslate nohighlight">\(Q\)</span>, where the two frames are at similar points along the trajectory, and they are the least structurally similar in that particular coupling sequence. <a class="reference external" href="#References">[6-9]</a></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">metric</span><span class="o">=</span><span class="s1">&#39;discrete_frechet&#39;</span><span class="p">)</span>
+<span class="n">ps</span><span class="o">.</span><span class="n">D</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/lily/anaconda3/envs/mdanalysis/lib/python3.7/site-packages/MDAnalysis/analysis/psa.py:1556: DeprecationWarning: `save_result` is deprecated!
+`save_result` will be removed in release 1.0.0.
+You can save the distance matrix :attr:`D` to a numpy file with ``np.save(filename, PSAnalysis.D)``.
+  self.save_result(filename=filename)
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[ 0.        ,  1.33312649, 22.37205967,  2.04737475,  7.55204694],
+       [ 1.33312649,  0.        , 22.39916723,  2.07957565,  7.55032613],
+       [22.37205967, 22.39916723,  0.        , 22.42282569, 25.74534511],
+       [ 2.04737475,  2.07957565, 22.42282569,  0.        ,  7.67052241],
+       [ 7.55204694,  7.55032613, 25.74534511,  7.67052241,  0.        ]])
+</pre></div></div>
+</div>
+<div class="section" id="id5">
+<h3>Plotting<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;ward&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([[ 0.        ,  1.        ,  1.33312649,  2.        ],
+        [ 3.        ,  5.        ,  2.25503365,  3.        ],
+        [ 4.        ,  6.        ,  9.20452471,  4.        ],
+        [ 2.        ,  7.        , 29.13448001,  5.        ]]),
+ {&#39;icoord&#39;: [[35.0, 35.0, 45.0, 45.0],
+   [25.0, 25.0, 40.0, 40.0],
+   [15.0, 15.0, 32.5, 32.5],
+   [5.0, 5.0, 23.75, 23.75]],
+  &#39;dcoord&#39;: [[0.0, 1.3331264917717554, 1.3331264917717554, 0.0],
+   [0.0, 2.2550336465704057, 2.2550336465704057, 1.3331264917717554],
+   [0.0, 9.204524708552725, 9.204524708552725, 2.2550336465704057],
+   [0.0, 29.134480014437507, 29.134480014437507, 9.204524708552725]],
+  &#39;ivl&#39;: [&#39;2&#39;, &#39;4&#39;, &#39;3&#39;, &#39;0&#39;, &#39;1&#39;],
+  &#39;leaves&#39;: [2, 4, 3, 0, 1],
+  &#39;color_list&#39;: [&#39;g&#39;, &#39;g&#39;, &#39;b&#39;, &#39;b&#39;]},
+ array([[ 0.        , 25.74534511, 22.42282569, 22.37205967, 22.39916723],
+        [25.74534511,  0.        ,  7.67052241,  7.55204694,  7.55032613],
+        [22.42282569,  7.67052241,  0.        ,  2.04737475,  2.07957565],
+        [22.37205967,  7.55204694,  2.04737475,  0.        ,  1.33312649],
+        [22.39916723,  7.55032613,  2.07957565,  1.33312649,  0.        ]]))
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 432x288 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/examples_analysis_trajectory_similarity_psa_27_2.png" src="../../../_images/examples_analysis_trajectory_similarity_psa_27_2.png" />
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ps</span><span class="o">.</span><span class="n">plot_annotated_heatmap</span><span class="p">(</span><span class="n">linkage</span><span class="o">=</span><span class="s1">&#39;single&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(array([[ 0.        ,  1.        ,  1.33312649,  2.        ],
+        [ 3.        ,  5.        ,  2.04737475,  3.        ],
+        [ 4.        ,  6.        ,  7.55032613,  4.        ],
+        [ 2.        ,  7.        , 22.37205967,  5.        ]]),
+ {&#39;icoord&#39;: [[35.0, 35.0, 45.0, 45.0],
+   [25.0, 25.0, 40.0, 40.0],
+   [15.0, 15.0, 32.5, 32.5],
+   [5.0, 5.0, 23.75, 23.75]],
+  &#39;dcoord&#39;: [[0.0, 1.3331264917717554, 1.3331264917717554, 0.0],
+   [0.0, 2.047374750604888, 2.047374750604888, 1.3331264917717554],
+   [0.0, 7.550326126269361, 7.550326126269361, 2.047374750604888],
+   [0.0, 22.37205966687729, 22.37205966687729, 7.550326126269361]],
+  &#39;ivl&#39;: [&#39;2&#39;, &#39;4&#39;, &#39;3&#39;, &#39;0&#39;, &#39;1&#39;],
+  &#39;leaves&#39;: [2, 4, 3, 0, 1],
+  &#39;color_list&#39;: [&#39;g&#39;, &#39;g&#39;, &#39;b&#39;, &#39;b&#39;]},
+ array([[ 0.        , 25.74534511, 22.42282569, 22.37205967, 22.39916723],
+        [25.74534511,  0.        ,  7.67052241,  7.55204694,  7.55032613],
+        [22.42282569,  7.67052241,  0.        ,  2.04737475,  2.07957565],
+        [22.37205967,  7.55204694,  2.04737475,  0.        ,  1.33312649],
+        [22.39916723,  7.55032613,  2.07957565,  1.33312649,  0.        ]]))
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;Figure size 432x288 with 0 Axes&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../../../_images/examples_analysis_trajectory_similarity_psa_28_2.png" src="../../../_images/examples_analysis_trajectory_similarity_psa_28_2.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="References">
+<h2>References<a class="headerlink" href="#References" title="Permalink to this headline">¶</a></h2>
+<p>[1] Oliver Beckstein, Elizabeth J. Denning, Juan R. Perilla, and Thomas B. Woolf. Zipping and Unzipping of Adenylate Kinase: Atomistic Insights into the Ensemble of Open↔Closed Transitions. Journal of Molecular Biology, 394(1):160–176, November 2009. 00107. URL: <a class="reference external" href="https://linkinghub.elsevier.com/retrieve/pii/S0022283609011164">https://linkinghub.elsevier.com/retrieve/pii/S0022283609011164</a>, doi:10.1016/j.jmb.2009.09.009.</p>
+<p>[2] Richard J. Gowers, Max Linke, Jonathan Barnoud, Tyler J. E. Reddy, Manuel N. Melo, Sean L. Seyler, Jan Domański, David L. Dotson, Sébastien Buchoux, Ian M. Kenney, and Oliver Beckstein. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Proceedings of the 15th Python in Science Conference, pages 98–105, 2016. 00152. URL: <a class="reference external" href="https://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html">https://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html</a>, doi:10.25080/Majora-629e541a-00e.</p>
+<p>[3] Naveen Michaud-Agrawal, Elizabeth J. Denning, Thomas B. Woolf, and Oliver Beckstein. MDAnalysis: A toolkit for the analysis of molecular dynamics simulations. Journal of Computational Chemistry, 32(10):2319–2327, July 2011. 00778. URL: <a class="reference external" href="http://doi.wiley.com/10.1002/jcc.21787">http://doi.wiley.com/10.1002/jcc.21787</a>, doi:10.1002/jcc.21787.</p>
+<p>[4] Sean L. Seyler, Avishek Kumar, M. F. Thorpe, and Oliver Beckstein. Path Similarity Analysis: A Method for Quantifying Macromolecular Pathways. PLOS Computational Biology, 11(10):e1004568, October 2015. URL: <a class="reference external" href="https://dx.plos.org/10.1371/journal.pcbi.1004568">https://dx.plos.org/10.1371/journal.pcbi.1004568</a>, doi:10.1371/journal.pcbi.1004568.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="harmonic_ensemble_similarity.html" class="btn btn-neutral float-right" title="Calculating the Harmonic Ensemble Similarity between ensembles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="README.html" class="btn btn-neutral float-left" title="Trajectory similarity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

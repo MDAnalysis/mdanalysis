@@ -1,0 +1,605 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Standard residues in MDAnalysis selections &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Advanced topology concepts" href="advanced_topology.html" />
+    <link rel="prev" title="Writing your own trajectory analysis" href="examples/analysis/custom_trajectory_analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Standard residues in MDAnalysis selections</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#proteins">Proteins</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#protein-backbone">Protein backbone</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#nucleic-acids">Nucleic acids</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#nucleic-backbone">Nucleic backbone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nucleobases">Nucleobases</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#nucleic-sugars">Nucleic sugars</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Standard residues in MDAnalysis selections</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/standard_selections.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="standard-residues-in-mdanalysis-selections">
+<span id="standard-selections"></span><h1>Standard residues in MDAnalysis selections<a class="headerlink" href="#standard-residues-in-mdanalysis-selections" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="proteins">
+<span id="protein-selection"></span><h2>Proteins<a class="headerlink" href="#proteins" title="Permalink to this headline">¶</a></h2>
+<p>The residue names listed here are accessible via the “protein” keyword in the <a class="reference internal" href="selections.html#selections"><span class="std std-ref">Atom selection language</span></a>.</p>
+<p>The below names are drawn from the CHARMM 27, OPLS-AA, GROMOS 53A6, AMBER 03, and AMBER 99sb*-ILDN force fields.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>ACE</p></td>
+<td><p>ALA</p></td>
+<td><p>ALAD</p></td>
+<td><p>ARG</p></td>
+<td><p>ARGN</p></td>
+<td><p>ASF</p></td>
+<td><p>ASH</p></td>
+<td><p>ASN</p></td>
+</tr>
+<tr class="row-even"><td><p>ASN1</p></td>
+<td><p>ASP</p></td>
+<td><p>ASPH</p></td>
+<td><p>CALA</p></td>
+<td><p>CARG</p></td>
+<td><p>CASF</p></td>
+<td><p>CASN</p></td>
+<td><p>CASP</p></td>
+</tr>
+<tr class="row-odd"><td><p>CCYS</p></td>
+<td><p>CCYX</p></td>
+<td><p>CGLN</p></td>
+<td><p>CGLU</p></td>
+<td><p>CGLY</p></td>
+<td><p>CHID</p></td>
+<td><p>CHIE</p></td>
+<td><p>CHIP</p></td>
+</tr>
+<tr class="row-even"><td><p>CILE</p></td>
+<td><p>CLEU</p></td>
+<td><p>CLYS</p></td>
+<td><p>CME</p></td>
+<td><p>CMET</p></td>
+<td><p>CPHE</p></td>
+<td><p>CPRO</p></td>
+<td><p>CSER</p></td>
+</tr>
+<tr class="row-odd"><td><p>CTHR</p></td>
+<td><p>CTRP</p></td>
+<td><p>CTYR</p></td>
+<td><p>CVAL</p></td>
+<td><p>CYM</p></td>
+<td><p>CYS</p></td>
+<td><p>CYS1</p></td>
+<td><p>CYS2</p></td>
+</tr>
+<tr class="row-even"><td><p>CYSH</p></td>
+<td><p>CYX</p></td>
+<td><p>DAB</p></td>
+<td><p>GLH</p></td>
+<td><p>GLN</p></td>
+<td><p>GLU</p></td>
+<td><p>GLUH</p></td>
+<td><p>GLY</p></td>
+</tr>
+<tr class="row-odd"><td><p>HID</p></td>
+<td><p>HIE</p></td>
+<td><p>HIP</p></td>
+<td><p>HIS</p></td>
+<td><p>HIS1</p></td>
+<td><p>HIS2</p></td>
+<td><p>HISA</p></td>
+<td><p>HISB</p></td>
+</tr>
+<tr class="row-even"><td><p>HISD</p></td>
+<td><p>HISE</p></td>
+<td><p>HISH</p></td>
+<td><p>HSD</p></td>
+<td><p>HSE</p></td>
+<td><p>HSP</p></td>
+<td><p>HYP</p></td>
+<td><p>ILE</p></td>
+</tr>
+<tr class="row-odd"><td><p>LEU</p></td>
+<td><p>LYN</p></td>
+<td><p>LYS</p></td>
+<td><p>LYSH</p></td>
+<td><p>MET</p></td>
+<td><p>MSE</p></td>
+<td><p>NALA</p></td>
+<td><p>NARG</p></td>
+</tr>
+<tr class="row-even"><td><p>NASN</p></td>
+<td><p>NASP</p></td>
+<td><p>NCYS</p></td>
+<td><p>NCYX</p></td>
+<td><p>NGLN</p></td>
+<td><p>NGLU</p></td>
+<td><p>NGLY</p></td>
+<td><p>NHID</p></td>
+</tr>
+<tr class="row-odd"><td><p>NHIE</p></td>
+<td><p>NHIP</p></td>
+<td><p>NILE</p></td>
+<td><p>NLEU</p></td>
+<td><p>NLYS</p></td>
+<td><p>NME</p></td>
+<td><p>NMET</p></td>
+<td><p>NPHE</p></td>
+</tr>
+<tr class="row-even"><td><p>NPRO</p></td>
+<td><p>NSER</p></td>
+<td><p>NTHR</p></td>
+<td><p>NTRP</p></td>
+<td><p>NTYR</p></td>
+<td><p>NVAL</p></td>
+<td><p>ORN</p></td>
+<td><p>PGLU</p></td>
+</tr>
+<tr class="row-odd"><td><p>PHE</p></td>
+<td><p>PRO</p></td>
+<td><p>QLN</p></td>
+<td><p>SER</p></td>
+<td><p>THR</p></td>
+<td><p>TRP</p></td>
+<td><p>TYR</p></td>
+<td><p>VAL</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="protein-backbone">
+<h3>Protein backbone<a class="headerlink" href="#protein-backbone" title="Permalink to this headline">¶</a></h3>
+<p>Protein backbone atoms in MDAnalysis belong to a recognised protein residue and have the atom names:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 40%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>N</p></td>
+<td><p>CA</p></td>
+<td><p>C</p></td>
+<td><p>O</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="nucleic-acids">
+<span id="nucleic-selection"></span><h2>Nucleic acids<a class="headerlink" href="#nucleic-acids" title="Permalink to this headline">¶</a></h2>
+<p>The residue names listed here are accessible via the “nucleic” keyword in the <a class="reference internal" href="selections.html#selections"><span class="std std-ref">Atom selection language</span></a>.</p>
+<p>The below names are drawn from largely from the CHARMM force field.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+<col style="width: 13%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>ADE</p></td>
+<td><p>URA</p></td>
+<td><p>CYT</p></td>
+<td><p>GUA</p></td>
+<td><p>THY</p></td>
+<td><p>DA</p></td>
+<td><p>DC</p></td>
+<td><p>DG</p></td>
+</tr>
+<tr class="row-even"><td><p>DT</p></td>
+<td><p>RA</p></td>
+<td><p>RU</p></td>
+<td><p>RG</p></td>
+<td><p>RC</p></td>
+<td><p>A</p></td>
+<td><p>T</p></td>
+<td><p>U</p></td>
+</tr>
+<tr class="row-odd"><td><p>C</p></td>
+<td><p>G</p></td>
+<td><p>DA5</p></td>
+<td><p>DC5</p></td>
+<td><p>DG5</p></td>
+<td><p>DT5</p></td>
+<td><p>DA3</p></td>
+<td><p>DC3</p></td>
+</tr>
+<tr class="row-even"><td><p>DG3</p></td>
+<td><p>DT3</p></td>
+<td><p>RA5</p></td>
+<td><p>RU5</p></td>
+<td><p>RG5</p></td>
+<td><p>RC5</p></td>
+<td><p>RA3</p></td>
+<td><p>RU3</p></td>
+</tr>
+<tr class="row-odd"><td><p>RG3</p></td>
+<td><p>RC3</p></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="nucleic-backbone">
+<h3>Nucleic backbone<a class="headerlink" href="#nucleic-backbone" title="Permalink to this headline">¶</a></h3>
+<p>Nucleic backbone atoms in MDAnalysis belong to a recognised nucleic acid residue and have the atom names:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 8%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 23%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>P</p></td>
+<td><p>C5’</p></td>
+<td><p>C3’</p></td>
+<td><p>O3’</p></td>
+<td><p>O5’</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nucleobases">
+<span id="nucleobase-selection"></span><h3>Nucleobases<a class="headerlink" href="#nucleobases" title="Permalink to this headline">¶</a></h3>
+<p>Nucleobase atoms from nucleic acid residues are recognised based on their names in CHARMM.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 12%" />
+<col style="width: 18%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>N9</p></td>
+<td><p>N7</p></td>
+<td><p>C8</p></td>
+<td><p>C5</p></td>
+<td><p>C4</p></td>
+<td><p>N3</p></td>
+<td><p>C2</p></td>
+<td><p>N1</p></td>
+</tr>
+<tr class="row-even"><td><p>C6</p></td>
+<td><p>O6</p></td>
+<td><p>N2</p></td>
+<td><p>N6</p></td>
+<td><p>O2</p></td>
+<td><p>N4</p></td>
+<td><p>O4</p></td>
+<td><p>C5M</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="nucleic-sugars">
+<h3>Nucleic sugars<a class="headerlink" href="#nucleic-sugars" title="Permalink to this headline">¶</a></h3>
+<p>Nucleic sugar atoms from nucleic acid residues are recognised by MDAnalysis if they have the atom names:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>C1’</p></td>
+<td><p>C2’</p></td>
+<td><p>C3’</p></td>
+<td><p>C4’</p></td>
+<td><p>O4’</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="advanced_topology.html" class="btn btn-neutral float-right" title="Advanced topology concepts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="examples/analysis/custom_trajectory_analysis.html" class="btn btn-neutral float-left" title="Writing your own trajectory analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

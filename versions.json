@@ -2,7 +2,13 @@
   {
     "version": "2.0.0-dev0",
     "display": "2.0.0-dev0",
-    "url": "https://docs.mdanalysis.org/2.0.0-dev0",
+    "url": "https://userguide.mdanalysis.org/2.0.0-dev0",
     "latest": false
+  },
+  {
+    "version": "1.0.0",
+    "display": "1.0.0",
+    "url": "https://mdauserguide.minium.com.au/1.0.0",
+    "latest": true
   }
 ]

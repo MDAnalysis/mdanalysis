@@ -1,0 +1,327 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Computing mass and charge density on each axis\n",
+    "\n",
+    "Here we compute the mass and charge density of water along the three cartesian axes of a fixed-volume unit cell (i.e. from a simulation in the NVT ensemble). \n",
+    "\n",
+    "**Last updated:** February 2020\n",
+    "\n",
+    "**Minimum version of MDAnalysis:** 0.17.0\n",
+    "\n",
+    "**Packages required:**\n",
+    "    \n",
+    "* MDAnalysis (<a data-cite=\"michaud-agrawal_mdanalysis_2011\" href=\"https://doi.org/10.1002/jcc.21787\">Michaud-Agrawal *et al.*, 2011</a>, <a data-cite=\"gowers_mdanalysis_2016\" href=\"https://doi.org/10.25080/Majora-629e541a-00e\">Gowers *et al.*, 2016</a>)\n",
+    "* MDAnalysisTests\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import MDAnalysis as mda\n",
+    "from MDAnalysis.tests.datafiles import waterPSF, waterDCD\n",
+    "from MDAnalysis.analysis import lineardensity as lin\n",
+    "\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt\n",
+    "%matplotlib inline"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Loading files"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The test files we are working with are a cube of water."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "u = mda.Universe(waterPSF, waterDCD)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "`MDAnalysis.analysis.lineardensity.LinearDensity` will partition each of your axes into bins of user-specified `binsize` (in angstrom), and give the average mass density and average charge density of your atom group selection. \n",
+    "\n",
+    "This analysis is only suitable for a trajectory with a fixed box size. While passing a trajectory with a variable box size will not raise an error, `LinearDensity` will not account for changing dimensions. It will only evaluate the density of your atoms in the bins created from the trajectory frame when the class is first initialised.\n",
+    "\n",
+    "Below, we iterate through the trajectory to verify that its box dimensions remain constant."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n",
+      "[50. 50. 50. 90. 90. 90.]\n"
+     ]
+    }
+   ],
+   "source": [
+    "for ts in u.trajectory:\n",
+    "    print(ts.dimensions)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can choose to compute the density of individual atoms, residues, segments, or fragments (groups of bonded atoms with no bonds to any atom outside the group). By default, the grouping is for `atoms`. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "density = lin.LinearDensity(u.atoms,\n",
+    "                            grouping='atoms').run()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The results of the analysis are in `density.results`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "200"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "density.nbins"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.00053564, 0.00080345, 0.00876966, 0.03507863, 0.00107127,\n",
+       "       0.00348163, 0.00241036, 0.02791588, 0.04277702, 0.01753932,\n",
+       "       0.00160691, 0.00133909, 0.00026782, 0.        , 0.00107127,\n",
+       "       0.00107127, 0.00053564, 0.        , 0.03400736, 0.01968186,\n",
+       "       0.02339714, 0.01355621, 0.00026782, 0.00107127, 0.00107127,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ,\n",
+       "       0.        , 0.        , 0.        , 0.        , 0.        ])"
+      ]
+     },
+     "execution_count": 6,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "density.results['x']['pos']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "dict_keys(['dim', 'slice volume', 'pos', 'pos_std', 'char', 'char_std'])"
+      ]
+     },
+     "execution_count": 7,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "density.results['x'].keys()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "1"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "density.results['y']['dim']"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[<matplotlib.lines.Line2D at 0x112cbe198>]"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    },
+    {
+     "data": {
+      "image/png": "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\n",
+      "text/plain": [
+       "<Figure size 432x288 with 1 Axes>"
+      ]
+     },
+     "metadata": {
+      "needs_background": "light"
+     },
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "plt.plot(np.linspace(0, 50, 200), density.results['x']['pos'])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## References\n",
+    "\n",
+    "[1] Oliver Beckstein, Elizabeth&nbsp;J. Denning, Juan&nbsp;R. Perilla, and Thomas&nbsp;B. Woolf.\n",
+    "Zipping and <span class=\"bibtex-protected\">Unzipping</span> of <span class=\"bibtex-protected\">Adenylate</span> <span class=\"bibtex-protected\">Kinase</span>: <span class=\"bibtex-protected\">Atomistic</span> <span class=\"bibtex-protected\">Insights</span> into the <span class=\"bibtex-protected\">Ensemble</span> of <span class=\"bibtex-protected\">Open</span>↔<span class=\"bibtex-protected\">Closed</span> <span class=\"bibtex-protected\">Transitions</span>.\n",
+    "<em>Journal of Molecular Biology</em>, 394(1):160–176, November 2009.\n",
+    "00107.\n",
+    "URL: <a href=\"https://linkinghub.elsevier.com/retrieve/pii/S0022283609011164\">https://linkinghub.elsevier.com/retrieve/pii/S0022283609011164</a>, <a href=\"https://doi.org/10.1016/j.jmb.2009.09.009\">doi:10.1016/j.jmb.2009.09.009</a>.\n",
+    "\n",
+    "[2] Richard&nbsp;J. Gowers, Max Linke, Jonathan Barnoud, Tyler J.&nbsp;E. Reddy, Manuel&nbsp;N. Melo, Sean&nbsp;L. Seyler, Jan Domański, David&nbsp;L. Dotson, Sébastien Buchoux, Ian&nbsp;M. Kenney, and Oliver Beckstein.\n",
+    "<span class=\"bibtex-protected\">MDAnalysis</span>: <span class=\"bibtex-protected\">A</span> <span class=\"bibtex-protected\">Python</span> <span class=\"bibtex-protected\">Package</span> for the <span class=\"bibtex-protected\">Rapid</span> <span class=\"bibtex-protected\">Analysis</span> of <span class=\"bibtex-protected\">Molecular</span> <span class=\"bibtex-protected\">Dynamics</span> <span class=\"bibtex-protected\">Simulations</span>.\n",
+    "<em>Proceedings of the 15th Python in Science Conference</em>, pages 98–105, 2016.\n",
+    "00152.\n",
+    "URL: <a href=\"https://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html\">https://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html</a>, <a href=\"https://doi.org/10.25080/Majora-629e541a-00e\">doi:10.25080/Majora-629e541a-00e</a>.\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python (mda0170)",
+   "language": "python",
+   "name": "mda0170"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.7"
+  },
+  "toc": {
+   "base_numbering": 1,
+   "nav_menu": {},
+   "number_sections": false,
+   "sideBar": true,
+   "skip_h1_title": false,
+   "title_cell": "Table of Contents",
+   "title_sidebar": "Contents",
+   "toc_cell": false,
+   "toc_position": {},
+   "toc_section_display": true,
+   "toc_window_display": false
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

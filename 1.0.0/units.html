@@ -1,0 +1,688 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Units and constants &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Reading and writing files" href="reading_and_writing.html" />
+    <link rel="prev" title="On-the-fly transformations" href="trajectories/transformations.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Units and constants</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unit-conversion">Unit conversion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#constants">Constants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#length">Length</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#density">Density</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time">Time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#charge">Charge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#speed">Speed</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#force">Force</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#energy">Energy</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Units and constants</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/units.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="units-and-constants">
+<span id="units"></span><h1>Units and constants<a class="headerlink" href="#units-and-constants" title="Permalink to this headline">¶</a></h1>
+<p>The units of MDAnalysis trajectories are the <strong>Å</strong> (<strong>ångström</strong>) for
+<strong>length</strong> and <strong>ps</strong> (<strong>picosecond</strong>) for <strong>time</strong>. Regardless of how the
+original MD format stored the trajectory data, MDAnalysis converts it to
+MDAnalysis units when reading the data in, and converts back when writing the
+data out. Analysis classes generally also use these default units. Exceptions
+to the default units are always noted in the documentation; for example, mass
+densities can be given in <span class="math notranslate nohighlight">\(g/cm^3\)</span>.</p>
+<p>Other base units are listed in the table <a class="reference internal" href="#table-baseunits"><span class="std std-ref">Base units in MDAnalysis</span></a>.</p>
+<span id="table-baseunits"></span><table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Base units in MDAnalysis</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 19%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Quantity</p></th>
+<th class="head"><p>Unit</p></th>
+<th class="head"><p>SI units</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>length</p></td>
+<td><p>Å</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-10}\)</span> m</p></td>
+</tr>
+<tr class="row-odd"><td><p>time</p></td>
+<td><p>ps</p></td>
+<td><p><span class="math notranslate nohighlight">\(10^{-12}\)</span> s</p></td>
+</tr>
+<tr class="row-even"><td><p>energy</p></td>
+<td><p>kJ/mol</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.66053892103219 \times 10^{-21}\)</span> J</p></td>
+</tr>
+<tr class="row-odd"><td><p>charge</p></td>
+<td><p><span class="math notranslate nohighlight">\(e\)</span></p></td>
+<td><p><span class="math notranslate nohighlight">\(1.602176565 \times 10^{-19}\)</span> As</p></td>
+</tr>
+<tr class="row-even"><td><p>force</p></td>
+<td><p>kJ/(mol·Å)</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.66053892103219 \times 10^{-11}\)</span> J/m</p></td>
+</tr>
+<tr class="row-odd"><td><p>speed</p></td>
+<td><p>Å/ps</p></td>
+<td><p><span class="math notranslate nohighlight">\(100\)</span> m/s</p></td>
+</tr>
+<tr class="row-even"><td><p>mass</p></td>
+<td><p>u</p></td>
+<td><p><span class="math notranslate nohighlight">\(1.66053906660(50) \times 10^{-27}\)</span> kg</p></td>
+</tr>
+<tr class="row-odd"><td><p>angle</p></td>
+<td><p>degrees</p></td>
+<td><p><span class="math notranslate nohighlight">\(\frac{\pi}{180}\)</span> rad</p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="unit-conversion">
+<h2>Unit conversion<a class="headerlink" href="#unit-conversion" title="Permalink to this headline">¶</a></h2>
+<p>Quantities can be converted from units with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/units.html#MDAnalysis.units.convert" title="(in MDAnalysis v1.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">convert()</span></code></a>.
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/units.html#MDAnalysis.units.convert" title="(in MDAnalysis v1.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">convert()</span></code></a> simply multiplies the initial quantity with a
+precomputed conversion factor, as obtained from
+<a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/units.html#MDAnalysis.units.get_conversion_factor" title="(in MDAnalysis v1.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_conversion_factor()</span></code></a>.</p>
+<p>The computed conversion factors for each quantity type are stored in <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/units.html#module-MDAnalysis.units" title="(in MDAnalysis v1.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a> and shown below.</p>
+</div>
+<div class="section" id="constants">
+<h2>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="length">
+<h3>Length<a class="headerlink" href="#length" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 34%" />
+<col style="width: 66%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Angstrom</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>angstrom</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>femtometer</p></td>
+<td><p>100000</p></td>
+</tr>
+<tr class="row-even"><td><p>fm</p></td>
+<td><p>100000</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanometer</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-even"><td><p>nm</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>picometer</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-even"><td><p>pm</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p>Å</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="density">
+<h3>Density<a class="headerlink" href="#density" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 58%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A^{-3}</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Angstrom^{-3}</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>Molar</p></td>
+<td><p>1660.54</p></td>
+</tr>
+<tr class="row-odd"><td><p>SPC</p></td>
+<td><p>30.3718</p></td>
+</tr>
+<tr class="row-even"><td><p>TIP3P</p></td>
+<td><p>29.8566</p></td>
+</tr>
+<tr class="row-odd"><td><p>TIP4P</p></td>
+<td><p>29.8864</p></td>
+</tr>
+<tr class="row-even"><td><p>nanometer^{-3}</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-odd"><td><p>nm^{-3}</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-even"><td><p>water</p></td>
+<td><p>30.0063</p></td>
+</tr>
+<tr class="row-odd"><td><p>Å^{-3}</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="time">
+<h3>Time<a class="headerlink" href="#time" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 37%" />
+<col style="width: 63%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>AKMA</p></td>
+<td><p>20.4548</p></td>
+</tr>
+<tr class="row-odd"><td><p>femtosecond</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-even"><td><p>fs</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanosecond</p></td>
+<td><p>0.001</p></td>
+</tr>
+<tr class="row-even"><td><p>ns</p></td>
+<td><p>0.001</p></td>
+</tr>
+<tr class="row-odd"><td><p>picosecond</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>ps</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>s</p></td>
+<td><p>1e-12</p></td>
+</tr>
+<tr class="row-even"><td><p>sec</p></td>
+<td><p>1e-12</p></td>
+</tr>
+<tr class="row-odd"><td><p>second</p></td>
+<td><p>1e-12</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="charge">
+<h3>Charge<a class="headerlink" href="#charge" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 76%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Amber</p></td>
+<td><p>18.2223</p></td>
+</tr>
+<tr class="row-odd"><td><p>As</p></td>
+<td><p>1.60218e-19</p></td>
+</tr>
+<tr class="row-even"><td><p>C</p></td>
+<td><p>1.60218e-19</p></td>
+</tr>
+<tr class="row-odd"><td><p>e</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="speed">
+<h3>Speed<a class="headerlink" href="#speed" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 51%" />
+<col style="width: 49%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A/ps</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Angstrom/AKMA</p></td>
+<td><p>0.0488882</p></td>
+</tr>
+<tr class="row-even"><td><p>Angstrom/femtosecond</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-odd"><td><p>Angstrom/fs</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-even"><td><p>Angstrom/picosecond</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>Angstrom/ps</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>angstrom/femtosecond</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-odd"><td><p>angstrom/fs</p></td>
+<td><p>1000</p></td>
+</tr>
+<tr class="row-even"><td><p>angstrom/picosecond</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>m/s</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-even"><td><p>nanometer/picosecond</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>nanometer/ps</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-even"><td><p>nm/ns</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p>nm/ps</p></td>
+<td><p>0.1</p></td>
+</tr>
+<tr class="row-even"><td><p>pm/ps</p></td>
+<td><p>100</p></td>
+</tr>
+<tr class="row-odd"><td><p>Å/ps</p></td>
+<td><p>1</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="force">
+<h3>Force<a class="headerlink" href="#force" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>J/m</p></td>
+<td><p>1.66054e-11</p></td>
+</tr>
+<tr class="row-odd"><td><p>N</p></td>
+<td><p>1.66054e-11</p></td>
+</tr>
+<tr class="row-even"><td><p>Newton</p></td>
+<td><p>1.66054e-11</p></td>
+</tr>
+<tr class="row-odd"><td><p>kJ/(mol*A)</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p>kJ/(mol*Angstrom)</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>kJ/(mol*nm)</p></td>
+<td><p>10</p></td>
+</tr>
+<tr class="row-even"><td><p>kJ/(mol*Å)</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>kcal/(mol*Angstrom)</p></td>
+<td><p>0.239006</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="energy">
+<h3>Energy<a class="headerlink" href="#energy" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 70%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Unit</p></th>
+<th class="head"><p>Conversion factor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>J</p></td>
+<td><p>1.66054e-21</p></td>
+</tr>
+<tr class="row-odd"><td><p>eV</p></td>
+<td><p>0.0103643</p></td>
+</tr>
+<tr class="row-even"><td><p>kJ/mol</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>kcal/mol</p></td>
+<td><p>0.239006</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="reading_and_writing.html" class="btn btn-neutral float-right" title="Reading and writing files" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="trajectories/transformations.html" class="btn btn-neutral float-left" title="On-the-fly transformations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>On-the-fly transformations &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Units and constants" href="../units.html" />
+    <link rel="prev" title="Slicing trajectories" href="slicing_trajectories.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">On-the-fly transformations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#custom-transformations">Custom transformations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>On-the-fly transformations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/trajectories/transformations.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="on-the-fly-transformations">
+<span id="transformations"></span><h1>On-the-fly transformations<a class="headerlink" href="#on-the-fly-transformations" title="Permalink to this headline">¶</a></h1>
+<p>An on-the-fly transformation is a function that silently modifies the dynamic data contained in a trajectory <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> (typically coordinates) as it is loaded into memory. It is called for each current time step to transform data into your desired representation. A transformation function must also return the current <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>, as transformations are often chained together.</p>
+<p>The <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/trajectory_transformations.html#module-MDAnalysis.transformations" title="(in MDAnalysis v1.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a> module contains a collection of transformations. For example, <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/transformations/fit.html#MDAnalysis.transformations.fit.fit_rot_trans" title="(in MDAnalysis v1.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">fit_rot_trans()</span></code></a> can perform a mass-weighted alignment on an <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> to a reference.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+
+<span class="gp">In [3]: </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">transformations</span> <span class="k">as</span> <span class="n">trans</span>
+
+<span class="gp">In [4]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+
+<span class="gp">In [5]: </span><span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&#39;</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">align_transform</span> <span class="o">=</span> <span class="n">trans</span><span class="o">.</span><span class="n">fit_rot_trans</span><span class="p">(</span><span class="n">protein</span><span class="p">,</span> <span class="n">protein</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="s1">&#39;mass&#39;</span><span class="p">)</span>
+
+<span class="gp">In [7]: </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="n">align_transform</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Other implemented transformations include functions to <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/transformations/translate.html#module-MDAnalysis.transformations.translate" title="(in MDAnalysis v1.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">translate</span></code></a>, <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/transformations/rotate.html#module-MDAnalysis.transformations.rotate" title="(in MDAnalysis v1.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">rotate</span></code></a>, <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/transformations/fit.html#module-MDAnalysis.transformations.fit" title="(in MDAnalysis v1.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">fit</span></code></a> an <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> to a reference, and <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/transformations/wrap.html#module-MDAnalysis.transformations.wrap" title="(in MDAnalysis v1.0)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">wrap</span></code></a> or unwrap groups in the unit cell.</p>
+<p>Although you can only call <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_transformations" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_transformations()</span></code></a> <em>once</em>, you can pass in multiple transformations in a list, which will be executed in order. For example, the below workflow:</p>
+<ul class="simple">
+<li><p>makes all molecules whole (unwraps them over periodic boundary conditions)</p></li>
+<li><p>centers the protein in the center of the box</p></li>
+<li><p>wraps water back into the box</p></li>
+</ul>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="go"># create new Universe for new transformations</span>
+<span class="gp">In [8]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+
+<span class="gp">In [9]: </span><span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&#39;</span><span class="p">)</span>
+
+<span class="gp">In [10]: </span><span class="n">water</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+
+<span class="gp">In [11]: </span><span class="n">workflow</span> <span class="o">=</span> <span class="p">[</span><span class="n">trans</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">),</span>
+<span class="gp">   ....: </span>            <span class="n">trans</span><span class="o">.</span><span class="n">center_in_box</span><span class="p">(</span><span class="n">protein</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">),</span>
+<span class="gp">   ....: </span>            <span class="n">trans</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">water</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)]</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [12]: </span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">workflow</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If your transformation does not depend on something within the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> (e.g. a chosen <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>), you can also create a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> directly with transformations. The code below translates coordinates 1 angstrom up on the z-axis:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [13]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="p">[</span><span class="n">trans</span><span class="o">.</span><span class="n">translate</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])])</span>
+</pre></div>
+</div>
+<p>If you need a different transformation, it is easy to implement your own.</p>
+<div class="section" id="custom-transformations">
+<h2>Custom transformations<a class="headerlink" href="#custom-transformations" title="Permalink to this headline">¶</a></h2>
+<p>At its core, a transformation function must only take a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> as its input and return the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> as the output.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [14]: </span><span class="k">def</span> <span class="nf">up_by_2</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+<span class="gp">   ....: </span>    <span class="sd">&quot;&quot;&quot;Translates atoms up by 2 angstrom&quot;&quot;&quot;</span>
+<span class="gp">   ....: </span>    <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="gp">   ....: </span>    <span class="k">return</span> <span class="n">ts</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [15]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="p">[</span><span class="n">up_by_2</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>If your transformation needs other arguments, you will need to wrap your core transformation with a wrapper function that can accept the other arguments.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [16]: </span><span class="k">def</span> <span class="nf">up_by_x</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<span class="gp">   ....: </span>    <span class="sd">&quot;&quot;&quot;Translates atoms up by x angstrom&quot;&quot;&quot;</span>
+<span class="gp">   ....: </span>    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+<span class="gp">   ....: </span>        <span class="sd">&quot;&quot;&quot;Handles the actual Timestep&quot;&quot;&quot;</span>
+<span class="gp">   ....: </span>        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)])</span>
+<span class="gp">   ....: </span>        <span class="k">return</span> <span class="n">ts</span>
+<span class="gp">   ....: </span>    <span class="k">return</span> <span class="n">wrapped</span>
+<span class="gp">   ....: </span>
+
+<span class="go"># load Universe with transformations that move it up by 7 angstrom</span>
+<span class="gp">In [17]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="p">[</span><span class="n">up_by_x</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">up_by_x</span><span class="p">(</span><span class="mi">2</span><span class="p">)])</span>
+</pre></div>
+</div>
+<p>Alternatively, you can use <a class="reference external" href="https://docs.python.org/3/library/functools.html#functools.partial" title="(in Python v3.8)"><code class="xref py py-func docutils literal notranslate"><span class="pre">functools.partial()</span></code></a> to substitute the other arguments.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="gp">In [19]: </span><span class="k">def</span> <span class="nf">up_by_x</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="gp">   ....: </span>    <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)])</span>
+<span class="gp">   ....: </span>    <span class="k">return</span> <span class="n">ts</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [20]: </span><span class="n">up_by_5</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">up_by_x</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="gp">In [21]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="p">[</span><span class="n">up_by_5</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>On-the-fly transformation functions can be applied to any property of a Timestep, not just the atom positions. For example, to give each frame of a trajectory a box:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [22]: </span><span class="k">def</span> <span class="nf">set_box</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+<span class="gp">   ....: </span>    <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">]</span>
+<span class="gp">   ....: </span>    <span class="k">return</span> <span class="n">ts</span>
+<span class="gp">   ....: </span>
+
+<span class="gp">In [23]: </span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="p">[</span><span class="n">set_box</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../units.html" class="btn btn-neutral float-right" title="Units and constants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="slicing_trajectories.html" class="btn btn-neutral float-left" title="Slicing trajectories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

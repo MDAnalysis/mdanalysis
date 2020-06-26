@@ -1,0 +1,814 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Centering a trajectory in the box &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Alignments and RMS fitting" href="../analysis/alignment_and_rms/README.html" />
+    <link rel="prev" title="Transformations" href="README.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../README.html">Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../quickstart.html">Quick start guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../constructing_universe.html">Constructing, modifying, and adding to a Universe</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="README.html">Transformations</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Centering a trajectory in the box</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Loading-files">Loading files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Before-transformation">Before transformation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Unwrapping-the-protein">Unwrapping the protein</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Centering-in-the-box">Centering in the box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Wrapping-the-solvent-back-into-the-box">Wrapping the solvent back into the box</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Doing-all-this-on-the-fly">Doing all this on-the-fly</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#References">References</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/alignment_and_rms/README.html">Alignments and RMS fitting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/distances_and_contacts/README.html">Distances and contacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/trajectory_similarity/README.html">Trajectory similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/structure/README.html">Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/reduced_dimensions/README.html">Dimension reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/polymers_and_membranes/README.html">Polymers and membranes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis/volumetric/README.html">Volumetric analyses</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../selections.html">Atom selection language</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../topology_system.html">The topology system</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../README.html">Examples</a> &raquo;</li>
+        
+          <li><a href="README.html">Transformations</a> &raquo;</li>
+        
+      <li>Centering a trajectory in the box</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/examples/transformations/center_protein_in_box.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<script src='http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js'></script>
+<script>require=requirejs;</script><div class="section" id="Centering-a-trajectory-in-the-box">
+<h1>Centering a trajectory in the box<a class="headerlink" href="#Centering-a-trajectory-in-the-box" title="Permalink to this headline">¶</a></h1>
+<p>Here we use MDAnalysis transformations to make a protein whole, center it in the box, and then wrap the water back into the box. We then look at how to do this on-the-fly.</p>
+<p><strong>Last executed:</strong> Feb 07, 2020 with MDAnalysis 0.20.2-dev0</p>
+<p><strong>Last updated:</strong> January 2020</p>
+<p><strong>Minimum version of MDAnalysis:</strong> 0.19.0</p>
+<p><strong>Packages required:</strong></p>
+<ul class="simple">
+<li><p>MDAnalysis (<a class="bibtex reference internal" href="../../references.html#michaud-agrawal-mdanalysis-2011" id="id1">[MADWB11]</a>, <a class="bibtex reference internal" href="../../references.html#gowers-mdanalysis-2016" id="id2">[GLB+16]</a>)</p></li>
+<li><p>MDAnalysisTests</p></li>
+</ul>
+<p><strong>Optional packages for visualisation:</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://nglviewer.org/nglview/latest/">nglview</a> (<a class="bibtex reference internal" href="../../references.html#nguyen-nglviewinteractive-2018" id="id3">[NCR18]</a>)</p></li>
+</ul>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">nglview</span> <span class="k">as</span> <span class="nn">nv</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "5c98d79a824e4373882a198e8040538a", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="section" id="Loading-files">
+<h2>Loading files<a class="headerlink" href="#Loading-files" title="Permalink to this headline">¶</a></h2>
+<p>The test files we will be working with here are trajectories of a adenylate kinase (AdK), a phosophotransferase enzyme. (<a class="bibtex reference internal" href="../../references.html#beckstein-zipping-2009" id="id4">[BDPW09]</a>)</p>
+<p>For the step-by-step transformations, we need to load the trajectory into memory so that our changes to the coordinates persist. If your trajectory is too large for that, see the <a class="reference external" href="#Doing-all-this-on-the-fly">on-the-fly transformation</a> section for how to do this out-of-memory.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="Before-transformation">
+<h2>Before transformation<a class="headerlink" href="#Before-transformation" title="Permalink to this headline">¶</a></h2>
+<p>If you have NGLView installed, you can view the trajectory as it currently is.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">view</span> <span class="o">=</span> <span class="n">nv</span><span class="o">.</span><span class="n">show_mdanalysis</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">add_representation</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+<span class="n">view</span>
+</pre></div>
+</div>
+</div>
+<p>Otherwise, we embed a gif of it below.</p>
+<p><img alt="original" src="../../_images/original.gif" /></p>
+<p>For easier analysis and nicer visualisation, we want to center this protein in the box.</p>
+</div>
+<div class="section" id="Unwrapping-the-protein">
+<h2>Unwrapping the protein<a class="headerlink" href="#Unwrapping-the-protein" title="Permalink to this headline">¶</a></h2>
+<p>The first step is to “unwrap” the protein from the border of the box, to make the protein whole. MDAnalysis provides the <code class="docutils literal notranslate"><span class="pre">AtomGroup.unwrap</span></code> function to do this easily. Note that this function requires your universe to have bonds in it.</p>
+<p>We loop over the trajectory to unwrap for each frame.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+    <span class="n">protein</span><span class="o">.</span><span class="n">unwrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="s1">&#39;fragments&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>As you can see, the protein is now whole, but not centered.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">unwrapped</span> <span class="o">=</span> <span class="n">nv</span><span class="o">.</span><span class="n">show_mdanalysis</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">unwrapped</span><span class="o">.</span><span class="n">add_representation</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+<span class="n">unwrapped</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+<span class="n">unwrapped</span>
+</pre></div>
+</div>
+</div>
+<p>Over the course of the trajectory it leaves the box.</p>
+<p><img alt="unwrapped" src="../../_images/unwrapped.gif" /></p>
+</div>
+<div class="section" id="Centering-in-the-box">
+<h2>Centering in the box<a class="headerlink" href="#Centering-in-the-box" title="Permalink to this headline">¶</a></h2>
+<p>The next step is to center the protein in the box. We calculate the center-of-mass of the protein and the center of the box for each timestep. We then move <em>all</em> the atoms so that the protein center-of-mass is in the center of the box.</p>
+<p>If you don’t have masses in your trajectory, try using the <code class="docutils literal notranslate"><span class="pre">center_of_geometry</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+    <span class="n">protein_center</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">(</span><span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">dim</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
+    <span class="n">box_center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">box_center</span> <span class="o">-</span> <span class="n">protein_center</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>The protein is now in the center of the box, but the solvent is likely outside it, as we have just moved all the atoms.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">centered</span> <span class="o">=</span> <span class="n">nv</span><span class="o">.</span><span class="n">show_mdanalysis</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">centered</span><span class="o">.</span><span class="n">add_representation</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+<span class="n">centered</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+<span class="n">centered</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="centered" src="../../_images/centered.gif" /></p>
+</div>
+<div class="section" id="Wrapping-the-solvent-back-into-the-box">
+<h2>Wrapping the solvent back into the box<a class="headerlink" href="#Wrapping-the-solvent-back-into-the-box" title="Permalink to this headline">¶</a></h2>
+<p>Luckily, MDAnalysis also has <code class="docutils literal notranslate"><span class="pre">AtomGroup.wrap</span></code> to wrap molecules back into the box. Our trajectory has dimensions defined, which the function will find automatically. If your trajectory does not, or you wish to use a differently sized box, you can pass in a <code class="docutils literal notranslate"><span class="pre">box</span></code> with dimensions in the form <code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">not_protein</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not protein&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+    <span class="n">not_protein</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>And now it is centered!</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">wrapped</span> <span class="o">=</span> <span class="n">nv</span><span class="o">.</span><span class="n">show_mdanalysis</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+<span class="n">wrapped</span><span class="o">.</span><span class="n">add_representation</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+<span class="n">wrapped</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+<span class="n">wrapped</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="wrapped" src="../../_images/wrapped.gif" /></p>
+</div>
+<div class="section" id="Doing-all-this-on-the-fly">
+<h2>Doing all this on-the-fly<a class="headerlink" href="#Doing-all-this-on-the-fly" title="Permalink to this headline">¶</a></h2>
+<p>Running all the transformations above can be difficult if your trajectory is large, or your computational resources are limited. Use on-the-fly transformations to keep your data out-of-memory.</p>
+<p>Some common transformations are defined in <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">MDAnalysis.transformations</span> <span class="k">as</span> <span class="nn">trans</span>
+</pre></div>
+</div>
+</div>
+<p>We re-load our universe.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">u2</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">TPR</span><span class="p">,</span> <span class="n">XTC</span><span class="p">)</span>
+
+<span class="n">protein2</span> <span class="o">=</span> <span class="n">u2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;protein&#39;</span><span class="p">)</span>
+<span class="n">not_protein2</span> <span class="o">=</span> <span class="n">u2</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;not protein&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>If you are using MDAnalysis from version 0.21.0 onwards, the <code class="docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code> module contains <code class="docutils literal notranslate"><span class="pre">wrap</span></code> and <code class="docutils literal notranslate"><span class="pre">unwrap</span></code> functions. If not, we need to define a transformation ourselves.</p>
+<p>A transformation is a function takes a <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep</span></code> of a trajectory, modifies the <code class="docutils literal notranslate"><span class="pre">positions</span></code>, and returns the timestep.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+    <span class="n">protein2</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ts</span>
+
+<span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+    <span class="n">not_protein2</span><span class="o">.</span><span class="n">wrap</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ts</span>
+</pre></div>
+</div>
+</div>
+<p>If you need arguments besides the timestep, you can return a wrapped function. The outer function contains your other arguments. The inner <code class="docutils literal notranslate"><span class="pre">wrapped_function</span></code> function only takes the <code class="docutils literal notranslate"><span class="pre">ts</span></code> argument and returns it, as usual.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">unwrap_atomgroup</span><span class="p">(</span><span class="n">ag</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapped_function</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">unwrap</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ts</span>
+    <span class="k">return</span> <span class="n">wrapped_function</span>
+
+<span class="k">def</span> <span class="nf">wrap_atomgroup</span><span class="p">(</span><span class="n">ag</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapped_function</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+        <span class="n">ag</span><span class="o">.</span><span class="n">wrap</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ts</span>
+    <span class="k">return</span> <span class="n">wrapped_function</span>
+</pre></div>
+</div>
+</div>
+<p>At this point, you can pass your transformations into your trajectory. You can only use <code class="docutils literal notranslate"><span class="pre">add_transformations</span></code> <em>once</em>, so pass them all in at once.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">transforms</span> <span class="o">=</span> <span class="p">[</span><span class="n">unwrap_atomgroup</span><span class="p">(</span><span class="n">protein2</span><span class="p">),</span>
+              <span class="n">trans</span><span class="o">.</span><span class="n">center_in_box</span><span class="p">(</span><span class="n">protein2</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+              <span class="n">wrap_atomgroup</span><span class="p">(</span><span class="n">not_protein2</span><span class="p">)]</span>
+
+<span class="n">u2</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_transformations</span><span class="p">(</span><span class="o">*</span><span class="n">transforms</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">otf</span> <span class="o">=</span> <span class="n">nv</span><span class="o">.</span><span class="n">show_mdanalysis</span><span class="p">(</span><span class="n">u2</span><span class="p">)</span>
+<span class="n">otf</span><span class="o">.</span><span class="n">add_representation</span><span class="p">(</span><span class="s1">&#39;point&#39;</span><span class="p">,</span> <span class="s1">&#39;resname SOL&#39;</span><span class="p">)</span>
+<span class="n">otf</span><span class="o">.</span><span class="n">center</span><span class="p">()</span>
+<span class="n">otf</span>
+</pre></div>
+</div>
+</div>
+<p><img alt="on the fly" src="../../_images/on_the_fly.gif" /></p>
+</div>
+<div class="section" id="References">
+<h2>References<a class="headerlink" href="#References" title="Permalink to this headline">¶</a></h2>
+<p>[1] Richard J. Gowers, Max Linke, Jonathan Barnoud, Tyler J. E. Reddy, Manuel N. Melo, Sean L. Seyler, Jan Domański, David L. Dotson, Sébastien Buchoux, Ian M. Kenney, and Oliver Beckstein. MDAnalysis: A Python Package for the Rapid Analysis of Molecular Dynamics Simulations. Proceedings of the 15th Python in Science Conference, pages 98–105, 2016. 00152. URL: <a class="reference external" href="https://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html">https://conference.scipy.org/proceedings/scipy2016/oliver_beckstein.html</a>, doi:10.25080/Majora-629e541a-00e.</p>
+<p>[2] Naveen Michaud-Agrawal, Elizabeth J. Denning, Thomas B. Woolf, and Oliver Beckstein. MDAnalysis: A toolkit for the analysis of molecular dynamics simulations. Journal of Computational Chemistry, 32(10):2319–2327, July 2011. 00778. URL: <a class="reference external" href="http://doi.wiley.com/10.1002/jcc.21787">http://doi.wiley.com/10.1002/jcc.21787</a>, doi:10.1002/jcc.21787.</p>
+<p>[3] Hai Nguyen, David A Case, and Alexander S Rose. NGLview–interactive molecular graphics for Jupyter notebooks. Bioinformatics, 34(7):1241–1242, April 2018. 00024. URL: <a class="reference external" href="https://academic.oup.com/bioinformatics/article/34/7/1241/4721781">https://academic.oup.com/bioinformatics/article/34/7/1241/4721781</a>, doi:10.1093/bioinformatics/btx789.</p>
+<p>[4] Oliver Beckstein, Elizabeth J. Denning, Juan R. Perilla, and Thomas B. Woolf. Zipping and Unzipping of Adenylate Kinase: Atomistic Insights into the Ensemble of Open↔Closed Transitions. Journal of Molecular Biology, 394(1):160–176, November 2009. 00107. URL: <a class="reference external" href="https://linkinghub.elsevier.com/retrieve/pii/S0022283609011164">https://linkinghub.elsevier.com/retrieve/pii/S0022283609011164</a>, doi:10.1016/j.jmb.2009.09.009.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../analysis/alignment_and_rms/README.html" class="btn btn-neutral float-right" title="Alignments and RMS fitting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="README.html" class="btn btn-neutral float-left" title="Transformations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

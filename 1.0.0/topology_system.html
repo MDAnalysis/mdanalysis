@@ -1,0 +1,1001 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The topology system &mdash; MDAnalysis User Guide  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+        <script src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis User Guide  documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Trajectories" href="trajectories/trajectories.html" />
+    <link rel="prev" title="Atom selection language" href="selections.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/user_guide.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Getting started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/quickstart.html">Quick start guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently asked questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/README.html">Examples</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Data structures</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="universe.html">Universe</a></li>
+<li class="toctree-l1"><a class="reference internal" href="atomgroup.html">AtomGroup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="groups_of_atoms.html">Groups of atoms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selections.html">Atom selection language</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The topology system</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#topology-attributes">Topology attributes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#canonical-attributes">Canonical attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#format-specific-attributes">Format-specific attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connectivity-information">Connectivity information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-topologyattrs">Adding TopologyAttrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modifying-topologyattrs">Modifying TopologyAttrs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#default-values-and-attribute-levels">Default values and attribute levels</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#topology-objects">Topology objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-to-a-universe">Adding to a Universe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-with-an-atomgroup">Creating with an AtomGroup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleting-from-a-universe">Deleting from a Universe</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#topology-specific-methods">Topology-specific methods</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Trajectories</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/trajectories.html">Trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/slicing_trajectories.html">Slicing trajectories</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trajectories/transformations.html">On-the-fly transformations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units.html">Units and constants</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Input/output</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reading_and_writing.html">Reading and writing files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/index.html">Format overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/guessing.html">Guessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/auxiliary.html">Auxiliary files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/selection_exporters.html">Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="formats/format_reference.html">Format reference</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Analysis</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html">Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#alignments-and-rms-fitting">Alignments and RMS fitting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#distances-and-contacts">Distances and contacts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#trajectory-similarity">Trajectory similarity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#structure">Structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#volumetric-analyses">Volumetric analyses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#dimension-reduction">Dimension reduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/README.html#polymers-and-membranes">Polymers and membranes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/analysis/custom_trajectory_analysis.html">Writing your own trajectory analysis</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Advanced</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="standard_selections.html">Standard residues in MDAnalysis selections</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced_topology.html">Advanced topology concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">Example data</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Contributing</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_code.html">Contributing to the main codebase</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing_docs.html">Contributing to the user guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="preparing_releases_and_hotfixes.html">Preparing a release</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module_imports.html">Module imports in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing.html">Tests in MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MDAnalysis User Guide</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>The topology system</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/topology_system.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-topology-system">
+<span id="topology-system"></span><h1>The topology system<a class="headerlink" href="#the-topology-system" title="Permalink to this headline">¶</a></h1>
+<p>MDAnalysis groups static data about a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> into its topology. This is typically loaded from a topology file. Topology information falls into 3 categories:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="groups_of_atoms.html#residues-and-segments"><span class="std std-ref">Atom containers (Residues and Segments)</span></a></p></li>
+<li><p><a class="reference internal" href="#topology-attributes"><span class="std std-ref">Atom attributes (e.g. name, mass, bfactor)</span></a></p></li>
+<li><p><a class="reference internal" href="#topology-objects"><span class="std std-ref">Topology objects: bonds, angles, dihedrals, impropers</span></a></p></li>
+</ul>
+</div></blockquote>
+<p>Users will almost never interact directly with a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topology.html#MDAnalysis.core.topology.Topology" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a>. Modifying atom containers or topology attributes is typically done through <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>. Methods for viewing containers or topology attributes, or for calculating topology object values, are accessed through <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
+<div class="section" id="topology-attributes">
+<span id="id1"></span><h2>Topology attributes<a class="headerlink" href="#topology-attributes" title="Permalink to this headline">¶</a></h2>
+<p>MDAnalysis supports a range of topology attributes for each <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.Atom" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> and <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>. If an attribute is defined for an Atom, it will be for an AtomGroup, and vice versa – however, they are accessed with singular and plural versions of the attribute specifically.</p>
+<div class="section" id="canonical-attributes">
+<h3>Canonical attributes<a class="headerlink" href="#canonical-attributes" title="Permalink to this headline">¶</a></h3>
+<p>These attributes are derived for every <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>, including Universes created with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.empty" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">empty()</span></code></a>. They encode the MDAnalysis order of each object.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 21%" />
+<col style="width: 64%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Atom</strong></p></td>
+<td><p><strong>AtomGroup</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>index</p></td>
+<td><p>indices</p></td>
+<td><p>MDAnalysis canonical atom index (from 0)</p></td>
+</tr>
+<tr class="row-odd"><td><p>resindex</p></td>
+<td><p>resindices</p></td>
+<td><p>MDAnalysis canonical residue index (from 0)</p></td>
+</tr>
+<tr class="row-even"><td><p>segindex</p></td>
+<td><p>segindices</p></td>
+<td><p>MDAnalysis segment index (from 0)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The following attributes are read or guessed from every format supported by MDAnalysis.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 20%" />
+<col style="width: 67%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><strong>Atom</strong></p></td>
+<td><p><strong>AtomGroup</strong></p></td>
+<td><p><strong>Description</strong></p></td>
+</tr>
+<tr class="row-even"><td><p>id</p></td>
+<td><p>ids</p></td>
+<td><p>atom serial (from 1, except PSF/DMS/TPR formats)</p></td>
+</tr>
+<tr class="row-odd"><td><p>mass</p></td>
+<td><p>masses</p></td>
+<td><p>atom mass (guessed, default: 0.0)</p></td>
+</tr>
+<tr class="row-even"><td><p>resid</p></td>
+<td><p>resids</p></td>
+<td><p>residue number (from 1, except for TPR)</p></td>
+</tr>
+<tr class="row-odd"><td><p>resnum</p></td>
+<td><p>resnums</p></td>
+<td><p>alias of resid</p></td>
+</tr>
+<tr class="row-even"><td><p>segid</p></td>
+<td><p>segids</p></td>
+<td><p>names of segments (default: ‘SYSTEM’)</p></td>
+</tr>
+<tr class="row-odd"><td><p>type</p></td>
+<td><p>types</p></td>
+<td><p>atom name, atom element, or force field atom type</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="format-specific-attributes">
+<h3>Format-specific attributes<a class="headerlink" href="#format-specific-attributes" title="Permalink to this headline">¶</a></h3>
+<p>The table below lists attributes that are read from supported formats. These can also be <a class="reference internal" href="#add-topologyattrs"><span class="std std-ref">added to a Universe</span></a> created from a file that does not support them.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 2%" />
+<col style="width: 2%" />
+<col style="width: 6%" />
+<col style="width: 89%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Atom</p></th>
+<th class="head"><p>AtomGroup</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Supported formats</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>altLoc</p></td>
+<td><p>altLocs</p></td>
+<td><p>Alternate location</p></td>
+<td><p><a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>angles</p></td>
+<td><p>angles</p></td>
+<td></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>atomiccharge</p></td>
+<td><p>atomiccharges</p></td>
+<td><p>Atomic number</p></td>
+<td><p><a class="reference internal" href="formats/reference/gms.html#gms-format"><span class="std std-ref">GMS</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>atomnum</p></td>
+<td><p>atomnums</p></td>
+<td><p>?</p></td>
+<td><p><a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>bfactor</p></td>
+<td><p>bfactors</p></td>
+<td><p>alias of tempfactor</p></td>
+<td><p><a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>bonds</p></td>
+<td><p>bonds</p></td>
+<td></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/mol2.html#mol2-format"><span class="std std-ref">MOL2</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/txyz.html#txyz-format"><span class="std std-ref">TXYZ, ARC</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>chainID</p></td>
+<td><p>chainIDs</p></td>
+<td><p>chain ID</p></td>
+<td><p><a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>charge</p></td>
+<td><p>charges</p></td>
+<td><p>partial atomic charge</p></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/mol2.html#mol2-format"><span class="std std-ref">MOL2</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/pqr.html#pqr-format"><span class="std std-ref">PQR</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>dihedrals</p></td>
+<td><p>dihedrals</p></td>
+<td></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>element</p></td>
+<td><p>elements</p></td>
+<td><p>atom element</p></td>
+<td><p><a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>icode</p></td>
+<td><p>icodes</p></td>
+<td><p>atom insertion code</p></td>
+<td><p><a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/pqr.html#pqr-format"><span class="std std-ref">PQR</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>impropers</p></td>
+<td><p>impropers</p></td>
+<td></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>model</p></td>
+<td><p>models</p></td>
+<td><p>model number (from 0)</p></td>
+<td><p><a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>molnum</p></td>
+<td><p>molnums</p></td>
+<td><p>[molecules] number (from 0)</p></td>
+<td><p><a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>moltype</p></td>
+<td><p>moltypes</p></td>
+<td><p>[moleculetype] name</p></td>
+<td><p><a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>name</p></td>
+<td><p>names</p></td>
+<td><p>atom names</p></td>
+<td><p><a class="reference internal" href="formats/reference/config.html#config-format"><span class="std std-ref">CONFIG</span></a>, <a class="reference internal" href="formats/reference/crd.html#crd-format"><span class="std std-ref">CRD</span></a>, <a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a>, <a class="reference internal" href="formats/reference/gms.html#gms-format"><span class="std std-ref">GMS</span></a>, <a class="reference internal" href="formats/reference/gro.html#gro-format"><span class="std std-ref">GRO</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/config.html#history-format"><span class="std std-ref">HISTORY</span></a>, <a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/mol2.html#mol2-format"><span class="std std-ref">MOL2</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/pqr.html#pqr-format"><span class="std std-ref">PQR</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/txyz.html#txyz-format"><span class="std std-ref">TXYZ, ARC</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a>, <a class="reference internal" href="formats/reference/xyz.html#xyz-format"><span class="std std-ref">XYZ</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>occupancy</p></td>
+<td><p>occupancies</p></td>
+<td><p>atom occupancy</p></td>
+<td><p><a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>radius</p></td>
+<td><p>radii</p></td>
+<td><p>atomic radius</p></td>
+<td><p><a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/pqr.html#pqr-format"><span class="std std-ref">PQR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>record_type</p></td>
+<td><p>record_types</p></td>
+<td><p>ATOM / HETATM</p></td>
+<td><p><a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/pqr.html#pqr-format"><span class="std std-ref">PQR</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>resname</p></td>
+<td><p>resnames</p></td>
+<td><p>residue name (except GSD has ints)</p></td>
+<td><p><a class="reference internal" href="formats/reference/crd.html#crd-format"><span class="std std-ref">CRD</span></a>, <a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a>, <a class="reference internal" href="formats/reference/gro.html#gro-format"><span class="std std-ref">GRO</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/mol2.html#mol2-format"><span class="std std-ref">MOL2</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/pqr.html#pqr-format"><span class="std std-ref">PQR</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>tempfactor</p></td>
+<td><p>tempfactors</p></td>
+<td><p>B-factor</p></td>
+<td><p><a class="reference internal" href="formats/reference/crd.html#crd-format"><span class="std std-ref">CRD</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/pdbqt.html#pdbqt-format"><span class="std std-ref">PDBQT</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>type_index</p></td>
+<td><p>type_indices</p></td>
+<td><p>amber atom type number</p></td>
+<td><p><a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="connectivity-information">
+<span id="topologyobject-attr"></span><h3>Connectivity information<a class="headerlink" href="#connectivity-information" title="Permalink to this headline">¶</a></h3>
+<p>MDAnalysis can also read connectivity information, if the file provides it. These become available as <a class="reference internal" href="#topology-objects"><span class="std std-ref">Topology objects</span></a>, which have additional functionality.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 3%" />
+<col style="width: 3%" />
+<col style="width: 94%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Atom</p></th>
+<th class="head"><p>AtomGroup</p></th>
+<th class="head"><p>Supported formats</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>angles</p></td>
+<td><p>angles</p></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>bonds</p></td>
+<td><p>bonds</p></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/dms.html#dms-format"><span class="std std-ref">DMS</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/mmtf.html#mmtf-format"><span class="std std-ref">MMTF</span></a>, <a class="reference internal" href="formats/reference/mol2.html#mol2-format"><span class="std std-ref">MOL2</span></a>, <a class="reference internal" href="formats/reference/pdb.html#pdb-format"><span class="std std-ref">PDB, ENT</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/txyz.html#txyz-format"><span class="std std-ref">TXYZ, ARC</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a>, <a class="reference internal" href="formats/reference/xpdb.html#xpdb-format"><span class="std std-ref">XPDB</span></a></p></td>
+</tr>
+<tr class="row-even"><td><p>dihedrals</p></td>
+<td><p>dihedrals</p></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+<tr class="row-odd"><td><p>impropers</p></td>
+<td><p>impropers</p></td>
+<td><p><a class="reference internal" href="formats/reference/data.html#data-format"><span class="std std-ref">DATA</span></a>, <a class="reference internal" href="formats/reference/gsd.html#gsd-format"><span class="std std-ref">GSD</span></a>, <a class="reference internal" href="formats/reference/psf.html#psf-format"><span class="std std-ref">PSF</span></a>, <a class="reference internal" href="formats/reference/top.html#top-format"><span class="std std-ref">TOP, PRMTOP, PARM7</span></a>, <a class="reference internal" href="formats/reference/tpr.html#tpr-format"><span class="std std-ref">TPR</span></a>, <a class="reference internal" href="formats/reference/xml.html#xml-format"><span class="std std-ref">XML</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="adding-topologyattrs">
+<span id="add-topologyattrs"></span><h3>Adding TopologyAttrs<a class="headerlink" href="#adding-topologyattrs" title="Permalink to this headline">¶</a></h3>
+<p>Each of the attributes above can be added to a Universe if it was not available in the file with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_TopologyAttr()</span></code></a>.</p>
+<p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_TopologyAttr()</span></code></a> takes two arguments:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">topologyattr</span></code> : the singular or plural name of a TopologyAttr, <em>or</em> a MDAnalysis TopologyAttr object. This must already have been defined as a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.TopologyAttr" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyAttr</span></code></a> (see <a class="reference internal" href="advanced_topology.html#custom-topologyattrs"><span class="std std-ref">Adding custom TopologyAttrs</span></a> for an example of adding a custom topology attribute).</p></li>
+<li><p><code class="code docutils literal notranslate"><span class="pre">values</span></code> (optional) : if <code class="code docutils literal notranslate"><span class="pre">topologyattr</span></code> is a string, the values for that attribute. This can be <code class="code docutils literal notranslate"><span class="pre">None</span></code> if the attribute has default values defined, e.g. <code class="code docutils literal notranslate"><span class="pre">bfactors</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [1]: </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="gp">In [2]: </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span>
+
+<span class="gp">In [3]: </span><span class="n">psf</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">)</span>
+
+<span class="gp">In [4]: </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">psf</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+<span class="gh">Out[4]: </span><span class="go">False</span>
+
+<span class="gp">In [5]: </span><span class="n">psf</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">)</span>
+
+<span class="gp">In [6]: </span><span class="n">psf</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bfactors</span>
+<span class="gh">Out[6]: </span><span class="go">array([0., 0., 0., ..., 0., 0., 0.])</span>
+</pre></div>
+</div>
+<p>One way to modify topology attributes is to simply replace them with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_TopologyAttr()</span></code></a>:</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [7]: </span><span class="n">psf</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;bfactors&#39;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">psf</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+
+<span class="gp">In [8]: </span><span class="n">psf</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">bfactors</span>
+<span class="gh">Out[8]: </span><span class="go"></span>
+<span class="go">array([0.000e+00, 1.000e+00, 2.000e+00, ..., 3.338e+03, 3.339e+03,</span>
+<span class="go">       3.340e+03])</span>
+</pre></div>
+</div>
+<p>The number of values provided should correspond with the “level” of the attribute. For example, B-factors are atomic-level information. However, residue names and residue ids apply to residues. See a <a class="reference internal" href="#topologyattr-defaults"><span class="std std-ref">table of attribute levels and default values</span></a> for more information.</p>
+</div>
+<div class="section" id="modifying-topologyattrs">
+<h3>Modifying TopologyAttrs<a class="headerlink" href="#modifying-topologyattrs" title="Permalink to this headline">¶</a></h3>
+<p>Existing topology attributes can be directly modified by assigning new values.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [9]: </span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+
+<span class="gp">In [10]: </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PDB</span>
+
+<span class="gp">In [11]: </span><span class="n">pdb</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
+
+<span class="gp">In [12]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">residues</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">resnames</span>
+<span class="gh">Out[12]: </span><span class="go">array([&#39;MET&#39;, &#39;ARG&#39;, &#39;ILE&#39;], dtype=object)</span>
+
+<span class="gp">In [13]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">residues</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">resnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RES1&#39;</span><span class="p">,</span> <span class="s1">&#39;RES2&#39;</span><span class="p">,</span> <span class="s1">&#39;RES3&#39;</span><span class="p">]</span>
+
+<span class="gp">In [14]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">residues</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">resnames</span>
+<span class="gh">Out[14]: </span><span class="go"></span>
+<span class="go">array([&#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;,</span>
+<span class="go">       &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;,</span>
+<span class="go">       &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES1&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;,</span>
+<span class="go">       &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;,</span>
+<span class="go">       &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;,</span>
+<span class="go">       &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES2&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;,</span>
+<span class="go">       &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;,</span>
+<span class="go">       &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;, &#39;RES3&#39;], dtype=object)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method cannot be used with connectivity attributes, i.e. bonds, angles, dihedrals, and impropers.</p>
+</div>
+<p>Similarly to adding topology attributes with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_TopologyAttr()</span></code></a>, the “level” of the attribute matters. Residue attributes can only be assigned to attributes at the Residue or ResidueGroup level. The same applies to attributes for Atoms and Segments. For example, we would get a NotImplementedError if we tried to assign resnames to an AtomGroup.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [15]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">resnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;new_name&#39;</span><span class="p">]</span>
+
+<span class="go">NotImplementedErrorTraceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-15-0f99b0dc5f49&gt; in &lt;module&gt;</span>
+<span class="go">----&gt; 1 pdb.residues[0].atoms.resnames = [&#39;new_name&#39;]</span>
+<span class="go">...</span>
+<span class="go">NotImplementedError: Cannot set resnames from AtomGroup. Use &#39;AtomGroup.residues.resnames = &#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="default-values-and-attribute-levels">
+<span id="topologyattr-defaults"></span><h3>Default values and attribute levels<a class="headerlink" href="#default-values-and-attribute-levels" title="Permalink to this headline">¶</a></h3>
+<p>Topology information in MDAnalysis is always associated with a level: one of atom, residue, or segment. For example, <code class="code docutils literal notranslate"><span class="pre">indices</span></code> is Atom information, <code class="code docutils literal notranslate"><span class="pre">resindices</span></code> is Residue information, and <code class="code docutils literal notranslate"><span class="pre">segindices</span></code> is Segment information. Many topology attributes also have default values, so that they can be <a class="reference internal" href="#add-topologyattrs"><span class="std std-ref">added to a Universe without providing explicit values</span></a>, and expected types. The table below lists which attributes have default values, what they are, and the information level.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 13%" />
+<col style="width: 42%" />
+<col style="width: 7%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Atom</p></th>
+<th class="head"><p>AtomGroup</p></th>
+<th class="head"><p>default</p></th>
+<th class="head"><p>level</p></th>
+<th class="head"><p>type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>altLocs</p></td>
+<td><p>altLoc</p></td>
+<td><p>‘’</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>angles</p></td>
+<td><p>angles</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>atomiccharges</p></td>
+<td><p>atomiccharge</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>atomnums</p></td>
+<td><p>atomnum</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>bfactors</p></td>
+<td><p>bfactor</p></td>
+<td><p>0.0</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘float’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>bonds</p></td>
+<td><p>bonds</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>chainIDs</p></td>
+<td><p>chainID</p></td>
+<td><p>‘’</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>charges</p></td>
+<td><p>charge</p></td>
+<td><p>0.0</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘float’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>dihedrals</p></td>
+<td><p>dihedrals</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>elements</p></td>
+<td><p>element</p></td>
+<td><p>‘’</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>icodes</p></td>
+<td><p>icode</p></td>
+<td><p>‘’</p></td>
+<td><p>residue</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>ids</p></td>
+<td><p>id</p></td>
+<td><p>continuous sequence from 1 to n_atoms</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘int’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>impropers</p></td>
+<td><p>impropers</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>masses</p></td>
+<td><p>mass</p></td>
+<td><p>0.0</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘numpy.float64’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>models</p></td>
+<td><p>model</p></td>
+<td><p>No default values</p></td>
+<td><p>segment</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>molnums</p></td>
+<td><p>molnum</p></td>
+<td><p>No default values</p></td>
+<td><p>residue</p></td>
+<td><p>&lt;class ‘numpy.int64’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>moltypes</p></td>
+<td><p>moltype</p></td>
+<td><p>No default values</p></td>
+<td><p>residue</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>names</p></td>
+<td><p>name</p></td>
+<td><p>‘’</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>occupancies</p></td>
+<td><p>occupancy</p></td>
+<td><p>0.0</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘float’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>radii</p></td>
+<td><p>radius</p></td>
+<td><p>0.0</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘float’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>record_types</p></td>
+<td><p>record_type</p></td>
+<td><p>‘ATOM’</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>resids</p></td>
+<td><p>resid</p></td>
+<td><p>continuous sequence from 1 to n_residues</p></td>
+<td><p>residue</p></td>
+<td><p>&lt;class ‘int’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>resnames</p></td>
+<td><p>resname</p></td>
+<td><p>‘’</p></td>
+<td><p>residue</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>resnums</p></td>
+<td><p>resnum</p></td>
+<td><p>continuous sequence from 1 to n_residues</p></td>
+<td><p>residue</p></td>
+<td><p>&lt;class ‘int’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>segids</p></td>
+<td><p>segid</p></td>
+<td><p>‘’</p></td>
+<td><p>segment</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+<tr class="row-odd"><td><p>tempfactors</p></td>
+<td><p>tempfactor</p></td>
+<td><p>0.0</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘float’&gt;</p></td>
+</tr>
+<tr class="row-even"><td><p>type_indices</p></td>
+<td><p>type_index</p></td>
+<td><p>No default values</p></td>
+<td><p>atom</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>types</p></td>
+<td><p>type</p></td>
+<td><p>‘’</p></td>
+<td><p>atom</p></td>
+<td><p>&lt;class ‘object’&gt;</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="topology-objects">
+<span id="id2"></span><h2>Topology objects<a class="headerlink" href="#topology-objects" title="Permalink to this headline">¶</a></h2>
+<p>MDAnalysis defines four types of <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a> by connectivity:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Bond" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bond</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Angle" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Angle</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.Dihedral" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.ImproperDihedral" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ImproperDihedral</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>The value of each topology object can be calculated with <code class="xref py py-func docutils literal notranslate"><span class="pre">value()</span></code>.</p>
+<p>Each <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a> also contains the following attributes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject.atoms" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">atoms</span></code></a> : the ordered atoms in the object</p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject.indices" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">indices</span></code></a> : the ordered atom indices in the object</p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject.type" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">type</span></code></a> : this is either the ‘type’ of the bond/angle/dihedral/improper, or a tuple of the atom types.</p></li>
+<li><p><code class="xref py py-attr docutils literal notranslate"><span class="pre">is_guessed</span></code> : MDAnalysis can guess bonds. This property records if the object was read from a file or guessed.</p></li>
+</ul>
+</div></blockquote>
+<p>Groups of these are held in <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a>s. The master groups of TopologyObjects are <a class="reference internal" href="universe.html#universe-properties"><span class="std std-ref">accessible as properties of a Universe</span></a>. TopologyObjects are typically read from a file with connectivity information (<a class="reference internal" href="#topologyobject-attr"><span class="std std-ref">see the supported formats here</span></a>). However, they can be created in two ways: by adding them to a Universe, or by creating them from an <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>. Bonds can be guessed based on distance and Van der Waals’ radii with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.guess_bonds" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">AtomGroup.guess_bonds</span></code></a>.</p>
+<div class="section" id="adding-to-a-universe">
+<h3>Adding to a Universe<a class="headerlink" href="#adding-to-a-universe" title="Permalink to this headline">¶</a></h3>
+<p>As of version 0.21.0, there are specific methods for adding <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>s to a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_Bonds()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_Angles()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_Dihedrals()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_Impropers()</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>These accept the following values:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a></p></li>
+<li><p>an iterable of atom indices</p></li>
+<li><p>an iterable of <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>s</p></li>
+</ul>
+</div></blockquote>
+<p>Prior to version 0.21.0, objects could be added to a Universe with <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.add_TopologyAttr" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_TopologyAttr()</span></code></a>.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [15]: </span><span class="nb">hasattr</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="s1">&#39;angles&#39;</span><span class="p">)</span>
+<span class="gh">Out[15]: </span><span class="go">False</span>
+
+<span class="gp">In [16]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="s1">&#39;angles&#39;</span><span class="p">,</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)])</span>
+
+<span class="gp">In [17]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">angles</span>
+<span class="gh">Out[17]: </span><span class="go">&lt;TopologyGroup containing 2 angles&gt;</span>
+</pre></div>
+</div>
+<p>Both of these methods add the new objects to the associated master <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a> in the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
+</div>
+<div class="section" id="creating-with-an-atomgroup">
+<h3>Creating with an AtomGroup<a class="headerlink" href="#creating-with-an-atomgroup" title="Permalink to this headline">¶</a></h3>
+<p>An <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> can be represented as a bond, angle, dihedral angle, or improper angle <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a> through the respective properties:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.bond" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bond</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.angle" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">angle</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.dihedral" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">dihedral</span></code></a></p></li>
+<li><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.improper" title="(in MDAnalysis v1.0)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">improper</span></code></a></p></li>
+</ul>
+</div></blockquote>
+<p>The <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> must contain the corresponding number of atoms, in the desired order. For example, a bond cannot be created from three atoms.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="n">pdb</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">bond</span>
+
+<span class="go">ValueErrorTraceback (most recent call last)</span>
+<span class="go">&lt;ipython-input-21-e59c36ab66f4&gt; in &lt;module&gt;</span>
+<span class="go">----&gt; 1 pdb.atoms[[3, 4, 2]].bond</span>
+<span class="go">...</span>
+<span class="go">ValueError: bond only makes sense for a group with exactly 2 atoms</span>
+</pre></div>
+</div>
+<p>However, the angle Atom 2 —– Atom 4 —— Atom 3 can be calculated, even if the atoms are not connected with bonds.</p>
+<div class="highlight-ipython notranslate"><div class="highlight"><pre><span></span><span class="gp">In [18]: </span><span class="n">a</span> <span class="o">=</span> <span class="n">pdb</span><span class="o">.</span><span class="n">atoms</span><span class="p">[[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">angle</span>
+
+<span class="gp">In [19]: </span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+<span class="go">47.770653826924175</span>
+</pre></div>
+</div>
+<p>These AtomGroup <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>s are not added to the associated master <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyGroup</span></code></a> in the <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
+</div>
+<div class="section" id="deleting-from-a-universe">
+<h3>Deleting from a Universe<a class="headerlink" href="#deleting-from-a-universe" title="Permalink to this headline">¶</a></h3>
+<p>As of version 0.21.0, there are specific methods for deleting <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyObject" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">TopologyObject</span></code></a>s from a <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_Bonds()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_Angles()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_Dihedrals()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">delete_Impropers()</span></code></p></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="topology-specific-methods">
+<span id="topology-groupmethods"></span><h2>Topology-specific methods<a class="headerlink" href="#topology-specific-methods" title="Permalink to this headline">¶</a></h2>
+<p>A number of analysis and transformation methods are defined for <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>, <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ResidueGroup</span></code></a>, and <a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup" title="(in MDAnalysis v1.0)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SegmentGroup</span></code></a> that require specific properties to be available. The primary requirement is the <cite>positions</cite> attribute. With positions, you can easily compute a center of geometry:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
+<span class="go">array([-0.04223882,  0.01418196, -0.03504874])</span>
+</pre></div>
+</div>
+<p>The following methods all require coordinates.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bbox()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">bsphere()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">center()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">center_of_geometry()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">centroid()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">pack_into_box()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">rotate()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">rotate_by()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">transform()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">translate()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">unwrap()</span></code></p></li>
+<li><p><code class="xref py py-meth docutils literal notranslate"><span class="pre">wrap()</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Other methods are made available when certain topology attributes are defined in the Universe. These are listed below.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 48%" />
+<col style="width: 7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Method</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Requires</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.total_charge" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">total_charge()</span></code></a></p></td>
+<td><p>Total charge of (compounds of) the group</p></td>
+<td><p>charges</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.align_principal_axis" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">align_principal_axis()</span></code></a></p></td>
+<td><p>Align principal axis with index <cite>axis</cite> with <cite>vector</cite></p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.asphericity" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">asphericity()</span></code></a></p></td>
+<td><p>Asphericity</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.center_of_mass" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">center_of_mass()</span></code></a></p></td>
+<td><p>Center of mass of (compounds of) the group</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.moment_of_inertia" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">moment_of_inertia()</span></code></a></p></td>
+<td><p>Tensor moment of inertia relative to center of mass as 3x3 numpy array</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.principal_axes" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">principal_axes()</span></code></a></p></td>
+<td><p>Calculate the principal axes from the moment of inertia</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.radius_of_gyration" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">radius_of_gyration()</span></code></a></p></td>
+<td><p>Radius of gyration</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.shape_parameter" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">shape_parameter()</span></code></a></p></td>
+<td><p>Shape parameter</p></td>
+<td><p>masses</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.mdanalysis.org/docs/documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.total_mass" title="(in MDAnalysis v1.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">total_mass()</span></code></a></p></td>
+<td><p>Total mass of (compounds of) the group</p></td>
+<td><p>masses</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="trajectories/trajectories.html" class="btn btn-neutral float-right" title="Trajectories" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="selections.html" class="btn btn-neutral float-left" title="Atom selection language" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2019-2020, Lily Wang, Rocco Meli, Richard J. Gowers, and Oliver Beckstein.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
