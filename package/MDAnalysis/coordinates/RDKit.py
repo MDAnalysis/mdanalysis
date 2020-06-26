@@ -213,13 +213,13 @@ class RDKitConverter(base.ConverterBase):
             # other properties
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
+                attr = attr[:-1]
                 if isinstance(value, np.float):
-                    rdatom.SetDoubleProp("_MDAnalysis_%s" % attr[:-1], 
-                                         float(value))
+                    rdatom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
                 elif isinstance(value, np.int):
-                    rdatom.SetIntProp("_MDAnalysis_%s" % attr[:-1], int(value))
+                    rdatom.SetIntProp("_MDAnalysis_%s" % attr, int(value))
                 else:
-                rdatom.SetProp("_MDAnalysis_%s" % attr[:-1], value)
+                    rdatom.SetProp("_MDAnalysis_%s" % attr, value)
             # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
@@ -238,7 +238,11 @@ class RDKitConverter(base.ConverterBase):
             bonds = ag.bonds
 
         for bond in bonds:
-            bond_indices = [atom_mapper[i] for i in bond.indices]
+            try:
+                bond_indices = [atom_mapper[i] for i in bond.indices]
+            except KeyError:
+                # one of the atoms of the bond is not part of the atomgroup
+                continue
             try:
                 bond_type = bond.type.upper()
             except AttributeError:
