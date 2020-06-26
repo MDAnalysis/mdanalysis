@@ -300,7 +300,10 @@ def pickle_open(name, mode='rt'):
         return TextIOPicklable(raw)
 
 
-def bz2_pickle_open(name, mode):
+def bz2_pickle_open(name, mode='rt'):
+    if mode not in {'r', 'rt', 'rb'}:
+        raise ValueError("Only read mode ('r', 'rt', 'rb') \
+                         files can be pickled.")
     bz_mode = mode.replace("t", "")
     binary_file = BZ2Picklable(name, bz_mode)
     if "t" in mode:
@@ -309,7 +312,10 @@ def bz2_pickle_open(name, mode):
         return binary_file
 
 
-def gzip_pickle_open(name, mode):
+def gzip_pickle_open(name, mode='rt'):
+    if mode not in {'r', 'rt', 'rb'}:
+        raise ValueError("Only read mode ('r', 'rt', 'rb') \
+                         files can be pickled.")
     gz_mode = mode.replace("t", "")
     binary_file = GzipPicklable(name, gz_mode)
     if "t" in mode:
@@ -318,7 +324,10 @@ def gzip_pickle_open(name, mode):
         return binary_file
 
 
-def gsd_pickle_open(name, mode):
+def gsd_pickle_open(name, mode='rb'):
+    if mode not in {'r', 'rt', 'rb'}:
+        raise ValueError("Only read mode ('r', 'rt', 'rb') \
+                         files can be pickled.")
     gsdfileobj = fl.open(name=name,
                          mode=mode,
                          application='gsd.hoomd ' + gsd.__version__,
@@ -327,5 +336,5 @@ def gsd_pickle_open(name, mode):
     return GSDPicklable(gsdfileobj)
 
 
-def ncdf_pickle_open(name, mmap):
+def ncdf_pickle_open(name, mmap=None):
     return NCDFPicklable(name, mmap=mmap)

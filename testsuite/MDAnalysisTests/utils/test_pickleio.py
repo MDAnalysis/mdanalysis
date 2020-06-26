@@ -27,18 +27,24 @@ from numpy.testing import assert_equal
 
 from MDAnalysis.lib.util import anyopen
 from MDAnalysis.lib.picklable_file_io import (
-    pickle_open,
     BufferIOPicklable,
     FileIOPicklable,
     TextIOPicklable,
     BZ2Picklable,
-    GzipPicklable
+    GzipPicklable,
+    pickle_open,
+    bz2_pickle_open,
+    gzip_pickle_open,
+    gsd_pickle_open,
+    ncdf_pickle_open
 )
 from MDAnalysis.tests.datafiles import (
     PDB,
     XYZ_bz2,
     MMTF_gz,
-    GMS_ASYMOPT
+    GMS_ASYMOPT,
+    GSD,
+    NCDF
 )
 
 
@@ -77,7 +83,7 @@ def test_offset_text_to_0(f_text):
 ])
 def f_byte(request):
     filename, mode, ref_reader_class = request.param
-    return (anyopen(filename, mode), ref_reader_class)
+    return anyopen(filename, mode), ref_reader_class
 
 
 def test_get_right_open_handler_byte(f_byte):
@@ -85,14 +91,16 @@ def test_get_right_open_handler_byte(f_byte):
 
 
 def test_iopickle_byte(f_byte):
-    f_byte_pickled = pickle.loads(pickle.dumps(f_byte[0]))
-    assert_equal(f_byte[0].readline(), f_byte_pickled.readline())
+    file = f_byte[0]
+    f_byte_pickled = pickle.loads(pickle.dumps(file))
+    assert_equal(file.readline(), f_byte_pickled.readline())
 
 
 def test_offset_byte_to_tell(f_byte):
-    f_byte[0].readline()
-    f_byte_pickled = pickle.loads(pickle.dumps(f_byte[0]))
-    assert_equal(f_byte_pickled.tell(), f_byte[0].tell())
+    file = f_byte[0]
+    file.readline()
+    f_byte_pickled = pickle.loads(pickle.dumps(file))
+    assert_equal(f_byte_pickled.tell(), file.tell())
 
 
 def test_context_manager_pickle():
@@ -109,16 +117,32 @@ def test_fileio_pickle():
 
 @pytest.fixture(params=[
     # filename mode
-    (PDB, 'w'),
-    (PDB, 'x'),
-    (PDB, 'a'),
+    (PDB, 'w', pickle_open),
+    (PDB, 'x', pickle_open),
+    (PDB, 'a', pickle_open),
+    (XYZ_bz2, 'w', bz2_pickle_open),
+    (MMTF_gz, 'w', gzip_pickle_open)
 ])
 def unpicklable_f(request):
-    filename, mode = request.param
-    return filename, mode
+    filename, mode, open_func = request.param
+    return filename, mode, open_func
 
 
 def test_unpicklable_open_mode(unpicklable_f):
-    filename, mode = unpicklable_f
+    filename, mode, open_func = unpicklable_f
     with pytest.raises(ValueError, match=r"Only read mode *"):
-        pickle_open(filename, mode)
+        open_func(filename, mode)
+
+
+def test_GSD_pickle():
+    gsd_io = gsd_pickle_open(GSD, mode='rb')
+    gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
+    assert_equal(gsd_io.read_frame(0).particles.position,
+                 gsd_io_pickled.read_frame(0).particles.position)
+
+
+def test_NCDF_pickle():
+    ncdf_io = ncdf_pickle_open(NCDF, mmap=None)
+    ncdf_io_pickled = pickle.loads(pickle.dumps(ncdf_io))
+    assert_equal(ncdf_io.variables['coordinates'][0],
+                 ncdf_io_pickled.variables['coordinates'][0])
