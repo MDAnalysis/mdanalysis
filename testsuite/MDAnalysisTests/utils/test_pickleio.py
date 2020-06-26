@@ -25,18 +25,37 @@ import pickle
 import pytest
 from numpy.testing import assert_equal
 
-from MDAnalysis.lib.picklable_file_io import pickle_open, FileIOPicklable
-from MDAnalysis.tests.datafiles import PDB
+from MDAnalysis.lib.util import anyopen
+from MDAnalysis.lib.picklable_file_io import (
+    pickle_open,
+    BufferIOPicklable,
+    FileIOPicklable,
+    TextIOPicklable,
+    BZ2Picklable,
+    GzipPicklable
+)
+from MDAnalysis.tests.datafiles import (
+    PDB,
+    XYZ_bz2,
+    MMTF_gz,
+    GMS_ASYMOPT
+)
 
 
 @pytest.fixture(params=[
     # filename mode
     (PDB, 'r'),
     (PDB, 'rt'),
+    (XYZ_bz2, 'rt'),
+    (GMS_ASYMOPT, 'rt')
 ])
 def f_text(request):
     filename, mode = request.param
-    return pickle_open(filename, mode)
+    return anyopen(filename, mode)
+
+
+def test_get_right_open_handler_text(f_text):
+    assert_equal(f_text.__class__, TextIOPicklable)
 
 
 def test_iopickle_text(f_text):
@@ -51,23 +70,29 @@ def test_offset_text_to_0(f_text):
 
 
 @pytest.fixture(params=[
-    # filename mode
-    (PDB, 'rb'),
+    # filename mode ref_class
+    (PDB, 'rb', BufferIOPicklable),
+    (XYZ_bz2, 'rb', BZ2Picklable),
+    (MMTF_gz, 'rb', GzipPicklable)
 ])
 def f_byte(request):
-    filename, mode = request.param
-    return pickle_open(filename, mode)
+    filename, mode, ref_reader_class = request.param
+    return (anyopen(filename, mode), ref_reader_class)
+
+
+def test_get_right_open_handler_byte(f_byte):
+    assert_equal(f_byte[0].__class__, f_byte[1])
 
 
 def test_iopickle_byte(f_byte):
-    f_byte_pickled = pickle.loads(pickle.dumps(f_byte))
-    assert_equal(f_byte.readline(), f_byte_pickled.readline())
+    f_byte_pickled = pickle.loads(pickle.dumps(f_byte[0]))
+    assert_equal(f_byte[0].readline(), f_byte_pickled.readline())
 
 
 def test_offset_byte_to_tell(f_byte):
-    f_byte.readline()
-    f_byte_pickled = pickle.loads(pickle.dumps(f_byte))
-    assert_equal(f_byte_pickled.tell(), f_byte.tell())
+    f_byte[0].readline()
+    f_byte_pickled = pickle.loads(pickle.dumps(f_byte[0]))
+    assert_equal(f_byte_pickled.tell(), f_byte[0].tell())
 
 
 def test_context_manager_pickle():
