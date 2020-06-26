@@ -40,10 +40,12 @@ else:
     rdkit_installed = True
 
 
+@pytest.mark.skipif(rdkit_installed is False, reason="requires RDKit")
 def mol2_mol():
     return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
 
+@pytest.mark.skipif(rdkit_installed is False, reason="requires RDKit")
 def smiles_mol():
     mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
     mol = Chem.AddHs(mol)
