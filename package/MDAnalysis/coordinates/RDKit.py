@@ -96,6 +96,7 @@ else:
         "segindex": "SegmentNumber",
         "tempfactor": "TempFactor",
     }
+    PERIODIC_TABLE = Chem.GetPeriodicTable()
 
 
 class RDKitReader(memory.MemoryReader):
@@ -188,15 +189,8 @@ class RDKitConverter(base.ConverterBase):
             raise AttributeError(
                 "The `elements` attribute is required for the RDKitConverter "
                 "but is not present in this AtomGroup. Please refer to the "
-                "documentation to guess elements from other attributes. "
-                "If `types` are present in the AtomGroup, a good starting "
-                "point would be:\n"
-                ">>> from MDAnalysis.topology.guessers import "
-                "guess_atom_element\n"
-                ">>> elements = np.array(["
-                "guess_atom_element(x).capitalize() for x in u.atoms.types"
-                "], dtype=object)\n"
-                ">>> u.add_TopologyAttr('elements', elements)") from None
+                "documentation to guess elements from other attributes or "
+                "type `help(mda.topology.guessers)`") from None
 
         other_attrs = {}
         for attr in ["bfactors", "charges", "icodes", "segids", "types"]:
@@ -219,9 +213,12 @@ class RDKitConverter(base.ConverterBase):
             # other properties
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
-                if isinstance(value, np.generic):
-                    # convert numpy types to python standard types
-                    value = str(value)
+                if isinstance(value, np.float):
+                    rdatom.SetDoubleProp("_MDAnalysis_%s" % attr[:-1], 
+                                         float(value))
+                elif isinstance(value, np.int):
+                    rdatom.SetIntProp("_MDAnalysis_%s" % attr[:-1], int(value))
+                else:
                 rdatom.SetProp("_MDAnalysis_%s" % attr[:-1], value)
             # add atom
             index = mol.AddAtom(rdatom)
