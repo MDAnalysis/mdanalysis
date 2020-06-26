@@ -31,6 +31,8 @@ from numpy.testing import (assert_equal,
 
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_full
 
+from MDAnalysis.coordinates.RDKit import _infer_bo_and_charges
+
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
@@ -179,3 +181,35 @@ class TestRequiresRDKit(object):
                 u.atoms.convert_to("RDKIT")
                 assert "RDKit is required for the RDKitConverter" in str(
                     e.value)
+
+
+@pytest.mark.skipif(rdkit_installed is False, reason="requires RDKit")
+class TestRDKitFunctions(object):
+    @pytest.mark.parametrize("smi, out", [
+        ("[H]C([H])([H])[H]", "C"),
+        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])", "c1ccccc1"),
+        ("[Cl]-[C](-[H])-[O]", "C(=O)Cl"),
+        ("[H]-[C](-[O])-[N](-[H])-[H]", "C(=O)N"),
+        ("[C](-[H])(-[H])-[C](-[H])-[H]", "C=C"),
+        ("[P](-O)(-O)(-O)-[O]", "P(O)(O)(O)=O"),
+        ("[N]-[C]-[H]", "N#C"),
+    ])
+    def test_infer_bond_orders(self, smi, out):
+        molin = Chem.MolFromSmiles(smi, sanitize=False)
+        molin = _infer_bo_and_charges(molin)
+        molin = Chem.RemoveHs(molin)
+        molref = Chem.MolFromSmiles(out)
+        assert molin.HasSubstructMatch(
+            molref) and molref.HasSubstructMatch(molin)
+
+    @pytest.mark.parametrize("smi, atom, charge", [
+        ("C-[O]", "O", -1),
+        ("[N]-[C]-[O]", "O", -1),
+        ("[N](-[H])(-[H])(-[H])-[H]", "N", 1),
+    ])
+    def test_infer_charges(self, smi, atom, charge):
+        mol = Chem.MolFromSmiles(smi, sanitize=False)
+        mol = _infer_bo_and_charges(mol)
+        index = mol.GetSubstructMatch(Chem.MolFromSmarts(atom))[0]
+        atom = mol.GetAtomWithIdx(index)
+        assert atom.GetFormalCharge() == charge

@@ -219,7 +219,7 @@ class RDKitConverter(base.ConverterBase):
                 elif isinstance(value, np.int):
                     rdatom.SetIntProp("_MDAnalysis_%s" % attr[:-1], int(value))
                 else:
-                rdatom.SetProp("_MDAnalysis_%s" % attr[:-1], value)
+                    rdatom.SetProp("_MDAnalysis_%s" % attr[:-1], value)
             # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
@@ -237,8 +237,19 @@ class RDKitConverter(base.ConverterBase):
             ag.guess_bonds()
             bonds = ag.bonds
 
+        border_atom_indices = []
         for bond in bonds:
-            bond_indices = [atom_mapper[i] for i in bond.indices]
+            try:
+                bond_indices = [atom_mapper[i] for i in bond.indices]
+            except KeyError:
+                # one of the atoms of the bond is not part of the atomgroup
+                # save the bond atom that is in the atomgroup for later
+                for i in bond.indices:
+                    if i in atom_mapper.keys():
+                        border_atom_indices.append(atom_mapper[i])
+                        break
+                # skip the rest
+                continue
             try:
                 bond_type = bond.type.upper()
             except AttributeError:
@@ -248,7 +259,12 @@ class RDKitConverter(base.ConverterBase):
                 bond.order, Chem.BondType.SINGLE))
             mol.AddBond(*bond_indices, bond_type)
 
-        # sanitization
+        mol.UpdatePropertyCache(strict=False)
+
+        # infer bond orders and formal charges from the connectivity
+        _infer_bo_and_charges(mol, border_atom_indices)
+
+        # sanitize
         Chem.SanitizeMol(mol)
 
         return mol
@@ -290,3 +306,96 @@ def _add_mda_attr_to_rdkit(atom, attr, rdattr, mi):
             value = "{:>2}".format(symbol) + "{:<2}".format(number)
         # set attribute value in RDKit MonomerInfo
         getattr(mi, "Set%s" % rdattr)(value)
+
+
+def _infer_bo_and_charges(mol, border_atom_indices):
+    """Infer bond orders and formal charges from a molecule.
+
+    - Step 1
+    Since most MD topology files don't explicitely retain informations on bond 
+    orders or charges, it has to be guessed from the topology. This is done by 
+    looping other each atom and comparing its expected valence to the current 
+    valence, called `delta_v`. If two neighbouring atoms have a common 
+    positive delta_v, the bond between them most likely has a bond order of 
+    1+delta_v. If an atom doesn't share a delta_v with any of its neighbours, 
+    it likely needs a formal charge of -delta_v.
+
+    - Step 2
+    Some atoms can be "mutilated" by a selection (i.e. one of their bonds is cut). The previous step is likely to assign a formal charge to such atoms even if they weren't charged in the original topology. This step converts the resulting charges to radical electrons, or in some cases to higher order bonds. This ensures the atomgroup is not artificially charged because of the previous step.
+
+    Parameters
+    ----------
+
+    mol : rdkit.Chem.rdchem.RWMol
+        The molecule is modified inplace and must have all hydrogens added
+
+    border_atom_indices : list
+        List of border atoms indices
+    """
+    # Step 1
+    for atom in mol.GetAtoms():
+        # create delta_v for each possible valence
+        expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
+        current_v = atom.GetTotalValence()
+        delta_vs = [expected_v - current_v for expected_v in expected_vs]
+
+        # if there's only one possible valence state and the correpsonding
+        # delta_v is negative, it means we can only add a positive charge to
+        # the atom
+        if (len(delta_vs) == 1) and (delta_vs[0] < 0):
+            charge = -delta_vs[0]
+            atom.SetFormalCharge(charge)
+            mol.UpdatePropertyCache(strict=False)
+        else:
+            neighbors = atom.GetNeighbors()
+            # check if one of the neighbors has a common delta_v
+            for i, na in enumerate(neighbors, start=1):
+                # create delta_v for the neighbor
+                na_expected_vs = PERIODIC_TABLE.GetValenceList(
+                    na.GetAtomicNum())
+                na_current = na.GetTotalValence()
+                na_delta = [
+                    na_expected - na_current for na_expected in na_expected_vs]
+                # smallest common delta_v, else NaN
+                common_delta = min(set(delta_vs).intersection(na_delta),
+                                   default=np.nan)
+                # common_delta == 0 means we don't need to do anything
+                if common_delta != 0:
+                    # if they have no delta_v in common
+                    if common_delta is np.nan:
+                        # if it's the last neighbor
+                        if i == len(neighbors):
+                            charge = -delta_vs[0]  # negative
+                            atom.SetFormalCharge(charge)
+                            mol.UpdatePropertyCache(strict=False)
+                    # if they both need a supplementary bond
+                    else:
+                        bond = mol.GetBondBetweenAtoms(
+                            atom.GetIdx(), na.GetIdx())
+                        bond.SetBondType(RDBONDORDER[common_delta+1])
+                        mol.UpdatePropertyCache(strict=False)
+                        break  # out of neighbors loop
+    
+    # Step 2
+    for i in border_atom_indices:
+        atom = mol.GetAtomWithIdx(i)
+        charge = atom.GetFormalCharge()
+        neighbors = atom.GetNeighbors()
+        # check if a neighbor atom also bears a charge
+        for i, na in enumerate(neighbors, 1):
+            na_charge = na.GetFormalCharge()
+            if na_charge < 0:
+                # both atoms have a negative charge 
+                # convert to higher order bond
+                common_delta = max([charge, na_charge])
+                bond = mol.GetBondBetweenAtoms(atom.GetIdx(), na.GetIdx())
+                bond.SetBondType(RDBONDORDER[-common_delta+1])
+                na.SetFormalCharge(na_charge - common_delta)
+                atom.SetFormalCharge(0)
+                atom.SetNumRadicalElectrons(common_delta - charge)
+                break
+            elif i == len(neighbors):
+                # no neighbor shares a negative charge
+                atom.SetNumRadicalElectrons(-atom.GetFormalCharge())
+                atom.SetFormalCharge(0)
+        mol.UpdatePropertyCache(strict=False)
