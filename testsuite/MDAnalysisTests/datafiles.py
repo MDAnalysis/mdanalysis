@@ -166,7 +166,7 @@ __all__ = [
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
-    "GSD", "GSD_bonds",
+    "GSD", "GSD_bonds", "GSD_long",
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
@@ -499,6 +499,7 @@ ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz'
 
 GSD = resource_filename(__name__, 'data/example.gsd')
 GSD_bonds = resource_filename(__name__, 'data/example_bonds.gsd')
+GSD_long = resource_filename(__name__, 'data/example_longer.gsd')
 
 DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
 DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')

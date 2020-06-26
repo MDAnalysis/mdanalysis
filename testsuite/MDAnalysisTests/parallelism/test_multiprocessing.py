@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import sys
 import multiprocessing
 
 import numpy as np
@@ -33,7 +32,6 @@ from MDAnalysis.lib.picklable_file_io import pickle_open
 from MDAnalysis.coordinates.core import get_reader_for
 
 from MDAnalysisTests.datafiles import (
-    AUX_XVG,
     CRD,
     PSF, DCD,
     DMS,
@@ -41,8 +39,10 @@ from MDAnalysisTests.datafiles import (
     DLP_HISTORY,
     INPCRD,
     GMS_ASYMOPT,
+    GMS_SYMOPT,
     GRO,
     GSD,
+    GSD_long,
     LAMMPSdata_mini,
     LAMMPSDUMP,
     mol2_molecules,
@@ -57,7 +57,7 @@ from MDAnalysisTests.datafiles import (
     TXYZ,
     XTC,
     XPDB_small,
-    XYZ_mini, XYZ,
+    XYZ_mini, XYZ, XYZ_bz2,
 )
 
 
@@ -81,6 +81,11 @@ def test_multiprocess_fileio():
     (GRO, XTC),
     (PDB_multiframe,),
     (XYZ,),
+    (XYZ_bz2,),  # .bz2
+    (GMS_SYMOPT,),  # .gms
+    (GMS_ASYMOPT,),  # .gz
+    (GSD_long,),
+    (NCDF,),
 ])
 def u(request):
     if len(request.param) == 1:
@@ -104,30 +109,37 @@ def getnames(u, ix):
     return u.atoms[ix].name
 
 
-@pytest.mark.xfail(sys.version_info < (3, 0), reason="pickle function not \
-                   working in python 2")
+def test_trajecotry_next(u):
+    u.trajectory.next()
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory.next()
+    u_p.trajectory.next()
+    assert_equal(u.atoms.positions[0], u_p.atoms.positions[0])
+
+
 def test_multiprocess_COG(u):
-    ag = u.atoms[10:20]
+    ag = u.atoms[2:5]
 
     ref = np.array([cog(u, ag, i)
-                    for i in range(4)])
+                    for i in range(3)])
 
     p = multiprocessing.Pool(2)
     res = np.array([p.apply(cog, args=(u, ag, i))
-                    for i in range(4)])
+                    for i in range(3)])
     p.close()
     assert_equal(ref, res)
 
 
-@pytest.mark.xfail(sys.version_info <= (3, 0), reason="pickle function not \
-                   working in python 2")
 def test_multiprocess_names(u):
+    if u.trajectory.__class__ == mda.coordinates.TRJ.NCDFReader:
+        # NDCFReader contains no information on atom name
+        return True
     ref = [getnames(u, i)
-           for i in range(10)]
+           for i in range(3)]
 
     p = multiprocessing.Pool(2)
     res = [p.apply(getnames, args=(u, i))
-           for i in range(10)]
+           for i in range(3)]
     p.close()
 
     assert_equal(ref, res)
