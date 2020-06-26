@@ -514,7 +514,7 @@ class HydrogenBondLifetimes(object):
     def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
                  nproc=1):
         warnings.warn(
-            "This class is depracated. "
+            "This class is deprecated. "
             "Please use MDAnalysis.analysis.hydrogenbonds instead.",
             category=DeprecationWarning
         )
