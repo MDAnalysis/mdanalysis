@@ -63,5 +63,3 @@ jobs:
       echo %CODECOV_TOKEN%
     condition: succeeded()
     displayName: 'Codecov Coverage Data Upload'
-    env:
-      CODECOV_TOKEN: $(CODECOV_TOKEN)
