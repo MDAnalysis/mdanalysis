@@ -33,22 +33,41 @@ from MDAnalysis.tests.datafiles import PDB
     # filename mode
     (PDB, 'r'),
     (PDB, 'rt'),
-    (PDB, 'rb'),
 ])
-def f(request):
+def f_text(request):
     filename, mode = request.param
     return pickle_open(filename, mode)
 
 
-def test_iopickle(f):
-    f_pickled = pickle.loads(pickle.dumps(f))
-    assert_equal(f.readline(), f_pickled.readline())
+def test_iopickle_text(f_text):
+    f_text_pickled = pickle.loads(pickle.dumps(f_text))
+    assert_equal(f_text.readline(), f_text_pickled.readline())
 
 
-def test_offset(f):
-    f.readline()
-    f_pickled = pickle.loads(pickle.dumps(f))
-    assert_equal(f.tell(), f_pickled.tell())
+def test_offset_text_to_0(f_text):
+    f_text.readline()
+    f_text_pickled = pickle.loads(pickle.dumps(f_text))
+    assert_equal(f_text_pickled.tell(), 0)
+
+
+@pytest.fixture(params=[
+    # filename mode
+    (PDB, 'rb'),
+])
+def f_byte(request):
+    filename, mode = request.param
+    return pickle_open(filename, mode)
+
+
+def test_iopickle_byte(f_byte):
+    f_byte_pickled = pickle.loads(pickle.dumps(f_byte))
+    assert_equal(f_byte.readline(), f_byte_pickled.readline())
+
+
+def test_offset_byte_to_tell(f_byte):
+    f_byte.readline()
+    f_byte_pickled = pickle.loads(pickle.dumps(f_byte))
+    assert_equal(f_byte_pickled.tell(), f_byte.tell())
 
 
 def test_context_manager_pickle():
@@ -78,10 +97,3 @@ def test_unpicklable_open_mode(unpicklable_f):
     filename, mode = unpicklable_f
     with pytest.raises(ValueError, match=r"Only read mode *"):
         pickle_open(filename, mode)
-
-
-def test_pickle_seek_fallback():
-    with pickle_open(PDB) as file:
-        file.__next__()
-        file_pickled = pickle.loads(pickle.dumps(file))
-        assert_equal(file_pickled.tell(), 0)

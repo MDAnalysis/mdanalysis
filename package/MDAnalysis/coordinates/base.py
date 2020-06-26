@@ -2115,7 +2115,7 @@ class ReaderBase(ProtoReader):
             else:
                 ts_kwargs[att] = val
 
-        self._ts_kwargs = ts_kwargs
+        self. _ts_kwargs = ts_kwargs
 
     def copy(self):
         """Return independent copy of this Reader.
@@ -2143,6 +2143,13 @@ class ReaderBase(ProtoReader):
         for aux in self.aux_list:
             self._auxs[aux].close()
         self.close()
+
+    def __getstate__(self):
+        return self.__dict__
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self[self.ts.frame]
 
 
 class _Writermeta(type):

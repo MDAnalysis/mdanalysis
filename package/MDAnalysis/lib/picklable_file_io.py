@@ -92,12 +92,7 @@ class FileIOPicklable(io.FileIO):
         super().__init__(name, mode='r')
 
     def __getstate__(self):
-        try:
-            tell = self.tell()
-        except OSError:
-            # when tell is disabled by next()
-            tell = 0
-        return self.name, tell
+        return self.name, self.tell()
 
     def __setstate__(self, args):
         name = args[0]
@@ -136,11 +131,7 @@ class BufferIOPicklable(io.BufferedReader):
         self.raw_class = raw.__class__
 
     def __getstate__(self):
-        try:
-            tell = self.tell()
-        except OSError:
-            tell = 0
-        return self.raw_class, self.name, tell
+        return self.raw_class, self.name, self.tell()
 
     def __setstate__(self, args):
         raw_class = args[0]
@@ -181,15 +172,11 @@ class TextIOPicklable(io.TextIOWrapper):
 
     def __getstate__(self):
         try:
-            tell = self.tell()
-        except OSError:
-            tell = 0
-        try:
             name = self.name
         except AttributeError:
             # This is kind of ugly--BZ2File does not save its name.
             name = self.buffer._fp.name
-        return self.raw_class, name, tell
+        return self.raw_class, name
 
     def __setstate__(self, args):
         raw_class = args[0]
@@ -198,7 +185,6 @@ class TextIOPicklable(io.TextIOWrapper):
         # GZip files, which also requires a text wrapper.
         raw = raw_class(name)
         super().__init__(raw)
-        self.seek(args[2])
 
 
 class BZ2Picklable(bz2.BZ2File):
@@ -206,11 +192,7 @@ class BZ2Picklable(bz2.BZ2File):
         super().__init__(name, mode)
 
     def __getstate__(self):
-        try:
-            tell = self.tell()
-        except OSError:
-            tell = 0
-        return self._fp.name, tell
+        return self._fp.name, self.tell()
 
     def __setstate__(self, args):
         super().__init__(args[0])
@@ -222,11 +204,7 @@ class GzipPicklable(gzip.GzipFile):
         super().__init__(name, mode)
 
     def __getstate__(self):
-        try:
-            tell = self.tell()
-        except OSError:
-            tell = 0
-        return self.name, tell
+        return self.name, self.tell()
 
     def __setstate__(self, args):
         super().__init__(args[0])
