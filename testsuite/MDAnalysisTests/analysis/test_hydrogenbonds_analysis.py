@@ -21,14 +21,16 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import numpy as np
-import MDAnalysis
-from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis
-from MDAnalysis.exceptions import NoDataError
-
+import logging
 import pytest
+
 from numpy.testing import (assert_allclose, assert_equal,
                            assert_array_almost_equal, assert_array_equal,
                            assert_almost_equal)
+
+import MDAnalysis
+from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis
+from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
 
@@ -220,6 +222,21 @@ class TestHydrogenBondAnalysisMock(object):
 
         h.autocorrelation(tau_max=2, intermittency=1)
         assert_array_equal(h.acf_timeseries, 1)
+
+    def test_no_attr_hbonds(self, universe):
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+
+        with pytest.raises(NoDataError, match="No .hbonds"):
+            h.autocorrelation(tau_max=2, intermittency=1)
+
+    def test_logging_step_not_1(self, universe, caplog):
+        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        h.run(step=2)
+
+        caplog.set_level(logging.WARNING)
+        h.autocorrelation(tau_max=2, intermittency=1)
+        assert any("ideally autocorrelation function would be carried out on consecutive frames" in
+                   rec.getMessage() for rec in caplog.records)
 
 
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
