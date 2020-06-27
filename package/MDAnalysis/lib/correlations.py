@@ -223,6 +223,9 @@ def correct_intermittency(list_of_sets, intermittency):
 
     list_of_sets = deepcopy(list_of_sets)
 
+    # an element (a superset) takes the form of:
+    # - an atom pair when computing hydrogen bonds lifetime,
+    # - atom ID in the case of water survival probability,
     for i, elements in enumerate(list_of_sets):
         # initially update each frame as seen 0 ago (now)
         seen_frames_ago = {i: 0 for i in elements}
@@ -238,12 +241,12 @@ def correct_intermittency(list_of_sets, intermittency):
                     seen_frames_ago[element] += 1
                     continue
 
-                # the element is found
+                # the element is present
                 if seen_frames_ago[element] == 0:
                     # the element was present in the last frame
                     continue
 
-                # it was absent more times than allowed
+                # element was absent more times than allowed
                 if seen_frames_ago[element] > intermittency:
                     continue
 

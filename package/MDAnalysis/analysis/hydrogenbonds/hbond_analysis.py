@@ -541,7 +541,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         if not hasattr(self, 'hbonds'):
             logging.error("Autocorrelation analysis of hydrogen bonds cannot be done before the hydrogen bonds are found")
             logging.error("Autocorrelation: Please use the .run() before calling this function")
-            return
+            raise NoDataError("No .hbonds: use the .run() first")
 
         if self.step != 1:
             logging.warning("Autocorrelation: ideally autocorrelation function would be carried out on consecutive frames. ")

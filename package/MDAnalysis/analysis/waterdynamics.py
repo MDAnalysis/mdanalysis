@@ -515,7 +515,7 @@ class HydrogenBondLifetimes(object):
                  nproc=1):
         warnings.warn(
             "This class is deprecated. "
-            "Please use MDAnalysis.analysis.hydrogenbonds instead.",
+            "Please use MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.autocorellation() instead.",
             category=DeprecationWarning
         )
 
