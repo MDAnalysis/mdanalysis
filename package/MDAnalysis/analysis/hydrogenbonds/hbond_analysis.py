@@ -191,7 +191,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
     """
 
     def __init__(self, universe, donors_sel=None, hydrogens_sel=None, acceptors_sel=None,
-                 d_h_cutoff=1.2, d_a_cutoff=3.0, d_h_a_angle_cutoff=150, update_selections=True):
+                 between=None, d_h_cutoff=1.2, d_a_cutoff=3.0, d_h_a_angle_cutoff=150,
+                 update_selections=True):
         """Set up atom selections and geometric criteria for finding hydrogen bonds in a Universe.
 
         Parameters
@@ -208,6 +209,14 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         acceptors_sel : str
             Selection string for the hydrogen bond acceptor atoms. Leave as `None` to guess which atoms to use in the
             analysis using :attr:`guess_acceptors`
+        between : List (optional)
+            Specify two selection strings for non-updating atom groups between which hydrogen bonds will be calculated.
+            For example, if the donor and acceptor selections include both protein and water, it is possible to
+            find only protein-water hydrogen bonds - and not protein-protein or water-water - by specifying
+            :attr`between=["protein", "SOL"]`. If a two-dimensional list is passed, hydrogen bonds between each pair
+            will be found. For example, :attr`between=[["protein", "SOL"], ["protein", "protein"]]` will calculate
+            all protein-water and protein-protein hydrogen bonds but not water-water hydrogen bonds. If None, hydrogen
+            bonds between all donors and acceptors will be calculated.
         d_h_cutoff : float (optional)
             Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
             universe topology does not contain bonding information
@@ -221,7 +230,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         Note
         ----
 
-        It is highly recommended that a universe topology with bonding information is used, as this is the only way
+        It is highly recommended that a universe topology with bond information is used, as this is the only way
         that guarantees the correct identification of donor-hydrogen pairs.
         """
 
@@ -230,6 +239,29 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.donors_sel = donors_sel
         self.hydrogens_sel = hydrogens_sel
         self.acceptors_sel = acceptors_sel
+
+        # If hydrogen bonding groups are selected, then generate corresponding atom groups
+        if between is not None:
+
+            if type(between) is not list or len(between)==0:
+                raise ValueError("between must be a non-empty list")
+            if type(between[0]) == str:
+                between = [between]
+
+            between_ags = []
+            for group1, group2 in between:
+                between_ags.append(
+                    [
+                        self.u.select_atoms(group1, update_selections=False),
+                        self.u.select_atoms(group2, update_selections=False)
+                    ]
+                )
+
+            self.between_ags = between_ags
+        else:
+            self.between_ags = None
+
+
         self.d_h_cutoff = d_h_cutoff
         self.d_a_cutoff = d_a_cutoff
         self.d_h_a_angle = d_h_a_angle_cutoff
@@ -430,6 +462,44 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         return donors, hydrogens
 
+    def _filter(self):
+        """Filter donor, hydrogen and acceptors atoms to consider only hydrogen bonds between two or more
+        specified groups.
+
+           Returns
+           -------
+           None
+        """
+
+        if self.between_ags is None:
+            return
+
+        mask = np.full(self._donors.n_atoms, fill_value=False)
+        for group1, group2 in self.between_ags:
+
+            # Find donors in G1 and acceptors in G2
+            mask[
+                    np.logical_and(
+                        np.in1d(self._donors.indices, group1.indices),
+                        np.in1d(self._accetpors.indices, group2.indices)
+                    )
+            ] = True
+
+            # Find acceptors in G1 and donors in G2
+            mask[
+                np.logical_and(
+                    np.in1d(self._acceptors.indices, group1.indices),
+                    np.in1d(self._donors.indices, group2.indices)
+                )
+            ] = True
+
+        self._donors = self._donors[mask]
+        self._hydrogens = self._hydrogens[mask]
+        self._acceptors = self._acceptors[mask]
+
+        return None
+
+
     def _prepare(self):
         self.hbonds = [[], [], [], [], [], []]
 
@@ -444,6 +514,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                                               updating=self.update_selections)
         self._donors, self._hydrogens = self._get_dh_pairs()
 
+        # If necessary, filter the donors, hydrogens and acceptors
+        self._filter()
+
     def _single_frame(self):
 
         box = self._ts.dimensions
@@ -451,6 +524,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         # Update donor-hydrogen pairs if necessary
         if self.update_selections:
             self._donors, self._hydrogens = self._get_dh_pairs()
+
+            # If necessary, filter the donors, hydrogens and acceptors
+            self._filter()
 
         # find D and A within cutoff distance of one another
         # min_cutoff = 1.0 as an atom cannot form a hydrogen bond with itself
@@ -529,13 +605,10 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         Returns
         -------
-        acf_tau_timeseries : list
-            tau from 1 to `tau_max`. Saved in the field acf_tau_timeseries.
-        acf_timeseries : list
-            autcorrelation value for each value of `tau`. Saved in the field acf_timeseries.
-        acf_timeseries_data: list
-            raw datapoints, of hydrogen and acceptor indices, from which the autocorrelation is calculated.
-             Saved in the field acf_timeseries_data.
+        tau_timeseries : np.array
+            tau from 1 to `tau_max`
+        timeseries : np.array
+            autcorrelation value for each value of `tau`
         """
 
         if not hasattr(self, 'hbonds'):
@@ -556,12 +629,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         intermittent_hbonds = correct_intermittency(found_hydrogen_bonds, intermittency=intermittency)
         tau_timeseries, timeseries, timeseries_data = autocorrelation(intermittent_hbonds, tau_max,
                                                                       window_step=window_step)
-        self.acf_tau_timeseries = tau_timeseries
-        self.acf_timeseries = timeseries
-        # user can investigate the distribution and sample size
-        self.acf_timeseries_data = timeseries_data
 
-        return self
+        return np.vstack([tau_timeseries, timeseries])
 
     def count_by_time(self):
         """Counts the number of hydrogen bonds per timestep.

@@ -210,31 +210,31 @@ class TestHydrogenBondAnalysisMock(object):
         assert_array_equal(counts, ref_counts)
 
     def test_hydrogen_bond_lifetime(self, universe):
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run()
+        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
+        hbonds.run()
 
-        h.autocorrelation(tau_max=2)
-        assert_array_equal(h.acf_timeseries, [1, 0, 0])
+        tau_timeseries, timeseries = hbonds.lifetime(tau_max=2)
+        assert_array_equal(timeseries, [1, 0, 0])
 
     def test_hydrogen_bond_lifetime_intermittency(self, universe):
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run()
+        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
+        hbonds.run()
 
-        h.autocorrelation(tau_max=2, intermittency=1)
-        assert_array_equal(h.acf_timeseries, 1)
+        tau_timeseries, timeseries = hbonds.lifetime(tau_max=2, intermittency=1)
+        assert_array_equal(timeseries, 1)
 
     def test_no_attr_hbonds(self, universe):
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
+        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
 
         with pytest.raises(NoDataError, match="No .hbonds"):
-            h.autocorrelation(tau_max=2, intermittency=1)
+            hbonds.lifetime(tau_max=2, intermittency=1)
 
     def test_logging_step_not_1(self, universe, caplog):
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run(step=2)
+        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
+        hbonds.run(step=2)
 
         caplog.set_level(logging.WARNING)
-        h.autocorrelation(tau_max=2, intermittency=1)
+        hbonds.lifetime(tau_max=2, intermittency=1)
         assert any("ideally autocorrelation function would be carried out on consecutive frames" in
                    rec.getMessage() for rec in caplog.records)
 
