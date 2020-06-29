@@ -25,6 +25,7 @@ import warnings
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
+from MDAnalysis.coordinates.RDKit import RDATTRIBUTES, _add_mda_attr_to_rdkit
 import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
@@ -42,10 +43,12 @@ else:
     rdkit_installed = True
 
 
+@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
 def mol2_mol():
     return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
 
+@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
 def smiles_mol():
     mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
     mol = Chem.AddHs(mol)
@@ -53,7 +56,7 @@ def smiles_mol():
     return mol
 
 
-@pytest.mark.skipif(rdkit_installed is False, reason="requires RDKit")
+@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
 class TestRDKitReader(object):
     @pytest.mark.parametrize("rdmol, n_frames", [
         (mol2_mol(), 1),
@@ -89,7 +92,7 @@ class TestRDKitReader(object):
                      mol2.trajectory.ts.positions)
 
 
-@pytest.mark.skipif(rdkit_installed is False, reason="requires RDKit")
+@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
 class TestRDKitConverter(object):
     @pytest.fixture
     def pdb(self):
@@ -105,26 +108,22 @@ class TestRDKitConverter(object):
         u.add_TopologyAttr('elements', elements)
         return u
 
-    @pytest.mark.parametrize("sel_str", [
-        "resid 1",
-        "resname LYS and name NZ",
-        "resid 34 and altloc B",
+    @pytest.mark.parametrize("sel_str, atom_index", [
+        ("resid 1", 0),
+        ("resname LYS and name NZ", 1),
+        ("resid 34 and altloc B", 2),
     ])
-    def test_monomer_info(self, pdb, sel_str):
+    def test_monomer_info(self, pdb, sel_str, atom_index):
         rdmol = Chem.MolFromPDBFile(PDB_full)
         sel = pdb.select_atoms(sel_str)
         umol = sel.convert_to("RDKIT")
-        atom = umol.GetAtomWithIdx(0)
+        atom = umol.GetAtomWithIdx(atom_index)
         mi = atom.GetMonomerInfo()
 
-        for mda_attr, rd_attr in mda.coordinates.RDKit.RDATTRIBUTES.items():
-            if mda_attr == "occupancy":
-                mda_attr = "occupancie"
-            elif mda_attr == "segindex":
-                mda_attr = "segindice"
+        for mda_attr, rd_attr in RDATTRIBUTES.items():
             rd_value = getattr(mi, "Get%s" % rd_attr)()
-            mda_value = getattr(sel, "%ss" % mda_attr)[0]
-            if mda_attr == "name":
+            mda_value = getattr(sel, "%s" % mda_attr)[atom_index]
+            if mda_attr == "names":
                 rd_value = rd_value.strip()
             assert rd_value == mda_value
 
@@ -160,6 +159,25 @@ class TestRDKitConverter(object):
             assert len(w) == 1
             assert "No `bonds` attribute in this AtomGroup" in str(
                 w[-1].message)
+
+    @pytest.mark.parametrize("attr, value, expected", [
+        ("names", "C1", " C1 "),
+        ("names", "C12", " C12"),
+        ("names", "Cl1", "Cl1 "),
+        ("altLocs", "A", "A"),
+        ("chainIDs", "B", "B"),
+        ("icodes", "C", "C"),
+        ("occupancies", 0.5, 0.5),
+        ("resnames", "LIG", "LIG"),
+        ("resids", 123, 123),
+        ("segindices", 1, 1),
+        ("tempfactors", 0.8, 0.8),
+    ])
+    def test_add_mda_attr_to_rdkit(self, attr, value, expected):
+        mi = Chem.AtomPDBResidueInfo()
+        _add_mda_attr_to_rdkit(attr, value, mi)
+        rdvalue = getattr(mi, "Get%s" % RDATTRIBUTES[attr])()
+        assert rdvalue == expected
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):

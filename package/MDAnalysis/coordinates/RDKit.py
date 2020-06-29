@@ -87,14 +87,15 @@ else:
     # add string version of the key for each bond
     RDBONDORDER.update({str(key): value for key, value in RDBONDORDER.items()})
     RDATTRIBUTES = {
-        "altLoc": "AltLoc",
-        "chainID": "ChainId",
-        "name": "Name",
-        "occupancy": "Occupancy",
-        "resname": "ResidueName",
-        "resid": "ResidueNumber",
-        "segindex": "SegmentNumber",
-        "tempfactor": "TempFactor",
+        "altLocs": "AltLoc",
+        "chainIDs": "ChainId",
+        "icodes": "InsertionCode",
+        "names": "Name",
+        "occupancies": "Occupancy",
+        "resnames": "ResidueName",
+        "resids": "ResidueNumber",
+        "segindices": "SegmentNumber",
+        "tempfactors": "TempFactor",
     }
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
@@ -192,8 +193,14 @@ class RDKitConverter(base.ConverterBase):
                 "documentation to guess elements from other attributes or "
                 "type `help(mda.topology.guessers)`") from None
 
+        # attributes accepted in PDBResidueInfo object
+        pdb_attrs = {}
+        for attr in RDATTRIBUTES.keys():
+            if hasattr(ag, attr):
+                pdb_attrs[attr] = getattr(ag, attr)
+        # others
         other_attrs = {}
-        for attr in ["bfactors", "charges", "icodes", "segids", "types"]:
+        for attr in ["bfactors", "charges", "segids", "types"]:
             if hasattr(ag, attr):
                 other_attrs[attr] = getattr(ag, attr)
 
@@ -207,19 +214,19 @@ class RDKitConverter(base.ConverterBase):
             rdatom.SetNoImplicit(True)
             # add PDB-like properties
             mi = Chem.AtomPDBResidueInfo()
-            for attr, rdattr in RDATTRIBUTES.items():
-                _add_mda_attr_to_rdkit(atom, attr, rdattr, mi)
+            for attr, values in pdb_attrs.items():
+                _add_mda_attr_to_rdkit(attr, values[i], mi)
             rdatom.SetMonomerInfo(mi)
             # other properties
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
+                attr = attr[:-1] # plural to singular
                 if isinstance(value, np.float):
-                    rdatom.SetDoubleProp("_MDAnalysis_%s" % attr[:-1], 
-                                         float(value))
+                    rdatom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
                 elif isinstance(value, np.int):
-                    rdatom.SetIntProp("_MDAnalysis_%s" % attr[:-1], int(value))
+                    rdatom.SetIntProp("_MDAnalysis_%s" % attr, int(value))
                 else:
-                    rdatom.SetProp("_MDAnalysis_%s" % attr[:-1], value)
+                    rdatom.SetProp("_MDAnalysis_%s" % attr, value)
             # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
@@ -270,22 +277,19 @@ class RDKitConverter(base.ConverterBase):
         return mol
 
 
-def _add_mda_attr_to_rdkit(atom, attr, rdattr, mi):
+def _add_mda_attr_to_rdkit(attr, value, mi):
     """Converts an MDAnalysis atom attribute into the RDKit equivalent and 
     stores it into an RDKit AtomPDBResidueInfo object.
 
     Parameters
     ----------
 
-    atom : MDAnalysis.core.groups.Atom
-        The atom to get the attributes from
     attr : str
         Name of the atom attribute in MDAnalysis in the singular form
-    rdattr : str
-        Name of the equivalent attribute in RDKit, as found in the `Set` and 
-        `Get` methods of the `AtomPDBResidueInfo`
+    value : object, np.int or np.float
+        Attribute value as found in the AtomGroup
     mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
-        MonomerInfo object containing all the relevant atom attributes
+        MonomerInfo object that will store the relevant atom attributes
     """
     try:  # get value in MDA atom
         value = getattr(atom, attr)
