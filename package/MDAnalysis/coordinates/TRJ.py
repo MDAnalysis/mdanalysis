@@ -158,7 +158,6 @@ import logging
 import MDAnalysis
 from . import base
 from ..lib import util
-from ..lib.picklable_file_io import ncdf_pickle_open
 logger = logging.getLogger("MDAnalysis.coordinates.AMBER")
 
 
@@ -1075,3 +1074,16 @@ class NCDFWriter(base.WriterBase):
         if self.trjfile is not None:
             self.trjfile.close()
             self.trjfile = None
+
+
+class NCDFPicklable(scipy.io.netcdf.netcdf_file):
+    def __getstate__(self):
+        return self.filename, self.use_mmap
+
+    def __setstate__(self, args):
+        self.__init__(args[0], mmap=args[1])
+
+
+def ncdf_pickle_open(name, mmap=None):
+    return NCDFPicklable(name, mmap=mmap)
+

@@ -47,10 +47,11 @@ Classes
 """
 import numpy as np
 import os
+import gsd
+import gsd.fl as fl
 import gsd.hoomd
 
 from . import base
-from ..lib.picklable_file_io import gsd_pickle_open
 
 
 class GSDReader(base.ReaderBase):
@@ -79,10 +80,10 @@ class GSDReader(base.ReaderBase):
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._read_next_timestep()
 
-    def open_trajectory(self) :
+    def open_trajectory(self):
         """opens the trajectory file using gsd.hoomd module"""
         self._frame = -1
-        self._file = gsd_pickle_open(self.filename,mode='rb')
+        self._file = gsd_pickle_open(self.filename, mode='rb')
 
     def close(self):
         """close reader"""
@@ -99,7 +100,7 @@ class GSDReader(base.ReaderBase):
         self.open_trajectory()
 
     def _read_frame(self, frame):
-        try :
+        try:
             myframe = self._file[frame]
         except IndexError:
             raise IOError from None
@@ -113,13 +114,13 @@ class GSDReader(base.ReaderBase):
 
         # set frame box dimensions
         self.ts.dimensions = myframe.configuration.box
-        for i in range(3,6) :
+        for i in range(3, 6):
             self.ts.dimensions[i] = np.arccos(self.ts.dimensions[i]) * 180.0 / np.pi
 
         # set particle positions
         frame_positions = myframe.particles.position
         n_atoms_now = frame_positions.shape[0]
-        if n_atoms_now != self.n_atoms :
+        if n_atoms_now != self.n_atoms:
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
                 " atoms. MDAnalysis in unable to deal with variable"
                 " topology!"%(frame, n_atoms_now, self.n_atoms))
@@ -130,3 +131,30 @@ class GSDReader(base.ReaderBase):
     def _read_next_timestep(self) :
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
+
+
+class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
+    def __getstate__(self):
+        return self.file.name, self.file.mode
+
+    def __setstate__(self, args):
+        gsdfileobj = fl.open(name=args[0],
+                             mode=args[1],
+                             application='gsd.hoomd ' + gsd.__version__,
+                             schema='hoomd',
+                             schema_version=[1, 3])
+        return self.__init__(gsdfileobj)
+
+
+def gsd_pickle_open(name, mode='rb'):
+    gsd_version = gsd.__version__
+    schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
+    if mode not in {'r', 'rt', 'rb'}:
+        raise ValueError("Only read mode ('r', 'rt', 'rb') \
+                         files can be pickled.")
+    gsdfileobj = fl.open(name=name,
+                         mode=mode,
+                         application='gsd.hoomd ' + gsd_version,
+                         schema='hoomd',
+                         schema_version=schema_version)
+    return GSDPicklable(gsdfileobj)
