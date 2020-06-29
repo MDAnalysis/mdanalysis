@@ -111,7 +111,7 @@ def getnames(u, ix):
     return u.atoms[ix].name
 
 
-def test_trajecotry_next(u):
+def test_trajectory_next(u):
     u.trajectory.next()
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory.next()
@@ -180,7 +180,6 @@ def test_multiprocess_names(u):
 ])
 def ref_reader(request):
     fmt_name, filename, extras = request.param
-
     r = get_reader_for(filename, format=fmt_name)(filename, **extras)
     try:
         yield r
@@ -191,7 +190,16 @@ def ref_reader(request):
 
 def test_readers_pickle(ref_reader):
     ps = pickle.dumps(ref_reader)
-
     reanimated = pickle.loads(ps)
-
     assert len(ref_reader) == len(reanimated)
+
+
+def test_timestep_pickle(ref_reader):
+    try:
+        ref_reader[2]
+    except IndexError:
+        # single frame files
+        pass
+    ps = pickle.dumps(ref_reader)
+    reanimated = pickle.loads(ps)
+    assert_equal(reanimated.ts, ref_reader.ts)
