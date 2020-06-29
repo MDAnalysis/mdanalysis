@@ -89,6 +89,7 @@ else:
     RDATTRIBUTES = {
         "altLoc": "AltLoc",
         "chainID": "ChainId",
+        "icode": "InsertionCode",
         "name": "Name",
         "occupancy": "Occupancy",
         "resname": "ResidueName",
@@ -193,7 +194,7 @@ class RDKitConverter(base.ConverterBase):
                 "type `help(mda.topology.guessers)`") from None
 
         other_attrs = {}
-        for attr in ["bfactors", "charges", "icodes", "segids", "types"]:
+        for attr in ["bfactors", "charges", "segids", "types"]:
             if hasattr(ag, attr):
                 other_attrs[attr] = getattr(ag, attr)
 
@@ -213,7 +214,7 @@ class RDKitConverter(base.ConverterBase):
             # other properties
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
-                attr = attr[:-1]
+                attr = attr[:-1] # plural to singular
                 if isinstance(value, np.float):
                     rdatom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
                 elif isinstance(value, np.int):
@@ -273,7 +274,7 @@ def _add_mda_attr_to_rdkit(atom, attr, rdattr, mi):
         Name of the equivalent attribute in RDKit, as found in the `Set` and 
         `Get` methods of the `AtomPDBResidueInfo`
     mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
-        MonomerInfo object containing all the relevant atom attributes
+        MonomerInfo object that will store the relevant atom attributes
     """
     try:  # get value in MDA atom
         value = getattr(atom, attr)
