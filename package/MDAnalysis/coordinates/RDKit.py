@@ -321,7 +321,7 @@ def _infer_bo_and_charges(mol, border_atom_indices):
     it likely needs a formal charge of -delta_v.
 
     - Step 2
-    Some atoms can be "mutilated" by a selection (i.e. one of their bonds is cut). The previous step is likely to assign a formal charge to such atoms even if they weren't charged in the original topology. This step converts the resulting charges to radical electrons, or in some cases to higher order bonds. This ensures the atomgroup is not artificially charged because of the previous step.
+    Some atoms can be "mutilated" by a selection (i.e. one of their bonds is cut). The previous step is likely to assign a formal charge to such atoms even if they weren't charged in the original topology. This step converts the resulting charges to higher order bonds when possible, or to radical electrons. This ensures the atomgroup is not artificially charged because of the previous step.
 
     Parameters
     ----------
