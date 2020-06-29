@@ -86,6 +86,8 @@ def test_multiprocess_fileio():
     (GMS_ASYMOPT,),  # .gz
     (GSD_long,),
     (NCDF,),
+    (np.arange(150).reshape(5, 10, 3).astype(np.float64),),
+    (GRO, [GRO, GRO, GRO, GRO, GRO]),
 ])
 def u(request):
     if len(request.param) == 1:
@@ -131,8 +133,10 @@ def test_multiprocess_COG(u):
 
 
 def test_multiprocess_names(u):
-    if u.trajectory.__class__ == mda.coordinates.TRJ.NCDFReader:
-        # NDCFReader contains no information on atom name
+    if u.trajectory.__class__ in (mda.coordinates.TRJ.NCDFReader,
+                                  mda.coordinates.memory.MemoryReader,
+                                  mda.coordinates.chain.ChainReader):
+        # These Readers contain no information on atom name
         return True
     ref = [getnames(u, i)
            for i in range(3)]

@@ -2115,7 +2115,7 @@ class ReaderBase(ProtoReader):
             else:
                 ts_kwargs[att] = val
 
-        self. _ts_kwargs = ts_kwargs
+        self._ts_kwargs = ts_kwargs
 
     def copy(self):
         """Return independent copy of this Reader.

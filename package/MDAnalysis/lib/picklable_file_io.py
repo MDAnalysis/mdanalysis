@@ -47,8 +47,6 @@ import os
 
 import bz2
 import gzip
-from gsd import fl
-import gsd.hoomd
 import scipy.io
 
 
@@ -211,19 +209,6 @@ class GzipPicklable(gzip.GzipFile):
         self.seek(args[1])
 
 
-class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
-    def __getstate__(self):
-        return self.file.name, self.file.mode
-
-    def __setstate__(self, args):
-        gsdfileobj = fl.open(name=args[0],
-                             mode=args[1],
-                             application='gsd.hoomd ' + gsd.__version__,
-                             schema='hoomd',
-                             schema_version=[1, 3])
-        return self.__init__(gsdfileobj)
-
-
 class NCDFPicklable(scipy.io.netcdf.netcdf_file):
     def __getstate__(self):
         return self.filename, self.use_mmap
@@ -322,18 +307,6 @@ def gzip_pickle_open(name, mode='rt'):
         return TextIOPicklable(binary_file)
     else:
         return binary_file
-
-
-def gsd_pickle_open(name, mode='rb'):
-    if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') \
-                         files can be pickled.")
-    gsdfileobj = fl.open(name=name,
-                         mode=mode,
-                         application='gsd.hoomd ' + gsd.__version__,
-                         schema='hoomd',
-                         schema_version=[1, 3])
-    return GSDPicklable(gsdfileobj)
 
 
 def ncdf_pickle_open(name, mmap=None):

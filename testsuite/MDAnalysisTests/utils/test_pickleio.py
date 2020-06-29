@@ -35,7 +35,13 @@ from MDAnalysis.lib.picklable_file_io import (
     pickle_open,
     bz2_pickle_open,
     gzip_pickle_open,
-    gsd_pickle_open,
+)
+from MDAnalysis.coordinates.GSD import (
+    GSDPicklable,
+    gsd_pickle_open
+)
+from MDAnalysis.coordinates.TRJ import (
+    NCDFPicklable,
     ncdf_pickle_open
 )
 from MDAnalysis.tests.datafiles import (
@@ -66,7 +72,7 @@ def test_get_right_open_handler_text(f_text):
 
 def test_iopickle_text(f_text):
     f_text_pickled = pickle.loads(pickle.dumps(f_text))
-    assert_equal(f_text.readline(), f_text_pickled.readline())
+    assert_equal(f_text.readlines(), f_text_pickled.readlines())
 
 
 def test_offset_text_to_0(f_text):
@@ -93,7 +99,7 @@ def test_get_right_open_handler_byte(f_byte):
 def test_iopickle_byte(f_byte):
     file = f_byte[0]
     f_byte_pickled = pickle.loads(pickle.dumps(file))
-    assert_equal(file.readline(), f_byte_pickled.readline())
+    assert_equal(file.readlines(), f_byte_pickled.readlines())
 
 
 def test_offset_byte_to_tell(f_byte):
@@ -106,13 +112,13 @@ def test_offset_byte_to_tell(f_byte):
 def test_context_manager_pickle():
     with pickle_open(PDB) as file:
         file_pickled = pickle.loads(pickle.dumps(file))
-        assert_equal(file.readline(), file_pickled.readline())
+        assert_equal(file.readlines(), file_pickled.readlines())
 
 
 def test_fileio_pickle():
     raw_io = FileIOPicklable(PDB)
     raw_io_pickled = pickle.loads(pickle.dumps(raw_io))
-    assert_equal(raw_io.readline(), raw_io_pickled.readline())
+    assert_equal(raw_io.readlines(), raw_io_pickled.readlines())
 
 
 @pytest.fixture(params=[
