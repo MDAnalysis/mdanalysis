@@ -252,8 +252,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             for group1, group2 in between:
                 between_ags.append(
                     [
-                        self.u.select_atoms(group1, update_selections=False),
-                        self.u.select_atoms(group2, update_selections=False)
+                        self.u.select_atoms(group1, updating=False),
+                        self.u.select_atoms(group2, updating=False)
                     ]
                 )
 
@@ -462,42 +462,37 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         return donors, hydrogens
 
-    def _filter(self):
-        """Filter donor, hydrogen and acceptors atoms to consider only hydrogen bonds between two or more
+    def _filter_atoms(self, donors, hydrogens, acceptors):
+        """Filter donor, hydrogen and acceptor atoms to consider only hydrogen bonds between two or more
         specified groups.
+
+        Groups are specified with the `between` keyword when creating the HydrogenBondAnalysis object.
 
            Returns
            -------
-           None
+           donors, hydrogens, acceptors: Filtered AtomGroups
         """
 
-        if self.between_ags is None:
-            return
-
-        mask = np.full(self._donors.n_atoms, fill_value=False)
+        mask = np.full(donors.n_atoms, fill_value=False)
         for group1, group2 in self.between_ags:
 
             # Find donors in G1 and acceptors in G2
             mask[
                     np.logical_and(
-                        np.in1d(self._donors.indices, group1.indices),
-                        np.in1d(self._accetpors.indices, group2.indices)
+                        np.in1d(donors.indices, group1.indices),
+                        np.in1d(acceptors.indices, group2.indices)
                     )
             ] = True
 
             # Find acceptors in G1 and donors in G2
             mask[
                 np.logical_and(
-                    np.in1d(self._acceptors.indices, group1.indices),
-                    np.in1d(self._donors.indices, group2.indices)
+                    np.in1d(acceptors.indices, group1.indices),
+                    np.in1d(donors.indices, group2.indices)
                 )
             ] = True
 
-        self._donors = self._donors[mask]
-        self._hydrogens = self._hydrogens[mask]
-        self._acceptors = self._acceptors[mask]
-
-        return None
+        return donors[mask], hydrogens[mask], acceptors[mask]
 
 
     def _prepare(self):
@@ -514,9 +509,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                                               updating=self.update_selections)
         self._donors, self._hydrogens = self._get_dh_pairs()
 
-        # If necessary, filter the donors, hydrogens and acceptors
-        self._filter()
-
     def _single_frame(self):
 
         box = self._ts.dimensions
@@ -524,9 +516,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         # Update donor-hydrogen pairs if necessary
         if self.update_selections:
             self._donors, self._hydrogens = self._get_dh_pairs()
-
-            # If necessary, filter the donors, hydrogens and acceptors
-            self._filter()
 
         # find D and A within cutoff distance of one another
         # min_cutoff = 1.0 as an atom cannot form a hydrogen bond with itself
@@ -543,6 +532,10 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         tmp_donors = self._donors[d_a_indices.T[0]]
         tmp_hydrogens = self._hydrogens[d_a_indices.T[0]]
         tmp_acceptors = self._acceptors[d_a_indices.T[1]]
+
+        # Remove donor-acceptor pairs between pairs of AtomGroups we are not interested in
+        if self.between_ags is not None:
+            tmp_donors, tmp_hydrogens, tmp_acceptors = self._filter_atoms(tmp_donors, tmp_hydrogens, tmp_acceptors)
 
         # Find D-H-A angles greater than d_h_a_angle_cutoff
         d_h_a_angles = np.rad2deg(
@@ -592,6 +585,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         Parameters
         ----------
+        of : list, optional
+            A tuple ("A", "B") such as ("Protein", "Ligand"), or a list of tuples, e.g [("A", "B"), ("A", "A and around 5 B")]
+            for which the lifetime should be calculated.
         window_step : int, optional
             The number of frames between each t(0).
         tau_max : int, optional

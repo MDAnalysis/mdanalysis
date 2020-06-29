@@ -239,6 +239,111 @@ class TestHydrogenBondAnalysisMock(object):
                    rec.getMessage() for rec in caplog.records)
 
 
+class TestHydrogenBondAnalysisBetween(object):
+
+    kwargs = {
+        'donors_sel': 'name O P',
+        'hydrogens_sel': 'name H1 H2 PH',
+        'acceptors_sel': 'name O P',
+        'd_h_cutoff': 1.2,
+        'd_a_cutoff': 3.0,
+        'd_h_a_angle_cutoff': 120.0
+    }
+
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def universe():
+        # create two water molecules and two "protein" molecules
+        # P1-PH1 are the two atoms that comprise the toy protein PROT1
+        """
+                       H4
+                        \
+            O1-H2 .... O2-H3 ... P1-PH1 ... P2-PH2
+           /
+          H1
+        """
+        n_residues = 4
+        n_sol_residues = 2
+        n_prot_residues = 2
+        u = MDAnalysis.Universe.empty(
+            n_atoms=n_sol_residues*3 + n_prot_residues*2,
+            n_residues=n_residues,
+            atom_resindex=[0, 0, 0, 1, 1, 1, 2, 2, 3, 3],
+            residue_segindex=[0, 0, 1, 1],
+            trajectory=True,  # necessary for adding coordinates
+            )
+
+        u.add_TopologyAttr('name', ['O', 'H1', 'H2'] * n_sol_residues + ['P', 'PH'] * n_prot_residues)
+        u.add_TopologyAttr('type', ['O', 'H', 'H'] * n_sol_residues + ['P', 'PH'] * n_prot_residues)
+        u.add_TopologyAttr('resname', ['SOL'] * n_sol_residues + ['PROT'] * n_prot_residues)
+        u.add_TopologyAttr('resid', list(range(1, n_residues + 1)))
+        u.add_TopologyAttr('id', list(range(1, (n_sol_residues * 3 + n_prot_residues * 2) + 1)))
+
+        # Atomic coordinates with hydrogen bonds between:
+        #     O1-H2---O2
+        #     O2-H3---P1
+        #     P1-PH1---P2
+        pos = np.array([[0, 0, 0],             # O1
+                        [-0.249, -0.968, 0],    # H1
+                        [1, 0, 0],              # H2
+                        [2.5, 0, 0],            # O2
+                        [3., 0, 0],             # H3
+                        [2.250, 0.968, 0],      # H4
+                        [5.5, 0, 0],             # P1
+                        [6.5, 0, 0],             # PH1
+                        [8.5, 0, 0],             # P2
+                        [9.5, 0, 0],             # PH2
+                        ])
+
+        coordinates = np.empty((1,  # number of frames
+                                u.atoms.n_atoms,
+                                3))
+        coordinates[0] = pos
+        u.load_new(coordinates, order='fac')
+
+        return u
+
+    def test_between_all(self, universe):
+        # don't specify groups between which to find hydrogen bonds
+        hbonds = HydrogenBondAnalysis(universe, between=None, **self.kwargs)
+        hbonds.run()
+
+        # indices of [donor, hydrogen, acceptor] for each hydrogen bond
+        expected_hbond_indices = [
+            [0, 2, 3], # water-water
+            [3, 4, 6], # protein-water
+            [6, 7, 8]  # protein-protein
+        ]
+        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+
+    def test_between_PW(self, universe):
+        # Find only protein-water hydrogen bonds
+        hbonds = HydrogenBondAnalysis(universe, between=["resname PROT", "resname SOL"], **self.kwargs)
+        hbonds.run()
+
+        # indices of [donor, hydrogen, acceptor] for each hydrogen bond
+        expected_hbond_indices = [
+            [3, 4, 6] # protein-water
+        ]
+        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+
+    def test_between_PW_PP(self, universe):
+        # Find protein-water and protein-protein hydrogen bonds (not water-water)
+        hbonds = HydrogenBondAnalysis(
+            universe,
+            between=[["resname PROT", "resname SOL"], ["resname PROT", "resname PROT"]],
+            **self.kwargs
+        )
+        hbonds.run()
+
+        # indices of [donor, hydrogen, acceptor] for each hydrogen bond
+        expected_hbond_indices = [
+            [3, 4, 6], # protein-water
+            [6, 7, 8] # protein-protein
+        ]
+        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+
+
 class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(TestHydrogenBondAnalysisTIP3P):
     """Uses the same distance and cutoff hydrogen bond criteria as :class:`TestHydrogenBondAnalysisTIP3P`, so the
     results are identical, but the hydrogens and acceptors are guessed whilst the donor-hydrogen pairs are determined
