@@ -25,6 +25,7 @@ import warnings
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
+from MDAnalysis.coordinates.RDKit import RDATTRIBUTES, _add_mda_attr_to_rdkit
 import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
@@ -117,7 +118,7 @@ class TestRDKitConverter(object):
         atom = umol.GetAtomWithIdx(atom_index)
         mi = atom.GetMonomerInfo()
 
-        for mda_attr, rd_attr in mda.coordinates.RDKit.RDATTRIBUTES.items():
+        for mda_attr, rd_attr in RDATTRIBUTES.items():
             rd_value = getattr(mi, "Get%s" % rd_attr)()
             mda_value = getattr(sel, "%s" % mda_attr)[atom_index]
             if mda_attr == "names":
@@ -156,6 +157,25 @@ class TestRDKitConverter(object):
             assert len(w) == 1
             assert "No `bonds` attribute in this AtomGroup" in str(
                 w[-1].message)
+
+    @pytest.mark.parametrize("attr, value, expected", [
+        ("names", "C1", " C1 "),
+        ("names", "C12", " C12"),
+        ("names", "Cl1", "Cl1 "),
+        ("altLocs", "A", "A"),
+        ("chainIDs", "B", "B"),
+        ("icodes", "C", "C"),
+        ("occupancies", 0.5, 0.5),
+        ("resnames", "LIG", "LIG"),
+        ("resids", 123, 123),
+        ("segindices", 1, 1),
+        ("tempfactors", 0.8, 0.8),
+    ])
+    def test_add_mda_attr_to_rdkit(self, attr, value, expected):
+        mi = Chem.AtomPDBResidueInfo()
+        _add_mda_attr_to_rdkit(attr, value, mi)
+        rdvalue = getattr(mi, "Get%s" % RDATTRIBUTES[attr])()
+        assert rdvalue == expected
 
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):

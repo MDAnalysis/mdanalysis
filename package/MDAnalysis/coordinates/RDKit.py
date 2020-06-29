@@ -282,7 +282,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
     if isinstance(value, np.generic):
         # convert numpy types to python standard types
         value = value.item()
-    if attr == "name":
+    if attr == "names":
         # RDKit needs the name to be properly formated for a
         # PDB file (1 letter elements start at col 14)
         name = re.findall('(\D+|\d+)', value)
@@ -290,7 +290,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
             symbol, number = name
         else:
             symbol, number = name[0], ""
-        value = "{:>2}".format(symbol) + "{:<2}".format(number)
+        value = "{:>2}{:<2}".format(symbol, number)
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
     getattr(mi, "Set%s" % rdattr)(value)
