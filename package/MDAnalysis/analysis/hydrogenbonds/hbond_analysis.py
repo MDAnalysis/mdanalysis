@@ -574,7 +574,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         self.hbonds = np.asarray(self.hbonds).T
 
-    def autocorrelation(self, tau_max=20, window_step=1, intermittency=0):
+    def lifetime(self, tau_max=20, window_step=1, intermittency=0):
         """
         Computes and returns the time-autocorrelation (HydrogenBondLifetimes) of hydrogen bonds.
 
