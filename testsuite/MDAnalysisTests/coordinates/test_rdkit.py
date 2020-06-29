@@ -25,7 +25,6 @@ import warnings
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
-from MDAnalysis.coordinates.RDKit import RDATTRIBUTES, _add_mda_attr_to_rdkit
 import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
@@ -35,6 +34,8 @@ from MDAnalysisTests.datafiles import mol2_molecule, PDB_full
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
+    from MDAnalysis.coordinates.RDKit import (
+        RDATTRIBUTES, _add_mda_attr_to_rdkit)
 except ImportError:
     rdkit_installed = False
 else:
