@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium,
+         jbarnoud
 
   * 2.0.0
 
@@ -32,6 +33,7 @@ Enhancements
     token (Issue #2468, PR #2707)
   * Added the `from_smiles` classmethod to the Universe (Issue #2468, PR #2707)
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
+  * Improved performances when parsing TPR files (PR #2804)
 
 Changes
   * Changes development status from Beta to Mature (Issue #2773)
