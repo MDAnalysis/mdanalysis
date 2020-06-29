@@ -105,26 +105,22 @@ class TestRDKitConverter(object):
         u.add_TopologyAttr('elements', elements)
         return u
 
-    @pytest.mark.parametrize("sel_str", [
-        "resid 1",
-        "resname LYS and name NZ",
-        "resid 34 and altloc B",
+    @pytest.mark.parametrize("sel_str, atom_index", [
+        ("resid 1", 0),
+        ("resname LYS and name NZ", 1),
+        ("resid 34 and altloc B", 2),
     ])
-    def test_monomer_info(self, pdb, sel_str):
+    def test_monomer_info(self, pdb, sel_str, atom_index):
         rdmol = Chem.MolFromPDBFile(PDB_full)
         sel = pdb.select_atoms(sel_str)
         umol = sel.convert_to("RDKIT")
-        atom = umol.GetAtomWithIdx(0)
+        atom = umol.GetAtomWithIdx(atom_index)
         mi = atom.GetMonomerInfo()
 
         for mda_attr, rd_attr in mda.coordinates.RDKit.RDATTRIBUTES.items():
-            if mda_attr == "occupancy":
-                mda_attr = "occupancie"
-            elif mda_attr == "segindex":
-                mda_attr = "segindice"
             rd_value = getattr(mi, "Get%s" % rd_attr)()
-            mda_value = getattr(sel, "%ss" % mda_attr)[0]
-            if mda_attr == "name":
+            mda_value = getattr(sel, "%s" % mda_attr)[atom_index]
+            if mda_attr == "names":
                 rd_value = rd_value.strip()
             assert rd_value == mda_value
 
