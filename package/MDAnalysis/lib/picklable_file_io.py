@@ -37,7 +37,17 @@ in a object composition approach.
 .. autoclass:: TextIOPicklable
    :members:
 
+.. autoclass:: BZ2Picklable
+   :members:
+
+.. autoclass:: GzipPicklable
+   :members:
+
 .. autofunction:: pickle_open
+
+.. autofunction:: bz2_pickle_open
+
+.. autofunction:: gzip_pickle_open
 
 
 .. versionadded:: 2.0.0
@@ -47,7 +57,6 @@ import os
 
 import bz2
 import gzip
-import scipy.io
 
 
 class FileIOPicklable(io.FileIO):
@@ -180,12 +189,56 @@ class TextIOPicklable(io.TextIOWrapper):
         raw_class = args[0]
         name = args[1]
         # raw_class is used for further expansion this functionality to
-        # GZip files, which also requires a text wrapper.
+        # Gzip files, which also requires a text wrapper.
         raw = raw_class(name)
         super().__init__(raw)
 
 
 class BZ2Picklable(bz2.BZ2File):
+    """File object (read-only) for bzip2 (de)compression that can be pickled.
+
+    This class provides a file-like object (as returned by :func:`bz2.open`,
+    namely :class:`bz2.BZ2File`) that, unlike standard Python file objects,
+    can be pickled. Only read mode is supported.
+
+    When the file is pickled, filename and position of the open file handle in
+    the file are saved. On unpickling, the file is opened by filename,
+    and the file is seeked to the saved position.
+    This means that for a successful unpickle, the original file still has to
+    be accessible with its filename.
+
+    Note
+    ----
+    This class only supprots opening files in binary mode. If you need to open
+    to open a compressed file in text mode, use the :func:`bz2_pickle_open`.
+
+    Parameters
+    ----------
+    name : str
+        a filename given a text or byte string.
+    mode : str
+        can only be 'r', 'rb' to make pickle work.
+
+    Example
+    -------
+    ::
+
+        >>> file = BZ2Picklable(XYZ_bz2)
+        >>> file.readline()
+        >>> file_pickled = pickle.loads(pickle.dumps(file))
+        >>> print(file.tell(), file_pickled.tell())
+            5 5
+
+    See Also
+    ---------
+    FileIOPicklable
+    BufferIOPicklable
+    TextIOPicklable
+    GzipPicklable
+
+
+    .. versionadded:: 2.0.0
+    """
     def __init__(self, name, mode='rb'):
         super().__init__(name, mode)
 
@@ -198,6 +251,50 @@ class BZ2Picklable(bz2.BZ2File):
 
 
 class GzipPicklable(gzip.GzipFile):
+    """File object (read-only) that can be pickled.
+
+    This class provides a file-like object (as returned by :func:`gzip.open`,
+    namely :class:`gzip.GzipFile`) that, unlike standard Python file objects,
+    can be pickled. Only read mode is supported.
+
+    When the file is pickled, filename and position of the open file handle in
+    the file are saved. On unpickling, the file is opened by filename,
+    and the file is seeked to the saved position.
+    This means that for a successful unpickle, the original file still has to
+    be accessible with its filename.
+
+    Note
+    ----
+    This class only supprots opening files in binary mode. If you need to open
+    to open a compressed file in text mode, use the :func:`gzip_pickle_open`.
+
+    Parameters
+    ----------
+    name : str
+        a filename given a text or byte string.
+    mode : str
+        can only be 'r', 'rb' to make pickle work.
+
+    Example
+    -------
+    ::
+
+        >>> file = GzipPicklable(MMTF_gz)
+        >>> file.readline()
+        >>> file_pickled = pickle.loads(pickle.dumps(file))
+        >>> print(file.tell(), file_pickled.tell())
+            1218 1218
+
+    See Also
+    ---------
+    FileIOPicklable
+    BufferIOPicklable
+    TextIOPicklable
+    BZ2Picklable
+
+
+    .. versionadded:: 2.0.0
+    """
     def __init__(self, name, mode='rb'):
         super().__init__(name, mode)
 
@@ -207,14 +304,6 @@ class GzipPicklable(gzip.GzipFile):
     def __setstate__(self, args):
         super().__init__(args[0])
         self.seek(args[1])
-
-
-class NCDFPicklable(scipy.io.netcdf.netcdf_file):
-    def __getstate__(self):
-        return self.filename, self.use_mmap
-
-    def __setstate__(self, args):
-        self.__init__(args[0], mmap=args[1])
 
 
 def pickle_open(name, mode='rt'):
@@ -285,7 +374,63 @@ def pickle_open(name, mode='rt'):
         return TextIOPicklable(raw)
 
 
-def bz2_pickle_open(name, mode='rt'):
+def bz2_pickle_open(name, mode='rb'):
+    """Open a bzip2-compressed file in binary or text mode
+    with pickle function implemented.
+
+    This function returns either BZ2Picklable or TextIOPicklable wrapped
+    BZ2Picklable object given different reading mode. It can be used as a
+    context manager, and replace the built-in :func:`bz2.open` function
+    in read mode that only returns an unpicklable file object.
+
+    Note
+    ----
+    Can be only used with read mode.
+
+    Parameters
+    ----------
+    name : str
+        a filename given a text or byte string.
+    mode: {'r', 'rt', 'rb'} (optional)
+        'r':  open for reading in binary mode;
+        'rt': read in text mode;
+        'rb': read in binary mode; (default)
+
+    Returns
+    -------
+    stream-like object: BZ2Picklable or TextIOPicklable
+        when mode is 'rt', returns TextIOPicklable;
+        when mode is 'r' or 'rb', returns BZ2Picklable
+
+    Raises
+    ------
+    ValueError
+        if `mode` is not one of the allowed read modes
+
+    Examples
+    -------
+    open as context manager::
+
+        with bz2_pickle_open('filename') as f:
+            line = f.readline()
+
+    open as function::
+
+        f = bz2_pickle_open('filename')
+        line = f.readline()
+        f.close()
+
+    See Also
+    --------
+    :func:`io.open`
+    :func:`bz2.open`
+    :func:`MDAnalysis.lib.util.anyopen`
+    :func:`MDAnalysis.lib.picklable_file_io.pickle_open`
+    :func:`MDAnalysis.lib.picklable_file_io.gzip_pickle_open`
+
+
+    .. versionadded:: 2.0.0
+    """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') \
                          files can be pickled.")
@@ -297,7 +442,63 @@ def bz2_pickle_open(name, mode='rt'):
         return binary_file
 
 
-def gzip_pickle_open(name, mode='rt'):
+def gzip_pickle_open(name, mode='rb'):
+    """Open a gzip-compressed file in binary or text mode
+    with pickle function implemented.
+
+    This function returns either GzipPicklable or TextIOPicklable wrapped
+    GzipPicklable object given different reading mode. It can be used as a
+    context manager, and replace the built-in :func:`gzip.open` function
+    in read mode that only returns an unpicklable file object.
+
+    Note
+    ----
+    Can be only used with read mode.
+
+    Parameters
+    ----------
+    name : str
+        a filename given a text or byte string.
+    mode: {'r', 'rt', 'rb'} (optional)
+        'r':  open for reading in binary mode;
+        'rt': read in text mode;
+        'rb': read in binary mode; (default)
+
+    Returns
+    -------
+    stream-like object: GzipPicklable or TextIOPicklable
+        when mode is 'rt', returns TextIOPicklable;
+        when mode is 'r' or 'rb', returns GzipPicklable
+
+    Raises
+    ------
+    ValueError
+        if `mode` is not one of the allowed read modes
+
+    Examples
+    -------
+    open as context manager::
+
+        with gzip_pickle_open('filename') as f:
+            line = f.readline()
+
+    open as function::
+
+        f = gzip_pickle_open('filename')
+        line = f.readline()
+        f.close()
+
+    See Also
+    --------
+    :func:`io.open`
+    :func:`gzip.open`
+    :func:`MDAnalysis.lib.util.anyopen`
+    :func:`MDAnalysis.lib.picklable_file_io.pickle_open`
+    :func:`MDAnalysis.lib.picklable_file_io.bz2_pickle_open`
+
+
+    .. versionadded:: 2.0.0
+    """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') \
                          files can be pickled.")
@@ -307,7 +508,3 @@ def gzip_pickle_open(name, mode='rt'):
         return TextIOPicklable(binary_file)
     else:
         return binary_file
-
-
-def ncdf_pickle_open(name, mmap=None):
-    return NCDFPicklable(name, mmap=mmap)
