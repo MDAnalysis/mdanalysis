@@ -309,7 +309,7 @@ TRR_multi_frame = resource_filename(
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
-H5MD_xvf = resource_filename(__name__, 'data/cobrotoxin.h5')
+H5MD_xvf = resource_filename(__name__, 'data/cobrotoxin.h5md')
 XVG_BZ2 = resource_filename(__name__, 'data/cobrotoxin_protein_forces.xvg.bz2')
 
 XPDB_small = resource_filename(__name__, 'data/5digitResid.pdb')
