@@ -32,6 +32,16 @@ from numpy.testing import (assert_equal,
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_full
 from MDAnalysisTests.util import block_import, import_not_available
 
+
+@block_import('rdkit')
+class TestRequiresRDKit(object):
+    def test_converter_requires_rdkit(self):
+        u = mda.Universe(mol2_molecule)
+        with pytest.raises(ImportError) as e:
+            u.atoms.convert_to("RDKIT")
+            assert "RDKit is required for the RDKitConverter" in str(e.value)
+
+
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
@@ -52,15 +62,6 @@ else:
         mol = Chem.AddHs(mol)
         cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
-
-
-@block_import('rdkit')
-class TestRequiresRDKit(object):
-    def test_converter_requires_rdkit(self):
-        u = mda.Universe(mol2_molecule)
-        with pytest.raises(ImportError) as e:
-            u.atoms.convert_to("RDKIT")
-            assert "RDKit is required for the RDKitConverter" in str(e.value)
 
 
 requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
