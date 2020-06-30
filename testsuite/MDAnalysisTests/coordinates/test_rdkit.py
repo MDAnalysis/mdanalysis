@@ -30,6 +30,7 @@ from numpy.testing import (assert_equal,
                            assert_almost_equal)
 
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_full
+from MDAnalysisTests.util import block_import, import_not_available
 
 try:
     from rdkit import Chem
@@ -37,16 +38,12 @@ try:
     from MDAnalysis.coordinates.RDKit import (
         RDATTRIBUTES, _add_mda_attr_to_rdkit)
 except ImportError:
-    rdkit_installed = False
-
     def mol2_mol():
         pass
 
     def smiles_mol():
         pass
 else:
-    rdkit_installed = True
-
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
@@ -57,7 +54,16 @@ else:
         return mol
 
 
-requires_rdkit = pytest.mark.skipif(rdkit_installed == False,
+@block_import('rdkit')
+class TestRequiresRDKit(object):
+    def test_converter_requires_rdkit(self):
+        u = mda.Universe(mol2_molecule)
+        with pytest.raises(ImportError) as e:
+            u.atoms.convert_to("RDKIT")
+            assert "RDKit is required for the RDKitConverter" in str(e.value)
+
+
+requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
                                     reason="requires RDKit")
 
 
@@ -192,12 +198,3 @@ class TestRDKitConverter(object):
             rdprop = rdprops["_MDAnalysis_%s" % prop]
             mdaprop = getattr(mol2.atoms[idx], prop)
             assert rdprop == mdaprop
-
-
-@pytest.mark.skipif(rdkit_installed == True, reason="test minimal dependency")
-class TestRequiresRDKit(object):
-    def test_converter_requires_rdkit(self):
-        u = mda.Universe(mol2_molecule)
-        with pytest.raises(ImportError) as e:
-            u.atoms.convert_to("RDKIT")
-            assert "RDKit is required for the RDKitConverter" in str(e.value)
