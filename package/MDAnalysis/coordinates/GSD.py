@@ -76,10 +76,9 @@ class GSDReader(base.ReaderBase):
 
 
         .. versionadded:: 0.17.0
-
         .. versionchanged:: 2.0.0
-        Now use a picklable :class:`gsd.hoomd.HOOMDTrajectory`--
-        :class:`GSDPicklable`
+            Now use a picklable :class:`gsd.hoomd.HOOMDTrajectory`--
+            :class:`GSDPicklable`
 
         """
         super(GSDReader, self).__init__(filename, **kwargs)
