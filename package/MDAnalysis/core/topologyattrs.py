@@ -1687,7 +1687,7 @@ class Aromaticities(AtomAttr):
 class ResidueAttr(TopologyAttr):
     attrname = 'residueattrs'
     singular = 'residueattr'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Residue]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     per_object = 'residue'
 
     def get_atoms(self, ag):
@@ -1722,7 +1722,6 @@ class Resids(ResidueAttr):
     """Residue ID"""
     attrname = 'resids'
     singular = 'resid'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     dtype = int
 
     @staticmethod
@@ -1734,7 +1733,6 @@ class Resids(ResidueAttr):
 class Resnames(ResidueAttr):
     attrname = 'resnames'
     singular = 'resname'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     transplants = defaultdict(list)
     dtype = object
 
@@ -1844,7 +1842,6 @@ class Resnames(ResidueAttr):
 class Resnums(ResidueAttr):
     attrname = 'resnums'
     singular = 'resnum'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     dtype = int
 
     @staticmethod
@@ -1870,14 +1867,11 @@ class Moltypes(ResidueAttr):
     """
     attrname = 'moltypes'
     singular = 'moltype'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
     dtype = object
 
 
 class Molnums(ResidueAttr):
-    """Name of the molecule type
-
-    Two molecules that share a molecule type share a common template topology.
+    """Index of molecule from 0
     """
     attrname = 'molnums'
     singular = 'molnum'
@@ -1893,7 +1887,7 @@ class SegmentAttr(TopologyAttr):
     """
     attrname = 'segmentattrs'
     singular = 'segmentattr'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Segment]
+    target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue, Segment]
     per_object = 'segment'
 
     def get_atoms(self, ag):
@@ -1922,8 +1916,6 @@ class SegmentAttr(TopologyAttr):
 class Segids(SegmentAttr):
     attrname = 'segids'
     singular = 'segid'
-    target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
-                      Atom, Residue, Segment]
     transplants = defaultdict(list)
     dtype = object
 
