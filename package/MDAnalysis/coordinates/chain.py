@@ -422,15 +422,22 @@ class ChainReader(base.ProtoReader):
 
     def __getstate__(self):
         state = self.__dict__.copy()
+        state['ts'] = self.ts.__deepcopy__()
+        index = self.ts.frame
         state.pop('_ChainReader__chained_trajectories_iter', None)
-        return state
+        for reader in state['readers'][:self.__active_reader_index + 1]:
+            reader.rewind()
+        self.ts = state['ts']
+        return state, index
 
 
-    def __setstate__(self, state):
+    def __setstate__(self, args):
+        state = args[0]
+        index = args[1]
         self.__dict__.update(state)
         self.__chained_trajectories_iter = self._chained_iterator()
-        self[state['_ChainReader__active_reader_index']]
-
+        for i in range(index + 1):
+            self._read_next_timestep()
 
     # methods that can change with the current reader
     def convert_time_from_native(self, t):

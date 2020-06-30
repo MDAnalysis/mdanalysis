@@ -2103,7 +2103,7 @@ class ReaderBase(ProtoReader):
        Removed deprecated flags functionality, use convert_units kwarg instead
     .. versionchanged:: 2.0.0
        Now supports (un)pickle. Upon unpickling,
-       the current timestep is retained.
+       the current timestep is retained by reconstrunction.
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):

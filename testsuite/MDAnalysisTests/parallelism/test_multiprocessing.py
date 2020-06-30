@@ -88,6 +88,8 @@ def test_multiprocess_fileio():
     (NCDF,),
     (np.arange(150).reshape(5, 10, 3).astype(np.float64),),
     (GRO, [GRO, GRO, GRO, GRO, GRO]),
+    (PDB, [PDB, PDB, PDB, PDB, PDB]),
+    (GRO, [XTC, XTC]),
 ])
 def u(request):
     if len(request.param) == 1:
@@ -177,6 +179,8 @@ def test_multiprocess_names(u):
     ('TXYZ', TXYZ, dict()),
     ('memory', np.arange(60).reshape(2, 10, 3).astype(np.float64), dict()),
     ('CHAIN', [GRO, GRO, GRO], dict()),
+    ('CHAIN', [PDB, PDB, PDB], dict()),
+    ('CHAIN', [XTC, XTC, XTC], dict()),
 ])
 def ref_reader(request):
     fmt_name, filename, extras = request.param
