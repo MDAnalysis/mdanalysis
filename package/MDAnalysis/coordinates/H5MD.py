@@ -58,9 +58,9 @@ class H5MDReader(base.ReaderBase):
         #self.ts.data['step'] = myframe.configuration.step
 
         # set frame box dimensions
-        self.ts.dimensions = myframe.configuration.box
-        for i in range(3,6) :
-            self.ts.dimensions[i] = np.arccos(self.ts.dimensions[i]) * 180.0 / np.pi
+        self.ts.dimensions = self._file['particles']['atoms']['box']['edges']['value'][frame,:,:] #triclinic dimension
+        #for i in range(3,6) :
+            #self.ts.dimensions[i] = np.arccos(self.ts.dimensions[i]) * 180.0 / np.pi
 
         # set particle positions
         frame_positions = self._file['particles']['atoms']['positions']['value'][frame,:,:]
