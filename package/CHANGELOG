@@ -18,12 +18,13 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * ResidueAttrs now have Atom as a target class by default; ICodes and 
+    Molnums now have default target_classes (#2803, PR #2805)
   * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
     error (Issue #2765)
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
   * Testsuite does not any more matplotlib.use('agg') (#2191)
-  * ResidueAttrs now have Atom as a target class by default (#2803)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from 
