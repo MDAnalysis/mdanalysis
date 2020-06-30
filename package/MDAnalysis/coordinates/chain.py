@@ -213,6 +213,9 @@ class ChainReader(base.ProtoReader):
        added ``continuous`` trajectory option
     .. versionchanged:: 0.19.0
        limit output of __repr__
+    .. versionchanged:: 2.0.0
+       Now ChainReader can be (un)pickled. Upon unpickling,
+       current timestep is retained.
 
     """
     format = 'CHAIN'

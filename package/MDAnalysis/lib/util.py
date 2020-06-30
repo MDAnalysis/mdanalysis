@@ -350,9 +350,19 @@ def anyopen(datasource, mode='rt', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
 
+    .. versionchanged:: 2.0.0
+       New read handlers support pickle functionality
+       if `datasource` is a filename.
+       They return a custom picklable file stream in
+       :class:`MDAnalysis.lib.picklable_file_io`.
+
     """
-    read_handlers = {'bz2': bz2_pickle_open, 'gz': gzip_pickle_open, '': pickle_open}
-    write_handlers = {'bz2': bz2.open, 'gz': gzip.open, '': open}
+    read_handlers = {'bz2': bz2_pickle_open,
+                     'gz': gzip_pickle_open,
+                     '': pickle_open}
+    write_handlers = {'bz2': bz2.open,
+                      'gz': gzip.open,
+                      '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):

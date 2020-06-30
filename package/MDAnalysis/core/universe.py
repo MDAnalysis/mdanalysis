@@ -314,6 +314,11 @@ class Universe(object):
     .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
         Removed instant selectors.
+
+    .. versionchanged:: 2.0.0
+        Universe now can be (un)pickled.
+        Topology, trajectory and anchor_name are reserved upon unpickle.
+
     """
 # Py3 TODO
 #    def __init__(self, topology=None, *coordinates, all_coordinates=False,

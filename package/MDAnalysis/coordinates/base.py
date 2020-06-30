@@ -226,6 +226,7 @@ class Timestep(object):
 
          create a timestep object with space for n_atoms
 
+
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
@@ -233,6 +234,9 @@ class Timestep(object):
        :attr:`n_atoms` now a read only property.
        :attr:`frame` now 0-based instead of 1-based.
        Attributes `status` and `step` removed.
+    .. versionchanged:: 2.0.0
+       Timestep now can be (un)pickled. Weakref for Reader
+       will be dropped.
     """
     order = 'F'
 
@@ -2070,7 +2074,6 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
         return ts
 
 
-
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
     :meth:`__del__` method.
@@ -2098,6 +2101,9 @@ class ReaderBase(ProtoReader):
        Provides kwargs to be passed to :class:`Timestep`
     .. versionchanged:: 1.0
        Removed deprecated flags functionality, use convert_units kwarg instead
+    .. versionchanged:: 2.0.0
+       Now supports (un)pickle. Upon unpickling,
+       the current timestep is retained.
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):

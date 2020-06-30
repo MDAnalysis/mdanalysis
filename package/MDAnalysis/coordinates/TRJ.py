@@ -85,6 +85,8 @@ those and will raise a :exc:`NotImplementedError` if anything else is detected.
 .. autoclass:: NCDFWriter
    :members:
 
+.. autoclass:: NCDFPicklable
+   :members:
 
 .. _ascii-trajectories:
 
@@ -449,6 +451,9 @@ class NCDFReader(base.ReaderBase):
     .. versionchanged:: 1.0.0
        Support for reading `degrees` units for `cell_angles` has now been
        removed (Issue #2327)
+    .. versionchanged:: 2.0.0
+       Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--
+       :class:`NCDFPicklable`.
 
     """
 
@@ -468,8 +473,8 @@ class NCDFReader(base.ReaderBase):
 
         super(NCDFReader, self).__init__(filename, **kwargs)
 
-        self.trjfile = ncdf_pickle_open(self.filename,
-                                        mmap=self._mmap)
+        self.trjfile = NCDFPicklable(self.filename,
+                                    mmap=self._mmap)
 
         # AMBER NetCDF files should always have a convention
         try:
@@ -1077,13 +1082,53 @@ class NCDFWriter(base.WriterBase):
 
 
 class NCDFPicklable(scipy.io.netcdf.netcdf_file):
+    """NetCDF file object (read-only) that can be pickled.
+
+    This class provides a file-like object (as returned by
+    :class:`scipy.io.netcdf.netcdf_file`) that,
+    unlike standard Python file objects,
+    can be pickled. Only read mode is supported.
+
+    When the file is pickled, filename and mmap of the open file handle in
+    the file are saved. On unpickling, the file is opened by filename,
+    and the mmap file is loaded.
+    This means that for a successful unpickle, the original file still has to
+    be accessible with its filename.
+
+    Parameters
+    ----------
+    filename : str or file-like
+        a filename given a text or byte string.
+    mmap : None or bool, optional
+        Whether to mmap `filename` when reading. True when `filename`
+        is a file name, False when `filename` is a file-like object.
+
+    Example
+    -------
+    ::
+
+        f = NCDFPicklable(NCDF)
+        print(f.variables['coordinates'].data)
+        f.close()
+
+    can also be used as context manager::
+
+        with NCDFPicklable(NCDF) as f:
+            print(f.variables['coordinates'].data)
+
+    See Also
+    ---------
+    :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
+
+
+    .. versionadded:: 2.0.0
+    """
     def __getstate__(self):
         return self.filename, self.use_mmap
 
     def __setstate__(self, args):
         self.__init__(args[0], mmap=args[1])
-
-
-def ncdf_pickle_open(name, mmap=None):
-    return NCDFPicklable(name, mmap=mmap)
-

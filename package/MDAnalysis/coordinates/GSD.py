@@ -44,9 +44,13 @@ Classes
 .. autoclass:: GSDReader
    :inherited-members:
 
+.. autoclass:: GSDPicklable
+   :members:
+
+.. autofunction:: gsd_pickle_open
+
 """
 import numpy as np
-import os
 import gsd
 import gsd.fl as fl
 import gsd.hoomd
@@ -72,6 +76,11 @@ class GSDReader(base.ReaderBase):
 
 
         .. versionadded:: 0.17.0
+
+        .. versionchanged:: 2.0.0
+        Now use a picklable :class:`gsd.hoomd.HOOMDTrajectory`--
+        :class:`GSDPicklable`
+
         """
         super(GSDReader, self).__init__(filename, **kwargs)
         self.filename = filename
@@ -124,33 +133,130 @@ class GSDReader(base.ReaderBase):
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
                 " atoms. MDAnalysis in unable to deal with variable"
                 " topology!"%(frame, n_atoms_now, self.n_atoms))
-        else :
+        else:
             self.ts.positions = frame_positions
         return self.ts
 
-    def _read_next_timestep(self) :
+    def _read_next_timestep(self):
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
 
 
 class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
+    """Hoomd GSD file object (read-only) that can be pickled.
+
+    This class provides a file-like object (as by :func:`gsd.hoomd.open`,
+    namely :class:`gsd.hoodm.HOOMDTrajectory`) that, unlike file objects,
+    can be pickled. Only read mode is supported.
+
+    When the file is pickled, filename and mode of :class:`gsd.fl.GSDFile` in
+    the file are saved. On unpickling, the file is opened by filename.
+    This means that for a successful unpickle, the original file still has to
+    be accessible with its filename.
+
+    Note
+    ----
+    Open hoomd GSD files with `gsd_pickle_open`.
+
+    Parameters
+    ----------
+    file: :class:`gsd.fl.GSDFile`
+        File to access.
+
+    Example
+    -------
+    ::
+
+        gsdfileobj = gsd.fl.open(name=filename,
+                                     mode='rb',
+                                     application='gsd.hoomd '+gsd.__version__,
+                                     schema='hoomd',
+                                     schema_version=[1, 3]
+        file = GSDPicklable(gsdfileobj)
+        file_pickled = pickle.loads(pickle.dumps(file))
+
+    See Also
+    ---------
+    :func:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
+    :func:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
+    :func:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
+    :func:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
+    :func:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
+
+
+    .. versionadded:: 2.0.0
+    """
     def __getstate__(self):
         return self.file.name, self.file.mode
 
     def __setstate__(self, args):
+        gsd_version = gsd.__version__
+        schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
         gsdfileobj = fl.open(name=args[0],
                              mode=args[1],
-                             application='gsd.hoomd ' + gsd.__version__,
+                             application='gsd.hoomd ' + gsd_version,
                              schema='hoomd',
-                             schema_version=[1, 3])
-        return self.__init__(gsdfileobj)
+                             schema_version=schema_version)
+        self.__init__(gsdfileobj)
 
 
 def gsd_pickle_open(name, mode='rb'):
+    """Open hoomd schema GSD file with pickle function implemented.
+
+    This function returns either GSDPicklable object. It can be used as a
+    context manager, and replace the built-in :func:`gsd.hoomd.open` function
+    in read mode that only returns an unpicklable file object.
+
+    Schema version will depend on the version of gsd module.
+
+    Note
+    ----
+    Can be only used with read mode.
+
+    Parameters
+    ----------
+    name : str
+        a filename given a text or byte string.
+    mode: {'r', 'rb'} (optional)
+        'r', 'rb':  open for reading;
+
+    Returns
+    -------
+    stream-like object: GSDPicklable
+
+    Raises
+    ------
+    ValueError
+        if `mode` is not one of the allowed read modes
+
+    Examples
+    -------
+    open as context manager::
+
+        with gsd_pickle_open('filename') as f:
+            line = f.readline()
+
+    open as function::
+
+        f = gsd_pickle_open('filename')
+        line = f.readline()
+        f.close()
+
+    See Also
+    --------
+    :func:`MDAnalysis.lib.util.anyopen`
+    :func:`MDAnalysis.lib.picklable_file_io.pickle_open`
+    :func:`MDAnalysis.lib.picklable_file_io.bz2_pickle_open`
+    :func:`MDAnalysis.lib.picklable_file_io.gzip_pickle_open`
+    :func:`gsd.hoomd.open`
+
+
+    .. versionadded:: 2.0.0
+    """
     gsd_version = gsd.__version__
     schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
-    if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') \
+    if mode not in {'r', 'rb'}:
+        raise ValueError("Only read mode ('r', 'rb') \
                          files can be pickled.")
     gsdfileobj = fl.open(name=name,
                          mode=mode,

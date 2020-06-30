@@ -42,7 +42,6 @@ from MDAnalysis.coordinates.GSD import (
 )
 from MDAnalysis.coordinates.TRJ import (
     NCDFPicklable,
-    ncdf_pickle_open
 )
 from MDAnalysis.tests.datafiles import (
     PDB,
@@ -148,7 +147,13 @@ def test_GSD_pickle():
 
 
 def test_NCDF_pickle():
-    ncdf_io = ncdf_pickle_open(NCDF, mmap=None)
+    ncdf_io = NCDFPicklable(NCDF, mmap=None)
     ncdf_io_pickled = pickle.loads(pickle.dumps(ncdf_io))
     assert_equal(ncdf_io.variables['coordinates'][0],
                  ncdf_io_pickled.variables['coordinates'][0])
+
+
+def test_NCDF_mmap_pickle():
+    ncdf_io = NCDFPicklable(NCDF, mmap=False)
+    ncdf_io_pickled = pickle.loads(pickle.dumps(ncdf_io))
+    assert_equal(ncdf_io_pickled.use_mmap, False)

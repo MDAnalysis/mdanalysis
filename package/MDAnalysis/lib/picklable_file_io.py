@@ -251,7 +251,7 @@ class BZ2Picklable(bz2.BZ2File):
 
 
 class GzipPicklable(gzip.GzipFile):
-    """File object (read-only) that can be pickled.
+    """Gzip file object (read-only) that can be pickled.
 
     This class provides a file-like object (as returned by :func:`gzip.open`,
     namely :class:`gzip.GzipFile`) that, unlike standard Python file objects,
