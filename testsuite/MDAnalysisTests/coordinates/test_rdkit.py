@@ -114,9 +114,8 @@ class TestRDKitConverter(object):
     def mol2(self):
         u = mda.Universe(mol2_molecule)
         # add elements
-        elements = np.array([
-            guess_atom_element(x).capitalize() for x in u.atoms.types
-        ], dtype=object)
+        elements = np.array([guess_atom_element(x) for x in u.atoms.types], 
+                            dtype=object)
         u.add_TopologyAttr('elements', elements)
         return u
 

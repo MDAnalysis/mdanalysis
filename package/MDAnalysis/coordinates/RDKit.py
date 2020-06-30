@@ -209,7 +209,7 @@ class RDKitConverter(base.ConverterBase):
 
         for i, (atom, element) in enumerate(zip(ag, elements)):
             # create atom
-            rdatom = Chem.Atom(element)
+            rdatom = Chem.Atom(element.capitalize())
             # disable adding H to the molecule
             rdatom.SetNoImplicit(True)
             # add PDB-like properties
