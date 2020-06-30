@@ -836,9 +836,11 @@ class Universe(object):
                 six.raise_from(ValueError(
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
-                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "To raise an issue go to: "
+                    "https://github.com/MDAnalysis/mdanalysis/issues"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
+                        topologyattr, ', '.join(
+                            sorted(_TOPOLOGY_ATTRS.keys())))),
                     None)
             else:
                 topologyattr = tcls.from_blank(
