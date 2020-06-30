@@ -25,19 +25,14 @@ Useful functions for running tests
 
 """
 
-try:
-    import __builtin__
-    builtins_name = '__builtin__'
-    importer = __builtin__.__import__
-except ImportError:
-    import builtins
-    builtins_name = 'builtins'
-    importer = builtins.__import__
+import builtins
+builtins_name = 'builtins'
+importer = builtins.__import__
 
 from contextlib import contextmanager
 from functools import wraps
 import importlib
-import mock
+from unittest import mock
 import os
 import warnings
 import pytest
@@ -93,6 +88,38 @@ def executable_not_found(*args):
         if MDAnalysis.lib.util.which(name) is not None:
             return False
     return True
+
+
+def import_not_available(module_name):
+    """Helper function to check if a module cannot be imported, intended as an
+    argument of pytest.mark.skipif
+
+    Parameters
+    ----------
+    module_name : str
+        Name of module to test importing
+
+    Returns
+    -------
+    True
+        if module cannot be imported
+    False
+        otherwise (i.e. module can be imported)
+
+    Example
+    -------
+    To be used in the following manner::
+
+    @pytest.mark.skipif(import_not_available("module_name"),
+                        msg="skip test as module_name could not be imported")
+
+    """
+    try:
+        test = importlib.import_module(module_name)
+    except ImportError:
+        return True
+    else:
+        return False
 
 
 @contextmanager
@@ -213,6 +240,7 @@ class _NoDeprecatedCallContext(object):
                 __tracebackhide__ = True
                 msg = "Produced DeprecationWarning or PendingDeprecationWarning"
                 raise AssertionError(msg)
+
 
 def no_deprecated_call(func=None, *args, **kwargs):
 	# modified version of similar pytest function

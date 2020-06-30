@@ -26,14 +26,14 @@ from .utils import create_vmd_surface
 
 due.cite(Doi("10.1016/S0006-3495(93)81293-1"),
          description="HOLE program",
-         path="MDAnalysis.analysis.hole",
+         path="MDAnalysis.analysis.hole2",
          cite_module=True)
 due.cite(Doi("10.1016/S0263-7855(97)00009-X"),
          description="HOLE program",
-         path="MDAnalysis.analysis.hole",
+         path="MDAnalysis.analysis.hole2",
          cite_module=True)
 due.cite(Doi("10.1016/j.jmb.2013.10.024"),
          description="HOLE trajectory analysis with orderparameters",
-         path="MDAnalysis.analysis.hole",
+         path="MDAnalysis.analysis.hole2",
          cite_module=True)
 del Doi
