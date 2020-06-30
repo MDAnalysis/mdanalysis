@@ -38,24 +38,30 @@ try:
         RDATTRIBUTES, _add_mda_attr_to_rdkit)
 except ImportError:
     rdkit_installed = False
+
+    def mol2_mol():
+        pass
+
+    def smiles_mol():
+        pass
 else:
     rdkit_installed = True
 
+    def mol2_mol():
+        return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
-@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
-def mol2_mol():
-    return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
-
-
-@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
-def smiles_mol():
-    mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
-    mol = Chem.AddHs(mol)
-    cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
-    return mol
+    def smiles_mol():
+        mol = Chem.MolFromSmiles("CN1C=NC2=C1C(=O)N(C(=O)N2C)C")
+        mol = Chem.AddHs(mol)
+        cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
+        return mol
 
 
-@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
+requires_rdkit = pytest.mark.skipif(rdkit_installed == False,
+                                    reason="requires RDKit")
+
+
+@requires_rdkit
 class TestRDKitReader(object):
     @pytest.mark.parametrize("rdmol, n_frames", [
         (mol2_mol(), 1),
@@ -91,7 +97,7 @@ class TestRDKitReader(object):
                      mol2.trajectory.ts.positions)
 
 
-@pytest.mark.skipif(rdkit_installed == False, reason="requires RDKit")
+@requires_rdkit
 class TestRDKitConverter(object):
     @pytest.fixture
     def pdb(self):
@@ -188,13 +194,10 @@ class TestRDKitConverter(object):
             assert rdprop == mdaprop
 
 
+@pytest.mark.skipif(rdkit_installed == True, reason="test minimal dependency")
 class TestRequiresRDKit(object):
     def test_converter_requires_rdkit(self):
-        if rdkit_installed:
-            pass
-        else:
-            u = mda.Universe(mol2_molecule)
-            with pytest.raises(ImportError) as e:
-                u.atoms.convert_to("RDKIT")
-                assert "RDKit is required for the RDKitConverter" in str(
-                    e.value)
+        u = mda.Universe(mol2_molecule)
+        with pytest.raises(ImportError) as e:
+            u.atoms.convert_to("RDKIT")
+            assert "RDKit is required for the RDKitConverter" in str(e.value)
