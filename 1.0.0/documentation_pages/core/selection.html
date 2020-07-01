@@ -1,0 +1,571 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>11.3.1. Atom selection Hierarchy — MDAnalysis.core.selection &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="11.4.1. Core functions of MDAnalysis" href="init.html" />
+    <link rel="prev" title="11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs" href="topologyattrs.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../core_modules.html">11. Core modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#important-objects-for-users">11.1. Important objects for users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#topology-system">11.2. Topology system</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../core_modules.html#selection-system">11.3. Selection system</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">11.3.1. Atom selection Hierarchy — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../core_modules.html#flag-system">11.4. Flag system</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../core_modules.html">11. Core modules</a> &raquo;</li>
+        
+      <li>11.3.1. Atom selection Hierarchy — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/core/selection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.core.selection"></span><div class="section" id="atom-selection-hierarchy-mdanalysis-core-selection">
+<h1>11.3.1. Atom selection Hierarchy — <a class="reference internal" href="#module-MDAnalysis.core.selection" title="MDAnalysis.core.selection"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.core.selection</span></code></a><a class="headerlink" href="#atom-selection-hierarchy-mdanalysis-core-selection" title="Permalink to this headline">¶</a></h1>
+<p>This module contains objects that represent selections. They are
+constructed and then applied to the group.</p>
+<p>In general, <code class="xref py py-meth docutils literal notranslate"><span class="pre">Parser.parse()</span></code> creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code> object
+from a selection string. This <code class="xref py py-class docutils literal notranslate"><span class="pre">Selection</span></code> object is then passed
+an <a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> through its
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">apply()</span></code> method to apply the
+<code class="docutils literal notranslate"><span class="pre">Selection</span></code> to the <code class="docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</p>
+<p>This is all invisible to the user through the
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup.select_atoms" title="MDAnalysis.core.groups.AtomGroup.select_atoms"><code class="xref py py-meth docutils literal notranslate"><span class="pre">select_atoms()</span></code></a> method of an
+<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>.</p>
+<dl class="class">
+<dt id="MDAnalysis.core.selection.AltlocSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AltlocSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AltlocSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AltlocSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘altLoc’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.AroundSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AroundSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AroundSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AroundSelection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.AtomICodeSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AtomICodeSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AtomICodeSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AtomICodeSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on icode attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.AtomNameSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AtomNameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AtomNameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AtomNameSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘names’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.AtomTypeSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">AtomTypeSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#AtomTypeSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.AtomTypeSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘types’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.BackboneSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">BackboneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.BackboneSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>A BackboneSelection contains all atoms with name ‘N’, ‘CA’, ‘C’, ‘O’.</p>
+<p>This excludes OT* on C-termini
+(which are included by, eg VMD’s backbone selection).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.BaseSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">BaseSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#BaseSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.BaseSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selection of atoms in nucleobases.</p>
+<p>Recognized atom names (from CHARMM):</p>
+<blockquote>
+<div>‘N9’, ‘N7’, ‘C8’, ‘C5’, ‘C4’, ‘N3’, ‘C2’, ‘N1’, ‘C6’,
+‘O6’,’N2’,’N6’, ‘O2’,’N4’,’O4’,’C5M’</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.ByResSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ByResSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ByResSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ByResSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects all atoms that are in the same segment and residue as selection</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Use <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> instead of <code class="code docutils literal notranslate"><span class="pre">&quot;resids&quot;</span></code> (see #2669 and #2672)</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.DistanceSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">DistanceSelection</code><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for distance search based selections</p>
+<dl class="method">
+<dt id="MDAnalysis.core.selection.DistanceSelection.validate_dimensions">
+<code class="descname">validate_dimensions</code><span class="sig-paren">(</span><em>dimensions</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#DistanceSelection.validate_dimensions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.DistanceSelection.validate_dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the system is periodic in all three-dimensions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dimensions</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – 6-item array denoting system size and angles</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Returns argument dimensions if system is periodic in all
+three-dimensions, otherwise returns None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.8)">None</a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.MoleculeTypeSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">MoleculeTypeSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#MoleculeTypeSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.MoleculeTypeSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘moltypes’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.NucleicBackboneSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicBackboneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicBackboneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicBackboneSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains all atoms with name “P”, “C5’”, C3’”, “O3’”, “O5’”.</p>
+<p>These atoms are only recognized if they are in a residue matched
+by the <a class="reference internal" href="#MDAnalysis.core.selection.NucleicSelection" title="MDAnalysis.core.selection.NucleicSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">NucleicSelection</span></code></a>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.NucleicSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>All atoms in nucleic acid residues with recognized residue names.</p>
+<p>Recognized residue names:</p>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt>from the CHARMM force field ::</dt>
+<dd>awk ‘/RESI/ {printf “’”’”%s”’”’,”,$2 }’ top_all27_prot_na.rtf</dd>
+</dl>
+</li>
+<li>recognized: ‘ADE’, ‘URA’, ‘CYT’, ‘GUA’, ‘THY’</li>
+<li>recognized (CHARMM in Gromacs): ‘DA’, ‘DU’, ‘DC’, ‘DG’, ‘DT’</li>
+</ul>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.8: </span>additional Gromacs selections</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.NucleicSugarSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicSugarSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSugarSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains all atoms with name C1’, C2’, C3’, C4’, O2’, O4’, O3’.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.PointSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">PointSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#PointSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.PointSelection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.PropertySelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">PropertySelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#PropertySelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.PropertySelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some of the possible properties:
+x, y, z, radius, mass,</p>
+<p>Possible splitting around operator:</p>
+<p>prop x &lt; 5
+prop x&lt; 5
+prop x &lt;5
+prop x&lt;5</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.ProteinSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ProteinSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ProteinSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ProteinSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Consists of all residues with  recognized residue names.</p>
+<p>Recognized residue names in <code class="xref py py-attr docutils literal notranslate"><span class="pre">ProteinSelection.prot_res</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>from the CHARMM force field::</dt>
+<dd>awk ‘/RESI/ {printf “’”’”%s”’”’,”,$2 }’ top_all27_prot_lipid.rtf</dd>
+</dl>
+</li>
+<li>manually added special CHARMM, OPLS/AA and Amber residue names.</li>
+</ul>
+</div></blockquote>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.convert_aa_code" title="MDAnalysis.lib.util.convert_aa_code"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.convert_aa_code()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.RecordTypeSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">RecordTypeSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#RecordTypeSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.RecordTypeSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘record_type’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.ResidSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ResidSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ResidSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ResidSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on numerical fields</p>
+<p>Allows the use of ‘:’ and ‘-‘ to specify a range of values
+For example</p>
+<blockquote>
+<div>resid 1:10</div></blockquote>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.ResidueNameSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">ResidueNameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#ResidueNameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.ResidueNameSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘resnames’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.SameSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SameSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selects all atoms that have the same subkeyword value as any atom in selection</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Map <code class="code docutils literal notranslate"><span class="pre">&quot;residue&quot;</span></code> to <code class="code docutils literal notranslate"><span class="pre">&quot;resindices&quot;</span></code> and <code class="code docutils literal notranslate"><span class="pre">&quot;segment&quot;</span></code> to
+<code class="code docutils literal notranslate"><span class="pre">&quot;segindices&quot;</span></code> (see #2669 and #2672)</p>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.SegmentNameSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SegmentNameSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SegmentNameSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SegmentNameSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select atoms based on ‘segids’ attribute</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.SelectionParser">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SelectionParser</code><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>A small parser for selection expressions.  Demonstration of
+recursive descent parsing using Precedence climbing (see
+<a class="reference external" href="http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm">http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm</a>).  Transforms
+expressions into nested Selection tree.</p>
+<p>For reference, the grammar that we parse is</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">E</span><span class="p">(</span><span class="n">xpression</span><span class="p">)</span><span class="o">--&gt;</span> <span class="n">Exp</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">Exp</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">--&gt;</span>      <span class="n">P</span> <span class="p">{</span><span class="n">B</span> <span class="n">Exp</span><span class="p">(</span><span class="n">q</span><span class="p">)}</span>
+<span class="n">P</span> <span class="o">--&gt;</span>           <span class="n">U</span> <span class="n">Exp</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">|</span> <span class="s2">&quot;(&quot;</span> <span class="n">E</span> <span class="s2">&quot;)&quot;</span> <span class="o">|</span> <span class="n">v</span>
+<span class="n">B</span><span class="p">(</span><span class="n">inary</span><span class="p">)</span> <span class="o">--&gt;</span>    <span class="s2">&quot;and&quot;</span> <span class="o">|</span> <span class="s2">&quot;or&quot;</span>
+<span class="n">U</span><span class="p">(</span><span class="n">nary</span><span class="p">)</span> <span class="o">--&gt;</span>     <span class="s2">&quot;not&quot;</span>
+<span class="n">T</span><span class="p">(</span><span class="n">erms</span><span class="p">)</span> <span class="o">--&gt;</span>     <span class="n">segid</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                <span class="o">|</span> <span class="n">resname</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                <span class="o">|</span> <span class="n">resid</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                <span class="o">|</span> <span class="n">name</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+                <span class="o">|</span> <span class="nb">type</span> <span class="p">[</span><span class="n">value</span><span class="p">]</span>
+</pre></div>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.core.selection.SelectionParser.expect">
+<code class="descname">expect</code><span class="sig-paren">(</span><em>token</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.expect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.expect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Anticipate and remove a given token</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.core.selection.SelectionParser.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>selectstr</em>, <em>selgroups</em>, <em>periodic=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SelectionParser.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SelectionParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Selection object from a string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>selectstr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – The string that describes the selection</li>
+<li><strong>selgroups</strong> (<em>AtomGroups</em>) – AtomGroups to be used in <cite>group</cite> selections</li>
+<li><strong>periodic</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – for distance based selections, whether to consider
+periodic boundary conditions</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li><em>The appropriate Selection object.  Use the .apply method on</em></li>
+<li><em>this to perform the selection.</em></li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">SelectionError</span></code> – If anything goes wrong in creating the Selection object.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.SphericalLayerSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SphericalLayerSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SphericalLayerSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SphericalLayerSelection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.SphericalZoneSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">SphericalZoneSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#SphericalZoneSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.SphericalZoneSelection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.core.selection.StringSelection">
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">StringSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#StringSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.StringSelection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Selections based on text attributes</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Supports multiple wildcards, based on fnmatch</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.selection.grab_not_keywords">
+<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">grab_not_keywords</code><span class="sig-paren">(</span><em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#grab_not_keywords"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.grab_not_keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop tokens from the left until you hit a keyword</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.html#collections.deque" title="(in Python v3.8)"><em>collections.deque</em></a>) – deque of strings, some tokens some not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>values</strong> – All non keywords found until a keyword was hit</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function pops the values from the deque</p>
+</div>
+<p class="rubric">Examples</p>
+<p>grab_not_keywords([‘H’, ‘and’,’resname’, ‘MET’])
+&gt;&gt;&gt; [‘H’]</p>
+<p>grab_not_keywords([‘H’, ‘Ca’, ‘N’, ‘and’,’resname’, ‘MET’])
+&gt;&gt;&gt; [‘H’, ‘Ca’ ,’N’]</p>
+<p>grab_not_keywords([‘and’,’resname’, ‘MET’])
+&gt;&gt;&gt; []</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="MDAnalysis.core.selection.is_keyword">
+<code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">is_keyword</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#is_keyword"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.is_keyword" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is val a selection keyword?</p>
+<dl class="docutils">
+<dt>Returns False on any of the following strings:</dt>
+<dd><ul class="first last simple">
+<li>keys in SELECTIONDICT (tokens from Selection objects)</li>
+<li>keys in OPERATIONS (tokens from LogicOperations)</li>
+<li>(Parentheses)</li>
+<li>The value <cite>None</cite> (used as EOF in selection strings)</li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="init.html" class="btn btn-neutral float-right" title="11.4.1. Core functions of MDAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="topologyattrs.html" class="btn btn-neutral float-left" title="11.2.3. Topology attribute objects — MDAnalysis.core.topologyattrs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,729 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.visualization.streamlines_3D &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.visualization.streamlines_3D</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.visualization.streamlines_3D</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Streamplots (3D) --- :mod:`MDAnalysis.visualization.streamlines_3D`</span>
+<span class="sd">===================================================================</span>
+
+<span class="sd">:Authors: Tyler Reddy and Matthieu Chavent</span>
+<span class="sd">:Year: 2014</span>
+<span class="sd">:Copyright: GNU Public License v3</span>
+<span class="sd">:Citation: [Chavent2014]_</span>
+
+<span class="sd">The :func:`generate_streamlines_3d` function can generate a 3D flow field from</span>
+<span class="sd">a MD trajectory, for instance, lipid molecules in a virus capsid. It can make</span>
+<span class="sd">use of multiple cores to perform the analyis in parallel (using</span>
+<span class="sd">:mod:`multiprocessing`).</span>
+
+
+<span class="sd">See Also</span>
+<span class="sd">--------</span>
+<span class="sd">MDAnalysis.visualization.streamlines : streamplots in 2D</span>
+
+
+<span class="sd">.. autofunction:: generate_streamlines_3d</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">multiprocessing</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.testing</span>
+<span class="kn">import</span> <span class="nn">scipy</span>
+<span class="kn">import</span> <span class="nn">scipy.spatial.distance</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+
+<span class="k">def</span> <span class="nf">determine_container_limits</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">buffer_value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate the extent of the atom coordinates + buffer.</span>
+
+<span class="sd">    A function for the parent process which should take the input trajectory</span>
+<span class="sd">    and calculate the limits of the container for the system and return these</span>
+<span class="sd">    limits.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    topology_file_path : str</span>
+<span class="sd">        topology file name</span>
+<span class="sd">    trajectory_file_path : str</span>
+<span class="sd">        trajectory file name</span>
+<span class="sd">    buffer_value : float</span>
+<span class="sd">        buffer value (padding) in +/- {x, y, z}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">universe_object</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">)</span>
+    <span class="n">all_atom_selection</span> <span class="o">=</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>  <span class="c1"># select all particles</span>
+    <span class="n">all_atom_coordinate_array</span> <span class="o">=</span> <span class="n">all_atom_selection</span><span class="o">.</span><span class="n">positions</span>
+    <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">all_atom_coordinate_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+        <span class="n">all_atom_coordinate_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">all_atom_coordinate_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+        <span class="n">all_atom_coordinate_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">all_atom_coordinate_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+        <span class="n">all_atom_coordinate_array</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+    <span class="n">tuple_of_limits</span> <span class="o">=</span> \
+        <span class="p">(</span>
+            <span class="n">x_min</span> <span class="o">-</span> <span class="n">buffer_value</span><span class="p">,</span>
+            <span class="n">x_max</span> <span class="o">+</span> <span class="n">buffer_value</span><span class="p">,</span> <span class="n">y_min</span> <span class="o">-</span> <span class="n">buffer_value</span><span class="p">,</span> <span class="n">y_max</span> <span class="o">+</span> <span class="n">buffer_value</span><span class="p">,</span> <span class="n">z_min</span> <span class="o">-</span> <span class="n">buffer_value</span><span class="p">,</span>
+            <span class="n">z_max</span> <span class="o">+</span> <span class="n">buffer_value</span><span class="p">)</span>  <span class="c1"># using buffer_value to catch particles near edges</span>
+    <span class="k">return</span> <span class="n">tuple_of_limits</span>
+
+
+<span class="k">def</span> <span class="nf">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Produce a 3D grid for the simulation system.</span>
+
+<span class="sd">    The partitioning is based on the tuple of Cartesian Coordinate limits</span>
+<span class="sd">    calculated in an earlier step.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tuple_of_limits : tuple</span>
+<span class="sd">        ``x_min, x_max, y_min, y_max, z_min, z_max``</span>
+<span class="sd">    grid_spacing : float</span>
+<span class="sd">        grid size in all directions in ångström</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    grid : array</span>
+<span class="sd">        ``numpy.mgrid[x_min:x_max:grid_spacing, y_min:y_max:grid_spacing, z_min:z_max:grid_spacing]``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">,</span> <span class="n">z_min</span><span class="p">,</span> <span class="n">z_max</span> <span class="o">=</span> <span class="n">tuple_of_limits</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mgrid</span><span class="p">[</span><span class="n">x_min</span><span class="p">:</span><span class="n">x_max</span><span class="p">:</span><span class="n">grid_spacing</span><span class="p">,</span> <span class="n">y_min</span><span class="p">:</span><span class="n">y_max</span><span class="p">:</span><span class="n">grid_spacing</span><span class="p">,</span> <span class="n">z_min</span><span class="p">:</span><span class="n">z_max</span><span class="p">:</span><span class="n">grid_spacing</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">grid</span>
+
+
+<span class="k">def</span> <span class="nf">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split the grid into blocks of vertices.</span>
+
+<span class="sd">    Take the overall `grid` for the system and split it into lists of cube</span>
+<span class="sd">    vertices that can be distributed to each core.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : numpy.array</span>
+<span class="sd">        3D array</span>
+<span class="sd">    num_cores : int</span>
+<span class="sd">        number of partitions to generate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list_dictionaries_for_cores : list of dict</span>
+<span class="sd">    total_cubes : int</span>
+<span class="sd">    num_sheets : int</span>
+<span class="sd">    delta_array_shape : tuple</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># unpack the x,y,z mgrid arrays</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="n">grid</span>
+    <span class="n">num_z_values</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">num_sheets</span> <span class="o">=</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">delta_array_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">])</span>  <span class="c1"># the final target shape for return delta arrays is n-1 in each dimension</span>
+
+    <span class="n">ordered_list_per_sheet_x_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x_sheet</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>  <span class="c1"># each x_sheet should have shape (25,23) and the same x value in each element</span>
+        <span class="n">array_all_x_values_current_sheet</span> <span class="o">=</span> <span class="n">x_sheet</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ordered_list_per_sheet_x_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_all_x_values_current_sheet</span><span class="p">)</span>
+    <span class="n">ordered_list_per_sheet_y_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">y_columns</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+        <span class="n">array_all_y_values_current_sheet</span> <span class="o">=</span> <span class="n">y_columns</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ordered_list_per_sheet_y_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_all_y_values_current_sheet</span><span class="p">)</span>
+    <span class="n">ordered_list_per_sheet_z_values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">z_slices</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>
+        <span class="n">array_all_z_values_current_sheet</span> <span class="o">=</span> <span class="n">z_slices</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ordered_list_per_sheet_z_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">array_all_z_values_current_sheet</span><span class="p">)</span>
+
+    <span class="n">ordered_list_cartesian_coordinates_per_sheet</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">x_sheet_coords</span><span class="p">,</span> <span class="n">y_sheet_coords</span><span class="p">,</span> <span class="n">z_sheet_coords</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ordered_list_per_sheet_x_values</span><span class="p">,</span>
+                                                              <span class="n">ordered_list_per_sheet_y_values</span><span class="p">,</span>
+                                                              <span class="n">ordered_list_per_sheet_z_values</span><span class="p">):</span>
+        <span class="n">ordered_list_cartesian_coordinates_per_sheet</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">x_sheet_coords</span><span class="p">,</span> <span class="n">y_sheet_coords</span><span class="p">,</span> <span class="n">z_sheet_coords</span><span class="p">)))</span>
+    <span class="n">array_ordered_cartesian_coords_per_sheet</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ordered_list_cartesian_coordinates_per_sheet</span><span class="p">)</span>
+    <span class="c1">#now I&#39;m going to want to build cubes in an ordered fashion, and in such a way that I can track the index /</span>
+    <span class="c1"># centroid of each cube for domain decomposition / reconstruction and mayavi mlab.flow() input</span>
+    <span class="c1">#cubes will be formed from N - 1 base sheets combined with subsequent sheets</span>
+    <span class="n">current_base_sheet</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">dictionary_cubes_centroids_indices</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">current_base_sheet</span> <span class="o">&lt;</span> <span class="n">num_sheets</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">current_base_sheet_array</span> <span class="o">=</span> <span class="n">array_ordered_cartesian_coords_per_sheet</span><span class="p">[</span><span class="n">current_base_sheet</span><span class="p">]</span>
+        <span class="n">current_top_sheet_array</span> <span class="o">=</span> <span class="n">array_ordered_cartesian_coords_per_sheet</span><span class="p">[</span>
+            <span class="n">current_base_sheet</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>  <span class="c1"># the points of the sheet &#39;to the right&#39; in the grid</span>
+        <span class="n">current_index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">current_index</span> <span class="o">&lt;</span> <span class="n">current_base_sheet_array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">num_z_values</span><span class="p">:</span>
+            <span class="c1"># iterate through all the indices in each of the sheet arrays (careful to avoid extra</span>
+            <span class="c1"># points not needed for cubes)</span>
+            <span class="n">column_z_level</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># start at the bottom of a given 4-point column and work up</span>
+            <span class="k">while</span> <span class="n">column_z_level</span> <span class="o">&lt;</span> <span class="n">num_z_values</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">current_list_cube_vertices</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">first_two_vertices_base_sheet</span> <span class="o">=</span> <span class="n">current_base_sheet_array</span><span class="p">[</span><span class="n">current_index</span><span class="p">:</span><span class="n">current_index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">first_two_vertices_top_sheet</span> <span class="o">=</span> <span class="n">current_top_sheet_array</span><span class="p">[</span><span class="n">current_index</span><span class="p">:</span><span class="n">current_index</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">next_two_vertices_base_sheet</span> <span class="o">=</span> <span class="n">current_base_sheet_array</span><span class="p">[</span><span class="n">current_index</span> <span class="o">+</span>
+                                                                        <span class="n">num_z_values</span><span class="p">:</span> <span class="mi">2</span> <span class="o">+</span>
+                                                                        <span class="n">num_z_values</span> <span class="o">+</span> <span class="n">current_index</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">next_two_vertices_top_sheet</span> <span class="o">=</span> <span class="n">current_top_sheet_array</span><span class="p">[</span><span class="n">current_index</span> <span class="o">+</span>
+                                                                      <span class="n">num_z_values</span><span class="p">:</span> <span class="mi">2</span> <span class="o">+</span>
+                                                                      <span class="n">num_z_values</span> <span class="o">+</span> <span class="n">current_index</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">vertex_set</span> <span class="ow">in</span> <span class="p">[</span>
+                    <span class="n">first_two_vertices_base_sheet</span><span class="p">,</span> <span class="n">first_two_vertices_top_sheet</span><span class="p">,</span>
+                    <span class="n">next_two_vertices_base_sheet</span><span class="p">,</span> <span class="n">next_two_vertices_top_sheet</span>
+                <span class="p">]:</span>
+                    <span class="n">current_list_cube_vertices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">vertex_set</span><span class="p">)</span>
+                <span class="n">vertex_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_list_cube_vertices</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="n">vertex_array</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="s2">&quot;vertex_array has incorrect shape&quot;</span>
+                <span class="n">cube_centroid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">current_list_cube_vertices</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">dictionary_cubes_centroids_indices</span><span class="p">[</span><span class="n">cube_counter</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;centroid&#39;</span><span class="p">:</span> <span class="n">cube_centroid</span><span class="p">,</span>
+                    <span class="s1">&#39;vertex_list&#39;</span><span class="p">:</span> <span class="n">current_list_cube_vertices</span><span class="p">}</span>
+                <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">current_index</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">column_z_level</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">column_z_level</span> <span class="o">==</span> <span class="n">num_z_values</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># the loop will break but I should also increment the</span>
+                    <span class="c1"># current_index</span>
+                    <span class="n">current_index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">current_base_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">total_cubes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dictionary_cubes_centroids_indices</span><span class="p">)</span>
+
+    <span class="c1">#produce an array of pseudo cube indices (actually the dictionary keys which are cube numbers in string format):</span>
+    <span class="n">pseudo_cube_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_cubes</span><span class="p">)</span>
+    <span class="n">sublist_of_cube_indices_per_core</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">pseudo_cube_indices</span><span class="p">,</span> <span class="n">num_cores</span><span class="p">)</span>
+    <span class="c1">#now, the split of pseudoindices seems to work well, and the above sublist_of_cube_indices_per_core is a list of</span>
+    <span class="c1"># arrays of cube numbers / keys in the original dictionary</span>
+    <span class="c1">#now I think I&#39;ll try to produce a list of dictionaries that each contain their assigned cubes based on the above</span>
+    <span class="c1">#  per core split</span>
+    <span class="n">list_dictionaries_for_cores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">subdictionary_counter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">array_cube_indices</span> <span class="ow">in</span> <span class="n">sublist_of_cube_indices_per_core</span><span class="p">:</span>
+        <span class="n">current_core_dictionary</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">items_to_pop</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_cube_indices</span><span class="p">)</span>
+        <span class="n">items_popped</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">items_popped</span> <span class="o">&lt;</span> <span class="n">items_to_pop</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">dictionary_cubes_centroids_indices</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
+            <span class="n">current_core_dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+            <span class="n">items_popped</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">list_dictionaries_for_cores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current_core_dictionary</span><span class="p">)</span>
+        <span class="n">subdictionary_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">list_dictionaries_for_cores</span><span class="p">,</span> <span class="n">total_cubes</span><span class="p">,</span> <span class="n">num_sheets</span><span class="p">,</span> <span class="n">delta_array_shape</span>
+
+
+<span class="k">def</span> <span class="nf">per_core_work</span><span class="p">(</span><span class="n">start_frame_coord_array</span><span class="p">,</span> <span class="n">end_frame_coord_array</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span>
+                  <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run the analysis on one core.</span>
+
+<span class="sd">    The code to perform on a given core given the dictionary of cube data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">list_previous_frame_centroids</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_previous_frame_indices</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># define some utility functions for trajectory iteration:</span>
+
+    <span class="k">def</span> <span class="nf">point_in_cube</span><span class="p">(</span><span class="n">array_point_coordinates</span><span class="p">,</span> <span class="n">list_cube_vertices</span><span class="p">,</span> <span class="n">cube_centroid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Determine if an array of coordinates are within a cube.&quot;&quot;&quot;</span>
+        <span class="c1">#the simulation particle point can&#39;t be more than half the cube side length away from the cube centroid in</span>
+        <span class="c1"># any given dimension:</span>
+        <span class="n">array_cube_vertices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">list_cube_vertices</span><span class="p">)</span>
+        <span class="n">cube_half_side_length</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">pdist</span><span class="p">(</span><span class="n">array_cube_vertices</span><span class="p">,</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">/</span> <span class="mf">2.0</span>
+        <span class="n">array_cube_vertex_distances_from_centroid</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">spatial</span><span class="o">.</span><span class="n">distance</span><span class="o">.</span><span class="n">cdist</span><span class="p">(</span><span class="n">array_cube_vertices</span><span class="p">,</span>
+                                                                                 <span class="n">cube_centroid</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_almost_equal</span><span class="p">(</span><span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+                                          <span class="n">array_cube_vertex_distances_from_centroid</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">decimal</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+                                          <span class="n">err_msg</span><span class="o">=</span><span class="s2">&quot;not all cube vertex to centroid distances are the same, &quot;</span>
+                                                  <span class="s2">&quot;so not a true cube&quot;</span><span class="p">)</span>
+        <span class="n">absolute_delta_coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">subtract</span><span class="p">(</span><span class="n">array_point_coordinates</span><span class="p">,</span> <span class="n">cube_centroid</span><span class="p">))</span>
+        <span class="n">absolute_delta_x_coords</span> <span class="o">=</span> <span class="n">absolute_delta_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">indices_delta_x_acceptable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">absolute_delta_x_coords</span> <span class="o">&lt;=</span> <span class="n">cube_half_side_length</span><span class="p">)</span>
+        <span class="n">absolute_delta_y_coords</span> <span class="o">=</span> <span class="n">absolute_delta_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">indices_delta_y_acceptable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">absolute_delta_y_coords</span> <span class="o">&lt;=</span> <span class="n">cube_half_side_length</span><span class="p">)</span>
+        <span class="n">absolute_delta_z_coords</span> <span class="o">=</span> <span class="n">absolute_delta_coords</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">indices_delta_z_acceptable</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">absolute_delta_z_coords</span> <span class="o">&lt;=</span> <span class="n">cube_half_side_length</span><span class="p">)</span>
+        <span class="n">intersection_xy_acceptable_arrays</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">indices_delta_x_acceptable</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                                              <span class="n">indices_delta_y_acceptable</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">overall_indices_points_in_current_cube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">intersection_xy_acceptable_arrays</span><span class="p">,</span>
+                                                                   <span class="n">indices_delta_z_acceptable</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">overall_indices_points_in_current_cube</span>
+
+    <span class="k">def</span> <span class="nf">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span><span class="n">array_simulation_particle_coordinates</span><span class="p">,</span>
+                                                    <span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Basically update the cube dictionary objects assigned to this core to contain a new key/value pair</span>
+<span class="sd">        corresponding to the indices of the relevant particles that fall within a given cube. Also, for a given cube,</span>
+<span class="sd">        store a key/value pair for the centroid of the particles that fall within the cube.&quot;&quot;&quot;</span>
+        <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
+            <span class="n">index_list_in_cube</span> <span class="o">=</span> <span class="n">point_in_cube</span><span class="p">(</span><span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;vertex_list&#39;</span><span class="p">],</span>
+                                               <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid&#39;</span><span class="p">])</span>
+            <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;start_frame_index_list_in_cube&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">index_list_in_cube</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index_list_in_cube</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># if there&#39;s at least one particle in this cube</span>
+                <span class="n">centroid_particles_in_cube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">array_simulation_particle_coordinates</span><span class="p">[</span><span class="n">index_list_in_cube</span><span class="p">],</span>
+                                                           <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid_of_particles_first_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">centroid_particles_in_cube</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># empty cube</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid_of_particles_first_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;empty&#39;</span>
+            <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">update_dictionary_end_frame</span><span class="p">(</span><span class="n">array_simulation_particle_coordinates</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update the cube dictionary objects again as appropriate for the second and final frame.&quot;&quot;&quot;</span>
+        <span class="n">cube_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">cube</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">dictionary_cube_data_this_core</span><span class="p">):</span>
+            <span class="c1"># if there were no particles in the cube in the first frame, then set dx,dy,dz each to 0</span>
+            <span class="k">if</span> <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid_of_particles_first_frame&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;empty&#39;</span><span class="p">:</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># there was at least one particle in the starting cube so we can get dx,dy,dz centroid values</span>
+                <span class="n">new_coordinate_array_for_particles_starting_in_this_cube</span> <span class="o">=</span> <span class="n">array_simulation_particle_coordinates</span><span class="p">[</span>
+                    <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;start_frame_index_list_in_cube&#39;</span><span class="p">]]</span>
+                <span class="n">new_centroid_for_particles_starting_in_this_cube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span>
+                    <span class="n">new_coordinate_array_for_particles_starting_in_this_cube</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;centroid_of_paticles_final_frame&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_centroid_for_particles_starting_in_this_cube</span>
+                <span class="n">delta_centroid_array_this_cube</span> <span class="o">=</span> <span class="n">new_centroid_for_particles_starting_in_this_cube</span> <span class="o">-</span> <span class="n">cube</span><span class="p">[</span>
+                    <span class="s1">&#39;centroid_of_particles_first_frame&#39;</span><span class="p">]</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dx&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">cube</span><span class="p">[</span><span class="s1">&#39;dz&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta_centroid_array_this_cube</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">cube_counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1">#now that the parent process is dealing with the universe object &amp; grabbing required coordinates, each child</span>
+    <span class="c1"># process only needs to take the coordinate arrays &amp; perform the operations with its assigned cubes (no more file</span>
+    <span class="c1">#  opening and trajectory iteration on each core--which I&#39;m hoping will substantially reduce the physical memory</span>
+    <span class="c1"># footprint of my 3D streamplot code)</span>
+    <span class="n">update_dictionary_point_in_cube_start_frame</span><span class="p">(</span><span class="n">start_frame_coord_array</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span><span class="p">)</span>
+    <span class="n">update_dictionary_end_frame</span><span class="p">(</span><span class="n">end_frame_coord_array</span><span class="p">,</span> <span class="n">dictionary_cube_data_this_core</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dictionary_cube_data_this_core</span>
+
+
+<span class="k">def</span> <span class="nf">produce_coordinate_arrays_single_process</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span>
+                                             <span class="n">end_frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate coordinate arrays.</span>
+
+<span class="sd">    To reduce memory footprint produce only a single MDA selection and get</span>
+<span class="sd">    desired coordinate arrays; can later send these coordinate arrays to all</span>
+<span class="sd">    child processes rather than having each child process open a trajectory and</span>
+<span class="sd">    waste memory.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">universe_object</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">)</span>
+    <span class="n">relevant_particles</span> <span class="o">=</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">MDA_selection</span><span class="p">)</span>
+    <span class="c1"># pull out coordinate arrays from desired frames:</span>
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">universe_object</span><span class="o">.</span><span class="n">trajectory</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&gt;</span> <span class="n">end_frame</span><span class="p">:</span>
+            <span class="k">break</span>  <span class="c1"># stop here</span>
+        <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="n">start_frame</span><span class="p">:</span>
+            <span class="n">start_frame_relevant_particle_coordinate_array_xyz</span> <span class="o">=</span> <span class="n">relevant_particles</span><span class="o">.</span><span class="n">positions</span>
+        <span class="k">elif</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">==</span> <span class="n">end_frame</span><span class="p">:</span>
+            <span class="n">end_frame_relevant_particle_coordinate_array_xyz</span> <span class="o">=</span> <span class="n">relevant_particles</span><span class="o">.</span><span class="n">positions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">continue</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">start_frame_relevant_particle_coordinate_array_xyz</span><span class="p">,</span> <span class="n">end_frame_relevant_particle_coordinate_array_xyz</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="generate_streamlines_3d"><a class="viewcode-back" href="../../../documentation_pages/visualization/streamlines_3D.html#MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d">[docs]</a><span class="k">def</span> <span class="nf">generate_streamlines_3d</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span> <span class="n">trajectory_file_path</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span>
+                            <span class="n">end_frame</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">,</span> <span class="n">maximum_delta_magnitude</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                            <span class="n">num_cores</span><span class="o">=</span><span class="s1">&#39;maximum&#39;</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Produce the x, y and z components of a 3D streamplot data set.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    topology_file_path : str</span>
+<span class="sd">            Absolute path to the topology file</span>
+<span class="sd">    trajectory_file_path : str</span>
+<span class="sd">            Absolute path to the trajectory file. It will normally be desirable</span>
+<span class="sd">            to filter the trajectory with a tool such as GROMACS</span>
+<span class="sd">            :program:`g_filter` (see [Chavent2014]_)</span>
+<span class="sd">    grid_spacing : float</span>
+<span class="sd">            The spacing between grid lines (angstroms)</span>
+<span class="sd">    MDA_selection : str</span>
+<span class="sd">            MDAnalysis selection string</span>
+<span class="sd">    start_frame : int</span>
+<span class="sd">            First frame number to parse</span>
+<span class="sd">    end_frame : int</span>
+<span class="sd">            Last frame number to parse</span>
+<span class="sd">    xmin : float</span>
+<span class="sd">            Minimum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">    xmax : float</span>
+<span class="sd">            Maximum coordinate boundary for x-axis (angstroms)</span>
+<span class="sd">    ymin : float</span>
+<span class="sd">            Minimum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">    ymax : float</span>
+<span class="sd">            Maximum coordinate boundary for y-axis (angstroms)</span>
+<span class="sd">    maximum_delta_magnitude : float</span>
+<span class="sd">            Absolute value of the largest displacement tolerated for the</span>
+<span class="sd">            centroid of a group of particles ( angstroms). Values above this</span>
+<span class="sd">            displacement will not count in the streamplot (treated as</span>
+<span class="sd">            excessively large displacements crossing the periodic boundary)</span>
+<span class="sd">    num_cores : int or &#39;maximum&#39; (optional)</span>
+<span class="sd">            The number of cores to use. (Default &#39;maximum&#39; uses all available</span>
+<span class="sd">            cores)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dx_array : array of floats</span>
+<span class="sd">            An array object containing the displacements in the x direction</span>
+<span class="sd">    dy_array : array of floats</span>
+<span class="sd">            An array object containing the displacements in the y direction</span>
+<span class="sd">    dz_array : array of floats</span>
+<span class="sd">            An array object containing the displacements in the z direction</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Generate 3D streamlines and visualize in `mayavi`_::</span>
+
+<span class="sd">        import numpy as np</span>
+
+<span class="sd">        import MDAnalysis</span>
+<span class="sd">        import MDAnalysis.visualization.streamlines_3D</span>
+
+<span class="sd">        import mayavi, mayavi.mlab</span>
+
+<span class="sd">        # assign coordinate system limits and grid spacing:</span>
+<span class="sd">        x_lower,x_upper = -8.73, 1225.96</span>
+<span class="sd">        y_lower,y_upper = -12.58, 1224.34</span>
+<span class="sd">        z_lower,z_upper = -300, 300</span>
+<span class="sd">        grid_spacing_value = 20</span>
+
+<span class="sd">        x1, y1, z1 = MDAnalysis.visualization.streamlines_3D.generate_streamlines_3d(</span>
+<span class="sd">                        &#39;testing.gro&#39;, &#39;testing_filtered.xtc&#39;,</span>
+<span class="sd">                         xmin=x_lower, xmax=x_upper,</span>
+<span class="sd">                         ymin=y_lower, ymax=y_upper,</span>
+<span class="sd">                         zmin=z_lower, zmax=z_upper,</span>
+<span class="sd">                         grid_spacing=grid_spacing_value, MDA_selection = &#39;name PO4&#39;,</span>
+<span class="sd">                         start_frame=2, end_frame=3, num_cores=&#39;maximum&#39;)</span>
+
+<span class="sd">        x, y, z = np.mgrid[x_lower:x_upper:x1.shape[0]*1j,</span>
+<span class="sd">                          y_lower:y_upper:y1.shape[1]*1j,</span>
+<span class="sd">                          z_lower:z_upper:z1.shape[2]*1j]</span>
+
+<span class="sd">        # plot with mayavi:</span>
+<span class="sd">        fig = mayavi.mlab.figure(bgcolor=(1.0, 1.0, 1.0), size=(800, 800), fgcolor=(0, 0, 0))</span>
+<span class="sd">        for z_value in np.arange(z_lower, z_upper, grid_spacing_value):</span>
+<span class="sd">            st = mayavi.mlab.flow(x, y, z, x1, y1, z1, line_width=1,</span>
+<span class="sd">                                  seedtype=&#39;plane&#39;, integration_direction=&#39;both&#39;)</span>
+<span class="sd">            st.streamline_type = &#39;tube&#39;</span>
+<span class="sd">            st.tube_filter.radius = 2</span>
+<span class="sd">            st.seed.widget.origin = np.array([ x_lower,  y_upper,   z_value])</span>
+<span class="sd">            st.seed.widget.point1 = np.array([ x_upper, y_upper,  z_value])</span>
+<span class="sd">            st.seed.widget.point2 = np.array([ x_lower, y_lower,  z_value])</span>
+<span class="sd">            st.seed.widget.resolution = int(x1.shape[0])</span>
+<span class="sd">            st.seed.widget.enabled = False</span>
+<span class="sd">        mayavi.mlab.axes(extent = [0, 1200, 0, 1200, -300, 300])</span>
+<span class="sd">        fig.scene.z_plus_view()</span>
+<span class="sd">        mayavi.mlab.savefig(&#39;test_streamplot_3D.png&#39;)</span>
+<span class="sd">        # more compelling examples can be produced for vesicles and other spherical systems</span>
+
+<span class="sd">    .. image:: test_streamplot_3D.png</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    MDAnalysis.visualization.streamlines.generate_streamlines</span>
+
+
+<span class="sd">    .. _mayavi: http://docs.enthought.com/mayavi/mayavi/</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># work out the number of cores to use:</span>
+    <span class="k">if</span> <span class="n">num_cores</span> <span class="o">==</span> <span class="s1">&#39;maximum&#39;</span><span class="p">:</span>
+        <span class="n">num_cores</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>  <span class="c1"># use all available cores</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">num_cores</span> <span class="o">=</span> <span class="n">num_cores</span>  <span class="c1"># use the value specified by the user</span>
+        <span class="c1"># assert isinstance(num_cores,(int,long)), &quot;The number of specified cores must (of course) be an integer.&quot;</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">seterr</span><span class="p">(</span><span class="nb">all</span><span class="o">=</span><span class="s1">&#39;warn&#39;</span><span class="p">,</span> <span class="n">over</span><span class="o">=</span><span class="s1">&#39;raise&#39;</span><span class="p">)</span>
+    <span class="n">parent_cube_dictionary</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># collect all data from child processes here</span>
+
+    <span class="k">def</span> <span class="nf">log_result_to_parent</span><span class="p">(</span><span class="n">process_dict</span><span class="p">):</span>
+        <span class="n">parent_cube_dictionary</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">process_dict</span><span class="p">)</span>
+
+    <span class="c1">#step 1: produce tuple of cartesian coordinate limits for the first frame</span>
+    <span class="c1">#tuple_of_limits = determine_container_limits(topology_file_path = topology_file_path,trajectory_file_path =</span>
+    <span class="c1"># trajectory_file_path,buffer_value=buffer_value)</span>
+    <span class="n">tuple_of_limits</span> <span class="o">=</span> <span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">ymin</span><span class="p">,</span> <span class="n">ymax</span><span class="p">,</span> <span class="n">zmin</span><span class="p">,</span> <span class="n">zmax</span><span class="p">)</span>
+    <span class="c1">#step 2: produce a suitable grid (will assume that grid size / container size does not vary during simulation--or</span>
+    <span class="c1">#  at least not beyond the buffer limit, such that this grid can be used for all subsequent frames)</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">produce_grid</span><span class="p">(</span><span class="n">tuple_of_limits</span><span class="o">=</span><span class="n">tuple_of_limits</span><span class="p">,</span> <span class="n">grid_spacing</span><span class="o">=</span><span class="n">grid_spacing</span><span class="p">)</span>
+    <span class="c1">#step 3: split the grid into a dictionary of cube information that can be sent to each core for processing:</span>
+    <span class="n">list_dictionaries_for_cores</span><span class="p">,</span> <span class="n">total_cubes</span><span class="p">,</span> <span class="n">num_sheets</span><span class="p">,</span> <span class="n">delta_array_shape</span> <span class="o">=</span> <span class="n">split_grid</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">num_cores</span><span class="o">=</span><span class="n">num_cores</span><span class="p">)</span>
+    <span class="c1">#step 3b: produce required coordinate arrays on a single core to avoid making a universe object on each core:</span>
+    <span class="n">start_frame_coord_array</span><span class="p">,</span> <span class="n">end_frame_coord_array</span> <span class="o">=</span> <span class="n">produce_coordinate_arrays_single_process</span><span class="p">(</span><span class="n">topology_file_path</span><span class="p">,</span>
+                                                                                              <span class="n">trajectory_file_path</span><span class="p">,</span>
+                                                                                              <span class="n">MDA_selection</span><span class="p">,</span>
+                                                                                              <span class="n">start_frame</span><span class="p">,</span> <span class="n">end_frame</span><span class="p">)</span>
+    <span class="c1">#step 4: per process work using the above grid data split</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">num_cores</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sub_dictionary_of_cube_data</span> <span class="ow">in</span> <span class="n">list_dictionaries_for_cores</span><span class="p">:</span>
+        <span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">per_core_work</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+            <span class="n">start_frame_coord_array</span><span class="p">,</span> <span class="n">end_frame_coord_array</span><span class="p">,</span> <span class="n">sub_dictionary_of_cube_data</span><span class="p">,</span> <span class="n">MDA_selection</span><span class="p">,</span> <span class="n">start_frame</span><span class="p">,</span>
+            <span class="n">end_frame</span><span class="p">),</span> <span class="n">callback</span><span class="o">=</span><span class="n">log_result_to_parent</span><span class="p">)</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">pool</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
+    <span class="c1">#so, at this stage the parent process now has a single dictionary with all the cube objects updated from all</span>
+    <span class="c1"># available cores</span>
+    <span class="c1">#the 3D streamplot (i.e, mayavi flow() function) will require separate 3D np arrays for dx,dy,dz</span>
+    <span class="c1">#the shape of each 3D array will unfortunately have to match the mgrid data structure (bit of a pain): (</span>
+    <span class="c1"># num_sheets - 1, num_sheets - 1, cubes_per_column)</span>
+    <span class="n">cubes_per_sheet</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">total_cubes</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">num_sheets</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="c1">#produce dummy zero arrays for dx,dy,dz of the appropriate shape:</span>
+    <span class="n">dx_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">delta_array_shape</span><span class="p">)</span>
+    <span class="n">dy_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">delta_array_shape</span><span class="p">)</span>
+    <span class="n">dz_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">delta_array_shape</span><span class="p">)</span>
+    <span class="c1">#now use the parent cube dictionary to correctly substitute in dx,dy,dz values</span>
+    <span class="n">current_sheet</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># which is also the current row</span>
+    <span class="n">y_index_current_sheet</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># sub row</span>
+    <span class="n">z_index_current_column</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># column</span>
+    <span class="n">total_cubes_current_sheet</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">cube_number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">total_cubes</span><span class="p">):</span>
+        <span class="n">dx_array</span><span class="p">[</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">y_index_current_sheet</span><span class="p">,</span> <span class="n">z_index_current_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span>
+            <span class="s1">&#39;dx&#39;</span><span class="p">]</span>
+        <span class="n">dy_array</span><span class="p">[</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">y_index_current_sheet</span><span class="p">,</span> <span class="n">z_index_current_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span>
+            <span class="s1">&#39;dy&#39;</span><span class="p">]</span>
+        <span class="n">dz_array</span><span class="p">[</span><span class="n">current_sheet</span><span class="p">,</span> <span class="n">y_index_current_sheet</span><span class="p">,</span> <span class="n">z_index_current_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_cube_dictionary</span><span class="p">[</span><span class="n">cube_number</span><span class="p">][</span>
+            <span class="s1">&#39;dz&#39;</span><span class="p">]</span>
+        <span class="n">z_index_current_column</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">total_cubes_current_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">z_index_current_column</span> <span class="o">==</span> <span class="n">delta_array_shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="c1"># done building current y-column so iterate y value and reset z</span>
+            <span class="n">z_index_current_column</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">y_index_current_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">y_index_current_sheet</span> <span class="o">==</span> <span class="n">delta_array_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>  <span class="c1"># current sheet is complete</span>
+                <span class="n">current_sheet</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">y_index_current_sheet</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># restart for new sheet</span>
+                <span class="n">z_index_current_column</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">total_cubes_current_sheet</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1"># now set velocity component values greater than a certain cutoff to 0,</span>
+    <span class="c1"># because they tend to reflect spurious values (i.e., PBC jumping)</span>
+    <span class="n">dx_array</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dx_array</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">maximum_delta_magnitude</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">dy_array</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dy_array</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">maximum_delta_magnitude</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">dz_array</span><span class="p">[</span><span class="nb">abs</span><span class="p">(</span><span class="n">dz_array</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">maximum_delta_magnitude</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">dx_array</span><span class="p">,</span> <span class="n">dy_array</span><span class="p">,</span> <span class="n">dz_array</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
