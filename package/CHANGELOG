@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
-         lilyminium, daveminh, jbarnoud, yuxuanzhuang
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555
 
   * 2.0.0
 
@@ -24,11 +24,12 @@ Fixes
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
   * Testsuite does not any more matplotlib.use('agg') (#2191)
-  * In ChainReader, read_frame does not trigger change of iterating position. 
+  * In ChainReader, read_frame does not trigger change of iterating position.
     (Issue #2723, PR #2815)
   * TRZReader now checks `n_atoms` on reading. (Issue #2817, PR #2820)
   * TRZWriter now writes `n_atoms` to the file. (Issue #2817, PR #2820)
-
+  * fixed InterRDF_s function now gives correct results if density=True.
+    (Issue #2811, PR #2812)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
@@ -44,7 +45,7 @@ Enhancements
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
     (see upstream NumPy PR 14882), and our pytest configuration will raise an
-    error for any violation when testing with development NumPy builds 
+    error for any violation when testing with development NumPy builds
     (`1.20.0`)
   * Changes development status from Beta to Mature (Issue #2773)
   * Removes deprecated MDAnalysis.analysis.hole, please use

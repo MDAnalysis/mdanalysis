@@ -46,6 +46,8 @@ The radial cumulative distribution function is
 
 and the average number of :math:`b` particles within radius :math:`r`
 
+.. _equation-countab:
+
 .. math::
 
    N_{ab}(r) = \rho G_{ab}(r)
@@ -55,6 +57,13 @@ compute, for instance, coordination numbers such as the number of neighbors in
 the first solvation shell :math:`N(r_1)` where :math:`r_1` is the position of
 the first minimum in :math:`g(r)`.
 
+In :class:`InterRDF_s`, we provide an option `density`. When `density` is
+`True`, it will return the RDF :math:`g_{ab}(r)`; when `density` is False`,
+it will return the density of particle :math:`b` in a shell at distance
+:math:`r` around a :math:`a` particle, which is
+
+.. math::
+   n_{ab}(r) = \rho g_{ab}(r)
 
 .. _`pair distribution functions`:
    https://en.wikipedia.org/wiki/Pair_distribution_function
@@ -68,7 +77,7 @@ Average radial distribution function
 :class:`InterRDF` is a tool to calculate average radial distribution functions
 between two groups of atoms. Suppose we have two AtomGroups ``A`` and
 ``B``. ``A`` contains atom ``A1``, ``A2``, and ``B`` contains ``B1``,
-``B2``. Give ``A`` and ``B`` to class:`InterRDF`, the output will be the
+``B2``. Given ``A`` and ``B`` to :class:`InterRDF`, the output will be the
 average of RDFs between ``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and
 ``B1``, ``A2`` and ``B2``. A typical application is to calculate the RDF of
 solvent with itself or with another solute.
@@ -77,27 +86,81 @@ solvent with itself or with another solute.
    :members:
    :inherited-members:
 
+   .. attribute:: bins
+
+      :class:`numpy.ndarray` of the centers of the `nbins` histogram
+      bins.
+
+   .. attribute:: edges
+
+      :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
+      bins.
+
+   .. attribute:: rdf
+
+      :class:`numpy.ndarray` of the :ref:`radial distribution
+      function<equation-gab>` values for the :attr:`bins`.
+
+   .. attribute:: count
+
+      :class:`numpy.ndarray` representing the radial histogram, i.e.,
+      the raw counts, for all :attr:`bins`.
+
 
 Site-specific radial distribution function
 ------------------------------------------
 
 :class:`InterRDF_s` calculates site-specific radial distribution
 functions. Instead of two groups of atoms it takes as input a list of pairs of
-AtomGroup, ``[[A, B], [C, D], ...]``. Give the same ``A`` and ``B`` to
-:class:`InterRDF_s`, the output will be a list of RDFs between ``A1`` and
-``B1``, ``A1`` and ``B2``, ``A2`` and ``B1``, ``A2`` and ``B2`` (and similarly
-for ``C`` and ``D``). These site-specific radial distribution functions are
-typically calculated if one is interested in the solvation shells of a ligand
-in a binding site or the solvation of specific residues in a protein. A common
-use case is to choose ``A`` and ``C`` to be AtomGroups that only contain a
-single atom and ``W`` all solvent molecules: ``InterRDF_s(u, [[A, W], [B,
-W]])`` will then produce the RDF of solvent around atom ``A[0]`` and around
-atom ``B[0]``.
-
+AtomGroup, ``[[A, B], [C, D], ...]``. Given the same ``A`` and ``B`` to
+:class:`InterRDF_s`, the output will be a list of individual RDFs between
+``A1`` and ``B1``, ``A1`` and ``B2``, ``A2`` and ``B1``, ``A2`` and ``B2`` (and
+similarly for ``C`` and ``D``). These site-specific radial distribution
+functions are typically calculated if one is interested in the solvation shells
+of a ligand in a binding site or the solvation of specific residues in a
+protein.
 
 .. autoclass:: InterRDF_s
    :members:
    :inherited-members:
+
+   .. attribute:: bins
+
+      :class:`numpy.ndarray` of the centers of the `nbins` histogram
+      bins; all individual site-specific RDFs have the same bins.
+
+   .. attribute:: edges
+
+      :class:`numpy.ndarray` of the `nbins + 1` edges of the histogram
+      bins; all individual site-specific RDFs have the same bins.
+
+   .. attribute:: rdf
+
+      :class:`list` of the site-specific :ref:`radial distribution
+      functions<equation-gab>` or :ref:`density
+      functions<equation-nab>` for the :attr:`bins`. The list contains
+      ``len(ags)`` entries. Each entry for the ``i``-th pair ``[A, B]
+      = ags[i]`` in `ags` is a :class:`numpy.ndarray` with shape
+      ``(len(A), len(B))``, i.e., a stack of RDFs. For example,
+      ``rdf[i][0, 2]`` is the RDF between atoms ``A[0]`` and ``B[2]``.
+
+   .. attribute:: count
+
+      :class:`list` of the site-specific radial histograms, i.e., the
+      raw counts, for all :attr:`bins`. The data have the same
+      structure as :attr:`rdf` except that the arrays contain the raw
+      counts.
+
+   .. attribute:: cdf
+
+      :class:`list` of the site-specific :ref:`cumulative
+      counts<equation-countab>`, for all :attr:`bins`. The data have the same
+      structure as :attr:`rdf` except that the arrays contain the cumulative
+      counts.
+
+      This attribute only exists after :meth:`get_cdf` has been run.
+
+
 
 
 .. Not Implemented yet:
@@ -113,9 +176,17 @@ from .base import AnalysisBase
 
 
 class InterRDF(AnalysisBase):
-    """Intermolecular pair distribution function
+    r"""Intermolecular pair distribution function
 
-    InterRDF(g1, g2, nbins=75, range=(0.0, 15.0))
+    The :ref:`radial distribution function<equation-gab>` is calculated by
+    histogramming distances between all particles in `g1` and `g2` while taking
+    periodic boundary conditions into account via the minimum image
+    convention.
+
+    The `exclusion_block` keyword may be used to exclude a set of distances
+    from the calculations.
+
+    Results are available in the attributes :attr:`rdf` and :attr:`count`.
 
     Arguments
     ---------
@@ -230,7 +301,7 @@ class InterRDF(AnalysisBase):
 
 
 class InterRDF_s(AnalysisBase):
-    """Site-specific intermolecular pair distribution function
+    r"""Site-specific intermolecular pair distribution function
 
     Arguments
     ---------
@@ -243,6 +314,11 @@ class InterRDF_s(AnalysisBase):
           Number of bins in the histogram [75]
     range : tuple or list (optional)
           The size of the RDF [0.0, 15.0]
+    density : bool (optional)
+          Calculate :math:`g_{ab}(r)` if set to ``True``; or calculate
+          :math:`n_{ab}(r)` if set to ``false``; the default is
+          ``True``.
+
 
     Example
     -------
@@ -265,19 +341,20 @@ class InterRDF_s(AnalysisBase):
 
     Results are available through the :attr:`bins` and :attr:`rdf` attributes::
 
-      plt.plot(rdf.bins, rdf.rdf[0][0][0])
+      plt.plot(rdf.bins, rdf.rdf[0][0, 0])
 
     (Which plots the rdf between the first atom in ``s1`` and the first atom in
     ``s2``)
 
-    To generate the *cumulative distribution function* (cdf), use the
+    To generate the *cumulative distribution function* (cdf) in the sense of
+    "particles within radius :math:`r`", i.e., :math:`N_{ab}(r)`, use the
     :meth:`~InterRDF_s.get_cdf` method ::
 
       cdf = rdf.get_cdf()
 
-    Results are available through the :attr:'cdf' attribute::
+    Results are available through the :attr:`cdf` attribute::
 
-      plt.plot(rdf.bins, rdf.cdf[0][0][0])
+      plt.plot(rdf.bins, rdf.cdf[0][0, 0])
 
     (Which plots the cdf between the first atom in ``s1`` and the first atom in
     ``s2``)
@@ -325,8 +402,8 @@ class InterRDF_s(AnalysisBase):
                                                     box=self.u.dimensions)
 
             for j, (idx1, idx2) in enumerate(pairs):
-                self.count[i][idx1, idx2, :] += np.histogram(dist[j], 
-                                                             **self.rdf_settings)[0]            
+                self.count[i][idx1, idx2, :] += np.histogram(dist[j],
+                                                             **self.rdf_settings)[0]
 
         self.volume += self._ts.volume
 
@@ -342,14 +419,11 @@ class InterRDF_s(AnalysisBase):
 
         for i, (ag1, ag2) in enumerate(self.ags):
             # Number of each selection
-            nA = len(ag1)
-            nB = len(ag2)
-            N = nA * nB
             indices.append([ag1.indices, ag2.indices])
 
             # Average number density
             box_vol = self.volume / self.n_frames
-            density = N / box_vol
+            density = 1 / box_vol
 
             if self._density:
                 rdf.append(self.count[i] / (density * vol * self.n_frames))
@@ -360,13 +434,20 @@ class InterRDF_s(AnalysisBase):
         self.indices = indices
 
     def get_cdf(self):
-        """Calculate the cumulative distribution functions (CDF) for all sites.
-        Note that this is the actual count within a given radius, i.e.,
-        :math:`N(r)`.
+        r"""Calculate the cumulative counts for all sites.
+
+        This is the :ref:`cumulative count<equation-countab>` within a given
+        radius, i.e., :math:`N_{ab}(r)`.
+
+        The result is returned and also stored in the attribute
+        :attr:`cdf`.
+
+
         Returns
         -------
-              cdf : list
-                      list of arrays with the same structure as :attr:`rdf`
+        cdf : list
+              list of arrays with the same structure as :attr:`rdf`
+
         """
         # Calculate cumulative distribution function
         # Empty list to restore CDF
