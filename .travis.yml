@@ -1,3 +1,4 @@
+version: ~> 1.0
 language: generic
 group: travis_latest
 
@@ -87,6 +88,16 @@ jobs:
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
            ASV_CHECK="true"
 
+    - env: NAME="pypi check"
+           PYTHON_VERSION=3.7
+           CODECOV="false"
+           MAIN_CMD="cd package && python setup.py"
+           SETUP_CMD="sdist"
+           BUILD_CMD=""
+           INSTALL_HOLE="false"
+           CONDA_DEPENDENCIES="setuptools cython twine"
+           PYPI_CHECK="true"
+
     - os: osx
       env: PYTHON_VERSION=3.6
            NUMPY_VERSION=1.17.3
@@ -137,7 +148,14 @@ script:
       cd ../benchmarks
       time python -m asv check -E existing
     fi
-
+  # check pypi package build
+  - |
+    if [[ "${PYPI_CHECK}" == "true" ]]; then
+       DISTRIBUTION=$(ls -t1 ${TRAVIS_BUILD_DIR}/package/dist/MDAnalysis-*.tar.gz | head -n 1)
+       test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
+       echo "twine check $DISTRIBUTION"
+       twine check $DISTRIBUTION
+    fi
 
 after_success:
   - |
