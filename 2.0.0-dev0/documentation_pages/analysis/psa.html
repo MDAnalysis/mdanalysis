@@ -273,7 +273,7 @@ doi: <a class="reference external" href="http://dx.doi.org/10.1371/journal.pcbi.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>v</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – coordinates</li>
+<li><strong>v</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – coordinates</li>
 <li><strong>axes</strong> (<em>None / int / tuple</em><em> (</em><em>optional</em><em>)</em>) – Axes or axes along which a sum is performed. The default
 (<em>axes</em> = <code class="docutils literal notranslate"><span class="pre">None</span></code>) performs a sum over all the dimensions of
 the input array.  The value of <em>axes</em> may be negative, in
@@ -298,7 +298,7 @@ which case it counts from the last axis to the zeroth axis.</li>
 <p>The MSDs between all pairs of points in <cite>P</cite> and <cite>Q</cite> are
 calculated, each pair having a point from <cite>P</cite> and a point from
 <cite>Q</cite>.</p>
-<p><cite>P</cite> (<cite>Q</cite>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
+<p><cite>P</cite> (<cite>Q</cite>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
 steps, <span class="math notranslate nohighlight">\(N\)</span> atoms, and <span class="math notranslate nohighlight">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>). The pairwise MSD
 matrix has dimensions <span class="math notranslate nohighlight">\(N_p\)</span> by <span class="math notranslate nohighlight">\(N_q\)</span>.</p>
@@ -307,8 +307,8 @@ matrix has dimensions <span class="math notranslate nohighlight">\(N_p\)</span> 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
-<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
+<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
 </ul>
 </td>
 </tr>
@@ -316,7 +316,7 @@ matrix has dimensions <span class="math notranslate nohighlight">\(N_p\)</span> 
 in <cite>Q</cite></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -333,7 +333,7 @@ in <cite>Q</cite></p>
 <code class="descclassname">MDAnalysis.analysis.psa.</code><code class="descname">get_coord_axes</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#get_coord_axes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.get_coord_axes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of atoms and the axes corresponding to atoms
 and coordinates for a given path.</p>
-<p>The <cite>path</cite> is assumed to be a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> where the 0th axis
+<p>The <cite>path</cite> is assumed to be a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> where the 0th axis
 corresponds to a frame (a snapshot of coordinates). The <span class="math notranslate nohighlight">\(3N\)</span>
 (Cartesian) coordinates are assumed to be either:</p>
 <ol class="arabic simple">
@@ -347,7 +347,7 @@ each atom.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – representing a path</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – representing a path</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the number of atoms and the axes containing coordinates</td>
 </tr>
@@ -385,7 +385,7 @@ each atom.</li>
 <p>The metric used is RMSD, as opposed to the more conventional L2
 (Euclidean) norm, because this is convenient for i.e., comparing
 protein configurations.</p>
-<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
+<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
 steps, <span class="math notranslate nohighlight">\(N\)</span> atoms, and <span class="math notranslate nohighlight">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>). <em>P</em> (<em>Q</em>) has
 either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\)</span> (<span class="math notranslate nohighlight">\(N_q \times N \times 3\)</span>), or <span class="math notranslate nohighlight">\(N_p \times (3N)\)</span> (<span class="math notranslate nohighlight">\(N_q \times (3N)\)</span>) in flattened form.</p>
@@ -395,8 +395,8 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
-<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
+<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
 </ul>
 </td>
 </tr>
@@ -446,7 +446,7 @@ Analysis And Machine Intelligence, 37:2153-63, 2015.</td></tr>
 <dt id="MDAnalysis.analysis.psa.hausdorff_wavg">
 <code class="descclassname">MDAnalysis.analysis.psa.</code><code class="descname">hausdorff_wavg</code><span class="sig-paren">(</span><em>P</em>, <em>Q</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#hausdorff_wavg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.hausdorff_wavg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the weighted average Hausdorff distance between two paths.</p>
-<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
+<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
 steps, <span class="math notranslate nohighlight">\(N\)</span> atoms, and <span class="math notranslate nohighlight">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>). <em>P</em> (<em>Q</em>) has
 either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\)</span> (<span class="math notranslate nohighlight">\(N_q \times N \times 3\)</span>), or <span class="math notranslate nohighlight">\(N_p \times (3N)\)</span> (<span class="math notranslate nohighlight">\(N_q \times (3N)\)</span>) in flattened form. The nearest
@@ -459,8 +459,8 @@ measure that gives equal weight to <em>P</em> and <em>Q</em>.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
-<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
+<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
 </ul>
 </td>
 </tr>
@@ -499,7 +499,7 @@ obey the triangle inequality); see <a class="reference internal" href="#seyler20
 <dt id="MDAnalysis.analysis.psa.hausdorff_avg">
 <code class="descclassname">MDAnalysis.analysis.psa.</code><code class="descname">hausdorff_avg</code><span class="sig-paren">(</span><em>P</em>, <em>Q</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#hausdorff_avg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.hausdorff_avg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the average Hausdorff distance between two paths.</p>
-<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
+<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
 steps, <span class="math notranslate nohighlight">\(N\)</span> atoms, and <span class="math notranslate nohighlight">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>). <em>P</em> (<em>Q</em>) has
 either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\)</span> (<span class="math notranslate nohighlight">\(N_q \times N \times 3\)</span>), or <span class="math notranslate nohighlight">\(N_p \times (3N)\)</span> (<span class="math notranslate nohighlight">\(N_q \times (3N)\)</span>) in flattened form. The nearest
@@ -512,8 +512,8 @@ average Hausdorff gives equal weight to both paths.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
-<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
+<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
 </ul>
 </td>
 </tr>
@@ -551,7 +551,7 @@ triangle inequality); see <a class="reference internal" href="#seyler2015" id="i
 <dt id="MDAnalysis.analysis.psa.hausdorff_neighbors">
 <code class="descclassname">MDAnalysis.analysis.psa.</code><code class="descname">hausdorff_neighbors</code><span class="sig-paren">(</span><em>P</em>, <em>Q</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#hausdorff_neighbors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.hausdorff_neighbors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the Hausdorff neighbors of two paths.</p>
-<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
+<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
 steps, <span class="math notranslate nohighlight">\(N\)</span> atoms, and <span class="math notranslate nohighlight">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>). <em>P</em> (<em>Q</em>) has
 either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\)</span> (<span class="math notranslate nohighlight">\(N_q \times N \times 3\)</span>), or <span class="math notranslate nohighlight">\(N_p \times (3N)\)</span> (<span class="math notranslate nohighlight">\(N_q \times (3N)\)</span>) in flattened form.</p>
@@ -560,8 +560,8 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
-<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
+<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
 </ul>
 </td>
 </tr>
@@ -591,7 +591,7 @@ hausdorff neighbors.</li>
 <dt id="MDAnalysis.analysis.psa.discrete_frechet">
 <code class="descclassname">MDAnalysis.analysis.psa.</code><code class="descname">discrete_frechet</code><span class="sig-paren">(</span><em>P</em>, <em>Q</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#discrete_frechet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.discrete_frechet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the discrete Fréchet distance between two paths.</p>
-<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
+<p><em>P</em> (<em>Q</em>) is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of <span class="math notranslate nohighlight">\(N_p\)</span> (<span class="math notranslate nohighlight">\(N_q\)</span>) time
 steps, <span class="math notranslate nohighlight">\(N\)</span> atoms, and <span class="math notranslate nohighlight">\(3N\)</span> coordinates (e.g.,
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup.positions" title="MDAnalysis.core.groups.AtomGroup.positions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup.positions</span></code></a>). <em>P</em> (<em>Q</em>) has
 either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\)</span> (<span class="math notranslate nohighlight">\(N_q \times N \times 3\)</span>), or :<span class="math notranslate nohighlight">\(N_p \times (3N)\)</span> (<span class="math notranslate nohighlight">\(N_q \times (3N)\)</span>) in flattened form.</p>
@@ -600,8 +600,8 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
-<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
+<li><strong>P</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the first path</li>
+<li><strong>Q</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – the points in the second path</li>
 </ul>
 </td>
 </tr>
@@ -707,9 +707,9 @@ distance matrix.</p>
 <dd><p>Represent a path based on a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>.</p>
 <p>Pre-process a <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> object: (1) fit the trajectory to a
 reference structure, (2) convert fitted time series to a
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representation of <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a>.</p>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representation of <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a>.</p>
 <p>The analysis is performed with <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> and stores the result
-in the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>.
+in the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>.
 <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> also generates a fitted trajectory and path from
 alignment of the original trajectories to a reference structure.</p>
 <div class="versionadded">
@@ -791,7 +791,7 @@ to compose <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.pat
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.psa.Path.path">
 <code class="descname">path</code><a class="headerlink" href="#MDAnalysis.analysis.psa.Path.path" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> object representation of the fitted trajectory</p>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> object representation of the fitted trajectory</p>
 </dd></dl>
 
 <dl class="method">
@@ -866,7 +866,7 @@ inputted universe (<a class="reference internal" href="#MDAnalysis.analysis.psa.
 <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.to_path" title="MDAnalysis.analysis.psa.Path.to_path"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Path.to_path()</span></code></a> are used consecutively to generate a new universe
 (<a class="reference internal" href="#MDAnalysis.analysis.psa.Path.u_fitted" title="MDAnalysis.analysis.psa.Path.u_fitted"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.u_fitted</span></code></a>) containing the fitted trajectory along with the
 corresponding <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> represented as an
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The method returns a tuple of the topology name
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>. The method returns a tuple of the topology name
 and new trajectory name, which can be fed directly into an
 <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> object after unpacking the tuple using the
 <code class="docutils literal notranslate"><span class="pre">*</span></code> operator, as in
@@ -892,9 +892,9 @@ the <cite>array_like</cite> as a weight for the corresponding atom in the
 AtomGroup.</li>
 <li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Reject match if the atomic masses for matched atoms differ by more
 than <em>tol_mass</em> [0.1]</li>
-<li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> with 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
+<li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> with 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
 if <code class="docutils literal notranslate"><span class="pre">False</span></code> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> is a 3D (<span class="math notranslate nohighlight">\(N_p\times N\times 3\)</span>)
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -923,7 +923,7 @@ trajectory.</p>
 <p>Given a selection of <em>N</em> atoms from <em>select</em>, the atomic positions for
 each frame in the fitted universe (<a class="reference internal" href="#MDAnalysis.analysis.psa.Path.u_fitted" title="MDAnalysis.analysis.psa.Path.u_fitted"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.u_fitted</span></code></a>) trajectory
 (with <span class="math notranslate nohighlight">\(N_p\)</span> total frames) are appended sequentially to form a 3D or 2D
-(if <em>flat</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representation of the
+(if <em>flat</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representation of the
 fitted trajectory (with dimensions <span class="math notranslate nohighlight">\(N_p\times N\times 3\)</span> or <span class="math notranslate nohighlight">\(N_p\times 3N\)</span>, respectively).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -936,9 +936,9 @@ the trajectory from <a class="reference internal" href="#MDAnalysis.analysis.psa
 <li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – the selection for constructing the coordinates of each frame in
 <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a>; if <code class="docutils literal notranslate"><span class="pre">None</span></code> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path_select" title="MDAnalysis.analysis.psa.Path.path_select"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path_select</span></code></a>
 is used, else it is overridden by <em>select</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> as a 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
+<li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> as a 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
 if <code class="docutils literal notranslate"><span class="pre">False</span></code> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> is a 3D (<span class="math notranslate nohighlight">\(N_p\times N\times 3\)</span>)
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 </ul>
 </td>
 </tr>
@@ -947,7 +947,7 @@ if <code class="docutils literal notranslate"><span class="pre">False</span></co
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.u_fitted.trajectory</span></code></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -964,10 +964,10 @@ of paths from an all-pairs comparison generated by <code class="xref py py-class
 <p>The nearest neighbors for each path of a pair of paths is generated by
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAPair.compute_nearest_neighbors()</span></code> and stores the result
 in a dictionary (<a class="reference internal" href="#MDAnalysis.analysis.psa.PSAPair.nearest_neighbors" title="MDAnalysis.analysis.psa.PSAPair.nearest_neighbors"><code class="xref py py-attr docutils literal notranslate"><span class="pre">nearest_neighbors</span></code></a>): each path has a
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the frames of its nearest neighbors, and a
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of its nearest neighbor distances
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the frames of its nearest neighbors, and a
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of its nearest neighbor distances
 <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>. For example, <em>nearest_neighbors[‘frames’]</em> is a pair
-of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, the first being the frames of the nearest
+of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, the first being the frames of the nearest
 neighbors of the first path, <em>i</em>, the second being those of the second path,
 <em>j</em>.</p>
 <p>The Hausdorff pair for the pair of paths is found by calling
@@ -1055,7 +1055,7 @@ nearest neighbor distances for each path in <em>this</em> <a class="reference in
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.psa.</code><code class="descname">PSAnalysis</code><span class="sig-paren">(</span><em>universes</em>, <em>reference=None</em>, <em>select='name CA'</em>, <em>ref_frame=0</em>, <em>path_select=None</em>, <em>labels=None</em>, <em>targetdir='.'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform Path Similarity Analysis (PSA) on a set of trajectories.</p>
 <p>The analysis is performed with <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> and stores the result
-in the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>.
+in the <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> distance matrix <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="MDAnalysis.analysis.psa.PSAnalysis.D"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.D</span></code></a>.
 <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.run" title="MDAnalysis.analysis.psa.PSAnalysis.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PSAnalysis.run()</span></code></a> also generates a fitted trajectory and path from
 alignment of the original trajectories to a reference structure.</p>
 <div class="versionadded">
@@ -1146,14 +1146,14 @@ to compose <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.pat
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.paths">
 <code class="descname">paths</code><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.paths" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> objects representing the set/ensemble of
+<dd><p>list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> objects representing the set/ensemble of
 fitted trajectories</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.D">
 <code class="descname">D</code><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.D" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> whichs store calculated distance matrix</p>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> whichs store calculated distance matrix</p>
 </dd></dl>
 
 <dl class="method">
@@ -1173,7 +1173,7 @@ checked for proper distance matrix form by
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>dist_mat</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><em>numpy.ndarray</em></a>) – user-specified distance matrix to be clustered [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
+<li><strong>dist_mat</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – user-specified distance matrix to be clustered [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>method</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of linkage criterion for clustering [<code class="docutils literal notranslate"><span class="pre">'ward'</span></code>]</li>
 <li><strong>no_plot</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, do not render the dendrogram [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>no_labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> then do not label dendrogram [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
@@ -1224,12 +1224,12 @@ AtomGroup [<code class="docutils literal notranslate"><span class="pre">None</sp
 <li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – Reject match if the atomic masses for matched atoms differ by more
 than <em>tol_mass</em> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame index to select frame from <em>reference</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> as a 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
+<li><strong>flat</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – represent <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> as a 2D (<span class="math notranslate nohighlight">\(N_p\times 3N\)</span>) <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>;
 if <code class="docutils literal notranslate"><span class="pre">False</span></code> then <a class="reference internal" href="#MDAnalysis.analysis.psa.Path.path" title="MDAnalysis.analysis.psa.Path.path"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Path.path</span></code></a> is a 3D (<span class="math notranslate nohighlight">\(N_p\times N\times 3\)</span>)
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code>, pickle list of names for fitted trajectories
 [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
-<li><strong>store</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> then writes each path (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)
+<li><strong>store</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – if <code class="docutils literal notranslate"><span class="pre">True</span></code> then writes each path (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)
 in <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.paths" title="MDAnalysis.analysis.psa.PSAnalysis.paths"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.paths</span></code></a> to compressed npz (numpy) files
 [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 </ul>
@@ -1323,7 +1323,7 @@ matrix [<code class="docutils literal notranslate"><span class="pre">False</span
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">representation of the distance matrix (or vector)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)">numpy.ndarray</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)">numpy.ndarray</a></p>
 </td>
 </tr>
 </tbody>
@@ -1343,7 +1343,7 @@ method.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representations of paths in
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representations of paths in
 <code class="xref py py-class docutils literal notranslate"><span class="pre">PSA</span></code></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
@@ -1538,7 +1538,7 @@ paths. The nearest neighbor frames and distances for a <a class="reference inter
 can be accessed in the nearest neighbor dictionary using the keys
 ‘frames’ and ‘distances’, respectively. E.g.,
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAPair.nearest_neighbors['distances']</span></code> returns a <em>pair</em> of
-<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.18)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> corresponding to the nearest neighbor distances
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> corresponding to the nearest neighbor distances
 for each path. Similarly, Hausdorff pair information can be accessed
 using <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAPair.hausdorff_pair" title="MDAnalysis.analysis.psa.PSAPair.hausdorff_pair"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAPair.hausdorff_pair</span></code></a> with the keys ‘frames’ and
 ‘distance’.</p>
@@ -1616,7 +1616,7 @@ frames/distances in <code class="xref py py-attr docutils literal notranslate"><
 <dt id="MDAnalysis.analysis.psa.PSAnalysis.save_paths">
 <code class="descname">save_paths</code><span class="sig-paren">(</span><em>filename=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/psa.html#PSAnalysis.save_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.psa.PSAnalysis.save_paths" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save fitted <a class="reference internal" href="#MDAnalysis.analysis.psa.PSAnalysis.paths" title="MDAnalysis.analysis.psa.PSAnalysis.paths"><code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.paths</span></code></a> to numpy compressed npz files.</p>
-<p>The data are saved with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.savez_compressed.html#numpy.savez_compressed" title="(in NumPy v1.18)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savez_compressed()</span></code></a> in the directory
+<p>The data are saved with <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.savez_compressed.html#numpy.savez_compressed" title="(in NumPy v1.19)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.savez_compressed()</span></code></a> in the directory
 specified by <code class="xref py py-attr docutils literal notranslate"><span class="pre">PSAnalysis.targetdir</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
