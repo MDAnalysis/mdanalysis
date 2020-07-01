@@ -13,14 +13,15 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/>>/20 orbeckst
+??/??/20 orbeckst, VOD555
 
   * 1.0.1
 
 Fixes
   * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
-
+  * fixed InterRDF_s function now gives correct results if density=True.
+    (Issue #2811, PR #2812)
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
