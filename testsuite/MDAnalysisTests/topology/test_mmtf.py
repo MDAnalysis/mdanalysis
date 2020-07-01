@@ -1,7 +1,7 @@
 import pytest
 from numpy.testing import assert_equal
 import mmtf
-import mock
+from unittest import mock
 
 import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup

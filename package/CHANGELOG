@@ -12,21 +12,32 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
   * release numbers follow "Semantic Versioning" http://semver.org
 
-------------------------------------------------------------------------------
 ??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium, daveminh
 
   * 2.0.0
 
 Fixes
+  * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
+    error (Issue #2765)
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
   * Testsuite does not any more matplotlib.use('agg') (#2191)
 
 Enhancements
+  * Added the RDKitParser which creates a `core.topology.Topology` object from 
+    an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates 
+    from RDKit conformers (Issue #2468, PR #2707)
+  * Added the `Aromaticities` topology attribute, and the `aromatic` selection 
+    token (Issue #2468, PR #2707)
+  * Added the `from_smiles` classmethod to the Universe (Issue #2468, PR #2707)
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
 
 Changes
+  * Changes development status from Beta to Mature (Issue #2773)
+  * Removes deprecated MDAnalysis.analysis.hole, please use
+    MDAnalysis.analysis.hole2.hole instead (Issue #2739)
+  * Replaces use of mock in favour of unittest.mock (Issue #2777)
   * Removes support for passing `atoms` to XYZWriter. (Issue #2739, PR #2754)
   * Removes; deprecated support for using Writer.write(Timestep), deprecated
     Writer.write_next_timestep, use write() instead. (Issue #2739)

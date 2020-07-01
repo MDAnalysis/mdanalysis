@@ -28,8 +28,8 @@ env:
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
-    - CONDA_MIN_DEPENDENCIES="mmtf-python mock six biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0"
+    - CONDA_MIN_DEPENDENCIES="mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
@@ -131,13 +131,15 @@ after_success:
     if [[ $CODECOV == 'true' ]]; then \
       codecov; \
     fi
+
   # can't use test here since this leads to travis fails even though the build passes
   # turn off blocking as it causes large writes to stdout to fail 
   # (see https://github.com/travis-ci/travis-ci/issues/4704)
   - |
-    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
+    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] ; then
       python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
       cd ${TRAVIS_BUILD_DIR}/package/MDAnalysis
+      export GH_DOC_BRANCH=${TRAVIS_BRANCH}
       export VERSION=$(python -c "import version; print(version.__version__)")
       cd -
       bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs_via_travis.sh;

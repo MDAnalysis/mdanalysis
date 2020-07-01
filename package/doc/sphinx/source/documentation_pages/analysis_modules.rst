@@ -30,10 +30,10 @@ MDAnalysis with :program:`conda` (see :ref:`installation-instructions`) then a
 *full set of dependencies* is automatically installed.
 
 Other modules require external programs. For instance, the
-:mod:`MDAnalysis.analysis.hole` module requires an installation of the HOLE_
-suite of programs. You will need to install these external dependencies by
-following their installation instructions before you can use the corresponding
-MDAnalysis module.
+:mod:`MDAnalysis.analysis.hole2.hole` module requires an installation of the
+HOLE_ suite of programs. You will need to install these external dependencies
+by following their installation instructions before you can use the
+corresponding MDAnalysis module.
 
 .. _scikit-learn: http://scikit-learn.org/
 .. _HOLE: http://www.holeprogram.org/
@@ -78,7 +78,6 @@ Membranes and membrane proteins
 .. toctree::
    :maxdepth: 1
 
-   analysis/hole
    analysis/hole2
    analysis/leaflet
 

@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import os
-import mock
+from unittest import mock
 
 """Tests whether os.fork() is called as a side effect when importing MDAnalysis.
 See PR #1794 for details."""
