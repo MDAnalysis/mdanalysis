@@ -385,14 +385,18 @@ class Timestep(object):
 
         return ts
 
+
     def __getstate__(self):
+        self.dt
         state = self.__dict__.copy()
         state.pop('_reader', None)
 
         return state
 
+
     def __setstate__(self, state):
         self.__dict__.update(state)
+
 
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
@@ -2150,8 +2154,6 @@ class ReaderBase(ProtoReader):
             self._auxs[aux].close()
         self.close()
 
-    def __getstate__(self):
-        return self.__dict__
 
     def __setstate__(self, state):
         self.__dict__ = state
