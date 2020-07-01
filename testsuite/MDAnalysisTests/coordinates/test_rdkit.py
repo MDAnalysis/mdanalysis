@@ -198,3 +198,14 @@ class TestRDKitConverter(object):
             rdprop = rdprops["_MDAnalysis_%s" % prop]
             mdaprop = getattr(mol2.atoms[idx], prop)
             assert rdprop == mdaprop
+
+    @pytest.mark.parametrize("sel_str", [
+        "resname ALA",
+        "resname PRO and segid A",
+    ])
+    def test_index_property(self, pdb, sel_str):
+        ag = pdb.select_atoms(sel_str)
+        mol = ag.convert_to("RDKIT")
+        expected = ag.indices
+        indices = np.array([a.GetIntProp("_MDAnalysis_index") for a in mol.GetAtoms()], dtype=np.int32)
+        assert_equal(indices, expected)

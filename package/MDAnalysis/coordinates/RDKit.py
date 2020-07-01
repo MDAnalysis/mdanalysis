@@ -227,6 +227,7 @@ class RDKitConverter(base.ConverterBase):
                     rdatom.SetIntProp("_MDAnalysis_%s" % attr, int(value))
                 else:
                     rdatom.SetProp("_MDAnalysis_%s" % attr, value)
+            rdatom.SetIntProp("_MDAnalysis_index", int(atom.ix))
             # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
