@@ -5,8 +5,8 @@
 /* MDAnalysis gray: #808080 */
 /* MDAnalysis white: #FFFFFF */
 /* MDAnalysis black: #000000 */
-/* Very light orange: #FFEBD0 */
-/* Code orange: #ca6500 */
+/* Darker orange: e76900 */
+/* Even darker orange: #a24900 */
 /* RTD dark grey: #343131 */
 /* RTD light grey: #e6e6e6 */
 
@@ -203,23 +203,4 @@ dl.field-list > dt::after {
 
 .rst-content code:not(.xref).literal {
     color: #ca6500;
-}
-/* override table width restrictions */
-@media screen and (min-width: 767px) {
-
-    .wy-table-responsive table td, .wy-table-responsive table th {
-       /* !important prevents the common CSS stylesheets from overriding
-          this as on RTD they are loaded after this stylesheet */
-       white-space: normal !important;
-    }
- 
-    .wy-table-responsive {
-       overflow: visible !important;
-       max-width: 100% !important;
-    }
- }
-
-dl.footnote p {
-    font-weight: lighter;
-    font-size: 14px
 }

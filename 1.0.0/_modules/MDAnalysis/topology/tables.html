@@ -1,0 +1,614 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.topology.tables &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.topology.tables</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.topology.tables</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">MDAnalysis topology tables</span>
+<span class="sd">==========================</span>
+
+<span class="sd">The module contains static lookup tables for atom typing etc. The</span>
+<span class="sd">tables are dictionaries that are indexed by the element.</span>
+
+<span class="sd">.. autodata:: atomelements</span>
+<span class="sd">.. autodata:: masses</span>
+<span class="sd">.. autodata:: vdwradii</span>
+
+<span class="sd">The original raw data are stored as multi-line strings that are</span>
+<span class="sd">translated into dictionaries with :func:`kv2dict`. In the future,</span>
+<span class="sd">these tables might be moved into external data files; see</span>
+<span class="sd">:func:`kv2dict` for explanation of the file format.</span>
+
+<span class="sd">.. autofunction:: kv2dict</span>
+
+<span class="sd">The raw tables are stored in the strings</span>
+
+<span class="sd">.. autodata:: TABLE_ATOMELEMENTS</span>
+<span class="sd">.. autodata:: TABLE_MASSES</span>
+<span class="sd">.. autodata:: TABLE_VDWRADII</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+
+<div class="viewcode-block" id="kv2dict"><a class="viewcode-back" href="../../../documentation_pages/topology/tables.html#MDAnalysis.topology.tables.kv2dict">[docs]</a><span class="k">def</span> <span class="nf">kv2dict</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">convertor</span><span class="o">=</span><span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Primitive ad-hoc parser of a key-value record list.</span>
+
+<span class="sd">    * The string *s* should contain each key-value pair on a separate</span>
+<span class="sd">      line (separated by newline). The first white space after the key</span>
+<span class="sd">      separates key and value.</span>
+
+<span class="sd">    * Empty lines are allowed.</span>
+
+<span class="sd">    * Comment lines (starting with #) are allowed.</span>
+
+<span class="sd">    * Leading whitespace is ignored.</span>
+
+<span class="sd">    The *convertor* is a function that converts its single argument to</span>
+<span class="sd">    a valid Python type. The default is :func:`str` but other</span>
+<span class="sd">    possibilities are :func:`int` (for integers) or :func:`float` for</span>
+<span class="sd">    floating point numbers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">d</span><span class="p">[</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">convertor</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">d</span></div>
+
+
+<span class="c1">#: Table with hard-coded special atom names, used for guessing atom types</span>
+<span class="c1">#: with :func:`MDAnalysis.topology.core.guess_atom_element`.</span>
+<span class="n">TABLE_ATOMELEMENTS</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># translation of atomnames to types/element</span>
+<span class="s2"># based on CHARMM and AMBER usage with a little bit of GROMOS (and PROPKA)</span>
+<span class="s2"># NOTE: CL might be ambiguous and is interpreted as chloride!</span>
+
+<span class="s2"># --------- ------------------</span>
+<span class="s2"># atomname   element</span>
+<span class="s2"># --------- ------------------</span>
+
+<span class="s2"># Bromide</span>
+<span class="s2">BR           BR</span>
+
+<span class="s2"># Calcium</span>
+<span class="s2">CAL          CA</span>
+<span class="s2">C0           CA</span>
+<span class="s2">CA2+         CA</span>
+
+<span class="s2"># Cesium</span>
+<span class="s2">CES          CS</span>
+
+<span class="s2"># Chloride</span>
+<span class="s2">CLA          CL</span>
+<span class="s2">CLAL         CL</span>
+<span class="s2">CL           CL</span>
+<span class="s2">CL-          CL</span>
+
+<span class="s2"># Iodide</span>
+<span class="s2">IOD          I</span>
+
+<span class="s2"># Iron</span>
+<span class="s2">FE           FE</span>
+<span class="s2">FE2          FE</span>
+
+<span class="s2"># Lithium</span>
+<span class="s2">LIT          LI</span>
+<span class="s2">LI           LI</span>
+<span class="s2">LI+          LI</span>
+<span class="s2">QL           LI</span>
+
+<span class="s2"># Magnesium</span>
+<span class="s2">MG           MG</span>
+<span class="s2">MG2+         MG</span>
+
+<span class="s2"># Noble gases</span>
+<span class="s2">## XXX collides with NE, HE in Arg  XXX</span>
+<span class="s2">## XXX so we remove the noble gases XXX</span>
+<span class="s2">##HE           HE</span>
+<span class="s2">##NE           NE</span>
+
+<span class="s2"># Potassium</span>
+<span class="s2">K            K</span>
+<span class="s2">POT          K</span>
+<span class="s2">K+           K</span>
+<span class="s2">QK           K</span>
+
+<span class="s2"># Sodium</span>
+<span class="s2">SOD          NA</span>
+<span class="s2">NA           NA</span>
+<span class="s2">NA+          NA</span>
+<span class="s2">QN           NA</span>
+
+<span class="s2"># Zink</span>
+<span class="s2">ZN           ZN</span>
+
+<span class="s2"># Copper</span>
+<span class="s2">CU           CU</span>
+
+<span class="s2"># Cesium</span>
+<span class="s2">CS           CS</span>
+<span class="s2">CS+          CS</span>
+<span class="s2">CES          CS</span>
+
+<span class="s2"># Cerium??</span>
+<span class="s2">QC           CE</span>
+
+<span class="s2"># Rubidium</span>
+<span class="s2">RB           RB</span>
+<span class="s2">QR           RB</span>
+
+<span class="s2"># special carbons (Amber?)</span>
+<span class="s2">BC           C</span>
+<span class="s2">AC           C</span>
+
+<span class="s2"># dummy atom types</span>
+<span class="s2">MW           DUMMY</span>
+
+<span class="s2"># other types are guessed from the name; see</span>
+<span class="s2"># topology.core.guess_atom_elements()</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#: Dictionary with hard-coded special atom names, used for guessing atom types</span>
+<span class="c1">#: with :func:`MDAnalysis.topology.core.guess_atom_type`.</span>
+<span class="n">atomelements</span> <span class="o">=</span> <span class="n">kv2dict</span><span class="p">(</span><span class="n">TABLE_ATOMELEMENTS</span><span class="p">)</span>
+
+<span class="n">elements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;H&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;LI&#39;</span><span class="p">,</span> <span class="s1">&#39;BE&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;NA&#39;</span><span class="p">,</span> <span class="s1">&#39;MG&#39;</span><span class="p">,</span> <span class="s1">&#39;AL&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;SI&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;CL&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;K&#39;</span><span class="p">]</span>
+
+<span class="c1">#: Plain-text table with atomic masses in u.</span>
+<span class="n">TABLE_MASSES</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># masses for elements in atomic units (u)</span>
+<span class="s2"># (taken from CHARMM and Gromacs atommass.dat)</span>
+
+<span class="s2">#------------ -----------</span>
+<span class="s2"># atomtype    mass</span>
+<span class="s2">#------------ -----------</span>
+<span class="s2">Ac    227.028</span>
+<span class="s2">Al    26.981539</span>
+<span class="s2">Am    243</span>
+<span class="s2">Sb    121.757</span>
+<span class="s2">Ar    39.948</span>
+<span class="s2">As    74.92159</span>
+<span class="s2">At    210</span>
+<span class="s2">Ba    137.327</span>
+<span class="s2">Bk    247</span>
+<span class="s2">Be    9.012182</span>
+<span class="s2">Bi    208.98037</span>
+<span class="s2">Bh    262</span>
+<span class="s2">B     10.811</span>
+<span class="s2">BR    79.90400</span>
+<span class="s2">Cd    112.411</span>
+<span class="s2">CA    40.08000</span>
+<span class="s2">Cf    251</span>
+<span class="s2">C     12.01100</span>
+<span class="s2">Ce    140.11600</span>
+<span class="s2">CS    132.90000</span>
+<span class="s2">CL    35.45000</span>
+<span class="s2">Cr    51.9961</span>
+<span class="s2">Co    58.9332</span>
+<span class="s2">CU    63.54600</span>
+<span class="s2">Cm    247</span>
+<span class="s2">Db    262</span>
+<span class="s2">Dy    162.5</span>
+<span class="s2">Es    252</span>
+<span class="s2">Er    167.26</span>
+<span class="s2">Eu    151.965</span>
+<span class="s2">Fm    257</span>
+<span class="s2">F     18.99800</span>
+<span class="s2">Fr    223</span>
+<span class="s2">Gd    157.25</span>
+<span class="s2">Ga    69.723</span>
+<span class="s2">Ge    72.61</span>
+<span class="s2">Au    196.96654</span>
+<span class="s2">Hf    178.49</span>
+<span class="s2">Hs    265</span>
+<span class="s2">HE    4.00260</span>
+<span class="s2">Ho    164.93032</span>
+<span class="s2">H     1.00800</span>
+<span class="s2">In    114.82</span>
+<span class="s2">I     126.90450</span>
+<span class="s2">Ir    192.22</span>
+<span class="s2">FE    55.84700</span>
+<span class="s2">Kr    83.8</span>
+<span class="s2">La    138.9055</span>
+<span class="s2">Lr    262</span>
+<span class="s2">Pb    207.2</span>
+<span class="s2">Li    6.941</span>
+<span class="s2">Lu    174.967</span>
+<span class="s2">MG    24.30500</span>
+<span class="s2">Mn    54.93805</span>
+<span class="s2">Mt    266</span>
+<span class="s2">Md    258</span>
+<span class="s2">Hg    200.59</span>
+<span class="s2">Mo    95.94</span>
+<span class="s2">N     14.00700</span>
+<span class="s2">NA    22.98977</span>
+<span class="s2">Nd    144.24</span>
+<span class="s2">NE    20.17970</span>
+<span class="s2">Np    237.048</span>
+<span class="s2">Ni    58.6934</span>
+<span class="s2">Nb    92.90638</span>
+<span class="s2">No    259</span>
+<span class="s2">Os    190.2</span>
+<span class="s2">O     15.99900</span>
+<span class="s2">Pd    106.42</span>
+<span class="s2">P     30.97400</span>
+<span class="s2">Pt    195.08</span>
+<span class="s2">Pu    244</span>
+<span class="s2">Po    209</span>
+<span class="s2">K     39.10200</span>
+<span class="s2">Pr    140.90765</span>
+<span class="s2">Pm    145</span>
+<span class="s2">Pa    231.0359</span>
+<span class="s2">Ra    226.025</span>
+<span class="s2">Rn    222</span>
+<span class="s2">Re    186.207</span>
+<span class="s2">Rh    102.9055</span>
+<span class="s2">RB    85.46780</span>
+<span class="s2">Ru    101.07</span>
+<span class="s2">Rf    261</span>
+<span class="s2">Sm    150.36</span>
+<span class="s2">Sc    44.95591</span>
+<span class="s2">Sg    263</span>
+<span class="s2">Se    78.96</span>
+<span class="s2">Si    28.0855</span>
+<span class="s2">Ag    107.8682</span>
+<span class="s2">Na    22.989768</span>
+<span class="s2">Sr    87.62</span>
+<span class="s2">S     32.06000</span>
+<span class="s2">Ta    180.9479</span>
+<span class="s2">Tc    98</span>
+<span class="s2">Te    127.6</span>
+<span class="s2">Tb    158.92534</span>
+<span class="s2">Tl    204.3833</span>
+<span class="s2">Th    232.0381</span>
+<span class="s2">Tm    168.93421</span>
+<span class="s2">Sn    118.71</span>
+<span class="s2">Ti    47.88</span>
+<span class="s2">W     183.85</span>
+<span class="s2">U     238.0289</span>
+<span class="s2">V     50.9415</span>
+<span class="s2">Xe    131.29</span>
+<span class="s2">Yb    173.04</span>
+<span class="s2">Y     88.90585</span>
+<span class="s2">ZN    65.37000</span>
+<span class="s2">Zr    91.224</span>
+<span class="s2">DUMMY 0.0</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#: Dictionary table with atomic masses in u, indexed by the element from</span>
+<span class="c1">#: :data:`atomelements`.</span>
+<span class="n">masses</span> <span class="o">=</span> <span class="n">kv2dict</span><span class="p">(</span><span class="n">TABLE_MASSES</span><span class="p">,</span> <span class="n">convertor</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="c1">#: Plain-text table with vdw radii.</span>
+<span class="n">TABLE_VDWRADII</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2"># Van der Waals radii taken from</span>
+<span class="s2"># [1] Bondi, A. (1964). &quot;Van der Waals Volumes and Radii&quot;.</span>
+<span class="s2">#     J. Phys. Chem. 68 (3): 441-451. doi:10.1021/j100785a001.</span>
+<span class="s2"># [2] Rowland and Taylor (1996). &quot;Intermolecular Nonbonded Contact Distances in Organic Crystal Structures:</span>
+<span class="s2">#                                 Comparison with Distances Expected from van der Waals Radii&quot;.</span>
+<span class="s2">#     J. Phys. Chem., 1996, 100 (18), 7384.7391. doi:10.1021/jp953141+.</span>
+<span class="s2"># [3] Mantina, et al. (2009). &quot;Consistent van der Waals Radii for the Whole Main Group&quot;.</span>
+<span class="s2">#     J. Phys. Chem. A, 2009, 113 (19), 5806-5812. doi:10.1021/jp8111556.</span>
+<span class="s2">#------------ -----------</span>
+<span class="s2"># atomtype    r_vdw</span>
+<span class="s2">#------------ -----------</span>
+<span class="s2">H    1.10</span>
+<span class="s2">HE   1.40</span>
+<span class="s2">LI   1.82</span>
+<span class="s2">BE   1.53</span>
+<span class="s2">B    1.92</span>
+<span class="s2">C    1.70</span>
+<span class="s2">N    1.55</span>
+<span class="s2">O    1.52</span>
+<span class="s2">F    1.47</span>
+<span class="s2">NE   1.54</span>
+<span class="s2">NA   2.27</span>
+<span class="s2">MG   1.73</span>
+<span class="s2">AL   1.84</span>
+<span class="s2">SI   2.10</span>
+<span class="s2">P    1.80</span>
+<span class="s2">S    1.80</span>
+<span class="s2">CL   1.75</span>
+<span class="s2">AR   1.88</span>
+<span class="s2">K    2.75</span>
+<span class="s2">CA   2.31</span>
+<span class="s2">NI   1.63</span>
+<span class="s2">CU   1.40</span>
+<span class="s2">ZN   1.39</span>
+<span class="s2">GA   1.87</span>
+<span class="s2">GE   2.11</span>
+<span class="s2">AA   1.85</span>
+<span class="s2">SE   1.90</span>
+<span class="s2">BR   1.85</span>
+<span class="s2">KR   2.02</span>
+<span class="s2">RR   3.03</span>
+<span class="s2">SR   2.49</span>
+<span class="s2">PD   1.63</span>
+<span class="s2">AG   1.72</span>
+<span class="s2">CD   1.58</span>
+<span class="s2">IN   1.93</span>
+<span class="s2">SN   2.17</span>
+<span class="s2">SB   2.06</span>
+<span class="s2">TE   2.06</span>
+<span class="s2">I    1.98</span>
+<span class="s2">XE   2.16</span>
+<span class="s2">CS   3.43</span>
+<span class="s2">BA   2.68</span>
+<span class="s2">PT   1.75</span>
+<span class="s2">AU   1.66</span>
+<span class="s2">HH   1.55</span>
+<span class="s2">TL   1.96</span>
+<span class="s2">PB   2.02</span>
+<span class="s2">BI   2.07</span>
+<span class="s2">PO   1.97</span>
+<span class="s2">AT   2.02</span>
+<span class="s2">RN   2.20</span>
+<span class="s2">FR   3.48</span>
+<span class="s2">RA   2.83</span>
+<span class="s2">U    1.86</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1">#: Dictionary table with vdw radii, indexed by the element from</span>
+<span class="c1">#: :data:`atomelements`.</span>
+<span class="c1">#: .. SeeAlso:: :func:`MDAnalysis.topology.core.guess_bonds`</span>
+<span class="n">vdwradii</span> <span class="o">=</span> <span class="n">kv2dict</span><span class="p">(</span><span class="n">TABLE_VDWRADII</span><span class="p">,</span> <span class="n">convertor</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+<span class="n">Z2SYMB</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span>                                                                <span class="mi">2</span><span class="p">:</span> <span class="s1">&#39;He&#39;</span><span class="p">,</span> 
+          <span class="mi">3</span><span class="p">:</span> <span class="s1">&#39;Li&#39;</span><span class="p">,</span>   <span class="mi">4</span><span class="p">:</span> <span class="s1">&#39;Be&#39;</span><span class="p">,</span>  <span class="mi">5</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span>   <span class="mi">6</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span>   <span class="mi">7</span><span class="p">:</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span>   <span class="mi">8</span><span class="p">:</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>   <span class="mi">9</span><span class="p">:</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span>  <span class="mi">10</span><span class="p">:</span> <span class="s1">&#39;Ne&#39;</span><span class="p">,</span> 
+          <span class="mi">11</span><span class="p">:</span> <span class="s1">&#39;Na&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">:</span> <span class="s1">&#39;Mg&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">:</span> <span class="s1">&#39;Al&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">:</span> <span class="s1">&#39;Si&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">:</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span>  <span class="mi">16</span><span class="p">:</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span>  <span class="mi">17</span><span class="p">:</span> <span class="s1">&#39;Cl&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">:</span> <span class="s1">&#39;Ar&#39;</span><span class="p">,</span> 
+          <span class="mi">19</span><span class="p">:</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span>  <span class="mi">20</span><span class="p">:</span> <span class="s1">&#39;Ca&#39;</span><span class="p">,</span> <span class="mi">21</span><span class="p">:</span> <span class="s1">&#39;Sc&#39;</span><span class="p">,</span> <span class="mi">22</span><span class="p">:</span> <span class="s1">&#39;Ti&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">:</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span>  <span class="mi">24</span><span class="p">:</span> <span class="s1">&#39;Cr&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">:</span> <span class="s1">&#39;Mn&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">:</span> <span class="s1">&#39;Fe&#39;</span><span class="p">,</span> 
+          <span class="mi">27</span><span class="p">:</span> <span class="s1">&#39;Co&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">:</span> <span class="s1">&#39;Ni&#39;</span><span class="p">,</span> <span class="mi">29</span><span class="p">:</span> <span class="s1">&#39;Cu&#39;</span><span class="p">,</span> <span class="mi">30</span><span class="p">:</span> <span class="s1">&#39;Zn&#39;</span><span class="p">,</span> <span class="mi">31</span><span class="p">:</span> <span class="s1">&#39;Ga&#39;</span><span class="p">,</span> <span class="mi">32</span><span class="p">:</span> <span class="s1">&#39;Ge&#39;</span><span class="p">,</span> <span class="mi">33</span><span class="p">:</span> <span class="s1">&#39;As&#39;</span><span class="p">,</span> <span class="mi">34</span><span class="p">:</span> <span class="s1">&#39;Se&#39;</span><span class="p">,</span> 
+          <span class="mi">35</span><span class="p">:</span> <span class="s1">&#39;Br&#39;</span><span class="p">,</span> <span class="mi">36</span><span class="p">:</span> <span class="s1">&#39;Kr&#39;</span><span class="p">,</span> <span class="mi">37</span><span class="p">:</span> <span class="s1">&#39;Rb&#39;</span><span class="p">,</span> <span class="mi">38</span><span class="p">:</span> <span class="s1">&#39;Sr&#39;</span><span class="p">,</span> <span class="mi">39</span><span class="p">:</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span>  <span class="mi">40</span><span class="p">:</span> <span class="s1">&#39;Zr&#39;</span><span class="p">,</span> <span class="mi">41</span><span class="p">:</span> <span class="s1">&#39;Nb&#39;</span><span class="p">,</span> <span class="mi">42</span><span class="p">:</span> <span class="s1">&#39;Mo&#39;</span><span class="p">,</span> 
+          <span class="mi">43</span><span class="p">:</span> <span class="s1">&#39;Tc&#39;</span><span class="p">,</span> <span class="mi">44</span><span class="p">:</span> <span class="s1">&#39;Ru&#39;</span><span class="p">,</span> <span class="mi">45</span><span class="p">:</span> <span class="s1">&#39;Rh&#39;</span><span class="p">,</span> <span class="mi">46</span><span class="p">:</span> <span class="s1">&#39;Pd&#39;</span><span class="p">,</span> <span class="mi">47</span><span class="p">:</span> <span class="s1">&#39;Ag&#39;</span><span class="p">,</span> <span class="mi">48</span><span class="p">:</span> <span class="s1">&#39;Cd&#39;</span><span class="p">,</span> <span class="mi">49</span><span class="p">:</span> <span class="s1">&#39;In&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">:</span> <span class="s1">&#39;Sn&#39;</span><span class="p">,</span> 
+          <span class="mi">51</span><span class="p">:</span> <span class="s1">&#39;Sb&#39;</span><span class="p">,</span> <span class="mi">52</span><span class="p">:</span> <span class="s1">&#39;Te&#39;</span><span class="p">,</span> <span class="mi">53</span><span class="p">:</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span>  <span class="mi">54</span><span class="p">:</span> <span class="s1">&#39;Xe&#39;</span><span class="p">,</span> <span class="mi">55</span><span class="p">:</span> <span class="s1">&#39;Cs&#39;</span><span class="p">,</span> <span class="mi">56</span><span class="p">:</span> <span class="s1">&#39;Ba&#39;</span><span class="p">,</span> <span class="mi">57</span><span class="p">:</span> <span class="s1">&#39;La&#39;</span><span class="p">,</span> <span class="mi">58</span><span class="p">:</span> <span class="s1">&#39;Ce&#39;</span><span class="p">,</span> 
+          <span class="mi">59</span><span class="p">:</span> <span class="s1">&#39;Pr&#39;</span><span class="p">,</span> <span class="mi">60</span><span class="p">:</span> <span class="s1">&#39;Nd&#39;</span><span class="p">,</span> <span class="mi">61</span><span class="p">:</span> <span class="s1">&#39;Pm&#39;</span><span class="p">,</span> <span class="mi">62</span><span class="p">:</span> <span class="s1">&#39;Sm&#39;</span><span class="p">,</span> <span class="mi">63</span><span class="p">:</span> <span class="s1">&#39;Eu&#39;</span><span class="p">,</span> <span class="mi">64</span><span class="p">:</span> <span class="s1">&#39;Gd&#39;</span><span class="p">,</span> <span class="mi">65</span><span class="p">:</span> <span class="s1">&#39;Tb&#39;</span><span class="p">,</span> <span class="mi">66</span><span class="p">:</span> <span class="s1">&#39;Dy&#39;</span><span class="p">,</span> 
+          <span class="mi">67</span><span class="p">:</span> <span class="s1">&#39;Ho&#39;</span><span class="p">,</span> <span class="mi">68</span><span class="p">:</span> <span class="s1">&#39;Er&#39;</span><span class="p">,</span> <span class="mi">69</span><span class="p">:</span> <span class="s1">&#39;Tm&#39;</span><span class="p">,</span> <span class="mi">70</span><span class="p">:</span> <span class="s1">&#39;Yb&#39;</span><span class="p">,</span> <span class="mi">71</span><span class="p">:</span> <span class="s1">&#39;Lu&#39;</span><span class="p">,</span> <span class="mi">72</span><span class="p">:</span> <span class="s1">&#39;Hf&#39;</span><span class="p">,</span> <span class="mi">73</span><span class="p">:</span> <span class="s1">&#39;Ta&#39;</span><span class="p">,</span> <span class="mi">74</span><span class="p">:</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> 
+          <span class="mi">75</span><span class="p">:</span> <span class="s1">&#39;Re&#39;</span><span class="p">,</span> <span class="mi">76</span><span class="p">:</span> <span class="s1">&#39;Os&#39;</span><span class="p">,</span> <span class="mi">77</span><span class="p">:</span> <span class="s1">&#39;Ir&#39;</span><span class="p">,</span> <span class="mi">78</span><span class="p">:</span> <span class="s1">&#39;Pt&#39;</span><span class="p">,</span> <span class="mi">79</span><span class="p">:</span> <span class="s1">&#39;Au&#39;</span><span class="p">,</span> <span class="mi">80</span><span class="p">:</span> <span class="s1">&#39;Hg&#39;</span><span class="p">,</span> <span class="mi">81</span><span class="p">:</span> <span class="s1">&#39;Tl&#39;</span><span class="p">,</span> <span class="mi">82</span><span class="p">:</span> <span class="s1">&#39;Pb&#39;</span><span class="p">,</span> 
+          <span class="mi">83</span><span class="p">:</span> <span class="s1">&#39;Bi&#39;</span><span class="p">,</span> <span class="mi">84</span><span class="p">:</span> <span class="s1">&#39;Po&#39;</span><span class="p">,</span> <span class="mi">85</span><span class="p">:</span> <span class="s1">&#39;At&#39;</span><span class="p">,</span> <span class="mi">86</span><span class="p">:</span> <span class="s1">&#39;Rn&#39;</span><span class="p">,</span> <span class="mi">87</span><span class="p">:</span> <span class="s1">&#39;Fr&#39;</span><span class="p">,</span> <span class="mi">88</span><span class="p">:</span> <span class="s1">&#39;Ra&#39;</span><span class="p">,</span> <span class="mi">89</span><span class="p">:</span> <span class="s1">&#39;Ac&#39;</span><span class="p">,</span> <span class="mi">90</span><span class="p">:</span> <span class="s1">&#39;Th&#39;</span><span class="p">,</span> 
+          <span class="mi">91</span><span class="p">:</span> <span class="s1">&#39;Pa&#39;</span><span class="p">,</span> <span class="mi">92</span><span class="p">:</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span>  <span class="mi">93</span><span class="p">:</span> <span class="s1">&#39;Np&#39;</span><span class="p">,</span> <span class="mi">94</span><span class="p">:</span> <span class="s1">&#39;Pu&#39;</span><span class="p">,</span> <span class="mi">95</span><span class="p">:</span> <span class="s1">&#39;Am&#39;</span><span class="p">,</span> <span class="mi">96</span><span class="p">:</span> <span class="s1">&#39;Cm&#39;</span><span class="p">,</span> <span class="mi">97</span><span class="p">:</span> <span class="s1">&#39;Bk&#39;</span><span class="p">,</span> <span class="mi">98</span><span class="p">:</span> <span class="s1">&#39;Cf&#39;</span><span class="p">,</span> 
+          <span class="mi">99</span><span class="p">:</span> <span class="s1">&#39;Es&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">:</span> <span class="s1">&#39;Fm&#39;</span><span class="p">,</span> <span class="mi">101</span><span class="p">:</span> <span class="s1">&#39;Md&#39;</span><span class="p">,</span> <span class="mi">102</span><span class="p">:</span> <span class="s1">&#39;No&#39;</span><span class="p">,</span> <span class="mi">103</span><span class="p">:</span> <span class="s1">&#39;Lr&#39;</span><span class="p">,</span> <span class="mi">104</span><span class="p">:</span> <span class="s1">&#39;Rf&#39;</span><span class="p">,</span> <span class="mi">105</span><span class="p">:</span> <span class="s1">&#39;Db&#39;</span><span class="p">,</span> 
+          <span class="mi">106</span><span class="p">:</span> <span class="s1">&#39;Sg&#39;</span><span class="p">,</span> <span class="mi">107</span><span class="p">:</span> <span class="s1">&#39;Bh&#39;</span><span class="p">,</span> <span class="mi">108</span><span class="p">:</span> <span class="s1">&#39;Hs&#39;</span><span class="p">,</span> <span class="mi">109</span><span class="p">:</span> <span class="s1">&#39;Mt&#39;</span><span class="p">,</span> <span class="mi">110</span><span class="p">:</span> <span class="s1">&#39;Ds&#39;</span><span class="p">,</span> <span class="mi">111</span><span class="p">:</span> <span class="s1">&#39;Rg&#39;</span><span class="p">,</span> <span class="mi">112</span><span class="p">:</span> <span class="s1">&#39;Cn&#39;</span><span class="p">,</span> 
+          <span class="mi">113</span><span class="p">:</span> <span class="s1">&#39;Nh&#39;</span><span class="p">,</span> <span class="mi">114</span><span class="p">:</span> <span class="s1">&#39;Fl&#39;</span><span class="p">,</span> <span class="mi">115</span><span class="p">:</span> <span class="s1">&#39;Mc&#39;</span><span class="p">,</span> <span class="mi">116</span><span class="p">:</span> <span class="s1">&#39;Lv&#39;</span><span class="p">,</span> <span class="mi">117</span><span class="p">:</span> <span class="s1">&#39;Ts&#39;</span><span class="p">,</span> <span class="mi">118</span><span class="p">:</span> <span class="s1">&#39;Og&#39;</span><span class="p">}</span>
+
+<span class="n">SYMB2Z</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">Z2SYMB</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

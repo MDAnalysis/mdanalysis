@@ -1,0 +1,656 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.encore.clustering.ClusteringMethod &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.encore.clustering.ClusteringMethod</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.encore.clustering.ClusteringMethod</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">clustering frontend --- :mod:`MDAnalysis.analysis.encore.clustering.ClusteringMethod`</span>
+<span class="sd">=====================================================================================</span>
+
+<span class="sd">The module defines classes for interfacing to various clustering algorithms.</span>
+<span class="sd">One has been implemented natively, and will always be available, while</span>
+<span class="sd">others are available only if scikit-learn is installed</span>
+
+<span class="sd">:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</span>
+
+<span class="sd">.. versionadded:: 0.16.0</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># Import native affinity propagation implementation</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">affinityprop</span>
+
+<span class="c1"># Attempt to import scikit-learn clustering algorithms</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sklearn.cluster</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">sklearn</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;sklearn.cluster could not be imported: some functionality will &quot;</span> \
+          <span class="s2">&quot;not be available in encore.fit_clusters()&quot;</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">ImportWarning</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">msg</span>
+
+
+<div class="viewcode-block" id="encode_centroid_info"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.encode_centroid_info">[docs]</a><span class="k">def</span> <span class="nf">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">cluster_centers_indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Adjust cluster indices to include centroid information</span>
+<span class="sd">    as described in documentation for ClusterCollection</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">return_inverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">c_center</span> <span class="ow">in</span> <span class="n">cluster_centers_indices</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">clusters</span><span class="p">[</span><span class="n">c_center</span><span class="p">]</span> <span class="o">!=</span> <span class="n">c_center</span><span class="p">:</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">c_center</span><span class="p">]]</span> <span class="o">=</span> <span class="n">c_center</span>
+    <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="ClusteringMethod"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.ClusteringMethod">[docs]</a><span class="k">class</span> <span class="nc">ClusteringMethod</span> <span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base class for any Clustering Method</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Whether the method accepts a distance matrix</span>
+    <span class="n">accepts_distance_matrix</span><span class="o">=</span><span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        x</span>
+<span class="sd">            either trajectory coordinate data (np.array) or an</span>
+<span class="sd">            encore.utils.TriangularMatrix, encoding the conformational</span>
+<span class="sd">            distance matrix</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        NotImplementedError</span>
+<span class="sd">           Method or behavior needs to be defined by a subclass    </span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Class </span><span class="si">{0}</span><span class="s2"> doesn&#39;t implement __call__()&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="AffinityPropagationNative"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagationNative">[docs]</a><span class="k">class</span> <span class="nc">AffinityPropagationNative</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interface to the natively implemented Affinity propagation procedure.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+                 <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                 <span class="n">add_noise</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        damping : float, optional</span>
+<span class="sd">            Damping factor (default is 0.9). Parameter for the Affinity</span>
+<span class="sd">            Propagation for clustering.</span>
+
+<span class="sd">        preference : float, optional</span>
+<span class="sd">            Preference parameter used in the Affinity Propagation algorithm for</span>
+<span class="sd">            clustering  (default -1.0). A high preference value results in</span>
+<span class="sd">            many clusters, a low preference will result in fewer numbers of</span>
+<span class="sd">            clusters.</span>
+
+<span class="sd">        max_iter : int, optional</span>
+<span class="sd">            Maximum number of iterations for affinity propagation (default is</span>
+<span class="sd">            500).</span>
+
+<span class="sd">        convergence_iter : int, optional</span>
+<span class="sd">            Minimum number of unchanging iterations to achieve convergence</span>
+<span class="sd">            (default is 50). Parameter in the Affinity Propagation for</span>
+<span class="sd">            clustering.</span>
+
+<span class="sd">        add_noise : bool, optional</span>
+<span class="sd">            Apply noise to similarity matrix before running clustering</span>
+<span class="sd">            (default is True)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">damping</span> <span class="o">=</span> <span class="n">damping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">preference</span> <span class="o">=</span> <span class="n">preference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span> <span class="o">=</span> <span class="n">max_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">convergence_iter</span> <span class="o">=</span> <span class="n">convergence_iter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_noise</span> <span class="o">=</span> <span class="n">add_noise</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        distance_matrix : encore.utils.TriangularMatrix</span>
+<span class="sd">            conformational distance matrix</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.array : array, shape(n_elements) </span>
+<span class="sd">            centroid frames of the clusters for all of the elements</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           This method no longer returns ``details``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">clusters</span> <span class="o">=</span> <span class="n">affinityprop</span><span class="o">.</span><span class="n">AffinityPropagation</span><span class="p">(</span>
+            <span class="n">s</span><span class="o">=</span><span class="n">distance_matrix</span> <span class="o">*</span> <span class="o">-</span><span class="mf">1.</span><span class="p">,</span>   <span class="c1"># invert sign</span>
+            <span class="n">preference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">preference</span><span class="p">,</span>
+            <span class="n">lam</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">damping</span><span class="p">,</span>
+            <span class="n">max_iterations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="n">convergence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convergence_iter</span><span class="p">,</span>
+            <span class="n">noise</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">add_noise</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">clusters</span></div>
+<span class="k">if</span> <span class="n">sklearn</span><span class="p">:</span>
+
+<div class="viewcode-block" id="AffinityPropagation"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.AffinityPropagation">[docs]</a>    <span class="k">class</span> <span class="nc">AffinityPropagation</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interface to the Affinity propagation clustering procedure implemented</span>
+<span class="sd">        in sklearn.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">damping</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">preference</span><span class="o">=-</span><span class="mf">1.0</span><span class="p">,</span>
+                     <span class="n">max_iter</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">convergence_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+
+<span class="sd">            damping : float, optional</span>
+<span class="sd">                Damping factor (default is 0.9). Parameter for the Affinity</span>
+<span class="sd">                Propagation for clustering.</span>
+
+<span class="sd">            preference : float, optional</span>
+<span class="sd">                Preference parameter used in the Affinity Propagation algorithm</span>
+<span class="sd">                for clustering  (default -1.0). A high preference value results</span>
+<span class="sd">                in many clusters, a low preference will result in fewer numbers</span>
+<span class="sd">                of clusters.</span>
+
+<span class="sd">            max_iter : int, optional</span>
+<span class="sd">                Maximum number of iterations for affinity propagation (default</span>
+<span class="sd">                is 500).</span>
+
+<span class="sd">            convergence_iter : int, optional</span>
+<span class="sd">                Minimum number of unchanging iterations to achieve convergence</span>
+<span class="sd">                (default is 50). Parameter in the Affinity Propagation for</span>
+<span class="sd">                clustering.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ap</span> <span class="o">=</span> \
+                <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">AffinityPropagation</span><span class="p">(</span>
+                    <span class="n">damping</span><span class="o">=</span><span class="n">damping</span><span class="p">,</span>
+                    <span class="n">preference</span><span class="o">=</span><span class="n">preference</span><span class="p">,</span>
+                    <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+                    <span class="n">convergence_iter</span><span class="o">=</span><span class="n">convergence_iter</span><span class="p">,</span>
+                    <span class="n">affinity</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+
+<span class="sd">            distance_matrix : encore.utils.TriangularMatrix</span>
+<span class="sd">                conformational distance matrix</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">                centroid frames of the clusters for all of the elements</span>
+
+<span class="sd">            .. versionchanged:: 1.0.0</span>
+<span class="sd">               This method no longer returns ``details``</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Affinity Propagation: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span>
+                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
+
+            <span class="c1"># Convert from distance matrix to similarity matrix</span>
+            <span class="n">similarity_matrix</span> <span class="o">=</span> <span class="n">distance_matrix</span><span class="o">.</span><span class="n">as_array</span><span class="p">()</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">similarity_matrix</span><span class="p">)</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">ap</span><span class="o">.</span><span class="n">cluster_centers_indices_</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">clusters</span></div>
+
+
+
+<div class="viewcode-block" id="DBSCAN"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.DBSCAN">[docs]</a>    <span class="k">class</span> <span class="nc">DBSCAN</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interface to the DBSCAN clustering procedure implemented in sklearn.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">eps</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+                     <span class="n">min_samples</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                     <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                     <span class="n">leaf_size</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+
+<span class="sd">            eps : float, optional (default = 0.5)</span>
+<span class="sd">                The maximum distance between two samples for them to be</span>
+<span class="sd">                considered as in the same neighborhood.</span>
+
+<span class="sd">            min_samples : int, optional (default = 5)</span>
+<span class="sd">                The number of samples (or total weight) in a neighborhood for</span>
+<span class="sd">                a point to be considered as a core point. This includes the</span>
+<span class="sd">                point itself.</span>
+
+<span class="sd">            algorithm : {&#39;auto&#39;, &#39;ball_tree&#39;, &#39;kd_tree&#39;, &#39;brute&#39;}, optional</span>
+<span class="sd">                The algorithm to be used by the NearestNeighbors module</span>
+<span class="sd">                to compute pointwise distances and find nearest neighbors.</span>
+<span class="sd">                See NearestNeighbors module documentation for details.</span>
+
+<span class="sd">            leaf_size : int, optional (default = 30)</span>
+<span class="sd">                Leaf size passed to BallTree or cKDTree. This can affect the</span>
+<span class="sd">                speed of the construction and query, as well as the memory</span>
+<span class="sd">                required to store the tree. The optimal value depends</span>
+<span class="sd">                on the nature of the problem.</span>
+
+<span class="sd">            sample_weight : array, shape (n_samples,), optional</span>
+<span class="sd">                Weight of each sample, such that a sample with a weight of at</span>
+<span class="sd">                least ``min_samples`` is by itself a core sample; a sample with</span>
+<span class="sd">                negative weight may inhibit its eps-neighbor from being core.</span>
+<span class="sd">                Note that weights are absolute, and default to 1.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">DBSCAN</span><span class="p">(</span><span class="n">eps</span><span class="o">=</span><span class="n">eps</span><span class="p">,</span>
+                                                 <span class="n">min_samples</span> <span class="o">=</span> <span class="n">min_samples</span><span class="p">,</span>
+                                                 <span class="n">algorithm</span><span class="o">=</span><span class="n">algorithm</span><span class="p">,</span>
+                                                 <span class="n">leaf_size</span> <span class="o">=</span> <span class="n">leaf_size</span><span class="p">,</span>
+                                                 <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">,</span>
+                                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distance_matrix</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+
+<span class="sd">            distance_matrix : encore.utils.TriangularMatrix</span>
+<span class="sd">                conformational distance matrix</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">                centroid frames of the clusters for all of the elements</span>
+
+<span class="sd">            .. versionchanged:: 1.0.0</span>
+<span class="sd">               This method no longer returns ``details``</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting DBSCAN: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">get_params</span><span class="p">()))</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbscan</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">distance_matrix</span><span class="o">.</span><span class="n">as_array</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">clusters</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">clusters</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># No centroid information is provided by DBSCAN, so we just</span>
+            <span class="c1"># pick random members</span>
+            <span class="n">cluster_representatives</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span> <span class="n">return_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
+                                            <span class="n">cluster_representatives</span><span class="p">)</span>
+          
+            <span class="k">return</span> <span class="n">clusters</span></div>
+
+<div class="viewcode-block" id="KMeans"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/clustering.html#MDAnalysis.analysis.encore.clustering.ClusteringMethod.KMeans">[docs]</a>    <span class="k">class</span> <span class="nc">KMeans</span><span class="p">(</span><span class="n">ClusteringMethod</span><span class="p">):</span>
+
+        <span class="c1"># Whether the method accepts a distance matrix</span>
+        <span class="n">accepts_distance_matrix</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Interface to the KMeans clustering procedure implemented in sklearn.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                     <span class="n">n_clusters</span><span class="p">,</span>
+                     <span class="n">max_iter</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span>
+                     <span class="n">n_init</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                     <span class="n">init</span><span class="o">=</span><span class="s1">&#39;k-means++&#39;</span><span class="p">,</span>
+                     <span class="n">algorithm</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                     <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+                     <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                     <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">copy_x</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                     <span class="n">n_jobs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                     <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            n_clusters : int</span>
+<span class="sd">                The number of clusters to form as well as the number of</span>
+<span class="sd">                centroids to generate.</span>
+
+<span class="sd">            max_iter : int, optional (default 300)</span>
+<span class="sd">                Maximum number of iterations of the k-means algorithm to run.</span>
+
+<span class="sd">            n_init : int, optional (default 10)</span>
+<span class="sd">                Number of time the k-means algorithm will be run with different</span>
+<span class="sd">                centroid seeds. The final results will be the best output of</span>
+<span class="sd">                n_init consecutive runs in terms of inertia.</span>
+
+<span class="sd">            init : {&#39;k-means++&#39;, &#39;random&#39;, or ndarray, or a callable}, optional</span>
+<span class="sd">                Method for initialization, default to &#39;k-means++&#39;:</span>
+<span class="sd">                &#39;k-means++&#39; : selects initial cluster centers for k-mean</span>
+<span class="sd">                clustering in a smart way to speed up convergence. See section</span>
+<span class="sd">                Notes in k_init for more details.</span>
+<span class="sd">                &#39;random&#39;: generate k centroids from a Gaussian with mean and</span>
+<span class="sd">                variance estimated from the data.</span>
+<span class="sd">                If an ndarray is passed, it should be of shape</span>
+<span class="sd">                (n_clusters, n_features) and gives the initial centers.</span>
+<span class="sd">                If a callable is passed, it should take arguments X, k and</span>
+<span class="sd">                and a random state and return an initialization.</span>
+
+<span class="sd">            precompute_distances : {&#39;auto&#39;, True, False}</span>
+<span class="sd">                Precompute distances (faster but takes more memory).</span>
+<span class="sd">                &#39;auto&#39; : do not precompute distances if</span>
+<span class="sd">                n_samples * n_clusters &gt; 12 million. This corresponds to about</span>
+<span class="sd">                100MB overhead per job using double precision.</span>
+<span class="sd">                True : always precompute distances</span>
+<span class="sd">                False : never precompute distances</span>
+
+<span class="sd">            tol : float, optional (default 1e-4)</span>
+<span class="sd">                The relative increment in the results before declaring</span>
+<span class="sd">                convergence.</span>
+
+<span class="sd">            verbose : boolean, optional (default False)</span>
+<span class="sd">                Verbosity mode.</span>
+
+<span class="sd">            random_state : integer or numpy.RandomState, optional</span>
+<span class="sd">                The generator used to initialize the centers. If an integer is</span>
+<span class="sd">                given, it fixes the seed. Defaults to the global numpy random</span>
+<span class="sd">                number generator.</span>
+
+<span class="sd">            copy_x : boolean, optional</span>
+<span class="sd">                When pre-computing distances it is more numerically accurate to</span>
+<span class="sd">                center the data first.  If copy_x is True, then the original</span>
+<span class="sd">                data is not modified.  If False, the original data is modified,</span>
+<span class="sd">                and put back before the function returns, but small numerical</span>
+<span class="sd">                differences may be introduced by subtracting and then adding</span>
+<span class="sd">                the data mean.</span>
+
+<span class="sd">            n_jobs : int</span>
+<span class="sd">                The number of jobs to use for the computation. This works by</span>
+<span class="sd">                computing each of the n_init runs in parallel. If -1 all CPUs</span>
+<span class="sd">                are used. If 1 is given, no parallel computing code is used at</span>
+<span class="sd">                all, which is useful for debugging. For n_jobs below -1,</span>
+<span class="sd">                (n_cpus + 1 + n_jobs) are used. Thus for n_jobs = -2, all CPUs</span>
+<span class="sd">                but one are used.</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span> <span class="o">=</span> <span class="n">sklearn</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">n_clusters</span><span class="p">,</span>
+                                                 <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+                                                 <span class="n">n_init</span><span class="o">=</span><span class="n">n_init</span><span class="p">,</span>
+                                                 <span class="n">init</span><span class="o">=</span><span class="n">init</span><span class="p">,</span>
+                                                 <span class="n">precompute_distances</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+                                                 <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+                                                 <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                                                 <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+                                                 <span class="n">copy_x</span><span class="o">=</span><span class="n">copy_x</span><span class="p">,</span>
+                                                 <span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">,</span>
+                                                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+
+<span class="sd">            coordinates : np.array</span>
+<span class="sd">                trajectory atom coordinates</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            numpy.array : array, shape(n_elements) </span>
+<span class="sd">                centroid frames of the clusters for all of the elements</span>
+
+<span class="sd">            .. versionchanged:: 1.0.0</span>
+<span class="sd">               This method no longer returns ``details``</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Starting Kmeans: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                         <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">get_params</span><span class="p">())))</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+            <span class="n">distances</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kmeans</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span>
+            <span class="n">cluster_center_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">clusters</span> <span class="o">=</span> <span class="n">encode_centroid_info</span><span class="p">(</span><span class="n">clusters</span><span class="p">,</span>
+                                             <span class="n">cluster_center_indices</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="n">clusters</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

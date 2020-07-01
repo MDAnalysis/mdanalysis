@@ -1,0 +1,456 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../../../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../../../index.html">
+          
+
+          
+            
+            <img src="../../../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">dimensionality reduction frontend --- :mod:`MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality`</span>
+<span class="sd">======================================================================================================================</span>
+
+<span class="sd">The module defines a function serving as front-end for various dimensionality</span>
+<span class="sd">reduction algorithms, wrapping them to allow them to be used interchangably.</span>
+
+<span class="sd">:Author: Matteo Tiberti, Wouter Boomsma, Tone Bengtsen</span>
+
+<span class="sd">.. versionadded:: 0.16.0</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">..confdistmatrix</span> <span class="k">import</span> <span class="n">get_distance_matrix</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="k">import</span> <span class="n">ParallelCalculation</span><span class="p">,</span> <span class="n">merge_universes</span>
+<span class="kn">from</span> <span class="nn">..dimensionality_reduction.DimensionalityReductionMethod</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">StochasticProximityEmbeddingNative</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="reduce_dimensionality"><a class="viewcode-back" href="../../../../../documentation_pages/analysis/encore/dimensionality_reduction.html#MDAnalysis.analysis.encore.dimensionality_reduction.reduce_dimensionality.reduce_dimensionality">[docs]</a><span class="k">def</span> <span class="nf">reduce_dimensionality</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span>
+                          <span class="n">method</span><span class="o">=</span><span class="n">StochasticProximityEmbeddingNative</span><span class="p">(),</span>
+                          <span class="n">select</span><span class="o">=</span><span class="s2">&quot;name CA&quot;</span><span class="p">,</span>
+                          <span class="n">distance_matrix</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">allow_collapsed_result</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                          <span class="n">ncores</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                          <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reduce dimensions in frames from one or more ensembles, using one or more</span>
+<span class="sd">    dimensionality reduction methods. The function optionally takes</span>
+<span class="sd">    pre-calculated distances matrices as an argument. Note that not all</span>
+<span class="sd">    dimensionality reduction procedure can work directly on distance matrices,</span>
+<span class="sd">    so the distance matrices might be ignored for particular choices of</span>
+<span class="sd">    method.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    ensembles : MDAnalysis.Universe, or list or list of list thereof</span>
+<span class="sd">        The function takes either a single Universe object, a list of Universe</span>
+<span class="sd">        objects or a list of lists of Universe objects. If given a single</span>
+<span class="sd">        universe, it simply works on the conformations in the trajectory. If</span>
+<span class="sd">        given a list of ensembles, it will merge them and analyse them together,</span>
+<span class="sd">        keeping track of the ensemble to which each of the conformations belong.</span>
+<span class="sd">        Finally, if passed a list of list of ensembles, the function will just</span>
+<span class="sd">        repeat the functionality just described - merging ensembles for each</span>
+<span class="sd">        ensemble in the outer loop.</span>
+
+<span class="sd">    method : MDAnalysis.analysis.encore.dimensionality_reduction.DimensionalityReductionMethod or list</span>
+<span class="sd">        A single or a list of instances of the DimensionalityReductionMethod</span>
+<span class="sd">        classes from the dimensionality_reduction module. A separate analysis</span>
+<span class="sd">        will be run for each method. Note that different parameters for the</span>
+<span class="sd">        same method can be explored by adding different instances of</span>
+<span class="sd">        the same dimensionality reduction class. Options are Stochastic</span>
+<span class="sd">        Proximity Embedding or Principal Component Analysis.</span>
+
+<span class="sd">    select : str, optional</span>
+<span class="sd">        Atom selection string in the MDAnalysis format (default is &quot;name CA&quot;)</span>
+
+<span class="sd">    distance_matrix : encore.utils.TriangularMatrix, optional</span>
+<span class="sd">        Distance matrix for stochastic proximity embedding. If this parameter</span>
+<span class="sd">        is not supplied an RMSD distance matrix will be calculated on the fly (default).</span>
+<span class="sd">        If several distance matrices are supplied, an analysis will be done</span>
+<span class="sd">        for each of them. The number of provided distance matrices should</span>
+<span class="sd">        match the number of provided ensembles.</span>
+
+<span class="sd">    allow_collapsed_result: bool, optional</span>
+<span class="sd">        Whether a return value of a list of one value should be collapsed</span>
+<span class="sd">        into just the value (default = True).</span>
+
+<span class="sd">    ncores : int, optional</span>
+<span class="sd">        Maximum number of cores to be used (default is 1).</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+
+<span class="sd">    list of coordinate arrays in the reduced dimensions (or potentially a single</span>
+<span class="sd">    coordinate array object if allow_collapsed_result is set to True)</span>
+
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Two ensembles are created as Universe object using a topology file and</span>
+<span class="sd">    two trajectories. The topology- and trajectory files used are obtained</span>
+<span class="sd">    from the MDAnalysis test suite for two different simulations of the protein</span>
+<span class="sd">    AdK.</span>
+<span class="sd">    Here, we reduce two ensembles to two dimensions, and plot the result using</span>
+<span class="sd">    matplotlib: ::</span>
+
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis import Universe</span>
+<span class="sd">        &gt;&gt;&gt; import MDAnalysis.analysis.encore as encore</span>
+<span class="sd">        &gt;&gt;&gt; from MDAnalysis.tests.datafiles import PSF, DCD, DCD2</span>
+<span class="sd">        &gt;&gt;&gt; ens1 = Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; ens2 = Universe(PSF, DCD2)</span>
+<span class="sd">        &gt;&gt;&gt; coordinates, details = encore.reduce_dimensionality([ens1,ens2])</span>
+<span class="sd">        &gt;&gt;&gt; plt.scatter(coordinates[0], coordinates[1],</span>
+<span class="sd">                        color=[[&quot;red&quot;, &quot;blue&quot;][m-1] for m</span>
+<span class="sd">                        in details[&quot;ensemble_membership&quot;]])</span>
+
+<span class="sd">    Note how we extracted information about which conformation belonged to</span>
+<span class="sd">    which ensemble from the details variable.</span>
+
+<span class="sd">    You can change the parameters of the dimensionality reduction method</span>
+<span class="sd">    by explicitly specifying the method ::</span>
+
+<span class="sd">        &gt;&gt;&gt; coordinates, details =</span>
+<span class="sd">                encore.reduce_dimensionality([ens1,ens2],</span>
+<span class="sd">                     method=encore.StochasticProximityEmbeddingNative(dimension=3))</span>
+
+<span class="sd">    Here is an illustration using Principal Component Analysis, instead</span>
+<span class="sd">    of the default dimensionality reduction method ::</span>
+
+<span class="sd">        &gt;&gt;&gt; coordinates, details =</span>
+<span class="sd">                encore.reduce_dimensionality(</span>
+<span class="sd">                     [ens1,ens2],</span>
+<span class="sd">                     method=encore.PrincipalComponentAnalysis(dimension=2))</span>
+
+<span class="sd">    You can also combine multiple methods in one call ::</span>
+
+<span class="sd">        &gt;&gt;&gt; coordinates, details =</span>
+<span class="sd">                encore.reduce_dimensionality(</span>
+<span class="sd">                     [ens1,ens2],</span>
+<span class="sd">                     method=[encore.PrincipalComponentAnalysis(dimension=2),</span>
+<span class="sd">                             encore.StochasticProximityEmbeddingNative(dimension=2)])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+            <span class="n">ensembles</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span>
+
+        <span class="n">ensembles_list</span> <span class="o">=</span> <span class="n">ensembles</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ensembles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+            <span class="n">ensembles_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">ensembles</span><span class="p">]</span>
+
+        <span class="c1"># Calculate merged ensembles and transfer to memory</span>
+        <span class="n">merged_ensembles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ensembles</span> <span class="ow">in</span> <span class="n">ensembles_list</span><span class="p">:</span>
+            <span class="c1"># Transfer ensembles to memory</span>
+            <span class="k">for</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="n">ensembles</span><span class="p">:</span>
+                <span class="n">ensemble</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
+            <span class="n">merged_ensembles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">merge_universes</span><span class="p">(</span><span class="n">ensembles</span><span class="p">))</span>
+
+    <span class="n">methods</span> <span class="o">=</span> <span class="n">method</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">method</span><span class="p">]</span>
+
+    <span class="c1"># Check whether any of the methods can make use of a distance matrix</span>
+    <span class="n">any_method_accept_distance_matrix</span> <span class="o">=</span> \
+        <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">([</span><span class="n">_method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span> <span class="k">for</span> <span class="n">_method</span> <span class="ow">in</span>
+                <span class="n">methods</span><span class="p">])</span>
+
+
+
+    <span class="c1"># If distance matrices are provided, check that it matches the number</span>
+    <span class="c1"># of ensembles</span>
+    <span class="k">if</span> <span class="n">distance_matrix</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">,</span> <span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+            <span class="n">distance_matrix</span> <span class="o">=</span> <span class="p">[</span><span class="n">distance_matrix</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> \
+                        <span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged_ensembles</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Dimensions of provided list of distance matrices &quot;</span>
+                             <span class="s2">&quot;does not match that of provided list of &quot;</span>
+                             <span class="s2">&quot;ensembles: </span><span class="si">{0}</span><span class="s2"> vs </span><span class="si">{1}</span><span class="s2">&quot;</span>
+                             <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">distance_matrix</span><span class="p">),</span>
+                                     <span class="nb">len</span><span class="p">(</span><span class="n">merged_ensembles</span><span class="p">)))</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Calculate distance matrices for all merged ensembles - if not provided</span>
+        <span class="k">if</span> <span class="n">any_method_accept_distance_matrix</span><span class="p">:</span>
+            <span class="n">distance_matrix</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
+                <span class="n">distance_matrix</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">get_distance_matrix</span><span class="p">(</span><span class="n">merged_ensemble</span><span class="p">,</span>
+                                                           <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
+                                                           <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">methods</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">method</span><span class="o">.</span><span class="n">accepts_distance_matrix</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">+=</span> <span class="p">[(</span><span class="n">d</span><span class="p">,)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">distance_matrix</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">merged_ensemble</span> <span class="ow">in</span> <span class="n">merged_ensembles</span><span class="p">:</span>
+                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">merged_ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">timeseries</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="s2">&quot;fac&quot;</span><span class="p">)</span>
+
+                <span class="c1"># Flatten coordinate matrix into n_frame x n_coordinates</span>
+                <span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coordinates</span><span class="p">,</span>
+                                         <span class="p">(</span><span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">coordinates</span><span class="p">,))</span>
+
+    <span class="c1"># Execute dimensionality reduction procedure</span>
+    <span class="n">pc</span> <span class="o">=</span> <span class="n">ParallelCalculation</span><span class="p">(</span><span class="n">ncores</span><span class="p">,</span> <span class="n">methods</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+    <span class="c1"># Run parallel calculation</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+
+    <span class="c1"># Keep track of which sample belongs to which ensembles</span>
+    <span class="n">details</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">ensembles</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ensemble</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ensembles</span><span class="p">):</span>
+            <span class="n">ensemble_assignment</span> <span class="o">+=</span> <span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">ensemble</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="n">ensemble_assignment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ensemble_assignment</span><span class="p">)</span>
+        <span class="n">details</span><span class="p">[</span><span class="s1">&#39;ensemble_membership&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ensemble_assignment</span>
+
+    <span class="n">coordinates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+        <span class="n">coordinates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c1"># details.append(result[1][1])</span>
+
+    <span class="k">if</span> <span class="n">allow_collapsed_result</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">coordinates</span><span class="p">)</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">coordinates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># details = details[0]</span>
+
+    <span class="k">return</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">details</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

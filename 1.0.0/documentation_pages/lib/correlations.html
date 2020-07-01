@@ -1,0 +1,433 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>13.2.11. Correlations utilities — MDAnalysis.lib.correlations &mdash; MDAnalysis 1.0.0 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.0 documentation"
+          href="../../_static/opensearch.xml"/>
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" href="formats/libmdaxdr.html" />
+    <link rel="prev" title="13.2.10. Helper functions — MDAnalysis.lib.util" href="util.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#overview">13.1. Overview</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../lib_modules.html#list-of-modules">13.2. List of modules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="distances.html">13.2.1. Fast distance array computation — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="distances.html#low-level-modules-for-mdanalysis-lib-distances">13.2.2. Low-level modules for <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.distances</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="NeighborSearch.html">13.2.3. Neighbor Search wrapper for MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.NeighborSearch</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="nsgrid.html">13.2.4. Neighbor search library — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.nsgrid</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="pkdtree.html">13.2.5. PeriodicKDTree — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.pkdtree</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="log.html">13.2.6. Setting up logging — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.log</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="mdamath.html">13.2.7. Mathematical helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.mdamath</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="transformations.html">13.2.8. Homogeneous Transformation Matrices and Quaternions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.transformations</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qcprot.html">13.2.9. Fast QCP RMSD structure alignment — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.qcprot</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="util.html">13.2.10. Helper functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.util</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#autocorrelation-function">13.2.11.1. Autocorrelation Function</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#intermittency-function">13.2.11.2. Intermittency Function</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../lib_modules.html#low-level-file-formats">13.3. Low level file formats</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a> &raquo;</li>
+        
+      <li>13.2.11. Correlations utilities — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/lib/correlations.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.lib.correlations"></span><div class="section" id="correlations-utilities-mdanalysis-lib-correlations">
+<h1>13.2.11. Correlations utilities — <a class="reference internal" href="#module-MDAnalysis.lib.correlations" title="MDAnalysis.lib.correlations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations</span></code></a><a class="headerlink" href="#correlations-utilities-mdanalysis-lib-correlations" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Authors:</th><td class="field-body">Paul Smith &amp; Mateusz Bieniek</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2020</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v2</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+<p>This module is primarily for internal use by other analysis modules. It
+provides functionality for calculating the time autocorrelation function
+of a binary variable (i.e one that is either true or false at each
+frame for a given atom/molecule/set of molecules). This module includes
+functions for calculating both the time continuous autocorrelation and
+the intermittent autocorrelation. The function <a class="reference internal" href="#MDAnalysis.lib.correlations.autocorrelation" title="MDAnalysis.lib.correlations.autocorrelation"><code class="xref py py-func docutils literal notranslate"><span class="pre">autocorrelation()</span></code></a>
+calculates the continuous autocorrelation only. The data may be
+pre-processed using the function <code class="xref py py-func docutils literal notranslate"><span class="pre">intermittency()</span></code> in order to
+acount for intermittency before passing the results to
+<a class="reference internal" href="#MDAnalysis.lib.correlations.autocorrelation" title="MDAnalysis.lib.correlations.autocorrelation"><code class="xref py py-func docutils literal notranslate"><span class="pre">autocorrelation()</span></code></a>.</p>
+<p>This module is inspired by seemingly disparate analyses that rely on the same
+underlying calculation, including the survival probability of water around
+proteins <a class="reference internal" href="../analysis/waterdynamics.html#araya-secchi2014" id="id1">[Araya-Secchi2014]</a>, hydrogen bond lifetimes <a class="reference internal" href="../analysis/hbond_autocorrel.html#gowers2015" id="id2">[Gowers2015]</a>, <a class="reference internal" href="../analysis/waterdynamics.html#araya-secchi2014" id="id3">[Araya-Secchi2014]</a>,
+and the rate of cholesterol flip-flop in lipid bilayers <a class="reference internal" href="#gu2019" id="id4">[Gu2019]</a>.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p>Analysis tools that make use of modules:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="../analysis/waterdynamics.html#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics.SurvivalProbability</span></code></a></dt>
+<dd>Calculates the continuous or intermittent survival probability
+of an atom group in a region of interest.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="../analysis/hbond_analysis.html#module-MDAnalysis.analysis.hbonds.hbond_analysis" title="MDAnalysis.analysis.hbonds.hbond_analysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hbonds.hbond_analysis</span></code></a></dt>
+<dd>Calculates the continuous or intermittent hydrogen bond
+lifetime.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</div>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="gu2019" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[Gu2019]</a></td><td>Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)
+Cholesterol Flip-Flop in Heterogeneous Membranes.
+J. Chem. Theory Comput. 15 (3), 2064–2070.
+<a class="reference external" href="https://doi.org/10.1021/acs.jctc.8b00933">https://doi.org/10.1021/acs.jctc.8b00933</a>.</td></tr>
+</tbody>
+</table>
+<div class="section" id="autocorrelation-function">
+<h2>13.2.11.1. Autocorrelation Function<a class="headerlink" href="#autocorrelation-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.lib.correlations.autocorrelation">
+<code class="descclassname">MDAnalysis.lib.correlations.</code><code class="descname">autocorrelation</code><span class="sig-paren">(</span><em>list_of_sets</em>, <em>tau_max</em>, <em>window_step=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/correlations.html#autocorrelation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.correlations.autocorrelation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implementation of a discrete autocorrelation function.</p>
+<p>The autocorrelation of a property <span class="math notranslate nohighlight">\(x\)</span> from a time <span class="math notranslate nohighlight">\(t=t_0\)</span> to <span class="math notranslate nohighlight">\(t=t_0 + \tau\)</span>
+is given by:</p>
+<div class="math notranslate nohighlight">
+\[C(\tau) = \langle \frac{ x(t_0)x(t_0 +\tau) }{ x(t_0)x(t_0) } \rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(x\)</span> may represent any property of a particle, such as velocity or
+potential energy.</p>
+<p>This function is an implementation of a special case of the time
+autocorrelation function in which the property under consideration can
+be encoded with indicator variables, <span class="math notranslate nohighlight">\(0\)</span> and <span class="math notranslate nohighlight">\(1\)</span>, to represent the binary
+state of said property. This special case is often referred to as the
+survival probability (<span class="math notranslate nohighlight">\(S(\tau)\)</span>). As an example, in calculating the survival
+probability of water molecules within 5 Å of a protein, each water
+molecule will either be within this cutoff range (<span class="math notranslate nohighlight">\(1\)</span>) or not (<span class="math notranslate nohighlight">\(0\)</span>). The
+total number of water molecules within the cutoff at time <span class="math notranslate nohighlight">\(t_0\)</span> will be
+given by <span class="math notranslate nohighlight">\(N(t_0)\)</span>. Other cases include the Hydrogen Bond Lifetime as
+well as the translocation rate of cholesterol across a bilayer.</p>
+<p>The survival probability of a property of a set of particles is
+given by:</p>
+<div class="math notranslate nohighlight">
+\[S(\tau) =  \langle \frac{ N(t_0, t_0 + \tau )} { N(t_0) }\rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(N(t0)\)</span> is the number of particles at time <span class="math notranslate nohighlight">\(t_0\)</span> for which the feature
+is observed, and <span class="math notranslate nohighlight">\(N(t0, t_0 + \tau)\)</span> is the number of particles for which
+this feature is present at every frame from <span class="math notranslate nohighlight">\(t_0\)</span> to <span class="math notranslate nohighlight">\(N(t0, t_0 + \tau)\)</span>.
+The angular brackets represent an average over all time origins, <span class="math notranslate nohighlight">\(t_0\)</span>.</p>
+<p>See <a class="reference internal" href="../analysis/waterdynamics.html#araya-secchi2014" id="id5">[Araya-Secchi2014]</a> for a description survival probability.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – List of sets. Each set corresponds to data from a single frame. Each element in a set
+may be, for example, an atom id or a tuple of atoms ids. In the case of calculating the
+survival probability of water around a protein, these atom ids in a given set will be
+those of the atoms which are within a cutoff distance of the protein at a given frame.</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The last tau (lag time, inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,
+the survival probability will be calculated over 20 frames.</li>
+<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – <dl class="docutils">
+<dt>The step size for t0 to perform autocorrelation. Ideally, window_step will be larger than</dt>
+<dd>tau_max to ensure independence of each window for which the calculation is performed.
+Default is 1.</dd>
+</dl>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>tau_timeseries</strong> (<em>list of int</em>) – the values of tau for which the autocorrelation was calculated</li>
+<li><strong>timeseries</strong> (<em>list of int</em>) – the autocorelation values for each of the tau values</li>
+<li><strong>timeseries_data</strong> (<em>list of list of int</em>) – the raw data from which the autocorrelation is computed, i.e <span class="math notranslate nohighlight">\(S(\tau)\)</span> at each window.
+This allows the time dependant evolution of <span class="math notranslate nohighlight">\(S(\tau)\)</span> to be investigated.</li>
+<li><em>.. versionadded:: 0.19.2</em></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="intermittency-function">
+<h2>13.2.11.2. Intermittency Function<a class="headerlink" href="#intermittency-function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="MDAnalysis.lib.correlations.correct_intermittency">
+<code class="descclassname">MDAnalysis.lib.correlations.</code><code class="descname">correct_intermittency</code><span class="sig-paren">(</span><em>list_of_sets</em>, <em>intermittency</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/lib/correlations.html#correct_intermittency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.lib.correlations.correct_intermittency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Preprocess data to allow intermittent behaviour prior to calling <a class="reference internal" href="#MDAnalysis.lib.correlations.autocorrelation" title="MDAnalysis.lib.correlations.autocorrelation"><code class="xref py py-func docutils literal notranslate"><span class="pre">autocorrelation()</span></code></a>.</p>
+<p>Survival probabilty may be calculated either with a strict continuous requirement or
+a less strict intermittency. If calculating the survival probability water around a
+protein for example, in the former case the water must be within a cutoff distance
+of the protein at every frame from <span class="math notranslate nohighlight">\(t_0\)</span> to <span class="math notranslate nohighlight">\(t_0 + \tau\)</span> in order for it to be considered
+present at <span class="math notranslate nohighlight">\(t_0 + \tau\)</span>. In the intermittent case, the water molecule is allowed to
+leave the region of interest for up to a specified consecutive number of frames whilst still
+being considered present at <span class="math notranslate nohighlight">\(t_0 + \tau\)</span>.</p>
+<p>This function pre-processes data, such as the atom ids of water molecules within a cutoff
+distance of a protein at each frame, in order to allow for intermittent behaviour, with a
+single pass over the data.</p>
+<p>For example, if an atom is absent for a number of frames equal or smaller than the parameter
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">intermittency</span></code>, then this absence will be removed and thus the atom is considered to have
+not left.
+e.g 7,A,A,7 with <cite>intermittency=2</cite> will be replaced by 7,7,7,7, where A=absence.</p>
+<p>The returned data can be used as input to the function <a class="reference internal" href="#MDAnalysis.lib.correlations.autocorrelation" title="MDAnalysis.lib.correlations.autocorrelation"><code class="xref py py-func docutils literal notranslate"><span class="pre">autocorrelation()</span></code></a> in order
+to calculate the survival probability with a given intermittency.</p>
+<p>See <a class="reference internal" href="../analysis/hbond_autocorrel.html#gowers2015" id="id6">[Gowers2015]</a> for a description of
+intermittency in the calculation of hydrogen bond lifetimes.</p>
+<p># TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>list_of_sets</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a>) – In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a
+single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]</li>
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The maximum gap allowed. The default <cite>intermittency=0</cite> means that if the datapoint is missing at any frame, no
+changes are made to the data. With the value of <cite>intermittency=2</cite>, all datapoints missing for up to two
+consecutive frames will be instead be considered present.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>list_of_sets</strong> – returns a new list with the IDs with added IDs which disappeared for &lt;= <code class="xref py py-attr docutils literal notranslate"><span class="pre">intermittency</span></code>.
+e.g If [{0, 1}, {0}, {0}, {0, 1}] is a list of sets of atom ids present at each frame and <cite>intermittency=2</cite>,
+both atoms will be considered present throughout and thus the returned list of sets will be
+[{0, 1}, {0, 1}, {0, 1}, {0, 1}].</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="formats/libmdaxdr.html" class="btn btn-neutral float-right" title="13.3.1. Low-level Gromacs XDR trajectory reading — MDAnalysis.lib.formats.libmdaxdr" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="util.html" class="btn btn-neutral float-left" title="13.2.10. Helper functions — MDAnalysis.lib.util" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
