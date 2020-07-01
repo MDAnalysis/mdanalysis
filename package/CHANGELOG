@@ -12,7 +12,8 @@ The rules for this file:
   * accompany each entry with github issue/PR number (Issue #xyz)
   * release numbers follow "Semantic Versioning" http://semver.org
 
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium, 
+------------------------------------------------------------------------------
+??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium,
          daveminh
 
   * 2.0.0
@@ -25,10 +26,10 @@ Fixes
   * Testsuite does not any more matplotlib.use('agg') (#2191)
 
 Enhancements
-  * Added the RDKitParser which creates a `core.topology.Topology` object from 
-    an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates 
+  * Added the RDKitParser which creates a `core.topology.Topology` object from
+    an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates
     from RDKit conformers (Issue #2468, PR #2707)
-  * Added the `Aromaticities` topology attribute, and the `aromatic` selection 
+  * Added the `Aromaticities` topology attribute, and the `aromatic` selection
     token (Issue #2468, PR #2707)
   * Added the `from_smiles` classmethod to the Universe (Issue #2468, PR #2707)
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
