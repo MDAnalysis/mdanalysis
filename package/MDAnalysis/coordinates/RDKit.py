@@ -63,6 +63,7 @@ import numpy as np
 
 from ..exceptions import NoDataError
 from ..topology.guessers import guess_atom_element
+from ..core.topologyattrs import _TOPOLOGY_ATTRS
 from . import memory
 from . import base
 
@@ -220,7 +221,7 @@ class RDKitConverter(base.ConverterBase):
             # other properties
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
-                attr = attr[:-1] # plural to singular
+                attr = _TOPOLOGY_ATTRS[attr].singular
                 if isinstance(value, np.float):
                     rdatom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
                 elif isinstance(value, np.int):
