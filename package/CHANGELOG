@@ -13,7 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/20 richardjgowers, IAlibay, orbeckst, VOD555, lilyminium
+??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
+         VOD555, lilyminium
 
   * 1.0.1
 
@@ -25,6 +26,9 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
+
+Enhancements
+  * Improved performances when parsing TPR files (PR #2804)
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
@@ -232,7 +236,7 @@ Deprecations
   * Writer.write_next_timestep is deprecated, use write() instead (remove in 2.0)
   * Writer.write(Timestep) is deprecated, use either a Universe or AtomGroup
 
->>>>>>> develop
+
 09/05/19 IAlibay, richardjgowers
 
   * 0.20.1
