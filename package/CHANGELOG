@@ -32,6 +32,8 @@ Enhancements
     token (Issue #2468, PR #2707)
   * Added the `from_smiles` classmethod to the Universe (Issue #2468, PR #2707)
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
+  * Added a simple version of the RDKitConverter that handles uncharged 
+    molecules with bond orders/bond types assigned (#2468, PR #2775)
 
 Changes
   * Changes development status from Beta to Mature (Issue #2773)
