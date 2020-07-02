@@ -304,13 +304,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span> <span class="o">=</span> <span class="n">natoms</span>
 
 <div class="viewcode-block" id="InteractionKind.process"><a class="viewcode-back" href="../../../../documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.InteractionKind.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_ndx</span><span class="p">):</span>
-        <span class="k">while</span> <span class="n">atom_ndx</span><span class="p">:</span>
-            <span class="c1"># format for all info: (type, [atom1, atom2, ...])</span>
-            <span class="c1"># yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in range(self.natoms)]</span>
-
-            <span class="c1"># but currently only [atom1, atom2, ...] is interested</span>
-            <span class="n">atom_ndx</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="p">[</span><span class="n">atom_ndx</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">natoms</span><span class="p">)]</span></div></div>
+        <span class="c1"># The format for all record is (type, atom1, atom2, ...)</span>
+        <span class="c1"># but we are only interested in the atoms.</span>
+        <span class="k">for</span> <span class="n">cursor</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_ndx</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">atom_ndx</span><span class="p">[</span><span class="n">cursor</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span> <span class="n">cursor</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">natoms</span><span class="p">]</span></div></div>
 </pre></div>
 
            </div>
