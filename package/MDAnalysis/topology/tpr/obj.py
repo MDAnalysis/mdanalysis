@@ -125,10 +125,7 @@ class InteractionKind(object):
         self.natoms = natoms
 
     def process(self, atom_ndx):
-        while atom_ndx:
-            # format for all info: (type, [atom1, atom2, ...])
-            # yield atom_ndx.pop(0), [atom_ndx.pop(0) for i in range(self.natoms)]
-
-            # but currently only [atom1, atom2, ...] is interested
-            atom_ndx.pop(0)
-            yield [atom_ndx.pop(0) for i in range(self.natoms)]
+        # The format for all record is (type, atom1, atom2, ...)
+        # but we are only interested in the atoms.
+        for cursor in range(0, len(atom_ndx), self.natoms + 1):
+            yield atom_ndx[cursor + 1: cursor + 1 + self.natoms]
