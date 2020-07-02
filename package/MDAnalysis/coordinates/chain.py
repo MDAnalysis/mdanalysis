@@ -556,7 +556,7 @@ class ChainReader(base.ProtoReader):
         # update Timestep
         self.ts = self.active_reader.ts
         self.ts.frame = frame  # continuous frames, 0-based
-        self._current_frame = frame
+        self.__current_frame = frame
         return self.ts
 
 
@@ -572,7 +572,7 @@ class ChainReader(base.ProtoReader):
 
     def _rewind(self):
         """Internal method: Rewind trajectories themselves and trj pointer."""
-        self._current_frame = -1
+        self.__current_frame = -1
         self._apply('rewind')
         self.__next__()
 
@@ -581,7 +581,7 @@ class ChainReader(base.ProtoReader):
 
     def __iter__(self):
         """Generator for all frames, starting at frame 0."""
-        self._current_frame = -1
+        self.__current_frame = -1
         # start from first frame
         return self
 
@@ -643,12 +643,12 @@ class ChainReader(base.ProtoReader):
         return ts
 
     def __next__(self):
-        if self._current_frame < self.n_frames - 1:
-            j, f = self._get_local_frame(self._current_frame + 1)
+        if self.__current_frame < self.n_frames - 1:
+            j, f = self._get_local_frame(self.__current_frame + 1)
             self.__activate_reader(j)
             self.ts = self.active_reader[f]
-            self.ts.frame = self._current_frame + 1
-            self._current_frame += 1
+            self.ts.frame = self.__current_frame + 1
+            self.__current_frame += 1
             return self.ts
         else:
             raise StopIteration()
