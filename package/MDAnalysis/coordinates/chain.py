@@ -38,7 +38,6 @@ interest to developers.
    .. automethod:: _get
    .. automethod:: _get_same
    .. automethod:: _read_frame
-   .. automethod:: _chained_iterator
 
 """
 import warnings
@@ -560,13 +559,12 @@ class ChainReader(base.ProtoReader):
         self._current_frame = frame
         return self.ts
 
-    def _chained_iterator(self):
-        """Iterator that presents itself as a chained trajectory."""
-        self._rewind()  # must rewind all readers
 
     def _read_next_timestep(self, ts=None):
-        self.ts = next(self.__chained_trajectories_iter)
-        return self.ts
+        if ts is None:
+            ts = self.ts
+        ts = self.__next__()
+        return ts
 
     def rewind(self):
         """Set current frame to the beginning."""
@@ -654,6 +652,3 @@ class ChainReader(base.ProtoReader):
             return self.ts
         else:
             raise StopIteration()
-
-    def next(self):
-        return self.__next__()
