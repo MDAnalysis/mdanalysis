@@ -21,6 +21,8 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import itertools
+import pickle
+
 import numpy as np
 import pytest
 from unittest import TestCase
@@ -423,6 +425,14 @@ class BaseReaderTest(object):
         with pytest.raises(ValueError):
             transformed.add_transformations(translate([2,2,2]))
 
+
+    def test_pickle_reader(self, reader):
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(len(reader), len(reader_p))
+        assert_equal(reader.ts, reader_p.ts,
+                     "Timestep is changed after pickling")
+
+
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
         ts = reader[-1]
@@ -488,6 +498,11 @@ class MultiframeReaderTest(BaseReaderTest):
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
 
+
+    def test_pickle_next_ts_reader(self, reader):
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(next(reader), next(reader_p),
+                    "Next timestep is changed after pickling")
 
 class BaseWriterTest(object):
     @staticmethod
