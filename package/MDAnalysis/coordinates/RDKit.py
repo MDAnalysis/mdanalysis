@@ -246,12 +246,11 @@ class RDKitConverter(base.ConverterBase):
             ag.guess_bonds()
             bonds = ag.bonds
 
+        # only keep bonds where both atoms belong to the AtomGroup
+        bonds = bonds.atomgroup_intersection(ag, strict=True)
+        
         for bond in bonds:
-            try:
-                bond_indices = [atom_mapper[i] for i in bond.indices]
-            except KeyError:
-                # one of the atoms of the bond is not part of the atomgroup
-                continue
+            bond_indices = [atom_mapper[i] for i in bond.indices]
             try:
                 bond_type = bond.type.upper()
             except AttributeError:
