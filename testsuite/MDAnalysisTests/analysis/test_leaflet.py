@@ -177,6 +177,7 @@ def test_component_index_is_not_none(universe, lipid_heads):
     lfls_ag = LeafletFinder(universe, lipid_heads, cutoff=15.0, pbc=True)
     assert_almost_equal(len(lfls_ag.groups(component_index=0)), 180, decimal=4)
 
+
 class BaseTestLipidEnrichment:
     pytest.importorskip('sklearn')
     protein_sel = 'protein'
@@ -216,6 +217,7 @@ class TestLipidEnrichmentMembrane(BaseTestLipidEnrichment):
         assert len(bottom) == 2
         assert_equal(top['DPPC']['Near protein'], 0)
         assert_equal(top['all']['Near protein'], 0)
+
 
 class TestLipidEnrichmentMemProtAA(BaseTestLipidEnrichment):
     files = [GRO_MEMPROT, XTC_MEMPROT]
@@ -314,6 +316,7 @@ class TestLipidEnrichmentMemProtAA(BaseTestLipidEnrichment):
         assert_almost_equal(lower['POPG']['SD enrichment'], 0.4438, decimal=4)
 
     def test_results_summary_df(self, lipen):
+        pytest.import_or_skip('pandas')
         df = lipen.summary_as_dataframe()
         upper = df[df.Leaflet == 1]
         lower = df[df.Leaflet == 2]

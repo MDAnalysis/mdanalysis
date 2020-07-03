@@ -323,6 +323,7 @@ def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
     results.sort(order=["N", "cutoff"])  # sort ascending by N, then cutoff
     return results[0]  # (cutoff,N) with N>1 and shortest cutoff
 
+
 class LipidEnrichment(AnalysisBase):
     """Calculate the lipid depletion-enrichment index around a protein
     by leaflet.
