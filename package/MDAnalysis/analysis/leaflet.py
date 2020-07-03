@@ -73,9 +73,9 @@ import warnings
 import numpy as np
 import networkx as NX
 
-from .. import core
+from .. import core, selections, _TOPOLOGY_ATTRNAMES, _TOPOLOGY_ATTRS
 from . import distances
-from .. import selections
+from .base import AnalysisBase
 
 from ..due import due, Doi
 
@@ -322,3 +322,253 @@ def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
     del _sizes
     results.sort(order=["N", "cutoff"])  # sort ascending by N, then cutoff
     return results[0]  # (cutoff,N) with N>1 and shortest cutoff
+
+class LipidEnrichment(AnalysisBase):
+    """Calculate the lipid depletion-enrichment index around a protein
+    by leaflet.
+
+    The depletion-enrichment index (DEI) of a lipid around a protein indicates
+    how enriched or depleted that lipid in the lipid annulus around the
+    protein, with respect to the density of the lipid in the bulk
+    membrane. If more than one leaflet is specified, then the index is
+    calculated for each leaflet.
+
+    The DEI for lipid species or group :math:`L` at cutoff :math:`r` is as follows:
+
+    .. math::
+
+        \text{DEI}_{L, r} = \frac{n(x_{(L, r)})}{n(x_r)} \times \frac{n(x)}{n(x_L)}
+
+    where :math:`n(x_{(L, r)})` is the number of lipids :math:`L` within 
+    distance :math:`r` of the protein; :math:`n(x_r)` is total number of lipids 
+    within distance :math:`r` of the protein; :math:`n(x_L)` is the total number 
+    of lipids :math:`L` in that membrane or leaflet; and :math:`n(x)` is the total 
+    number of all lipids in that membrane or leaflet.
+
+    The results of this analysis contain these values:
+
+    * 'Near protein': the number of lipids :math:`L` within 
+        cutoff :math:`r` of the protein
+    * 'Fraction near protein': the fraction of the lipids :math:`L`
+        with respect to all lipids within cutoff :math:`r` of the 
+        protein: :math:`\frac{n(x_{(L, r)})}{n(x_r)}`
+    * 'Enrichment': the depletion-enrichment index.
+
+    This algorithm was obtained from [Corradi2018]_ . Please cite them if you use 
+    this analysis in published work.
+
+    .. note::
+
+        This analysis requires ``scikit-learn`` to be installed to 
+        determine leaflets.
+
+
+    Parameters
+    ----------
+
+    universe: Universe or AtomGroup
+        The atoms to apply this analysis to.
+    select_protein: str (optional)
+        Selection string for the protein.
+    select_residues: str (optional)
+        Selection string for the group of residues / lipids to analyse.
+    select_headgroup: str (optional)
+        Selection string for the lipid headgroups. This is used to determine
+        leaflets and compute distances, unless ``compute_headgroup_only`` is
+        ``False``.
+    n_leaflets: int (optional)
+        How many leaflets to split the membrane into.
+    count_by_attr: str (optional)
+        How to split the lipid species. By default, this is `resnames` so
+        each lipid species is computed individually. However, any topology
+        attribute can be used. For example, you could add a new attribute
+        describing tail saturation.
+    enrichment_cutoff: float (optional)
+        Cutoff in ångström
+    delta: float (optional)
+        Leaflets are determined via spectral clustering on a similarity matrix.
+        This similarity matrix is created from a pairwise distance matrix by
+        applying the gaussian kernel 
+        :math:`\exp{\frac{-\text{dist_matrix}^2}{2*\delta^2}}`. If your
+        leaflets are incorrect, try finetuning the `delta` value.
+    compute_headgroup_only: bool (optional)
+        By default this analysis only uses distance from the lipid headgroup
+        to determine whether a lipid is within the `enrichment_cutoff`
+        distance from the protein. This choice was made to save computation.
+        Compute the distance from every atom by toggling this option off.
+    **kwargs
+        Passed to :class:`~MDAnalysis.analysis.base.AnalysisBase`.
+
+    Attributes
+    ----------
+
+    protein: :class:`~MDAnalysis.core.groups.AtomGroup`
+        Protein atoms.
+    residues: :class:`~MDAnalysis.core.groups.ResidueGroup`
+        Lipid residues.
+    headgroups: :class:`~MDAnalysis.core.groups.AtomGroup`
+        Headgroup atoms.
+    leaflet_residues: list of :class:`~MDAnalysis.core.groups.ResidueGroup`
+        Residues per leaflet.
+    leaflet_headgroups: list of :class:`~MDAnalysis.core.groups.AtomGroup`
+        Headgroup atoms per leaflet.
+    residue_counts: list of :class:`numpy.ndarray` (n_lipid_groups, n_frames)
+        Number of each residue around protein for each frame, per leaflet.
+    total_counts: list of :class:`numpy.ndarray` (n_frames,)
+        Total number of residues around protein for each frame, per leaflet.
+    leaflets: list of dict of dicts
+        Counts, fraction, and enrichment index of each residue per frame, per
+        leaflet.
+    leaflets_summary: list of dict of dicts
+        Counts, fraction, and enrichment index as averages and standard 
+        deviations, per leaflet.
+    box: :class:`numpy.ndarray` or ``None``
+        Universe dimensions.
+    n_leaflets: int
+        Number of leaflets
+    delta: float
+        delta used Gaussian kernel to transform pairwise distances into a
+        similarity matrix for clustering.
+    compute_headgroup_only: bool
+        whether to compute distances only using the headgroup.
+    attrname: str
+        The topology attribute used to group lipid species.
+    """
+
+    def __init__(self, universe, select_protein: str='protein', 
+                 select_residues: str='all', select_headgroup: str='name PO4',
+                 n_leaflets: int=2, count_by_attr:str ='resnames', 
+                 enrichment_cutoff: float=6, delta: float=0.5,
+                 compute_headgroup_only: bool=True, **kwargs):
+        super(LipidEnrichment, self).__init__(universe.universe.trajectory, 
+                                              **kwargs)
+        self.box = universe.dimensions
+        self.protein = universe.select_atoms(select_protein)
+        self.residues = universe.select_atoms(select_residues).residues
+        self.n_residues = len(self.residues)
+        self.headgroups = self.residues.atoms.select_atoms(select_headgroup)
+        if n_leaflets < 1:
+            raise ValueError('Must have at least one leaflet')
+        self.n_leaflets = n_leaflets
+        self.delta = delta
+        self.compute_headgroup_only = compute_headgroup_only
+        self.cutoff = enrichment_cutoff
+        self.leaflets = []
+        self.leaflets_summary = []
+
+        # process this a bit to remove errors like "alt_locs"
+        attrname = _TOPOLOGY_ATTRNAMES[count_by_attr.lower().replace('_', '')]
+        self.attrname = _TOPOLOGY_ATTRS[attrname].attrname
+
+    def _prepare(self):
+        try:
+            import sklearn.cluster as skc
+        except ImportError:
+            raise ImportError('scikit-learn is required to use this analysis '
+                              'but is not installed. Install it with `conda '
+                              'install scikit-learn` or `pip install '
+                              'scikit-learn`.') from None
+
+        if self.n_leaflets > 1:
+            # determine leaflets by clustering center-of-mass
+            coms = self.headgroups.center_of_mass(compound='residues')
+            pdist = distances.distance_array(coms, coms, box=self.box)
+            psim = np.exp(-pdist**2/(2*(self.delta**2)))
+            sc = skc.SpectralClustering(n_clusters=self.n_leaflets, affinity='precomputed_nearest_neighbors')
+            clusters = sc.fit_predict(pdist)
+            leaflets = []
+            for i in range(self.n_leaflets):
+                leaflets.append([])
+            for res, i in zip(self.residues, clusters):
+                leaflets[i].append(res)
+            self.leaflet_residues = lres = [np.array(x).sum() 
+                                            for x in leaflets]
+            self.leaflet_residues.sort(key=lambda x: x.center_of_mass()[-1],
+                                       reverse=True)
+            self.leaflet_headgroups = [(self.headgroups & r.atoms) 
+                                       for r in lres]
+        else:
+            self.leaflet_residues = [self.residues]
+            self.leaflet_headgroups = [self.headgroups]
+        
+        if not self.compute_headgroup_only:
+            self.leaflet_headgroups = [h.residues.atoms
+                                       for h in self.leaflet_headgroups]
+
+        # set up results
+        self.residue_counts = [np.zeros((len(r), self.n_frames)) for r in lres]
+        self.total_counts = np.zeros((self.n_leaflets, self.n_frames))
+        self.leaflet_ids = ids = [getattr(r, self.attrname) for r in lres]
+        self.leaflets = [dict.fromkeys(np.unique(r)) for r in ids]
+        self.leaflets_summary = [dict.fromkeys(np.unique(r)) for r in ids]
+
+    def _single_frame(self):
+        for i, headgroup in enumerate(self.leaflet_headgroups):
+            hcom = headgroup.center_of_mass(compound='residues')
+            pairs = distances.capped_distance(self.protein.positions,
+                                              hcom, self.cutoff,
+                                              box=self.box,
+                                              return_distances=False)
+            if pairs.size > 0:
+                indices = np.sort(pairs[:, 1])
+                indices = np.unique(indices)
+            else:
+                indices = []
+            self.residue_counts[i][indices, self._frame_index] = 1
+            self.total_counts[i][self._frame_index] = len(indices)
+    
+    def _conclude(self):
+        for i, leaf in enumerate(self.leaflets):
+            ids = self.leaflet_ids[i]
+            summary = self.leaflets_summary[i]
+            res_counts = self.residue_counts[i]
+            all_lipids = {}
+            all_lipids_sum = {}
+            all_lipids['Near protein'] = nc_all = res_counts.sum(axis=0)
+            all_lipids_sum['Total near protein'] = nc_all.sum()
+            all_lipids_sum['Average near protein'] = avgall = nc_all.mean()
+            all_lipids_sum['Total number'] = all_total = len(res_counts)
+            all_lipids_sum['SD near protein'] = nc_all.std()
+            for resname in leaf.keys():
+                mask = ids == resname
+                counts = res_counts[mask]
+                results = {}
+                results_sum = {}
+                results['Near protein'] = nc = counts.sum(axis=0)
+                results_sum['Average near protein'] = avg = nc.mean()
+                results_sum['Total number'] = total = sum(mask)
+                results_sum['SD near protein'] = nc.std()
+                results['Fraction near protein'] = frac = nc/nc_all
+                results_sum['Average fraction near protein'] = avg_frac = avg/avgall
+                results_sum['SD fraction near protein'] = frac.std()
+                denom = total/all_total
+                results['Enrichment'] = frac/denom
+                results_sum['Average enrichment'] = avg_frac/denom
+                results_sum['SD enrichment'] = (frac/denom).std()
+                leaf[resname] = results
+                summary[resname] = results_sum
+            leaf['all'] = all_lipids
+            summary['all'] = all_lipids_sum
+    
+    def summary_as_dataframe(self):
+        """Convert the results summary into a pandas DataFrame.
+        
+        This requires pandas to be installed.
+        """
+
+        if not self.leaflets_summary:
+            raise ValueError('Call run() first to get results')
+        try:
+            import pandas as pd
+        except ImportError:
+            raise ImportError('pandas is required to use this function '
+                              'but is not installed. Please install with '
+                              '`conda install pandas` or '
+                              '`pip install pandas`.') from None
+        
+        dfs = [pd.DataFrame.from_dict(d, orient='index') 
+               for d in self.leaflets_summary]
+        for i, df in enumerate(dfs, 1):
+            df['Leaflet'] = i
+        df = pd.concat(dfs)
+        return df
