@@ -136,9 +136,10 @@ after_success:
   # turn off blocking as it causes large writes to stdout to fail 
   # (see https://github.com/travis-ci/travis-ci/issues/4704)
   - |
-    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
+    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] ; then
       python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
       cd ${TRAVIS_BUILD_DIR}/package/MDAnalysis
+      export GH_DOC_BRANCH=${TRAVIS_BRANCH}
       export VERSION=$(python -c "import version; print(version.__version__)")
       cd -
       bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs_via_travis.sh;
