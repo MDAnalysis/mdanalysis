@@ -84,7 +84,6 @@ Classes
    :members:
 
 """
-import sys
 import warnings
 import numpy as np
 import os
@@ -134,7 +133,6 @@ class TRZReader(base.ReaderBase):
     ----
     Binary TRZ trajectories are *always* assumed to be written in
     *little-endian* byte order and are read as such.
-
 
 
     .. versionchanged:: 0.11.0
