@@ -470,8 +470,8 @@ class LipidEnrichment(AnalysisBase):
                               'scikit-learn`.') from None
 
         if self.n_leaflets > 1:
-            # determine leaflets by clustering center-of-mass
-            coms = self.headgroups.center_of_mass(compound='residues')
+            # determine leaflets by clustering center-of-geometry
+            coms = self.headgroups.center_of_geometry(compound='residues')
             pdist = distances.distance_array(coms, coms, box=self.box)
             psim = np.exp(-pdist**2/(2*(self.delta**2)))
             sc = skc.SpectralClustering(n_clusters=self.n_leaflets, affinity='precomputed_nearest_neighbors')
@@ -483,7 +483,7 @@ class LipidEnrichment(AnalysisBase):
                 leaflets[i].append(res)
             self.leaflet_residues = lres = [np.array(x).sum() 
                                             for x in leaflets]
-            self.leaflet_residues.sort(key=lambda x: x.center_of_mass()[-1],
+            self.leaflet_residues.sort(key=lambda x: x.center_of_geometry()[-1],
                                        reverse=True)
             self.leaflet_headgroups = [(self.headgroups & r.atoms) 
                                        for r in lres]
@@ -504,7 +504,7 @@ class LipidEnrichment(AnalysisBase):
 
     def _single_frame(self):
         for i, headgroup in enumerate(self.leaflet_headgroups):
-            hcom = headgroup.center_of_mass(compound='residues')
+            hcom = headgroup.center_of_geometry(compound='residues')
             pairs = distances.capped_distance(self.protein.positions,
                                               hcom, self.cutoff,
                                               box=self.box,
