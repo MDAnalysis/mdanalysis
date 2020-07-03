@@ -179,7 +179,7 @@ def test_component_index_is_not_none(universe, lipid_heads):
 
 
 class BaseTestLipidEnrichment:
-    pytest.importorskip('sklearn')
+    pytest.importorskip('sklearn', minversion='0.23.1')
     protein_sel = 'protein'
     avg_c = 'Average near protein'
     sd_c = 'SD near protein'

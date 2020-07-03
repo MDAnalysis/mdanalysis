@@ -355,7 +355,7 @@ class LipidEnrichment(AnalysisBase):
         protein: :math:`\frac{n(x_{(L, r)})}{n(x_r)}`
     * 'Enrichment': the depletion-enrichment index.
 
-    This algorithm was obtained from [Corradi2018]_ . Please cite them if you use 
+    This algorithm was obtained from [Corradi2018]_. Please cite them if you use 
     this analysis in published work.
 
     .. note::
