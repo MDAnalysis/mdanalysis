@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium,
-         daveminh, jbarnoud
+         daveminh, jbarnoud, yuxuanzhuang
+
 
 
   * 2.0.0
@@ -25,6 +26,8 @@ Fixes
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
   * Testsuite does not any more matplotlib.use('agg') (#2191)
+  * In ChainReader, read_frame does not trigger change of iterating position. 
+    (Issue #2723, PR #2815)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
