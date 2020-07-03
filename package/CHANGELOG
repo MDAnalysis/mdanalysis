@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium,
-         daveminh
+         daveminh, yuxuanzhuang
 
   * 2.0.0
 
@@ -24,6 +24,7 @@ Fixes
   * TOPParser no longer guesses elements when missing atomic number records
     (Issues #2449, #2651)
   * Testsuite does not any more matplotlib.use('agg') (#2191)
+  * TRZReader now checks `n_atoms` provided right during initilization. 
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
