@@ -164,7 +164,7 @@ class TRZReader(base.ReaderBase):
 
         Raises
         ------
-        AttributeError
+        ValueError
            If wrong `n_atoms`/topology file is provided.
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
@@ -231,9 +231,9 @@ class TRZReader(base.ReaderBase):
         try:
             self._get_dt()
         except OSError:
-            raise AttributeError("`n_atoms` is incompatible "
-                                 "with provided trajectory file. "
-                                 "(Maybe `topology` is wrong?)")
+            raise ValueError("Supplied n_atoms {} is incompatible "
+                             "with provided trajectory file. "
+                             "Maybe `topology` is wrong?".format(self.n_atoms))
 
 
     def _read_trz_header(self):

@@ -129,6 +129,10 @@ class TestTRZReader(RefTRZ):
             assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
             assert_equal(W.n_atoms, 100)
 
+    def test_get_wrong_n_atoms(self):
+        with pytest.raises(ValueError, match=r"Supplied n_atoms *"):
+            mda.Universe(TRZ, n_atoms = 8080)
+
 
 class TestTRZWriter(RefTRZ):
     prec = 3
