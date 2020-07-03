@@ -31,7 +31,7 @@ import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
 from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND)
+                                       ALIGN_UNBOUND, GRO, XTC)
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -504,6 +504,18 @@ class TestAlignmentProcessing(object):
                                                 "unexpected length")
         assert len(
             sel['mobile']) == 23090, "selection string has unexpected length"
+
+
+# temporary test to see if downstream issue can be replicated
+def test_aligntraj_xtc(tmpdir):
+    u = mda.Universe(GRO, XTC)
+
+    aligner = align.AlignTraj(u, u, select='protein and name CA',
+                              in_memory=True)
+
+    aligner.run()
+
+    assert 1 == 1
 
 
 def test_sequence_alignment():
