@@ -99,6 +99,11 @@ class TestChainReader(object):
         universe.trajectory[98]  # index is 0-based and frames are 0-based
         assert_equal(universe.trajectory.frame, 98, "wrong frame number")
 
+    def test_next_after_frame_numbering(self, universe):
+        universe.trajectory[98]  # index is 0-based and frames are 0-based
+        universe.trajectory.next()
+        assert_equal(universe.trajectory.frame, 99, "wrong frame number")
+
     def test_frame(self, universe):
         universe.trajectory[0]
         coord0 = universe.atoms.positions.copy()

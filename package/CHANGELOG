@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
-         VOD555, lilyminium
+         yuxuanzhuang, VOD555, lilyminium
 
   * 1.0.1
 
@@ -22,6 +22,8 @@ Fixes
   * Development status changed from beta to mature (Issue #2773)
   * pip installation only requests Python 2.7-compatible packages (#2736)
   * Testsuite does not use any more matplotlib.use('agg') (#2191)
+  * In ChainReader, read_frame does not trigger change of iterating position.
+    (Issue #2723, PR #2815)
   * rdf.InterRDF_s density keyword documented and now gives correct results for
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
@@ -47,7 +49,7 @@ Fixes
     (Issue #2565)
   * Made NoDataError a subclass of ValueError *and* AttributeError
     (Issue #2635)
-  * Fixed select_atoms("around 0.0 ...") selections and capped_distance 
+  * Fixed select_atoms("around 0.0 ...") selections and capped_distance
     causing a segfault (Issue #2656 PR #2665)
   * `PDBWriter` writes unitary `CRYST1` record (cubic box with sides of 1 Å)
     when `u.dimensions` is `None` or `np.zeros(6)` (Issue #2679, PR #2685)
