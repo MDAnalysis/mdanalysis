@@ -181,6 +181,12 @@ def test_component_index_is_not_none(universe, lipid_heads):
 class BaseTestLipidEnrichment:
     pytest.importorskip('sklearn')
     protein_sel = 'protein'
+    avg_c = 'Average near protein'
+    sd_c = 'SD near protein'
+    avg_frac = 'Average fraction near protein'
+    sd_frac = 'SD fraction near protein'
+    avg_en = 'Average enrichment'
+    sd_en = 'SD enrichment'
 
     @pytest.fixture()
     def universe(self):
@@ -284,71 +290,71 @@ class TestLipidEnrichmentMemProtAA(BaseTestLipidEnrichment):
         assert_equal(set(lower.keys()), {'POPE', 'POPG', 'all'})
 
         # counts near protein
-        assert_almost_equal(upper['POPE']['Average near protein'], 4.4)
-        assert_almost_equal(lower['POPE']['Average near protein'], 9.2)
-        assert_almost_equal(upper['POPG']['Average near protein'], 0)
-        assert_almost_equal(lower['POPG']['Average near protein'], 5.2)
-        assert_almost_equal(upper['all']['Average near protein'], 4.4)
-        assert_almost_equal(lower['all']['Average near protein'], 14.4)
-        assert_almost_equal(upper['POPE']['SD near protein'], 1.8547, decimal=4)
-        assert_almost_equal(lower['POPE']['SD near protein'], 1.4697, decimal=4)
-        assert_almost_equal(upper['POPG']['SD near protein'], 0)
-        assert_almost_equal(lower['POPG']['SD near protein'], 1.3266, decimal=4)
+        assert_almost_equal(upper['POPE'][self.avg_c], 4.4)
+        assert_almost_equal(lower['POPE'][self.avg_c], 9.2)
+        assert_almost_equal(upper['POPG'][self.avg_c], 0)
+        assert_almost_equal(lower['POPG'][self.avg_c], 5.2)
+        assert_almost_equal(upper['all'][self.avg_c], 4.4)
+        assert_almost_equal(lower['all'][self.avg_c], 14.4)
+        assert_almost_equal(upper['POPE'][self.sd_c], 1.8547, decimal=4)
+        assert_almost_equal(lower['POPE'][self.sd_c], 1.4697, decimal=4)
+        assert_almost_equal(upper['POPG'][self.sd_c], 0)
+        assert_almost_equal(lower['POPG'][self.sd_c], 1.3266, decimal=4)
 
         # Fraction
-        assert_almost_equal(upper['POPE']['Average fraction near protein'], 1)
-        assert_almost_equal(lower['POPE']['Average fraction near protein'], 0.6389, decimal=4)
-        assert_almost_equal(upper['POPG']['Average fraction near protein'], 0)
-        assert_almost_equal(lower['POPG']['Average fraction near protein'], 0.3611, decimal=4)
-        assert_almost_equal(upper['POPE']['SD fraction near protein'], 0)
-        assert_almost_equal(lower['POPE']['SD fraction near protein'], 0.0888, decimal=4)
-        assert_almost_equal(upper['POPG']['SD fraction near protein'], 0)
-        assert_almost_equal(lower['POPG']['SD fraction near protein'], 0.0888, decimal=4)
+        assert_almost_equal(upper['POPE'][self.avg_frac], 1)
+        assert_almost_equal(lower['POPE'][self.avg_frac], 0.6389, decimal=4)
+        assert_almost_equal(upper['POPG'][self.avg_frac], 0)
+        assert_almost_equal(lower['POPG'][self.avg_frac], 0.3611, decimal=4)
+        assert_almost_equal(upper['POPE'][self.sd_frac], 0)
+        assert_almost_equal(lower['POPE'][self.sd_frac], 0.0888, decimal=4)
+        assert_almost_equal(upper['POPG'][self.sd_frac], 0)
+        assert_almost_equal(lower['POPG'][self.sd_frac], 0.0888, decimal=4)
 
         # enrichment
-        assert_almost_equal(upper['POPE']['Average enrichment'], 1.2478, decimal=4)
-        assert_almost_equal(lower['POPE']['Average enrichment'], 0.7986, decimal=4)
-        assert_almost_equal(upper['POPG']['Average enrichment'], 0)
-        assert_almost_equal(lower['POPG']['Average enrichment'], 1.8056, decimal=4)
-        assert_almost_equal(upper['POPE']['SD enrichment'], 0)
-        assert_almost_equal(lower['POPE']['SD enrichment'], 0.1109, decimal=4)
-        assert_almost_equal(upper['POPG']['SD enrichment'], 0)
-        assert_almost_equal(lower['POPG']['SD enrichment'], 0.4438, decimal=4)
+        assert_almost_equal(upper['POPE'][self.avg_en], 1.2478, decimal=4)
+        assert_almost_equal(lower['POPE'][self.avg_en], 0.7986, decimal=4)
+        assert_almost_equal(upper['POPG'][self.avg_en], 0)
+        assert_almost_equal(lower['POPG'][self.avg_en], 1.8056, decimal=4)
+        assert_almost_equal(upper['POPE'][self.sd_en], 0)
+        assert_almost_equal(lower['POPE'][self.sd_en], 0.1109, decimal=4)
+        assert_almost_equal(upper['POPG'][self.sd_en], 0)
+        assert_almost_equal(lower['POPG'][self.sd_en], 0.4438, decimal=4)
 
     def test_results_summary_df(self, lipen):
-        pytest.import_or_skip('pandas')
+        pytest.importorskip('pandas')
         df = lipen.summary_as_dataframe()
         upper = df[df.Leaflet == 1]
         lower = df[df.Leaflet == 2]
 
         # counts near protein
-        assert_almost_equal(upper.loc['POPE', 'Average near protein'], 4.4)
-        assert_almost_equal(lower.loc['POPE', 'Average near protein'], 9.2)
-        assert_almost_equal(upper.loc['POPG', 'Average near protein'], 0)
-        assert_almost_equal(lower.loc['POPG', 'Average near protein'], 5.2)
-        assert_almost_equal(upper.loc['all', 'Average near protein'], 4.4)
-        assert_almost_equal(lower.loc['all', 'Average near protein'], 14.4)
-        assert_almost_equal(upper.loc['POPE', 'SD near protein'], 1.8547, decimal=4)
-        assert_almost_equal(lower.loc['POPE', 'SD near protein'], 1.4697, decimal=4)
-        assert_almost_equal(upper.loc['POPG', 'SD near protein'], 0)
-        assert_almost_equal(lower.loc['POPG', 'SD near protein'], 1.3266, decimal=4)
+        assert_almost_equal(upper.loc['POPE', self.avg_c], 4.4)
+        assert_almost_equal(lower.loc['POPE', self.avg_c], 9.2)
+        assert_almost_equal(upper.loc['POPG', self.avg_c], 0)
+        assert_almost_equal(lower.loc['POPG', self.avg_c], 5.2)
+        assert_almost_equal(upper.loc['all', self.avg_c], 4.4)
+        assert_almost_equal(lower.loc['all', self.avg_c], 14.4)
+        assert_almost_equal(upper.loc['POPE', self.sd_c], 1.8547, decimal=4)
+        assert_almost_equal(lower.loc['POPE', self.sd_c], 1.4697, decimal=4)
+        assert_almost_equal(upper.loc['POPG', self.sd_c], 0)
+        assert_almost_equal(lower.loc['POPG', self.sd_c], 1.3266, decimal=4)
 
         # Fraction
-        assert_almost_equal(upper.loc['POPE', 'Average fraction near protein'], 1)
-        assert_almost_equal(lower.loc['POPE', 'Average fraction near protein'], 0.6389, decimal=4)
-        assert_almost_equal(upper.loc['POPG', 'Average fraction near protein'], 0)
-        assert_almost_equal(lower.loc['POPG', 'Average fraction near protein'], 0.3611, decimal=4)
-        assert_almost_equal(upper.loc['POPE', 'SD fraction near protein'], 0)
-        assert_almost_equal(lower.loc['POPE', 'SD fraction near protein'], 0.0888, decimal=4)
-        assert_almost_equal(upper.loc['POPG', 'SD fraction near protein'], 0)
-        assert_almost_equal(lower.loc['POPG', 'SD fraction near protein'], 0.0888, decimal=4)
+        assert_almost_equal(upper.loc['POPE', self.avg_frac],1)
+        assert_almost_equal(lower.loc['POPE', self.avg_frac], 0.6389, decimal=4)
+        assert_almost_equal(upper.loc['POPG', self.avg_frac], 0)
+        assert_almost_equal(lower.loc['POPG', self.avg_frac], 0.3611, decimal=4)
+        assert_almost_equal(upper.loc['POPE', self.sd_frac], 0)
+        assert_almost_equal(lower.loc['POPE', self.sd_frac], 0.0888, decimal=4)
+        assert_almost_equal(upper.loc['POPG', self.sd_frac], 0)
+        assert_almost_equal(lower.loc['POPG', self.sd_frac], 0.0888, decimal=4)
 
         # enrichment
-        assert_almost_equal(upper.loc['POPE', 'Average enrichment'], 1.2478, decimal=4)
-        assert_almost_equal(lower.loc['POPE', 'Average enrichment'], 0.7986, decimal=4)
-        assert_almost_equal(upper.loc['POPG', 'Average enrichment'], 0)
-        assert_almost_equal(lower.loc['POPG', 'Average enrichment'], 1.8056, decimal=4)
-        assert_almost_equal(upper.loc['POPE', 'SD enrichment'], 0)
-        assert_almost_equal(lower.loc['POPE', 'SD enrichment'], 0.1109, decimal=4)
-        assert_almost_equal(upper.loc['POPG', 'SD enrichment'], 0)
-        assert_almost_equal(lower.loc['POPG', 'SD enrichment'], 0.4438, decimal=4)
+        assert_almost_equal(upper.loc['POPE', self.avg_en], 1.2478, decimal=4)
+        assert_almost_equal(lower.loc['POPE', self.avg_en], 0.7986, decimal=4)
+        assert_almost_equal(upper.loc['POPG', self.avg_en], 0)
+        assert_almost_equal(lower.loc['POPG', self.avg_en], 1.8056, decimal=4)
+        assert_almost_equal(upper.loc['POPE', self.sd_en], 0)
+        assert_almost_equal(lower.loc['POPE', self.sd_en], 0.1109, decimal=4)
+        assert_almost_equal(upper.loc['POPG', self.sd_en], 0)
+        assert_almost_equal(lower.loc['POPG', self.sd_en], 0.4438, decimal=4)

@@ -475,7 +475,8 @@ class LipidEnrichment(AnalysisBase):
             coms = self.headgroups.center_of_geometry(compound='residues')
             pdist = distances.distance_array(coms, coms, box=self.box)
             psim = np.exp(-pdist**2/(2*(self.delta**2)))
-            sc = skc.SpectralClustering(n_clusters=self.n_leaflets, affinity='precomputed_nearest_neighbors')
+            sc = skc.SpectralClustering(n_clusters=self.n_leaflets,
+                                        affinity='precomputed_nearest_neighbors')
             clusters = sc.fit_predict(pdist)
             leaflets = []
             for i in range(self.n_leaflets):
@@ -539,13 +540,13 @@ class LipidEnrichment(AnalysisBase):
                 results_sum['Average near protein'] = avg = nc.mean()
                 results_sum['Total number'] = total = sum(mask)
                 results_sum['SD near protein'] = nc.std()
-                results['Fraction near protein'] = frac = nc/nc_all
-                results_sum['Average fraction near protein'] = avg_frac = avg/avgall
+                results['Fraction near protein'] = frac = nc / nc_all
+                results_sum['Average fraction near protein'] = avg_frac = avg / avgall
                 results_sum['SD fraction near protein'] = frac.std()
-                denom = total/all_total
-                results['Enrichment'] = frac/denom
-                results_sum['Average enrichment'] = avg_frac/denom
-                results_sum['SD enrichment'] = (frac/denom).std()
+                denom = total / all_total
+                results['Enrichment'] = frac / denom
+                results_sum['Average enrichment'] = avg_frac / denom
+                results_sum['SD enrichment'] = (frac / denom).std()
                 leaf[resname] = results
                 summary[resname] = results_sum
             leaf['all'] = all_lipids
