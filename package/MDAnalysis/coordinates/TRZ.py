@@ -136,12 +136,14 @@ class TRZReader(base.ReaderBase):
     *little-endian* byte order and are read as such.
 
 
+
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based.
        Extra data (Temperature, Energies, Pressures, etc) now read
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
-
+    .. versionchanged:: 2.0.0
+       Now checks for the right `n_atoms` during initilization.
     """
 
     format = "TRZ"
@@ -159,6 +161,11 @@ class TRZReader(base.ReaderBase):
             number of atoms in trajectory, must be taken from topology file!
         convert_units : bool (optional)
             converts units to MDAnalysis defaults
+
+        Raises
+        ------
+        AttributeError
+           If wrong `n_atoms`/topology file is provided.
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
 
@@ -220,6 +227,14 @@ class TRZReader(base.ReaderBase):
         self._dtype = np.dtype(frame_contents)
 
         self._read_next_timestep()
+
+        try:
+            self._get_dt()
+        except OSError:
+            raise AttributeError("`n_atoms` is incompatible "
+                                 "with provided trajectory file. "
+                                 "(Maybe `topology` is wrong?)")
+
 
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
