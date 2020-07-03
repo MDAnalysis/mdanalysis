@@ -23,7 +23,9 @@ import numpy as np
 import pytest
 from numpy.testing import assert_array_almost_equal
 
+import MDAnalysis as mda
 from MDAnalysisTests import make_Universe
+from MDAnalysisTests.datafiles import TPR, XTC
 from MDAnalysis.transformations.fit import fit_translation, fit_rot_trans
 from MDAnalysis.lib.transformations import rotation_matrix
 
@@ -268,3 +270,11 @@ def test_fit_rot_trans_transformations_api(fit_universe):
     transform = fit_rot_trans(test_u, ref_u)
     test_u.trajectory.add_transformations(transform)
     assert_array_almost_equal(test_u.trajectory.ts.positions, ref_u.trajectory.ts.positions, decimal=3)
+
+
+def test_xtc_transform():
+    u = mda.Universe(TPR, XTC)
+    protein = u.select_atoms('protein')
+    align_transform = fit_rot_trans(protein, protein, weights=protein.masses)
+    u.trajectory.add_transformations(align_transform)
+    assert 1 == 1
