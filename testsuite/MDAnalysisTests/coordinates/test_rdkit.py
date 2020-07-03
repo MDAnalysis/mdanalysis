@@ -114,10 +114,34 @@ class TestRDKitConverter(object):
     def mol2(self):
         u = mda.Universe(mol2_molecule)
         # add elements
-        elements = np.array([guess_atom_element(x) for x in u.atoms.types], 
+        elements = np.array([guess_atom_element(x) for x in u.atoms.types],
                             dtype=object)
         u.add_TopologyAttr('elements', elements)
         return u
+
+    @pytest.fixture
+    def peptide(self):
+        mol = Chem.MolFromSequence("MDANALYSISandRDKIT")
+        u = mda.Universe(mol)
+        return u
+
+    @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
+    def test_single_atom_mol(self, smi):
+        u = mda.Universe.from_smiles(smi, addHs=False,
+                                     generate_coordinates=False)
+        mol = u.atoms.convert_to("RDKIT")
+        assert mol.GetNumAtoms() == 1
+
+    @pytest.mark.parametrize("resname, n_atoms, n_fragments", [
+        ("MET", 8, 1),
+        ("THR", 8, 1),
+        ("ILE", 16, 2),
+        ("ASP", 24, 3),
+    ])
+    def test_mol_from_selection(self, peptide, resname, n_atoms, n_fragments):
+        mol = peptide.select_atoms("resname %s" % resname).convert_to("RDKIT")
+        assert n_atoms == mol.GetNumAtoms()
+        assert n_fragments == len(Chem.GetMolFrags(mol))
 
     @pytest.mark.parametrize("sel_str, atom_index", [
         ("resid 1", 0),
@@ -207,5 +231,6 @@ class TestRDKitConverter(object):
         ag = pdb.select_atoms(sel_str)
         mol = ag.convert_to("RDKIT")
         expected = ag.indices
-        indices = np.array([a.GetIntProp("_MDAnalysis_index") for a in mol.GetAtoms()], dtype=np.int32)
+        indices = np.array([a.GetIntProp("_MDAnalysis_index")
+                            for a in mol.GetAtoms()], dtype=np.int32)
         assert_equal(indices, expected)
