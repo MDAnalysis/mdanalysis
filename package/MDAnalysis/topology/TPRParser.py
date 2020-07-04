@@ -183,7 +183,7 @@ class TPRParser(TopologyReaderBase):
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader
         except EOFError:
-            msg = "{0}: Invalid tpr file or cannot be recognized".format(self.filename)
+            msg = f"{self.filename}: Invalid tpr file or cannot be recognized"
             logger.critical(msg)
             raise IOError(msg)
 
@@ -220,7 +220,7 @@ class TPRParser(TopologyReaderBase):
         if th.bTop:
             tpr_top = tpr_utils.do_mtop(data, V)
         else:
-            msg = "{0}: No topology found in tpr file".format(self.filename)
+            msg = f"{self.filename}: No topology found in tpr file"
             logger.critical(msg)
             raise IOError(msg)
 
@@ -254,18 +254,18 @@ class TPRParser(TopologyReaderBase):
     #         utils.do_inputrec(data)
 
     def _log_header(self, th):
-        logger.info("Gromacs version   : {0}".format(th.ver_str))
-        logger.info("tpx version       : {0}".format(th.fver))
-        logger.info("tpx generation    : {0}".format(th.fgen))
-        logger.info("tpx precision     : {0}".format(th.precision))
-        logger.info("tpx file_tag      : {0}".format(th.file_tag))
-        logger.info("tpx natoms        : {0}".format(th.natoms))
-        logger.info("tpx ngtc          : {0}".format(th.ngtc))
-        logger.info("tpx fep_state     : {0}".format(th.fep_state))
-        logger.info("tpx lambda        : {0}".format(th.lamb))
-        logger.debug("tpx bIr (input record): {0}".format(th.bIr))
-        logger.debug("tpx bTop         : {0}".format(th.bTop))
-        logger.debug("tpx bX           : {0}".format(th.bX))
-        logger.debug("tpx bV           : {0}".format(th.bV))
-        logger.debug("tpx bF           : {0}".format(th.bF))
-        logger.debug("tpx bBox         : {0}".format(th.bBox))
+        logger.info(f"Gromacs version   : {th.ver_str}")
+        logger.info(f"tpx version       : {th.fver}")
+        logger.info(f"tpx generation    : {th.fgen}")
+        logger.info(f"tpx precision     : {th.precision}")
+        logger.info(f"tpx file_tag      : {th.file_tag}")
+        logger.info(f"tpx natoms        : {th.natoms}")
+        logger.info(f"tpx ngtc          : {th.ngtc}")
+        logger.info(f"tpx fep_state     : {th.fep_state}")
+        logger.info(f"tpx lambda        : {th.lamb}")
+        logger.debug(f"tpx bIr (input record): {th.bIr}")
+        logger.debug(f"tpx bTop         : {th.bTop}")
+        logger.debug(f"tpx bX           : {th.bX}")
+        logger.debug(f"tpx bV           : {th.bV}")
+        logger.debug(f"tpx bF           : {th.bF}")
+        logger.debug(f"tpx bBox         : {th.bBox}")
