@@ -77,17 +77,12 @@ class TPXUnpacker(xdrlib.Unpacker):
     Extend the standard XDR unpacker for the specificity of TPX files.
     """
     def __init__(self, data):
-        # Using super here would be ideal, but it does not work on python2 as
-        # TPXUnpacker is a `classobj` and not a `type`.
-        # super().__init__(data)
-        xdrlib.Unpacker.__init__(self, data)
+        super().__init__(data)
         self._buf = self.get_buffer()
 
     # The parent class uses a dunder attribute to store the
     # cursor position. This property makes it easier to manipulate
     # this attribute that is otherwise "protected".
-    # The use of this property works well in python3, but fails in python2
-    # where direct access to the mangled attribute seems required.
     @property
     def _pos(self):
         return self.get_position()
@@ -97,14 +92,8 @@ class TPXUnpacker(xdrlib.Unpacker):
         self.set_position(value)
 
     def _unpack_value(self, item_size, struct_template):
-        # Ideally, we should use the _pos attribute, but it present some
-        # unexpected behaviour on python2 where the position of the cursor is
-        # not kept in sync between the method defined in TPXUnpacker and the
-        # methods defined in the base class.
-        # start_position = self._pos
-        # end_position = self._pos = start_position + item_size
-        start_position = self._Unpacker__pos  # pylint: disable=access-member-before-definition 
-        end_position = self._pos = self._Unpacker__pos = start_position + item_size
+        start_position = self._pos
+        end_position = self._pos = start_position + item_size
         content = self._buf[start_position:end_position]
         if len(content) != item_size:
             raise EOFError
@@ -148,8 +137,8 @@ class TPXUnpacker2020(TPXUnpacker):
     """
     @classmethod
     def from_unpacker(cls, unpacker):
-        new_unpacker = cls(unpacker._buf)
-        new_unpacker._pos = new_unpacker._Unpacker__pos = unpacker._Unpacker__pos
+        new_unpacker = cls(unpacker.get_buffer())
+        new_unpacker._pos = unpacker.get_position()
         if hasattr(unpacker, 'unpack_real'):
             if unpacker.unpack_real == unpacker.unpack_float:
                 new_unpacker.unpack_real = new_unpacker.unpack_float
@@ -162,8 +151,8 @@ class TPXUnpacker2020(TPXUnpacker):
     def unpack_fstring(self, n):
         if n < 0:
             raise ValueError('Size of fstring cannot be negative.')
-        start_position = self._Unpacker__pos # pylint: disable=access-member-before-definition
-        end_position = self._pos = self._Unpacker__pos = start_position + n
+        start_position = self._pos
+        end_position = self._pos = start_position + n
         if end_position > len(self._buf):
             raise EOFError
         content = self._buf[start_position:end_position]
