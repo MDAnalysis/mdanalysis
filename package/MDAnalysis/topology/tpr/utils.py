@@ -272,12 +272,10 @@ def read_tpxheader(data):
     return th
 
 
-def extract_box_info(data, fileVersion):
+def extract_box_info(data, fver):
     box = ndo_rvec(data, S.DIM)
-    box_rel = ndo_rvec(data, S.DIM) if fileVersion >= 51 else 0
-    box_v = ndo_rvec(data, S.DIM) if fileVersion >= 28 else None
-    if (fileVersion < 56):
-        ndo_rvec(data, S.DIM)  # mdum?
+    box_rel = ndo_rvec(data, S.DIM)
+    box_v = ndo_rvec(data, S.DIM)
 
     return obj.Box(box, box_rel, box_v)
 
@@ -422,13 +420,10 @@ def do_symtab(data):
 
 def do_ffparams(data, fver):
     atnr = data.unpack_int()
-    if fver < 57:
-        data.unpack_int()  # idum
     ntypes = data.unpack_int()
     functype = ndo_int(data, ntypes)
     reppow = data.unpack_double() if fver >= 66 else 12.0
-    if fver >= 57:
-        fudgeQQ = data.unpack_real()
+    fudgeQQ = data.unpack_real()
 
     # mimicing the c code,
     # remapping the functype due to inconsistency in different versions
@@ -533,8 +528,6 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # anharm_polarize.drcut
             data.unpack_real()  # anharm_polarize.khyp
         elif i in [S.F_WATER_POL]:
-            if fver < 31:
-                fver_err(fver)
             data.unpack_real()  # wpol.al_x
             data.unpack_real()  # wpol.al_y
             data.unpack_real()  # wpol.al_z
@@ -612,11 +605,8 @@ def do_iparams(data, functypes, fver):
         elif i in [S.F_POSRES]:
             do_rvec(data)  # posres.pos0A
             do_rvec(data)  # posres.fcA
-            if fver < 27:
-                fver_err(fver)
-            else:
-                do_rvec(data)  # posres.pos0B
-                do_rvec(data)  # posres.fcB
+            do_rvec(data)  # posres.pos0B
+            do_rvec(data)  # posres.fcB
 
         elif i in [S.F_FBPOSRES]:
             data.unpack_int()   # fbposres.geom
@@ -629,8 +619,7 @@ def do_iparams(data, functypes, fver):
 
         elif i in [S.F_RBDIHS]:
             ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcA
-            if fver >= 25:
-                ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcB
+            ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcB
 
         elif i in [S.F_FOURDIHS]:
             # Fourier dihedrals
@@ -683,8 +672,7 @@ def do_iparams(data, functypes, fver):
 
 
 def do_moltype(data, symtab, fver):
-    if fver >= 57:
-        molname = do_symstr(data, symtab)
+    molname = do_symstr(data, symtab)
 
     # key info: about atoms
     atoms_obj = do_atoms(data, symtab, fver)
@@ -772,9 +760,6 @@ def do_atoms(data, symtab, fver):
     nr = data.unpack_int()  # number of atoms in a particular molecule
     nres = data.unpack_int()  # number of residues in a particular molecule
 
-    if fver < 57:
-        fver_err(fver)
-
     atoms = []
     for i in range(nr):
         A = do_atom(data, fver)
@@ -783,15 +768,9 @@ def do_atoms(data, symtab, fver):
     # do_strstr
     atomnames = [symtab[i] for i in ndo_int(data, nr)]
 
-    if fver <= 20:
-        fver_err(fver)
-    else:
-        type = [symtab[i] for i in ndo_int(data, nr)]  # e.g. opls_111
-        typeB = [symtab[i] for i in ndo_int(data, nr)]
+    type = [symtab[i] for i in ndo_int(data, nr)]  # e.g. opls_111
+    typeB = [symtab[i] for i in ndo_int(data, nr)]
     resnames = do_resinfo(data, symtab, fver, nres)
-
-    if fver < 57:
-        fver_err(fver)
 
     return obj.Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
 
@@ -818,11 +797,8 @@ def do_atom(data, fver):
     ptype = data.unpack_int()  # regular atom, virtual site or others
     resind = data.unpack_int()  # index of residue
 
-    if fver >= 52:
-        atomnumber = data.unpack_int()  # index of atom type
+    atomnumber = data.unpack_int()  # index of atom type
 
-    if fver < 23 or fver < 39 or fver < 57:
-        fver_err(fver)
     return obj.Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
 
 
@@ -839,8 +815,6 @@ def do_ilists(data, fver):
             nr.append(0)
             iatoms.append(None)
         else:
-            if fver < 44:
-                fver_err(fver)
             # do_ilist
             n = data.unpack_int()
             nr.append(n)
