@@ -321,7 +321,7 @@ def do_mtop(data, fver):
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
         molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
-        segid = "seg_{0}_{1}".format(i, molblock)
+        segid = f"seg_{i}_{molblock}"
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
@@ -673,7 +673,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_int()  # cmap.cmapA
             data.unpack_int()  # cmap.cmapB
         else:
-            raise NotImplementedError("unknown functype: {0}".format(i))
+            raise NotImplementedError(f"unknown functype: {i}")
     return
 
 
