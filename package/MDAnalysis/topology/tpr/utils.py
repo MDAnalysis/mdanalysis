@@ -726,7 +726,7 @@ def do_moltype(data, symtab, fver):
             elif ik_obj.name == 'SETTLE':
                 # SETTLE interactions are optimized triangular constraints for
                 # water molecules. They should be counted as a pair of bonds
-                # between the oxigen and the hydrogens. In older versions of
+                # between the oxygen and the hydrogens. In older versions of
                 # the TPR format only specifies the index of the oxygen and
                 # assumes that the next two atoms are the hydrogens.
                 if len(ias) == 2:
