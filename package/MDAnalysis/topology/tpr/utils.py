@@ -203,8 +203,8 @@ def ndo_ivec(data, n):
 def fileVersion_err(fver):
     if fver not in setting.SUPPORTED_VERSIONS:
         raise NotImplementedError(
-            "Your tpx version is {0}, which this parser does not support, yet ".format(
-                fver))
+            f"Your tpx version is {fver}, which this parser does not support, yet "
+        )
 
 
 def define_unpack_real(prec, data):
@@ -214,7 +214,7 @@ def define_unpack_real(prec, data):
     elif prec == 8:
         data.unpack_real = data.unpack_double
     else:
-        raise ValueError("unsupported precision: {0}".format(prec))
+        raise ValueError(f"unsupported precision: {prec}")
 
 
 def read_tpxheader(data):
@@ -755,7 +755,7 @@ def do_moltype(data, symtab, fver):
     moltype = obj.MoleculeKind(molname, atomkinds, bonds, angles, dihs, impr)
     #### end: MDAnalysis specific
 
-    # info in do_block and do_blocka is not interested, but has to be parsed
+    # info in do_block and do_blocka is not interesting, but has to be parsed
     # here so that all moltypes can be parsed properly
     do_block(data)
     do_blocka(data)
