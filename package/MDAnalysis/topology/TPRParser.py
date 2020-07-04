@@ -132,8 +132,7 @@ The function :func:`read_tpxheader` is based on the
 ``read_`` or ``do_`` are trying to be similar to those in
 :file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.
 
-Wherever ``fver_err(fver)`` is used, it means the tpx version problem
-has not been solved. Versions prior to Gromacs 4.0.x are not supported.
+Versions prior to Gromacs 4.0.x are not supported.
 
 .. Links
 .. _Gromacs: http://www.gromacs.org
@@ -207,7 +206,7 @@ class TPRParser(TopologyReaderBase):
         if th.bBox:
             tpr_utils.extract_box_info(data, th.fver)
 
-        if state_ngtc > 0 and th.fver >= 28:
+        if state_ngtc > 0:
             if th.fver < 69:                      # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
             tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
