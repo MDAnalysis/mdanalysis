@@ -433,11 +433,9 @@ def do_ffparams(data, fver):
             if fver < k[0] and functype[i] >= k[1]:
                 functype[i] += 1
 
-    # parameters for different functions, None returned for now since not sure
-    # what is iparams
-    iparams = do_iparams(data, functype, fver)
+    do_iparams(data, functype, fver)
 
-    params = obj.Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
+    params = obj.Params(atnr, ntypes, functype, reppow, fudgeQQ)
     return params
 
 
