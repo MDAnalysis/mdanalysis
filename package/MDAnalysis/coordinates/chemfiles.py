@@ -132,7 +132,7 @@ class ChemfilesReader(base.ReaderBase):
         if isinstance(self.filename, chemfiles.Trajectory):
             self._file = self.filename
         else:
-            self._file = chemfiles.Trajectory(self.filename, 'r', self._format)
+            self._file = ChemfilesPicklable(self.filename, 'r', self._format)
 
     def close(self):
         """close reader"""
@@ -381,3 +381,10 @@ class ChemfilesWriter(base.WriterBase):
             topology.add_bond(bond.atoms[0].ix, bond.atoms[1].ix)
 
         return topology
+
+class ChemfilesPicklable(chemfiles.Trajectory):
+    def __getstate__(self):
+        return self.path, self._Trajectory__mode, self._Trajectory__format
+
+    def __setstate__(self, args):
+       self.__init__(*args)
