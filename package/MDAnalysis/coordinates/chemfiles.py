@@ -37,6 +37,7 @@ Classes
 
 .. autoclass:: ChemfilesWriter
 
+.. autoclass:: ChemfilesPicklable
 """
 import numpy as np
 from distutils.version import LooseVersion
@@ -382,9 +383,56 @@ class ChemfilesWriter(base.WriterBase):
 
         return topology
 
-class ChemfilesPicklable(chemfiles.Trajectory):
-    def __getstate__(self):
-        return self.path, self._Trajectory__mode, self._Trajectory__format
+if HAS_CHEMFILES:
+    class ChemfilesPicklable(chemfiles.Trajectory):
+        """Chemfiles file object (read-only) that can be pickled.
 
-    def __setstate__(self, args):
-       self.__init__(*args)
+        This class provides a file-like object (as returned by
+        :class:`chemfiles.Trajectory`) that,
+        unlike standard Python file objects,
+        can be pickled. Only read mode is supported.
+
+        When the file is pickled, path, mode, and format of the open file handle in
+        the file are saved. On unpickling, the file is opened by path with mode,
+        and saved format.
+        This means that for a successful unpickle, the original file still has to
+        be accessible with its filename.
+
+        Parameters
+        ----------
+        filename : str
+            a filename given a text or byte string.
+        mode : 'r' , optional
+            can only be 'r' for pickling.
+        format : '', optional
+            guessed from the file extension if empty.
+
+        Example
+        -------
+        ::
+
+            f = ChemfilesPicklable(XYZ, 'r', '')
+            print(f.read())
+            f.close()
+
+        can also be used as context manager::
+
+            with ChemfilesPicklable(XYZ) as f:
+                print(f.read())
+
+        See Also
+        ---------
+        :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
+        :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
+        :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
+        :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
+        :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
+
+
+        .. versionadded:: 2.0.0
+        """
+        def __getstate__(self):
+            return self.path, self._Trajectory__mode, self._Trajectory__format
+
+        def __setstate__(self, args):
+           self.__init__(*args)
