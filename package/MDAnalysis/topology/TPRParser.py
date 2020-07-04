@@ -189,11 +189,9 @@ class TPRParser(TopologyReaderBase):
 
         self._log_header(th)
 
-        V = th.fver                                    # since it's used very often
-
         # Starting with gromacs 2020 (tpx version 119), the body of the file
         # is encoded differently. We change the unpacker accordingly.
-        if V >= S.tpxv_AddSizeField and th.fgen >= 27:
+        if th.fver >= S.tpxv_AddSizeField and th.fgen >= 27:
             actual_body_size = len(data.get_buffer()) - data.get_position()
             if actual_body_size == 4 * th.sizeOfTprBody:
                 # See issue #2428.
@@ -207,18 +205,18 @@ class TPRParser(TopologyReaderBase):
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
-            tpr_utils.extract_box_info(data, V)
+            tpr_utils.extract_box_info(data, th.fver)
 
-        if state_ngtc > 0 and V >= 28:
-            if V < 69:                      # redundancy due to  different versions
+        if state_ngtc > 0 and th.fver >= 28:
+            if th.fver < 69:                      # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
             tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
-        if V < 26:
-            tpr_utils.fileVersion_err(V)
+        if th.fver < 26:
+            tpr_utils.fileVersion_err(th.fver)
 
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, V)
+            tpr_top = tpr_utils.do_mtop(data, th.fver)
         else:
             msg = f"{self.filename}: No topology found in tpr file"
             logger.critical(msg)
