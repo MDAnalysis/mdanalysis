@@ -38,6 +38,14 @@ from MDAnalysis.tests.datafiles import (
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
 
+BONDED_TPRS = (
+    TPR510_bonded,
+    TPR2016_bonded,
+    TPR2018_bonded,
+    TPR2019B3_bonded,
+    TPR2020_bonded,
+)
+
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
@@ -133,13 +141,7 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
             'Interaction type "{}" not found'.format(name)
 
 
-@pytest.mark.parametrize('topology', (
-        TPR510_bonded,
-        TPR2016_bonded,
-        TPR2018_bonded,
-        TPR2019B3_bonded,
-        TPR2020_bonded,
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('bond', (
         ('BONDS', [(0, 1)]),
         ('G96BONDS', [(1, 2)]),
@@ -162,10 +164,7 @@ def test_all_bonds(topology, bond):
     bond_type_in_topology(bond_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('angle', (
     ('ANGLES', [(0, 1, 2)]),
     ('G96ANGLES', [(1, 2, 3)]),
@@ -183,10 +182,7 @@ def test_all_angles(topology, angle):
     angle_type_in_topology(angle_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('dih', (
         ('PDIHS', [(0, 1, 2, 3), (1, 2, 3, 4), (7, 8, 9, 10)]),
         ('RBDIHS', [(4, 5, 6, 7)]),
@@ -202,10 +198,7 @@ def test_all_dihedrals(topology, dih):
     dih_type_in_topology(dih_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('impr', (
     ('IDIHS', [(2, 3, 4, 5), (3, 4, 5, 6)]),
     ('PIDIHS', [(5, 6, 7, 8)])
