@@ -154,6 +154,12 @@ class TextIOPicklable(io.TextIOWrapper):
     This class provides a file-like :class:`io.TextIOWrapper` object that can
     be pickled. Note that this only works in read mode.
 
+    Note
+    ----
+    After pickling, the current position is reset. `universe.trajectory[i]` has
+    to be used to return to its original frame.
+
+
     Parameters
     ----------
     raw : FileIO object

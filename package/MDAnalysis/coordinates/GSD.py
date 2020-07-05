@@ -156,6 +156,8 @@ class GSDPicklable(gsd.hoomd.HOOMDTrajectory):
     Note
     ----
     Open hoomd GSD files with `gsd_pickle_open`.
+    After pickling, the current frame is reset. `universe.trajectory[i]` has
+    to be used to return to its original frame.
 
     Parameters
     ----------

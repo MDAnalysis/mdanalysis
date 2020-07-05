@@ -392,11 +392,16 @@ if HAS_CHEMFILES:
         unlike standard Python file objects,
         can be pickled. Only read mode is supported.
 
-        When the file is pickled, path, mode, and format of the open file handle in
-        the file are saved. On unpickling, the file is opened by path with mode,
+        When the file is pickled, path, mode, and format of the open file handle
+        are saved. On unpickling, the file is opened by path with mode,
         and saved format.
-        This means that for a successful unpickle, the original file still has to
-        be accessible with its filename.
+        This means that for a successful unpickle, the original file still has
+        to be accessible with its filename.
+
+        Note
+        ----
+        After pickling, the current frame is reset. `universe.trajectory[i]` has
+        to be used to return to its original frame.
 
         Parameters
         ----------
