@@ -181,7 +181,7 @@ class TPRParser(TopologyReaderBase):
         data = tpr_utils.TPXUnpacker(tprf)
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader
-        except EOFError:
+        except (EOFError, ValueError):
             msg = f"{self.filename}: Invalid tpr file or cannot be recognized"
             logger.critical(msg)
             raise IOError(msg)

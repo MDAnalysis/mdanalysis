@@ -222,6 +222,8 @@ def read_tpxheader(data):
     """
     # Last compatibility check with gromacs-2016
     ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
+    if not ver_str.startswith(b'VERSION'):
+        raise ValueError('Input does not look like a TPR file.')
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file

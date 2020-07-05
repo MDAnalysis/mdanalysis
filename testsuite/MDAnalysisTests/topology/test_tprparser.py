@@ -33,7 +33,8 @@ from MDAnalysis.tests.datafiles import (
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
     TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020,
     TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
-    TPR2020B2_bonded, TPR2020_bonded,
+    TPR2020B2_bonded, TPR2020_bonded, TPR334_bonded,
+    XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
@@ -234,8 +235,14 @@ def test_settle(bonds_water):
     assert bonds_water[-1][1] == 2262
 
 
-@pytest.mark.parametrize('tpr_path', (TPR2020B2, TPR2020B2_bonded))
-def test_fail_for_gmx2020_beta(tpr_path):
+@pytest.mark.parametrize('tpr_path, expected_exception', (
+    (TPR2020B2, IOError),  # Gromacs 2020 beta see issue #2428
+    (TPR2020B2_bonded, IOError),  # Gromacs 2020 beta see issue #2428
+    (TPR334_bonded, NotImplementedError),  # Too old
+    (XTC, IOError),  # Not a TPR file
+))
+def test_fail_for_unsupported_files(tpr_path, expected_exception):
     parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
-    with pytest.raises(IOError):
+    with pytest.raises(expected_exception):
         parser.parse()
+
