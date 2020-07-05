@@ -498,11 +498,13 @@ class MultiframeReaderTest(BaseReaderTest):
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
 
-
+    #  To make sure we not only save the current timestep information,
+    #  but also maintain its relative position.
     def test_pickle_next_ts_reader(self, reader):
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(next(reader), next(reader_p),
                     "Next timestep is changed after pickling")
+
 
 class BaseWriterTest(object):
     @staticmethod

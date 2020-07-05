@@ -387,7 +387,10 @@ class Timestep(object):
 
 
     def __getstate__(self):
+        #  save `dt` info so we no longer
+        #  need `_reader` after pickling.
         self.dt
+
         state = self.__dict__.copy()
         state.pop('_reader', None)
 
