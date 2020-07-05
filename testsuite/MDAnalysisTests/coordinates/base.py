@@ -419,12 +419,10 @@ class BaseReaderTest(object):
             ideal_coords = ref.iter_ts(i).positions + v1 + v2
             assert_array_almost_equal(ts.positions, ideal_coords, decimal = ref.prec)
 
-
     def test_add_another_transformations_raises_ValueError(self, transformed):
         # After defining the transformations, the workflow cannot be changed
         with pytest.raises(ValueError):
             transformed.add_transformations(translate([2,2,2]))
-
 
     def test_pickle_reader(self, reader):
         reader_p = pickle.loads(pickle.dumps(reader))
@@ -503,7 +501,7 @@ class MultiframeReaderTest(BaseReaderTest):
     def test_pickle_next_ts_reader(self, reader):
         reader_p = pickle.loads(pickle.dumps(reader))
         assert_equal(next(reader), next(reader_p),
-                    "Next timestep is changed after pickling")
+                     "Next timestep is changed after pickling")
 
 
 class BaseWriterTest(object):

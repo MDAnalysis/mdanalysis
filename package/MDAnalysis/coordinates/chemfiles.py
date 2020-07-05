@@ -383,6 +383,7 @@ class ChemfilesWriter(base.WriterBase):
 
         return topology
 
+
 if HAS_CHEMFILES:
     class ChemfilesPicklable(chemfiles.Trajectory):
         """Chemfiles file object (read-only) that can be pickled.
@@ -392,7 +393,7 @@ if HAS_CHEMFILES:
         unlike standard Python file objects,
         can be pickled. Only read mode is supported.
 
-        When the file is pickled, path, mode, and format of the open file handle
+        When the file is pickled, path, mode, and format of the file handle
         are saved. On unpickling, the file is opened by path with mode,
         and saved format.
         This means that for a successful unpickle, the original file still has
@@ -400,7 +401,7 @@ if HAS_CHEMFILES:
 
         Note
         ----
-        After pickling, the current frame is reset. `universe.trajectory[i]` has
+        Upon pickling, the current frame is reset. `universe.trajectory[i]` has
         to be used to return to its original frame.
 
         Parameters
@@ -440,4 +441,4 @@ if HAS_CHEMFILES:
             return self.path, self._Trajectory__mode, self._Trajectory__format
 
         def __setstate__(self, args):
-           self.__init__(*args)
+            self.__init__(*args)

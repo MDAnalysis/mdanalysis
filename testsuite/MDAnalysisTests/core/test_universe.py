@@ -346,7 +346,7 @@ class TestUniverse(object):
 
     def test_pickle(self):
         u = mda.Universe(PSF, DCD)
-        s = pickle.dumps(u, protocol = pickle.HIGHEST_PROTOCOL)
+        s = pickle.dumps(u, protocol=pickle.HIGHEST_PROTOCOL)
         new_u = pickle.loads(s)
         assert_equal(u.atoms.names, new_u.atoms.names)
 

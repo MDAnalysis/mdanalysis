@@ -474,7 +474,7 @@ class NCDFReader(base.ReaderBase):
         super(NCDFReader, self).__init__(filename, **kwargs)
 
         self.trjfile = NCDFPicklable(self.filename,
-                                    mmap=self._mmap)
+                                     mmap=self._mmap)
 
         # AMBER NetCDF files should always have a convention
         try:

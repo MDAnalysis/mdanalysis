@@ -757,7 +757,9 @@ class Universe(object):
         # Can't quite use __setstate__/__getstate__ so go via __reduce__
         # Universe's two "legs" of topology and traj both serialise themselves
         # the only other state held in Universe is anchor name?
-        return (self._unpickle_U, (self._topology, self._trajectory, self.anchor_name))
+        return (self._unpickle_U, (self._topology,
+                                   self._trajectory,
+                                   self.anchor_name))
 
     # Properties
     @property

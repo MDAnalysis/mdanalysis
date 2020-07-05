@@ -304,7 +304,6 @@ class Timestep(object):
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
 
-
     @classmethod
     def from_timestep(cls, other, **kwargs):
         """Create a copy of another Timestep, in the format of this Timestep
@@ -385,7 +384,6 @@ class Timestep(object):
 
         return ts
 
-
     def __getstate__(self):
         #  save `dt` info so we no longer
         #  need `_reader` after pickling.
@@ -396,10 +394,8 @@ class Timestep(object):
 
         return state
 
-
     def __setstate__(self, state):
         self.__dict__.update(state)
-
 
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
@@ -462,7 +458,7 @@ class Timestep(object):
             return self._pos[atoms]
         else:
             raise TypeError
-    
+
     def __getattr__(self, attr):
         # special-case timestep info
         if attr in ('velocities', 'forces', 'positions'):
