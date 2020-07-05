@@ -168,6 +168,14 @@ class TestHydrogenBondAnalysisMock(object):
 
         return u
 
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def hydrogen_bonds(universe):
+        h = HydrogenBondAnalysis(universe, **TestHydrogenBondAnalysisMock.kwargs)
+        h.run()
+        return h
+
+
     def test_no_bond_info_exception(self, universe):
 
         kwargs = {
@@ -183,54 +191,41 @@ class TestHydrogenBondAnalysisMock(object):
             h = HydrogenBondAnalysis(universe, **kwargs)
             h._get_dh_pairs()
 
-    def test_first(self, universe):
+    def test_first(self, hydrogen_bonds):
+        assert len(hydrogen_bonds.hbonds) == 2
 
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run()
-
-        assert len(h.hbonds) == 2
-
-        frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, dha_angle = h.hbonds[0]
+        frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, dha_angle = hydrogen_bonds.hbonds[0]
         assert_equal(donor_index, 0)
         assert_equal(hydrogen_index, 2)
         assert_equal(acceptor_index, 3)
         assert_almost_equal(da_dst, 2.5)
         assert_almost_equal(dha_angle, 180)
 
-    def test_count_by_time(self, universe):
-
-        h = HydrogenBondAnalysis(universe, **self.kwargs)
-        h.run()
-
+    def test_count_by_time(self, hydrogen_bonds):
         ref_times = np.array([0, 1, 2]) # u.trajectory.dt is 1
         ref_counts = np.array([1, 0, 1])
 
-        counts = h.count_by_time()
-        assert_array_almost_equal(h.times, ref_times)
+        counts = hydrogen_bonds.count_by_time()
+        assert_array_almost_equal(hydrogen_bonds.times, ref_times)
         assert_array_equal(counts, ref_counts)
 
-    def test_hydrogen_bond_lifetime(self, universe):
-        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
-        hbonds.run()
-
-        tau_timeseries, timeseries = hbonds.lifetime(tau_max=2)
+    def test_hydrogen_bond_lifetime(self, hydrogen_bonds):
+        tau_timeseries, timeseries = hydrogen_bonds.lifetime(tau_max=2)
         assert_array_equal(timeseries, [1, 0, 0])
 
-    def test_hydrogen_bond_lifetime_intermittency(self, universe):
-        hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
-        hbonds.run()
-
-        tau_timeseries, timeseries = hbonds.lifetime(tau_max=2, intermittency=1)
+    def test_hydrogen_bond_lifetime_intermittency(self, hydrogen_bonds):
+        tau_timeseries, timeseries = hydrogen_bonds.lifetime(tau_max=2, intermittency=1)
         assert_array_equal(timeseries, 1)
 
     def test_no_attr_hbonds(self, universe):
         hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
-
+        # hydrogen bonds are not computed
         with pytest.raises(NoDataError, match="No .hbonds"):
             hbonds.lifetime(tau_max=2, intermittency=1)
 
     def test_logging_step_not_1(self, universe, caplog):
         hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
+        # using step 2
         hbonds.run(step=2)
 
         caplog.set_level(logging.WARNING)

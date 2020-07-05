@@ -141,6 +141,35 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths)::
   hbonds.acceptors_sel = f"({protein_acceptors_sel}) or ({water_acceptors_sel} and around 10 not resname TIP3})"
   hbonds.run()
 
+To calculate the hydrogen bonds between different groups, for example a protein and a ligand, one can use the
+:attr:`between` keyword:
+
+  import MDAnalysis
+  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
+
+  u = MDAnalysis.Universe(psf, trajectory)
+
+  hbonds = HBA(universe=u, hydrogens_sel='resname TIP3 and name H1 H2', acceptors_sel='resname TIP3 and name OH2',
+                between=['resname LIG', 'protein'])
+  hbonds.run()
+
+It is further possible to compute hydrogen bonds between several groups with with use of :attr:`between`
+
+  import MDAnalysis
+  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
+
+  u = MDAnalysis.Universe(psf, trajectory)
+
+  hbonds = HBA(universe=u, hydrogens_sel='resname TIP3 and name H1 H2', acceptors_sel='resname TIP3 and name OH2',
+                between=[['resname LIG', 'protein'], ['resname LIG', 'resname WAT']])
+  hbonds.run()
+
+In order to compute the hydrogen bond lifetime, after computing one can use the :attr:`lifetime` function
+
+    ...
+    hbonds.run()
+    tau_timeseries, timeseries = hbonds.lifetime()
+
 It is highly recommended that a topology with bonding information is used to generate the universe, e.g `PSF`, `TPR`, or
 `PRMTOP` files. This is the only method by which it can be guaranteed that donor-hydrogen pairs are correctly identified.
 However, if, for example, a `PDB` file is used instead, a :attr:`donors_sel` may be provided along with a
@@ -167,6 +196,7 @@ The class and its methods
    :members:
 """
 import logging
+from collections.abc import Iterable
 
 import numpy as np
 
@@ -209,14 +239,14 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         acceptors_sel : str
             Selection string for the hydrogen bond acceptor atoms. Leave as `None` to guess which atoms to use in the
             analysis using :attr:`guess_acceptors`
-        between : List (optional)
+        between : List (optional),
             Specify two selection strings for non-updating atom groups between which hydrogen bonds will be calculated.
             For example, if the donor and acceptor selections include both protein and water, it is possible to
             find only protein-water hydrogen bonds - and not protein-protein or water-water - by specifying
             :attr`between=["protein", "SOL"]`. If a two-dimensional list is passed, hydrogen bonds between each pair
             will be found. For example, :attr`between=[["protein", "SOL"], ["protein", "protein"]]` will calculate
-            all protein-water and protein-protein hydrogen bonds but not water-water hydrogen bonds. If None, hydrogen
-            bonds between all donors and acceptors will be calculated.
+            all protein-water and protein-protein hydrogen bonds but not water-water hydrogen bonds. If `None`, hydrogen
+            bonds between all donors and acceptors will be calculated. See examples
         d_h_cutoff : float (optional)
             Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
             universe topology does not contain bonding information
@@ -232,6 +262,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         It is highly recommended that a universe topology with bond information is used, as this is the only way
         that guarantees the correct identification of donor-hydrogen pairs.
+
+        .. versionadded:: 2.0.0
+            Added `between` keyword
         """
 
         self.u = universe
@@ -242,10 +275,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # If hydrogen bonding groups are selected, then generate corresponding atom groups
         if between is not None:
-
-            if type(between) is not list or len(between)==0:
-                raise ValueError("between must be a non-empty list")
-            if type(between[0]) == str:
+            if not isinstance(between, Iterable) or len(between) == 0:
+                raise ValueError("between must be a non-empty list/iterable")
+            if isinstance(between[0], str):
                 between = [between]
 
             between_ags = []
@@ -585,9 +617,6 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         Parameters
         ----------
-        of : list, optional
-            A tuple ("A", "B") such as ("Protein", "Ligand"), or a list of tuples, e.g [("A", "B"), ("A", "A and around 5 B")]
-            for which the lifetime should be calculated.
         window_step : int, optional
             The number of frames between each t(0).
         tau_max : int, optional
@@ -613,7 +642,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             raise NoDataError("No .hbonds: use the .run() first")
 
         if self.step != 1:
-            logging.warning("Autocorrelation: ideally autocorrelation function would be carried out on consecutive frames. ")
+            logging.warning("Autocorrelation: Hydrogen bonds were computed with step > 1.  ")
+            logging.warning("Autocorrelation: We recommend recomputing hydrogen bonds with step = 1. ")
             logging.warning("Autocorrelation: if you would like to allow bonds to break and reform, please use 'intermittency'")
 
         # Extract the hydrogen bonds IDs only in the format [set(superset(x1,x2), superset(x3,x4)), ..]
