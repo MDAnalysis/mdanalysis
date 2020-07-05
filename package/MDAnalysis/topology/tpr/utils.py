@@ -231,6 +231,7 @@ def read_tpxheader(data):
 
     # This is for backward compatibility with development version 77-79 where
     # the tag was, mistakenly, placed before the generation.
+    # These versions are development versions between the 4.5 and 4.6 series.
     if 77 <= fileVersion <= 79:
         data.unpack_int()  # the value is 8, but haven't found the
         file_tag = data.do_string()
