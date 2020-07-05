@@ -35,12 +35,11 @@ Enhancements
     token (Issue #2468, PR #2707)
   * Added the `from_smiles` classmethod to the Universe (Issue #2468, PR #2707)
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
-<<<<<<< HEAD
-  * Added lib.pickle_file_io module for pickling file handlers. (PR #2723)
-=======
   * Improved performances when parsing TPR files (PR #2804)
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
->>>>>>> mda_origin/develop
+  * Added lib.pickle_file_io module for pickling file handlers. (PR #2723)
+  * Added pickle function to `Universe` and all Readers (without transformation)
+    (PR #2723)
 
 Changes
   * Changes development status from Beta to Mature (Issue #2773)
