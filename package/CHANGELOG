@@ -58,6 +58,8 @@ Enhancements
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
   * Dead code removed from the TPR parser and increased test coverage (PR #2840)
   * TPR parser exposes the elements topology attribute (PR #2858, see Issue #2553)
+  * Improved performance of select_atoms on strings (e.g. name, type, resname) and
+    'protein' selection (#2751 PR #2755)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types

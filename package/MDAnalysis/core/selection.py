@@ -515,7 +515,7 @@ class SelgroupSelection(Selection):
         return group[mask]
 
 
-class StringSelection(Selection):
+class _ProtoStringSelection(Selection):
     """Selections based on text attributes
 
     .. versionchanged:: 1.0.0
@@ -540,9 +540,13 @@ class StringSelection(Selection):
                 matches.append(ix)
 
         # atomname indices for members of this group
-        nmidx = nmattr.nmidx[group.ix]
+        nmidx = nmattr.nmidx[getattr(group, self.level)]
 
         return group[np.in1d(nmidx, matches)].unique
+
+
+class StringSelection(_ProtoStringSelection):
+    level = 'ix'  # operates on atom level attribute, i.e. '.ix'
 
 
 class AtomNameSelection(StringSelection):
@@ -569,21 +573,8 @@ class AtomICodeSelection(StringSelection):
     field = 'icodes'
 
 
-class _ResidueStringSelection(StringSelection):
-    def apply(self, group):
-        # rather than work on group.names, cheat and look at the lookup table
-        nmattr = getattr(group.universe._topology, self.field)
-
-        matches = []  # list of passing indices
-        # iterate through set of known atom names, check which pass
-        for nm, ix in nmattr.namedict.items():
-            if any(fnmatch.fnmatch(nm, val) for val in self.values):
-                matches.append(ix)
-
-        # atomname indices for members of this group
-        nmidx = nmattr.nmidx[group.resindices]
-
-        return group[np.in1d(nmidx, matches)].unique    
+class _ResidueStringSelection(_ProtoStringSelection):
+    level= 'resindices'
 
 
 class ResidueNameSelection(_ResidueStringSelection):
@@ -598,25 +589,11 @@ class MoleculeTypeSelection(_ResidueStringSelection):
     field = 'moltypes'
 
 
-class SegmentNameSelection(StringSelection):
+class SegmentNameSelection(_ProtoStringSelection):
     """Select atoms based on 'segids' attribute"""
     token = 'segid'
     field = 'segids'
-
-    def apply(self, group):
-        # rather than work on group.names, cheat and look at the lookup table
-        nmattr = group.universe._topology.segids
-
-        matches = []  # list of passing indices
-        # iterate through set of known atom names, check which pass
-        for nm, ix in nmattr.namedict.items():
-            if any(fnmatch.fnmatch(nm, val) for val in self.values):
-                matches.append(ix)
-
-        # atomname indices for members of this group
-        nmidx = nmattr.nmidx[group.segindices]
-
-        return group[np.in1d(nmidx, matches)].unique    
+    level = 'segindices'
 
 
 class AltlocSelection(StringSelection):
@@ -845,7 +822,7 @@ class ProteinSelection(Selection):
     """
     token = 'protein'
 
-    prot_res = np.array([
+    prot_res = {
         # CHARMM top_all27_prot_lipid.rtf
         'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
@@ -868,14 +845,20 @@ class ProteinSelection(Selection):
         'CLEU', 'CILE', 'CVAL', 'CASF', 'CASN', 'CGLN', 'CARG', 'CHID', 'CHIE',
         'CHIP', 'CTRP', 'CPHE', 'CTYR', 'CGLU', 'CASP', 'CLYS', 'CPRO', 'CCYS',
         'CCYX', 'CMET', 'CME', 'ASF',
-    ])
+    }
 
     def __init__(self, parser, tokens):
         pass
 
     def apply(self, group):
-        mask = np.in1d(group.resnames, self.prot_res)
-        return group[mask].unique
+        resname_attr = group.universe._topology.resnames
+        # which values in resname attr are in prot_res?
+        matches = [ix for (nm, ix) in resname_attr.namedict.items()
+                   if nm in self.prot_res]
+        # index of each atom's resname
+        nmidx = resname_attr.nmidx[group.resindices]
+        # intersect atom's resname index and matches to prot_res
+        return group[np.in1d(nmidx, matches)].unique
 
 
 class NucleicSelection(Selection):
