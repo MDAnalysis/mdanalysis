@@ -1350,6 +1350,13 @@ class TestBlocksOf(object):
         with pytest.raises(ValueError):
             util.blocks_of(arr[:, ::2], 2, 1)  # non-contiguous input
 
+@pytest.mark.parametrize('arr,answer', [
+    ([2, 3, 4, 7, 8, 9, 10, 15, 16], [[2, 3, 4], [7, 8, 9, 10], [15, 16]]),
+    ([11, 12, 13, 14, 15, 16], [[11, 12, 13, 14, 15, 16]]),
+    ([1, 2, 2, 2, 3, 6], [[1, 2, 2, 2, 3], [6]])
+])
+def test_group_same_or_consecutive_integers(arr, answer):
+    assert_equal(util.group_same_or_consecutive_integers(arr), answer)
 
 class TestNamespace(object):
     @staticmethod
