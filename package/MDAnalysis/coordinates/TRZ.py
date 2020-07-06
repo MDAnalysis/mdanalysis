@@ -226,14 +226,6 @@ class TRZReader(base.ReaderBase):
 
         self._read_next_timestep()
 
-        try:
-            self._get_dt()
-        except OSError:
-            raise ValueError("Supplied n_atoms {} is incompatible "
-                             "with provided trajectory file. "
-                             "Maybe `topology` is wrong?".format(self.n_atoms))
-
-
     def _read_trz_header(self):
         """Reads the header of the trz trajectory"""
         self._headerdtype = np.dtype([
@@ -257,6 +249,11 @@ class TRZReader(base.ReaderBase):
 
         try:
             data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            if data['natoms'][0] != self.n_atoms:
+                raise ValueError("Supplied n_atoms {} is incompatible "
+                                 "with provided trajectory file. "
+                                 "Maybe `topology` is wrong?".format(
+                                 self.n_atoms))
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]
