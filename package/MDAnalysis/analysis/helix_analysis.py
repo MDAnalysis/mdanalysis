@@ -40,6 +40,8 @@ Cα atoms. It can determine local structural features such as the local
 helical twist and rise, virtual torsion angle, local helix origins and
 bending angles between successive local helix axes.
 
+.. _HELANAL: https://pubmed.ncbi.nlm.nih.gov/10798526/
+
 Example use
 -----------
 
