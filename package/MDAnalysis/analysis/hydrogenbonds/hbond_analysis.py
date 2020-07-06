@@ -144,7 +144,7 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths)::
 To calculate the hydrogen bonds between different groups, for example a
 protein and water, one can use the :attr:`between` keyword. The
 following will find protein-water hydrogen bonds but not protein-protein
-or water-water hydrogen bonds:
+or water-water hydrogen bonds::
 
   import MDAnalysis
   from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
