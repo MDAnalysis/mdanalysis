@@ -67,6 +67,9 @@ Classes and Functions
 
 .. autofunction:: optimize_cutoff
 
+.. autoclass:: LipidEnrichment
+    :members:
+    
 """
 import warnings
 
