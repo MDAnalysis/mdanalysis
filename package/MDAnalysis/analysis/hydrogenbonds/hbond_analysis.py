@@ -268,9 +268,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             and acceptor selections include both protein and water, it is
             possible to find only protein-water hydrogen bonds - and not
             protein-protein or water-water - by specifying
-            :attr`between=["protein", "SOL"]`. If a two-dimensional list is
+            between=["protein", "SOL"]`. If a two-dimensional list is
             passed, hydrogen bonds between each pair will be found. For
-            example, :attr`between=[["protein", "SOL"], ["protein", "protein"]]`
+            example, between=[["protein", "SOL"], ["protein", "protein"]]`
             will calculate all protein-water and protein-protein hydrogen
             bonds but not water-water hydrogen bonds. If `None`, hydrogen
             bonds between all donors and acceptors will be calculated.
