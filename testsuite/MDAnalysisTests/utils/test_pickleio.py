@@ -43,8 +43,17 @@ from MDAnalysis.coordinates.GSD import (
 from MDAnalysis.coordinates.TRJ import (
     NCDFPicklable,
 )
+from MDAnalysis.coordinates.chemfiles import (
+    check_chemfiles_version
+)
+if check_chemfiles_version():
+    from MDAnalysis.coordinates.chemfiles import (
+        ChemfilesPicklable
+    )
+
 from MDAnalysis.tests.datafiles import (
     PDB,
+    XYZ,
     XYZ_bz2,
     MMTF_gz,
     GMS_ASYMOPT,
@@ -157,3 +166,12 @@ def test_NCDF_mmap_pickle():
     ncdf_io = NCDFPicklable(NCDF, mmap=False)
     ncdf_io_pickled = pickle.loads(pickle.dumps(ncdf_io))
     assert_equal(ncdf_io_pickled.use_mmap, False)
+
+
+@pytest.mark.skipif(not check_chemfiles_version(),
+                    reason="Wrong version of chemfiles")
+def test_Chemfiles_pickle():
+    chemfiles_io = ChemfilesPicklable(XYZ)
+    chemfiles_io_pickled = pickle.loads(pickle.dumps(chemfiles_io))
+    assert_equal(chemfiles_io.read().positions,
+                 chemfiles_io_pickled.read().positions)
