@@ -142,53 +142,56 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths)::
   hbonds.run()
 
 To calculate the hydrogen bonds between different groups, for example a
-protein and a ligand, one can use the :attr:`between` keyword:
+protein and water, one can use the :attr:`between` keyword. The
+following will find protein-water hydrogen bonds but not protein-protein
+or water-water hydrogen bonds:
 
   import MDAnalysis
   from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
-  HydrogenBondAnalysis as HBA)
+    HydrogenBondAnalysis as HBA)
 
   u = MDAnalysis.Universe(psf, trajectory)
 
   hbonds = HBA(
-      universe=u,
-      hydrogens_sel='resname TIP3 and name H1 H2',
-      acceptors_sel='resname TIP3 and name OH2',
-      between=['resname LIG', 'protein']
-      )
+    universe=u,
+    between=['resname TIP3', 'protein']
+    )
+
+  protein_hydrogens_sel = hbonds.guess_hydrogens("protein")
+  protein_acceptors_sel = hbonds.guess_acceptors("protein")
+
+  water_hydrogens_sel = "resname TIP3 and name H1 H2"
+  water_acceptors_sel = "resname TIP3 and name OH2"
+
+  hbonds.hydrogens_sel = f"({protein_hydrogens_sel}) or ({water_hydrogens_sel}"
+  hbonds.acceptors_sel = f"({protein_acceptors_sel}) or ({water_acceptors_sel}"
+
   hbonds.run()
 
 It is further possible to compute hydrogen bonds between several groups with
-with use of :attr:`between`
+with use of :attr:`between`. If in the above example,
+`between=[['resname TIP3', 'protein'], ['protein', 'protein']]`, all
+protein-water and protein-protein hydrogen bonds will be found, but
+no water-water hydrogen bonds.
 
-  import MDAnalysis
-  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
-  HydrogenBondAnalysis as HBA)
-
-  u = MDAnalysis.Universe(psf, trajectory)
-
-  hbonds = HBA(
-      universe=u,
-      hydrogens_sel='resname TIP3 and name H1 H2',
-      acceptors_sel='resname TIP3 and name OH2',
-      between=[['resname LIG', 'protein'], ['resname LIG', 'resname WAT']]
-      )
-  hbonds.run()
-
-In order to compute the hydrogen bond lifetime, after computing one can use
-the :attr:`lifetime` function
+In order to compute the hydrogen bond lifetime, after finding hydrogen bonds
+one can use the :attr:`lifetime` function:
 
     ...
     hbonds.run()
     tau_timeseries, timeseries = hbonds.lifetime()
 
-It is highly recommended that a topology with bonding information is used to generate the universe, e.g `PSF`, `TPR`, or
-`PRMTOP` files. This is the only method by which it can be guaranteed that donor-hydrogen pairs are correctly identified.
-However, if, for example, a `PDB` file is used instead, a :attr:`donors_sel` may be provided along with a
-:attr:`hydrogens_sel` and the donor-hydrogen pairs will be identified via a distance cutoff, :attr:`d_h_cutoff`::
+It is **highly recommended** that a topology with bond information is used to
+generate the universe, e.g `PSF`, `TPR`, or `PRMTOP` files. This is the only
+method by which it can be guaranteed that donor-hydrogen pairs are correctly
+identified. However, if, for example, a `PDB` file is used instead, a
+:attr:`donors_sel` may be provided along with a :attr:`hydrogens_sel` and the
+donor-hydrogen pairs will be identified via a distance cutoff,
+:attr:`d_h_cutoff`::
 
   import MDAnalysis
-  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis as HBA
+  from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
+    HydrogenBondAnalysis as HBA)
 
   u = MDAnalysis.Universe(pdb, trajectory)
 
