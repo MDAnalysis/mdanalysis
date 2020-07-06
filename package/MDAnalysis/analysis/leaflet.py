@@ -72,6 +72,7 @@ Classes and Functions
     
 """
 import warnings
+import functools
 
 import numpy as np
 import networkx as NX
@@ -188,9 +189,11 @@ class LeafletFinder(object):
             self.method = distances.group_coordinates_by_graph
         elif method == "spectralclustering":
             self.method = distances.group_coordinates_by_spectralclustering
+        elif method == "centerofgeometry":
+            self.method = distances.group_coordinates_by_cog
         else:
-            raise ValueError("`method` must be 'graph' or "
-                             "'spectralclustering'")
+            raise ValueError("`method` must be in {'graph', "
+                             "'spectralclustering', 'center_of_geometry'")
 
         self.universe = universe.universe
         self.select = select
@@ -380,6 +383,7 @@ class LipidEnrichment(AnalysisBase):
     **kwargs
         Passed to :class:`~MDAnalysis.analysis.base.AnalysisBase`.
 
+
     Attributes
     ----------
 
@@ -414,25 +418,66 @@ class LipidEnrichment(AnalysisBase):
         whether to compute distances only using the headgroup.
     attrname: str
         The topology attribute used to group lipid species.
+
+
     """
 
     def __init__(self, universe, select_protein: str = 'protein',
                  select_residues: str = 'all', select_headgroup: str = 'name PO4',
                  n_leaflets: int = 2, count_by_attr: str = 'resnames',
-                 enrichment_cutoff: float = 6, delta: float = 0.5,
-                 compute_headgroup_only: bool = True, **kwargs):
+                 enrichment_cutoff: float = 6, pbc: bool = True,
+                 compute_headgroup_only: bool = True,
+                 update_leaflet_step: int = 1,
+                 group_method: str = "spectralclustering",
+                 update_method=None, group_kwargs: dict = {},
+                 update_kwargs: dict = {}, **kwargs):
         super(LipidEnrichment, self).__init__(universe.universe.trajectory,
                                               **kwargs)
-        self.box = universe.dimensions
-        self.protein = universe.select_atoms(select_protein)
-        self.residues = universe.select_atoms(select_residues).residues
-        self.n_residues = len(self.residues)
-        self.headgroups = self.residues.atoms.select_atoms(select_headgroup)
         if n_leaflets < 1:
             raise ValueError('Must have at least one leaflet')
         self.n_leaflets = n_leaflets
-        self.delta = delta
-        self.compute_headgroup_only = compute_headgroup_only
+        group_method = group_method.lower().replace('_', '')
+        if group_method in ("spectralclustering", "graph"):
+            self._get_leaflets = functools.partial(self._update_leafletfinder,
+                                                   method=group_method,
+                                                   kwargs=group_kwargs)
+        else:
+            raise ValueError("`group_method` should be one of "
+                             "{'spectralclustering', 'graph'}")
+
+        if update_method is None:
+            self._update_leaflets = self._get_leaflets
+        else:
+            update_method = update_method.lower().replace('_', '')
+            if update_method in ("spectralclustering", "graph"):
+                self._update_leaflets = functools.partial(self._update_leafletfinder,
+                                                          method=update_method,
+                                                          kwargs=update_kwargs)
+            elif update_method == "centerofgeometry":
+                self._update_leaflets = self._update_cog
+            else:
+                raise ValueError("`update_method` should be one of "
+                                 "{'spectralclustering', 'graph', "
+                                 "'center_of_geometry'}")
+
+        self.group_kwargs = group_kwargs
+        self.update_leaflet_step = update_leaflet_step
+
+        self.pbc = pbc
+        self.box = universe.dimensions if pbc else None
+        self.protein = universe.select_atoms(select_protein)
+        self.residues = universe.select_atoms(select_residues).residues
+        self._resindices = self.residues.resindices
+        self.n_residues = len(self.residues)
+        self.headgroups = self.residues.atoms.select_atoms(select_headgroup)
+
+        if compute_headgroup_only:
+            self._residue_groups = [r.atoms.select_atoms(select_headgroup)
+                                    for r in self.residues]
+            self._compute_atoms = self.headgroups
+        else:
+            self._residue_groups = self.residues
+            self._compute_atoms = self.residues.atoms
         self.cutoff = enrichment_cutoff
         self.leaflets = []
         self.leaflets_summary = []
@@ -442,95 +487,98 @@ class LipidEnrichment(AnalysisBase):
         self.attrname = _TOPOLOGY_ATTRS[attrname].attrname
 
     def _prepare(self):
-        try:
-            import sklearn.cluster as skc
-        except ImportError:
-            raise ImportError('scikit-learn is required to use this analysis '
-                              'but is not installed. Install it with `conda '
-                              'install scikit-learn` or `pip install '
-                              'scikit-learn`.') from None
-
-        if self.n_leaflets > 1:
-            # determine leaflets by clustering center-of-geometry
-            coms = self.headgroups.center_of_geometry(compound='residues')
-            self.pdist = distances.distance_array(coms, coms, box=self.box)
-            # psim = np.exp(-pdist**2/(2*(self.delta**2)))
-            self.sc = skc.SpectralClustering(n_clusters=self.n_leaflets,
-                                             affinity='precomputed_nearest_neighbors')
-            clusters = self.sc.fit_predict(self.pdist)
-            leaflets = []
-            for i in range(self.n_leaflets):
-                leaflets.append([])
-            for res, i in zip(self.residues, clusters):
-                leaflets[i].append(res)
-            self.leaflet_residues = lres = [np.array(x).sum()
-                                            for x in leaflets]
-            self.leaflet_residues.sort(key=lambda x: x.center_of_geometry()[-1],
-                                       reverse=True)
-            self.leaflet_headgroups = [(self.headgroups & r.atoms)
-                                       for r in lres]
-        else:
-            self.leaflet_residues = [self.residues]
-            self.leaflet_headgroups = [self.headgroups]
-
-        if not self.compute_headgroup_only:
-            self.leaflet_headgroups = [h.residues.atoms
-                                       for h in self.leaflet_headgroups]
-
-        # set up results
-        self.residue_counts = [np.zeros((len(r), self.n_frames)) for r in lres]
+        self.ids = np.unique(getattr(self.residues, self.attrname))
+        self.near_counts = np.zeros((self.n_leaflets, len(self.ids),
+                                     self.n_frames))
+        self.residue_counts = np.zeros((self.n_leaflets, len(self.ids),
+                                        self.n_frames))
         self.total_counts = np.zeros((self.n_leaflets, self.n_frames))
-        self.leaflet_ids = ids = [getattr(r, self.attrname) for r in lres]
-        self.leaflets = [dict.fromkeys(np.unique(r)) for r in ids]
-        self.leaflets_summary = [dict.fromkeys(np.unique(r)) for r in ids]
+        self.leaflet_residue_masks = np.zeros((self.n_frames, self.n_leaflets,
+                                               self.n_residues), dtype=bool)
+        self.leaflet_residues = np.zeros((self.n_frames, self.n_leaflets),
+                                         dtype=object)
+        self._get_leaflets()
+        self._current_ids = [getattr(r, self.attrname)
+                             for r in self._current_leaflets]
 
     def _single_frame(self):
-        for i, headgroup in enumerate(self.leaflet_headgroups):
-            hcom = headgroup.center_of_geometry(compound='residues')
-            pairs = distances.capped_distance(self.protein.positions,
-                                              hcom, self.cutoff,
-                                              box=self.box,
-                                              return_distances=False)
-            if pairs.size > 0:
-                indices = np.sort(pairs[:, 1])
-                indices = np.unique(indices)
-            else:
-                indices = []
-            self.residue_counts[i][indices, self._frame_index] = 1
-            self.total_counts[i][self._frame_index] = len(indices)
+        if not self._frame_index % self.update_leaflet_step:
+            self._update_leaflets()
+            self._current_ids = [getattr(r, self.attrname)
+                                 for r in self._current_leaflets]
+
+        hcom = self._compute_atoms.center_of_geometry(compound="residues")
+        pairs = distances.capped_distance(self.protein.positions, hcom,
+                                          self.cutoff, box=self.box,
+                                          return_distances=False)
+        if pairs.size > 0:
+            indices = np.sort(pairs[:, 1])
+            indices = np.unique(indices)
+        else:
+            indices = []
+
+        resix = self._resindices[indices]
+
+        for i, leaf in enumerate(self._current_leaflets):
+            ids = self._current_ids[i]
+            _, ix1, ix2 = np.intersect1d(resix, leaf.resindices,
+                                         assume_unique=True,
+                                         return_indices=True)
+            self.total_counts[i, self._frame_index] = len(ix1)
+            subids = ids[ix2]
+            for j, x in enumerate(self.ids):
+                self.residue_counts[i, j, self._frame_index] = sum(ids == x)
+                self.near_counts[i, j, self._frame_index] = sum(subids == x)
 
     def _conclude(self):
-        for i, leaf in enumerate(self.leaflets):
-            ids = self.leaflet_ids[i]
-            summary = self.leaflets_summary[i]
+        for i in range(self.n_leaflets):
+            leaf = {}
+            summary = {}
             res_counts = self.residue_counts[i]
+            near_counts = self.near_counts[i]
             all_lipids = {}
             all_lipids_sum = {}
-            all_lipids['Near protein'] = nc_all = res_counts.sum(axis=0)
+            all_lipids['Near protein'] = nc_all = near_counts.sum(axis=0)
+            all_lipids['Total number'] = tc_all = res_counts.sum(axis=0)
             all_lipids_sum['Total near protein'] = nc_all.sum()
             all_lipids_sum['Average near protein'] = avgall = nc_all.mean()
-            all_lipids_sum['Total number'] = all_total = len(res_counts)
+            all_lipids_sum['Total number'] = all_total = res_counts.sum()
             all_lipids_sum['SD near protein'] = nc_all.std()
-            for resname in leaf.keys():
-                mask = ids == resname
-                counts = res_counts[mask]
+
+            for j, resname in enumerate(self.ids):
                 results = {}
                 results_sum = {}
-                results['Near protein'] = nc = counts.sum(axis=0)
+                results['Near protein'] = nc = near_counts[j]
                 results_sum['Average near protein'] = avg = nc.mean()
-                results_sum['Total number'] = total = sum(mask)
+                results_sum['Total number'] = total = res_counts[j]
                 results_sum['SD near protein'] = nc.std()
                 results['Fraction near protein'] = frac = nc / nc_all
-                results_sum['Average fraction near protein'] = avg_frac = avg / avgall
+                avg_frac = avg / avgall
+                results_sum['Average fraction near protein'] = avg_frac
                 results_sum['SD fraction near protein'] = frac.std()
-                denom = total / all_total
-                results['Enrichment'] = frac / denom
+                results['Enrichment'] = frac / (total / tc_all)
+                denom = total.sum() / all_total
                 results_sum['Average enrichment'] = avg_frac / denom
                 results_sum['SD enrichment'] = (frac / denom).std()
                 leaf[resname] = results
                 summary[resname] = results_sum
             leaf['all'] = all_lipids
             summary['all'] = all_lipids_sum
+            self.leaflets.append(leaf)
+            self.leaflets_summary.append(summary)
+
+    def _update_leafletfinder(self, method="spectralclustering", kwargs={}):
+        lf = LeafletFinder(self.headgroups, **kwargs,
+                           pbc=self.pbc, method=method)
+        self._current_leaflets = lf.leaflets
+
+    def _update_cog(self):
+        # this one relies on the leaflets not changing _too_ much. Fragile.
+        lcogs = [x.center_of_geometry() for x in self._current_leaflets]
+        rcogs = self.headgroups.center_of_geometry(compound='residues')
+        ix = distances.group_coordinates_by_cog(rcogs, lcogs, box=self.box,
+                                                return_predictor=False)
+        self._current_leaflets = [self._residue_groups[r] for r in ix]
 
     def summary_as_dataframe(self):
         """Convert the results summary into a pandas DataFrame.

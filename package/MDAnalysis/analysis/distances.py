@@ -281,6 +281,22 @@ def group_coordinates_by_spectralclustering(coordinates, n_groups=2,
     return groups
 
 
+def group_coordinates_by_cog(coordinates, centers=[], box=None,
+                             return_predictor=False,
+                             **kwargs):
+    coordinates = coordinates.astype(np.float64)
+    centers = np.asarray(centers)
+    dist = distance_array(coordinates, centers, box=box)
+    indices = np.arange(len(coordinates))
+    cluster_i = np.argmin(dist, axis=1)
+    ix = np.argsort(cluster_i)
+    groups = np.split(indices[ix], np.where(np.ediff1d(cluster_i[ix]))[0]+1)
+    groups = [np.sort(x) for x in groups]
+    if return_predictor:
+        return (groups, dist)
+    return groups
+
+
 def group_coordinates_by_graph(coordinates, cutoff=15.0, box=None,
                                sparse=None, return_predictor=False):
     """Cluster coordinates into groups using an adjacency matrix

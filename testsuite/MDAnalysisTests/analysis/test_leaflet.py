@@ -83,10 +83,13 @@ class BaseTestLeafletFinder(object):
         assert_equal(groups_string[1].indices, groups_ag[1].indices)
 
 
-class TestLeafletFinderByGraph(BaseTestLeafletFinder):
+class BaseTestLeafletFinderMartini(BaseTestLeafletFinder):
     files = [Martini_membrane_gro]
     LIPID_HEAD_STRING = "name PO4"
     leaflet_resids = [np.arange(1, 181), np.arange(226, 406)]
+
+
+class TestLeafletFinderByGraph(BaseTestLeafletFinderMartini):
     method = "graph"
 
     def test_pbc_on_off(self, universe, lfls):
@@ -172,12 +175,15 @@ class TestLeafletFinderByGraph(BaseTestLeafletFinder):
             assert lines2one(lines) == expected_output
 
 
-class TestLeafletFinderBySCMembrane(BaseTestLeafletFinder):
-    files = [Martini_membrane_gro]
-    LIPID_HEAD_STRING = "name PO4"
-    leaflet_resids = [np.arange(1, 181), np.arange(226, 406)]
+class TestLeafletFinderBySCMembrane(BaseTestLeafletFinderMartini):
     method = "spectralclustering"
     kwargs = {'n_groups': 2, 'cutoff': 100}
+
+
+class TestLeafletFinderByCOG(BaseTestLeafletFinderMartini):
+    method = "center_of_geometry"
+    kwargs = {'centers': [[55.63316663, 56.79550008, 73.80222244],
+                          [56.81394444, 55.90877751, 33.33372219]]}
 
 
 class TestLeafletFinderMemProtAA(BaseTestLeafletFinder):
@@ -219,15 +225,6 @@ class TestLipidEnrichmentMembrane(BaseTestLipidEnrichment):
     cutoff = 6
     n_lipids = 360
 
-    def test_leaflet_finder(self, lipen):
-        top_heads, bottom_heads = lipen.leaflet_headgroups
-        n_residues = len(top_heads) + len(bottom_heads)
-        assert_equal(n_residues, self.n_lipids)
-        assert_equal(top_heads.indices, np.arange(1, 2150, 12),
-                     err_msg="Found wrong leaflet lipids")
-        assert_equal(bottom_heads.indices, np.arange(2521, 4670, 12),
-                     err_msg="Found wrong leaflet lipids")
-
     def test_empty_results(self, lipen):
         assert len(lipen.leaflets) == 2
         top, bottom = lipen.leaflets
@@ -250,18 +247,6 @@ class TestLipidEnrichmentMemProtAA(BaseTestLipidEnrichment):
     n_upper = 113+28
     n_lower = 108+27
     n_lipids = 276
-
-    def test_leaflet_finder(self, lipen):
-        # by visual inspection
-        tops, bottoms = lipen.leaflet_residues
-        n_residues = len(tops) + len(bottoms)
-        assert_equal(n_residues, self.n_lipids)
-        top_rids = list(range(297, 410)) + list(range(518, 546))
-        assert_equal(tops.resids, top_rids,
-                     err_msg="Found wrong leaflet lipids")
-        bottom_rids = list(range(410, 518)) + list(range(546, 573))
-        assert_equal(bottoms.resids, bottom_rids,
-                     err_msg="Found wrong leaflet lipids")
 
     def test_results(self, lipen):
         upper, lower = lipen.leaflets
