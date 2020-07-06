@@ -84,9 +84,15 @@ from .base import AnalysisBase
 from ..due import due, Doi
 
 due.cite(Doi("10.1002/jcc.21787"),
-         description="LeafletFinder algorithm",
-         path="MDAnalysis.analysis.leaflet",
+         description="LeafletFinder 'graph' algorithm",
+         path="MDAnalysis.analysis.leaflet.LeafletFinder",
          cite_module=True)
+
+due.cite(Doi("10.1021/acscentsci.8b00143"),
+         description="Lipid enrichment-depletion index formula",
+         path="MDAnalysis.analysis.leaflet.LipidEnrichment",
+         cite_module=True)
+
 del Doi
 
 

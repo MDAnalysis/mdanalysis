@@ -179,6 +179,12 @@ class TestLeafletFinderBySCMembrane(BaseTestLeafletFinderMartini):
     method = "spectralclustering"
     kwargs = {'n_groups': 2, 'cutoff': 100}
 
+    @pytest.fixture()
+    def lfls(self, universe):
+        pytest.importorskip('sklearn', minversion='0.23.1')
+        return LeafletFinder(universe, select=self.LIPID_HEAD_STRING, pbc=True,
+                             method=self.method, **self.kwargs)
+
 
 class TestLeafletFinderByCOG(BaseTestLeafletFinderMartini):
     method = "center_of_geometry"
@@ -197,7 +203,6 @@ class TestLeafletFinderMemProtAA(BaseTestLeafletFinder):
 
 
 class BaseTestLipidEnrichment:
-    pytest.importorskip('sklearn', minversion='0.23.1')
     protein_sel = 'protein'
     avg_c = 'Average near protein'
     sd_c = 'SD near protein'
@@ -212,6 +217,7 @@ class BaseTestLipidEnrichment:
 
     @pytest.fixture()
     def lipen(self, universe):
+        pytest.importorskip('sklearn', minversion='0.23.1')
         return LipidEnrichment(universe, select_protein=self.protein_sel,
                                select_headgroup=self.headgroup_sel,
                                select_residues=self.lipid_sel,
