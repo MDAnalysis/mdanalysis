@@ -207,6 +207,7 @@ class TestLeafletFinderByCOG(BaseTestLeafletFinderMartini):
                           [56.81394444, 55.90877751, 33.33372219]]}
 
 
+@skip_spectralclustering
 class TestLeafletFinderMemProtAA(BaseTestLeafletFinder):
     files = [GRO_MEMPROT, XTC_MEMPROT]
     select = "resname POPE POPG"

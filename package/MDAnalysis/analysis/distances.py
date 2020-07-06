@@ -266,7 +266,7 @@ def group_coordinates_by_spectralclustering(coordinates, n_groups=2,
         sc = skc.SpectralClustering(n_clusters=n_groups,
                                     affinity='precomputed_nearest_neighbors')
     except ValueError as exc:
-        if "Unknown kernel" in exc.message:
+        if "Unknown kernel" in str(exc):
             raise ValueError("'precomputed_nearest_neighbors' not "
                              "recognised as a kernel. Try upgrading "
                              "scikit-learn >= 0.23.1")
