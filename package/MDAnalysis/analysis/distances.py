@@ -45,8 +45,8 @@ import numpy as np
 import scipy.sparse
 
 from MDAnalysis.lib.distances import (
-           capped_distance,
-           self_distance_array, distance_array,  # legacy reasons
+    capped_distance,
+    self_distance_array, distance_array,  # legacy reasons
 )
 from MDAnalysis.lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from MDAnalysis.lib.NeighborSearch import AtomNeighborSearch
@@ -101,16 +101,18 @@ def contact_matrix(coord, cutoff=15.0, returntype="numpy", box=None):
 
     if returntype == "numpy":
         adj = np.full((len(coord), len(coord)), False, dtype=bool)
-        pairs = capped_distance(coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
-        
+        pairs = capped_distance(
+            coord, coord, max_cutoff=cutoff, box=box, return_distances=False)
+
         idx, idy = np.transpose(pairs)
-        adj[idx, idy]=True
-        
+        adj[idx, idy] = True
+
         return adj
     elif returntype == "sparse":
         # Initialize square List of Lists matrix of dimensions equal to number
         # of coordinates passed
-        sparse_contacts = scipy.sparse.lil_matrix((len(coord), len(coord)), dtype='bool')
+        sparse_contacts = scipy.sparse.lil_matrix(
+            (len(coord), len(coord)), dtype='bool')
         if box is not None:
             # with PBC
             contact_matrix_pbc(coord, sparse_contacts, box, cutoff)
@@ -154,14 +156,15 @@ def dist(A, B, offset=0, box=None):
     """
 
     if A.atoms.n_atoms != B.atoms.n_atoms:
-        raise ValueError("AtomGroups A and B do not have the same number of atoms")
+        raise ValueError(
+            "AtomGroups A and B do not have the same number of atoms")
     try:
         off_A, off_B = offset
     except (TypeError, ValueError):
         off_A = off_B = int(offset)
     residues_A = np.array(A.resids) + off_A
     residues_B = np.array(B.resids) + off_B
-    
+
     d = calc_bonds(A.positions, B.positions, box)
     return np.array([residues_A, residues_B, d])
 
@@ -202,3 +205,137 @@ def between(group, A, B, distance):
     resA = set(ns_group.search(A, distance))
     resB = set(ns_group.search(B, distance))
     return sum(sorted(resB.intersection(resA)))
+
+
+def group_coordinates_by_spectralclustering(coordinates, n_groups=2,
+                                            cutoff=1e2, box=None,
+                                            return_predictor=False):
+    """Cluster coordinates into groups using spectral clustering
+
+    If the optional argument `box` is supplied, the minimum image convention
+    is applied when calculating distances.
+
+    Parameters
+    ----------
+    coordinates: numpy.ndarray
+        Coordinate array with shape ``(n, 3)``
+    n_groups: int (optional)
+        Number of resulting groups
+    cutoff: float (optional)
+        Cutoff for computing distances in the matrix used for clustering
+    box: numpy.ndarray
+        The unitcell dimensions of the system or ``None``. If ``None``,
+        we do not use the minimum image convention.
+    return_predictor: bool (optional)
+        whether to return the cluster class
+
+    Returns
+    -------
+    indices: list of numpy.ndarray
+        List of indices for each group, corresponding to the order
+        of ``coordinates``. ``indices[i]`` is the array of indices 
+        for the i-th cluster. ``k = indices[i][j]`` means that the
+        k-th entry in ``coordinates`` is in cluster ``i``. 
+        The groups are sorted by size.
+    """
+    try:
+        import sklearn.cluster as skc
+    except ImportError:
+        raise ImportError('scikit-learn is required to use this method '
+                          'but is not installed. Install it with `conda '
+                          'install scikit-learn` or `pip install '
+                          'scikit-learn`.') from None
+    coordinates = coordinates.astype(np.float64)
+    n_coordinates = len(coordinates)
+    indices = np.arange(n_coordinates)
+    if n_groups == 1:
+        if return_predictor:
+            return ([indices], None)
+        return indices
+
+    dist_mat = np.zeros((n_coordinates, n_coordinates))
+    dist_mat[:] = cutoff
+    pairs, distances = capped_distance(coordinates, coordinates, cutoff,
+                                       box=box, return_distances=True)
+    for (i, j), d in zip(pairs, distances):
+        dist_mat[i, j] = dist_mat[j, i] = d
+
+    # dist_mat = distance_array(coordinates, coordinates, box=box)
+
+    try:
+        sc = skc.SpectralClustering(n_clusters=n_groups,
+                                    affinity='precomputed_nearest_neighbors')
+    except ValueError as exc:
+        if "Unknown kernel" in exc.message:
+            raise ValueError("'precomputed_nearest_neighbors' not "
+                             "recognised as a kernel. Try upgrading "
+                             "scikit-learn >= 0.23.1")
+        raise exc
+
+    clusters = sc.fit_predict(dist_mat)
+    ix = np.argsort(clusters)
+    groups = np.split(indices[ix], np.where(np.ediff1d(clusters[ix]))[0]+1)
+    groups = [np.sort(x) for x in groups]
+    if return_predictor:
+        return (groups, sc)
+    return groups
+
+
+def group_coordinates_by_graph(coordinates, cutoff=15.0, box=None,
+                               sparse=None, return_predictor=False):
+    """Cluster coordinates into groups using an adjacency matrix
+
+    If the optional argument `box` is supplied, the minimum image convention
+    is applied when calculating distances.
+
+    Parameters
+    ----------
+    coordinates: numpy.ndarray
+        Coordinate array with shape ``(n, 3)``
+    cutoff: float (optional)
+        Cutoff distance for determining if two coordinates are in the same
+        group
+    box: numpy.ndarray
+        The unitcell dimensions of the system or ``None``. If ``None``,
+        we do not use the minimum image convention.
+    return_predictor: bool (optional)
+        whether to return the graph
+
+    Returns
+    -------
+    indices: list of numpy.ndarray
+        List of indices for each group, corresponding to the order
+        of ``coordinates``. ``indices[i]`` is the array of indices 
+        for the i-th cluster. ``k = indices[i][j]`` means that the
+        k-th entry in ``coordinates`` is in cluster ``i``. 
+        The groups are sorted by size.
+    """
+    try:
+        import networkx as nx
+    except ImportError:
+        raise ImportError("networkx is required to use this method "
+                          "but is not installed. Install it with "
+                          "`conda install networkx` or "
+                          "`pip install networkx`.") from None
+    returntype = "numpy" if not sparse else "sparse"
+    try:
+        adj = contact_matrix(coordinates, cutoff=cutoff, box=box,
+                             returntype=returntype)
+    except ValueError as exc:
+        if sparse is None:
+            warnings.warn("NxN matrix is too big. Switching to sparse matrix "
+                          "method")
+            adj = contact_matrix(coordinates, cutoff=cutoff, box=box,
+                                 returntype="sparse")
+        elif sparse is False:
+            raise ValueError("NxN matrix is too big. "
+                             "Use `sparse=True`") from None
+        else:
+            raise exc
+
+    graph = nx.Graph(adj)
+    groups = [np.sort(list(c)) for c in nx.connected_components(graph)]
+    if return_predictor:
+        return (groups, graph)
+    else:
+        return groups
