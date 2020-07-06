@@ -29,7 +29,7 @@ import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
 
-from MDAnalysisTests.datafiles import mol2_molecule, PDB_full
+from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO
 from MDAnalysisTests.util import block_import, import_not_available
 
 
@@ -121,9 +121,10 @@ class TestRDKitConverter(object):
 
     @pytest.fixture
     def peptide(self):
-        mol = Chem.MolFromSequence("MDANALYSISandRDKIT")
-        u = mda.Universe(mol)
-        return u
+        u = mda.Universe(GRO)
+        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        u.add_TopologyAttr('elements', elements)
+        return u.select_atoms("resid 2-12")
 
     @pytest.mark.parametrize("smi", ["[H]", "C", "O", "[He]"])
     def test_single_atom_mol(self, smi):
@@ -133,10 +134,10 @@ class TestRDKitConverter(object):
         assert mol.GetNumAtoms() == 1
 
     @pytest.mark.parametrize("resname, n_atoms, n_fragments", [
-        ("MET", 8, 1),
-        ("THR", 8, 1),
-        ("ILE", 16, 2),
-        ("ASP", 24, 3),
+        ("PRO", 14, 1),
+        ("ILE", 38, 1),
+        ("ALA", 20, 2),
+        ("GLY", 21, 3),
     ])
     def test_mol_from_selection(self, peptide, resname, n_atoms, n_fragments):
         mol = peptide.select_atoms("resname %s" % resname).convert_to("RDKIT")
