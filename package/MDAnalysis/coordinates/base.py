@@ -2153,7 +2153,6 @@ class ReaderBase(ProtoReader):
             self._auxs[aux].close()
         self.close()
 
-
     def __setstate__(self, state):
         self.__dict__ = state
         self[self.ts.frame]
