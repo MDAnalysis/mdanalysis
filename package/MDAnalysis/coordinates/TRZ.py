@@ -598,6 +598,7 @@ class TRZWriter(base.WriterBase):
         out['p1a'], out['p1b'] = 20, 20
         out['nframe'] = ts.frame + 1  # TRZ wants 1 based
         out['ntrj'] = data['step']
+        out['natoms'] = self.n_atoms
         out['treal'] = data['time']
         out['p2a'], out['p2b'] = 72, 72
         out['box'] = self.convert_pos_to_native(unitcell, inplace=False)
