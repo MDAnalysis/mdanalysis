@@ -50,8 +50,9 @@ HELANAL_SINGLE_DATA = {
                   35.05921936,  21.78928566,   9.8632431,   8.80066967,
                   5.5344553,   6.14356709,  10.15450764,  11.07686138,
                   9.23541832], dtype=np.float32),
-    'local_nres_per_turn summary': np.array([3.64864163,  0.152694,  0.1131402]),
-    'local_twists summary': np.array([98.83011627,   4.08171701,   3.07253003],
+    'local_nres_per_turn summary': np.array([3.64864163, 0.152694,
+                                             0.1131402]),
+    'local_twists summary': np.array([98.83011627, 4.08171701, 3.07253003],
                                      dtype=np.float32),
     'local_twists':
         np.array([97.23709869,   99.09676361,   97.25350952,  101.76019287,
@@ -95,7 +96,7 @@ def read_bending_matrix(fn):
             line = line.strip()
             if not line:
                 continue
-            if re.match("\D+", line):
+            if re.match(r"\D+", line):
                 label = line.split()[0]
                 current = data[label] = []
             else:
@@ -108,12 +109,12 @@ def read_bending_matrix(fn):
 def test_local_screw_angles_plane_circle():
     """
     Test the trivial case of a circle in the xy-plane.
-    The global axis is the x-axis and ref axis is the y-axis, 
+    The global axis is the x-axis and ref axis is the y-axis,
     so angles should be calculated to the xy-plane.
     """
     angdeg = np.arange(0, 360, 12, dtype=np.int)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
-    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad], 
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad],
                    dtype=np.float64)
     xyz[15, 1] = 0  # because np.sin(np.deg2rad(180)) = 1e-16 ?!
     screw = hel.local_screw_angles([1, 0, 0], [0, 1, 0], xyz)
@@ -121,15 +122,16 @@ def test_local_screw_angles_plane_circle():
     correct[(angdeg > 180)] = 180
     assert_almost_equal(screw, correct)
 
+
 def test_local_screw_angles_ortho_circle():
     """
     Test the trivial case of a circle in the xy-plane.
-    The global axis is the x-axis and ref axis is the z-axis, 
+    The global axis is the x-axis and ref axis is the z-axis,
     so angles should be calculated to the xz-plane.
     """
     angdeg = np.arange(0, 360, 12, dtype=np.int)
     angrad = np.deg2rad(angdeg, dtype=np.float64)
-    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad], 
+    xyz = np.array([[np.cos(a), np.sin(a), 0] for a in angrad],
                    dtype=np.float64)
     xyz[15, 1] = 0  # because np.sin(np.deg2rad(180)) = 1e-16 ?!
     screw = hel.local_screw_angles([1, 0, 0], [0, 0, 1], xyz)
@@ -143,7 +145,7 @@ def test_local_screw_angles_ortho_circle():
 def test_local_screw_angles_around_circle():
     """
     Test an orthogonal circle in the xz-plane.
-    The global axis is the y-axis and ref axis is the x-axis, 
+    The global axis is the y-axis and ref axis is the x-axis,
     so angles should be calculated to the xy-plane.
     """
     # circle in xz-plane
@@ -155,10 +157,11 @@ def test_local_screw_angles_around_circle():
     angdeg[-15] = 180
     assert_almost_equal(screw, angdeg)
 
+
 def test_local_screw_angles_around_circle_rising():
     """
     Test a circle in the xz-plane, rising on the y-axis.
-    The global axis is the y-axis and ref axis is the x-axis, 
+    The global axis is the y-axis and ref axis is the x-axis,
     so angles should be calculated to the xy-plane.
     The y-axis contribution should be removed so angles should
     be to the circle.
@@ -187,7 +190,7 @@ def test_local_screw_angles_parallel_axes():
 
 @pytest.fixture()
 def zigzag():
-    """
+    r"""
     x-axis is from bottom to up in plane of screen
     z-axis is left to right ->
          x    x    x    x    x

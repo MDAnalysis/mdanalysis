@@ -31,15 +31,14 @@ HELANAL --- analysis of protein helices
 
 .. versionadded:: 1.0.0
 
-This module contains code to analyse protein helices using the 
-`HELANAL <http://nucleix.mbu.iisc.ernet.in/helanal/helanal/helanal.html>`_ algorithm
+This module contains code to analyse protein helices using the
+HELANAL_ algorithm
 ([Bansal2000]_ , [Sugeta1967]_ ).
 
-`HELANAL <http://nucleix.mbu.iisc.ernet.in/helanal/helanal/helanal.html>`_ 
-quantifies the geometry of helices in proteins on the basis of their Cα
-atoms. It can determine local structural features such as the local helical twist and
-rise, virtual torsion angle, local helix origins and bending angles between
-successive local helix axes. 
+HELANAL_ quantifies the geometry of helices in proteins on the basis of their
+Cα atoms. It can determine local structural features such as the local
+helical twist and rise, virtual torsion angle, local helix origins and
+bending angles between successive local helix axes.
 
 Example use
 -----------
@@ -55,14 +54,14 @@ You can pass in a single selection::
 
     print(helanal.summary)
 
-Alternatively, you can analyse several helices at once by passing 
+Alternatively, you can analyse several helices at once by passing
 in multiple selection strings::
 
     helanal2 = hel.HELANAL(u, select=('name CA and resnum 100-160',
                                       'name CA and resnum 200-230'))
 
-The :func:`helix_analysis` function will carry out helix analysis on 
-atom positions, treating each row of coordinates as an alpha-carbon 
+The :func:`helix_analysis` function will carry out helix analysis on
+atom positions, treating each row of coordinates as an alpha-carbon
 equivalent::
 
     hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
@@ -79,7 +78,7 @@ from .base import AnalysisBase
 
 
 def vector_of_best_fit(coordinates):
-    """Fit vector through the centered coordinates, 
+    """Fit vector through the centered coordinates,
     pointing to the first coordinate (i.e. upside-down).
 
     Parameters
@@ -112,10 +111,10 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
     Parameters
     ----------
     global_axis: :class:`numpy.ndarray` of shape (3,)
-        Vector of best fit. Screw angles are calculated perpendicular to 
+        Vector of best fit. Screw angles are calculated perpendicular to
         this axis.
     ref_axis: :class:`numpy.ndarray` of shape (3,)
-        Reference length-wise axis. One of the reference vectors is 
+        Reference length-wise axis. One of the reference vectors is
         orthogonal to this axis.
     helix_directions: :class:`numpy.ndarray` of shape (N, 3)
         array of vectors representing the local direction of each
@@ -148,7 +147,7 @@ def local_screw_angles(global_axis, ref_axis, helix_directions):
 
     # angles from projection to perp
     refs = np.array([perp, ortho])  # (2, 3)
-    norms = _, ortho_norm = np.outer(mdamath.pnorm(refs), 
+    norms = _, ortho_norm = np.outer(mdamath.pnorm(refs),
                                      mdamath.pnorm(proj_plane))
     cos = cos_perp, cos_ortho = np.matmul(refs, proj_plane.T)/norms
     to_perp, to_ortho = np.arccos(np.clip(cos, -1, 1))  # (2, n_vec)
@@ -162,8 +161,8 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     r"""
     Calculate helix properties from atomic coordinates.
 
-    Each property is calculated from a sliding window of 4 atoms, 
-    from i to i+3. Any property whose name begins with 'local' is a 
+    Each property is calculated from a sliding window of 4 atoms,
+    from i to i+3. Any property whose name begins with 'local' is a
     property of a sliding window.
 
     Parameters
@@ -171,8 +170,8 @@ def helix_analysis(positions, ref_axis=[0, 0, 1]):
     positions: :class:`numpy.ndarray` of shape (N, 3)
         Atomic coordinates.
     ref_axis: array-like of length 3, optional
-        The reference axis used to calculate the tilt of the vector of best fit, 
-        and the local screw angles.
+        The reference axis used to calculate the tilt of the vector
+        of best fit, and the local screw angles.
 
     Returns
     -------
@@ -287,12 +286,12 @@ class HELANAL(AnalysisBase):
         The Universe or AtomGroup to apply the analysis to.
     select: str or iterable of str, optional
         The selection string to create an atom selection that the HELANAL
-        analysis is applied to. Note that HELANAL is designed to work on the 
-        alpha-carbon atoms of protein residues. If you pass in multiple 
+        analysis is applied to. Note that HELANAL is designed to work on the
+        alpha-carbon atoms of protein residues. If you pass in multiple
         selections, the selections will be analysed separately.
     ref_axis: array-like of length 3, optional
-        The reference axis used to calculate the tilt of the vector of best fit, 
-        and the local screw angles.
+        The reference axis used to calculate the tilt of the vector
+        of best fit, and the local screw angles.
     flatten_single_helix: bool, optional
         Whether to flatten results if only one selection is passed.
     verbose : bool, optional
@@ -301,16 +300,16 @@ class HELANAL(AnalysisBase):
     Attributes
     ----------
     local_twists: array or list of arrays
-        The local twist angle from atom i+1 to i+2. 
+        The local twist angle from atom i+1 to i+2.
         Each array has shape (n_frames, n_residues-3)
     local_nres_per_turn: array or list of arrays
-        Number of residues per turn, based on local_twist. 
+        Number of residues per turn, based on local_twist.
         Each array has shape (n_frames, n_residues-3)
     local_axes: array or list of arrays
-        The length-wise helix axis of the local window. 
+        The length-wise helix axis of the local window.
         Each array has shape (n_frames, n_residues-3, 3)
     local_heights: array or list of arrays
-        The rise of each local helix. 
+        The rise of each local helix.
         Each array has shape (n_frames, n_residues-3)
     local_helix_directions: array or list of arrays
         The unit vector from each local origin to atom i+1.
@@ -322,21 +321,21 @@ class HELANAL(AnalysisBase):
         The local screw angle for each helix.
         Each array has shape (n_frames, n_residues-2)
     local_bends: array or list of arrays
-        The angles between local helix axes, 3 windows apart. 
+        The angles between local helix axes, 3 windows apart.
         Each array has shape (n_frames, n_residues-6)
     all_bends: array or list of arrays
         The angles between local helix axes.
         Each array has shape (n_frames, n_residues-3, n_residues-3)
     global_axis: array or list of arrays
-        The length-wise axis for the overall helix. This points at 
-        the first helix window in the helix, so it runs opposite to 
+        The length-wise axis for the overall helix. This points at
+        the first helix window in the helix, so it runs opposite to
         the direction of the residue numbers.
         Each array has shape (n_frames, 3)
     global_tilts: array or list of arrays
         The angle between the global axis and the reference axis.
         Each array has shape (n_frames,)
     summary: dict or list of dicts
-        Summary of stats for each property: the mean, the sample 
+        Summary of stats for each property: the mean, the sample
         standard deviation, and the mean absolute deviation.
     """
 

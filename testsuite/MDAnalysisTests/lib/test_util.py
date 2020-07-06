@@ -551,7 +551,8 @@ class TestMakeWhole(object):
         ts = u.trajectory.ts
         ts.frame = 0
         ts.dimensions = [10, 10, 10, 90, 90, 90]
-        # assert ts.dimensions.dtype == np.float64  # not applicable since #2213
+        # assert ts.dimensions.dtype == np.float64
+        # not applicable since #2213
         ts.positions = np.array([[1, 1, 1, ], [9, 9, 9]], dtype=np.float32)
         u.add_TopologyAttr(Bonds([(0, 1)]))
         mdamath.make_whole(u.atoms)
@@ -1350,6 +1351,7 @@ class TestBlocksOf(object):
         with pytest.raises(ValueError):
             util.blocks_of(arr[:, ::2], 2, 1)  # non-contiguous input
 
+
 @pytest.mark.parametrize('arr,answer', [
     ([2, 3, 4, 7, 8, 9, 10, 15, 16], [[2, 3, 4], [7, 8, 9, 10], [15, 16]]),
     ([11, 12, 13, 14, 15, 16], [[11, 12, 13, 14, 15, 16]]),
@@ -2025,7 +2027,8 @@ class TestCheckBox(object):
                                           dtype=np.float32),
                                  np.array([1, 1, 1, 90, 90, 90],
                                           dtype=np.float64),
-                                 np.array([1, 1, 1, 1, 1, 1, 90, 90, 90, 90, 90, 90],
+                                 np.array([1, 1, 1, 1, 1, 1,
+                                           90, 90, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
     def test_ckeck_box_ortho(self, box):
         boxtype, checked_box = util.check_box(box)
@@ -2044,7 +2047,8 @@ class TestCheckBox(object):
                                           dtype=np.float32),
                                  np.array([1, 1, 2, 45, 90, 90],
                                           dtype=np.float64),
-                                 np.array([1, 1, 1, 1, 2, 2, 45, 45, 90, 90, 90, 90],
+                                 np.array([1, 1, 1, 1, 2, 2,
+                                           45, 45, 90, 90, 90, 90],
                                           dtype=np.float32)[::2]))
     def test_check_box_tri_vecs(self, box):
         boxtype, checked_box = util.check_box(box)
