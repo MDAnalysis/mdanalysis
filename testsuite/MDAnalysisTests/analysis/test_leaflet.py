@@ -35,6 +35,25 @@ from MDAnalysisTests.datafiles import (Martini_membrane_gro,
                                        XTC_MEMPROT,
                                        )
 
+try:
+    import sklearn
+except ImportError:
+    sklearn_version = None
+else:
+    sklearn_version = sklearn.__version__
+
+try:
+    import pandas
+except ImportError:
+    has_pandas = False
+else:
+    has_pandas = True
+
+skip_spectralclustering = pytest.mark.skipif((sklearn_version is None or
+                                              sklearn_version < "0.23.1"),
+                                             reason=("at least scikit-learn"
+                                                     " >= 0.23.1 required"))
+
 
 def lines2one(lines):
     """Join lines and squash all whitespace"""
@@ -176,15 +195,10 @@ class TestLeafletFinderByGraph(BaseTestLeafletFinderMartini):
             assert lines2one(lines) == expected_output
 
 
+@skip_spectralclustering
 class TestLeafletFinderBySCMembrane(BaseTestLeafletFinderMartini):
     method = "spectralclustering"
     kwargs = {'n_groups': 2, 'cutoff': 100}
-
-    @pytest.fixture()
-    def lfls(self, universe):
-        pytest.importorskip('sklearn', minversion='0.23.1')
-        return LeafletFinder(universe, select=self.LIPID_HEAD_STRING, pbc=True,
-                             method=self.method, **self.kwargs)
 
 
 class TestLeafletFinderByCOG(BaseTestLeafletFinderMartini):
@@ -218,13 +232,13 @@ class BaseTestLipidEnrichment:
 
     @pytest.fixture()
     def lipen(self, universe):
-        pytest.importorskip('sklearn', minversion='0.23.1')
         return LipidEnrichment(universe, select_protein=self.protein_sel,
                                select_headgroup=self.headgroup_sel,
                                select_residues=self.lipid_sel,
                                enrichment_cutoff=self.cutoff).run()
 
 
+@skip_spectralclustering
 class TestLipidEnrichmentMembrane(BaseTestLipidEnrichment):
     files = [Martini_membrane_gro]
     lipid_sel = 'resname DPPC'
@@ -241,6 +255,7 @@ class TestLipidEnrichmentMembrane(BaseTestLipidEnrichment):
         assert_equal(top['all']['Near protein'], 0)
 
 
+@skip_spectralclustering
 class TestLipidEnrichmentMemProtAA(BaseTestLipidEnrichment):
     files = [GRO_MEMPROT, XTC_MEMPROT]
     lipid_sel = 'resname POPE POPG'
@@ -327,8 +342,9 @@ class TestLipidEnrichmentMemProtAA(BaseTestLipidEnrichment):
         assert_almost_equal(upper['POPG'][self.sd_en], 0)
         assert_almost_equal(lower['POPG'][self.sd_en], 0.4438, decimal=4)
 
+    @pytest.mark.skipif(not has_pandas,
+                        reason="Need pandas for this function")
     def test_results_summary_df(self, lipen):
-        pytest.importorskip('pandas')
         df = lipen.summary_as_dataframe()
         upper = df[df.Leaflet == 1]
         lower = df[df.Leaflet == 2]
