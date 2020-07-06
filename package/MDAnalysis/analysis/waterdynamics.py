@@ -509,7 +509,8 @@ class HydrogenBondLifetimes(object):
        The ``nproc`` keyword was removed as it linked to a portion of code that
        may have failed in some cases.
     .. deprecated:: 2.0.0
-       Please use MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime() instead.
+       Instead, please use
+       MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime
 
     """
 
@@ -518,7 +519,8 @@ class HydrogenBondLifetimes(object):
                  nproc=1):
         warnings.warn(
             "This class is deprecated. "
-            "Please use MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime() instead.",
+            "Instrad, please use"
+            "MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime",
             category=DeprecationWarning
         )
 

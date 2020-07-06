@@ -29,7 +29,8 @@ from numpy.testing import (assert_allclose, assert_equal,
                            assert_almost_equal)
 
 import MDAnalysis
-from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import HydrogenBondAnalysis
+from MDAnalysis.analysis.hydrogenbonds.hbond_analysis import (
+    HydrogenBondAnalysis)
 from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests.datafiles import waterPSF, waterDCD
 
@@ -171,7 +172,10 @@ class TestHydrogenBondAnalysisMock(object):
     @staticmethod
     @pytest.fixture(scope='class')
     def hydrogen_bonds(universe):
-        h = HydrogenBondAnalysis(universe, **TestHydrogenBondAnalysisMock.kwargs)
+        h = HydrogenBondAnalysis(
+            universe,
+            **TestHydrogenBondAnalysisMock.kwargs
+        )
         h.run()
         return h
 
@@ -194,7 +198,8 @@ class TestHydrogenBondAnalysisMock(object):
     def test_first(self, hydrogen_bonds):
         assert len(hydrogen_bonds.hbonds) == 2
 
-        frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, dha_angle = hydrogen_bonds.hbonds[0]
+        frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
+            hydrogen_bonds.hbonds[0]
         assert_equal(donor_index, 0)
         assert_equal(hydrogen_index, 2)
         assert_equal(acceptor_index, 3)
@@ -214,7 +219,9 @@ class TestHydrogenBondAnalysisMock(object):
         assert_array_equal(timeseries, [1, 0, 0])
 
     def test_hydrogen_bond_lifetime_intermittency(self, hydrogen_bonds):
-        tau_timeseries, timeseries = hydrogen_bonds.lifetime(tau_max=2, intermittency=1)
+        tau_timeseries, timeseries = hydrogen_bonds.lifetime(
+            tau_max=2, intermittency=1
+        )
         assert_array_equal(timeseries, 1)
 
     def test_no_attr_hbonds(self, universe):
@@ -230,8 +237,10 @@ class TestHydrogenBondAnalysisMock(object):
 
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
-        assert any("ideally autocorrelation function would be carried out on consecutive frames" in
-                   rec.getMessage() for rec in caplog.records)
+
+        message = "ideally autocorrelation function would be carried out on" \
+            "consecutive frames"
+        assert any(message in rec.getMessage() for rec in caplog.records)
 
 
 class TestHydrogenBondAnalysisBetween(object):
@@ -268,26 +277,41 @@ class TestHydrogenBondAnalysisBetween(object):
             trajectory=True,  # necessary for adding coordinates
             )
 
-        u.add_TopologyAttr('name', ['O', 'H1', 'H2'] * n_sol_residues + ['P', 'PH'] * n_prot_residues)
-        u.add_TopologyAttr('type', ['O', 'H', 'H'] * n_sol_residues + ['P', 'PH'] * n_prot_residues)
-        u.add_TopologyAttr('resname', ['SOL'] * n_sol_residues + ['PROT'] * n_prot_residues)
-        u.add_TopologyAttr('resid', list(range(1, n_residues + 1)))
-        u.add_TopologyAttr('id', list(range(1, (n_sol_residues * 3 + n_prot_residues * 2) + 1)))
+        u.add_TopologyAttr(
+            'name',
+            ['O', 'H1', 'H2'] * n_sol_residues + ['P', 'PH'] * n_prot_residues
+        )
+        u.add_TopologyAttr(
+            'type',
+            ['O', 'H', 'H'] * n_sol_residues + ['P', 'PH'] * n_prot_residues
+        )
+        u.add_TopologyAttr(
+            'resname',
+            ['SOL'] * n_sol_residues + ['PROT'] * n_prot_residues
+        )
+        u.add_TopologyAttr(
+            'resid',
+            list(range(1, n_residues + 1))
+        )
+        u.add_TopologyAttr(
+            'id',
+            list(range(1, (n_sol_residues * 3 + n_prot_residues * 2) + 1))
+        )
 
         # Atomic coordinates with hydrogen bonds between:
         #     O1-H2---O2
         #     O2-H3---P1
         #     P1-PH1---P2
         pos = np.array([[0, 0, 0],             # O1
-                        [-0.249, -0.968, 0],    # H1
-                        [1, 0, 0],              # H2
-                        [2.5, 0, 0],            # O2
-                        [3., 0, 0],             # H3
-                        [2.250, 0.968, 0],      # H4
-                        [5.5, 0, 0],             # P1
-                        [6.5, 0, 0],             # PH1
-                        [8.5, 0, 0],             # P2
-                        [9.5, 0, 0],             # PH2
+                        [-0.249, -0.968, 0],   # H1
+                        [1, 0, 0],             # H2
+                        [2.5, 0, 0],           # O2
+                        [3., 0, 0],            # H3
+                        [2.250, 0.968, 0],     # H4
+                        [5.5, 0, 0],           # P1
+                        [6.5, 0, 0],           # PH1
+                        [8.5, 0, 0],           # P2
+                        [9.5, 0, 0],           # PH2
                         ])
 
         coordinates = np.empty((1,  # number of frames
@@ -305,36 +329,44 @@ class TestHydrogenBondAnalysisBetween(object):
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
-            [0, 2, 3], # water-water
-            [3, 4, 6], # protein-water
-            [6, 7, 8]  # protein-protein
+            [0, 2, 3],  # water-water
+            [3, 4, 6],  # protein-water
+            [6, 7, 8]   # protein-protein
         ]
         assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
 
     def test_between_PW(self, universe):
         # Find only protein-water hydrogen bonds
-        hbonds = HydrogenBondAnalysis(universe, between=["resname PROT", "resname SOL"], **self.kwargs)
-        hbonds.run()
-
-        # indices of [donor, hydrogen, acceptor] for each hydrogen bond
-        expected_hbond_indices = [
-            [3, 4, 6] # protein-water
-        ]
-        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
-
-    def test_between_PW_PP(self, universe):
-        # Find protein-water and protein-protein hydrogen bonds (not water-water)
         hbonds = HydrogenBondAnalysis(
             universe,
-            between=[["resname PROT", "resname SOL"], ["resname PROT", "resname PROT"]],
+            between=["resname PROT", "resname SOL"],
             **self.kwargs
         )
         hbonds.run()
 
         # indices of [donor, hydrogen, acceptor] for each hydrogen bond
         expected_hbond_indices = [
-            [3, 4, 6], # protein-water
-            [6, 7, 8] # protein-protein
+            [3, 4, 6]  # protein-water
+        ]
+        assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
+
+    def test_between_PW_PP(self, universe):
+        # Find protein-water and protein-protein hydrogen bonds (not
+        # water-water)
+        hbonds = HydrogenBondAnalysis(
+            universe,
+            between=[
+                ["resname PROT", "resname SOL"],
+                ["resname PROT", "resname PROT"]
+            ],
+            **self.kwargs
+        )
+        hbonds.run()
+
+        # indices of [donor, hydrogen, acceptor] for each hydrogen bond
+        expected_hbond_indices = [
+            [3, 4, 6],  # protein-water
+            [6, 7, 8]   # protein-protein
         ]
         assert_array_equal(hbonds.hbonds[:, 1:4], expected_hbond_indices)
 

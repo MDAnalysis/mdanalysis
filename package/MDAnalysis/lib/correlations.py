@@ -236,7 +236,7 @@ def correct_intermittency(list_of_sets, intermittency):
                     continue
 
                 # if the element is absent now
-                if not element in list_of_sets[i + j]:
+                if element not in list_of_sets[i + j]:
                     # increase its absence counter
                     seen_frames_ago[element] += 1
                     continue
@@ -250,8 +250,9 @@ def correct_intermittency(list_of_sets, intermittency):
                 if seen_frames_ago[element] > intermittency:
                     continue
 
-                # the element was absent but returned (within <= intermittency_value)
-                # add it to the frames where it was absent.
+                # The element was absent but returned, i.e.
+                # within <= intermittency_value.
+                # Add it to the frames where it was absent.
                 # Introduce the corrections.
                 for k in range(seen_frames_ago[element], 0, -1):
                     list_of_sets[i + j - k].add(element)
