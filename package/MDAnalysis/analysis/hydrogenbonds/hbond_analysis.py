@@ -686,19 +686,19 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                 "Autocorrelation: Please use the .run() before calling this"
                 "function"
             )
-            raise NoDataError("No .hbonds: use the .run() first")
+            raise NoDataError("No .hbonds attribute: use .run() first")
 
         if self.step != 1:
             logging.warning(
-                "Autocorrelation: Hydrogen bonds were computedwith step > 1."
+                "Autocorrelation: Hydrogen bonds were computed with step > 1."
             )
             logging.warning(
                 "Autocorrelation: We recommend recomputing hydrogen bonds with"
-                "step = 1."
+                " step = 1."
             )
             logging.warning(
                 "Autocorrelation: if you would like to allow bonds to break"
-                "and reform, please use 'intermittency'"
+                " and reform, please use 'intermittency'"
             )
 
         # Extract the hydrogen bonds IDs only in the format

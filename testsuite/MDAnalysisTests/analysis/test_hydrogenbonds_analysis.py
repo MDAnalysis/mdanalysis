@@ -204,7 +204,7 @@ class TestHydrogenBondAnalysisMock(object):
         assert_equal(hydrogen_index, 2)
         assert_equal(acceptor_index, 3)
         assert_almost_equal(da_dst, 2.5)
-        assert_almost_equal(dha_angle, 180)
+        assert_almost_equal(angle, 180)
 
     def test_count_by_time(self, hydrogen_bonds):
         ref_times = np.array([0, 1, 2]) # u.trajectory.dt is 1
@@ -238,9 +238,9 @@ class TestHydrogenBondAnalysisMock(object):
         caplog.set_level(logging.WARNING)
         hbonds.lifetime(tau_max=2, intermittency=1)
 
-        message = "ideally autocorrelation function would be carried out on" \
-            "consecutive frames"
-        assert any(message in rec.getMessage() for rec in caplog.records)
+        warning = \
+            "Autocorrelation: Hydrogen bonds were computed with step > 1."
+        assert any(warning in rec.getMessage() for rec in caplog.records)
 
 
 class TestHydrogenBondAnalysisBetween(object):
