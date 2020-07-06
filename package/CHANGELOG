@@ -30,6 +30,8 @@ Fixes
     (Issue #2723, PR #2815)
 
 Enhancements
+  * Refactored analysis.helanal into analysis.helix_analysis
+    (Issue #2452, PR #2622)
   * Added the RDKitParser which creates a `core.topology.Topology` object from
     an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates
     from RDKit conformers (Issue #2468, PR #2707)
@@ -143,7 +145,6 @@ Fixes
   * Contact Analysis class respects PBC (Issue #2368)
 
 Enhancements
-  * Refactored helanal in helix_analysis (Issue #2452, PR #2622)
   * Added support for FHI-AIMS input files (PR #2705)
   * vastly improved support for 32-bit Windows (PR #2696)
   * Added methods to compute the root-mean-square-inner-product of subspaces
