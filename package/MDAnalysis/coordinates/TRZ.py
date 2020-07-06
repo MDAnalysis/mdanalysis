@@ -253,7 +253,7 @@ class TRZReader(base.ReaderBase):
                 raise ValueError("Supplied n_atoms {} is incompatible "
                                  "with provided trajectory file. "
                                  "Maybe `topology` is wrong?".format(
-                                 self.n_atoms))
+                                                             self.n_atoms))
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]

@@ -131,7 +131,7 @@ class TestTRZReader(RefTRZ):
 
     def test_get_wrong_n_atoms(self):
         with pytest.raises(ValueError, match=r"Supplied n_atoms *"):
-            mda.Universe(TRZ, n_atoms = 8080)
+            mda.Universe(TRZ, n_atoms=8080)
 
 
 class TestTRZWriter(RefTRZ):
