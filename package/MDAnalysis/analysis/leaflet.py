@@ -125,6 +125,7 @@ class LeafletFinder(object):
     **kwargs:
         Passed to ``method``
 
+
     Attributes
     ----------
     universe: Universe
@@ -181,6 +182,11 @@ class LeafletFinder(object):
     :func:`~MDAnalysis.analysis.distances.group_coordinates_by_graph`
     :func:`~MDAnalysis.analysis.distances.group_coordinates_by_spectralclustering`
 
+
+    .. versionchanged:: 2.0.0
+        Refactored to move grouping code into ``distances`` and use
+        multiple methods. Added the "spectralclustering" and
+        "center_of_geometry" methods.
 
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
@@ -355,7 +361,6 @@ class LipidEnrichment(AnalysisBase):
 
     Parameters
     ----------
-
     universe: Universe or AtomGroup
         The atoms to apply this analysis to.
     select_protein: str (optional)
@@ -392,7 +397,6 @@ class LipidEnrichment(AnalysisBase):
 
     Attributes
     ----------
-
     protein: :class:`~MDAnalysis.core.groups.AtomGroup`
         Protein atoms.
     residues: :class:`~MDAnalysis.core.groups.ResidueGroup`
@@ -425,6 +429,8 @@ class LipidEnrichment(AnalysisBase):
     attrname: str
         The topology attribute used to group lipid species.
 
+
+    .. versionadded:: 2.0.0
 
     """
 
