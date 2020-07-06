@@ -61,6 +61,12 @@ in multiple selection strings::
     helanal2 = hel.HELANAL(u, select=('name CA and resnum 100-160',
                                       'name CA and resnum 200-230'))
 
+The :func:`helix_analysis` function will carry out helix analysis on 
+atom positions, treating each row of coordinates as an alpha-carbon 
+equivalent::
+
+    hel_xyz = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
+
 """
 from __future__ import division, absolute_import
 
@@ -339,75 +345,48 @@ class HELANAL(AnalysisBase):
         'local_screw_angles': (-2,),
     }
 
-    @classmethod
-    def from_SecondaryStructure(cls, secondary_structure, select='name CA',
-                                ref_axis=[0, 0, 1], verbose=False,
-                                flatten_single_helix=True):
-        """Construct a HELANAL instance from a SecondaryStructure calculation (e.g. DSSP).
-
-        Parameters
-        ----------
-        secondary_structure: instance of SecondaryStructureBase class
-            The secondary structure calculation to use. Must have been run()
-            already.
-        select: str, optional
-            The selection string to select atoms from each residue found. Note 
-            that unlike normal HELANAL creation, this cannot be an iterable of 
-            multiple selections.
-        ref_axis: array-like of length 3, optional
-            The reference axis used to calculate the tilt of the vector of best fit, 
-            and the local screw angles.
-        flatten_single_helix: bool, optional
-            Whether to flatten results if only one selection is passed.
-        verbose : bool, optional
-            Turn on more logging and debugging.
-
-        Returns
-        -------
-        :class:`~MDAnalysis.analysis.helix_analysis.HELANAL`
-        """
-        try:
-            ss = secondary_structure.simple_mode
-        except AttributeError:
-            raise ValueError('The SecondaryStructure instance must be run '
-                             'before passing to HELANAL')
-
-        helices = secondary_structure.residues[ss == 'Helix']
-        continuous = util.group_consecutive_integers(helices.resindices)
-
-        # must have at least 9 continuous residues for helanal
-        selections = []
-        universe = secondary_structure._universe
-        all_res = universe.residues
-        for resindices in continuous:
-            if len(resindices) >= 9:
-                res = all_res[resindices]
-                sel = 'resid {}:{} and {}'.format(res[0].resid,
-                                                  res[-1].resid,
-                                                  select)
-                selections.append(sel)
-        if not selections:
-            raise ValueError('Could not find any helices with at least '
-                             '9 continuous residues. Consider running '
-                             'HELANAL manually')
-
-        return cls(universe, select=selections, ref_axis=ref_axis,
-                   verbose=verbose, flatten_single_helix=flatten_single_helix)
-
     def __init__(self, universe, select='name CA', ref_axis=[0, 0, 1],
-                 verbose=False, flatten_single_helix=True):
+                 verbose=False, flatten_single_helix=True,
+                 split_residue_sequences=True):
         super(HELANAL, self).__init__(universe.universe.trajectory,
                                       verbose=verbose)
         selections = util.asiterable(select)
-        self.atomgroups = [universe.select_atoms(s) for s in selections]
-        for s, ag in zip(selections, self.atomgroups):
-            ids, counts = np.unique(ag.resindices, return_counts=True)
-            if np.any(counts > 1):
-                dup = ', '.join(map(str, ids[counts > 1]))
-                warnings.warn('Your selection {} includes multiple atoms '
-                              'for residues with these resindices: {}.'
-                              'HELANAL is designed to work on one carbon-alpha '
-                              'per residue.'.format(s, dup))
+        atomgroups = [universe.select_atoms(s) for s in selections]
+        consecutive = []
+        # check that residues are consecutive and long enough sequence
+        for s, ag in zip(selections, atomgroups):
+            groups = util.group_same_or_consecutive_integers(ag.resindices)
+            counter = 0
+            if len(groups) > 1:
+                msg = 'Your selection {} has gaps in the residues.'.format(s)
+                if split_residue_sequences:
+                    msg += ' Splitting into {} helices.'.format(len(groups))
+                else:
+                    groups = [ag.resindices]
+                warnings.warn(msg)
+
+            for g in groups:
+                ng = len(g)
+                counter += ng
+                if ng < 9:
+                    warnings.warn('Fewer than 9 atoms found for helix in '
+                                  'selection {} with these resindices: {}. '
+                                  'This sequence will be skipped. HELANAL '
+                                  'is designed to work on at sequences of '
+                                  '≥9 residues.'.format(s, g))
+                    continue
+
+                ids, counts = np.unique(g, return_counts=True)
+                if np.any(counts > 1):
+                    dup = ', '.join(map(str, ids[counts > 1]))
+                    warnings.warn('Your selection {} includes multiple atoms '
+                                'for residues with these resindices: {}.'
+                                'HELANAL is designed to work on one alpha-'
+                                'carbon per residue.'.format(s, dup))
+                
+                consecutive.append(ag[counter-ng:counter])
+                
+        self.atomgroups = consecutive
         self.ref_axis = np.asarray(ref_axis)
         self._flatten = flatten_single_helix
 
