@@ -34,10 +34,11 @@ from MDAnalysisTests.datafiles import (GRO, XTC, PSF, DCD, PDB_small,
                                        HELANAL_BENDING_MATRIX_SUBSET,
                                        XYZ)
 
-# reference data from a single PDB file:
+# reference data from old helix analysis of a single PDB file:
 #   data = MDAnalysis.analysis.helanal.helanal_main(PDB_small,
 #                    select="name CA and resnum 161-187")
-# keys renamed
+# keys are renamed and local screw angles now use a different
+# algorithm
 HELANAL_SINGLE_DATA = {
     'global_tilts': np.rad2deg(1.3309656332019535),
     'local_heights summary': np.array([1.5286051,  0.19648294,  0.11384312],
@@ -50,15 +51,6 @@ HELANAL_SINGLE_DATA = {
                   5.5344553,   6.14356709,  10.15450764,  11.07686138,
                   9.23541832], dtype=np.float32),
     'local_nres_per_turn summary': np.array([3.64864163,  0.152694,  0.1131402]),
-    # changed this implementation
-    # 'local_screw_angles':
-    #     np.array([87.80540079, -171.86019984,  -75.2341296,   24.61695962,
-    #               121.77104796, -134.94786976,  -35.07857424,   58.9621866,
-    #               159.40210233, -104.83368122,   -7.54816243,   87.40202629,
-    #               -176.13071955,  -89.13196878,   17.17321345,  105.26627814,
-    #               -147.00075298,  -49.36850775,   54.24557615,  156.06486532,
-    #               -110.82698327,   -5.72138626,   85.36050546, -167.28218858,
-    #               -68.23076936]),
     'local_twists summary': np.array([98.83011627,   4.08171701,   3.07253003],
                                      dtype=np.float32),
     'local_twists':
@@ -112,8 +104,21 @@ def read_bending_matrix(fn):
         data[k] = np.array(v)
     return data
 
+def test_local_screw_angles():
+    xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    angles = hel.local_screw_angles([1, 1, 1], [1, -1, -1], xyz)
+    assert_almost_equal(angles, [0, 135, 135])
 
-def test_helix_analysis_zigzag():
+def test_local_screw_angles_parallel_axes():
+    xyz = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    angles = hel.local_screw_angles([1, 0, 0], [-1, 0, 0], xyz)
+    # new ref should be [0, 0, 1]; 
+    # plane should be [0, -1, 0];
+    # ortho_plane should be [0, 0, 1]
+    assert_almost_equal(angles, [0, 90, 0])
+
+@pytest.fixture()
+def zigzag():
     #      x    x    x    x    x
     #     / \  / \  / \  / \  /
     #   x    x    x    x    x
@@ -124,7 +129,18 @@ def test_helix_analysis_zigzag():
                             [0]*n_atoms,  # y == 0
                             range(n_atoms))))  # z rises continuously
     u.load_new(xyz)
-    properties = hel.helix_analysis(u.atoms.positions, ref_axis=[0, 0, 1])
+    return u
+
+@pytest.mark.parametrize('ref_axis,screw_angles', [
+    ([0, 0, 1], [180, 0]),
+    ([0, 1, 0], [90, 90]),
+    ([1, 0, 0], [180, 0]),
+    ([1, 1, 1], [135, 45]),
+    ([1, 1, 2], [135, 45]),
+])
+def test_helix_analysis_zigzag(zigzag, ref_axis, screw_angles):
+    properties = hel.helix_analysis(zigzag.atoms.positions, 
+                                    ref_axis=ref_axis)
     assert_almost_equal(properties['local_twists'], 180, decimal=4)
     assert_almost_equal(properties['local_nres_per_turn'], 2, decimal=4)
     assert_almost_equal(properties['global_axis'],
@@ -134,16 +150,15 @@ def test_helix_analysis_zigzag():
     assert_almost_equal(properties['local_bends'], 0, decimal=4)
     assert_almost_equal(properties['all_bends'], 0, decimal=4)
     assert_almost_equal(properties['local_heights'], 0, decimal=4)
-    assert_almost_equal(properties['local_helix_directions'][0::2] - [-1, 0, 0],
-                        0, decimal=4)
-    assert_almost_equal(properties['local_helix_directions'][1::2] - [1, 0, 0],
-                        0, decimal=4)
-    origins = xyz[1:-1]
+    assert_almost_equal(properties['local_helix_directions'][0::2], 
+                        [[-1, 0, 0]]*49, decimal=4)
+    assert_almost_equal(properties['local_helix_directions'][1::2],
+                        [[1, 0, 0]]*49, decimal=4)
+    origins = zigzag.atoms.positions[1:-1]
     origins[:, 0] = 0
     assert_almost_equal(properties['local_origins'], origins, decimal=4)
-    assert_almost_equal(properties['local_screw_angles'], [
-                        180, 0]*49, decimal=4)
-
+    assert_almost_equal(properties['local_screw_angles'], 
+                        screw_angles*49, decimal=4)
 
 def test_helix_analysis_square_oct():
     # square-octagon-square-octagon
@@ -216,12 +231,14 @@ def test_helix_analysis_square_oct():
 class TestHELANAL(object):
 
     @pytest.fixture()
-    def universe(self):
-        return mda.Universe(PSF, DCD)
+    def psf_ca(self):
+        u = mda.Universe(PSF, DCD)
+        ag = u.select_atoms('name CA')
+        return ag
 
     @pytest.fixture()
-    def helanal(self, universe):
-        ha = hel.HELANAL(universe, select='name CA and resnum 161-187',
+    def helanal(self, psf_ca):
+        ha = hel.HELANAL(psf_ca, select='resnum 161-187',
                          flatten_single_helix=True)
         return ha.run(start=10, stop=80)
 
@@ -254,12 +271,12 @@ class TestHELANAL(object):
                                 decimal=4,
                                 err_msg=msg.format(key))
 
-    def test_multiple_selections(self, universe):
-        ha = hel.HELANAL(universe, flatten_single_helix=True,
-                         select=('name CA and resnum 30-40',
-                                 'name CA and resnum 60-80'))
+    def test_multiple_selections(self, psf_ca):
+        ha = hel.HELANAL(psf_ca, flatten_single_helix=True,
+                         select=('resnum 30-40', 'resnum 60-80'))
         ha.run()
-        n_frames = len(universe.trajectory)
+        n_frames = len(psf_ca.universe.trajectory)
+        assert len(ha.atomgroups) == 2
         assert len(ha.summary) == 2
         assert len(ha.all_bends) == 2
         assert ha.all_bends[0].shape == (n_frames, 8, 8)
@@ -277,6 +294,32 @@ class TestHELANAL(object):
             ha = hel.HELANAL(u, select='name H')
         assert len(rec) == 1
         assert 'multiple atoms' in rec[0].message.args[0]
+
+    def test_residue_gaps_split(self, psf_ca):
+        sel = 'resid 6:50 or resid 100:130 or resid 132:148'
+        with pytest.warns(UserWarning) as rec:
+            ha = hel.HELANAL(psf_ca, select=sel).run()
+            assert len(ha.atomgroups) == 3
+            assert len(ha.atomgroups[0]) == 45
+            assert len(ha.atomgroups[1]) == 31
+            assert len(ha.atomgroups[2]) == 17
+        assert len(rec) == 1
+        warnmsg = rec[0].message.args[0]
+        assert 'has gaps in the residues' in warnmsg
+        assert 'Splitting into 3 helices' in warnmsg
+
+    def test_residue_gaps_no_split(self, psf_ca):
+        sel = 'resid 6:50 or resid 100:130 or resid 132:148'
+        with pytest.warns(UserWarning) as rec:
+            ha = hel.HELANAL(psf_ca, select=sel, 
+                             split_residue_sequences=False)
+            ha.run()
+            assert len(ha.atomgroups) == 1
+            assert len(ha.atomgroups[0]) == 45+31+17
+        assert len(rec) == 1
+        warnmsg = rec[0].message.args[0]
+        assert 'has gaps in the residues' in warnmsg
+        assert 'Splitting into' not in warnmsg
 
 
 def test_vector_of_best_fit():
