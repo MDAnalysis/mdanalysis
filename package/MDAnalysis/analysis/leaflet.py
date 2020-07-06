@@ -69,7 +69,7 @@ Classes and Functions
 
 .. autoclass:: LipidEnrichment
     :members:
-    
+
 """
 import warnings
 import functools
@@ -85,13 +85,11 @@ from ..due import due, Doi
 
 due.cite(Doi("10.1002/jcc.21787"),
          description="LeafletFinder 'graph' algorithm",
-         path="MDAnalysis.analysis.leaflet.LeafletFinder",
-         cite_module=True)
+         path="MDAnalysis.analysis.leaflet.LeafletFinder")
 
 due.cite(Doi("10.1021/acscentsci.8b00143"),
          description="Lipid enrichment-depletion index formula",
-         path="MDAnalysis.analysis.leaflet.LipidEnrichment",
-         cite_module=True)
+         path="MDAnalysis.analysis.leaflet.LipidEnrichment")
 
 del Doi
 
@@ -120,9 +118,9 @@ class LeafletFinder(object):
         If ``False``, does not follow the minimum image convention when
         computing distances
     method: str, {"graph", "spectralclustering"}
-        method to use to assign groups to leaflets. Choose either 
+        method to use to assign groups to leaflets. Choose either
         "graph" for :func:`~distances.group_coordinates_by_graph` or
-        "spectralclustering" for 
+        "spectralclustering" for
         :func:`~distances.group_coordinates_by_spectralclustering`
     **kwargs:
         Passed to ``method``
@@ -144,7 +142,7 @@ class LeafletFinder(object):
         List of indices of atoms in each leaflet, corresponding to the
         order of `selection`. ``components[i]`` is the array of indices
         for the ``i``-th leaflet. ``k = components[i][j]`` means that the
-        ``k``-th atom in `selection` is in the ``i``-th leaflet. 
+        ``k``-th atom in `selection` is in the ``i``-th leaflet.
         The components are sorted by size.
     groups: list of AtomGroups
         List of AtomGroups in each leaflet. ``groups[i]`` is the ``i``-th
@@ -314,42 +312,44 @@ def optimize_cutoff(universe, select, dmin=10.0, dmax=20.0, step=0.5,
 
 
 class LipidEnrichment(AnalysisBase):
-    """Calculate the lipid depletion-enrichment index around a protein
+    r"""Calculate the lipid depletion-enrichment index around a protein
     by leaflet.
 
-    The depletion-enrichment index (DEI) of a lipid around a protein indicates
-    how enriched or depleted that lipid in the lipid annulus around the
-    protein, with respect to the density of the lipid in the bulk
+    The depletion-enrichment index (DEI) of a lipid around a protein
+    indicates how enriched or depleted that lipid in the lipid annulus
+    around the protein, with respect to the density of the lipid in the bulk
     membrane. If more than one leaflet is specified, then the index is
     calculated for each leaflet.
 
-    The DEI for lipid species or group :math:`L` at cutoff :math:`r` is as follows:
+    The DEI for lipid species or group :math:`L` at cutoff :math:`r` is as
+    follows:
 
     .. math::
 
         \text{DEI}_{L, r} = \frac{n(x_{(L, r)})}{n(x_r)} \times \frac{n(x)}{n(x_L)}
 
-    where :math:`n(x_{(L, r)})` is the number of lipids :math:`L` within 
-    distance :math:`r` of the protein; :math:`n(x_r)` is total number of lipids 
-    within distance :math:`r` of the protein; :math:`n(x_L)` is the total number 
-    of lipids :math:`L` in that membrane or leaflet; and :math:`n(x)` is the total 
-    number of all lipids in that membrane or leaflet.
+    where :math:`n(x_{(L, r)})` is the number of lipids :math:`L` within
+    distance :math:`r` of the protein; :math:`n(x_r)` is total number of
+    lipids within distance :math:`r` of the protein; :math:`n(x_L)`
+    is the total number of lipids :math:`L` in that membrane or leaflet; and
+    :math:`n(x)` is the total number of all lipids in that membrane or
+    leaflet.
 
     The results of this analysis contain these values:
 
-    * 'Near protein': the number of lipids :math:`L` within 
+    * 'Near protein': the number of lipids :math:`L` within
         cutoff :math:`r` of the protein
     * 'Fraction near protein': the fraction of the lipids :math:`L`
-        with respect to all lipids within cutoff :math:`r` of the 
+        with respect to all lipids within cutoff :math:`r` of the
         protein: :math:`\frac{n(x_{(L, r)})}{n(x_r)}`
     * 'Enrichment': the depletion-enrichment index.
 
-    This algorithm was obtained from [Corradi2018]_. Please cite them if you use 
-    this analysis in published work.
+    This algorithm was obtained from [Corradi2018]_. Please cite them if you
+    use this analysis in published work.
 
     .. note::
 
-        This analysis requires ``scikit-learn`` to be installed to 
+        This analysis requires ``scikit-learn`` to be installed to
         determine leaflets.
 
 
@@ -378,7 +378,7 @@ class LipidEnrichment(AnalysisBase):
     delta: float (optional)
         Leaflets are determined via spectral clustering on a similarity matrix.
         This similarity matrix is created from a pairwise distance matrix by
-        applying the gaussian kernel 
+        applying the gaussian kernel
         :math:`\exp{\frac{-\text{dist_matrix}^2}{2*\delta^2}}`. If your
         leaflets are incorrect, try finetuning the `delta` value.
     compute_headgroup_only: bool (optional)
@@ -411,7 +411,7 @@ class LipidEnrichment(AnalysisBase):
         Counts, fraction, and enrichment index of each residue per frame, per
         leaflet.
     leaflets_summary: list of dict of dicts
-        Counts, fraction, and enrichment index as averages and standard 
+        Counts, fraction, and enrichment index as averages and standard
         deviations, per leaflet.
     box: :class:`numpy.ndarray` or ``None``
         Universe dimensions.
@@ -429,13 +429,14 @@ class LipidEnrichment(AnalysisBase):
     """
 
     def __init__(self, universe, select_protein: str = 'protein',
-                 select_residues: str = 'all', select_headgroup: str = 'name PO4',
+                 select_residues: str = 'all',
+                 select_headgroup: str = 'name PO4',
                  n_leaflets: int = 2, count_by_attr: str = 'resnames',
                  enrichment_cutoff: float = 6, pbc: bool = True,
                  compute_headgroup_only: bool = True,
                  update_leaflet_step: int = 1,
                  group_method: str = "spectralclustering",
-                 update_method=None, group_kwargs: dict = {},
+                 update_method: str = None, group_kwargs: dict = {},
                  update_kwargs: dict = {}, **kwargs):
         super(LipidEnrichment, self).__init__(universe.universe.trajectory,
                                               **kwargs)

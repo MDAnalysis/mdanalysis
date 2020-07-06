@@ -233,9 +233,9 @@ def group_coordinates_by_spectralclustering(coordinates, n_groups=2,
     -------
     indices: list of numpy.ndarray
         List of indices for each group, corresponding to the order
-        of ``coordinates``. ``indices[i]`` is the array of indices 
+        of ``coordinates``. ``indices[i]`` is the array of indices
         for the i-th cluster. ``k = indices[i][j]`` means that the
-        k-th entry in ``coordinates`` is in cluster ``i``. 
+        k-th entry in ``coordinates`` is in cluster ``i``.
         The groups are sorted by size.
     """
     try:
@@ -321,9 +321,9 @@ def group_coordinates_by_graph(coordinates, cutoff=15.0, box=None,
     -------
     indices: list of numpy.ndarray
         List of indices for each group, corresponding to the order
-        of ``coordinates``. ``indices[i]`` is the array of indices 
+        of ``coordinates``. ``indices[i]`` is the array of indices
         for the i-th cluster. ``k = indices[i][j]`` means that the
-        k-th entry in ``coordinates`` is in cluster ``i``. 
+        k-th entry in ``coordinates`` is in cluster ``i``.
         The groups are sorted by size.
     """
     try:

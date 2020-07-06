@@ -27,7 +27,8 @@ from numpy.testing import assert_equal, assert_almost_equal
 import numpy as np
 import networkx as NX
 
-from MDAnalysis.analysis.leaflet import LeafletFinder, optimize_cutoff, LipidEnrichment
+from MDAnalysis.analysis.leaflet import (LeafletFinder, optimize_cutoff,
+                                         LipidEnrichment)
 from MDAnalysis.analysis import distances
 from MDAnalysisTests.datafiles import (Martini_membrane_gro,
                                        GRO_MEMPROT,
