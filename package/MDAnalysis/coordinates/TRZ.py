@@ -141,7 +141,7 @@ class TRZReader(base.ReaderBase):
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
     .. versionchanged:: 2.0.0
-       Now checks for the correct `n_atoms` during initilization
+       Now checks for the correct `n_atoms` on reading
        and can raise :exc:`ValueError`.
     """
 
