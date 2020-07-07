@@ -20,7 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import warnings
 
 import pytest
 import MDAnalysis as mda
@@ -37,9 +36,9 @@ from MDAnalysisTests.util import block_import, import_not_available
 class TestRequiresRDKit(object):
     def test_converter_requires_rdkit(self):
         u = mda.Universe(mol2_molecule)
-        with pytest.raises(ImportError) as e:
+        with pytest.raises(ImportError,
+                           match="RDKit is required for the RDKitConverter"):
             u.atoms.convert_to("RDKIT")
-            assert "RDKit is required for the RDKitConverter" in str(e.value)
 
 
 try:
@@ -83,15 +82,8 @@ class TestRDKitReader(object):
         assert_equal(expected, universe.trajectory.coordinate_array)
 
     def test_no_coordinates(self):
-        with warnings.catch_warnings(record=True) as w:
-            # Cause all warnings to always be triggered.
-            warnings.simplefilter("always")
-            # Trigger a warning.
+        with pytest.warns(UserWarning, match="No coordinates found"):
             u = mda.Universe.from_smiles("CCO", generate_coordinates=False)
-            # Verify the warning
-            assert len(w) == 1
-            assert "No coordinates found" in str(
-                w[-1].message)
         expected = np.empty((1, u.atoms.n_atoms, 3), dtype=np.float32)
         expected[:] = np.nan
         assert_equal(u.trajectory.coordinate_array, expected)
@@ -178,23 +170,19 @@ class TestRDKitConverter(object):
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
-        with pytest.raises(AttributeError) as e:
+        with pytest.raises(
+            AttributeError,
+            match="`elements` attribute is required for the RDKitConverter"
+        ):
             u.atoms.convert_to("RDKIT")
-            assert ("`elements` attribute is required for the RDKitConverter"
-                    in str(e.value))
 
     def test_warn_guess_bonds(self, pdb):
         pdb.delete_bonds(pdb.bonds)
         ag = pdb.select_atoms("resnum 101 and segid A")
         pdb.delete_bonds(ag.bonds)
-        with warnings.catch_warnings(record=True) as w:
-            # Cause all warnings to always be triggered.
-            warnings.simplefilter("always")
-            # trigger warning
+        with pytest.warns(UserWarning, 
+                          match="No `bonds` attribute in this AtomGroup"):
             ag.convert_to("RDKIT")
-            assert len(w) == 1
-            assert "No `bonds` attribute in this AtomGroup" in str(
-                w[-1].message)
 
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "C1", " C1 "),
