@@ -263,7 +263,6 @@
 <span class="sd">   :members:</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -320,7 +319,9 @@
 <span class="sd">       Extra data (Temperature, Energies, Pressures, etc) now read</span>
 <span class="sd">       into ts.data dictionary.</span>
 <span class="sd">       Now passes a weakref of self to ts (ts._reader).</span>
-
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Now checks for the correct `n_atoms` on reading</span>
+<span class="sd">       and can raise :exc:`ValueError`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nb">format</span> <span class="o">=</span> <span class="s2">&quot;TRZ&quot;</span>
@@ -338,6 +339,12 @@
 <span class="sd">            number of atoms in trajectory, must be taken from topology file!</span>
 <span class="sd">        convert_units : bool (optional)</span>
 <span class="sd">            converts units to MDAnalysis defaults</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">           If `n_atoms` or the number of atoms in the topology file do not</span>
+<span class="sd">           match the number of atoms in the trajectory.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">TRZReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">trzfilename</span><span class="p">,</span>  <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -423,6 +430,11 @@
 
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">trzfile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dtype</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;natoms&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Supplied n_atoms </span><span class="si">{}</span><span class="s2"> is incompatible &quot;</span>
+                                 <span class="s2">&quot;with provided trajectory file. &quot;</span>
+                                 <span class="s2">&quot;Maybe `topology` is wrong?&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                                             <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;nframe&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># 0 based for MDA</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ntrj&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;treal&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
@@ -767,6 +779,7 @@
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;p1a&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;p1b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;nframe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span>  <span class="c1"># TRZ wants 1 based</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;ntrj&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;step&#39;</span><span class="p">]</span>
+        <span class="n">out</span><span class="p">[</span><span class="s1">&#39;natoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;treal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;p2a&#39;</span><span class="p">],</span> <span class="n">out</span><span class="p">[</span><span class="s1">&#39;p2b&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">72</span>
         <span class="n">out</span><span class="p">[</span><span class="s1">&#39;box&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_pos_to_native</span><span class="p">(</span><span class="n">unitcell</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
