@@ -508,8 +508,9 @@ class HydrogenBondLifetimes(object):
     .. versionchanged:: 1.0.0
        The ``nproc`` keyword was removed as it linked to a portion of code that
        may have failed in some cases.
-    .. deprecated:: 2.0.0
-       Instead, please use
+    .. deprecated:: 1.0.1
+       ``waterdynamics.HydrogenBondLifetimes`` is deprecated and will be removed in 2.0.0.
+       Instead, please use (available in 2.0.0)
        MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime
 
     """
