@@ -149,6 +149,49 @@ class RDKitReader(memory.MemoryReader):
 class RDKitConverter(base.ConverterBase):
     """Convert MDAnalysis AtomGroup or Universe to `RDKit`_ :class:`rdkit.Chem.rdchem.Mol`
 
+    MDanalysis attributes are stored in each RDKit atom of the resulting 
+    molecule in two different ways: 
+
+    * in an `AtomPDBResidueInfo` object available through the 
+      ``atom.GetMonomerInfo()`` method if it's an attribute that is typically 
+      found in a PDB file,
+    * directly as an atom property available through the 
+      ``atom.GetPropsAsDict()`` method for the others.
+
+    Supported attributes:
+    
+    +-----------------------+-------------------------------------------+
+    | MDAnalysis attribute  | RDKit                                     |
+    +=======================+===========================================+
+    | altLocs               | atom.GetMonomerInfo().GetAltLoc()         |
+    +-----------------------+-------------------------------------------+
+    | chainIDs              | atom.GetMonomerInfo().GetChainId()        |
+    +-----------------------+-------------------------------------------+
+    | icodes                | atom.GetMonomerInfo().GetInsertionCode()  |
+    +-----------------------+-------------------------------------------+
+    | names                 | atom.GetMonomerInfo().GetName()           |
+    +-----------------------+-------------------------------------------+
+    | occupancies           | atom.GetMonomerInfo().GetOccupancy()      |
+    +-----------------------+-------------------------------------------+
+    | resnames              | atom.GetMonomerInfo().GetResidueName()    |
+    +-----------------------+-------------------------------------------+
+    | resids                | atom.GetMonomerInfo().GetResidueNumber()  |
+    +-----------------------+-------------------------------------------+
+    | segindices            | atom.GetMonomerInfo().GetSegmentNumber()  |
+    +-----------------------+-------------------------------------------+
+    | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |
+    +-----------------------+-------------------------------------------+
+    | bfactors              | atom.GetDoubleProp("_MDAnalysis_bfactor") |
+    +-----------------------+-------------------------------------------+
+    | charges               | atom.GetDoubleProp("_MDAnalysis_charge")  |
+    +-----------------------+-------------------------------------------+
+    | indices               | atom.GetIntProp("_MDAnalysis_index")      |
+    +-----------------------+-------------------------------------------+
+    | segids                | atom.GetProp("_MDAnalysis_segid")         |
+    +-----------------------+-------------------------------------------+
+    | types                 | atom.GetProp("_MDAnalysis_type")          |
+    +-----------------------+-------------------------------------------+
+
     Example
     -------
 
