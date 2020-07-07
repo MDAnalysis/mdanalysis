@@ -35,7 +35,11 @@ class H5MDReader(base.ReaderBase):
     """Reader for the H5MD format.
     
     At the moment, all data is read directly from file without unit conversion.
-
+    
+    Data that is currently read from an H5MD file includes: n_frames, dimensions,
+    positions, velocities, forces, data['step']
+    
+    Data that is not currently read from an H5MD file includes: masses and others
     """
     format = 'H5MD'
     units = {'time': None, 'length': None}
