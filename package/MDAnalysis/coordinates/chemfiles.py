@@ -401,6 +401,7 @@ if HAS_CHEMFILES:
 
         Note
         ----
+        Can only be used with readling ('r') mode.
         Upon pickling, the current frame is reset. `universe.trajectory[i]` has
         to be used to return to its original frame.
 
@@ -409,7 +410,7 @@ if HAS_CHEMFILES:
         filename : str
             a filename given a text or byte string.
         mode : 'r' , optional
-            can only be 'r' for pickling.
+            only 'r' can be used for pickling.
         format : '', optional
             guessed from the file extension if empty.
 
@@ -437,6 +438,14 @@ if HAS_CHEMFILES:
 
         .. versionadded:: 2.0.0
         """
+        def __init__(self, path, mode="r", format=""):
+            if mode != 'r':
+                raise ValueError("Only read mode ('r') "
+                                 "files can be pickled.")
+            super().__init__(path=path,
+                             mode=mode,
+                             format=format)
+
         def __getstate__(self):
             return self.path, self._Trajectory__mode, self._Trajectory__format
 

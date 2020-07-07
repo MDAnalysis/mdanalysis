@@ -72,10 +72,17 @@ class FileIOPicklable(io.FileIO):
     This means that for a successful unpickle, the original file still has to
     be accessible with its filename.
 
+    Note
+    ----
+    This class only supports reading files in binary mode. If you need to open
+    to open a file in text mode, use the :func:`pickle_open`.
+
     Parameters
     ----------
     name : str
         a filename given a text or byte string.
+    mode : str
+        only reading ('r') mode works.
 
     Example
     -------
@@ -95,10 +102,14 @@ class FileIOPicklable(io.FileIO):
 
     .. versionadded:: 2.0.0
     """
-    def __init__(self, name):
-        super().__init__(name, mode='r')
+    def __init__(self, name, mode='r'):
+        self._mode = mode
+        super().__init__(name, mode)
 
     def __getstate__(self):
+        if self._mode != 'r':
+            raise RuntimeError("Can only pickle files that were opened "
+                               "in read mode, not {}".format(self._mode))
         return self.name, self.tell()
 
     def __setstate__(self, args):
@@ -215,7 +226,7 @@ class BZ2Picklable(bz2.BZ2File):
 
     Note
     ----
-    This class only supprots opening files in binary mode. If you need to open
+    This class only supports reading files in binary mode. If you need to open
     to open a compressed file in text mode, use the :func:`bz2_pickle_open`.
 
     Parameters
@@ -246,9 +257,13 @@ class BZ2Picklable(bz2.BZ2File):
     .. versionadded:: 2.0.0
     """
     def __init__(self, name, mode='rb'):
+        self._bz_mode = mode
         super().__init__(name, mode)
 
     def __getstate__(self):
+        if not self._bz_mode.startswith('r'):
+            raise RuntimeError("Can only pickle files that were opened "
+                               "in read mode, not {}".format(self._bz_mode))
         return self._fp.name, self.tell()
 
     def __setstate__(self, args):
@@ -271,7 +286,7 @@ class GzipPicklable(gzip.GzipFile):
 
     Note
     ----
-    This class only supprots opening files in binary mode. If you need to open
+    This class only supports reading files in binary mode. If you need to open
     to open a compressed file in text mode, use the :func:`gzip_pickle_open`.
 
     Parameters
@@ -302,9 +317,13 @@ class GzipPicklable(gzip.GzipFile):
     .. versionadded:: 2.0.0
     """
     def __init__(self, name, mode='rb'):
+        self._gz_mode = mode
         super().__init__(name, mode)
 
     def __getstate__(self):
+        if not self._gz_mode.startswith('r'):
+            raise RuntimeError("Can only pickle files that were opened "
+                               "in read mode, not {}".format(self._gz_mode))
         return self.name, self.tell()
 
     def __setstate__(self, args):
