@@ -327,6 +327,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.d_a_cutoff = d_a_cutoff
         self.d_h_a_angle = d_h_a_angle_cutoff
         self.update_selections = update_selections
+        self.hbonds = None
 
     def guess_hydrogens(self,
                         select='all',
@@ -677,7 +678,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             autcorrelation value for each value of `tau`
         """
 
-        if not hasattr(self, 'hbonds'):
+        if self.hbonds is None:
             logging.error(
                 "Autocorrelation analysis of hydrogen bonds cannot be done"
                 "before the hydrogen bonds are found"
@@ -686,7 +687,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                 "Autocorrelation: Please use the .run() before calling this"
                 "function"
             )
-            raise NoDataError("No .hbonds attribute: use .run() first")
+            raise NoDataError(".hbonds attribute is None: use .run() first")
 
         if self.step != 1:
             logging.warning(

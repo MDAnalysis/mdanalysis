@@ -104,7 +104,7 @@ class TestHydrogenBondAnalysisTIP3P(object):
         assert_allclose(counts, ref_counts)
 
 
-class TestHydrogenBondAnalysisMock(object):
+class TestHydrogenBondAnalysisIdeal(object):
 
     kwargs = {
         'donors_sel': 'name O',
@@ -174,7 +174,7 @@ class TestHydrogenBondAnalysisMock(object):
     def hydrogen_bonds(universe):
         h = HydrogenBondAnalysis(
             universe,
-            **TestHydrogenBondAnalysisMock.kwargs
+            **TestHydrogenBondAnalysisIdeal.kwargs
         )
         h.run()
         return h
@@ -227,7 +227,7 @@ class TestHydrogenBondAnalysisMock(object):
     def test_no_attr_hbonds(self, universe):
         hbonds = HydrogenBondAnalysis(universe, **self.kwargs)
         # hydrogen bonds are not computed
-        with pytest.raises(NoDataError, match="No .hbonds"):
+        with pytest.raises(NoDataError, match=".hbonds attribute is None"):
             hbonds.lifetime(tau_max=2, intermittency=1)
 
     def test_logging_step_not_1(self, universe, caplog):
