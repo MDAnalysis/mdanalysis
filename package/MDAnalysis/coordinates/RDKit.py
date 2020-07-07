@@ -159,7 +159,7 @@ class RDKitConverter(base.ConverterBase):
       ``atom.GetPropsAsDict()`` method for the others.
 
     Supported attributes:
-    
+
     +-----------------------+-------------------------------------------+
     | MDAnalysis attribute  | RDKit                                     |
     +=======================+===========================================+
@@ -282,19 +282,15 @@ class RDKitConverter(base.ConverterBase):
             atom_mapper[atom.ix] = index
 
         try:
-            bonds = ag.bonds
-            if (len(bonds) == 0) and (ag.n_atoms > 1):
-                # force guessing bonds
-                raise NoDataError
-        except NoDataError:
+            ag.bonds.values()
+        except (NoDataError, IndexError):
             warnings.warn(
                 "No `bonds` attribute in this AtomGroup. Guessing bonds based"
                 "on atoms coordinates")
             ag.guess_bonds()
-            bonds = ag.bonds
 
         # only keep bonds where both atoms belong to the AtomGroup
-        bonds = bonds.atomgroup_intersection(ag, strict=True)
+        bonds = ag.bonds.atomgroup_intersection(ag, strict=True)
 
         for bond in bonds:
             bond_indices = [atom_mapper[i] for i in bond.indices]
