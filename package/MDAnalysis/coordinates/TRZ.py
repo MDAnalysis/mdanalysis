@@ -141,7 +141,8 @@ class TRZReader(base.ReaderBase):
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
     .. versionchanged:: 2.0.0
-       Now checks for the right `n_atoms` during initilization.
+       Now checks for the correct `n_atoms` during initilization
+       and can raise :exc:`ValueError`.
     """
 
     format = "TRZ"
@@ -163,7 +164,8 @@ class TRZReader(base.ReaderBase):
         Raises
         ------
         ValueError
-           If wrong `n_atoms`/topology file is provided.
+           If `n_atoms` or the number of atoms in the topology file do not
+           match the number of atoms in the trajectory.
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
 
