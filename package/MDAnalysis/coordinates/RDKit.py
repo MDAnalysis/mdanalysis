@@ -295,7 +295,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
             symbol, number = name
         else:
             symbol, number = name[0], ""
-        value = "{:>2}{:<2}".format(symbol, number)
+        value = "{:>2.2}{:<2.2}".format(symbol, number)
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
     getattr(mi, "Set%s" % rdattr)(value)
