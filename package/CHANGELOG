@@ -37,7 +37,7 @@ Enhancements
   * Improved performances when parsing TPR files (PR #2804)
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
   * Added a simple version of the RDKitConverter that handles uncharged 
-    molecules with bond orders/bond types assigned (#2468, PR #2775)
+    molecules with bond orders/bond types assigned (Issue #2468, PR #2775)
 
 Changes
   * Changes development status from Beta to Mature (Issue #2773)
