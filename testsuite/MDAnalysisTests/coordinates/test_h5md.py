@@ -50,6 +50,33 @@ def test_h5md_positions(h5md_universe):
                         [39.713223,  6.127234, 18.284992],
                         decimal=6)
 
+def test_h5md_velocities(h5md_universe):
+    h5md_universe.trajectory[0]
+    assert_almost_equal(h5md_universe.atoms.velocities[0],
+                        [-2.697732, 0.613568, 0.14334752],
+                        decimal=6)
+    h5md_universe.trajectory[1]
+    assert_almost_equal(h5md_universe.atoms.velocities[42],
+                        [-6.8698354, 7.834235 , -8.114698],
+                        decimal=6)
+    h5md_universe.trajectory[2]
+    assert_almost_equal(h5md_universe.atoms.velocities[10000],
+                        [9.799492, 5.631466, 6.852126],
+                        decimal=6)
+
+def test_h5md_forces(h5md_universe):
+    h5md_universe.trajectory[0]
+    assert_almost_equal(h5md_universe.atoms.forces[0],
+                        [20.071287, -155.2285, -96.72112],
+                        decimal=5)
+    h5md_universe.trajectory[1]
+    assert_almost_equal(h5md_universe.atoms.forces[42],
+                        [-4.1959066, -31.31548, 22.663044],
+                        decimal=6)
+    h5md_universe.trajectory[2]
+    assert_almost_equal(h5md_universe.atoms.forces[10000],
+                        [-41.43743, 83.35207, 62.94751],
+                        decimal=5)
 
 def test_h5md_dimensions(h5md_universe):
     # first timestep
