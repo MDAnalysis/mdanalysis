@@ -180,8 +180,8 @@ class TestRDKitConverter(object):
         u = mda.Universe(mol2_molecule)
         with pytest.raises(AttributeError) as e:
             u.atoms.convert_to("RDKIT")
-            assert "`elements` attribute is required for the RDKitConverter" in str(
-                e.value)
+            assert ("`elements` attribute is required for the RDKitConverter"
+                    in str(e.value))
 
     def test_warn_guess_bonds(self, pdb):
         pdb.delete_bonds(pdb.bonds)

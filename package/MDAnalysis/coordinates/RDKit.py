@@ -21,11 +21,11 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""RDKit molecule --- :mod:`MDAnalysis.coordinates.RDKit`
+"""RDKit molecule I/O --- :mod:`MDAnalysis.coordinates.RDKit`
 ================================================================
 
-Read coordinates data from an `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ :class:`rdkit.Chem.rdchem.Mol` with :class:`RDKitReader` 
-into a MDAnalysis Universe. Convert it back to a :class:`rdkit.Chem.rdchem.Mol` with 
+Read coordinates data from an `RDKit`_ :class:`rdkit.Chem.rdchem.Mol` with :class:`RDKitReader` 
+into an MDAnalysis Universe. Convert it back to an :class:`rdkit.Chem.rdchem.Mol` with 
 :class:`RDKitConverter`.
 
 
@@ -52,6 +52,8 @@ Classes
 
 .. autoclass:: RDKitConverter
    :members:
+
+.. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
 
 
 """
@@ -124,7 +126,7 @@ class RDKitReader(memory.MemoryReader):
 
     def __init__(self, filename, **kwargs):
         """Read coordinates from an RDKit molecule.
-        Each conformer in the original RDKit molecule will be read as a frame 
+        Each conformer in the original RDKit molecule will be read as a frame
         in the resulting universe.
 
         Parameters
@@ -145,7 +147,7 @@ class RDKitReader(memory.MemoryReader):
 
 
 class RDKitConverter(base.ConverterBase):
-    """Convert MDAnalysis AtomGroup or Universe to `RDKit <https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol>`_ :class:`rdkit.Chem.rdchem.Mol`.
+    """Convert MDAnalysis AtomGroup or Universe to `RDKit`_ :class:`rdkit.Chem.rdchem.Mol`
 
     Example
     -------
@@ -159,13 +161,15 @@ class RDKitConverter(base.ConverterBase):
 
 
     .. versionadded:: 2.0.0
+
+    .. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
     """
 
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
 
     def convert(self, obj):
-        """Write selection at current trajectory frame to :class:`~rdkit.Chem.rdchem.Mol`.
+        """Write selection at current trajectory frame to :class:`rdkit.Chem.rdchem.Mol`.
 
         Parameters
         -----------
@@ -267,7 +271,7 @@ class RDKitConverter(base.ConverterBase):
 
 
 def _add_mda_attr_to_rdkit(attr, value, mi):
-    """Converts an MDAnalysis atom attribute into the RDKit equivalent and 
+    """Converts an MDAnalysis atom attribute into the RDKit equivalent and
     stores it into an RDKit AtomPDBResidueInfo object.
 
     Parameters
@@ -286,7 +290,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
     if attr == "names":
         # RDKit needs the name to be properly formated for a
         # PDB file (1 letter elements start at col 14)
-        name = re.findall('(\D+|\d+)', value)
+        name = re.findall(r'(\D+|\d+)', value)
         if len(name) == 2:
             symbol, number = name
         else:
