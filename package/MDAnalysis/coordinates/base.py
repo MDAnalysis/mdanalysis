@@ -385,8 +385,11 @@ class Timestep(object):
         return ts
 
     def __getstate__(self):
-        #  save `dt` info so we no longer
-        #  need `_reader` after pickling.
+        #  The `dt` property is lazy loaded.
+        #  We need to load it once from the `_reader` (if exists)
+        #  attached to this timestep to get the dt value.
+        #  This is helpful to (un)pickle a `Timestep` without pickling `_reader`
+        #  and retain its dt value.
         self.dt
 
         state = self.__dict__.copy()
