@@ -177,6 +177,7 @@ Thank you!
    ./documentation_pages/core_modules
    ./documentation_pages/visualization_modules
    ./documentation_pages/lib_modules
+   ./documentation_pages/pickle_universe
    ./documentation_pages/version
    ./documentation_pages/units
    ./documentation_pages/exceptions
