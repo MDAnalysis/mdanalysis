@@ -178,4 +178,4 @@ def test_Chemfiles_pickle():
     frame = chemfiles_io.read()
     frame_pickled = chemfiles_io_pickled.read()
     assert_equal(frame.positions[:],
-                        frame_pickled.positions[:])
+                 frame_pickled.positions[:])
