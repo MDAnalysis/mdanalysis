@@ -74,12 +74,6 @@ try:
 except ImportError:
     pass
 else:
-    RDBONDTYPE = {
-        'AROMATIC': Chem.BondType.AROMATIC,
-        'SINGLE': Chem.BondType.SINGLE,
-        'DOUBLE': Chem.BondType.DOUBLE,
-        'TRIPLE': Chem.BondType.TRIPLE,
-    }
     RDBONDORDER = {
         1: Chem.BondType.SINGLE,
         1.5: Chem.BondType.AROMATIC,
@@ -294,13 +288,7 @@ class RDKitConverter(base.ConverterBase):
 
         for bond in bonds:
             bond_indices = [atom_mapper[i] for i in bond.indices]
-            try:
-                bond_type = bond.type.upper()
-            except AttributeError:
-                # bond type can be a tuple for PDB files
-                bond_type = None
-            bond_type = RDBONDTYPE.get(bond_type, RDBONDORDER.get(
-                bond.order, Chem.BondType.SINGLE))
+            bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
             mol.AddBond(*bond_indices, bond_type)
 
         # sanitization
