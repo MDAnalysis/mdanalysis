@@ -43,7 +43,6 @@ Also free to ask on the MDAnalysis mailing list for help:
 Google groups forbids any name that contains the string `anal'.)
 """
 
-from __future__ import print_function
 from setuptools import setup, Extension, find_packages
 from distutils.ccompiler import new_compiler
 from distutils.sysconfig import customize_compiler
@@ -56,8 +55,8 @@ import warnings
 import platform
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 7):
-    print('MDAnalysis requires Python 2.7 or better. Python {0:d}.{1:d} detected'.format(*
+if sys.version_info[:2] < (3, 6):
+    print('MDAnalysis requires Python 3.6 or better. Python {0:d}.{1:d} detected'.format(*
           sys.version_info[:2]))
     print('Please upgrade your version of Python.')
     sys.exit(-1)
@@ -182,14 +181,8 @@ def get_numpy_include():
     # versions.
     # setuptools forgets to unset numpy's setup flag and we get a crippled
     # version of it unless we do it ourselves.
-    try:
-        # Python 3 renamed the ``__builin__`` module into ``builtins``.
-        # Here we import the python 2 or the python 3 version of the module
-        # with the python 3 name. This could be done with ``six`` but that
-        # module may not be installed at that point.
-        import builtins
-    except ImportError:
-        import __builtin__ as builtins
+    import builtins
+
     builtins.__NUMPY_SETUP__ = False
     try:
         import numpy as np
@@ -531,7 +524,7 @@ if __name__ == '__main__':
     with open(abspath('SUMMARY.txt')) as summary:
         LONG_DESCRIPTION = summary.read()
     CLASSIFIERS = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -539,12 +532,10 @@ if __name__ == '__main__':
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -559,12 +550,10 @@ if __name__ == '__main__':
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
-          'six>=1.4.0',
           'mmtf-python>=1.0.0',
           'joblib>=0.12',
           'scipy>=1.0.0',
           'matplotlib>=1.5.1',
-          'tidynamics>=1.0.0',
           'tqdm>=4.43.0',
     ]
     if not os.name == 'nt':
@@ -619,6 +608,7 @@ if __name__ == '__main__':
                               # plotting in PSA
                   'sklearn',  # For clustering and dimensionality reduction
                               # functionality in encore
+                  'tidynamics>=1.0.0', # For MSD analysis method
               ],
           },
           test_suite="MDAnalysisTests",

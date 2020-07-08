@@ -41,7 +41,6 @@ Also free to ask on the MDAnalysis mailing list for help:
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
-from __future__ import print_function
 from setuptools import setup, find_packages
 from setuptools.command import sdist
 
@@ -79,8 +78,8 @@ class MDA_SDist(sdist.sdist):
 
 
 # Make sure I have the right Python version.
-if sys.version_info[:2] < (2, 7):
-    print("MDAnalysis requires Python 2.7 or better. "
+if sys.version_info[:2] < (3, 6):
+    print("MDAnalysis requires Python 3.6 or better. "
           "Python {0:d}.{1:d} detected".format(*sys.version_info[:2]))
     print("Please upgrade your version of Python.")
     sys.exit(-1)
@@ -93,7 +92,7 @@ if __name__ == '__main__':
         LONG_DESCRIPTION = summary.read()
 
     CLASSIFIERS = [
-        'Development Status :: 4 - Beta',
+        'Development Status :: 6 - Mature',
         'Environment :: Console',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
@@ -101,12 +100,10 @@ if __name__ == '__main__':
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows ',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: C',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Bio-Informatics',
@@ -184,7 +181,6 @@ if __name__ == '__main__':
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
               'hypothesis',
               'psutil>=4.0.2',
-              'tidynamics>=1.0.0'
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)
