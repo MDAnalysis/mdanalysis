@@ -346,22 +346,19 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
 def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     """Infer bond orders and formal charges from a molecule.
 
-    - Step 1
     Since most MD topology files don't explicitely retain informations on bond
     orders or charges, it has to be guessed from the topology. This is done by
     looping other each atom and comparing its expected valence to the current
-    valence, called `delta_v`. If two neighbouring atoms have a common
-    positive delta_v, the bond between them most likely has a bond order of
-    1+delta_v. If an atom doesn't share a delta_v with any of its neighbours,
-    it likely needs a formal charge of -delta_v.
-
-    - Step 2
-    Some atoms can be "mutilated" by a selection (i.e. one of their bonds is
-    cut). The previous step is likely to assign a negative charge to such atoms
-    even if they weren't charged in the original topology. This step converts
-    the resulting charges to higher order bonds when possible, or to radical
-    electrons. This ensures the atomgroup is not artificially charged because
-    of the previous step.
+    valence to get the Number of Unpaired Electrons (NUE).
+    If an atom has a negative NUE, it needs a positive formal charge (-NUE).
+    If two neighbouring atoms have the same NUE, the bond between them most
+    likely has to be increased by the value of NUE.
+    If an atom doesn't share a common NUE with any of its neighbours, it's
+    either a radical (because one its bonds was cut when creating the
+    AtomGroup) or it needs a negative formal charge of -NUE. Since these
+    radical atoms can be detected when looping over the bonds of the AtomGroup,
+    only atoms that are not part of this "terminal_atoms" list will be assigned
+    a negative formal charge.
 
     Parameters
     ----------
@@ -372,70 +369,48 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     terminal_atom_indices : list
         List of terminal atoms indices, i.e. atoms at the edges of a molecule
     """
-    # Step 1
+
     for atom in mol.GetAtoms():
-        # create delta_v for each possible valence
+        # get NUE for each possible valence
         expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
         current_v = atom.GetTotalValence()
-        delta_vs = [expected_v - current_v for expected_v in expected_vs]
+        nue = [expected_v - current_v for expected_v in expected_vs]
 
-        # if there's only one possible valence state and the correpsonding
-        # delta_v is negative, it means we can only add a positive charge to
+        # if there's only one possible valence state and the corresponding
+        # NUE is negative, it means we can only add a positive charge to
         # the atom
-        if (len(delta_vs) == 1) and (delta_vs[0] < 0):
-            charge = -delta_vs[0]
-            atom.SetFormalCharge(charge)
+        if (len(nue) == 1) and (nue[0] < 0):
+            atom.SetFormalCharge(-nue[0])
             mol.UpdatePropertyCache(strict=False)
         else:
             neighbors = atom.GetNeighbors()
-            # check if one of the neighbors has a common delta_v
+            # check if one of the neighbors has a common NUE
             for i, na in enumerate(neighbors, start=1):
-                # create delta_v for the neighbor
+                # create NUE for the neighbor
                 na_expected_vs = PERIODIC_TABLE.GetValenceList(
                     na.GetAtomicNum())
                 na_current = na.GetTotalValence()
-                na_delta = [
+                na_nue = [
                     na_expected - na_current for na_expected in na_expected_vs]
-                # smallest common delta_v, else NaN
-                common_delta = min(set(delta_vs).intersection(na_delta),
-                                   default=np.nan)
-                # common_delta == 0 means we don't need to do anything
-                if common_delta != 0:
-                    # if they have no delta_v in common
-                    if common_delta is np.nan:
-                        # if it's the last neighbor
-                        if i == len(neighbors):
-                            charge = -delta_vs[0]  # negative
-                            atom.SetFormalCharge(charge)
-                            mol.UpdatePropertyCache(strict=False)
-                    # if they both need a supplementary bond
+                # smallest common NUE, else None
+                common_nue = min(set(nue).intersection(na_nue), default=None)
+                # a common NUE of 0 means we don't need to do anything
+                if common_nue != 0:
+                    # if they have no NUE in common
+                    if common_nue is None:
+                        # # if we've already tried all the neighbors without a solution
+                        # if i == len(neighbors):
+                        #     # if it's an edge atom
+                        #     if len(neighbors) <= 1 or atom.GetIdx() in terminal_atom_indices:
+                        #         # negative charge
+                        #         atom.SetFormalCharge(-nue[0])
+                        #         atom.SetNumRadicalElectrons(0)
+                        #         mol.UpdatePropertyCache(strict=False)
+                        #         break
+                        pass
                     else:
                         bond = mol.GetBondBetweenAtoms(
                             atom.GetIdx(), na.GetIdx())
-                        bond.SetBondType(RDBONDORDER[common_delta+1])
+                        bond.SetBondType(RDBONDORDER[common_nue + 1])
                         mol.UpdatePropertyCache(strict=False)
-                        break  # out of neighbors loop
-
-    # Step 2
-    for i in terminal_atom_indices:
-        atom = mol.GetAtomWithIdx(i)
-        charge = atom.GetFormalCharge()
-        neighbors = atom.GetNeighbors()
-        # check if a neighbor atom also bears a charge
-        for i, na in enumerate(neighbors, 1):
-            na_charge = na.GetFormalCharge()
-            if na_charge < 0:
-                # both atoms have a negative charge
-                # convert to higher order bond
-                common_delta = max([charge, na_charge])
-                bond = mol.GetBondBetweenAtoms(atom.GetIdx(), na.GetIdx())
-                bond.SetBondType(RDBONDORDER[-common_delta+1])
-                na.SetFormalCharge(na_charge - common_delta)
-                atom.SetFormalCharge(0)
-                atom.SetNumRadicalElectrons(common_delta - charge)
-                break
-            elif i == len(neighbors):
-                # no neighbor shares a negative charge
-                atom.SetNumRadicalElectrons(-atom.GetFormalCharge())
-                atom.SetFormalCharge(0)
-        mol.UpdatePropertyCache(strict=False)
+                        break
