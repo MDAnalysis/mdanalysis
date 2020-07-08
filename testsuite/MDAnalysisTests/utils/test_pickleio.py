@@ -23,7 +23,7 @@
 import pickle
 
 import pytest
-from numpy.testing import assert_equal
+from numpy.testing import assert_equal, assert_almost_equal
 
 from MDAnalysis.lib.util import anyopen
 from MDAnalysis.lib.picklable_file_io import (
@@ -173,5 +173,6 @@ def test_NCDF_mmap_pickle():
 def test_Chemfiles_pickle():
     chemfiles_io = ChemfilesPicklable(XYZ)
     chemfiles_io_pickled = pickle.loads(pickle.dumps(chemfiles_io))
-    assert_equal(chemfiles_io.read_step(0).positions,
-                 chemfiles_io_pickled.read_step(0).positions)
+    assert_almost_equal(chemfiles_io.read().positions[:],
+                        chemfiles_io_pickled.read().positions[:],
+                        decimal=4)
