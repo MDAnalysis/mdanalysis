@@ -276,10 +276,12 @@ class RDKitConverter(base.ConverterBase):
             atom_mapper[atom.ix] = index
 
         try:
-            ag.bonds.values()
-        except (NoDataError, IndexError):
+            if (len(ag.bonds) == 0) and (ag.n_atoms > 1):
+                # force guessing bonds
+                raise NoDataError
+        except NoDataError:
             warnings.warn(
-                "No `bonds` attribute in this AtomGroup. Guessing bonds based"
+                "No `bonds` attribute in this AtomGroup. Guessing bonds based "
                 "on atoms coordinates")
             ag.guess_bonds()
 
