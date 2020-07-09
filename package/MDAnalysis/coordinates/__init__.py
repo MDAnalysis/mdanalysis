@@ -728,6 +728,7 @@ from . import PDBQT
 from . import PQR
 from . import TRJ
 from . import TRR
+from . import H5MD
 from . import TRZ
 from . import XTC
 from . import XYZ

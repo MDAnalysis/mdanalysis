@@ -1,13 +1,10 @@
-import sys
-import os
-import pyh5md
+import h5py
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.coordinates import base, core
 
 class Timestep(base.Timestep):
     """H5MD Timestep
-
     """
     order = 'C'
 
@@ -33,13 +30,13 @@ class Timestep(base.Timestep):
 
 class H5MDReader(base.ReaderBase):
     """Reader for the H5MD format.
-    
-    At the moment, all data is read directly from file without unit conversion.
-    
+
     Data that is currently read from an H5MD file includes: n_frames, dimensions,
     positions, velocities, forces, data['step']
-    
+
     Data that is not currently read from an H5MD file includes: masses and others
+
+    Currently requires data to be stored in ~particles/trajectory h5md group
     """
     format = 'H5MD'
     units = {'time': None, 'length': None}
@@ -58,17 +55,16 @@ class H5MDReader(base.ReaderBase):
         """
         super(H5MDReader, self).__init__(filename, **kwargs)
         self.filename = filename
-        self.open_trajectory() # also initializes particles_group('trajectory') as self._trajectory
-        self.n_atoms = pyh5md.element(self._trajectory, 'n_atoms').value[()]
+        self.open_trajectory()
+        self.n_atoms = self._file['particles']['trajectory']['n_atoms'][()]
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._read_next_timestep()
 
 
     def open_trajectory(self) :
-        """opens the trajectory file using pyh5md module"""
+        """opens the trajectory file using h5py package"""
         self._frame = -1
-        self._file = pyh5md.File(self.filename, 'r')
-        self._trajectory = self._file.particles_group('trajectory')
+        self._file = h5py.File(self.filename, 'r')
 
     def close(self):
         """close reader"""
@@ -77,7 +73,7 @@ class H5MDReader(base.ReaderBase):
     @property
     def n_frames(self):
         """number of frames in trajectory"""
-        return pyh5md.element(self._trajectory, 'positions').value.shape[0]
+        return self._file['particles']['trajectory']['positions']['value'].shape[0]
 
     def _reopen(self):
         """reopen trajectory"""
@@ -86,7 +82,7 @@ class H5MDReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         try:
-            myframe = pyh5md.element(self._trajectory, 'positions').step[frame]
+            myframe = self._file['particles']['trajectory']['positions']['step'][frame]
         except ValueError:
             raise IOError from None
 
@@ -96,15 +92,17 @@ class H5MDReader(base.ReaderBase):
 
         # sets the Timestep object
         ts.frame = frame
-        ts.data['step'] = pyh5md.element(self._trajectory, 'positions').step[frame]
-        # will add more data
+        ts.data['time'] = self._file['particles']['trajectory']['positions']['time'][frame]
+        ts.data['step'] = self._file['particles']['trajectory']['data']['step']['value'][frame]
+        ts.data['lambda'] = self._file['particles']['trajectory']['data']['lambda']['value'][frame]
+        ts.data['dt'] = self._file['particles']['trajectory']['data']['dt']['value'][frame]
 
         # set frame box dimensions
         # set triclinic box vectors
-        ts._unitcell[:] = pyh5md.element(self._trajectory['box'], 'edges').value[frame, :]
+        ts._unitcell[:] = self._file['particles']['trajectory']['box']['edges']['value'][frame, :]
 
         # set particle positions
-        frame_positions = pyh5md.element(self._trajectory, 'positions').value[frame, :]
+        frame_positions = self._file['particles']['trajectory']['positions']['value'][frame, :]
         n_atoms_now = frame_positions.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
@@ -114,7 +112,7 @@ class H5MDReader(base.ReaderBase):
             ts.positions = frame_positions
 
         # set particle velocities
-        frame_velocities = pyh5md.element(self._trajectory, 'velocities').value[frame, :]
+        frame_velocities = self._file['particles']['trajectory']['velocities']['value'][frame, :]
         n_atoms_now = frame_velocities.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
@@ -124,7 +122,7 @@ class H5MDReader(base.ReaderBase):
             ts.velocities = frame_velocities
 
         # set particle forces
-        frame_forces = pyh5md.element(self._trajectory, 'forces').value[frame, :]
+        frame_forces = self._file['particles']['trajectory']['forces']['value'][frame, :]
         n_atoms_now = frame_forces.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
@@ -132,8 +130,6 @@ class H5MDReader(base.ReaderBase):
                 " topology!"%(frame, n_atoms_now, self.n_atoms))
         else :
             ts.forces = frame_forces
-
-        return ts
 
     def _read_next_timestep(self) :
         """read next frame in trajectory"""
