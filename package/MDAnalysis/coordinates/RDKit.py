@@ -294,8 +294,8 @@ class RDKitConverter(base.ConverterBase):
                 # can happen for terminal atoms.
                 # save the bond atom that is in the atomgroup for later
                 terminal_atom_indices.extend([atom_mapper[i]
-                                            for i in bond.indices
-                                            if i in atom_mapper.keys()])
+                                              for i in bond.indices
+                                              if i in atom_mapper.keys()])
                 # skip adding this bond
                 continue
             bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
@@ -374,7 +374,7 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
         # get NUE for each possible valence
         expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
         current_v = atom.GetTotalValence()
-        nue = [expected_v - current_v for expected_v in expected_vs]
+        nue = [v - current_v for v in expected_vs]
 
         # if there's only one possible valence state and the corresponding
         # NUE is negative, it means we can only add a positive charge to
@@ -382,35 +382,41 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
         if (len(nue) == 1) and (nue[0] < 0):
             atom.SetFormalCharge(-nue[0])
             mol.UpdatePropertyCache(strict=False)
+            continue
         else:
             neighbors = atom.GetNeighbors()
             # check if one of the neighbors has a common NUE
             for i, na in enumerate(neighbors, start=1):
-                # create NUE for the neighbor
+                # get NUE for the neighbor
                 na_expected_vs = PERIODIC_TABLE.GetValenceList(
                     na.GetAtomicNum())
-                na_current = na.GetTotalValence()
-                na_nue = [
-                    na_expected - na_current for na_expected in na_expected_vs]
-                # smallest common NUE, else None
-                common_nue = min(set(nue).intersection(na_nue), default=None)
+                na_current_v = na.GetTotalValence()
+                na_nue = [v - na_current_v for v in na_expected_vs]
+                # smallest common NUE
+                common_nue = min(
+                    min([i for i in nue if i >= 0], default=0),
+                    min([i for i in na_nue if i >= 0], default=0)
+                )
                 # a common NUE of 0 means we don't need to do anything
                 if common_nue != 0:
-                    # if they have no NUE in common
-                    if common_nue is None:
-                        # # if we've already tried all the neighbors without a solution
-                        # if i == len(neighbors):
-                        #     # if it's an edge atom
-                        #     if len(neighbors) <= 1 or atom.GetIdx() in terminal_atom_indices:
-                        #         # negative charge
-                        #         atom.SetFormalCharge(-nue[0])
-                        #         atom.SetNumRadicalElectrons(0)
-                        #         mol.UpdatePropertyCache(strict=False)
-                        #         break
-                        pass
-                    else:
-                        bond = mol.GetBondBetweenAtoms(
-                            atom.GetIdx(), na.GetIdx())
-                        bond.SetBondType(RDBONDORDER[common_nue + 1])
-                        mol.UpdatePropertyCache(strict=False)
-                        break
+                    # increase bond order
+                    bond = mol.GetBondBetweenAtoms(
+                        atom.GetIdx(), na.GetIdx())
+                    order = common_nue + 1
+                    bond.SetBondType(RDBONDORDER[order])
+                    mol.UpdatePropertyCache(strict=False)
+                    if i < len(neighbors):
+                        # recalculate nue for atom
+                        current_v = atom.GetTotalValence()
+                        nue = [v - current_v for v in expected_vs]
+
+        # if the atom still has unpaired electrons
+        current_v = atom.GetTotalValence()
+        nue = [v - current_v for v in expected_vs][0]
+        if nue > 0:
+            # keep the radical if it's a terminal atom
+            # else transform it to a negative charge
+            if atom.GetIdx() not in terminal_atom_indices:
+                atom.SetFormalCharge(-nue)
+                atom.SetNumRadicalElectrons(0)
+                mol.UpdatePropertyCache(strict=False)

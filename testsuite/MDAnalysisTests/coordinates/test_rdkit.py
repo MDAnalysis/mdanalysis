@@ -181,7 +181,7 @@ class TestRDKitConverter(object):
         pdb.delete_bonds(pdb.bonds)
         ag = pdb.select_atoms("resnum 101 and segid A")
         pdb.delete_bonds(ag.bonds)
-        with pytest.warns(UserWarning, 
+        with pytest.warns(UserWarning,
                           match="No `bonds` attribute in this AtomGroup"):
             ag.convert_to("RDKIT")
 
@@ -228,33 +228,42 @@ class TestRDKitConverter(object):
 
 @requires_rdkit
 class TestRDKitFunctions(object):
-    @pytest.mark.parametrize("smi, out", [
-        ("[H]C([H])([H])[H]", "C"),
-        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])", "c1ccccc1"),
-        ("[Cl]-[C](-[H])-[O]", "C(=O)Cl"),
-        ("[H]-[C](-[O])-[N](-[H])-[H]", "C(=O)N"),
-        ("[C](-[H])(-[H])-[C](-[H])-[H]", "C=C"),
-        ("[P](-O)(-O)(-O)-[O]", "P(O)(O)(O)=O"),
-        ("[N]-[C]-[H]", "N#C"),
+    @pytest.mark.parametrize("smi, edges, out", [
+        ("C(-[H])(-[H])(-[H])-[H]", [], "C"),
+        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])", [], "c1ccccc1"),
+        ("[Cl]-[C](-[H])-[O]", [], "C(=O)Cl"),
+        ("[H]-[C](-[O])-[N](-[H])-[H]", [], "C(=O)N"),
+        ("[C](-[H])(-[H])-[C](-[H])-[H]", [], "C=C"),
+        ("[P](-O)(-O)(-O)-[O]", [], "P(O)(O)(O)=O"),
+        ("[P](-[O])(-[O])(-[O])-O", [], "O=P([O-])([O-])O"),
+        ("[N]-[C]-[H]", [], "N#C"),
+        ("[C](-[H])(-[H])-[Cl]", [0], "[H][C]([H])Cl"),
+        ("[C](-[H])-[C](-[H])-[H]", [0], "[H][C]=C([H])[H]"),
+        ("[C](-[H])-[Cl]", [0], "[H][C]Cl"),
+        ("[C](-[O])-[Cl]", [0], "O=[C]Cl"),
+        #("[S](-[O])(-[O])(-[Cl])-[Cl]", [], "O=S(=O)(Cl)Cl"),
+        #("[S](-[O])(-[O])-[Cl]", [0], "O=[S](=O)Cl"),
     ])
-    def test_infer_bond_orders(self, smi, out):
+    def test_infer_bond_orders(self, smi, edges, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        _infer_bo_and_charges(mol)
+        _infer_bo_and_charges(mol, edges)
+        Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
         assert mol.HasSubstructMatch(
             molref) and molref.HasSubstructMatch(mol)
 
-    @pytest.mark.skip(reason="not fully working yet")
     @pytest.mark.parametrize("smi, atom, charge", [
         ("C-[O]", "O", -1),
         ("[N]-[C]-[O]", "O", -1),
         ("[N](-[H])(-[H])(-[H])-[H]", "N", 1),
+        ("[O]-[C](-[H])-[C](-[H])-[H]", "O", -1),
     ])
     def test_infer_charges(self, smi, atom, charge):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
         _infer_bo_and_charges(mol)
+        Chem.SanitizeMol(mol)
         index = mol.GetSubstructMatch(Chem.MolFromSmarts(atom))[0]
         assert mol.GetAtomWithIdx(index).GetFormalCharge() == charge
