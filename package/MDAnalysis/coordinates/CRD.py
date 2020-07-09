@@ -206,7 +206,7 @@ class CRDWriter(base.WriterBase):
         for attr, default in (
                 ('resnames', itertools.cycle(('UNK',))),
                 # Resids *must* be an array because we index it later
-                ('resids', np.ones(n_atoms, dtype=np.int)),
+                ('resids', np.ones(n_atoms, dtype=int)),
                 ('names', itertools.cycle(('X',))),
                 ('tempfactors', itertools.cycle((0.0,))),
         ):
