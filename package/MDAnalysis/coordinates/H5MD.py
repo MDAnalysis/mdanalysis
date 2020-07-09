@@ -31,13 +31,45 @@ class Timestep(base.Timestep):
 class H5MDReader(base.ReaderBase):
     """Reader for the H5MD format.
 
-    Data that is currently read from an H5MD file includes: n_frames, dimensions,
-    positions, velocities, forces, data['step']
+    Currently reads .h5md files with the following HDF5 hierarchy:
+    Notation - (name) is an HDF5 group and [variable] is an HDF5 dataset,
+               <dtype> is dataset datatype
 
-    Data that is not currently read from an H5MD file includes: masses and others
+    H5MD root
+     \-- (h5md)
+     \-- (particles)
+        \-- (trajectory)
+            \-- (box)
+                \-- (edges)
+                    \-- [step] <int32>, gives frame#
+                    \-- [value] <float>, gives box dimensions
+            \-- (positions)
+                \-- [step] <int32>, gives frame #
+                \-- [time] <float>, gives time
+                \-- [value] <float>, gives trajectory positions
+            \-- (velocities)
+                \-- [step] <int32>, gives frame #
+                \-- [time] <float>, gives time
+                \-- [value] <float>, gives trajectory velocities
+            \-- (forces)
+                \-- [step] <int32>, gives frame #
+                \-- [time] <float>, gives time
+                \-- [value] <float>, gives trajectory forces
+            \-- (data)
+                \-- (dt)
+                    \-- [step] <int32>, gives frame #
+                    \-- [value] <float>, gives dt
+                \-- (lambda)
+                    \-- [step] <int32>, gives frame #
+                    \-- [value] <float>, gives lambda
+                \-- (step)
+                    \-- [step] <int32>, gives frame #
+                    \-- [value] <int32>, gives step
+            \-- [n_atoms] <int>, gives # of atoms in trajectory
 
-    Currently requires data to be stored in ~particles/trajectory h5md group
+    Data that is not currently read from an H5MD file includes: masses
     """
+
     format = 'H5MD'
     units = {'time': None, 'length': None}
     # need to add units
@@ -92,6 +124,8 @@ class H5MDReader(base.ReaderBase):
 
         # sets the Timestep object
         ts.frame = frame
+
+        # set data dictionary values
         ts.data['time'] = self._file['particles']['trajectory']['positions']['time'][frame]
         ts.data['step'] = self._file['particles']['trajectory']['data']['step']['value'][frame]
         ts.data['lambda'] = self._file['particles']['trajectory']['data']['lambda']['value'][frame]
