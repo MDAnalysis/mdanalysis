@@ -131,6 +131,8 @@ class H5MDReader(base.ReaderBase):
         else :
             ts.forces = frame_forces
 
+        return ts
+
     def _read_next_timestep(self) :
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
