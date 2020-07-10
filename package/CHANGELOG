@@ -28,8 +28,10 @@ Fixes
     (Issue #2723, PR #2815)
   * TRZReader now checks `n_atoms` on reading. (Issue #2817, PR #2820)
   * TRZWriter now writes `n_atoms` to the file. (Issue #2817, PR #2820)
-  * fixed InterRDF_s function now gives correct results if density=True.
-    (Issue #2811, PR #2812)
+  * rdf.InterRDF_s density keyword documented and now gives correct results for
+    density=True; the keyword was available since 0.19.0 but with incorrect
+    semantics and not documented and did not produce correct results (Issue
+    #2811, PR #2812)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
