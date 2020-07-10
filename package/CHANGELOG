@@ -13,8 +13,8 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium,
-         daveminh, jbarnoud, yuxuanzhuang
+??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang
 
   * 2.0.0
 
@@ -42,6 +42,10 @@ Enhancements
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
 
 Changes
+  * deprecated NumPy type aliases have been replaced with their actual types
+    (see upstream NumPy PR 14882), and our pytest configuration will raise an
+    error for any violation when testing with development NumPy builds 
+    (`1.20.0`)
   * Changes development status from Beta to Mature (Issue #2773)
   * Removes deprecated MDAnalysis.analysis.hole, please use
     MDAnalysis.analysis.hole2.hole instead (Issue #2739)
