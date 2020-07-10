@@ -13,8 +13,10 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
-??/??/?? richardjgowers, IAlibay, hmacdope, orbeckst, cbouy, lilyminium,
-         daveminh, jbarnoud, yuxuanzhuang
+
+??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang
+
 
   * 2.0.0
 
@@ -26,6 +28,9 @@ Fixes
   * Testsuite does not any more matplotlib.use('agg') (#2191)
   * In ChainReader, read_frame does not trigger change of iterating position. 
     (Issue #2723, PR #2815)
+  * TRZReader now checks `n_atoms` on reading. (Issue #2817, PR #2820)
+  * TRZWriter now writes `n_atoms` to the file. (Issue #2817, PR #2820)
+
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
@@ -42,6 +47,10 @@ Enhancements
     (PR #2723)
 
 Changes
+  * deprecated NumPy type aliases have been replaced with their actual types
+    (see upstream NumPy PR 14882), and our pytest configuration will raise an
+    error for any violation when testing with development NumPy builds 
+    (`1.20.0`)
   * Changes development status from Beta to Mature (Issue #2773)
   * Removes deprecated MDAnalysis.analysis.hole, please use
     MDAnalysis.analysis.hole2.hole instead (Issue #2739)

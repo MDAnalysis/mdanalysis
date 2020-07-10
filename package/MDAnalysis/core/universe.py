@@ -307,9 +307,9 @@ class Universe(object):
         current system dimensions (simulation unit cell, if set in the
         trajectory)
     atoms, residues, segments
-        master Groups for each topology level
+        principal Groups for each topology level
     bonds, angles, dihedrals
-        master ConnectivityGroups for each connectivity type
+        principal ConnectivityGroups for each connectivity type
 
     .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.

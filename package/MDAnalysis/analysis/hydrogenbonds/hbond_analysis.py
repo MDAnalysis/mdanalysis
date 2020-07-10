@@ -514,7 +514,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         indices /= self.step
 
         counts = np.zeros_like(self.frames)
-        counts[indices.astype(np.int)] = tmp_counts
+        counts[indices.astype(int)] = tmp_counts
         return counts
 
     def count_by_type(self):
@@ -532,11 +532,11 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         acceptor atoms in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.hbonds[:, 1].astype(np.int)]
-        a = self.u.atoms[self.hbonds[:, 3].astype(np.int)]
+        d = self.u.atoms[self.hbonds[:, 1].astype(int)]
+        a = self.u.atoms[self.hbonds[:, 3].astype(int)]
 
         tmp_hbonds = np.array([d.resnames, d.types, a.resnames, a.types],
-                              dtype=np.str).T
+                              dtype=str).T
         hbond_type, type_counts = np.unique(
             tmp_hbonds, axis=0, return_counts=True)
         hbond_type_list = []
@@ -561,9 +561,9 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         in a hydrogen bond.
         """
 
-        d = self.u.atoms[self.hbonds[:, 1].astype(np.int)]
-        h = self.u.atoms[self.hbonds[:, 2].astype(np.int)]
-        a = self.u.atoms[self.hbonds[:, 3].astype(np.int)]
+        d = self.u.atoms[self.hbonds[:, 1].astype(int)]
+        h = self.u.atoms[self.hbonds[:, 2].astype(int)]
+        a = self.u.atoms[self.hbonds[:, 3].astype(int)]
 
         tmp_hbonds = np.array([d.ids, h.ids, a.ids]).T
         hbond_ids, ids_counts = np.unique(tmp_hbonds, axis=0,
