@@ -424,7 +424,7 @@ class ChainReader(base.ProtoReader):
 
         #  the ts.frame of each reader is set to the chained frame index during
         #  iteration, thus we need to rewind the readers that have been used.
-        #  PR #2723 
+        #  PR #2723
         for reader in state['readers'][:self.__active_reader_index + 1]:
             reader.rewind()
 
