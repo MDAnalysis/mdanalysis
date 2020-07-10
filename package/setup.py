@@ -609,7 +609,6 @@ if __name__ == '__main__':
                   'sklearn',  # For clustering and dimensionality reduction
                               # functionality in encore
                   'tidynamics>=1.0.0', # For MSD analysis method
-                  'rdkit>=2020.03.1', # For chemoinformatics analysis
               ],
           },
           test_suite="MDAnalysisTests",
