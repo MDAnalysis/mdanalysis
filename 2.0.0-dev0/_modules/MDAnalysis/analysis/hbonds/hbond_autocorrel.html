@@ -565,12 +565,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
             <span class="k">return</span>
 
-        <span class="n">master_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="n">main_results</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                                                        <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span><span class="p">),</span>
                                           <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
         <span class="c1"># for normalising later</span>
-        <span class="n">counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">master_results</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">main_results</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_starts</span><span class="p">,</span>
                                             <span class="bp">self</span><span class="o">.</span><span class="n">_stops</span><span class="p">)),</span> <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nruns</span><span class="p">,</span>
@@ -580,19 +580,19 @@
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_single_run</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">stop</span><span class="p">))</span>
 
             <span class="n">nresults</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">nresults</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">master_results</span><span class="p">):</span>
-                <span class="n">master_results</span> <span class="o">+=</span> <span class="n">results</span>
+            <span class="k">if</span> <span class="n">nresults</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">main_results</span><span class="p">):</span>
+                <span class="n">main_results</span> <span class="o">+=</span> <span class="n">results</span>
                 <span class="n">counter</span> <span class="o">+=</span> <span class="mf">1.0</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">master_results</span><span class="p">[:</span><span class="n">nresults</span><span class="p">]</span> <span class="o">+=</span> <span class="n">results</span>
+                <span class="n">main_results</span><span class="p">[:</span><span class="n">nresults</span><span class="p">]</span> <span class="o">+=</span> <span class="n">results</span>
                 <span class="n">counter</span><span class="p">[:</span><span class="n">nresults</span><span class="p">]</span> <span class="o">+=</span> <span class="mf">1.0</span>
 
-        <span class="n">master_results</span> <span class="o">/=</span> <span class="n">counter</span>
+        <span class="n">main_results</span> <span class="o">/=</span> <span class="n">counter</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span>
-            <span class="nb">len</span><span class="p">(</span><span class="n">master_results</span><span class="p">),</span>
+            <span class="nb">len</span><span class="p">(</span><span class="n">main_results</span><span class="p">),</span>
             <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_skip</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">master_results</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solution</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_results</span></div>
 
     <span class="k">def</span> <span class="nf">_single_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Perform a single pass of the trajectory&quot;&quot;&quot;</span>
