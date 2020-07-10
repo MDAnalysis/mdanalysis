@@ -608,9 +608,9 @@ class TestAtomGroupProperties(object):
                            'charges', 'masses', 'radii', 'bfactors',
                            'occupancies'))
         u.atoms.occupancies = 1.0
-        master = u.atoms
+        main = u.atoms
         idx = [0, 1, 4, 7, 11, 14]
-        return master[idx]
+        return main[idx]
 
     attributes = (('name', 'names', 'string'),
                   ('type', 'types', 'string'),
