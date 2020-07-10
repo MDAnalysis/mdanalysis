@@ -422,8 +422,9 @@ class ChainReader(base.ProtoReader):
         #  save ts temporarily otherwise it will be changed during rewinding.
         state['ts'] = self.ts.__deepcopy__()
 
-        #  the ts.frame of each reader is set to the chained frame during
+        #  the ts.frame of each reader is set to the chained frame index during
         #  iteration, thus we need to rewind the readers that have been used.
+        #  PR #2723 
         for reader in state['readers'][:self.__active_reader_index + 1]:
             reader.rewind()
 

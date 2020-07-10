@@ -742,24 +742,19 @@ class Universe(object):
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
 
-    @classmethod
-    def _unpickle_U(cls, top, traj, anchor):
-        """Special method used by __reduce__ to deserialise a Universe"""
-        # top is a Topology object at this point, but Universe can handle that
-        u = cls(top)
-        u.anchor_name = anchor
-        # maybe this is None, but that's still cool
-        u.trajectory = traj
-
-        return u
-
-    def __reduce__(self):
-        # Can't quite use __setstate__/__getstate__ so go via __reduce__
+    def __getstate__(self):
         # Universe's two "legs" of topology and traj both serialise themselves
         # the only other state held in Universe is anchor name?
-        return (self._unpickle_U, (self._topology,
-                                   self._trajectory,
-                                   self.anchor_name))
+        return self.anchor_name, self._topology, self._trajectory
+
+    def __setstate__(self, args):
+        self._anchor_name = args[0]
+        self.make_anchor()
+
+        self._topology = args[1]
+        _generate_from_topology(self)
+
+        self._trajectory = args[2]
 
     # Properties
     @property
