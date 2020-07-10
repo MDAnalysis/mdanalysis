@@ -126,7 +126,7 @@ class Config(object):
     def __init__(self, fname='setup.cfg'):
         fname = abspath(fname)
         if os.path.exists(fname):
-            self.config = configparser.SafeConfigParser()
+            self.config = configparser.ConfigParser()
             self.config.read(fname)
 
     def get(self, option_name, default=None):
