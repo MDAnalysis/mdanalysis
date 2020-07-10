@@ -28,6 +28,8 @@ This module contains two classes to calculate radial
 `pair distribution functions`_ (`radial distribution functions`_ or "RDF").
 The RDF :math:`g_{ab}(r)` between types of particles :math:`a` and :math:`b` is
 
+.. _equation-gab:
+
 .. math::
 
    g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
@@ -58,9 +60,11 @@ the first solvation shell :math:`N(r_1)` where :math:`r_1` is the position of
 the first minimum in :math:`g(r)`.
 
 In :class:`InterRDF_s`, we provide an option `density`. When `density` is
-`True`, it will return the RDF :math:`g_{ab}(r)`; when `density` is False`,
-it will return the density of particle :math:`b` in a shell at distance
-:math:`r` around a :math:`a` particle, which is
+``False``, it will return the RDF :math:`g_{ab}(r)`; when `density` is
+``True``, it will return the density of particle :math:`b` in a shell at
+distance :math:`r` around a :math:`a` particle, which is
+
+.. _equation-nab:
 
 .. math::
    n_{ab}(r) = \rho g_{ab}(r)
@@ -317,9 +321,16 @@ class InterRDF_s(AnalysisBase):
     range : tuple or list (optional)
           The size of the RDF [0.0, 15.0]
     density : bool (optional)
-          Calculate :math:`g_{ab}(r)` if set to ``True``; or calculate
-          :math:`n_{ab}(r)` if set to ``false``; the default is
-          ``True``.
+          ``False``: calculate :math:`g_{ab}(r)`; ``True``: calculate
+          the true :ref:`single particle density<equation-nab>`
+          :math:`n_{ab}(r)`. The default is ``False``.
+
+          .. versionadded:: 1.0.1
+
+             This keyword was available since 0.19.0 but was not
+             documented. Furthermore, it had the opposite
+             meaning. Since 1.0.1 it is officially supported as
+             documented.
 
 
     Example
@@ -370,7 +381,7 @@ class InterRDF_s(AnalysisBase):
 
     """
     def __init__(self, u, ags,
-                 nbins=75, range=(0.0, 15.0), density=True, **kwargs):
+                 nbins=75, range=(0.0, 15.0), density=False, **kwargs):
         super(InterRDF_s, self).__init__(u.universe.trajectory, **kwargs)
 
         # List of pairs of AtomGroups
@@ -428,9 +439,9 @@ class InterRDF_s(AnalysisBase):
             density = 1 / box_vol
 
             if self._density:
-                rdf.append(self.count[i] / (density * vol * self.n_frames))
-            else:
                 rdf.append(self.count[i] / (vol * self.n_frames))
+            else:
+                rdf.append(self.count[i] / (density * vol * self.n_frames))
 
         self.rdf = rdf
         self.indices = indices

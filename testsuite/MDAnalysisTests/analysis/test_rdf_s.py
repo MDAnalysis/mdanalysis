@@ -102,14 +102,17 @@ def test_cdf(rdf):
 
 
 @pytest.mark.parametrize("density, value", [
-    (True, 26551.55088100731),
-    (False, 0.021915460340071267)])
+    (None, 26551.55088100731),    # default, like False (no kwarg, see below)
+    (False, 26551.55088100731),
+    (True, 0.021915460340071267)])
 def test_density(u, sels, density, value):
-    rdf = InterRDF_s(u, sels, density=density).run()
+    kwargs = {'density': density} if density is not None else {}
+    rdf = InterRDF_s(u, sels, **kwargs).run()
     assert_almost_equal(max(rdf.rdf[0][0][0]), value)
-    if density:
+    if not density:
         s1 = u.select_atoms('name ZND and resid 289')
         s2 = u.select_atoms(
                 'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
         rdf_ref = InterRDF(s1, s2).run()
         assert_almost_equal(rdf_ref.rdf, rdf.rdf[0][0][0])
+
