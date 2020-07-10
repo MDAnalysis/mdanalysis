@@ -174,7 +174,7 @@ if __name__ == '__main__':
                          'data/windows/*',
                          'data/*.itp',
                          'data/*.coor',
-                         'data/*.h5',
+                         'data/*.h5md',
                         ],
           },
           install_requires=[
