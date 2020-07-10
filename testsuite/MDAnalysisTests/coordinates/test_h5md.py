@@ -2,10 +2,72 @@ import pytest
 from numpy.testing import assert_almost_equal, assert_array_equal
 import numpy as np
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import H5MD_xvf, TPR_xvf
-from MDAnalysis.coordinates import H5MD
+from MDAnalysisTests.datafiles import H5MD_xvf, TPR_xvf, COORDINATES_TOPOLOGY, COORDINATES_H5MD
+from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
+                                              BaseReference, BaseWriterTest,
+                                              assert_timestep_almost_equal)
 
 
+class H5MDReference(BaseReference):
+    """Reference synthetic trajectory that was
+    copied from test_xdr.TRRReference"""
+    def __init__(self):
+        super(H5MDReference, self).__init__()
+        self.trajectory = COORDINATES_H5MD
+        self.topology = COORDINATES_TOPOLOGY
+        self.reader = mda.coordinates.H5MD.H5MDReader
+        self.ext = 'h5md'
+        self.prec = 3
+        self.changing_dimensions = True
+
+        self.first_frame.velocities = self.first_frame.positions / 10
+        self.first_frame.forces = self.first_frame.positions / 100
+
+        self.second_frame.velocities = self.second_frame.positions / 10
+        self.second_frame.forces = self.second_frame.positions / 100
+
+        self.last_frame.velocities = self.last_frame.positions / 10
+        self.last_frame.forces = self.last_frame.positions / 100
+
+        self.jump_to_frame.velocities = self.jump_to_frame.positions / 10
+        self.jump_to_frame.forces = self.jump_to_frame.positions / 100
+
+    def iter_ts(self, i):
+        ts = self.first_frame.copy()
+        ts.positions = 2**i * self.first_frame.positions
+        ts.velocities = ts.positions / 10
+        ts.forces = ts.positions / 100
+        ts.time = i
+        ts.frame = i
+        return ts
+
+class TestH5MDReader(MultiframeReaderTest):
+    """Tests H5MDReader with MultiframeReaderTest.
+    get_writer tests are marked with expected to fail since
+    H5MDWriter is not implemented yet."""
+    @staticmethod
+    @pytest.fixture()
+    def ref():
+        return H5MDReference()
+
+    @pytest.mark.xfail(reason='H5MD writer not implemented yet')
+    def test_get_writer_1(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test-writer.' + ref.ext
+            with reader.Writer(outfile) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+                assert_equal(W.n_atoms, reader.n_atoms)
+
+    @pytest.mark.xfail(reason='H5MD writer not implemented yet')
+    def test_get_writer_2(self, ref, reader, tmpdir):
+        with tmpdir.as_cwd():
+            outfile = 'test-writer.' + ref.ext
+            with reader.Writer(outfile, n_atoms=100) as W:
+                assert_equal(isinstance(W, ref.writer), True)
+                assert_equal(W.n_atoms, 100)
+
+
+"""The tests below test an example trajectory H5MD_xvf"""
 @pytest.fixture
 def h5md_universe():
     return mda.Universe(TPR_xvf, H5MD_xvf)
@@ -25,7 +87,6 @@ def test_h5md_positions(h5md_universe):
     assert_almost_equal(h5md_universe.atoms.positions[10000],
                         [44.117805, 50.442093, 23.299038],
                         decimal=6)
-
     # second timestep tests
     h5md_universe.trajectory[1]
     assert_almost_equal(h5md_universe.atoms.positions[0],
@@ -37,7 +98,6 @@ def test_h5md_positions(h5md_universe):
     assert_almost_equal(h5md_universe.atoms.positions[10000],
                         [45.869278, 5.0342298, 25.460655],
                         decimal=6)
-
     # third timestep tests
     h5md_universe.trajectory[2]
     assert_almost_equal(h5md_universe.atoms.positions[0],
@@ -80,25 +140,28 @@ def test_h5md_forces(h5md_universe):
 
 def test_h5md_dimensions(h5md_universe):
     # first timestep
-    ts = h5md_universe.trajectory[0]
-    assert_almost_equal(ts.dimensions,
+    h5md_universe.trajectory[0]
+    assert_almost_equal(h5md_universe.trajectory.ts.dimensions,
                         [52.763, 52.763, 52.763, 90., 90., 90.],
                         decimal=6)
     # second timestep
-    ts = h5md_universe.trajectory[1]
-    assert_almost_equal(ts.dimensions,
+    h5md_universe.trajectory[1]
+    assert_almost_equal(h5md_universe.trajectory.ts.dimensions,
                         [52.807877, 52.807877, 52.807877, 90., 90., 90.],
                         decimal=6)
     # third timestep
-    ts = h5md_universe.trajectory[2]
-    assert_almost_equal(ts.dimensions,
+    h5md_universe.trajectory[2]
+    assert_almost_equal(h5md_universe.trajectory.ts.dimensions,
                         [52.839806, 52.839806, 52.839806, 90., 90., 90.],
                         decimal=6)
 
 def test_h5md_data_step(h5md_universe):
-    assert h5md_universe.trajectory[0].data['step'] == 0
-    assert h5md_universe.trajectory[1].data['step'] == 1
-    assert h5md_universe.trajectory[2].data['step'] == 2
+    h5md_universe.trajectory[0]
+    assert h5md_universe.trajectory.ts.data['step'] == 0
+    h5md_universe.trajectory[1]
+    assert h5md_universe.trajectory.ts.data['step'] == 25000
+    h5md_universe.trajectory[2]
+    assert h5md_universe.trajectory.ts.data['step'] == 50000
 
 def test_rewind(h5md_universe):
     h5md_universe.trajectory.rewind()
@@ -118,7 +181,6 @@ def test_jump_last_frame(h5md_universe):
 def test_slice(h5md_universe, start, stop, step):
     frames = [h5md_universe.trajectory.ts.frame for ts in h5md_universe.trajectory[start:stop:step]]
     assert_array_equal(frames, np.arange(start, stop, step))
-
 
 @pytest.mark.parametrize("array_like", [list, np.array])
 def test_array_like(h5md_universe, array_like):
