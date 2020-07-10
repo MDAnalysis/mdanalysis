@@ -351,14 +351,13 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     looping other each atom and comparing its expected valence to the current
     valence to get the Number of Unpaired Electrons (NUE).
     If an atom has a negative NUE, it needs a positive formal charge (-NUE).
-    If two neighbouring atoms have the same NUE, the bond between them most
-    likely has to be increased by the value of NUE.
-    If an atom doesn't share a common NUE with any of its neighbours, it's
-    either a radical (because one its bonds was cut when creating the
-    AtomGroup) or it needs a negative formal charge of -NUE. Since these
-    radical atoms can be detected when looping over the bonds of the AtomGroup,
-    only atoms that are not part of this "terminal_atoms" list will be assigned
-    a negative formal charge.
+    If two neighbouring atoms have UEs, the bond between them most
+    likely has to be increased by the value of the smallest NUE.
+    If after this process, an atom still has UEs, it's either a radical
+    (because one its bonds was cut when creating the AtomGroup) or it needs a
+    negative formal charge of -NUE. Since these radical atoms can be detected
+    when looping over the bonds of the AtomGroup, only atoms that are not part
+    of this "terminal_atoms" list will be assigned a negative formal charge.
 
     Parameters
     ----------
