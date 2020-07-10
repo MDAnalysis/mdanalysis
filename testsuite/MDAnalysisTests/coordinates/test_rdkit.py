@@ -241,8 +241,9 @@ class TestRDKitFunctions(object):
         ("[C](-[H])-[C](-[H])-[H]", [0], "[H][C]=C([H])[H]"),
         ("[C](-[H])-[Cl]", [0], "[H][C]Cl"),
         ("[C](-[O])-[Cl]", [0], "O=[C]Cl"),
-        #("[S](-[O])(-[O])(-[Cl])-[Cl]", [], "O=S(=O)(Cl)Cl"),
-        #("[S](-[O])(-[O])-[Cl]", [0], "O=[S](=O)Cl"),
+        #("[S](-[O])(-[O])(-[O]-C)-C", [], "COS(=O)(=O)C"),
+        #("[S](-[O])(-[O])-C", [0], "O=[S](=O)C"),
+        #("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]", [], "CNC(N)=[N+](-[H])-[H]"),
     ])
     def test_infer_bond_orders(self, smi, edges, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
