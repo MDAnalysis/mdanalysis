@@ -57,5 +57,11 @@ functionality should first read the :ref:`Trajectory API`.
 
    coordinates/base
    coordinates/core
+   coordinates/pickle_universe
    coordinates/chain
    coordinates/XDR
+
+In particular, all trajectory readers have to be 
+:ref:`serializable<serialization>` and they should pass all tests
+available in the ``MDAnalysisTests.coordinates.base.MultiframeReaderTest`` 
+or ``MDAnalysisTests.coordinates.base.BaseReaderTest``.

@@ -388,7 +388,7 @@ class Timestep(object):
         #  The `dt` property is lazy loaded.
         #  We need to load it once from the `_reader` (if exists)
         #  attached to this timestep to get the dt value.
-        #  This is helpful to (un)pickle a `Timestep` without pickling `_reader`
+        #  This will help to (un)pickle a `Timestep` without pickling `_reader`
         #  and retain its dt value.
         self.dt
 
