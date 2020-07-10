@@ -307,7 +307,7 @@ class Universe(object):
         current system dimensions (simulation unit cell, if set in the
         trajectory)
     atoms, residues, segments
-        main Groups for each topology level
+        principal Groups for each topology level
     bonds, angles, dihedrals
         main ConnectivityGroups for each connectivity type
 
