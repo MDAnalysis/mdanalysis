@@ -25,8 +25,10 @@ def create_test_trj(universe, filename):
                                            step_from=trajectory_positions, store='time', time=True)
         trajectory_n_atoms = pyh5md.element(trajectory, 'n_atoms', store='fixed',
                                             data=universe.atoms.n_atoms)
-        data_dt = pyh5md.element(trajectory, 'data/dt', store='fixed',
-                                 data=universe.trajectory.ts.dt)
+        data_step = pyh5md.element(trajectory, 'data/step', store='time', data=universe.trajectory.ts.data['step'])
+        data_lambda = pyh5md.element(trajectory, 'data/lambda', store='time', data=universe.trajectory.ts.data['lambda'])
+        data_dt = pyh5md.element(trajectory, 'data/dt', store='time', data=universe.trajectory.ts.data['dt'])
+
         trajectory.create_box(dimension=3, boundary=['periodic', 'periodic', 'periodic'],
                               store='time', data=universe.trajectory.ts.triclinic_dimensions,
                               step_from=trajectory_positions)
@@ -36,6 +38,9 @@ def create_test_trj(universe, filename):
             trajectory_positions.append(universe.trajectory.ts.positions, ts.frame, time=ts.time)
             trajectory_velocities.append(universe.trajectory.ts.velocities, ts.frame, time=ts.time)
             trajectory_forces.append(universe.trajectory.ts.forces, ts.frame, time=ts.time)
+            data_step.append(universe.trajectory.ts.data['step'], ts.frame, time=ts.time)
+            data_lambda.append(universe.trajectory.ts.data['lambda'], ts.frame, time=ts.time)
+            data_dt.append(universe.trajectory.ts.data['dt'], ts.frame, time=ts.time)
 
 def main():
     pdb = COORDINATES_TOPOLOGY
