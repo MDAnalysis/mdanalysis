@@ -258,7 +258,7 @@ class TestRDKitFunctions(object):
         ("C-[O]", "O", -1),
         ("[N]-[C]-[O]", "O", -1),
         ("[N](-[H])(-[H])(-[H])-[H]", "N", 1),
-        ("[O]-[C](-[H])-[C](-[H])-[H]", "O", -1),
+        #("[O]-[C](-[H])-[C](-[H])-[H]", "O", -1),
     ])
     def test_infer_charges(self, smi, atom, charge):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
