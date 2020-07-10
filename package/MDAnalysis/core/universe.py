@@ -309,7 +309,7 @@ class Universe(object):
     atoms, residues, segments
         principal Groups for each topology level
     bonds, angles, dihedrals
-        main ConnectivityGroups for each connectivity type
+        principal ConnectivityGroups for each connectivity type
 
     .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
