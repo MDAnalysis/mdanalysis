@@ -110,7 +110,6 @@ Macromolecules
    analysis/gnm
    analysis/helanal
    analysis/helix_analysis
-   analysis/rdf
    analysis/dihedrals
 
 Liquids
