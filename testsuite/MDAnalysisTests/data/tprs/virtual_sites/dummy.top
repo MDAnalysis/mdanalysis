@@ -56,6 +56,42 @@ TEST 	    	1
 ; Site   funct    from
 15        1        1     2     3     4
 
+[ pairs ]
+; i  j funct v w
+ 14 15 1     1 1
+; i  j funct fudgeQQ qi qj v w
+ 15 16 2     1       1  1  1 1
+
+[ pairs_nb ]
+; i  j funct qi qj v w
+ 16 17 1     1  1  1 1
+
+[ position_restraints ]
+; i funct kx ky kz
+  1 1     1  1  1
+; i funct g r k
+  2 2     1 1 1
+
+[ distance_restraints ]
+; i j funct type label low up1 up2 weight
+  3 4 1     1    1     1   1   1   1
+
+[ dihedral_restraints ]
+; i j k l funct phi0 delta-phi k
+  4 5 6 7 1     1    1         1
+
+[ orientation_restraints ]
+; i j funct exp label alpha c obs weigth
+  3 4 1     1   1     1     1 1   1
+
+[ angle_restraints ]
+; i j  k  l funct theta0 kc multiplicity
+  8 9 10 11 1     1      1  1
+
+[ angle_restraints_z ]
+; i j funct theta0 kc multiplicity
+  8 9 1     1      1  1
+
 [bonds]
 ; i j 	funct 	length 	force.c.
   1 2   1       0.470   1250        ; regular bond
@@ -114,6 +150,9 @@ TEST 	    	1
   4  5  6  7  2     1 1 1 1           ; improper dihedrals (4 params)
   6  7  8  9  4     1 1 1 1 1 1       ; periodic improper dihedral
 
+[ exclusions ] 
+; i others
+  1 13  14  15
 
 [system]
 Topology test
