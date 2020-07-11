@@ -47,8 +47,6 @@ BONDED_TPRS = (
     TPR2019B3_bonded,
     TPR2020_bonded,
     TPR2020_double_bonded,
-)
-VIRTUAL_SITES_TPRS = (
     TPR_VS_2020,
 )
 
@@ -238,13 +236,6 @@ def test_settle(bonds_water):
     assert len(bonds_water) == 202
     # The last index corresponds to the last water atom
     assert bonds_water[-1][1] == 2262
-
-
-@pytest.mark.parametrize('tpr_path', VIRTUAL_SITES_TPRS)
-def test_virtual_sites(tpr_path):
-    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
-    topology = parser.parse()
-    assert topology.n_atoms
 
 
 @pytest.mark.parametrize('tpr_path, expected_exception', (
