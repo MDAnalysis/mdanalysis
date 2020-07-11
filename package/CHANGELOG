@@ -39,6 +39,7 @@ Fixes
   * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError 
     was thrown when finding D-H pairs via the topology if `hydrogens` was an 
     empty AtomGroup (Issue #2848)
+  * Fixed performance regression on select_atoms for string selections (#2751)
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
