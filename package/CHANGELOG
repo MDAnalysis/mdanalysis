@@ -19,6 +19,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * ResidueAttrs now have Atom as a target class by default; ICodes and 
+    Molnums now have default target_classes (#2803, PR #2805)
   * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
     error (Issue #2765)
   * TOPParser no longer guesses elements when missing atomic number records
