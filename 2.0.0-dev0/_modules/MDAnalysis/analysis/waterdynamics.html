@@ -687,11 +687,23 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       The ``nproc`` keyword was removed as it linked to a portion of code that</span>
 <span class="sd">       may have failed in some cases.</span>
+<span class="sd">    .. deprecated:: 1.0.1</span>
+<span class="sd">       ``waterdynamics.HydrogenBondLifetimes`` is deprecated and will be</span>
+<span class="sd">       removed in 2.0.0. Instead, please use (available in 2.0.0)</span>
+<span class="sd">       MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">dtmax</span><span class="p">,</span>
                  <span class="n">nproc</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This class is deprecated. &quot;</span>
+            <span class="s2">&quot;Instrad, please use&quot;</span>
+            <span class="s2">&quot;MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime&quot;</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span>
+        <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection1</span> <span class="o">=</span> <span class="n">selection1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selection2</span> <span class="o">=</span> <span class="n">selection2</span>

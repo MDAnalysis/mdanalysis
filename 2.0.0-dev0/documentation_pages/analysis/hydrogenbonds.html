@@ -337,12 +337,54 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>It is highly recommended that a topology with bonding information is used to generate the universe, e.g <cite>PSF</cite>, <cite>TPR</cite>, or
-<cite>PRMTOP</cite> files. This is the only method by which it can be guaranteed that donor-hydrogen pairs are correctly identified.
-However, if, for example, a <cite>PDB</cite> file is used instead, a <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> may be provided along with a
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> and the donor-hydrogen pairs will be identified via a distance cutoff, <code class="xref py py-attr docutils literal notranslate"><span class="pre">d_h_cutoff</span></code>:</p>
+<p>To calculate the hydrogen bonds between different groups, for example a
+protein and water, one can use the <code class="xref py py-attr docutils literal notranslate"><span class="pre">between</span></code> keyword. The
+following will find protein-water hydrogen bonds but not protein-protein
+or water-water hydrogen bonds:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="p">(</span>
+  <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+
+<span class="n">hbonds</span> <span class="o">=</span> <span class="n">HBA</span><span class="p">(</span>
+  <span class="n">universe</span><span class="o">=</span><span class="n">u</span><span class="p">,</span>
+  <span class="n">between</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;resname TIP3&#39;</span><span class="p">,</span> <span class="s1">&#39;protein&#39;</span><span class="p">]</span>
+  <span class="p">)</span>
+
+<span class="n">protein_hydrogens_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_hydrogens</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+<span class="n">protein_acceptors_sel</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">guess_acceptors</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
+
+<span class="n">water_hydrogens_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name H1 H2&quot;</span>
+<span class="n">water_acceptors_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name OH2&quot;</span>
+
+<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_hydrogens_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_hydrogens_sel</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_acceptors_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_acceptors_sel</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>It is further possible to compute hydrogen bonds between several groups with
+with use of <code class="xref py py-attr docutils literal notranslate"><span class="pre">between</span></code>. If in the above example,
+<cite>between=[[‘resname TIP3’, ‘protein’], [‘protein’, ‘protein’]]</cite>, all
+protein-water and protein-protein hydrogen bonds will be found, but
+no water-water hydrogen bonds.</p>
+<p>In order to compute the hydrogen bond lifetime, after finding hydrogen bonds
+one can use the <code class="xref py py-attr docutils literal notranslate"><span class="pre">lifetime</span></code> function:</p>
+<blockquote>
+<div>…
+hbonds.run()
+tau_timeseries, timeseries = hbonds.lifetime()</div></blockquote>
+<p>It is <strong>highly recommended</strong> that a topology with bond information is used to
+generate the universe, e.g <cite>PSF</cite>, <cite>TPR</cite>, or <cite>PRMTOP</cite> files. This is the only
+method by which it can be guaranteed that donor-hydrogen pairs are correctly
+identified. However, if, for example, a <cite>PDB</cite> file is used instead, a
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> may be provided along with a <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> and the
+donor-hydrogen pairs will be identified via a distance cutoff,
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">d_h_cutoff</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="p">(</span>
+  <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span><span class="p">)</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -361,22 +403,39 @@ However, if, for example, a <cite>PDB</cite> file is used instead, a <code class
 <h2>4.3.1.4. The class and its methods<a class="headerlink" href="#the-class-and-its-methods" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hydrogenbonds.hbond_analysis.</code><code class="descname">HydrogenBondAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>donors_sel=None</em>, <em>hydrogens_sel=None</em>, <em>acceptors_sel=None</em>, <em>d_h_cutoff=1.2</em>, <em>d_a_cutoff=3.0</em>, <em>d_h_a_angle_cutoff=150</em>, <em>update_selections=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.hydrogenbonds.hbond_analysis.</code><code class="descname">HydrogenBondAnalysis</code><span class="sig-paren">(</span><em>universe</em>, <em>donors_sel=None</em>, <em>hydrogens_sel=None</em>, <em>acceptors_sel=None</em>, <em>between=None</em>, <em>d_h_cutoff=1.2</em>, <em>d_a_cutoff=3.0</em>, <em>d_h_a_angle_cutoff=150</em>, <em>update_selections=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform an analysis of hydrogen bonds in a Universe.</p>
-<p>Set up atom selections and geometric criteria for finding hydrogen bonds in a Universe.</p>
+<p>Set up atom selections and geometric criteria for finding hydrogen
+bonds in a Universe.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – MDAnalysis Universe object</li>
-<li><strong>donors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond donor atoms. If the universe topology contains bonding information,
-leave <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as <cite>None</cite> so that donor-hydrogen pairs can be correctly identified.</li>
-<li><strong>hydrogens_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond hydrogen atoms. Leave as <cite>None</cite> to guess which hydrogens to use in
-the analysis using <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_hydrogens</span></code></a>. If <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> is left as <cite>None</cite>, also leave
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as None so that donor-hydrogen pairs can be correctly identified.</li>
-<li><strong>acceptors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond acceptor atoms. Leave as <cite>None</cite> to guess which atoms to use in the
-analysis using <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_acceptors</span></code></a></li>
+<li><strong>donors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond donor atoms. If the
+universe topology contains bonding information, leave
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as <cite>None</cite> so that donor-hydrogen pairs can be
+correctly identified.</li>
+<li><strong>hydrogens_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond hydrogen atoms. Leave as
+<cite>None</cite> to guess which hydrogens to use in the analysis using
+<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_hydrogens"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_hydrogens</span></code></a>. If <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> is left as
+<cite>None</cite>, also leave <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> as None so that
+donor-hydrogen pairs can be correctly identified.</li>
+<li><strong>acceptors_sel</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for the hydrogen bond acceptor atoms. Leave as
+<cite>None</cite> to guess which atoms to use in the analysis using
+<a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.guess_acceptors"><code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_acceptors</span></code></a></li>
+<li><strong>between</strong> (<em>List</em><em> (</em><em>optional</em><em>)</em><em>,</em>) – Specify two selection strings for non-updating atom groups between
+which hydrogen bonds will be calculated. For example, if the donor
+and acceptor selections include both protein and water, it is
+possible to find only protein-water hydrogen bonds - and not
+protein-protein or water-water - by specifying
+between=[“protein”, “SOL”]`. If a two-dimensional list is
+passed, hydrogen bonds between each pair will be found. For
+example, between=[[“protein”, “SOL”], [“protein”, “protein”]]`
+will calculate all protein-water and protein-protein hydrogen
+bonds but not water-water hydrogen bonds. If <cite>None</cite>, hydrogen
+bonds between all donors and acceptors will be calculated.</li>
 <li><strong>d_h_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff used for finding donor-hydrogen pairs [1.2]. Only used to find donor-hydrogen pairs if the
 universe topology does not contain bonding information</li>
 <li><strong>d_a_cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Distance cutoff for hydrogen bonds. This cutoff refers to the D-A distance. [3.0]</li>
@@ -389,8 +448,12 @@ universe topology does not contain bonding information</li>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is highly recommended that a universe topology with bonding information is used, as this is the only way
-that guarantees the correct identification of donor-hydrogen pairs.</p>
+<p>It is highly recommended that a universe topology with bond
+information is used, as this is the only way that guarantees the
+correct identification of donor-hydrogen pairs.</p>
+<div class="last versionadded">
+<p><span class="versionmodified">New in version 2.0.0: </span>Added <cite>between</cite> keyword</p>
+</div>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.count_by_ids">
@@ -554,6 +617,55 @@ charge greater than <code class="xref py py-attr docutils literal notranslate"><
 <p>Alternatively, this function may be used to quickly generate a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a> of potential hydrogen atoms involved
 in hydrogen bonding. This str may then be modified before being used to set the attribute
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime">
+<code class="descname">lifetime</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>window_step=1</em>, <em>intermittency=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.lifetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Computes and returns the time-autocorrelation (HydrogenBondLifetimes)</dt>
+<dd>of hydrogen bonds.</dd>
+</dl>
+<p>Before calling this method, the hydrogen bonds must first be computed
+with the <cite>run()</cite> function. The same <cite>start</cite>, <cite>stop</cite> and <cite>step</cite>
+parameters used in finding hydrogen bonds will be used here for
+calculating hydrogen bond lifetimes. That is, the same frames will be
+used in the analysis.</p>
+<p>Unique hydrogen bonds are identified using hydrogen-acceptor pairs.
+This means an acceptor switching to a different hydrogen atom - with
+the same donor - from one frame to the next is considered a different
+hydrogen bond.</p>
+<p>Please see <a class="reference internal" href="../lib/correlations.html#MDAnalysis.lib.correlations.autocorrelation" title="MDAnalysis.lib.correlations.autocorrelation"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations.autocorrelation()</span></code></a> and
+<code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.correlations.intermittency()</span></code> functions for more
+details.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>window_step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The number of frames between each t(0).</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Hydrogen bond lifetime is calculated for frames in the range
+1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite></li>
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which a bond can
+disappear but be counted as present if it returns at the next
+frame. An intermittency of <cite>0</cite> is equivalent to a continuous
+autocorrelation, which does not allow for hydrogen bond
+disappearance. For example, for <cite>intermittency=2</cite>, any given
+hydrogen bond may disappear for up to two consecutive frames yet
+be treated as being present at all frames. The default is
+continuous (intermittency=0).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>tau_timeseries</strong> (<em>np.array</em>) – tau from 1 to <cite>tau_max</cite></li>
+<li><strong>timeseries</strong> (<em>np.array</em>) – autcorrelation value for each value of <cite>tau</cite></li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
