@@ -83,7 +83,7 @@ analysis by using the class :class:`EinsteinMSD`
 .. code-block:: python
 
     u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)
-    MSD = msd.EinsteinMSD(u, 'all', msd_type='xyz', fft=True)
+    MSD = msd.EinsteinMSD(u, select='all', msd_type='xyz', fft=True)
     MSD.run()
 
 The MSD can then be accessed as
@@ -223,6 +223,7 @@ import numpy as np
 import logging
 from ..due import due, Doi
 from .base import AnalysisBase
+from ..core import groups
 
 logger = logging.getLogger('MDAnalysis.analysis.msd')
 
@@ -242,10 +243,11 @@ class EinsteinMSD(AnalysisBase):
     
     Parameters
     ----------
-    u : Universe
-        An MDAnalysis :class:`Universe`.
+    u : Universe or AtomGroup
+        An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
+        Note that :class:`UpdatingAtomGroup` instances are not accepted.
     select : str
-        A selection string. Defaults to `None` in which case
+        A selection string. Defaults to `all` in which case
         all atoms are selected.
     msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
         Desired dimensions to be included in the MSD. Defaults to 'xyz'.
@@ -270,14 +272,14 @@ class EinsteinMSD(AnalysisBase):
 
     """
 
-    def __init__(self, u, select, msd_type='xyz', fft=True, **kwargs):
+    def __init__(self, u, select='all', msd_type='xyz', fft=True, **kwargs):
         r"""
         Parameters
         ----------
-        u : Universe
-            An MDAnalysis :class:`Universe`.
+        u : Universe or AtomGroup
+            An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
         select : str
-            A selection string. Defaults to `None` in which case
+            A selection string. Defaults to `all` in which case
             all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
             Desired dimensions to be included in the MSD. Defaults to 'xyz'.
@@ -288,9 +290,12 @@ class EinsteinMSD(AnalysisBase):
             Defaults to ``True``.    
 
         """
+        if isinstance(u, groups.UpdatingAtomGroup):
+            raise TypeError("""UpdatingAtomGroups are not valid for MSD
+         computation""")
         self.u = u
 
-        super(EinsteinMSD, self).__init__(self.u.trajectory, **kwargs)
+        super(EinsteinMSD, self).__init__(self.u.universe.trajectory, **kwargs)
 
         # args
         self.select = select
