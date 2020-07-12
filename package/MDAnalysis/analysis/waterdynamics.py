@@ -81,11 +81,13 @@ Example use of the analysis classes
 HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
 
-The class Analyzing hydrogen bond lifetimes (HBL)
-:class:`HydrogenBondLifetimes` has been removed.
-Please use the newer module
-:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`.
+To analyse hydrogen bond lifetime, use
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` and
+its method `.lifetime` to find the hydrogen bonds and their lifetime.
 
+See Also
+    --------
+    :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`
 
 
 WaterOrientationalRelaxation
