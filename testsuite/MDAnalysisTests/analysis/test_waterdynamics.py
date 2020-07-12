@@ -49,6 +49,12 @@ def test_HydrogenBondLifetimes(universe):
     assert_almost_equal(hbl.timeseries[2][1], 0.75, 5)
 
 
+def test_HydrogenBondLifetimes_deprecation(universe):
+    with pytest.deprecated_call():
+        hbl = waterdynamics.HydrogenBondLifetimes(
+            universe, SELECTION1, SELECTION1, 0, 5, 3)
+
+
 def test_WaterOrientationalRelaxation(universe):
     wor = waterdynamics.WaterOrientationalRelaxation(
         universe, SELECTION1, 0, 5, 2)
