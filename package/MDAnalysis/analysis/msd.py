@@ -240,7 +240,7 @@ del Doi
 
 class EinsteinMSD(AnalysisBase):
     r"""Class to calculate Mean Squared Displacement by the Einstein relation.
-    
+
     Parameters
     ----------
     u : Universe or AtomGroup
@@ -345,7 +345,7 @@ class EinsteinMSD(AnalysisBase):
         # shape of position array set here, use span in last dimension
         # from this point on
         self._position_array[self._frame_index] = (
-        self._atoms.positions[:, self._dim])
+            self._atoms.positions[:, self._dim])
 
     def _conclude(self):
         if self.fft:
@@ -361,7 +361,7 @@ class EinsteinMSD(AnalysisBase):
         positions = self._position_array.astype(np.float64)
         for lag in lagtimes:
             disp = positions[:-lag, :, :] - positions[lag:, :, :]
-            sqdist = np.square(disp).sum(axis=-1) 
+            sqdist = np.square(disp).sum(axis=-1)
             self.msds_by_particle[lag, :] = np.mean(sqdist, axis=0)
         self.timeseries = self.msds_by_particle.mean(axis=1)
 
