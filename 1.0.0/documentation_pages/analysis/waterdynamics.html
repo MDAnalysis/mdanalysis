@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,11 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   
@@ -19,7 +23,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -28,6 +34,7 @@
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,11 +42,6 @@
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 1.0.0 documentation"
           href="../../_static/opensearch.xml"/>
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap" href="diffusionmap.html" />
@@ -70,7 +72,7 @@
             
             
               <div class="version">
-                1.0
+                1.0.0
               </div>
             
           
@@ -87,6 +89,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -140,6 +143,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -178,7 +182,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
@@ -298,7 +302,7 @@ protein and residue 42. If the hydrogen bond lifetimes are very stable, we can
 assume that residue 38 is hydrophilic, on the other hand, if the are very
 unstable, we can assume that residue 38 is hydrophobic:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">HydrogenBondLifetimes</span> <span class="k">as</span> <span class="n">HBL</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">HydrogenBondLifetimes</span> <span class="k">as</span> <span class="n">HBL</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">selection1</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
@@ -347,7 +351,7 @@ assume that water molecules are rotating/changing direction very slow, on the
 other hand, if WOR decay very fast, we can assume that water molecules are
 rotating/changing direction very fast:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">WaterOrientationalRelaxation</span> <span class="k">as</span> <span class="n">WOR</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">WaterOrientationalRelaxation</span> <span class="k">as</span> <span class="n">WOR</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
@@ -403,7 +407,7 @@ water molecules have some orientational preference, in this way we can see if
 water molecules are under an electric field or if they are interacting with
 something (residue, protein, etc):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">AngularDistribution</span> <span class="k">as</span> <span class="n">AD</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">AngularDistribution</span> <span class="k">as</span> <span class="n">AD</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 (protein and (resid 42 or resid 26) )&quot;</span>
@@ -453,7 +457,7 @@ molecules travels inside protein in XYZ direction (cylindric zone of radius
 11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong rise mean a fast movement of
 water molecules, a weak rise mean slow movement of particles:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">MeanSquareDisplacement</span> <span class="k">as</span> <span class="n">MSD</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">MeanSquareDisplacement</span> <span class="k">as</span> <span class="n">MSD</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 <span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
@@ -483,7 +487,7 @@ sphere of radius 12.3 centered in the geometrical center of resid 42 and 26.
 A slow decay of SP means a long permanence time of water molecules in
 the zone, on the other hand, a fast decay means a short permanence time:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
@@ -519,7 +523,7 @@ entire membrane will be calculated.</p>
 <p>Note, for this example, it is advisable to use <cite>Universe(in_memory=True)</cite> to ensure that the
 simulation is not being reloaded into memory for each lipid:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="k">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;md.gro&quot;</span><span class="p">,</span> <span class="s2">&quot;md100ns.xtc&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -928,11 +932,11 @@ rather than inclusive.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -942,8 +946,25 @@ rather than inclusive.</p>
     </section>
 
   </div>
-  
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
 
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
 
   <script type="text/javascript">
       jQuery(function () {

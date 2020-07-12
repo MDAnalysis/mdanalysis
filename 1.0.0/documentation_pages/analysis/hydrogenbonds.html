@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,11 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   
@@ -19,7 +23,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -28,6 +34,7 @@
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,11 +42,6 @@
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 1.0.0 documentation"
           href="../../_static/opensearch.xml"/>
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.3.2. Hydrogen Bond analysis (Deprecated) — MDAnalysis.analysis.hbonds.hbond_analysis" href="hbond_analysis.html" />
@@ -70,7 +72,7 @@
             
             
               <div class="version">
-                1.0
+                1.0.0
               </div>
             
           
@@ -87,6 +89,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -142,6 +145,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -180,7 +184,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
@@ -279,7 +283,7 @@ and can be accessed via <code class="xref py py-attr docutils literal notranslat
 <p>The simplest use case is to allow <a class="reference internal" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis" title="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondAnalysis</span></code></a> to guess the acceptor and hydrogen atoms, and to
 identify donor-hydrogen pairs via the bonding information in the topology:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -290,7 +294,7 @@ identify donor-hydrogen pairs via the bonding information in the topology:</p>
 <p>It is also possible to specify which hydrogens and acceptors to use in the analysis. For example, to find all hydrogen
 bonds in water:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -302,7 +306,7 @@ bonds in water:</p>
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">guess_acceptors</span></code>. This selection strings may then be modified prior to calling <code class="xref py py-attr docutils literal notranslate"><span class="pre">run</span></code>, or a subset of
 the universe may be used to guess the atoms. For example, find hydrogens and acceptors belonging to a protein:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -316,7 +320,7 @@ the universe may be used to guess the atoms. For example, find hydrogens and acc
 any water molecules within 10 Å of the protein (which may be useful for subsequently finding the lifetime of
 protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">psf</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -328,8 +332,8 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
 <span class="n">water_hydrogens_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name H1 H2&quot;</span>
 <span class="n">water_acceptors_sel</span> <span class="o">=</span> <span class="s2">&quot;resname TIP3 and name OH2&quot;</span>
 
-<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;(</span><span class="si">{protein_hydrogens_sel}</span><span class="s2">) or (</span><span class="si">{water_hydrogens_sel}</span><span class="s2"> and around 10 not resname TIP3})&quot;</span>
-<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="n">f</span><span class="s2">&quot;(</span><span class="si">{protein_acceptors_sel}</span><span class="s2">) or (</span><span class="si">{water_acceptors_sel}</span><span class="s2"> and around 10 not resname TIP3})&quot;</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">hydrogens_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_hydrogens_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_hydrogens_sel</span><span class="si">}</span><span class="s2"> and around 10 not resname TIP3</span><span class="si">}</span><span class="s2">)&quot;</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">acceptors_sel</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">protein_acceptors_sel</span><span class="si">}</span><span class="s2">) or (</span><span class="si">{</span><span class="n">water_acceptors_sel</span><span class="si">}</span><span class="s2"> and around 10 not resname TIP3</span><span class="si">}</span><span class="s2">)&quot;</span>
 <span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -338,7 +342,7 @@ protein-water hydrogen bonds or finding water-bridging hydrogen bond paths):</p>
 However, if, for example, a <cite>PDB</cite> file is used instead, a <code class="xref py py-attr docutils literal notranslate"><span class="pre">donors_sel</span></code> may be provided along with a
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">hydrogens_sel</span></code> and the donor-hydrogen pairs will be identified via a distance cutoff, <code class="xref py py-attr docutils literal notranslate"><span class="pre">d_h_cutoff</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
-<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="k">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.hydrogenbonds.hbond_analysis</span> <span class="kn">import</span> <span class="n">HydrogenBondAnalysis</span> <span class="k">as</span> <span class="n">HBA</span>
 
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
 
@@ -577,11 +581,11 @@ in hydrogen bonding. This str may then be modified before being used to set the 
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -591,8 +595,25 @@ in hydrogen bonding. This str may then be modified before being used to set the 
     </section>
 
   </div>
-  
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
 
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
 
   <script type="text/javascript">
       jQuery(function () {

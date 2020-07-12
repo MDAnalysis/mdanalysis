@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,11 @@
   
 
   
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
   
@@ -19,7 +23,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -28,6 +34,7 @@
         <script type="text/javascript" src="../../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../../_static/language_data.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -35,11 +42,6 @@
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 1.0.0 documentation"
           href="../../../_static/opensearch.xml"/>
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
 </head>
@@ -68,7 +70,7 @@
             
             
               <div class="version">
-                1.0
+                1.0.0
               </div>
             
           
@@ -85,6 +87,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -115,6 +118,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -153,7 +157,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Module code</a> &raquo;</li>
         
@@ -206,13 +210,13 @@
 <span class="sd">TopologyAttrs are used to contain attributes such as atom names or resids.</span>
 <span class="sd">These are usually read by the TopologyParser.</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span><span class="p">,</span> <span class="nb">range</span>
 
 <span class="kn">import</span> <span class="nn">Bio.Seq</span>
 <span class="kn">import</span> <span class="nn">Bio.SeqRecord</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
@@ -221,17 +225,17 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 
 
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="k">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="p">(</span><span class="n">cached</span><span class="p">,</span> <span class="n">convert_aa_code</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span>
                         <span class="n">unique_int_1d</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..lib</span> <span class="k">import</span> <span class="n">transformations</span><span class="p">,</span> <span class="n">mdamath</span>
-<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="k">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span>
-<span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="k">import</span> <span class="n">TopologyGroup</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">selection</span>
-<span class="kn">from</span> <span class="nn">.groups</span> <span class="k">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">transformations</span><span class="p">,</span> <span class="n">mdamath</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">SelectionError</span>
+<span class="kn">from</span> <span class="nn">.topologyobjects</span> <span class="kn">import</span> <span class="n">TopologyGroup</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">selection</span>
+<span class="kn">from</span> <span class="nn">.groups</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ComponentBase</span><span class="p">,</span> <span class="n">GroupBase</span><span class="p">,</span>
                      <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">,</span>
                      <span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
                      <span class="n">check_pbc_and_unwrap</span><span class="p">)</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_TOPOLOGY_TRANSPLANTS</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRNAMES</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_TOPOLOGY_TRANSPLANTS</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRNAMES</span>
 
 
 <span class="k">def</span> <span class="nf">_check_length</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
@@ -343,7 +347,7 @@
 
 <span class="k">class</span> <span class="nc">_TopologyAttrMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="c1"># register TopologyAttrs</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
         <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
         <span class="n">attrname</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;attrname&#39;</span><span class="p">)</span>
         <span class="n">singular</span> <span class="o">=</span> <span class="n">classdict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;singular&#39;</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
@@ -401,7 +405,7 @@
     <span class="n">singledoc</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
         <span class="k">else</span><span class="p">:</span>
@@ -445,11 +449,11 @@
         <span class="sd">&quot;&quot;&quot;Return a deepcopy of this attribute&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">guessed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Length of the TopologyAttr at its intrinsic level.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Accepts an AtomGroup, ResidueGroup or SegmentGroup&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
@@ -458,7 +462,7 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">Segment</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_segments</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">AtomGroup</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_atoms</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="p">(</span><span class="n">Residue</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">)):</span>
@@ -514,7 +518,7 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span>
     <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Atomindices.set_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomindices.set_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">set_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
@@ -546,7 +550,7 @@
     <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;resindex&#39;</span>
     <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Resindices.get_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Resindices.get_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
@@ -580,7 +584,7 @@
     <span class="n">target_classes</span> <span class="o">=</span> <span class="p">[</span><span class="n">AtomGroup</span><span class="p">,</span> <span class="n">ResidueGroup</span><span class="p">,</span> <span class="n">SegmentGroup</span><span class="p">,</span>
                       <span class="n">Atom</span><span class="p">,</span> <span class="n">Residue</span><span class="p">,</span> <span class="n">Segment</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="Segindices.get_atoms"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segindices.get_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
@@ -2135,7 +2139,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@_check_connection_values</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">values</span>
         <span class="k">if</span> <span class="n">types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">types</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -2157,7 +2161,7 @@
                               <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span><span class="p">),</span>
                               <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bondDict</span><span class="p">)</span>
 
     <span class="nd">@property</span>
@@ -2465,11 +2469,11 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -2479,8 +2483,25 @@
     </section>
 
   </div>
-  
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
 
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
 
   <script type="text/javascript">
       jQuery(function () {

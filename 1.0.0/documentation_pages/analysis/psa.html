@@ -1,8 +1,7 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8">
   
@@ -12,6 +11,11 @@
   
 
   
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
   
     <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
   
@@ -19,7 +23,9 @@
   
 
   
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -28,6 +34,7 @@
         <script type="text/javascript" src="../../_static/doctools.js"></script>
         <script type="text/javascript" src="../../_static/language_data.js"></script>
         <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,11 +42,6 @@
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within MDAnalysis 1.0.0 documentation"
           href="../../_static/opensearch.xml"/>
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.2.6. ENCORE Ensemble Similarity Calculations — MDAnalysis.analysis.encore" href="encore.html" />
@@ -70,7 +72,7 @@
             
             
               <div class="version">
-                1.0
+                1.0.0
               </div>
             
           
@@ -87,6 +89,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -142,6 +145,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -180,7 +184,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
@@ -406,7 +410,7 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 </table>
 <p class="rubric">Example</p>
 <p>Calculate the Hausdorff distance between two halves of a trajectory:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ca</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
@@ -423,7 +427,7 @@ either shape <span class="math notranslate nohighlight">\(N_p \times N \times 3\
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
-<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> is an optimized
+<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> is an optimized
 implementation of the early break algorithm of <a class="reference internal" href="#taha2015" id="id2">[Taha2015]</a>; the
 latter code is used here to calculate the symmetric Hausdorff
 distance with an RMSD metric</p>
@@ -469,8 +473,8 @@ measure that gives equal weight to <em>P</em> and <em>Q</em>.</p>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="k">import</span> <span class="n">Universe</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">Universe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ca</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
@@ -522,7 +526,7 @@ average Hausdorff gives equal weight to both paths.</p>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="k">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">u</span> <span class="o">=</span> <span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span><span class="n">DCD</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ca</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;name CA&#39;</span><span class="p">)</span>
@@ -578,7 +582,7 @@ distances for <cite>P</cite> and <cite>Q</cite>, respectively</p>
 <li>Hausdorff neighbors are those points on the two paths that are separated by
 the Hausdorff distance. They are the farthest nearest neighbors and are
 maximally different in the sense of the Hausdorff distance <a class="reference internal" href="#seyler2015" id="id5">[Seyler2015]</a>.</li>
-<li><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> can also provide the
+<li><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.spatial.distance.directed_hausdorff.html#scipy.spatial.distance.directed_hausdorff" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.spatial.distance.directed_hausdorff()</span></code></a> can also provide the
 hausdorff neighbors.</li>
 </ul>
 </dd></dl>
@@ -1185,10 +1189,10 @@ corresponding with MATLAB(TM) behavior, the threshold is set to
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><em>Z</em> – output from <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html#scipy.cluster.hierarchy.linkage" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.linkage()</span></code></a>;
+<li><em>Z</em> – output from <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html#scipy.cluster.hierarchy.linkage" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.linkage()</span></code></a>;
 list of indices representing the row-wise order of the objects
 after clustering</li>
-<li><em>dgram</em> – output from <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a></li>
+<li><em>dgram</em> – output from <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a></li>
 </ul>
 </p>
 </td>
@@ -1410,8 +1414,8 @@ keyword arguments are passed on to <a class="reference external" href="https://m
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – save figure to <em>filename</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>linkage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of linkage criterion for clustering [<code class="docutils literal notranslate"><span class="pre">'ward'</span></code>]</li>
-<li><strong>count_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>distance_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>count_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>distance_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – set the vertical size of plot in inches [<code class="docutils literal notranslate"><span class="pre">4.5</span></code>]</li>
 <li><strong>labelsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – set the font size for colorbar labels; font size for path labels on
 dendrogram default to 3 points smaller [<code class="docutils literal notranslate"><span class="pre">12</span></code>]</li>
@@ -1450,8 +1454,8 @@ keyword arguments are passed on to <a class="reference external" href="https://m
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – save figure to <em>filename</em> [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
 <li><strong>linkage</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – name of linkage criterion for clustering [<code class="docutils literal notranslate"><span class="pre">'ward'</span></code>]</li>
-<li><strong>count_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
-<li><strong>distance_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.0)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>count_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>distance_sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – see <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.dendrogram.html#scipy.cluster.hierarchy.dendrogram" title="(in SciPy v1.5.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">scipy.cluster.hierarchy.dendrogram()</span></code></a> [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
 <li><strong>figsize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – set the vertical size of plot in inches [<code class="docutils literal notranslate"><span class="pre">4.5</span></code>]</li>
 <li><strong>annot_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a>) – font size of annotation labels on heat map [<code class="docutils literal notranslate"><span class="pre">6.5</span></code>]</li>
 </ul>
@@ -1657,11 +1661,11 @@ specified by <code class="xref py py-attr docutils literal notranslate"><span cl
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
-  </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  </div> 
 
 </footer>
 
@@ -1671,8 +1675,25 @@ specified by <code class="xref py py-attr docutils literal notranslate"><span cl
     </section>
 
   </div>
-  
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
 
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
 
   <script type="text/javascript">
       jQuery(function () {
