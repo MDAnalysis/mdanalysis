@@ -208,7 +208,7 @@
 <p>This module contains two classes to calculate radial
 <a class="reference external" href="https://en.wikipedia.org/wiki/Pair_distribution_function">pair distribution functions</a> (<a class="reference external" href="https://en.wikipedia.org/wiki/Radial_distribution_function">radial distribution functions</a> or “RDF”).
 The RDF <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span> between types of particles <span class="math notranslate nohighlight">\(a\)</span> and <span class="math notranslate nohighlight">\(b\)</span> is</p>
-<div class="math notranslate nohighlight">
+<div class="math notranslate nohighlight" id="equation-gab">
 \[g_{ab}(r) = (N_{a} N_{b})^{-1} \sum_{i=1}^{N_a} \sum_{j=1}^{N_b}
             \langle \delta(|\mathbf{r}_i - \mathbf{r}_j| - r) \rangle\]</div>
 <p>which is normalized so that the RDF becomes 1 for large separations in a
@@ -219,18 +219,24 @@ represents it as a density.</p>
 <div class="math notranslate nohighlight">
 \[G_{ab}(r) = \int_0^r \!\!dr' 4\pi r'^2 g_{ab}(r')\]</div>
 <p>and the average number of <span class="math notranslate nohighlight">\(b\)</span> particles within radius <span class="math notranslate nohighlight">\(r\)</span></p>
-<div class="math notranslate nohighlight">
+<div class="math notranslate nohighlight" id="equation-countab">
 \[N_{ab}(r) = \rho G_{ab}(r)\]</div>
 <p>(with the appropriate density <span class="math notranslate nohighlight">\(\rho\)</span>). The latter function can be used to
 compute, for instance, coordination numbers such as the number of neighbors in
 the first solvation shell <span class="math notranslate nohighlight">\(N(r_1)\)</span> where <span class="math notranslate nohighlight">\(r_1\)</span> is the position of
 the first minimum in <span class="math notranslate nohighlight">\(g(r)\)</span>.</p>
+<p>In <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a>, we provide an option <cite>density</cite>. When <cite>density</cite> is
+<code class="docutils literal notranslate"><span class="pre">False</span></code>, it will return the RDF <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>; when <cite>density</cite> is
+<code class="docutils literal notranslate"><span class="pre">True</span></code>, it will return the density of particle <span class="math notranslate nohighlight">\(b\)</span> in a shell at
+distance <span class="math notranslate nohighlight">\(r\)</span> around a <span class="math notranslate nohighlight">\(a\)</span> particle, which is</p>
+<div class="math notranslate nohighlight" id="equation-nab">
+\[n_{ab}(r) = \rho g_{ab}(r)\]</div>
 <div class="section" id="average-radial-distribution-function">
 <h2>4.7.2.1.1. Average radial distribution function<a class="headerlink" href="#average-radial-distribution-function" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a> is a tool to calculate average radial distribution functions
 between two groups of atoms. Suppose we have two AtomGroups <code class="docutils literal notranslate"><span class="pre">A</span></code> and
 <code class="docutils literal notranslate"><span class="pre">B</span></code>. <code class="docutils literal notranslate"><span class="pre">A</span></code> contains atom <code class="docutils literal notranslate"><span class="pre">A1</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code>, and <code class="docutils literal notranslate"><span class="pre">B</span></code> contains <code class="docutils literal notranslate"><span class="pre">B1</span></code>,
-<code class="docutils literal notranslate"><span class="pre">B2</span></code>. Give <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to class:<cite>InterRDF</cite>, the output will be the
+<code class="docutils literal notranslate"><span class="pre">B2</span></code>. Given <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF" title="MDAnalysis.analysis.rdf.InterRDF"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF</span></code></a>, the output will be the
 average of RDFs between <code class="docutils literal notranslate"><span class="pre">A1</span></code> and <code class="docutils literal notranslate"><span class="pre">B1</span></code>, <code class="docutils literal notranslate"><span class="pre">A1</span></code> and <code class="docutils literal notranslate"><span class="pre">B2</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code> and
 <code class="docutils literal notranslate"><span class="pre">B1</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code> and <code class="docutils literal notranslate"><span class="pre">B2</span></code>. A typical application is to calculate the RDF of
 solvent with itself or with another solute.</p>
@@ -238,7 +244,13 @@ solvent with itself or with another solute.</p>
 <dt id="MDAnalysis.analysis.rdf.InterRDF">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rdf.</code><code class="descname">InterRDF</code><span class="sig-paren">(</span><em>g1</em>, <em>g2</em>, <em>nbins=75</em>, <em>range=(0.0</em>, <em>15.0)</em>, <em>exclusion_block=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Intermolecular pair distribution function</p>
-<p>InterRDF(g1, g2, nbins=75, range=(0.0, 15.0))</p>
+<p>The <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution function</span></a> is calculated by
+histogramming distances between all particles in <cite>g1</cite> and <cite>g2</cite> while taking
+periodic boundary conditions into account via the minimum image
+convention.</p>
+<p>The <cite>exclusion_block</cite> keyword may be used to exclude a set of distances
+from the calculations.</p>
+<p>Results are available in the attributes <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="MDAnalysis.analysis.rdf.InterRDF.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.count" title="MDAnalysis.analysis.rdf.InterRDF.count"><code class="xref py py-attr docutils literal notranslate"><span class="pre">count</span></code></a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -264,7 +276,7 @@ AtomGroups then use the <a class="reference internal" href="#MDAnalysis.analysis
 <span class="n">rdf</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the <code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code>
+<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="MDAnalysis.analysis.rdf.InterRDF.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="MDAnalysis.analysis.rdf.InterRDF.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a>
 attributes:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">)</span>
 </pre></div>
@@ -279,6 +291,34 @@ atom in each molecule, the exclusion mask <cite>(7, 7)</cite> can be used.</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
 removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.run" title="MDAnalysis.analysis.rdf.InterRDF.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">InterRDF.run()</span></code></a>.</p>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.bins">
+<code class="descname">bins</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
+bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.edges">
+<code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
+bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.rdf">
+<code class="descname">rdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
+function</span></a> values for the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="MDAnalysis.analysis.rdf.InterRDF.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF.count">
+<code class="descname">count</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.count" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> representing the radial histogram, i.e.,
+the raw counts, for all <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF.bins" title="MDAnalysis.analysis.rdf.InterRDF.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.rdf.InterRDF.run">
 <code class="descname">run</code><span class="sig-paren">(</span><em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>verbose=None</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF.run" title="Permalink to this definition">¶</a></dt>
@@ -306,19 +346,16 @@ removed. These should instead be passed to <a class="reference internal" href="#
 <h2>4.7.2.1.2. Site-specific radial distribution function<a class="headerlink" href="#site-specific-radial-distribution-function" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a> calculates site-specific radial distribution
 functions. Instead of two groups of atoms it takes as input a list of pairs of
-AtomGroup, <code class="docutils literal notranslate"><span class="pre">[[A,</span> <span class="pre">B],</span> <span class="pre">[C,</span> <span class="pre">D],</span> <span class="pre">...]</span></code>. Give the same <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to
-<a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a>, the output will be a list of RDFs between <code class="docutils literal notranslate"><span class="pre">A1</span></code> and
-<code class="docutils literal notranslate"><span class="pre">B1</span></code>, <code class="docutils literal notranslate"><span class="pre">A1</span></code> and <code class="docutils literal notranslate"><span class="pre">B2</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code> and <code class="docutils literal notranslate"><span class="pre">B1</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code> and <code class="docutils literal notranslate"><span class="pre">B2</span></code> (and similarly
-for <code class="docutils literal notranslate"><span class="pre">C</span></code> and <code class="docutils literal notranslate"><span class="pre">D</span></code>). These site-specific radial distribution functions are
-typically calculated if one is interested in the solvation shells of a ligand
-in a binding site or the solvation of specific residues in a protein. A common
-use case is to choose <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">C</span></code> to be AtomGroups that only contain a
-single atom and <code class="docutils literal notranslate"><span class="pre">W</span></code> all solvent molecules: <code class="docutils literal notranslate"><span class="pre">InterRDF_s(u,</span> <span class="pre">[[A,</span> <span class="pre">W],</span> <span class="pre">[B,</span>
-<span class="pre">W]])</span></code> will then produce the RDF of solvent around atom <code class="docutils literal notranslate"><span class="pre">A[0]</span></code> and around
-atom <code class="docutils literal notranslate"><span class="pre">B[0]</span></code>.</p>
+AtomGroup, <code class="docutils literal notranslate"><span class="pre">[[A,</span> <span class="pre">B],</span> <span class="pre">[C,</span> <span class="pre">D],</span> <span class="pre">...]</span></code>. Given the same <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> to
+<a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="MDAnalysis.analysis.rdf.InterRDF_s"><code class="xref py py-class docutils literal notranslate"><span class="pre">InterRDF_s</span></code></a>, the output will be a list of individual RDFs between
+<code class="docutils literal notranslate"><span class="pre">A1</span></code> and <code class="docutils literal notranslate"><span class="pre">B1</span></code>, <code class="docutils literal notranslate"><span class="pre">A1</span></code> and <code class="docutils literal notranslate"><span class="pre">B2</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code> and <code class="docutils literal notranslate"><span class="pre">B1</span></code>, <code class="docutils literal notranslate"><span class="pre">A2</span></code> and <code class="docutils literal notranslate"><span class="pre">B2</span></code> (and
+similarly for <code class="docutils literal notranslate"><span class="pre">C</span></code> and <code class="docutils literal notranslate"><span class="pre">D</span></code>). These site-specific radial distribution
+functions are typically calculated if one is interested in the solvation shells
+of a ligand in a binding site or the solvation of specific residues in a
+protein.</p>
 <dl class="class">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rdf.</code><code class="descname">InterRDF_s</code><span class="sig-paren">(</span><em>u</em>, <em>ags</em>, <em>nbins=75</em>, <em>range=(0.0</em>, <em>15.0)</em>, <em>density=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.rdf.</code><code class="descname">InterRDF_s</code><span class="sig-paren">(</span><em>u</em>, <em>ags</em>, <em>nbins=75</em>, <em>range=(0.0</em>, <em>15.0)</em>, <em>density=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s" title="Permalink to this definition">¶</a></dt>
 <dd><p>Site-specific intermolecular pair distribution function</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -330,6 +367,16 @@ atom <code class="docutils literal notranslate"><span class="pre">B[0]</span></c
 instances</li>
 <li><strong>nbins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins in the histogram [75]</li>
 <li><strong>range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><em>tuple</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><em>list</em></a><em> (</em><em>optional</em><em>)</em>) – The size of the RDF [0.0, 15.0]</li>
+<li><strong>density</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <p><code class="docutils literal notranslate"><span class="pre">False</span></code>: calculate <span class="math notranslate nohighlight">\(g_{ab}(r)\)</span>; <code class="docutils literal notranslate"><span class="pre">True</span></code>: calculate
+the true <a class="reference internal" href="#equation-nab"><span class="std std-ref">single particle density</span></a>
+<span class="math notranslate nohighlight">\(n_{ab}(r)\)</span>. The default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.1: </span>This keyword was available since 0.19.0 but was not
+documented. Furthermore, it had the opposite
+meaning. Since 1.0.1 it is officially supported as
+documented.</p>
+</div>
+</li>
 </ul>
 </td>
 </tr>
@@ -352,19 +399,20 @@ method:</p>
 <span class="n">rdf</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the <code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code> and <code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code> attributes:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a> and <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> attributes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">rdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>(Which plots the rdf between the first atom in <code class="docutils literal notranslate"><span class="pre">s1</span></code> and the first atom in
 <code class="docutils literal notranslate"><span class="pre">s2</span></code>)</p>
-<p>To generate the <em>cumulative distribution function</em> (cdf), use the
+<p>To generate the <em>cumulative distribution function</em> (cdf) in the sense of
+“particles within radius <span class="math notranslate nohighlight">\(r\)</span>”, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>, use the
 <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.get_cdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_cdf()</span></code></a> method</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cdf</span> <span class="o">=</span> <span class="n">rdf</span><span class="o">.</span><span class="n">get_cdf</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Results are available through the :attr:’cdf’ attribute:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">cdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<p>Results are available through the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cdf</span></code></a> attribute:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">rdf</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="n">rdf</span><span class="o">.</span><span class="n">cdf</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>(Which plots the cdf between the first atom in <code class="docutils literal notranslate"><span class="pre">s1</span></code> and the first atom in
@@ -376,14 +424,69 @@ method:</p>
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Support for the <code class="docutils literal notranslate"><span class="pre">start</span></code>, <code class="docutils literal notranslate"><span class="pre">stop</span></code>, and <code class="docutils literal notranslate"><span class="pre">step</span></code> keywords has been
 removed. These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.run" title="MDAnalysis.analysis.rdf.InterRDF_s.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">InterRDF_s.run()</span></code></a>.</p>
 </div>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.bins">
+<code class="descname">bins</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the centers of the <cite>nbins</cite> histogram
+bins; all individual site-specific RDFs have the same bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.edges">
+<code class="descname">edges</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.edges" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of the <cite>nbins + 1</cite> edges of the histogram
+bins; all individual site-specific RDFs have the same bins.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.rdf">
+<code class="descname">rdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-gab"><span class="std std-ref">radial distribution
+functions</span></a> or <a class="reference internal" href="#equation-nab"><span class="std std-ref">density
+functions</span></a> for the <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>. The list contains
+<code class="docutils literal notranslate"><span class="pre">len(ags)</span></code> entries. Each entry for the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th pair <code class="docutils literal notranslate"><span class="pre">[A,</span> <span class="pre">B]</span>
+<span class="pre">=</span> <span class="pre">ags[i]</span></code> in <cite>ags</cite> is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with shape
+<code class="docutils literal notranslate"><span class="pre">(len(A),</span> <span class="pre">len(B))</span></code>, i.e., a stack of RDFs. For example,
+<code class="docutils literal notranslate"><span class="pre">rdf[i][0,</span> <span class="pre">2]</span></code> is the RDF between atoms <code class="docutils literal notranslate"><span class="pre">A[0]</span></code> and <code class="docutils literal notranslate"><span class="pre">B[2]</span></code>.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.count">
+<code class="descname">count</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.count" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific radial histograms, i.e., the
+raw counts, for all <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>. The data have the same
+structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> except that the arrays contain the raw
+counts.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.rdf.InterRDF_s.cdf">
+<code class="descname">cdf</code><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of the site-specific <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative
+counts</span></a>, for all <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.bins" title="MDAnalysis.analysis.rdf.InterRDF_s.bins"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bins</span></code></a>. The data have the same
+structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a> except that the arrays contain the cumulative
+counts.</p>
+<p>This attribute only exists after <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.get_cdf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_cdf()</span></code></a> has been run.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="MDAnalysis.analysis.rdf.InterRDF_s.get_cdf">
 <code class="descname">get_cdf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/rdf.html#InterRDF_s.get_cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.rdf.InterRDF_s.get_cdf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the cumulative distribution functions (CDF) for all sites.
-Note that this is the actual count within a given radius, i.e.,
-<span class="math notranslate nohighlight">\(N(r)\)</span>.
-:returns: <strong>cdf</strong> – list of arrays with the same structure as <code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code>
-:rtype: list</p>
+<dd><p>Calculate the cumulative counts for all sites.</p>
+<p>This is the <a class="reference internal" href="#equation-countab"><span class="std std-ref">cumulative count</span></a> within a given
+radius, i.e., <span class="math notranslate nohighlight">\(N_{ab}(r)\)</span>.</p>
+<p>The result is returned and also stored in the attribute
+<a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.cdf" title="MDAnalysis.analysis.rdf.InterRDF_s.cdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cdf</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>cdf</strong> – list of arrays with the same structure as <a class="reference internal" href="#MDAnalysis.analysis.rdf.InterRDF_s.rdf" title="MDAnalysis.analysis.rdf.InterRDF_s.rdf"><code class="xref py py-attr docutils literal notranslate"><span class="pre">rdf</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)">list</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
