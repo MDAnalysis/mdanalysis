@@ -464,8 +464,8 @@ def do_iparams(data, functypes, fver):
         elif i in [setting.F_LINEAR_ANGLES]:
             data.unpack_real()  # linangle.klinA
             data.unpack_real()  # linangle.aA
-            data.unpack()  # linangle.klinB
-            data.unpack()  # linangle.aB);
+            data.unpack_real()  # linangle.klinB
+            data.unpack_real()  # linangle.aB);
         elif i in [setting.F_FENEBONDS]:
             data.unpack_real()  # fene.bm
             data.unpack_real()  # fene.kb
