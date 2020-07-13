@@ -147,11 +147,13 @@ class TestRDKitConverter(object):
         sel = pdb.select_atoms(sel_str)
         umol = sel.convert_to("RDKIT")
         atom = umol.GetAtomWithIdx(atom_index)
+        mda_index = np.where(
+            sel.indices == atom.GetIntProp("_MDAnalysis_index"))
         mi = atom.GetMonomerInfo()
 
         for mda_attr, rd_attr in RDATTRIBUTES.items():
             rd_value = getattr(mi, "Get%s" % rd_attr)()
-            mda_value = getattr(sel, "%s" % mda_attr)[atom_index]
+            mda_value = getattr(sel, "%s" % mda_attr)[mda_index]
             if mda_attr == "names":
                 rd_value = rd_value.strip()
             assert rd_value == mda_value
@@ -223,6 +225,7 @@ class TestRDKitConverter(object):
         expected = ag.indices
         indices = np.array([a.GetIntProp("_MDAnalysis_index")
                             for a in mol.GetAtoms()], dtype=np.int32)
+        indices.sort()
         assert_equal(indices, expected)
 
 
