@@ -30,13 +30,17 @@ can be pickled without modification.
 If the new reader uses I/O classes from other package (e.g. GSD), and cannot
 be pickled natively, create a new picklable class inherited from 
 the file class in that package (e.g. GSDPicklable), adding :func:`__getstate__`,
-:func:`__setstate__` functions to allow file handler serialization.
+:func:`__setstate__` functions (or :func:`__reduce__` if needed. Consult the
+pickle [documentation](https://docs.python.org/3/library/pickle.html) of python)
+to allow file handler serialization.
 
 To seek or not to seek
 ^^^^^^^^^^^^^^^^^^^^^^
 Some I/O class supports :func:`seek` and :func:`tell` functions to allow the file 
 to be pickled with an offset. It is normally not needed for MDAnalysis with
-random access. But if error occurs, find a way to make the offset work.
+random access. But if error occurs during testing, find a way to make the offset work.
+Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O 
+class supports offset?
 
 Miscellaneous
 ^^^^^^^^^^^^^
