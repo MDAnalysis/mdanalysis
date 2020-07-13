@@ -420,7 +420,7 @@ def _parse_conect(conect):
     RuntimeError
         Raised if ``conect`` is not a valid CONECT record
     """
-    atom_id = np.int(conect[6:11])
+    atom_id = int(conect[6:11])
     n_bond_atoms = len(conect[11:]) // 5
 
     try:

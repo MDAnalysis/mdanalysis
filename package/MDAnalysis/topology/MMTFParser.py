@@ -132,7 +132,7 @@ class ModelSelection(RangeSelection):
     field = 'models'
 
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
+        mask = np.zeros(len(group), dtype=bool)
         vals = group.models
 
         for upper, lower in zip(self.uppers, self.lowers):
