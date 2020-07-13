@@ -71,6 +71,7 @@ from . import base
 
 try:
     from rdkit import Chem
+    from rdkit.Chem import AllChem
 except ImportError:
     pass
 else:
@@ -263,13 +264,8 @@ class RDKitConverter(base.ConverterBase):
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
                 attr = _TOPOLOGY_ATTRS[attr].singular
-                if isinstance(value, np.float):
-                    rdatom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
-                elif isinstance(value, np.int):
-                    rdatom.SetIntProp("_MDAnalysis_%s" % attr, int(value))
-                else:
-                    rdatom.SetProp("_MDAnalysis_%s" % attr, value)
-            rdatom.SetIntProp("_MDAnalysis_index", int(atom.ix))
+                _set_atom_property(rdatom, attr, value)
+            _set_atom_property(rdatom, "index", int(atom.ix))
             # add atom
             index = mol.AddAtom(rdatom)
             # map index in universe to index in mol
@@ -305,6 +301,7 @@ class RDKitConverter(base.ConverterBase):
 
         # infer bond orders and formal charges from the connectivity
         _infer_bo_and_charges(mol, terminal_atom_indices)
+        mol = _standardize_patterns(mol)
 
         # sanitize
         Chem.SanitizeMol(mol)
@@ -341,6 +338,16 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
     getattr(mi, "Set%s" % rdattr)(value)
+
+
+def _set_atom_property(atom, attr, value):
+    """Converts an MDAnalysis atom attribute into an RDKit atom property"""
+    if isinstance(value, (float, np.float)):
+        atom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
+    elif isinstance(value, (int, np.int)):
+        atom.SetIntProp("_MDAnalysis_%s" % attr, int(value))
+    else:
+        atom.SetProp("_MDAnalysis_%s" % attr, value)
 
 
 def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
@@ -419,3 +426,59 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
                 atom.SetFormalCharge(-nue)
                 atom.SetNumRadicalElectrons(0)
                 mol.UpdatePropertyCache(strict=False)
+
+
+def _standardize_patterns(mol):
+    """Standardize functional groups using reactions from SMARTS patterns
+
+    Because the two NH2 groups in arginine are identical, during the reaction the pattern is matched 2 times and produces 2 identical products per ARG residue, which results in as many molecules as there are ARG residues when we use Chem.CombineMols. For this reason, we have to run the ARG reaction and keep the first product as many times as their are arginine residues in the molecule.
+    The same logic applies to all reactions that imply several identical 
+    moieties (like the two =O in sulfones).
+    """
+    reactions = [
+        ("Cterm", "[C-;v3:1]=[O:2]>>[C;+0:1]=[O:2]"),
+        ("Nterm", "[N-;v2;H1:1]>>[N;+0:1]"),
+        ("keto-enolate", "[C-:1]-[C:2]=[O:3]>>[C;+0:1]=[C:2]-[O;-1:3]"),
+    ]
+    # arginine
+    pattern = Chem.MolFromSmarts("[N;H1:1]-[C-;v3:2](-[N;H2:3])-[N;H2:4]")
+    n = len(mol.GetSubstructMatches(pattern))
+    reactions.extend(
+        n * [("ARG", "[N;H1:1]-[C-;v3:2](-[N;H2:3])-[N;H2:4]"
+                     ">>[N:1]-[C;+0:2](-[N:3])=[N;+1:4]")]
+    )
+    # sulfone
+    pattern = Chem.MolFromSmarts("[S;v4:1](-[O-;v1:2])-[O-;v1:3]")
+    n = len(mol.GetSubstructMatches(pattern))
+    reactions.extend(
+        n * [("sulfone", "[S;v4:1](-[O-;v1:2])-[O-;v1:3]"
+                         ">>[S;v6:1](=[O;+0:2])=[O;+0:3]")]
+    )
+    for name, reaction in reactions:
+        rxn = AllChem.ReactionFromSmarts(reaction)
+        products = rxn.RunReactants((mol,))
+        # product is an empty tuple if there were no matching atoms in the mol
+        if products:
+            if name in ["ARG", "sulfone"]:
+                products = products[::len(products)]
+            product = products[0][0]
+            for p in products[1:]:
+                product = Chem.CombineMols(product, p[0])
+            # map back atomic properties to the transformed atoms
+            for atom in product.GetAtoms():
+                try:
+                    atom.GetIntProp("old_mapno")
+                except KeyError:
+                    pass
+                else:
+                    atom.ClearProp("old_mapno")
+                    idx = atom.GetUnsignedProp("react_atom_idx")
+                    old_atom = mol.GetAtomWithIdx(idx)
+                    for prop, value in old_atom.GetPropsAsDict().items():
+                        if prop.startswith("_MDAnalysis"):
+                            attr = prop.split("_")[-1]
+                            _set_atom_property(atom, attr, value)
+                atom.ClearProp("react_atom_idx")
+            mol = product
+            mol.UpdatePropertyCache(strict=False)
+    return mol
