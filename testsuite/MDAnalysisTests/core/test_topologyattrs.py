@@ -80,6 +80,10 @@ class TopologyAttrMixin(object):
     def attr(self, top):
         return getattr(top, self.attrclass.attrname)
 
+    @pytest.fixture()
+    def universe(self, top):
+        return mda.Universe(top)
+
     def test_len(self, attr):
         assert len(attr) == len(attr.values)
 
@@ -215,6 +219,10 @@ class TestResidueAttr(TopologyAttrMixin):
         assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])),
                            self.values[[3, 2, 2]])
 
+    def test_get_atom(self, universe):
+        attr = getattr(universe.atoms[0], self.attrclass.singular)
+        assert_equal(attr, self.values[0])
+
     def test_get_residues(self, attr):
         assert_equal(attr.get_residues(DummyGroup([1, 2, 1, 3])),
                            self.values[[1, 2, 1, 3]])
@@ -246,6 +254,9 @@ class TestResidueAttr(TopologyAttrMixin):
         assert_equal(attr.get_segments(DummyGroup([0, 1, 1])),
                            [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
 
+class TestICodes(TestResidueAttr):
+    values = np.array(['a', 'b', '', 'd'])
+    attrclass = tpattrs.ICodes
 
 class TestResids(TestResidueAttr):
     values = np.array([10, 11, 18, 20])
