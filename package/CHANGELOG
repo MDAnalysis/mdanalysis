@@ -31,6 +31,8 @@ Fixes
 
 
 Enhancements
+  * Updated LeafletFinder to use flexible grouping methods and added new
+    grouping methods to analysis.distances (Issue #2843, PR #2844)
   * Added the RDKitParser which creates a `core.topology.Topology` object from
     an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates
     from RDKit conformers (Issue #2468, PR #2707)
