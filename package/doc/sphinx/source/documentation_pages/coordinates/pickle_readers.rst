@@ -3,22 +3,12 @@
 .. _serialization:
 
 *********************************************************
-Serialization of Universes
+Serialization of Coordinate Readers
 *********************************************************
 
-As we approach the exascale barrier, researchers are handling increasingly 
-large volumes of molecular dynamics (MD) data. Whilst MDAnalysis is a flexible
-and relatively fast framework for complex analysis tasks in MD simulations, 
-implementing a parallel computing framework would play a pivotal role in 
-accelerating the time to solution for such large datasets.
-
 To achieve a flawless implementation of parallelism, this document illustrates
-the basic idea of how current :class:`Universe` is being serialized. And what people
-should do to serialize a new reader.
-
-:class:`Universe` is serialized by serializing each necessary compartment---
-:attr:`_topology`, :attr:`_trajectory`, :attr:`anchor_name`; a new :class:`Universe` is
-reconstructed with these elements. 
+the basic idea of how different coordinate readers are being serialized in MDAnalysis,
+and what developers should do to serialize a new reader.
 
 To make sure every Trajectory reader can be successfully
 serialized, we implement picklable I/O classes (see :ref:`implemented-fileio`).
@@ -27,37 +17,6 @@ file handle are saved. On unpickling, the file is opened by filename.
 This means that for a successful unpickle, the original file still has to
 be accessible with its filename. To retain the current frame of the trajectory,
 :func:`_read_frame(previous frame)` will be called during unpickling.
-
-Here is an example of how a :class:`Universe` is (un)pickled:
-
-.. code-block:: python
-
-    u = MDAnalysis.Universe(topology, trajectory)
-    u.trajectory[5]
-    u_pickled = pickle.loads(pickle.dumps(u)
-    u_pickled.ts.frame == u.trajectory.ts.frame
-
-.. _simple_parallel_analysis:
-
-Simple analysis case
---------------------
-
-.. code-block:: python
-
-    def cog(u, ag, frame_id):
-        u.trajectory[frame_id]
-        return ag.center_of_geometry()
-
-    u = MDAnalysis.Universe(GRO, XTC)
-    ag = u.atoms[2:5]
-
-    p = multiprocessing.Pool(2)
-    result = np.array([p.apply(cog, args=(u, ag, i))
-                       for i in range(u.n_frames)])
-    p.close()
-
-Note to make sure :class:`Atomgroup` finds its anchored :class:`Universe` after pickling,
-the :class:`Universe` has to be pickled first.
 
 .. _how_to_serialize_a_new_reader:
 
@@ -107,11 +66,11 @@ add necessary tests inside ``utils/test_pickleio.py`` for I/O class,
 Currently implemented picklable IO Formats
 ------------------------------------------
 
-    * :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
-    * :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
-    * :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
-    * :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
-    * :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
-    * :class:`MDAnalysis.coordinates.GSD.GSDPicklable`
-    * :class:`MDAnalysis.coordinates.TRJ.NCDFPicklable`
-    * :class:`MDAnalysis.coordinates.chemfiles.ChemfilesPicklable`
+* :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
+* :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
+* :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
+* :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
+* :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
+* :class:`MDAnalysis.coordinates.GSD.GSDPicklable`
+* :class:`MDAnalysis.coordinates.TRJ.NCDFPicklable`
+* :class:`MDAnalysis.coordinates.chemfiles.ChemfilesPicklable`

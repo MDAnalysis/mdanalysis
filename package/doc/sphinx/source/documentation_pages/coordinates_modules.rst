@@ -57,7 +57,7 @@ functionality should first read the :ref:`Trajectory API`.
 
    coordinates/base
    coordinates/core
-   coordinates/pickle_universe
+   coordinates/pickle_readers
    coordinates/chain
    coordinates/XDR
 
