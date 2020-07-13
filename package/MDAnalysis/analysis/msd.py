@@ -247,7 +247,7 @@ class EinsteinMSD(AnalysisBase):
         An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
         Note that :class:`UpdatingAtomGroup` instances are not accepted.
     select : str
-        A selection string. Defaults to `all` in which case
+        A selection string. Defaults to "all" in which case
         all atoms are selected.
     msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
         Desired dimensions to be included in the MSD. Defaults to 'xyz'.
@@ -279,7 +279,7 @@ class EinsteinMSD(AnalysisBase):
         u : Universe or AtomGroup
             An MDAnalysis :class:`Universe` or :class:`AtomGroup`.
         select : str
-            A selection string. Defaults to `all` in which case
+            A selection string. Defaults to "all" in which case
             all atoms are selected.
         msd_type : {'xyz', 'xy', 'yz', 'xz', 'x', 'y', 'z'}
             Desired dimensions to be included in the MSD. Defaults to 'xyz'.
