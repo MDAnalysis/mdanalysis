@@ -24,7 +24,8 @@
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
-from MDAnalysis.coordinates.RDKit import _infer_bo_and_charges
+from MDAnalysis.coordinates.RDKit import (_infer_bo_and_charges,
+                                          _standardize_patterns)
 import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
@@ -143,7 +144,6 @@ class TestRDKitConverter(object):
         ("resid 34 and altloc B", 2),
     ])
     def test_monomer_info(self, pdb, sel_str, atom_index):
-        rdmol = Chem.MolFromPDBFile(PDB_full)
         sel = pdb.select_atoms(sel_str)
         umol = sel.convert_to("RDKIT")
         atom = umol.GetAtomWithIdx(atom_index)
@@ -244,14 +244,16 @@ class TestRDKitFunctions(object):
         ("[C](-[H])-[C](-[H])-[H]", [0], "[H][C]=C([H])[H]"),
         ("[C](-[H])-[Cl]", [0], "[H][C]Cl"),
         ("[C](-[O])-[Cl]", [0], "O=[C]Cl"),
-        #("[S](-[O])(-[O])(-[O]-C)-C", [], "COS(=O)(=O)C"),
+        ("[S](-[O])(-[O])(-[O]-C)-C", [], "COS(=O)(=O)C"),
         #("[S](-[O])(-[O])-C", [0], "O=[S](=O)C"),
-        #("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]", [], "CNC(N)=[N+](-[H])-[H]"),
+        ("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]",
+         [], "CNC(N)=[N+](-[H])-[H]"),
     ])
     def test_infer_bond_orders(self, smi, edges, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
         _infer_bo_and_charges(mol, edges)
+        mol = _standardize_patterns(mol)
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
@@ -262,12 +264,19 @@ class TestRDKitFunctions(object):
         ("C-[O]", "O", -1),
         ("[N]-[C]-[O]", "O", -1),
         ("[N](-[H])(-[H])(-[H])-[H]", "N", 1),
-        #("[O]-[C](-[H])-[C](-[H])-[H]", "O", -1),
+        ("[O]-[C](-[H])-[C](-[H])-[H]", "O", -1),
     ])
     def test_infer_charges(self, smi, atom, charge):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
         _infer_bo_and_charges(mol)
+        mol = _standardize_patterns(mol)
         Chem.SanitizeMol(mol)
         index = mol.GetSubstructMatch(Chem.MolFromSmarts(atom))[0]
         assert mol.GetAtomWithIdx(index).GetFormalCharge() == charge
+
+    def test_standardize_patterns(self):
+        pass
+
+    def test_set_atom_property(self):
+        pass
