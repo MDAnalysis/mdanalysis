@@ -389,3 +389,25 @@ def box_volume(dimensions):
         volume = tri_vecs[0, 0] * tri_vecs[1, 1] * tri_vecs[2, 2]
     return volume
 
+
+def vector_of_best_fit(coordinates):
+    """Fit vector through the centered coordinates,
+    pointing to last coordinate
+
+    Parameters
+    ----------
+    coordinates: :class:`numpy.ndarray` of shape (N, 3)
+    Returns
+    -------
+    :class:`numpy.ndarray` of shape (3,)
+        Vector of best fit.
+    """
+    centered = coordinates - coordinates.mean(axis=0)
+    Mt_M = np.matmul(centered.T, centered)
+    u, s, vh = np.linalg.linalg.svd(Mt_M)
+    vector = vh[0]
+
+    _angle = angle(centered[0], vector)
+    if _angle < np.pi/2:
+        vector *= -1
+    return vector

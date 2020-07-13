@@ -51,6 +51,7 @@ from ..lib.distances import (capped_distance,
 from ..lib.c_distances import contact_matrix_no_pbc, contact_matrix_pbc
 from ..lib.NeighborSearch import AtomNeighborSearch
 from ..lib.distances import calc_bonds
+from ..lib.mdamath import vector_of_best_fit
 
 
 import warnings
@@ -398,3 +399,48 @@ def group_coordinates_by_graph(coordinates, cutoff=15.0, box=None,
         return (groups, graph)
     else:
         return groups
+
+
+def group_vectors_by_orientation(vectors, n_groups=2,
+                                 return_predictor=False, **kwargs):
+    """Group vectors into groups by angles to first vector
+
+    If the optional argument `box` is supplied, the minimum image convention
+    is applied when calculating distances.
+
+    Parameters
+    ----------
+    coordinates: numpy.ndarray
+        Coordinate array with shape ``(n, 3)``
+    n_groups: int (optional)
+        Number of resulting groups. This is not tested for n_groups != 2.
+    return_predictor: bool (optional)
+        whether to return the angles
+    **kwargs:
+        ignored (available to provide a similar interface to other
+        grouping functions)
+
+    Returns
+    -------
+    indices: list of numpy.ndarray
+        List of indices for each group, corresponding to the order
+        of ``coordinates``. ``indices[i]`` is the array of indices
+        for the i-th cluster. ``k = indices[i][j]`` means that the
+        k-th entry in ``coordinates`` is in cluster ``i``.
+        The groups are sorted by size.
+
+    angles: :class:`numpy.ndarry` (optional)
+        Array of angles to the first vector
+    """
+    indices = np.arange(len(vectors))
+    vectors = np.asarray(vectors)
+    vdot = np.einsum('ij,jk->ik', vectors, vectors.T)
+    ix = np.argsort(vdot[0])[::-1]  # angle to first vector
+    vdot = vdot[ix]
+    indices = indices[ix]
+    bins = np.linspace(-1, 1, num=n_groups+1)[::-1]
+    splix = np.searchsorted(vdot[0], bins, side='left')
+    groups = np.split(indices, splix[1:-1], axis=0)
+    if return_predictor:
+        return (groups, vdot[0])
+    return groups

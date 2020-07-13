@@ -85,7 +85,9 @@ Classes and Functions
 
 import numpy as np
 
-from .. import selections
+from ..core import groups
+from ..lib.mdamath import vector_of_best_fit
+from .. import selections, lib
 from . import distances
 
 from ..due import due, Doi
@@ -95,6 +97,46 @@ due.cite(Doi("10.1002/jcc.21787"),
          path="MDAnalysis.analysis.leaflet.LeafletFinder")
 
 del Doi
+
+
+def lipid_orientation(residue, headgroup, pbc=True):
+    """Determine lipid orientation from headgroup.
+
+    Parameters
+    ----------
+    residue: Residue or AtomGroup
+        Lipid to determine orientation for.
+    headgroup: Atom or AtomGroup
+        Headgroup atom or atoms. The center of geometry is used
+        as the origin.
+    pbc: bool (optional)
+        Whether to use PBC.
+
+    Returns
+    -------
+    vector: numpy.ndarray (3,)
+        Vector of orientation
+    """
+    if isinstance(headgroup, groups.Atom):
+        headgroup = groups.AtomGroup([headgroup])
+    cog = headgroup.center_of_geometry(pbc=pbc)
+    atoms = sum([a for a in residue.atoms if a not in headgroup])
+    xyz = atoms.positions
+    if pbc and atoms.dimensions is not None:
+        xyz = lib.distances.apply_PBC(xyz, atoms.dimensions)  # unwrap
+    vec = xyz - cog  # direction vectors
+    vdot = np.einsum('ij,jk->ik', vec, vec.T)  # dot matrix
+    ix = np.argsort(np.diag(vdot))  # sort by distance from cog
+    mostly_acute = (vdot[ix] >= 0).sum(axis=0) > (len(vec)/2)
+    if len(mostly_acute) == 0:
+        raise ValueError("Could not find lipid direction; "
+                         "tail could not be determined by vector "
+                         "from the headgroup")
+    # original method: svd for line of best fit.
+    # turns out just the mean is better for leaflet identification...
+    # keep = np.r_[[cog], xyz[ix][mostly_acute]]
+    # return vector_of_best_fit(keep)
+    return vec[mostly_acute].mean(axis=0)
 
 
 class LeafletFinder(object):
@@ -135,12 +177,18 @@ class LeafletFinder(object):
         "graph" for :func:`~distances.group_coordinates_by_graph`;
         "spectralclustering" for
         :func:`~distances.group_coordinates_by_spectralclustering`;
-        or "center_of_geometry" for
-        :func:`~distances.group_coordinates_by_cog`.
-        Alternatively, pass in your own method. This *must* accept an
+        "center_of_geometry" for
+        :func:`~distances.group_coordinates_by_cog`;
+        "orientation" to calculate orientations for each lipid and
+        use :func:`~distances.group_vectors_by_orientation`
+        or alternatively, pass in your own method. This *must* accept an
         array of coordinates as the first argument, and *must*
         return either a list of numpy arrays (the ``components``
         attribute) or a tuple of (list of numpy arrays, predictor object).
+    resort_cog: bool (optional)
+        Whether to re-check leaflet membership by distance to
+        center-of-geometry after assigning. This is always on for
+        ``method="orientation"``.
     **kwargs:
         Passed to ``method``
 
@@ -219,7 +267,15 @@ class LeafletFinder(object):
     """
 
     def __init__(self, universe, select='all', cutoff=20.0, pbc=True,
-                 method="graph", **kwargs):
+                 method="graph", resort_cog=False, **kwargs):
+        self.universe = universe.universe
+        self.select = select
+        self.selection = universe.select_atoms(select, periodic=pbc)
+        self.pbc = pbc
+        self.cutoff = cutoff
+        self.box = self.universe.dimensions if pbc else None
+        self.positions = self.selection.positions
+
         if isinstance(method, str):
             method = method.lower().replace('_', '')
         if method == "graph":
@@ -228,16 +284,18 @@ class LeafletFinder(object):
             self.method = distances.group_coordinates_by_spectralclustering
         elif method == "centerofgeometry":
             self.method = distances.group_coordinates_by_cog
+        elif method == "orientation":
+            self.method = distances.group_vectors_by_orientation
+            hgdct = self.selection.groupby('resindices')
+            hgs_ = sorted(list(hgdct.items()), key=lambda x: x[0])
+            hgs = [x[1] for x in hgs_]
+            positions = [lipid_orientation(hg.residues[0], hg) for hg in hgs]
+            self.positions = np.array(positions)
+            resort_cog = True
         else:
             self.method = method
 
-        self.universe = universe.universe
-        self.select = select
-        self.selection = universe.select_atoms(select, periodic=pbc)
-        self.pbc = pbc
-        self.cutoff = cutoff
-        self.box = self.universe.dimensions if pbc else None
-        results = self.method(self.selection.positions,
+        results = self.method(self.positions,
                               cutoff=self.cutoff,
                               box=self.box,
                               return_predictor=True,
@@ -247,7 +305,17 @@ class LeafletFinder(object):
         else:
             self.components = results
             self.predictor = None
+
         self.groups = [self.selection[x] for x in self.components]
+        if resort_cog:
+            cogs = [x.center_of_geometry() for x in self.groups]
+            new = distances.group_coordinates_by_cog(self.selection.positions,
+                                                     centers=cogs,
+                                                     box=self.box,
+                                                     return_predictor=False)
+            self.components = new
+            self.groups = [self.selection[x] for x in self.components]
+
         self.leaflets = sorted(self.groups,
                                key=lambda x: x.center_of_geometry()[-1],
                                reverse=True)

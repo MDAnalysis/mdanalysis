@@ -28,7 +28,7 @@ import numpy as np
 import networkx as NX
 
 from MDAnalysis.analysis.leaflet import (LeafletFinder, optimize_cutoff,
-                                         )
+                                         lipid_orientation)
 from MDAnalysis.analysis import distances
 from MDAnalysisTests.datafiles import (Martini_membrane_gro,
                                        GRO_MEMPROT,
@@ -53,15 +53,31 @@ def lines2one(lines):
     return " ".join(" ".join(lines).split())
 
 
-def test_optimize_cutoff():
-    universe = mda.Universe(Martini_membrane_gro)
-    cutoff, N = optimize_cutoff(universe, select="name PO4", pbc=True)
+@pytest.fixture()
+def martini_universe():
+    return mda.Universe(Martini_membrane_gro)
+
+
+def test_optimize_cutoff(martini_universe):
+    cutoff, N = optimize_cutoff(martini_universe, select="name PO4",
+                                pbc=True)
     assert N == 2
     assert_almost_equal(cutoff, 10.5, decimal=4)
 
 
-class BaseTestLeafletFinder(object):
+@pytest.mark.parametrize('n,sel,vec', [
+    (0, "name PO4", [ -0.4729897,   5.5480019, -10.0399998]),
+    (180, "name ROH", [-0.0157176,  3.7500022, -6.7571378])
+])
+def test_orientation(martini_universe, n, sel, vec):
+    # vectors checked by visual validation "does this look about right"
+    res = martini_universe.residues[n]
+    headgroup = res.atoms.select_atoms(sel)
+    orientation = lipid_orientation(res, headgroup, pbc=True)
+    assert_almost_equal(orientation, vec)
 
+
+class BaseTestLeafletFinder(object):
     kwargs = {}
     n_lipids = 360
     select = "all"
@@ -192,8 +208,12 @@ class TestLeafletFinderByGraph(BaseTestLeafletFinderMartini):
 
 
 @skip_spectralclustering
-class TestLeafletFinderBySCMembrane(BaseTestLeafletFinderMartini):
+class TestLeafletFinderBySC(BaseTestLeafletFinderMartini):
     method = "spectralclustering"
+
+
+class TestLeafletFinderByOrientation(BaseTestLeafletFinderMartini):
+    method = "orientation"
 
 
 class TestLeafletFinderByCOG(BaseTestLeafletFinderMartini):
@@ -221,6 +241,10 @@ class BaseTestLFMemProt(BaseTestLeafletFinder):
 
 class TestLFMemProtGraph(BaseTestLFMemProt):
     method = "graph"
+
+
+class TestLFMemProtOrientation(BaseTestLFMemProt):
+    method = "orientation"
 
 
 @skip_spectralclustering
