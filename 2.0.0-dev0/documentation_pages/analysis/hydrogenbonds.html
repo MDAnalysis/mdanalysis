@@ -371,10 +371,11 @@ protein-water and protein-protein hydrogen bonds will be found, but
 no water-water hydrogen bonds.</p>
 <p>In order to compute the hydrogen bond lifetime, after finding hydrogen bonds
 one can use the <code class="xref py py-attr docutils literal notranslate"><span class="pre">lifetime</span></code> function:</p>
-<blockquote>
-<div>…
-hbonds.run()
-tau_timeseries, timeseries = hbonds.lifetime()</div></blockquote>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">hbonds</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span> <span class="o">=</span> <span class="n">hbonds</span><span class="o">.</span><span class="n">lifetime</span><span class="p">()</span>
+</pre></div>
+</div>
 <p>It is <strong>highly recommended</strong> that a topology with bond information is used to
 generate the universe, e.g <cite>PSF</cite>, <cite>TPR</cite>, or <cite>PRMTOP</cite> files. This is the only
 method by which it can be guaranteed that donor-hydrogen pairs are correctly
@@ -622,10 +623,8 @@ in hydrogen bonding. This str may then be modified before being used to set the 
 <dl class="method">
 <dt id="MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime">
 <code class="descname">lifetime</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>window_step=1</em>, <em>intermittency=0</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/hydrogenbonds/hbond_analysis.html#HydrogenBondAnalysis.lifetime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Computes and returns the time-autocorrelation (HydrogenBondLifetimes)</dt>
-<dd>of hydrogen bonds.</dd>
-</dl>
+<dd><p>Computes and returns the time-autocorrelation
+(HydrogenBondLifetimes) of hydrogen bonds.</p>
 <p>Before calling this method, the hydrogen bonds must first be computed
 with the <cite>run()</cite> function. The same <cite>start</cite>, <cite>stop</cite> and <cite>step</cite>
 parameters used in finding hydrogen bonds will be used here for

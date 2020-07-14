@@ -354,7 +354,7 @@
 <span class="sd">no water-water hydrogen bonds.</span>
 
 <span class="sd">In order to compute the hydrogen bond lifetime, after finding hydrogen bonds</span>
-<span class="sd">one can use the :attr:`lifetime` function:</span>
+<span class="sd">one can use the :attr:`lifetime` function::</span>
 
 <span class="sd">    ...</span>
 <span class="sd">    hbonds.run()</span>
@@ -812,9 +812,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hbonds</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
 <div class="viewcode-block" id="HydrogenBondAnalysis.lifetime"><a class="viewcode-back" href="../../../../documentation_pages/analysis/hydrogenbonds.html#MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.lifetime">[docs]</a>    <span class="k">def</span> <span class="nf">lifetime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Computes and returns the time-autocorrelation (HydrogenBondLifetimes)</span>
-<span class="sd">         of hydrogen bonds.</span>
+        <span class="sd">&quot;&quot;&quot;Computes and returns the time-autocorrelation</span>
+<span class="sd">        (HydrogenBondLifetimes) of hydrogen bonds.</span>
 
 <span class="sd">        Before calling this method, the hydrogen bonds must first be computed</span>
 <span class="sd">        with the `run()` function. The same `start`, `stop` and `step`</span>
