@@ -29,7 +29,7 @@ env:
     - SETUP_CMD="${PYTEST_FLAGS}"
     - BUILD_CMD="pip install -e package/ && (cd testsuite/ && python setup.py build)"
     - CONDA_MIN_DEPENDENCIES="mmtf-python biopython networkx cython matplotlib scipy griddataformats hypothesis gsd codecov"
-    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit"
+    - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
@@ -43,7 +43,7 @@ env:
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - NUMPY_VERSION=1.13.3
+    - NUMPY_VERSION=1.16.0
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 matrix:
