@@ -281,7 +281,7 @@
             <span class="s2">&quot;           See https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;           Use the format keyword to explicitly set the format: &#39;Universe(...,format=FORMAT)&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;           For missing formats, raise an issue at &quot;</span>
-            <span class="s2">&quot;http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="nb">format</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">_READERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
 
@@ -430,7 +430,8 @@
                 <span class="s2">&quot;   </span><span class="si">{1}</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="s2">&quot;   For missing formats, raise an issue at </span><span class="se">\n</span><span class="s2">&quot;</span>
-                <span class="s2">&quot;   http://issues.mdanalysis.org&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="s2">&quot;   https://github.com/MDAnalysis/mdanalysis/issues&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="nb">format</span><span class="p">,</span> <span class="n">_PARSERS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_PARSERS</span><span class="p">[</span><span class="s1">&#39;MINIMAL&#39;</span><span class="p">]</span>

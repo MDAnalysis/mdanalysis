@@ -1011,9 +1011,11 @@
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="s2">&quot;Unrecognised topology attribute name: &#39;</span><span class="si">{}</span><span class="s2">&#39;.&quot;</span>
                     <span class="s2">&quot;  Possible values: &#39;</span><span class="si">{}</span><span class="s2">&#39;</span><span class="se">\n</span><span class="s2">&quot;</span>
-                    <span class="s2">&quot;To raise an issue go to: http://issues.mdanalysis.org&quot;</span>
+                    <span class="s2">&quot;To raise an issue go to: &quot;</span>
+                    <span class="s2">&quot;https://github.com/MDAnalysis/mdanalysis/issues&quot;</span>
                     <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                        <span class="n">topologyattr</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
+                        <span class="n">topologyattr</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                            <span class="nb">sorted</span><span class="p">(</span><span class="n">_TOPOLOGY_ATTRS</span><span class="o">.</span><span class="n">keys</span><span class="p">()))))</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">topologyattr</span> <span class="o">=</span> <span class="n">tcls</span><span class="o">.</span><span class="n">from_blank</span><span class="p">(</span>
@@ -1464,10 +1466,10 @@
                 <span class="n">fragdict</span><span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">fraginfo</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">fragdict</span>
-    
+
 <div class="viewcode-block" id="Universe.from_smiles"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe.from_smiles">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_smiles</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">addHs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-                    <span class="n">generate_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> 
+    <span class="k">def</span> <span class="nf">from_smiles</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">addHs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">generate_coordinates</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                     <span class="n">rdkit_kwargs</span><span class="o">=</span><span class="p">{},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a Universe from a SMILES string with rdkit</span>
 
@@ -1525,7 +1527,7 @@
             <span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
         <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
-                <span class="s2">&quot;Creating a Universe from a SMILES string requires RDKit but &quot;</span> 
+                <span class="s2">&quot;Creating a Universe from a SMILES string requires RDKit but &quot;</span>
                 <span class="s2">&quot;it does not appear to be installed&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span>
 
         <span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">,</span> <span class="n">sanitize</span><span class="o">=</span><span class="n">sanitize</span><span class="p">)</span>
@@ -1537,7 +1539,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">addHs</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Generating coordinates requires adding &quot;</span>
                 <span class="s2">&quot;hydrogens with `addHs=True`&quot;</span><span class="p">)</span>
-            
+
             <span class="n">numConfs</span> <span class="o">=</span> <span class="n">rdkit_kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;numConfs&quot;</span><span class="p">,</span> <span class="n">numConfs</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">numConfs</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span> <span class="ow">and</span> <span class="n">numConfs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s2">&quot;numConfs must be a non-zero positive &quot;</span>
