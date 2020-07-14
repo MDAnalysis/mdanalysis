@@ -233,50 +233,71 @@ class TestRDKitConverter(object):
 class TestRDKitFunctions(object):
     @pytest.mark.parametrize("smi, edges, out", [
         ("C(-[H])(-[H])(-[H])-[H]", [], "C"),
-        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])", [], "c1ccccc1"),
-        ("[Cl]-[C](-[H])-[O]", [], "C(=O)Cl"),
-        ("[H]-[C](-[O])-[N](-[H])-[H]", [], "C(=O)N"),
         ("[C](-[H])(-[H])-[C](-[H])-[H]", [], "C=C"),
-        ("[P](-O)(-O)(-O)-[O]", [], "P(O)(O)(O)=O"),
-        ("[P](-[O])(-[O])(-[O])-O", [], "O=P([O-])([O-])O"),
+        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])", [],
+         "c1ccccc1"),
+        ("C-[C](-[H])-[O]", [], "C(=O)C"),
+        ("[H]-[C](-[O])-[N](-[H])-[H]", [], "C(=O)N"),
         ("[N]-[C]-[H]", [], "N#C"),
+        ("C-[C](-[O]-[H])-[O]", [], "CC(=O)O"),
+        ("[P](-[O]-[H])(-[O]-[H])(-[O]-[H])-[O]", [], "P(O)(O)(O)=O"),
+        ("[P](-[O]-[H])(-[O]-[H])(-[O])-[O]", [], "P([O-])(O)(O)=O"),
+        ("[P](-[O]-[H])(-[O])(-[O])-[O]", [], "P([O-])([O-])(O)=O"),
+        ("[P](-[O])(-[O])(-[O])-[O]", [], "P([O-])([O-])([O-])=O"),
+        ("[H]-[O]-[N]-[O]", [], "ON=O"),
+        ("[N]-[C]-[O]", [], "N#C[O-]"),
         ("[C](-[H])(-[H])-[Cl]", [0], "[H][C]([H])Cl"),
         ("[C](-[H])-[C](-[H])-[H]", [0], "[H][C]=C([H])[H]"),
         ("[C](-[H])-[Cl]", [0], "[H][C]Cl"),
         ("[C](-[O])-[Cl]", [0], "O=[C]Cl"),
-        ("[S](-[O])(-[O])(-[O]-C)-C", [], "COS(=O)(=O)C"),
-        #("[S](-[O])(-[O])-C", [0], "O=[S](=O)C"),
-        ("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]",
-         [], "CNC(N)=[N+](-[H])-[H]"),
     ])
     def test_infer_bond_orders(self, smi, edges, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
         _infer_bo_and_charges(mol, edges)
-        mol = _standardize_patterns(mol)
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
-        assert mol.HasSubstructMatch(
-            molref) and molref.HasSubstructMatch(mol)
+        assert mol.HasSubstructMatch(molref) and molref.HasSubstructMatch(
+            mol), "{} != {}".format(Chem.MolToSmiles(mol), out)
 
-    @pytest.mark.parametrize("smi, atom, charge", [
-        ("C-[O]", "O", -1),
-        ("[N]-[C]-[O]", "O", -1),
-        ("[N](-[H])(-[H])(-[H])-[H]", "N", 1),
-        ("[O]-[C](-[H])-[C](-[H])-[H]", "O", -1),
+    @pytest.mark.parametrize("smi, atom_idx, charge", [
+        ("[C](-[H])(-[H])(-[H])-[O]", 4, -1),
+        ("[N]-[C]-[O]", 2, -1),
+        ("[N](-[H])(-[H])(-[H])-[H]", 0, 1),
+        ("C-[C](-[O])-[O]", 3, -1),
     ])
-    def test_infer_charges(self, smi, atom, charge):
+    def test_infer_charges(self, smi, atom_idx, charge):
+        mol = Chem.MolFromSmiles(smi, sanitize=False)
+        mol.UpdatePropertyCache(strict=False)
+        _infer_bo_and_charges(mol)
+        Chem.SanitizeMol(mol)
+        assert mol.GetAtomWithIdx(atom_idx).GetFormalCharge() == charge
+
+    @pytest.mark.parametrize("smi, out", [
+        ("[S](-[O]-[H])(-[O]-[H])(-[O])-[O]", "S(=O)(=O)(O)O"),
+        ("[S](-[O]-[H])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])O"),
+        ("[S](-[O])(-[O])(-[O])-[O]", "S(=O)(=O)([O-])[O-]"),
+        ("C-[N](-[H])-[C](-[N](-[H])-[H])-[N](-[H])-[H]",
+         "CNC(N)=[N+](-[H])-[H]"),
+        ("[O]-[C](-[H])-[C](-[H])-[H]", "C([O-])=C"),
+        ("C-[N](-[O])-[O]", "C[N+](=O)[O-]"),
+        ("C(-[N](-[O])-[O])-[N](-[O])-[O]", "C([N+](=O)[O-])[N+](=O)[O-]"),
+        ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
+    ])
+    def test_standardize_patterns(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
         _infer_bo_and_charges(mol)
         mol = _standardize_patterns(mol)
         Chem.SanitizeMol(mol)
-        index = mol.GetSubstructMatch(Chem.MolFromSmarts(atom))[0]
-        assert mol.GetAtomWithIdx(index).GetFormalCharge() == charge
-
-    def test_standardize_patterns(self):
-        pass
+        mol = Chem.RemoveHs(mol)
+        molref = Chem.MolFromSmiles(out)
+        assert mol.HasSubstructMatch(molref) and molref.HasSubstructMatch(
+            mol), "{} != {}".format(Chem.MolToSmiles(mol), out)
 
     def test_set_atom_property(self):
+        pass
+
+    def test_reassign_props_after_reaction(self):
         pass
