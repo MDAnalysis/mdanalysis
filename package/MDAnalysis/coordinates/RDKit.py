@@ -142,7 +142,7 @@ class RDKitReader(memory.MemoryReader):
 
 
 class RDKitConverter(base.ConverterBase):
-    """Convert MDAnalysis AtomGroup or Universe to `RDKit`_ :class:`rdkit.Chem.rdchem.Mol`
+    """Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` to `RDKit`_ :class:`rdkit.Chem.rdchem.Mol`
 
     MDanalysis attributes are stored in each RDKit atom of the resulting 
     molecule in two different ways: 
@@ -198,6 +198,15 @@ class RDKitConverter(base.ConverterBase):
         mol = u.select_atoms('resname DMS').convert_to('RDKIT')
 
 
+    Notes
+    -----
+
+    The converter requires the :class:`~MDAnalysis.core.topologyattrs.Elements` attribute
+    to be present in the topology, else it will fail. 
+    It also requires the `bonds` attribute, although they will be automatically
+    guessed if not present.
+
+
     .. versionadded:: 2.0.0
 
     .. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
@@ -206,12 +215,15 @@ class RDKitConverter(base.ConverterBase):
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
 
-    def convert(self, obj):
+    def convert(self, obj, NoImplicit=True):
         """Write selection at current trajectory frame to :class:`rdkit.Chem.rdchem.Mol`.
 
         Parameters
         -----------
         obj : AtomGroup or Universe
+
+        NoImplicit : bool
+            Prevent adding hydrogens to the molecule
         """
         try:
             from rdkit import Chem
@@ -241,20 +253,21 @@ class RDKitConverter(base.ConverterBase):
         for attr in RDATTRIBUTES.keys():
             if hasattr(ag, attr):
                 pdb_attrs[attr] = getattr(ag, attr)
-        # others
+
         other_attrs = {}
         for attr in ["bfactors", "charges", "segids", "types"]:
             if hasattr(ag, attr):
                 other_attrs[attr] = getattr(ag, attr)
 
         mol = Chem.RWMol()
+        # map index in universe to index in mol
         atom_mapper = {}
 
         for i, (atom, element) in enumerate(zip(ag, elements)):
             # create atom
             rdatom = Chem.Atom(element.capitalize())
             # disable adding H to the molecule
-            rdatom.SetNoImplicit(True)
+            rdatom.SetNoImplicit(NoImplicit)
             # add PDB-like properties
             mi = Chem.AtomPDBResidueInfo()
             for attr, values in pdb_attrs.items():
@@ -268,7 +281,6 @@ class RDKitConverter(base.ConverterBase):
             _set_atom_property(rdatom, "index", int(atom.ix))
             # add atom
             index = mol.AddAtom(rdatom)
-            # map index in universe to index in mol
             atom_mapper[atom.ix] = index
 
         try:
