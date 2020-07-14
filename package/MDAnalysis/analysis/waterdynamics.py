@@ -86,8 +86,8 @@ To analyse hydrogen bond lifetime, use
 its method `.lifetime` to find the hydrogen bonds and their lifetime.
 
 See Also
-    --------
-    :mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`
+--------
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`
 
 
 WaterOrientationalRelaxation
