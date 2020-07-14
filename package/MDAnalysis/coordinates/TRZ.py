@@ -84,7 +84,6 @@ Classes
    :members:
 
 """
-import sys
 import warnings
 import numpy as np
 import os
@@ -141,7 +140,9 @@ class TRZReader(base.ReaderBase):
        Extra data (Temperature, Energies, Pressures, etc) now read
        into ts.data dictionary.
        Now passes a weakref of self to ts (ts._reader).
-
+    .. versionchanged:: 2.0.0
+       Now checks for the correct `n_atoms` on reading
+       and can raise :exc:`ValueError`.
     """
 
     format = "TRZ"
@@ -159,6 +160,12 @@ class TRZReader(base.ReaderBase):
             number of atoms in trajectory, must be taken from topology file!
         convert_units : bool (optional)
             converts units to MDAnalysis defaults
+
+        Raises
+        ------
+        ValueError
+           If `n_atoms` or the number of atoms in the topology file do not
+           match the number of atoms in the trajectory.
         """
         super(TRZReader, self).__init__(trzfilename,  **kwargs)
 
@@ -244,6 +251,11 @@ class TRZReader(base.ReaderBase):
 
         try:
             data = np.fromfile(self.trzfile, dtype=self._dtype, count=1)
+            if data['natoms'][0] != self.n_atoms:
+                raise ValueError("Supplied n_atoms {} is incompatible "
+                                 "with provided trajectory file. "
+                                 "Maybe `topology` is wrong?".format(
+                                                             self.n_atoms))
             ts.frame = data['nframe'][0] - 1  # 0 based for MDA
             ts._frame = data['ntrj'][0]
             ts.time = data['treal'][0]
@@ -588,6 +600,7 @@ class TRZWriter(base.WriterBase):
         out['p1a'], out['p1b'] = 20, 20
         out['nframe'] = ts.frame + 1  # TRZ wants 1 based
         out['ntrj'] = data['step']
+        out['natoms'] = self.n_atoms
         out['treal'] = data['time']
         out['p2a'], out['p2b'] = 72, 72
         out['box'] = self.convert_pos_to_native(unitcell, inplace=False)

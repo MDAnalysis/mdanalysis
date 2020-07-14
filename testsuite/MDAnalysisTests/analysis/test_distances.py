@@ -62,7 +62,7 @@ class TestContactMatrix(object):
                            [0, 1, 0, 0, 0],
                            [1, 0, 1, 0, 0],
                            [0, 0, 0, 1, 0],
-                           [0, 0, 0, 0, 1]], dtype=np.bool)
+                           [0, 0, 0, 0, 1]], dtype=bool)
     
     @staticmethod
     @pytest.fixture()
@@ -71,7 +71,7 @@ class TestContactMatrix(object):
                         [0, 1, 0, 0, 0],
                         [1, 0, 1, 1, 1],
                         [1, 0, 1, 1, 1],
-                        [1, 0, 1, 1, 1]], dtype=np.bool)
+                        [1, 0, 1, 1, 1]], dtype=bool)
 
     def test_np(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(

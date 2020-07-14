@@ -1,3 +1,4 @@
+version: ~> 1.0
 language: generic
 group: travis_latest
 
@@ -43,7 +44,7 @@ env:
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    - NUMPY_VERSION=1.13.3
+    - NUMPY_VERSION=1.16.0
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 matrix:
@@ -73,6 +74,16 @@ matrix:
            SETUP_CMD=""
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
            ASV_CHECK="true"
+
+    - env: NAME="pypi check"
+           PYTHON_VERSION=3.7
+           CODECOV="false"
+           MAIN_CMD="cd package && python setup.py"
+           SETUP_CMD="sdist"
+           BUILD_CMD=""
+           INSTALL_HOLE="false"
+           CONDA_DEPENDENCIES="setuptools cython twine"
+           PYPI_CHECK="true"
 
     - os: osx
       env: PYTHON_VERSION=3.6
@@ -124,20 +135,29 @@ script:
       cd ../benchmarks
       time python -m asv check -E existing
     fi
-
+  # check pypi package build
+  - |
+    if [[ "${PYPI_CHECK}" == "true" ]]; then
+       DISTRIBUTION=$(ls -t1 ${TRAVIS_BUILD_DIR}/package/dist/MDAnalysis-*.tar.gz | head -n 1)
+       test -n "${DISTRIBUTION}" || { echo "no distribution package/dist/MDAnalysis-*.tar.gz found"; exit 1; }
+       echo "twine check $DISTRIBUTION"
+       twine check $DISTRIBUTION
+    fi
 
 after_success:
   - |
     if [[ $CODECOV == 'true' ]]; then \
       codecov; \
     fi
+
   # can't use test here since this leads to travis fails even though the build passes
   # turn off blocking as it causes large writes to stdout to fail
   # (see https://github.com/travis-ci/travis-ci/issues/4704)
   - |
-    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] && [[ ${TRAVIS_BRANCH} == ${GH_DOC_BRANCH} ]]; then
+    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] ; then
       python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
       cd ${TRAVIS_BUILD_DIR}/package/MDAnalysis
+      export GH_DOC_BRANCH=${TRAVIS_BRANCH}
       export VERSION=$(python -c "import version; print(version.__version__)")
       cd -
       bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs_via_travis.sh;

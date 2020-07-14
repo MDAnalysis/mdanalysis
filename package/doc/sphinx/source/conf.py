@@ -133,7 +133,7 @@ html_theme = 'msmb_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# styles/fonts to match http://mdanalysis.org (see public/css)
+# styles/fonts to match https://userguide.mdanalysis.org
 #
 # /* MDAnalysis orange: #FF9200 */
 # /* MDAnalysis gray: #808080 */
