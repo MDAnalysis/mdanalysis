@@ -265,6 +265,8 @@ class EinsteinMSD(AnalysisBase):
         The averaged MSD over all the particles with respect to lag-time.
     msd_per_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
+    ag : :class:`AtomGroup`
+        The :class:`AtomGroup` resulting from your selection
     n_frames : int
         Number of frames included in the analysis.
     n_particles : int
@@ -293,9 +295,8 @@ class EinsteinMSD(AnalysisBase):
         if isinstance(u, groups.UpdatingAtomGroup):
             raise TypeError("""UpdatingAtomGroups are not valid for MSD
          computation""")
-        self.u = u
 
-        super(EinsteinMSD, self).__init__(self.u.universe.trajectory, **kwargs)
+        super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
         # args
         self.select = select
@@ -304,8 +305,8 @@ class EinsteinMSD(AnalysisBase):
         self.fft = fft
 
         # local
-        self._atoms = self.u.select_atoms(self.select)
-        self.n_particles = len(self._atoms)
+        self.ag = u.select_atoms(self.select)
+        self.n_particles = len(self.ag)
         self._position_array = None
 
         # result
@@ -345,7 +346,7 @@ class EinsteinMSD(AnalysisBase):
         # shape of position array set here, use span in last dimension
         # from this point on
         self._position_array[self._frame_index] = (
-            self._atoms.positions[:, self._dim])
+            self.ag.positions[:, self._dim])
 
     def _conclude(self):
         if self.fft:

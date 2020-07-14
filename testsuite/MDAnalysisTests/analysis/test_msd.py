@@ -22,6 +22,7 @@
 #
 
 
+from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 import MDAnalysis as mda
 
 from numpy.testing import (assert_almost_equal, assert_equal)
@@ -54,9 +55,6 @@ def test_notidynamics(u, SELECTION):
         u = mda.Universe(PSF, DCD)
         msd = MSD(u, SELECTION)
         msd.run()
-
-
-from MDAnalysis.analysis.msd import EinsteinMSD as MSD
 
 
 @pytest.fixture(scope='module')
@@ -101,6 +99,15 @@ class TestMSDSimple(object):
     def test_selection_works(self, msd):
         # test some basic size and shape things
         assert_equal(msd.n_particles, 10)
+
+    def test_ag_accepted(self, u):
+        ag = u.select_atoms("resid 1")
+        m = MSD(ag, msd_type='xyz', fft=False)
+
+    def test_updating_ag_rejected(self, u):
+        updating_ag = u.select_atoms("around 3.5 resid 1", updating=True)
+        with pytest.raises(TypeError):
+            m = MSD(updating_ag, msd_type='xyz', fft=False)
 
     @pytest.mark.parametrize('msdtype', ['foo', 'bar', 'yx', 'zyx'])
     def test_msdtype_error(self, u, SELECTION, msdtype):
