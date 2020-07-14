@@ -82,8 +82,7 @@ HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
 
 To analyse hydrogen bond lifetime, use
-:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis` and
-its method `.lifetime` to find the hydrogen bonds and their lifetime.
+:meth:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.liftetime`.
 
 See Also
     --------
