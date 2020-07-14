@@ -431,54 +431,75 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
 def _standardize_patterns(mol):
     """Standardize functional groups using reactions from SMARTS patterns
 
-    Because the two NH2 groups in arginine are identical, during the reaction the pattern is matched 2 times and produces 2 identical products per ARG residue, which results in as many molecules as there are ARG residues when we use Chem.CombineMols. For this reason, we have to run the ARG reaction and keep the first product as many times as their are arginine residues in the molecule.
-    The same logic applies to all reactions that imply several identical 
-    moieties (like the two =O in sulfones).
+    Due to the way reactions work, we first have to split the molecule by
+    fragments. Then, for each fragment, we apply the standardization reactions.
+    If a pattern is matched N times in the molecule, the reaction will return N
+    products as an array of shape (N, 1). Only the first product will be kept
+    and the same reaction will be reapplied to the product N times in total. 
+    Finally, the fragments are recombined.
     """
-    reactions = [
-        ("Cterm", "[C-;v3:1]=[O:2]>>[C;+0:1]=[O:2]"),
-        ("Nterm", "[N-;v2;H1:1]>>[N;+0:1]"),
-        ("keto-enolate", "[C-:1]-[C:2]=[O:3]>>[C;+0:1]=[C:2]-[O;-1:3]"),
-    ]
-    # arginine
-    pattern = Chem.MolFromSmarts("[N;H1:1]-[C-;v3:2](-[N;H2:3])-[N;H2:4]")
-    n = len(mol.GetSubstructMatches(pattern))
-    reactions.extend(
-        n * [("ARG", "[N;H1:1]-[C-;v3:2](-[N;H2:3])-[N;H2:4]"
-                     ">>[N:1]-[C;+0:2](-[N:3])=[N;+1:4]")]
-    )
-    # sulfone
-    pattern = Chem.MolFromSmarts("[S;v4:1](-[O-;v1:2])-[O-;v1:3]")
-    n = len(mol.GetSubstructMatches(pattern))
-    reactions.extend(
-        n * [("sulfone", "[S;v4:1](-[O-;v1:2])-[O-;v1:3]"
-                         ">>[S;v6:1](=[O;+0:2])=[O;+0:3]")]
-    )
-    for name, reaction in reactions:
-        rxn = AllChem.ReactionFromSmarts(reaction)
-        products = rxn.RunReactants((mol,))
-        # product is an empty tuple if there were no matching atoms in the mol
-        if products:
-            if name in ["ARG", "sulfone"]:
-                products = products[::len(products)]
-            product = products[0][0]
-            for p in products[1:]:
-                product = Chem.CombineMols(product, p[0])
-            # map back atomic properties to the transformed atoms
-            for atom in product.GetAtoms():
-                try:
-                    atom.GetIntProp("old_mapno")
-                except KeyError:
-                    pass
+
+    fragments = []
+    for reactant in Chem.GetMolFrags(mol, asMols=True):
+
+        for name, reaction in [
+            ("Cterm", "[C-;v3:1]=[O:2]>>[C;+0:1]=[O:2]"),
+            ("Nterm", "[N-;v2;H1:1]>>[N;+0:1]"),
+            ("keto-enolate", "[C-:1]-[C:2]=[O:3]>>[C;+0:1]=[C:2]-[O;-1:3]"),
+            ("ARG", "[N;H1:1]-[C-;v3:2](-[N;H2:3])-[N;H2:4]"
+                    ">>[N:1]-[C;+0:2](-[N:3])=[N;+1:4]"),
+            ("sulfone", "[S;v4:1](-[O-;v1:2])-[O-;v1:3]"
+                        ">>[S;v6:1](=[O;+0:2])=[O;+0:3]"),
+            ("nitro", "[N;v3:1](-[O-;v1:2])-[O-;v1:3]"
+                      ">>[N;+1:1](-[O;-1:2])=[O;+0:3]"),
+        ]:
+            # count how many times the reaction should be run
+            pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
+            n_matches = len(reactant.GetSubstructMatches(pattern))
+
+            # run the reaction for each matched pattern
+            rxn = AllChem.ReactionFromSmarts(reaction)
+            for n in range(n_matches):
+                products = rxn.RunReactants((reactant,))
+                # only keep the first product
+                if products:
+                    product = products[0][0]
+                    product.UpdatePropertyCache(strict=False)
+                    # make sure each atom in the product has its atom properties
+                    _reassign_props_after_reaction(reactant, product)
+                    # apply the next reaction to the product
+                    reactant = product
                 else:
-                    atom.ClearProp("old_mapno")
-                    idx = atom.GetUnsignedProp("react_atom_idx")
-                    old_atom = mol.GetAtomWithIdx(idx)
-                    for prop, value in old_atom.GetPropsAsDict().items():
-                        if prop.startswith("_MDAnalysis"):
-                            attr = prop.split("_")[-1]
-                            _set_atom_property(atom, attr, value)
-                atom.ClearProp("react_atom_idx")
-            mol = product
-            mol.UpdatePropertyCache(strict=False)
+                    # exit the n_matches loop if there's no product. Example
+                    # where this is needed: SO^{4}_{2-} will match the sulfone
+                    # pattern 6 times but the reaction is only needed once
+                    break
+
+        fragments.append(reactant)
+
+    # recombine fragments
+    mol = fragments.pop(0)
+    for fragment in fragments:
+        mol = Chem.CombineMols(mol, fragment)
+
     return mol
+
+
+def _reassign_props_after_reaction(reactant, product):
+    """Maps back atomic properties from the reactant to the product. 
+    The product molecule is modified inplace.
+    """
+    for atom in product.GetAtoms():
+        try:
+            atom.GetIntProp("old_mapno")
+        except KeyError:
+            pass
+        else:
+            atom.ClearProp("old_mapno")
+            idx = atom.GetUnsignedProp("react_atom_idx")
+            old_atom = reactant.GetAtomWithIdx(idx)
+            for prop, value in old_atom.GetPropsAsDict().items():
+                if prop.startswith("_MDAnalysis"):
+                    attr = prop.split("_")[-1]
+                    _set_atom_property(atom, attr, value)
+        atom.ClearProp("react_atom_idx")
