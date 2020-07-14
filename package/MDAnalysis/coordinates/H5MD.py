@@ -1,7 +1,10 @@
-import h5py
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.coordinates import base, core
+try:
+    import h5py
+except ImportError:
+    raise ImportError("Cannot import h5py")
 
 class Timestep(base.Timestep):
     """H5MD Timestep
@@ -32,40 +35,55 @@ class H5MDReader(base.ReaderBase):
     """Reader for the H5MD format.
 
     Currently reads .h5md files with the following HDF5 hierarchy:
-    Notation - (name) is an HDF5 group and [variable] is an HDF5 dataset,
-               <dtype> is dataset datatype
+
+    Notation
+    --------
+    (name) is an HDF5 group that the reader recognizes
+    {name} is an HDF5 group with arbitrary name
+    [variable] is an HDF5 dataset
+    <dtype> is dataset datatype
+    +-- is an attribute of a group or dataset
+    See `h5md documentation<https://nongnu.org/h5md/h5md.html#>`_
+    for detailed overview
 
     H5MD root
      \-- (h5md)
      \-- (particles)
-        \-- (trajectory)
+        \-- {group1}
             \-- (box)
+                +-- dimension <int>, gives box spatial dimension
+                +-- boundary <str>, gives boundary conditions
                 \-- (edges)
                     \-- [step] <int32>, gives frame#
                     \-- [value] <float>, gives box dimensions
-            \-- (positions)
-                \-- [step] <int32>, gives frame #
+            \-- (position)
+                \-- [step] <int>, gives frame #
                 \-- [time] <float>, gives time
+                    +-- units <str>
                 \-- [value] <float>, gives trajectory positions
-            \-- (velocities)
-                \-- [step] <int32>, gives frame #
+                    +-- units <str>
+            \-- (velocity)
+                \-- [step] <int>, gives frame #
                 \-- [time] <float>, gives time
+                    +-- units <str>
                 \-- [value] <float>, gives trajectory velocities
-            \-- (forces)
-                \-- [step] <int32>, gives frame #
+                    +-- units <str>
+            \-- (force)
+                \-- [step] <int>, gives frame #
                 \-- [time] <float>, gives time
+                    +-- units <str>
                 \-- [value] <float>, gives trajectory forces
+                    +-- units <str>
             \-- (data)
                 \-- (dt)
-                    \-- [step] <int32>, gives frame #
+                    \-- [step] <int>, gives frame #
                     \-- [value] <float>, gives dt
                 \-- (lambda)
-                    \-- [step] <int32>, gives frame #
+                    \-- [step] <int>, gives frame #
                     \-- [value] <float>, gives lambda
                 \-- (step)
-                    \-- [step] <int32>, gives frame #
-                    \-- [value] <int32>, gives step
-            \-- [n_atoms] <int>, gives # of atoms in trajectory
+                    \-- [step] <int>, gives frame #
+                    \-- [value] <int>, gives step
 
     Data that is not currently read from an H5MD file includes: masses
     """
@@ -83,20 +101,22 @@ class H5MDReader(base.ReaderBase):
             trajectory filename
         **kwargs : dict
             General reader arguments.
-
         """
         super(H5MDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()
-        self.n_atoms = self._file['particles']['trajectory']['n_atoms'][()]
+        self.n_atoms = self._particle_group['position/value'].shape[1]
         self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
         self._read_next_timestep()
 
 
     def open_trajectory(self) :
-        """opens the trajectory file using h5py package"""
+        """opens the trajectory file using h5py library"""
         self._frame = -1
         self._file = h5py.File(self.filename, 'r')
+        # pulls first key out of 'particles'
+        # allows for arbitrary name of group1 in 'particles'
+        self._particle_group = self._file['particles'][list(self._file['particles'])[0]]
 
     def close(self):
         """close reader"""
@@ -105,7 +125,7 @@ class H5MDReader(base.ReaderBase):
     @property
     def n_frames(self):
         """number of frames in trajectory"""
-        return self._file['particles']['trajectory']['positions']['value'].shape[0]
+        return self._particle_group['position/value'].shape[0]
 
     def _reopen(self):
         """reopen trajectory"""
@@ -114,54 +134,52 @@ class H5MDReader(base.ReaderBase):
 
     def _read_frame(self, frame):
         try:
-            myframe = self._file['particles']['trajectory']['positions']['step'][frame]
+            myframe = self._particle_group['position/step'][frame]
         except ValueError:
             raise IOError from None
 
-        # set frame number
         self._frame = frame
         ts = self.ts
-
-        # sets the Timestep object
+        particle_group = self._particle_group
         ts.frame = frame
 
         # set data dictionary values
-        ts.data['time'] = self._file['particles']['trajectory']['positions']['time'][frame]
-        ts.data['step'] = self._file['particles']['trajectory']['data']['step']['value'][frame]
-        ts.data['lambda'] = self._file['particles']['trajectory']['data']['lambda']['value'][frame]
-        ts.data['dt'] = self._file['particles']['trajectory']['data']['dt']['value'][frame]
+        ts.data['time'] = particle_group['position/time'][frame]
+        ts.data['step'] = particle_group['data/step/value'][frame]
+        ts.data['lambda'] = particle_group['data/lambda/value'][frame]
+        ts.data['dt'] = particle_group['data/dt/value'][frame]
 
         # set frame box dimensions
         # set triclinic box vectors
-        ts._unitcell[:] = self._file['particles']['trajectory']['box']['edges']['value'][frame, :]
+        ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
 
         # set particle positions
-        frame_positions = self._file['particles']['trajectory']['positions']['value'][frame, :]
+        frame_positions = particle_group['position/value'][frame, :]
         n_atoms_now = frame_positions.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
-                " atoms. MDAnalysis in unable to deal with variable"
-                " topology!"%(frame, n_atoms_now, self.n_atoms))
+                             " atoms. MDAnalysis in unable to deal with variable"
+                             " topology!"%(frame, n_atoms_now, self.n_atoms))
         else :
             ts.positions = frame_positions
 
         # set particle velocities
-        frame_velocities = self._file['particles']['trajectory']['velocities']['value'][frame, :]
+        frame_velocities = particle_group['velocity/value'][frame, :]
         n_atoms_now = frame_velocities.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
-                " atoms. MDAnalysis in unable to deal with variable"
-                " topology!"%(frame, n_atoms_now, self.n_atoms))
+                             " atoms. MDAnalysis in unable to deal with variable"
+                             " topology!"%(frame, n_atoms_now, self.n_atoms))
         else :
             ts.velocities = frame_velocities
 
         # set particle forces
-        frame_forces = self._file['particles']['trajectory']['forces']['value'][frame, :]
+        frame_forces = particle_group['force/value'][frame, :]
         n_atoms_now = frame_forces.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
-                " atoms. MDAnalysis in unable to deal with variable"
-                " topology!"%(frame, n_atoms_now, self.n_atoms))
+                             " atoms. MDAnalysis in unable to deal with variable"
+                             " topology!"%(frame, n_atoms_now, self.n_atoms))
         else :
             ts.forces = frame_forces
 
@@ -170,3 +188,12 @@ class H5MDReader(base.ReaderBase):
     def _read_next_timestep(self) :
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
+
+    def _read_h5md_units(self):
+        """converts units from H5MD to MDAnalysis notation"""
+        velocity_dict = {
+        'nm ps-1': 'nm/ps'
+        }
+        force_dict = {
+        'kJ mol-1 nm-1':'kJ/(mol*nm)'
+        }

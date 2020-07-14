@@ -1,6 +1,9 @@
-import pyh5md
 import MDAnalysis as mda
 from MDAnalysis.tests.datafiles import COORDINATES_TRR, COORDINATES_TOPOLOGY
+try:
+    import pyh5md
+except ImportError:
+    raise ImportError("Cannot import pyh5md")
 
 """
 This script converts the file test.trr to test.h5md, where
