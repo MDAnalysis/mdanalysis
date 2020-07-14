@@ -34,7 +34,6 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
-  * Class waterdynamics.HydrogenBondLifetimes was removed (PR #2842)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
@@ -69,6 +68,7 @@ Changes
   * Dropped Python 2 support
   * Changes the minimal NumPy version to 1.16.0 (Issue #2827, PR #2831)
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
+  * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
 
 Deprecations
 
