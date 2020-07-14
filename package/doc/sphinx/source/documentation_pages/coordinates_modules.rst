@@ -26,6 +26,7 @@ provide the format in the keyword argument *format* to
    coordinates/GMS
    coordinates/GSD
    coordinates/GRO
+   coordinates/H5MD
    coordinates/INPCRD
    coordinates/LAMMPS
    coordinates/MMTF
@@ -36,7 +37,7 @@ provide the format in the keyword argument *format* to
    coordinates/PQR
    coordinates/TRJ
    coordinates/TRR
-   coordinates/TRZ   
+   coordinates/TRZ
    coordinates/TXYZ
    coordinates/XTC
    coordinates/XYZ
