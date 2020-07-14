@@ -229,7 +229,7 @@
 <span class="sd">Many of the readers are not restricted to just reading files. They can</span>
 <span class="sd">also use gzip-compressed or bzip2-compressed files (through the</span>
 <span class="sd">internal use of :func:`openany`). It is also possible to provide more</span>
-<span class="sd">general streams as inputs, such as a :func:`cStringIO.StringIO`</span>
+<span class="sd">general streams as inputs, such as a :class:`io.StringIO`</span>
 <span class="sd">instances (essentially, a memory buffer) by wrapping these instances</span>
 <span class="sd">into a :class:`NamedStream`. This :class:`NamedStream` can then be</span>
 <span class="sd">used in place of an ordinary file name (typically, with a</span>
@@ -242,10 +242,10 @@
 
 <span class="sd">   import MDAnalysis</span>
 <span class="sd">   from MDAnalysis.lib.util import NamedStream</span>
-<span class="sd">   import cStringIO</span>
+<span class="sd">   from io import StringIO</span>
 
 <span class="sd">   pdb_s = &quot;TITLE     Lonely Ion\\nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00\\n&quot;</span>
-<span class="sd">   u = MDAnalysis.Universe(NamedStream(cStringIO.StringIO(pdb_s), &quot;ion.pdb&quot;))</span>
+<span class="sd">   u = MDAnalysis.Universe(NamedStream(StringIO(pdb_s), &quot;ion.pdb&quot;))</span>
 <span class="sd">   print(u)</span>
 <span class="sd">   #  &lt;Universe with 1 atoms&gt;</span>
 <span class="sd">   print(u.atoms.positions)</span>
@@ -260,7 +260,7 @@
 <span class="sd">The use of streams becomes more interesting when MDAnalysis is used as glue</span>
 <span class="sd">between different analysis packages and when one can arrange things so that</span>
 <span class="sd">intermediate frames (typically in the PDB format) are not written to disk but</span>
-<span class="sd">remain in memory via e.g. :mod:`cStringIO` buffers.</span>
+<span class="sd">remain in memory via e.g. :class:`io.StringIO` buffers.</span>
 
 
 <span class="sd">.. The following does *not* work because most readers need to</span>
@@ -525,7 +525,7 @@
 <span class="sd">    ----------</span>
 <span class="sd">    datasource</span>
 <span class="sd">        a file (from :class:`file` or :func:`open`) or a stream (e.g. from</span>
-<span class="sd">        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)</span>
+<span class="sd">        :func:`urllib2.urlopen` or :class:`io.StringIO`)</span>
 <span class="sd">    mode: {&#39;r&#39;, &#39;w&#39;, &#39;a&#39;} (optional)</span>
 <span class="sd">        Open in r(ead), w(rite) or a(ppen) mode. More complicated</span>
 <span class="sd">        modes (&#39;r+&#39;, &#39;w+&#39;, ...) are not supported; only the first letter of</span>
@@ -601,7 +601,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">stream</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">filename</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
-        <span class="k">pass</span>  <span class="c1"># can&#39;t set name (e.g. cStringIO.StringIO)</span>
+        <span class="k">pass</span>  <span class="c1"># can&#39;t set name (e.g. io.StringIO)</span>
     <span class="k">return</span> <span class="n">stream</span></div>
 
 
@@ -768,11 +768,11 @@
 
 <span class="sd">    Example</span>
 <span class="sd">    -------</span>
-<span class="sd">    Wrap a :func:`cStringIO.StringIO` instance to write to::</span>
+<span class="sd">    Wrap a :class:`io.StringIO` instance to write to::</span>
 
-<span class="sd">      import cStringIO</span>
+<span class="sd">      from io import StringIO</span>
 <span class="sd">      import os.path</span>
-<span class="sd">      stream = cStringIO.StringIO()</span>
+<span class="sd">      stream = StringIO()</span>
 <span class="sd">      f = NamedStream(stream, &quot;output.pdb&quot;)</span>
 <span class="sd">      print(os.path.splitext(f))</span>
 
@@ -815,7 +815,7 @@
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
 <span class="sd">        stream : stream</span>
-<span class="sd">            an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)</span>
+<span class="sd">            an open stream (e.g. :class:`file` or :class:`io.StringIO`)</span>
 <span class="sd">        filename : str</span>
 <span class="sd">            the filename that should be associated with the stream</span>
 <span class="sd">        reset : bool (optional)</span>
