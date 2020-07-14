@@ -16,21 +16,27 @@ def create_test_trj(universe, filename):
     # will eventually change this to use h5py instead
 
     with pyh5md.File(filename, 'w', creator='create_h5md_data.py') as f:
-        # Add a trajectory group into particles group
         trajectory = f.particles_group('trajectory')
 
-        # Add the positions, velocities, forces, n_atoms groups into the trajectory group
-        trajectory_positions = pyh5md.element(trajectory,'positions', store='time',
-                                              data=universe.trajectory.ts.positions, time=True)
-        trajectory_velocities = pyh5md.element(trajectory, 'velocities', data=universe.trajectory.ts.velocities,
-                                               step_from=trajectory_positions,store='time', time=True)
-        trajectory_forces = pyh5md.element(trajectory, 'forces', data=universe.trajectory.ts.forces,
-                                           step_from=trajectory_positions, store='time', time=True)
-        trajectory_n_atoms = pyh5md.element(trajectory, 'n_atoms', store='fixed',
-                                            data=universe.atoms.n_atoms)
+        trajectory_positions = pyh5md.element(trajectory,'position', store='time', data=universe.trajectory.ts.positions, time=True)
+        f['particles/trajectory/position'].attrs['units'] = 'Angstrom'
+        f['particles/trajectory/position/time'].attrs['units'] = 'ps'
+
+        trajectory_velocities = pyh5md.element(trajectory, 'velocity', data=universe.trajectory.ts.velocities, step_from=trajectory_positions,
+                                      store='time', time=True)
+        f['particles/trajectory/velocity'].attrs['units'] = 'Angstrom ps-1'
+        f['particles/trajectory/velocity/time'].attrs['units'] = 'ps'
+
+        trajectory_forces = pyh5md.element(trajectory, 'force', data=universe.trajectory.ts.forces, step_from=trajectory_positions,
+                                  store='time', time=True)
+        f['particles/trajectory/force'].attrs['units'] = 'kJ mol-1 Angstrom-1'
+        f['particles/trajectory/force/time'].attrs['units'] = 'ps'
+
+
         data_step = pyh5md.element(trajectory, 'data/step', store='time', data=universe.trajectory.ts.data['step'])
         data_lambda = pyh5md.element(trajectory, 'data/lambda', store='time', data=universe.trajectory.ts.data['lambda'])
         data_dt = pyh5md.element(trajectory, 'data/dt', store='time', data=universe.trajectory.ts.data['dt'])
+        f['particles/trajectory/data/dt'].attrs['units'] = 'ps'
 
         trajectory.create_box(dimension=3, boundary=['periodic', 'periodic', 'periodic'],
                               store='time', data=universe.trajectory.ts.triclinic_dimensions,

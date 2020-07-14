@@ -48,6 +48,12 @@ class H5MDReader(base.ReaderBase):
 
     H5MD root
      \-- (h5md)
+        +-- version
+        \-- author
+            +-- name: <str>, author's name
+            +-- email: <str>, option email
+        \-- creator
+            +-- name: <str>, gives file that created h5md file
      \-- (particles)
         \-- {group1}
             \-- (box)
@@ -89,11 +95,12 @@ class H5MDReader(base.ReaderBase):
     """
 
     format = 'H5MD'
-    units = {'time': None, 'length': None}
-    # need to add units
+    units = {'time': None, 'length': None, 'velocity': None,
+             'force': None}
+    # units are added from h5md file
     _Timestep = Timestep
 
-    def __init__(self, filename, **kwargs):
+    def __init__(self, filename, convert_units=True, **kwargs):
         """
         Parameters
         ----------
@@ -118,19 +125,23 @@ class H5MDReader(base.ReaderBase):
         # allows for arbitrary name of group1 in 'particles'
         self._particle_group = self._file['particles'][list(self._file['particles'])[0]]
 
+
     def close(self):
         """close reader"""
         self._file.close()
+
 
     @property
     def n_frames(self):
         """number of frames in trajectory"""
         return self._particle_group['position/value'].shape[0]
 
+
     def _reopen(self):
         """reopen trajectory"""
         self.close()
         self.open_trajectory()
+
 
     def _read_frame(self, frame):
         try:
@@ -183,17 +194,42 @@ class H5MDReader(base.ReaderBase):
         else :
             ts.forces = frame_forces
 
+        # unit conversion
+        self._translate_h5md_units()  # fills units dictionary
+        if self.convert_units:
+            self.convert_time_to_native(self.ts.time)
+            self.convert_pos_from_native(self.ts.dimensions[:3])
+            self.convert_pos_from_native(self.ts.positions)
+            self.convert_velocities_from_native(self.ts.velocities)
+            self.convert_forces_from_native(self.ts.forces)
+
         return ts
+
 
     def _read_next_timestep(self) :
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
 
-    def _read_h5md_units(self):
-        """converts units from H5MD to MDAnalysis notation"""
+
+    def _translate_h5md_units(self):
+        """converts units from H5MD to MDAnalysis notation
+        and fills units dictionary"""
+
         velocity_dict = {
-        'nm ps-1': 'nm/ps'
+        'nm ps-1': 'nm/ps',
+        'Angstrom ps-1': 'Angstrom/ps'
         }
         force_dict = {
-        'kJ mol-1 nm-1':'kJ/(mol*nm)'
+        'kJ mol-1 nm-1': 'kJ/(mol*nm)',
+        'kJ mol-1 Angstrom-1': 'kJ/(mol*Angstrom)'
         }
+
+        time_unit = self._particle_group['position/time'].attrs['units']
+        length_unit = self._particle_group['position'].attrs['units']
+        vel_unit = velocity_dict[self._particle_group['velocity'].attrs['units']]
+        force_unit = force_dict[self._particle_group['force'].attrs['units']]
+
+        self.units['time'] = time_unit
+        self.units['length'] = length_unit
+        self.units['velocity'] = vel_unit
+        self.units['force'] = force_unit
