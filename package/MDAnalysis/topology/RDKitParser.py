@@ -96,7 +96,43 @@ class RDKitParser(TopologyReaderBase):
      - ChainIDs
      - Occupancies
      - Tempfactors
-    
+
+    Attributes table:
+
+    +---------------------------------------------+-------------------------+
+    | RDKit attribute                             | MDAnalysis equivalent   |
+    +=============================================+=========================+
+    | atom.GetMonomerInfo().GetAltLoc()           | altLocs                 |
+    +---------------------------------------------+-------------------------+
+    | atom.GetIsAromatic()                        | aromaticities           |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetChainId()          | chainIDs                |
+    +---------------------------------------------+-------------------------+
+    | atom.GetDoubleProp('_GasteigerCharge')      | charges                 |
+    | atom.GetDoubleProp('_TriposPartialCharge')  |                         |
+    +---------------------------------------------+-------------------------+
+    | atom.GetSymbol()                            | elements                |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetInsertionCode()    | icodes                  |
+    +---------------------------------------------+-------------------------+
+    | atom.GetIdx()                               | indices                 |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMass()                              | masses                  |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetName()             | names                   |
+    | atom.GetProp('_TriposAtomName')             |                         |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetResidueName()      | resnames                |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetResidueNumber()    | resnums                 |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetTempFactor()       | tempfactors             |
+    +---------------------------------------------+-------------------------+
+    | atom.GetProp('_TriposAtomType')             | types                   |
+    +---------------------------------------------+-------------------------+
+
 
     .. versionadded:: 2.0.0
     """
