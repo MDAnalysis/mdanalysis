@@ -45,18 +45,6 @@ def u():
     return mda.Universe(PSF, DCD)
 
 
-@block_import('tidynamics')
-def test_notidynamics(u, SELECTION):
-    # Have to avoid importing until here as otherwise tidynamics will already
-    # be imported
-    from MDAnalysis.analysis.msd import EinsteinMSD as MSD
-
-    with pytest.raises(ImportError, match="tidynamics was not found"):
-        u = mda.Universe(PSF, DCD)
-        msd = MSD(u, SELECTION)
-        msd.run()
-
-
 @pytest.fixture(scope='module')
 def NSTEP():
     nstep = 5000
@@ -87,6 +75,14 @@ def step_traj(NSTEP):  # constant velocity
     return u
 
 
+@block_import('tidynamics')
+def test_notidynamics(u, SELECTION):
+    with pytest.raises(ImportError, match="tidynamics was not found"):
+        u = mda.Universe(PSF, DCD)
+        msd = MSD(u, SELECTION)
+        msd.run()
+
+
 def characteristic_poly(n, d):
     # polynomial that describes unit step traj MSD
     x = np.arange(0, n)
@@ -106,7 +102,8 @@ class TestMSDSimple(object):
 
     def test_updating_ag_rejected(self, u):
         updating_ag = u.select_atoms("around 3.5 resid 1", updating=True)
-        with pytest.raises(TypeError):
+        errmsg = "UpdatingAtomGroups are not valid"
+        with pytest.raises(TypeError, match=errmsg):
             m = MSD(updating_ag, msd_type='xyz', fft=False)
 
     @pytest.mark.parametrize('msdtype', ['foo', 'bar', 'yx', 'zyx'])
