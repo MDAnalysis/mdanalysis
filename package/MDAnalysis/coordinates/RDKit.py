@@ -94,6 +94,7 @@ else:
         "resids": "ResidueNumber",
         "segindices": "SegmentNumber",
         "tempfactors": "TempFactor",
+        "bfactors": "TempFactor",
     }
     PERIODIC_TABLE = Chem.GetPeriodicTable()
 
@@ -176,7 +177,7 @@ class RDKitConverter(base.ConverterBase):
     +-----------------------+-------------------------------------------+
     | tempfactors           | atom.GetMonomerInfo().GetTempFactor()     |
     +-----------------------+-------------------------------------------+
-    | bfactors              | atom.GetDoubleProp("_MDAnalysis_bfactor") |
+    | bfactors              | atom.GetMonomerInfo().GetTempFactor()     |
     +-----------------------+-------------------------------------------+
     | charges               | atom.GetDoubleProp("_MDAnalysis_charge")  |
     +-----------------------+-------------------------------------------+
@@ -205,6 +206,8 @@ class RDKitConverter(base.ConverterBase):
     to be present in the topology, else it will fail.
     It also requires the `bonds` attribute, although they will be automatically
     guessed if not present.
+    If both `tempfactors` and `bfactors` attributes are present, the conversion
+    will fail, since only one of these should be present.
 
 
     .. versionadded:: 2.0.0
@@ -250,12 +253,18 @@ class RDKitConverter(base.ConverterBase):
 
         # attributes accepted in PDBResidueInfo object
         pdb_attrs = {}
+        if hasattr(ag, "bfactors") and hasattr(ag, "tempfactors"):
+            raise AttributeError(
+                "Both `tempfactors` and `bfactors` attributes are present but "
+                "only one can be assigned to the RDKit molecule. Please "
+                "delete the unnecessary one and retry."
+            )
         for attr in RDATTRIBUTES.keys():
             if hasattr(ag, attr):
                 pdb_attrs[attr] = getattr(ag, attr)
 
         other_attrs = {}
-        for attr in ["bfactors", "charges", "segids", "types"]:
+        for attr in ["charges", "segids", "types"]:
             if hasattr(ag, attr):
                 other_attrs[attr] = getattr(ag, attr)
 
