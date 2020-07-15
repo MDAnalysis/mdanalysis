@@ -34,8 +34,9 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
-  * Attribute error was thrown when finding D-H pairs via the topology if
-    `hydrogens` was an empty AtomGroup (Issue #2848)
+  * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError 
+    was thrown when finding D-H pairs via the topology if `hydrogens` was an 
+    empty AtomGroup (Issue #2848)
 
 Enhancements
   * Added the RDKitParser which creates a `core.topology.Topology` object from
