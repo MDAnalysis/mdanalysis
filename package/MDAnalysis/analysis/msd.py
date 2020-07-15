@@ -293,8 +293,8 @@ class EinsteinMSD(AnalysisBase):
 
         """
         if isinstance(u, groups.UpdatingAtomGroup):
-            raise TypeError("""UpdatingAtomGroups are not valid for MSD
-         computation""")
+            raise TypeError("UpdatingAtomGroups are not valid for MSD "
+                            "computation")
 
         super(EinsteinMSD, self).__init__(u.universe.trajectory, **kwargs)
 
