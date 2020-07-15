@@ -45,13 +45,13 @@ try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
     from MDAnalysis.coordinates.RDKit import (
-        RDATTRIBUTES, 
+        RDATTRIBUTES,
         _add_mda_attr_to_rdkit,
         _infer_bo_and_charges,
         _standardize_patterns,
         _set_atom_property,
-        _reassign_props_after_reaction
-        )
+        _reassign_props_after_reaction,
+    )
 except ImportError:
     def mol2_mol():
         pass
@@ -79,7 +79,7 @@ else:
         mol = Chem.AddHs(mol)
         cids = AllChem.EmbedMultipleConfs(mol, numConfs=3)
         return mol
-    
+
     def dummy_product():
         mol = Chem.RWMol()
         atom = Chem.Atom(1)

@@ -202,7 +202,7 @@ class RDKitConverter(base.ConverterBase):
     -----
 
     The converter requires the :class:`~MDAnalysis.core.topologyattrs.Elements` attribute
-    to be present in the topology, else it will fail. 
+    to be present in the topology, else it will fail.
     It also requires the `bonds` attribute, although they will be automatically
     guessed if not present.
 
@@ -447,7 +447,7 @@ def _standardize_patterns(mol):
     fragments. Then, for each fragment, we apply the standardization reactions.
     If a pattern is matched N times in the molecule, the reaction will return N
     products as an array of shape (N, 1). Only the first product will be kept
-    and the same reaction will be reapplied to the product N times in total. 
+    and the same reaction will be reapplied to the product N times in total.
     Finally, the fragments are recombined.
     """
 
@@ -477,7 +477,7 @@ def _standardize_patterns(mol):
                 if products:
                     product = products[0][0]
                     product.UpdatePropertyCache(strict=False)
-                    # make sure each atom in the product has its atom properties
+                    # map back atom properties from the reactant to the product
                     _reassign_props_after_reaction(reactant, product)
                     # apply the next reaction to the product
                     reactant = product
@@ -498,7 +498,7 @@ def _standardize_patterns(mol):
 
 
 def _reassign_props_after_reaction(reactant, product):
-    """Maps back atomic properties from the reactant to the product. 
+    """Maps back atomic properties from the reactant to the product.
     The product molecule is modified inplace.
     """
     for atom in product.GetAtoms():
