@@ -140,7 +140,7 @@ class TestRDKitParserPDB(RDKitParserBase):
     ref_filename = PDB_helix
 
     expected_attrs = RDKitParserBase.expected_attrs + ['resnames', 'altLocs', 
-        'chainIDs', 'occupancies', 'tempfactors']
+        'chainIDs', 'occupancies', 'icodes', 'tempfactors']
     guessed_attrs = ['types']
     
     expected_n_atoms = 137
