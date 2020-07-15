@@ -219,7 +219,7 @@ from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
-from MDAnalysis import AtomGroup
+from MDAnalysis.core.groups import AtomGroup
 
 from ...due import due, Doi
 
