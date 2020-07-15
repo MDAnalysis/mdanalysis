@@ -292,7 +292,7 @@ class RDKitParser(TopologyReaderBase):
             segids = np.array(segids, dtype=object)
             icodes = np.array(icodes, dtype=object)
             residx, (resnums, resnames, icodes, segids) = change_squash(
-                (resnums, resnames, icodes, segids), 
+                (resnums, resnames, icodes, segids),
                 (resnums, resnames, icodes, segids))
             n_residues = len(resnums)
             for vals, Attr, dtype in (
