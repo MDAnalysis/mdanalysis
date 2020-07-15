@@ -47,8 +47,8 @@ Enhancements
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
-  * Added a simple version of the RDKitConverter that handles uncharged 
-    molecules with bond orders/bond types assigned (Issue #2468, PR #2775)
+  * Added a converter that works for any input with all hydrogens explicit in 
+    the topology (Issue #2468, PR #2775)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
