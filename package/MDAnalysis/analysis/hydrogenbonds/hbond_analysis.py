@@ -174,6 +174,7 @@ import numpy as np
 from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.core.groups import AtomGroup
 
 from ...due import due, Doi
 
@@ -410,7 +411,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                                   'can be used.')
 
             hydrogens = self.u.select_atoms(self.hydrogens_sel)
-            donors = sum(h.bonded_atoms[0] for h in hydrogens)
+            donors = sum(h.bonded_atoms[0] for h in hydrogens) if hydrogens \
+                else AtomGroup([], self.u)
 
         # Otherwise, use d_h_cutoff as a cutoff distance
         else:

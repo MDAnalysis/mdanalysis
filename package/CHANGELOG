@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
-         yuxuanzhuang, lilyminium, VOD555
+         yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz
 
   * 1.0.1
 
@@ -32,6 +32,9 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
+  * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError
+    was thrown when finding D-H pairs via the topology if `hydrogens` was an
+    empty AtomGroup (Issue #2848)
 
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
