@@ -398,6 +398,7 @@
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.distances</span> <span class="kn">import</span> <span class="n">capped_distance</span><span class="p">,</span> <span class="n">calc_angles</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.correlations</span> <span class="kn">import</span> <span class="n">autocorrelation</span><span class="p">,</span> <span class="n">correct_intermittency</span>
 <span class="kn">from</span> <span class="nn">MDAnalysis.exceptions</span> <span class="kn">import</span> <span class="n">NoDataError</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
 
 <span class="kn">from</span> <span class="nn">...due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 
@@ -683,7 +684,8 @@
                                   <span class="s1">&#39;can be used.&#39;</span><span class="p">)</span>
 
             <span class="n">hydrogens</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hydrogens_sel</span><span class="p">)</span>
-            <span class="n">donors</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span>
+            <span class="n">donors</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">h</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hydrogens</span><span class="p">)</span> <span class="k">if</span> <span class="n">hydrogens</span> \
+                <span class="k">else</span> <span class="n">AtomGroup</span><span class="p">([],</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">)</span>
 
         <span class="c1"># Otherwise, use d_h_cutoff as a cutoff distance</span>
         <span class="k">else</span><span class="p">:</span>
