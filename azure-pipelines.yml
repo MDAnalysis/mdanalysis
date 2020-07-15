@@ -29,6 +29,9 @@ jobs:
         Python36-64bit-full:
           PYTHON_VERSION: '3.6'
           PYTHON_ARCH: 'x64'
+        Python37-64bit-full:
+          PYTHON_VERSION: '3.7'
+          PYTHON_ARCH: 'x64'
         Python38-64bit-full:
           PYTHON_VERSION: '3.8'
           PYTHON_ARCH: 'x64'
@@ -51,6 +54,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
+      tqdm
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
   - script: >-
@@ -65,7 +69,6 @@ jobs:
       networkx
       parmed
       tidynamics>=1.0.0
-      tqdm
     displayName: 'Install additional dependencies for 64-bit tests'
     condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - powershell: |
