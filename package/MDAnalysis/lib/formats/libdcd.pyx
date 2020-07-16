@@ -260,7 +260,7 @@ cdef class DCDFile:
             self.close()
             return
 
-        current_frame = state[1]
+        current_frame = state[1] - 1
         self.seek(current_frame)
 
 
