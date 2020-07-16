@@ -47,6 +47,7 @@ jobs:
       scikit-learn
       scipy
       h5py
+      tqdm
     displayName: 'Install dependencies'
   - powershell: |
       cd package

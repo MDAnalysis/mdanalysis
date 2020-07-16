@@ -3,7 +3,9 @@ from MDAnalysis.tests.datafiles import COORDINATES_TRR, COORDINATES_TOPOLOGY
 try:
     import pyh5md
 except ImportError:
-    raise ImportError("Cannot import pyh5md")
+    HAS_PYH5MD = False
+else:
+    HAS_PYH5MD = True
 
 """
 This script converts the file test.trr to test.h5md, where
@@ -58,4 +60,7 @@ def main():
     create_test_trj(u, 'test.h5md')
 
 if __name__ == '__main__':
-    main()
+    if HAS_PYH5MD:
+        main()
+    else:
+        pass

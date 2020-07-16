@@ -79,7 +79,7 @@ class Timestep(base.Timestep):
         angles are in degrees.
 
         Setting dimensions will populate the underlying native format description (triclinic box vectors)
-        If `edges<https://nongnu.org/h5md/h5md.html#simulation-box>`_ is a matrix,
+        If `edges <https://nongnu.org/h5md/h5md.html#simulation-box>`_ is a matrix,
         the box is of triclinic shape with the edge vectors given by the rows of the matrix.)
         """
         return core.triclinic_box(*self._unitcell) # vectors are the rows
@@ -100,7 +100,7 @@ class H5MDReader(base.ReaderBase):
     [variable] is an HDF5 dataset
     <dtype> is dataset datatype
     +-- is an attribute of a group or dataset
-    See `h5md documentation<https://nongnu.org/h5md/h5md.html#>`_
+    See `h5md documentation <https://nongnu.org/h5md/h5md.html#>`_
     for detailed overview
 
     H5MD root
@@ -152,7 +152,9 @@ class H5MDReader(base.ReaderBase):
     """
 
     format = 'H5MD'
-    units = {'time': None, 'length': None, 'velocity': None,
+    units = {'time': None,
+             'length': None,
+             'velocity': None,
              'force': None}
     # units are added from h5md file
     _Timestep = Timestep
@@ -172,7 +174,17 @@ class H5MDReader(base.ReaderBase):
         self.filename = filename
         self.open_trajectory()
         self.n_atoms = self._particle_group['position/value'].shape[1]
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
+
+        self.has_positions = 'position' in self._particle_group
+        #if not self.has_positions:
+            #raise ValueError("'position' group must be in 'particles' group")
+        self.has_velocities = 'velocity' in self._particle_group
+        self.has_forces = 'force' in self._particle_group
+
+        self.ts = self._Timestep(self.n_atoms,
+                                 velocities=self.has_velocities,
+                                 forces=self.has_forces,
+                                 **self._ts_kwargs)
         self._read_next_timestep()
 
 
@@ -225,10 +237,15 @@ class H5MDReader(base.ReaderBase):
         ts.frame = frame
 
         # set data dictionary values
-        ts.data['time'] = particle_group['position/time'][frame]
-        ts.data['step'] = particle_group['data/step/value'][frame]
-        ts.data['lambda'] = particle_group['data/lambda/value'][frame]
-        ts.data['dt'] = particle_group['data/dt/value'][frame]
+        if 'data' in self._particle_group:
+            if 'time' in self._particle_group['data']:
+                ts.data['time'] = particle_group['position/time'][frame]
+            if 'step' in self._particle_group['data']:
+                ts.data['step'] = particle_group['data/step/value'][frame]
+            if 'lambda' in self._particle_group['data']:
+                ts.data['lambda'] = particle_group['data/lambda/value'][frame]
+            if 'dt' in self._particle_group['data']:
+                ts.data['dt'] = particle_group['data/dt/value'][frame]
 
         # set frame box dimensions
         # set triclinic box vectors
@@ -239,39 +256,43 @@ class H5MDReader(base.ReaderBase):
         n_atoms_now = frame_positions.shape[0]
         if n_atoms_now != self.n_atoms :
             raise ValueError("Frame %d has %d atoms but the initial frame has %d"
-                             " atoms. MDAnalysis in unable to deal with variable"
+                             " atoms. MDAnalysis is unable to deal with variable"
                              " topology!"%(frame, n_atoms_now, self.n_atoms))
         else :
             ts.positions = frame_positions
 
         # set particle velocities
-        frame_velocities = particle_group['velocity/value'][frame, :]
-        n_atoms_now = frame_velocities.shape[0]
-        if n_atoms_now != self.n_atoms :
-            raise ValueError("Frame %d has %d atoms but the initial frame has %d"
-                             " atoms. MDAnalysis in unable to deal with variable"
-                             " topology!"%(frame, n_atoms_now, self.n_atoms))
-        else :
-            ts.velocities = frame_velocities
+        if self.has_velocities:
+            frame_velocities = particle_group['velocity/value'][frame, :]
+            n_atoms_now = frame_velocities.shape[0]
+            if n_atoms_now != self.n_atoms :
+                raise ValueError("Frame %d has %d atoms but the initial frame has %d"
+                                 " atoms. MDAnalysis is unable to deal with variable"
+                                 " topology!"%(frame, n_atoms_now, self.n_atoms))
+            else :
+                ts.velocities = frame_velocities
 
         # set particle forces
-        frame_forces = particle_group['force/value'][frame, :]
-        n_atoms_now = frame_forces.shape[0]
-        if n_atoms_now != self.n_atoms :
-            raise ValueError("Frame %d has %d atoms but the initial frame has %d"
-                             " atoms. MDAnalysis in unable to deal with variable"
-                             " topology!"%(frame, n_atoms_now, self.n_atoms))
-        else :
-            ts.forces = frame_forces
+        if self.has_forces:
+            frame_forces = particle_group['force/value'][frame, :]
+            n_atoms_now = frame_forces.shape[0]
+            if n_atoms_now != self.n_atoms :
+                raise ValueError("Frame %d has %d atoms but the initial frame has %d"
+                                 " atoms. MDAnalysis is unable to deal with variable"
+                                 " topology!"%(frame, n_atoms_now, self.n_atoms))
+            else :
+                ts.forces = frame_forces
 
         # unit conversion
         self._translate_h5md_units()  # fills units dictionary
         if self.convert_units:
-            self.ts.time = self.convert_time_to_native(self.ts.time, inplace=False)
+            #self.ts.time = self.convert_time_to_native(self.ts.time)
             self.convert_pos_from_native(self.ts.dimensions[:3])
             self.convert_pos_from_native(self.ts.positions)
-            self.convert_velocities_from_native(self.ts.velocities)
-            self.convert_forces_from_native(self.ts.forces)
+            if self.has_velocities:
+                self.convert_velocities_from_native(self.ts.velocities)
+            if self.has_forces:
+                self.convert_forces_from_native(self.ts.forces)
 
         return ts
 
@@ -294,12 +315,38 @@ class H5MDReader(base.ReaderBase):
         'kJ mol-1 Angstrom-1': 'kJ/(mol*Angstrom)'
         }
 
-        time_unit = self._particle_group['position/time'].attrs['units']
-        length_unit = self._particle_group['position'].attrs['units']
-        vel_unit = velocity_dict[self._particle_group['velocity'].attrs['units']]
-        force_unit = force_dict[self._particle_group['force'].attrs['units']]
+        if 'units' in self._particle_group['position/time'].attrs:
+            try:
+                self.units['time'] = self._particle_group['position/time'].attrs['units']
+            except KeyError:
+                print("Unit %d not recognized by H5MDReader. Please "
+                      "raise an issue on `MDAnalysis github <https://github.com/MDAnalysis/mdanalysis>`_"
+                      ""%(self._particle_group['position/time'].attrs['units']))
 
-        self.units['time'] = time_unit
-        self.units['length'] = length_unit
-        self.units['velocity'] = vel_unit
-        self.units['force'] = force_unit
+        if 'units' in self._particle_group['position'].attrs:
+            try:
+                self.units['length'] = self._particle_group['position'].attrs['units']
+            except KeyError:
+                print("Unit %d not recognized by H5MDReader. Please "
+                      "raise an issue on `MDAnalysis github <https://github.com/MDAnalysis/mdanalysis>`_"
+                      ""%(self._particle_group['position'].attrs['units']))
+
+        # looks for unit in h5md file and passes it to velocity_dict for translation
+        if self.has_velocities:
+            if 'units' in self._particle_group['velocity'].attrs:
+                try:
+                    self.units['velocity'] = velocity_dict[self._particle_group['velocity'].attrs['units']]
+                except KeyError:
+                    print("Unit %d not recognized by H5MDReader. Please "
+                          "raise an issue on `MDAnalysis github <https://github.com/MDAnalysis/mdanalysis>`_"
+                          ""%(self._particle_group['velocity'].attrs['units']))
+
+        # looks for unit in h5md file and passes it to force_dict for translation
+        if self.has_forces:
+            if 'units' in self._particle_group['force'].attrs:
+                try:
+                    self.units['force'] = force_dict[self._particle_group['force'].attrs['units']]
+                except KeyError:
+                    print("Unit %d not recognized by H5MDReader. Please "
+                          "raise an issue on `MDAnalysis github <https://github.com/MDAnalysis/mdanalysis>`_"
+                          ""%(self._particle_group['force'].attrs['units']))
