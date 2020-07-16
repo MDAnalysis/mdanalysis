@@ -570,13 +570,9 @@ def do_iparams(data, functypes, fver):
         ]:
             data.unpack_real()  # pdihs_phiA
             data.unpack_real()  # pdihs_cpA
-            if (i == setting.F_ANGRES or i == setting.F_ANGRESZ) and fver < 42:
-                data.unpack_real()  # harmonic.rB
-                data.unpack_real()  # harmonic.krB
-            else:
-                data.unpack_real()  # pdihs_phiB
-                data.unpack_real()  # pdihs_cpB
-                data.unpack_int()  # pdihs_mult
+            data.unpack_real()  # pdihs_phiB
+            data.unpack_real()  # pdihs_cpB
+            data.unpack_int()  # pdihs_mult
 
         elif i in [setting.F_RESTRDIHS]:
             data.unpack_real()  # pdihs.phiA
