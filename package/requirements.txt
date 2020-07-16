@@ -10,7 +10,7 @@ mmtf-python
 msmb_theme==1.2.0
 netcdf4
 networkx
-numpy
+numpy>=1.16.0
 parmed
 psutil
 pytest
