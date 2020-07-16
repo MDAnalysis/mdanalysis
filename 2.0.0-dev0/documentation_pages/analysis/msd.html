@@ -259,7 +259,7 @@ random walk. Files provided as part of the MDAnalysis test suite are used
 <p>Given a universe containing trajectory data we can extract the MSD
 analysis by using the class <a class="reference internal" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="MDAnalysis.analysis.msd.EinsteinMSD"><code class="xref py py-class docutils literal notranslate"><span class="pre">EinsteinMSD</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">RANDOM_WALK</span><span class="p">,</span> <span class="n">RANDOM_WALK_TOPO</span><span class="p">)</span>
-<span class="n">MSD</span> <span class="o">=</span> <span class="n">msd</span><span class="o">.</span><span class="n">EinsteinMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">MSD</span> <span class="o">=</span> <span class="n">msd</span><span class="o">.</span><span class="n">EinsteinMSD</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">MSD</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -380,15 +380,16 @@ arXiv:2003.09205 [Cond-Mat, Physics:Physics].</td></tr>
 <h2>4.7.2.2.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.msd.EinsteinMSD">
-<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.msd.</code><code class="descname">EinsteinMSD</code><span class="sig-paren">(</span><em>u</em>, <em>select</em>, <em>msd_type='xyz'</em>, <em>fft=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.msd.</code><code class="descname">EinsteinMSD</code><span class="sig-paren">(</span><em>u</em>, <em>select='all'</em>, <em>msd_type='xyz'</em>, <em>fft=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/msd.html#EinsteinMSD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class to calculate Mean Squared Displacement by the Einstein relation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A selection string. Defaults to <cite>None</cite> in which case
+<li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.
+Note that <code class="xref py py-class docutils literal notranslate"><span class="pre">UpdatingAtomGroup</span></code> instances are not accepted.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
 all atoms are selected.</li>
 <li><strong>msd_type</strong> (<em>{'xyz'</em><em>, </em><em>'xy'</em><em>, </em><em>'yz'</em><em>, </em><em>'xz'</em><em>, </em><em>'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em>) – Desired dimensions to be included in the MSD. Defaults to ‘xyz’.</li>
 <li><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of
@@ -443,6 +444,20 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 </dd></dl>
 
 <dl class="attribute">
+<dt id="MDAnalysis.analysis.msd.EinsteinMSD.ag">
+<code class="descname">ag</code><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.ag" title="Permalink to this definition">¶</a></dt>
+<dd><p>The <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code> resulting from your selection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="MDAnalysis.analysis.msd.EinsteinMSD.n_frames">
 <code class="descname">n_frames</code><a class="headerlink" href="#MDAnalysis.analysis.msd.EinsteinMSD.n_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of frames included in the analysis.</p>
@@ -475,8 +490,8 @@ Defaults to <code class="docutils literal notranslate"><span class="pre">True</s
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>.</li>
-<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A selection string. Defaults to <cite>None</cite> in which case
+<li><strong>u</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – An MDAnalysis <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code>.</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A selection string. Defaults to “all” in which case
 all atoms are selected.</li>
 <li><strong>msd_type</strong> (<em>{'xyz'</em><em>, </em><em>'xy'</em><em>, </em><em>'yz'</em><em>, </em><em>'xz'</em><em>, </em><em>'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em>) – Desired dimensions to be included in the MSD. Defaults to ‘xyz’.</li>
 <li><strong>fft</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, uses a fast FFT based algorithm for computation of

@@ -262,7 +262,7 @@
 <span class="sd">.. code-block:: python</span>
 
 <span class="sd">    u = mda.Universe(RANDOM_WALK, RANDOM_WALK_TOPO)</span>
-<span class="sd">    MSD = msd.EinsteinMSD(u, &#39;all&#39;, msd_type=&#39;xyz&#39;, fft=True)</span>
+<span class="sd">    MSD = msd.EinsteinMSD(u, select=&#39;all&#39;, msd_type=&#39;xyz&#39;, fft=True)</span>
 <span class="sd">    MSD.run()</span>
 
 <span class="sd">The MSD can then be accessed as</span>
@@ -402,6 +402,7 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">from</span> <span class="nn">..due</span> <span class="kn">import</span> <span class="n">due</span><span class="p">,</span> <span class="n">Doi</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+<span class="kn">from</span> <span class="nn">..core</span> <span class="kn">import</span> <span class="n">groups</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.analysis.msd&#39;</span><span class="p">)</span>
 
@@ -418,13 +419,14 @@
 
 <div class="viewcode-block" id="EinsteinMSD"><a class="viewcode-back" href="../../../documentation_pages/analysis/msd.html#MDAnalysis.analysis.msd.EinsteinMSD">[docs]</a><span class="k">class</span> <span class="nc">EinsteinMSD</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class to calculate Mean Squared Displacement by the Einstein relation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    u : Universe</span>
-<span class="sd">        An MDAnalysis :class:`Universe`.</span>
+<span class="sd">    u : Universe or AtomGroup</span>
+<span class="sd">        An MDAnalysis :class:`Universe` or :class:`AtomGroup`.</span>
+<span class="sd">        Note that :class:`UpdatingAtomGroup` instances are not accepted.</span>
 <span class="sd">    select : str</span>
-<span class="sd">        A selection string. Defaults to `None` in which case</span>
+<span class="sd">        A selection string. Defaults to &quot;all&quot; in which case</span>
 <span class="sd">        all atoms are selected.</span>
 <span class="sd">    msd_type : {&#39;xyz&#39;, &#39;xy&#39;, &#39;yz&#39;, &#39;xz&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;}</span>
 <span class="sd">        Desired dimensions to be included in the MSD. Defaults to &#39;xyz&#39;.</span>
@@ -442,6 +444,8 @@
 <span class="sd">        The averaged MSD over all the particles with respect to lag-time.</span>
 <span class="sd">    msd_per_particle : :class:`numpy.ndarray`</span>
 <span class="sd">        The MSD of each individual particle with respect to lag-time.</span>
+<span class="sd">    ag : :class:`AtomGroup`</span>
+<span class="sd">        The :class:`AtomGroup` resulting from your selection</span>
 <span class="sd">    n_frames : int</span>
 <span class="sd">        Number of frames included in the analysis.</span>
 <span class="sd">    n_particles : int</span>
@@ -449,14 +453,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">msd_type</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">,</span> <span class="n">fft</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">        u : Universe</span>
-<span class="sd">            An MDAnalysis :class:`Universe`.</span>
+<span class="sd">        u : Universe or AtomGroup</span>
+<span class="sd">            An MDAnalysis :class:`Universe` or :class:`AtomGroup`.</span>
 <span class="sd">        select : str</span>
-<span class="sd">            A selection string. Defaults to `None` in which case</span>
+<span class="sd">            A selection string. Defaults to &quot;all&quot; in which case</span>
 <span class="sd">            all atoms are selected.</span>
 <span class="sd">        msd_type : {&#39;xyz&#39;, &#39;xy&#39;, &#39;yz&#39;, &#39;xz&#39;, &#39;x&#39;, &#39;y&#39;, &#39;z&#39;}</span>
 <span class="sd">            Desired dimensions to be included in the MSD. Defaults to &#39;xyz&#39;.</span>
@@ -467,9 +471,11 @@
 <span class="sd">            Defaults to ``True``.    </span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">groups</span><span class="o">.</span><span class="n">UpdatingAtomGroup</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;UpdatingAtomGroups are not valid for MSD &quot;</span>
+                            <span class="s2">&quot;computation&quot;</span><span class="p">)</span>
 
-        <span class="nb">super</span><span class="p">(</span><span class="n">EinsteinMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">EinsteinMSD</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
@@ -478,8 +484,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">fft</span> <span class="o">=</span> <span class="n">fft</span>
 
         <span class="c1"># local</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">select</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_particles</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># result</span>
@@ -519,7 +525,7 @@
         <span class="c1"># shape of position array set here, use span in last dimension</span>
         <span class="c1"># from this point on</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fft</span><span class="p">:</span>
@@ -535,7 +541,7 @@
         <span class="n">positions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_array</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">lag</span> <span class="ow">in</span> <span class="n">lagtimes</span><span class="p">:</span>
             <span class="n">disp</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[:</span><span class="o">-</span><span class="n">lag</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">positions</span><span class="p">[</span><span class="n">lag</span><span class="p">:,</span> <span class="p">:,</span> <span class="p">:]</span>
-            <span class="n">sqdist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> 
+            <span class="n">sqdist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">square</span><span class="p">(</span><span class="n">disp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="p">[</span><span class="n">lag</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sqdist</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">msds_by_particle</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
