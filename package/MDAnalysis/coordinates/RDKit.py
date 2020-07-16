@@ -24,9 +24,9 @@
 """RDKit molecule I/O --- :mod:`MDAnalysis.coordinates.RDKit`
 ================================================================
 
-Read coordinates data from an `RDKit`_ :class:`rdkit.Chem.rdchem.Mol` with :class:`RDKitReader` 
-into an MDAnalysis Universe. Convert it back to an :class:`rdkit.Chem.rdchem.Mol` with 
-:class:`RDKitConverter`.
+Read coordinates data from an `RDKit`_ :class:`rdkit.Chem.rdchem.Mol` with
+:class:`RDKitReader` into an MDAnalysis Universe. Convert it back to an
+:class:`rdkit.Chem.rdchem.Mol` with :class:`RDKitConverter`.
 
 
 Example
@@ -143,15 +143,17 @@ class RDKitReader(memory.MemoryReader):
 
 
 class RDKitConverter(base.ConverterBase):
-    """Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` to `RDKit`_ :class:`rdkit.Chem.rdchem.Mol`
+    """Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or
+    :class:`~MDAnalysis.core.universe.Universe` to `RDKit`_
+    :class:`rdkit.Chem.rdchem.Mol`
 
-    MDanalysis attributes are stored in each RDKit atom of the resulting 
-    molecule in two different ways: 
+    MDanalysis attributes are stored in each RDKit atom of the resulting
+    molecule in two different ways:
 
-    * in an `AtomPDBResidueInfo` object available through the 
-      ``atom.GetMonomerInfo()`` method if it's an attribute that is typically 
+    * in an `AtomPDBResidueInfo` object available through the
+      ``atom.GetMonomerInfo()`` method if it's an attribute that is typically
       found in a PDB file,
-    * directly as an atom property available through the 
+    * directly as an atom property available through the
       ``atom.GetPropsAsDict()`` method for the others.
 
     Supported attributes:
@@ -202,8 +204,8 @@ class RDKitConverter(base.ConverterBase):
     Notes
     -----
 
-    The converter requires the :class:`~MDAnalysis.core.topologyattrs.Elements` attribute
-    to be present in the topology, else it will fail.
+    The converter requires the :class:`~MDAnalysis.core.topologyattrs.Elements`
+    attribute to be present in the topology, else it will fail.
     It also requires the `bonds` attribute, although they will be automatically
     guessed if not present.
     If both `tempfactors` and `bfactors` attributes are present, the conversion
@@ -219,7 +221,8 @@ class RDKitConverter(base.ConverterBase):
     units = {'time': None, 'length': 'Angstrom'}
 
     def convert(self, obj, NoImplicit=True):
-        """Write selection at current trajectory frame to :class:`rdkit.Chem.rdchem.Mol`.
+        """Write selection at current trajectory frame to 
+        :class:`rdkit.Chem.rdchem.Mol`.
 
         Parameters
         -----------
