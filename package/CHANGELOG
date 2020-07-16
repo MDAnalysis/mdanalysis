@@ -39,6 +39,7 @@ Enhancements
   * Added computation of Mean Squared Displacements (#2438, PR #2619)
   * Improved performances when parsing TPR files (PR #2804)
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
+  * Dead code removed from the TPR parser and increased test coverage (PR #2840)
 
 Changes
   * Changes development status from Beta to Mature (Issue #2773)
