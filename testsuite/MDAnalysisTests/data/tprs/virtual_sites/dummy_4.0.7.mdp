@@ -3,7 +3,7 @@
 disre = simple
 orire = yes
 orire-fitgrp = System
-; Shell particles, used in polarized force fields, requires the energy to
-; be computed every step.
-nstcalcenergy = 1
+; Activate implicit solvents
+; The feature is not supported by the Verlet cutoff scheme.
 ; Implicit solvents where removed in gromacs 2020.
+implicit-solvent = GBSA

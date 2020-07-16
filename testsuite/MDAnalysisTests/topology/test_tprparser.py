@@ -34,7 +34,7 @@ from MDAnalysis.tests.datafiles import (
     TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020, TPR2020Double,
     TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
     TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded, TPR334_bonded,
-    TPR_EXTRA_2020, TPR_EXTRA_2018,
+    TPR_EXTRA_2020, TPR_EXTRA_2018, TPR_EXTRA_2016, TPR_EXTRA_407,
     XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
@@ -49,6 +49,8 @@ BONDED_TPRS = (
     TPR2020_double_bonded,
     TPR_EXTRA_2020,
     TPR_EXTRA_2018,
+    TPR_EXTRA_2016,
+    TPR_EXTRA_407,
 )
 
 
@@ -139,6 +141,12 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
     """
     Test if an interaction appears as expected in the topology
     """
+    post_40_potentials = {
+        'RESTRAINTPOT', 'RESTRANGLES', 'RESTRDIHS', 'CBTDIHS', 'PIDIHS',
+    }
+    if name in post_40_potentials and topology_path == TPR_EXTRA_407:
+        # The potential is not yet implemented in this version of gromacs
+        return
     parser = MDAnalysis.topology.TPRParser.TPRParser(topology_path)
     top = parser.parse()
     for element in elements:
