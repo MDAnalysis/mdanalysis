@@ -305,8 +305,9 @@ cdef class _XDRFile:
         self._has_offsets = state[3]
 
         # where was I
-        current_frame = state[1] - 1
-        self.seek(current_frame)
+        current_frame = state[1]
+        self.seek(current_frame - 1)
+        self.current_frame = current_frame
 
     def seek(self, frame):
         """Seek to Frame.
