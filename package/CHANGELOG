@@ -39,6 +39,8 @@ Fixes
     empty AtomGroup (Issue #2848)
 
 Enhancements
+  * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
+    and improved docs (Issue #2784)
   * Added the RDKitParser which creates a `core.topology.Topology` object from
     an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates
     from RDKit conformers (Issue #2468, PR #2707)
