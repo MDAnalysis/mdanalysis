@@ -305,7 +305,7 @@ class Aggregation_size(AnalysisBase):  # subclass AnalysisBase
         for counter in range(len(aggregate)-1):
             size_agg[counter] = len(aggregate[counter])
         self.size_num[self._frame_index] = {
-            j:size_agg.count(j) for j in size_agg}
+            j: size_agg.count(j) for j in size_agg}
         if 0 in self.size_num[self._frame_index].keys():
             del self.size_num[self._frame_index][0]
         # Give option to not considering the monomer in calculation.
@@ -358,22 +358,13 @@ class Aggregation_size(AnalysisBase):  # subclass AnalysisBase
                    'weight_average', 'z_average',
                    'Radius of Gyration']
         self.df = pd.DataFrame(self.results, columns=columns)
-
-
-
-import os
-os.chdir(r"path")
-gro_file = "mdrun.gro"
-xtc_file = "mdrun.xtc"
-u = mda.Universe(gro_file, xtc_file)
-Mol = u.select_atoms('resname AsphC')
-rog_base = Aggregation_size(Mol, number_of_molecules = 50, Type = "COM", 
-no_monomer = True, Gyr_calc=True).run()
-
-print(rog_base.results)
-rog_base.df
-
-
-
-
-
+#import os
+#os.chdir(r"path")
+#gro_file = "mdrun.gro"
+#xtc_file = "mdrun.xtc"
+#u = mda.Universe(gro_file, xtc_file)
+#Mol = u.select_atoms('resname AsphC')
+#rog_base = Aggregation_size(Mol, number_of_molecules = 50, Type = "COM", 
+#no_monomer = True, Gyr_calc=True).run()
+#print(rog_base.results)
+#rog_base.df
