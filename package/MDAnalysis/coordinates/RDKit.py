@@ -254,6 +254,15 @@ class RDKitConverter(base.ConverterBase):
                 "documentation to guess elements from other attributes or "
                 "type `help(mda.topology.guessers)`") from None
 
+        if "H" not in ag.elements:
+            warnings.warn(
+                "No hydrogen atom could be found in the topology, but the "
+                "converter requires all hydrogens to be explicit. Please "
+                "check carefully the output molecule as the converter is "
+                "likely to add negative charges and assign incorrect bond "
+                "orders to structures with implicit hydrogens."
+            )
+
         # attributes accepted in PDBResidueInfo object
         pdb_attrs = {}
         if hasattr(ag, "bfactors") and hasattr(ag, "tempfactors"):

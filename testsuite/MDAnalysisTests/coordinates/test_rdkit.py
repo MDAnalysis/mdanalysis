@@ -235,6 +235,14 @@ class TestRDKitConverter(object):
                           match="No `bonds` attribute in this AtomGroup"):
             ag.convert_to("RDKIT")
 
+    def test_warn_no_hydrogen(self):
+        u = mda.Universe.from_smiles("O=O")
+        with pytest.warns(
+            UserWarning,
+            match="No hydrogen atom could be found in the topology"
+        ):
+            u.atoms.convert_to("RDKIT")
+
     @pytest.mark.parametrize("attr, value, expected", [
         ("names", "C1", " C1 "),
         ("names", "C12", " C12"),
