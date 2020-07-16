@@ -242,6 +242,7 @@
     <span class="n">Segids</span><span class="p">,</span>
     <span class="n">AltLocs</span><span class="p">,</span>
     <span class="n">ChainIDs</span><span class="p">,</span>
+    <span class="n">ICodes</span><span class="p">,</span>
     <span class="n">Occupancies</span><span class="p">,</span>
     <span class="n">Tempfactors</span><span class="p">,</span>
 <span class="p">)</span>
@@ -273,9 +274,46 @@
 <span class="sd">     - Resnames</span>
 <span class="sd">     - AltLocs</span>
 <span class="sd">     - ChainIDs</span>
+<span class="sd">     - ICodes</span>
 <span class="sd">     - Occupancies</span>
 <span class="sd">     - Tempfactors</span>
-<span class="sd">    </span>
+
+<span class="sd">    Attributes table:</span>
+
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | RDKit attribute                             | MDAnalysis equivalent   |</span>
+<span class="sd">    +=============================================+=========================+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetAltLoc()           | altLocs                 |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetIsAromatic()                        | aromaticities           |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetChainId()          | chainIDs                |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetDoubleProp(&#39;_GasteigerCharge&#39;)      | charges                 |</span>
+<span class="sd">    | atom.GetDoubleProp(&#39;_TriposPartialCharge&#39;)  |                         |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetSymbol()                            | elements                |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetInsertionCode()    | icodes                  |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetIdx()                               | indices                 |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMass()                              | masses                  |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetName()             | names                   |</span>
+<span class="sd">    | atom.GetProp(&#39;_TriposAtomName&#39;)             |                         |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetResidueName()      | resnames                |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetResidueNumber()    | resnums                 |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetMonomerInfo().GetTempFactor()       | tempfactors             |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+<span class="sd">    | atom.GetProp(&#39;_TriposAtomType&#39;)             | types                   |</span>
+<span class="sd">    +---------------------------------------------+-------------------------+</span>
+
 
 <span class="sd">    .. versionadded:: 2.0.0</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -314,6 +352,7 @@
         <span class="n">segids</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">altlocs</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">chainids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">icodes</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">occupancies</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">tempfactors</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -339,6 +378,7 @@
                 <span class="n">segids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetSegmentNumber</span><span class="p">())</span>
                 <span class="n">altlocs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetAltLoc</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="n">chainids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetChainId</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">icodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetInsertionCode</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                 <span class="n">occupancies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetOccupancy</span><span class="p">())</span>
                 <span class="n">tempfactors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mi</span><span class="o">.</span><span class="n">GetTempFactor</span><span class="p">())</span>
             <span class="k">else</span><span class="p">:</span>
@@ -429,14 +469,16 @@
             <span class="n">resnums</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
             <span class="n">resnames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">resnames</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
             <span class="n">segids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">segids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-            <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">segids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
-                <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">segids</span><span class="p">),</span> 
-                <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">segids</span><span class="p">))</span>
+            <span class="n">icodes</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">icodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+            <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">icodes</span><span class="p">,</span> <span class="n">segids</span><span class="p">))</span>
             <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resnums</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">vals</span><span class="p">,</span> <span class="n">Attr</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span>
                 <span class="p">(</span><span class="n">resnums</span><span class="p">,</span> <span class="n">Resids</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
                 <span class="p">(</span><span class="n">resnums</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">Resnums</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">resnames</span><span class="p">,</span> <span class="n">Resnames</span><span class="p">,</span> <span class="nb">object</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">resnames</span><span class="p">,</span> <span class="n">Resnames</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">icodes</span><span class="p">,</span> <span class="n">ICodes</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Attr</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>

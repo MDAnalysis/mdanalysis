@@ -254,11 +254,70 @@
 <li>Resnames</li>
 <li>AltLocs</li>
 <li>ChainIDs</li>
+<li>ICodes</li>
 <li>Occupancies</li>
 <li>Tempfactors</li>
 </ul>
 </dd>
 </dl>
+<p>Attributes table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="64%" />
+<col width="36%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">RDKit attribute</th>
+<th class="head">MDAnalysis equivalent</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>atom.GetMonomerInfo().GetAltLoc()</td>
+<td>altLocs</td>
+</tr>
+<tr class="row-odd"><td>atom.GetIsAromatic()</td>
+<td>aromaticities</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetChainId()</td>
+<td>chainIDs</td>
+</tr>
+<tr class="row-odd"><td>atom.GetDoubleProp(‘_GasteigerCharge’)
+atom.GetDoubleProp(‘_TriposPartialCharge’)</td>
+<td>charges</td>
+</tr>
+<tr class="row-even"><td>atom.GetSymbol()</td>
+<td>elements</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMonomerInfo().GetInsertionCode()</td>
+<td>icodes</td>
+</tr>
+<tr class="row-even"><td>atom.GetIdx()</td>
+<td>indices</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMass()</td>
+<td>masses</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetName()
+atom.GetProp(‘_TriposAtomName’)</td>
+<td>names</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMonomerInfo().GetOccupancy()</td>
+<td>occupancies</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetResidueName()</td>
+<td>resnames</td>
+</tr>
+<tr class="row-odd"><td>atom.GetMonomerInfo().GetResidueNumber()</td>
+<td>resnums</td>
+</tr>
+<tr class="row-even"><td>atom.GetMonomerInfo().GetTempFactor()</td>
+<td>tempfactors</td>
+</tr>
+<tr class="row-odd"><td>atom.GetProp(‘_TriposAtomType’)</td>
+<td>types</td>
+</tr>
+</tbody>
+</table>
 <div class="versionadded">
 <p><span class="versionmodified">New in version 2.0.0.</span></p>
 </div>
