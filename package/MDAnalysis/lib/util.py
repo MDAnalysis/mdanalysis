@@ -50,7 +50,7 @@ Streams
 Many of the readers are not restricted to just reading files. They can
 also use gzip-compressed or bzip2-compressed files (through the
 internal use of :func:`openany`). It is also possible to provide more
-general streams as inputs, such as a :func:`cStringIO.StringIO`
+general streams as inputs, such as a :class:`io.StringIO`
 instances (essentially, a memory buffer) by wrapping these instances
 into a :class:`NamedStream`. This :class:`NamedStream` can then be
 used in place of an ordinary file name (typically, with a
@@ -63,10 +63,10 @@ In the following example, we use a PDB stored as a string ``pdb_s``::
 
    import MDAnalysis
    from MDAnalysis.lib.util import NamedStream
-   import cStringIO
+   from io import StringIO
 
    pdb_s = "TITLE     Lonely Ion\\nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00\\n"
-   u = MDAnalysis.Universe(NamedStream(cStringIO.StringIO(pdb_s), "ion.pdb"))
+   u = MDAnalysis.Universe(NamedStream(StringIO(pdb_s), "ion.pdb"))
    print(u)
    #  <Universe with 1 atoms>
    print(u.atoms.positions)
@@ -81,7 +81,7 @@ provide the ``format="pdb"`` keyword argument to the
 The use of streams becomes more interesting when MDAnalysis is used as glue
 between different analysis packages and when one can arrange things so that
 intermediate frames (typically in the PDB format) are not written to disk but
-remain in memory via e.g. :mod:`cStringIO` buffers.
+remain in memory via e.g. :class:`io.StringIO` buffers.
 
 
 .. The following does *not* work because most readers need to
@@ -328,7 +328,7 @@ def anyopen(datasource, mode='rt', reset=True):
     ----------
     datasource
         a file (from :class:`file` or :func:`open`) or a stream (e.g. from
-        :func:`urllib2.urlopen` or :class:`cStringIO.StringIO`)
+        :func:`urllib2.urlopen` or :class:`io.StringIO`)
     mode: {'r', 'w', 'a'} (optional)
         Open in r(ead), w(rite) or a(ppen) mode. More complicated
         modes ('r+', 'w+', ...) are not supported; only the first letter of
@@ -415,7 +415,7 @@ def anyopen(datasource, mode='rt', reset=True):
     try:
         stream.name = filename
     except (AttributeError, TypeError):
-        pass  # can't set name (e.g. cStringIO.StringIO)
+        pass  # can't set name (e.g. io.StringIO)
     return stream
 
 
@@ -582,11 +582,11 @@ class NamedStream(io.IOBase, PathLike):
 
     Example
     -------
-    Wrap a :func:`cStringIO.StringIO` instance to write to::
+    Wrap a :class:`io.StringIO` instance to write to::
 
-      import cStringIO
+      from io import StringIO
       import os.path
-      stream = cStringIO.StringIO()
+      stream = StringIO()
       f = NamedStream(stream, "output.pdb")
       print(os.path.splitext(f))
 
@@ -629,7 +629,7 @@ class NamedStream(io.IOBase, PathLike):
         Parameters
         ----------
         stream : stream
-            an open stream (e.g. :class:`file` or :func:`cStringIO.StringIO`)
+            an open stream (e.g. :class:`file` or :class:`io.StringIO`)
         filename : str
             the filename that should be associated with the stream
         reset : bool (optional)

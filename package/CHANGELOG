@@ -34,8 +34,13 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
+  * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError 
+    was thrown when finding D-H pairs via the topology if `hydrogens` was an 
+    empty AtomGroup (Issue #2848)
 
 Enhancements
+  * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
+    and improved docs (Issue #2784)
   * Added the RDKitParser which creates a `core.topology.Topology` object from
     an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates
     from RDKit conformers (Issue #2468, PR #2707)
@@ -72,6 +77,7 @@ Changes
   * Set Python 3.6 as the minimum supported version (Issue #2541)
   * Changes the minimal NumPy version to 1.16.0 (Issue #2827, PR #2831)
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
+  * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
 
 Deprecations
 
