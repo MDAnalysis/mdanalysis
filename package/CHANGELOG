@@ -52,6 +52,7 @@ Enhancements
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
+  * Dead code removed from the TPR parser and increased test coverage (PR #2840)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
