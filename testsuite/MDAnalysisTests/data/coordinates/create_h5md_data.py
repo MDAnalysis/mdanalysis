@@ -34,7 +34,7 @@ def create_test_trj(universe, filename):
         f['particles/trajectory/force'].attrs['units'] = 'kJ mol-1 Angstrom-1'
         f['particles/trajectory/force/time'].attrs['units'] = 'ps'
 
-
+        data_time = pyh5md.element(trajectory, 'data/time', store='time', data=universe.trajectory.ts.data['time'])
         data_step = pyh5md.element(trajectory, 'data/step', store='time', data=universe.trajectory.ts.data['step'])
         data_lambda = pyh5md.element(trajectory, 'data/lambda', store='time', data=universe.trajectory.ts.data['lambda'])
         data_dt = pyh5md.element(trajectory, 'data/dt', store='time', data=universe.trajectory.ts.data['dt'])
@@ -49,6 +49,7 @@ def create_test_trj(universe, filename):
             trajectory_positions.append(universe.trajectory.ts.positions, ts.frame, time=ts.time)
             trajectory_velocities.append(universe.trajectory.ts.velocities, ts.frame, time=ts.time)
             trajectory_forces.append(universe.trajectory.ts.forces, ts.frame, time=ts.time)
+            data_time.append(universe.trajectory.ts.data['time'], ts.frame, time=ts.time)
             data_step.append(universe.trajectory.ts.data['step'], ts.frame, time=ts.time)
             data_lambda.append(universe.trajectory.ts.data['lambda'], ts.frame, time=ts.time)
             data_dt.append(universe.trajectory.ts.data['dt'], ts.frame, time=ts.time)
@@ -60,7 +61,7 @@ def main():
     create_test_trj(u, 'test.h5md')
 
 if __name__ == '__main__':
-    if HAS_PYH5MD:
-        main()
+    if not HAS_PYH5MD:
+        raise RuntimeError("Please install pyh5md")
     else:
-        pass
+        main()

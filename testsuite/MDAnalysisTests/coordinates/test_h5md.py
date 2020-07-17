@@ -3,13 +3,15 @@ from numpy.testing import assert_almost_equal, assert_array_equal
 import numpy as np
 import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
-from MDAnalysisTests.datafiles import H5MD_xvf, TPR_xvf, COORDINATES_TOPOLOGY, COORDINATES_H5MD
+from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf,
+                                       COORDINATES_TOPOLOGY,
+                                       COORDINATES_H5MD)
 from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
                                               BaseReference, BaseWriterTest,
                                               assert_timestep_almost_equal)
 
 
-h5py = pytest.importorskip('h5py')
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 class H5MDReference(BaseReference):
     """Reference synthetic trajectory that was
