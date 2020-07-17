@@ -79,9 +79,11 @@ __all__ = [
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
     "TPR450", "TPR451", "TPR452", "TPR453", "TPR454", "TPR455", "TPR455Double",
     "TPR460", "TPR461", "TPR502", "TPR504", "TPR505", "TPR510", "TPR2016",
-    "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020",
+    "TPR2018", "TPR2019B3", "TPR2020B2", "TPR2020", "TPR2020Double",
     "TPR510_bonded", "TPR2016_bonded", "TPR2018_bonded", "TPR2019B3_bonded",
-    "TPR2020B2_bonded", "TPR2020_bonded",
+    "TPR2020B2_bonded", "TPR2020_bonded", "TPR2020_double_bonded",
+    "TPR334_bonded",
+    "TPR_EXTRA_2020", "TPR_EXTRA_2018", "TPR_EXTRA_2016", "TPR_EXTRA_407",
     "PDB_sub_sol", "PDB_sub_dry",  # TRRReader sub selection
     "TRR_sub_sol",
     "XTC_sub_sol",
@@ -339,13 +341,21 @@ TPR2020 = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020.tpr')
 TPR455Double = resource_filename(__name__, 'data/tprs/drew_gmx_4.5.5.double.tpr')
 TPR460 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.tpr')
 TPR461 = resource_filename(__name__, 'data/tprs/ab42_gmx_4.6.1.tpr')
+TPR2020Double = resource_filename(__name__, 'data/tprs/2lyz_gmx_2020_double.tpr')
 # all bonded interactions
+TPR334_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_3.3.4.tpr')
 TPR510_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_5.1.tpr')
 TPR2016_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2016.tpr')
 TPR2018_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2018.tpr')
 TPR2019B3_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2019-beta3.tpr')
 TPR2020B2_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020-beta2.tpr')
 TPR2020_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020.tpr')
+TPR2020_double_bonded = resource_filename(__name__, 'data/tprs/all_bonded/dummy_2020_double.tpr')
+# all interactions
+TPR_EXTRA_2020 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2020.tpr')
+TPR_EXTRA_2018 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2018.tpr')
+TPR_EXTRA_2016 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-2016.3.tpr')
+TPR_EXTRA_407 = resource_filename(__name__, 'data/tprs/virtual_sites/extra-interactions-4.0.7.tpr')
 
 XYZ_psf = resource_filename(__name__, 'data/2r9r-1b.psf')
 XYZ_bz2 = resource_filename(__name__, 'data/2r9r-1b.xyz.bz2')

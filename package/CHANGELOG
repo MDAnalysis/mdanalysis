@@ -55,6 +55,7 @@ Enhancements
   * Added lib.pickle_file_io module for pickling file handlers. (PR #2723)
   * Added pickle function to `Universe` and all Readers (without transformation)
     (PR #2723)
+  * Dead code removed from the TPR parser and increased test coverage (PR #2840)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
