@@ -404,3 +404,38 @@ class TestRDKitFunctions(object):
                 atom.GetUnsignedProp("react_atom_idx")
             with pytest.raises(KeyError, match="_MDAnalysis_index"):
                 atom.GetIntProp("_MDAnalysis_index")
+
+    @pytest.mark.parametrize("smi_in", [
+        "c1ccc(cc1)-c1ccccc1-c1ccccc1",
+        "c1cc[nH]c1",
+        "c1ccc(cc1)-c1ccc(-c2ccccc2)c(-c2ccccc2)c1-c1ccccc1",
+        "c1ccc2c(c1)c1ccccc1c1ccccc1c1ccccc1c1ccccc21",
+        "c1csc(c1)-c1ccoc1-c1cc[nH]c1",
+        "C1=C2C(=NC=N1)N=CN2",
+        "CN1C=NC(=C1SC2=NC=NC3=C2NC=N3)[N+](=O)[O-]",
+        #"c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
+    ])
+    def test_order_independant(self, smi_in):
+        # generate mol with hydrogens but without bond orders
+        ref = Chem.MolFromSmiles(smi_in)
+        template = Chem.AddHs(ref)
+        for atom in template.GetAtoms():
+            atom.SetIsAromatic(False)
+        for bond in template.GetBonds():
+            bond.SetIsAromatic(False)
+            bond.SetBondType(Chem.BondType.SINGLE)
+        Chem.SanitizeMol(template)
+        # go through each possible starting atom
+        for a in template.GetAtoms():
+            smi = Chem.MolToSmiles(template, rootedAtAtom=a.GetIdx())
+            m = Chem.MolFromSmiles(smi, sanitize=False)
+            for atom in m.GetAtoms():
+                atom.SetNoImplicit(True)
+            m.UpdatePropertyCache(strict=False)
+            _infer_bo_and_charges(m)
+            m = _standardize_patterns(m)
+            Chem.SanitizeMol(m)
+            m = Chem.RemoveHs(m)
+            assert m.HasSubstructMatch(ref) and ref.HasSubstructMatch(
+                m), "Failed when starting from atom %s%d" % (
+                    a.GetSymbol(), a.GetIndex())

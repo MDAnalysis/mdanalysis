@@ -449,16 +449,16 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
                         current_v = atom.GetTotalValence()
                         nue = [v - current_v for v in expected_vs]
 
-        # if the atom still has unpaired electrons
-        current_v = atom.GetTotalValence()
-        nue = [v - current_v for v in expected_vs][0]
-        if nue > 0:
-            # keep the radical if it's a terminal atom
-            # else transform it to a negative charge
-            if atom.GetIdx() not in terminal_atom_indices:
-                atom.SetFormalCharge(-nue)
-                atom.SetNumRadicalElectrons(0)
-                mol.UpdatePropertyCache(strict=False)
+            # if the atom still has unpaired electrons
+            current_v = atom.GetTotalValence()
+            nue = [v - current_v for v in expected_vs][0]
+            if nue > 0:
+                # keep the radical if it's a terminal atom
+                # else transform it to a negative charge
+                if atom.GetIdx() not in terminal_atom_indices:
+                    atom.SetFormalCharge(-nue)
+                    atom.SetNumRadicalElectrons(0)
+                    mol.UpdatePropertyCache(strict=False)
 
 
 def _standardize_patterns(mol):
@@ -485,6 +485,13 @@ def _standardize_patterns(mol):
                         ">>[S;v6:1](=[O;+0:2])=[O;+0:3]"),
             ("nitro", "[N;v3:1](-[O-;v1:2])-[O-;v1:3]"
                       ">>[N;+1:1](-[O;-1:2])=[O;+0:3]"),
+            ("anion-*=*-anion", "[*-:1]-[*:2]=[*:3]-[*-:4]"
+                                ">>[*;+0:1]=[*:2]-[*:3]=[*;+0:4]"),
+            ("anion-*=*-*=*-anion", "[*-:1][*:2]=[*:3][*:4]=[*:5][*-:6]"
+             ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*;+0:6]"),
+            ("anion-*=*-*=*-*=*-anion",
+             "[*-:1][*:2]=[*:3][*:4]=[*:5][*:6]=[*:7][*-:8]"
+             ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*:6]-[*:7]=[*;+0:8]"),
         ]:
             # count how many times the reaction should be run
             pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
