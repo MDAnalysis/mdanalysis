@@ -31,12 +31,27 @@ from MDAnalysis.tests.datafiles import (
     TPR400, TPR402, TPR403, TPR404, TPR405, TPR406, TPR407,
     TPR450, TPR451, TPR452, TPR453, TPR454, TPR455, TPR455Double,
     TPR460, TPR461, TPR502, TPR504, TPR505, TPR510, TPR510_bonded,
-    TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020,
+    TPR2016, TPR2018, TPR2019B3, TPR2020B2, TPR2020, TPR2020Double,
     TPR2016_bonded, TPR2018_bonded, TPR2019B3_bonded,
-    TPR2020B2_bonded, TPR2020_bonded,
+    TPR2020B2_bonded, TPR2020_bonded, TPR2020_double_bonded, TPR334_bonded,
+    TPR_EXTRA_2020, TPR_EXTRA_2018, TPR_EXTRA_2016, TPR_EXTRA_407,
+    XTC,
 )
 from MDAnalysisTests.topology.base import ParserBase
 import MDAnalysis.topology.TPRParser
+
+BONDED_TPRS = (
+    TPR510_bonded,
+    TPR2016_bonded,
+    TPR2018_bonded,
+    TPR2019B3_bonded,
+    TPR2020_bonded,
+    TPR2020_double_bonded,
+    TPR_EXTRA_2020,
+    TPR_EXTRA_2018,
+    TPR_EXTRA_2016,
+    TPR_EXTRA_407,
+)
 
 
 class TPRAttrs(ParserBase):
@@ -85,7 +100,7 @@ class TestTPRGromacsVersions(TPRAttrs):
     @pytest.fixture(params=[TPR400, TPR402, TPR403, TPR404, TPR405, TPR406,
                             TPR407, TPR450, TPR451, TPR452, TPR453, TPR454,
                             TPR455, TPR502, TPR504, TPR505, TPR510, TPR2016,
-                            TPR2018, TPR2019B3, TPR2020])
+                            TPR2018, TPR2019B3, TPR2020, TPR2020Double])
     def filename(self, request):
         return request.param
 
@@ -126,6 +141,12 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
     """
     Test if an interaction appears as expected in the topology
     """
+    post_40_potentials = {
+        'RESTRAINTPOT', 'RESTRANGLES', 'RESTRDIHS', 'CBTDIHS', 'PIDIHS',
+    }
+    if name in post_40_potentials and topology_path == TPR_EXTRA_407:
+        # The potential is not yet implemented in this version of gromacs
+        return
     parser = MDAnalysis.topology.TPRParser.TPRParser(topology_path)
     top = parser.parse()
     for element in elements:
@@ -133,13 +154,7 @@ def _test_is_in_topology(name, elements, topology_path, topology_section):
             'Interaction type "{}" not found'.format(name)
 
 
-@pytest.mark.parametrize('topology', (
-        TPR510_bonded,
-        TPR2016_bonded,
-        TPR2018_bonded,
-        TPR2019B3_bonded,
-        TPR2020_bonded,
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('bond', (
         ('BONDS', [(0, 1)]),
         ('G96BONDS', [(1, 2)]),
@@ -162,10 +177,7 @@ def test_all_bonds(topology, bond):
     bond_type_in_topology(bond_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('angle', (
     ('ANGLES', [(0, 1, 2)]),
     ('G96ANGLES', [(1, 2, 3)]),
@@ -183,10 +195,7 @@ def test_all_angles(topology, angle):
     angle_type_in_topology(angle_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('dih', (
         ('PDIHS', [(0, 1, 2, 3), (1, 2, 3, 4), (7, 8, 9, 10)]),
         ('RBDIHS', [(4, 5, 6, 7)]),
@@ -202,10 +211,7 @@ def test_all_dihedrals(topology, dih):
     dih_type_in_topology(dih_type, elements, topology)
 
 
-@pytest.mark.parametrize('topology', (
-    TPR510_bonded,
-    TPR2016_bonded
-))
+@pytest.mark.parametrize('topology', BONDED_TPRS)
 @pytest.mark.parametrize('impr', (
     ('IDIHS', [(2, 3, 4, 5), (3, 4, 5, 6)]),
     ('PIDIHS', [(5, 6, 7, 8)])
@@ -241,8 +247,14 @@ def test_settle(bonds_water):
     assert bonds_water[-1][1] == 2262
 
 
-@pytest.mark.parametrize('tpr_path', (TPR2020B2, TPR2020B2_bonded))
-def test_fail_for_gmx2020_beta(tpr_path):
+@pytest.mark.parametrize('tpr_path, expected_exception', (
+    (TPR2020B2, IOError),  # Gromacs 2020 beta see issue #2428
+    (TPR2020B2_bonded, IOError),  # Gromacs 2020 beta see issue #2428
+    (TPR334_bonded, NotImplementedError),  # Too old
+    (XTC, IOError),  # Not a TPR file
+))
+def test_fail_for_unsupported_files(tpr_path, expected_exception):
     parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
-    with pytest.raises(IOError):
+    with pytest.raises(expected_exception):
         parser.parse()
+
