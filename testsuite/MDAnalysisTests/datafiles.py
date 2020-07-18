@@ -74,7 +74,7 @@ __all__ = [
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
     "GRO_sameresid_diffresname", # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
-    "H5MD_xvf", # TPR_xvf + TRR_xvf converted to h5md format
+    "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
@@ -193,7 +193,7 @@ __all__ = [
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
-    "SDF_molecule" # MDL SDFile for rdkit
+    "SDF_molecule"  # MDL SDFile for rdkit
 ]
 
 from pkg_resources import resource_filename
