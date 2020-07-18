@@ -23,6 +23,7 @@
 """
 H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
 ========================================================
+
 The `H5MD`_ file format is based upon `HDF5`_, which makes use of parallel file
 system features through the MPI-IO interface of the HDF5 library.
 
