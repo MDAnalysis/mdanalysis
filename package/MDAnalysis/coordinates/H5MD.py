@@ -320,8 +320,8 @@ class H5MDReader(base.ReaderBase):
         if n_atoms_now != self.n_atoms:
             raise ValueError("Frame {} has {} atoms but the initial frame"
                              " has {} atoms. MDAnalysis is unable to deal"
-                             " with variable topology!".format(frame,
-                              n_atoms_now, self.n_atoms))
+                             " with variable topology!"
+                             "".format(frame, n_atoms_now, self.n_atoms))
         else:
             ts.positions = frame_positions
 
@@ -332,8 +332,8 @@ class H5MDReader(base.ReaderBase):
             if n_atoms_now != self.n_atoms:
                 raise ValueError("Frame {} has {} atoms but the initial frame"
                                  " has {} atoms. MDAnalysis is unable to deal"
-                                 " with variable topology!".format(frame,
-                                  n_atoms_now, self.n_atoms))
+                                 " with variable topology!"
+                                 "".format(frame, n_atoms_now, self.n_atoms))
             else:
                 ts.velocities = frame_velocities
 
@@ -344,8 +344,8 @@ class H5MDReader(base.ReaderBase):
             if n_atoms_now != self.n_atoms:
                 raise ValueError("Frame {} has {} atoms but the initial frame"
                                  " has {} atoms. MDAnalysis is unable to deal"
-                                 " with variable topology!".format(frame,
-                                  n_atoms_now, self.n_atoms))
+                                 " with variable topology!"
+                                 "".format(frame, n_atoms_now, self.n_atoms))
             else:
                 ts.forces = frame_forces
 
@@ -361,7 +361,7 @@ class H5MDReader(base.ReaderBase):
 
         return ts
 
-    def _read_next_timestep(self) :
+    def _read_next_timestep(self):
         """read next frame in trajectory"""
         return self._read_frame(self._frame + 1)
 
@@ -398,13 +398,13 @@ class H5MDReader(base.ReaderBase):
         if self.has_velocities:
             if 'units' in self._particle_group['velocity'].attrs:
                 try:
-                    self.units['velocity'] = self._unit_translation['velocity'][
-                                             self._particle_group
-                                             ['velocity'].attrs['units']]
+                    self.units['velocity'] = self._unit_translation[
+                                             'velocity'][self._particle_group[
+                                             'velocity'].attrs['units']]
                 except KeyError:
-                    raise RuntimeError("Velocity unit '{}' is not recognized by"
-                                       " H5MDReader. Please raise an issue in"
-                                       " https://github.com/MDAnalysis/"
+                    raise RuntimeError("Velocity unit '{}' is not recognized"
+                                       " by H5MDReader. Please raise an issue"
+                                       " in https://github.com/MDAnalysis/"
                                        "mdanalysis/issues".format(
                                         self._particle_group['velocity'].
                                         attrs['units'])) from None

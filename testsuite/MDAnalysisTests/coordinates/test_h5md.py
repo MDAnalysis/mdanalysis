@@ -289,7 +289,9 @@ def test_unknown_position_unit(h5md_file, ref, tmpdir):
             with h5py.File(outfile, 'w') as g:
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
-                g['particles/trajectory/position'].attrs['units'] = 'random string'
+                g['particles'
+                  '/trajectory'
+                  '/position'].attrs['units'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
@@ -302,7 +304,10 @@ def test_unknown_time_unit(h5md_file, ref, tmpdir):
             with h5py.File(outfile, 'w') as g:
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
-                g['particles/trajectory/position/time'].attrs['units'] = 'random string'
+                g['particles'
+                  '/trajectory'
+                  '/position'
+                  '/time'].attrs['units'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
@@ -315,7 +320,9 @@ def test_unknown_velocity_unit(h5md_file, ref, tmpdir):
             with h5py.File(outfile, 'w') as g:
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
-                g['particles/trajectory/velocity'].attrs['units'] = 'random string'
+                g['particles'
+                  '/trajectory'
+                  '/velocity'].attrs['units'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
@@ -328,7 +335,9 @@ def test_unknown_force_unit(h5md_file, ref, tmpdir):
             with h5py.File(outfile, 'w') as g:
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
-                g['particles/trajectory/force'].attrs['units'] = 'random string'
+                g['particles'
+                  '/trajectory'
+                  '/force'].attrs['units'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
