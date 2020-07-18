@@ -20,13 +20,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""
-H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
+"""H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
 ========================================================
 
-The `H5MD`_ file format is based upon `HDF5`_, which makes use of parallel file
-system features through the MPI-IO interface of the HDF5 library.
-
+The `H5MD`_ file format is based upon `HDF5`_, which makes use of parallel
+file system features through the MPI-IO interface of the HDF5 library.
 The reader currently uses the `H5PY`_ library to access data from an H5MD file.
 
 .. _`H5MD`: https://nongnu.org/h5md/index.html
@@ -49,7 +47,7 @@ Classes
 
       velocities of the atoms as a :class:`numpy.ndarray` of shape
       `(n_atoms, 3)`; only available if the trajectory contains velocities
-       or if the *velocities* = ``True`` keyword has been supplied.
+      or if the *velocities* = ``True`` keyword has been supplied.
 
    .. attribute:: forces
 
@@ -60,9 +58,6 @@ Classes
 
 .. autoclass:: H5MDReader
    :members:
-
-
-
 
 """
 
