@@ -117,12 +117,13 @@ class H5MDReader(base.ReaderBase):
 
         H5MD root
          \-- (h5md)
-            \-- version
+            +-- version <int>
             \-- author
                 +-- name <str>, author's name
-                +-- email : <str>
+                +-- email <str>, optional email address
             \-- creator
-                +-- name : <str>, file that created .h5md file
+                +-- name <str>, file that created .h5md file
+                +-- version
          \-- (particles)
             \-- {group1}
                 \-- (box)
@@ -177,13 +178,43 @@ class H5MDReader(base.ReaderBase):
              'force': None}
     # Translate H5MD units (https://nongnu.org/h5md/modules/units.html) to MDAnalysis units.
     _unit_translation = {
+        'time': {
+            'ps': 'ps',
+            'fs': 'fs',
+            'ns': 'ns',
+            'second': 'second',
+            'sec': 'sec',
+            's': 's',
+            'AKMA': 'AKMA',
+            },
+        'length': {
+            'Angstrom': 'Angstrom',
+            'angstrom': 'Angstrom',
+            'A': 'Angstrom',
+            'nm': 'nm',
+            'pm': 'pm',
+            'fm': 'fm',
+            },
         'velocity': {
+            'Angstrom ps-1': 'Angstrom/ps',
+            'A ps-1': 'Angstrom/ps',
+            'Angstrom fs-1': 'Angstrom/fs',
+            'A fs-1': 'Angstrom/fs',
+            'Angstrom AKMA-1': 'Angstrom/AKMA',
+            'A AKMA-1': 'Angstrom/AKMA',
             'nm ps-1': 'nm/ps',
-            'Angstrom ps-1': 'Angstrom/ps'
+            'nm ns-1': 'nm/ns',
+            'pm ps-1': 'pm/ps',
+            'm s-1': 'm/s'
             },
         'force':  {
+            'kJ mol-1 Angstrom-1': 'kJ/(mol*Angstrom)',
             'kJ mol-1 nm-1': 'kJ/(mol*nm)',
-            'kJ mol-1 Angstrom-1': 'kJ/(mol*Angstrom)'
+            'Newton': 'Newton',
+            'N': 'N',
+            'J m-1': 'J/m',
+            'kcal mol-1 Angstrom-1': 'kcal/(mol*Angstrom)',
+            'kcal mol-1 A-1': 'kcal/(mol*Angstrom)'
             }
     }
     _Timestep = Timestep
@@ -204,14 +235,12 @@ class H5MDReader(base.ReaderBase):
         super(H5MDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.open_trajectory()
-        self.n_atoms = self._particle_group['position/value'].shape[1]
-
-        self.has_positions = 'position' in self._particle_group
+        self.has_positions = 'position' in self._particle_group.keys()
         if not self.has_positions:
             raise ValueError("'position' group must be in 'particles' group")
+        self.n_atoms = self._particle_group['position/value'].shape[1]
         self.has_velocities = 'velocity' in self._particle_group
         self.has_forces = 'force' in self._particle_group
-
         self.ts = self._Timestep(self.n_atoms,
                                  velocities=self.has_velocities,
                                  forces=self.has_forces,
@@ -340,17 +369,17 @@ class H5MDReader(base.ReaderBase):
 
         if 'units' in self._particle_group['position/time'].attrs:
             try:
-                self.units['time'] = self._particle_group['position/time'].attrs['units']
+                self.units['time'] = self._unit_translation['time'][self._particle_group['position/time'].attrs['units']]
             except KeyError:
-                raise RuntimeError("Unit {} not recognized by H5MDReader. Please "
+                raise RuntimeError("Unit '{}' not recognized by H5MDReader. Please "
                       "raise an issue in https://github.com/MDAnalysis/mdanalysis/issues".format(
                       self._particle_group['position/time'].attrs['units'])) from None
 
         if 'units' in self._particle_group['position'].attrs:
             try:
-                self.units['length'] = self._particle_group['position'].attrs['units']
+                self.units['length'] = self._unit_translation['length'][self._particle_group['position'].attrs['units']]
             except KeyError:
-                raise RuntimeError("Unit {} not recognized by H5MDReader. Please "
+                raise RuntimeError("Unit '{}'' not recognized by H5MDReader. Please "
                       "raise an issue in https://github.com/MDAnalysis/mdanalysis/issues".format(
                       self._particle_group['position'].attrs['units'])) from None
 
@@ -360,7 +389,7 @@ class H5MDReader(base.ReaderBase):
                 try:
                     self.units['velocity'] = self._unit_translation['velocity'][self._particle_group['velocity'].attrs['units']]
                 except KeyError:
-                    raise RuntimeError("Unit {} not recognized by H5MDReader. Please "
+                    raise RuntimeError("Velocity unit '{}' not recognized by H5MDReader. Please "
                       "raise an issue in https://github.com/MDAnalysis/mdanalysis/issues".format(
                       self._particle_group['velocity'].attrs['units'])) from None
 
