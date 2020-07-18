@@ -75,11 +75,13 @@ def create_test_trj(uni, filename):
             data_dt.append(uni.trajectory.ts.data['dt'],
                            ts.frame, time=ts.time)
 
+
 def main():
     pdb = COORDINATES_TOPOLOGY
     trr = COORDINATES_TRR
     u = mda.Universe(pdb, trr)
     create_test_trj(u, 'test.h5md')
+
 
 if __name__ == '__main__':
     if not HAS_PYH5MD:

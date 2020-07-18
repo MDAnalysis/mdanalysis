@@ -321,9 +321,8 @@ class H5MDReader(base.ReaderBase):
             raise ValueError("Frame {} has {} atoms but the initial frame"
                              " has {} atoms. MDAnalysis is unable to deal"
                              " with variable topology!".format(frame,
-                                                          n_atoms_now,
-                                                          self.n_atoms))
-        else :
+                              n_atoms_now, self.n_atoms))
+        else:
             ts.positions = frame_positions
 
         # set particle velocities
@@ -334,9 +333,8 @@ class H5MDReader(base.ReaderBase):
                 raise ValueError("Frame {} has {} atoms but the initial frame"
                                  " has {} atoms. MDAnalysis is unable to deal"
                                  " with variable topology!".format(frame,
-                                                              n_atoms_now,
-                                                              self.n_atoms))
-            else :
+                                  n_atoms_now, self.n_atoms))
+            else:
                 ts.velocities = frame_velocities
 
         # set particle forces
@@ -347,9 +345,8 @@ class H5MDReader(base.ReaderBase):
                 raise ValueError("Frame {} has {} atoms but the initial frame"
                                  " has {} atoms. MDAnalysis is unable to deal"
                                  " with variable topology!".format(frame,
-                                                              n_atoms_now,
-                                                              self.n_atoms))
-            else :
+                                  n_atoms_now, self.n_atoms))
+            else:
                 ts.forces = frame_forces
 
         # unit conversion
@@ -382,8 +379,8 @@ class H5MDReader(base.ReaderBase):
                                    " H5MDReader. Please raise an issue in"
                                    " https://github.com/MDAnalysis/"
                                    "mdanalysis/issues".format(
-                                   self._particle_group['position/time'].
-                                   attrs['units'])) from None
+                                    self._particle_group['position/time'].
+                                    attrs['units'])) from None
 
         if 'units' in self._particle_group['position'].attrs:
             try:
@@ -395,8 +392,8 @@ class H5MDReader(base.ReaderBase):
                                    " H5MDReader. Please raise an issue in"
                                    " https://github.com/MDAnalysis/"
                                    "mdanalysis/issues".format(
-                                   self._particle_group['position/time'].
-                                   attrs['units'])) from None
+                                    self._particle_group['position'].
+                                    attrs['units'])) from None
 
         if self.has_velocities:
             if 'units' in self._particle_group['velocity'].attrs:
@@ -409,8 +406,8 @@ class H5MDReader(base.ReaderBase):
                                        " H5MDReader. Please raise an issue in"
                                        " https://github.com/MDAnalysis/"
                                        "mdanalysis/issues".format(
-                                       self._particle_group['position/time'].
-                                       attrs['units'])) from None
+                                        self._particle_group['velocity'].
+                                        attrs['units'])) from None
 
         if self.has_forces:
             if 'units' in self._particle_group['force'].attrs:
@@ -423,5 +420,5 @@ class H5MDReader(base.ReaderBase):
                                        " H5MDReader. Please raise an issue in"
                                        " https://github.com/MDAnalysis/"
                                        "mdanalysis/issues".format(
-                                       self._particle_group['position/time'].
-                                       attrs['units'])) from None
+                                        self._particle_group['force'].
+                                        attrs['units'])) from None

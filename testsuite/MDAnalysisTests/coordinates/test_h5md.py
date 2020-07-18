@@ -75,7 +75,7 @@ class TestH5MDReader(MultiframeReaderTest):
                 assert_equal(W.n_atoms, 100)
 
 
-"""The tests below test an example trajectory H5MD_xvf"""
+# The tests below test an example trajectory H5MD_xvf
 @pytest.fixture
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def h5md_universe():
@@ -209,7 +209,7 @@ def test_jump_last_frame(h5md_universe):
                                                (1, 2, 1)))
 def test_slice(h5md_universe, start, stop, step):
     frames = [h5md_universe.trajectory.ts.frame
-             for ts in h5md_universe.trajectory[start:stop:step]]
+              for ts in h5md_universe.trajectory[start:stop:step]]
     assert_array_equal(frames, np.arange(start, stop, step))
 
 
@@ -218,7 +218,7 @@ def test_slice(h5md_universe, start, stop, step):
 def test_array_like(h5md_universe, array_like):
     array = array_like([0, 2])
     frames = [h5md_universe.trajectory.ts.frame
-             for ts in h5md_universe.trajectory[array]]
+              for ts in h5md_universe.trajectory[array]]
     assert_array_equal(frames, array)
 
 
@@ -226,7 +226,7 @@ def test_array_like(h5md_universe, array_like):
 @pytest.mark.parametrize("indices", ([0, 1, 2, 1, 2, 2, 0]))
 def test_list_indices(h5md_universe, indices):
     frames = [h5md_universe.trajectory.ts.frame
-             for ts in h5md_universe.trajectory[indices]]
+              for ts in h5md_universe.trajectory[indices]]
     assert_array_equal(frames, indices)
 
 
