@@ -203,7 +203,7 @@ class PDBParser(TopologyReaderBase):
                           "bonds will not be parsed")
         else:
             # Issue 2832: don't append Bonds if there are no bonds
-            if len(bonds) > 0:
+            if bonds:
                 top.add_TopologyAttr(bonds)
 
         return top
