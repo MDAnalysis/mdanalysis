@@ -81,52 +81,12 @@ Example use of the analysis classes
 HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
 
-Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both
-continuos and intermittent. In this case we are analyzing how residue 38
-interact with a water sphere of radius 6.0 centered on the geometric center of
-protein and residue 42. If the hydrogen bond lifetimes are very stable, we can
-assume that residue 38 is hydrophilic, on the other hand, if the are very
-unstable, we can assume that residue 38 is hydrophobic::
+To analyse hydrogen bond lifetime, use
+:meth:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.liftetime`.
 
-  import MDAnalysis
-  from MDAnalysis.analysis.waterdynamics import HydrogenBondLifetimes as HBL
-
-  u = MDAnalysis.Universe(pdb, trajectory)
-  selection1 = "byres name OH2 and sphzone 6.0 protein and resid 42"
-  selection2 = "resid 38"
-  HBL_analysis = HBL(universe, selection1, selection2, 0, 2000, 30)
-  HBL_analysis.run()
-  time = 0
-  #now we print the data ready to plot. The first two columns are the HBLc vs t
-  #plot and the second two columns are the HBLi vs t graph
-  for HBLc, HBLi in HBL_analysis.timeseries:
-      print("{time} {HBLc} {time} {HBLi}".format(time=time, HBLc=HBLc, HBLi=HBLi))
-      time += 1
-
-  #we can also plot our data
-  plt.figure(1,figsize=(18, 6))
-
-  #HBL continuos
-  plt.subplot(121)
-  plt.xlabel('time')
-  plt.ylabel('HBLc')
-  plt.title('HBL Continuos')
-  plt.plot(range(0,time),[column[0] for column in HBL_analysis.timeseries])
-
-  #HBL intermitent
-  plt.subplot(122)
-  plt.xlabel('time')
-  plt.ylabel('HBLi')
-  plt.title('HBL Intermitent')
-  plt.plot(range(0,time),[column[1] for column in HBL_analysis.timeseries])
-
-  plt.show()
-
-where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is
-the value for the intermittent hydrogen bond lifetime, t0 = 0, tf = 2000 and
-dtmax = 30. In this way we create 30 windows timestep (30 values in x
-axis). The continuos hydrogen bond lifetimes should decay faster than
-intermittent.
+See Also
+--------
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`
 
 
 WaterOrientationalRelaxation
@@ -349,23 +309,6 @@ simulation is not being reloaded into memory for each lipid::
 Output
 ------
 
-HydrogenBondLifetimes
-~~~~~~~~~~~~~~~~~~~~~
-
-Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is
-stored in :attr:`HydrogenBondLifetimes.timeseries` (in all the following
-descriptions, # indicates comments that are not part of the output)::
-
-    results = [
-        [ # time t0
-            <HBL_c>, <HBL_i>
-        ],
-        [ # time t1
-            <HBL_c>, <HBL_i>
-        ],
-        ...
-     ]
-
 WaterOrientationalRelaxation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -428,10 +371,6 @@ a list of all SPs calculated for each tau. This can be used to compute the distr
 Classes
 --------
 
-.. autoclass:: HydrogenBondLifetimes
-   :members:
-   :inherited-members:
-
 .. autoclass:: WaterOrientationalRelaxation
    :members:
    :inherited-members:
@@ -459,205 +398,6 @@ import numpy as np
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 from MDAnalysis.lib.log import ProgressBar
-
-
-class HydrogenBondLifetimes(object):
-    r"""Hydrogen bond lifetime analysis
-
-    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
-    (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
-    obtain the continuous and intermittent behavior of hydrogen bonds in
-    time. A fast decay in these parameters indicate a fast change in HBs
-    connectivity. A slow decay indicate very stables hydrogen bonds, like in
-    ice. The HBL is also know as "Hydrogen Bond Population Relaxation"
-    (HBPR). In the continuos case we have:
-
-    .. math::
-       C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
-
-    where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
-    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and
-    :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:
-
-    .. math::
-       C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
-
-    where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
-    :math:`ij` at time :math:`t_0+\tau` (intermittent) and
-    :math:`h_{ij}(t_0+\tau)=0` otherwise.
-
-
-    Parameters
-    ----------
-    universe : Universe
-      Universe object
-    selection1 : str
-      Selection string for first selection [‘byres name OH2’].
-      It could be any selection available in MDAnalysis, not just water.
-    selection2 : str
-      Selection string to analize its HBL against selection1
-    t0 : int
-      frame  where analysis begins
-    tf : int
-      frame where analysis ends
-    dtmax : int
-      Maximum dt size, `dtmax` < `tf` or it will crash.
-
-
-    .. versionadded:: 0.11.0
-    .. versionchanged:: 1.0.0
-       The ``nproc`` keyword was removed as it linked to a portion of code that
-       may have failed in some cases.
-    .. deprecated:: 1.0.1
-       ``waterdynamics.HydrogenBondLifetimes`` is deprecated and will be
-       removed in 2.0.0. Instead, please use (available in 2.0.0)
-       MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime
-
-    """
-
-
-    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
-                 nproc=1):
-        warnings.warn(
-            "This class is deprecated. "
-            "Instrad, please use"
-            "MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime",
-            category=DeprecationWarning
-        )
-
-        self.universe = universe
-        self.selection1 = selection1
-        self.selection2 = selection2
-        self.t0 = t0
-        self.tf = tf - 1
-        self.dtmax = dtmax
-        self.timeseries = None
-
-    def _getC_i(self, HBP, t0, t):
-        """
-        This function give the intermitent Hydrogen Bond Lifetime
-        C_i = <h(t0)h(t)>/<h(t0)> between t0 and t
-        """
-        C_i = 0
-        for i in range(len(HBP[t0])):
-            for j in range(len(HBP[t])):
-                if (HBP[t0][i][0] == HBP[t][j][0] and HBP[t0][i][1] == HBP[t][j][1]):
-                    C_i += 1
-                    break
-        if len(HBP[t0]) == 0:
-            return 0.0
-        else:
-            return float(C_i) / len(HBP[t0])
-
-    def _getC_c(self, HBP, t0, t):
-        """
-        This function give the continous Hydrogen Bond Lifetime
-        C_c = <h(t0)h'(t)>/<h(t0)> between t0 and t
-        """
-        C_c = 0
-        dt = 1
-        begt0 = t0
-        HBP_cp = HBP
-        HBP_t0 = HBP[t0]
-        newHBP = []
-        if t0 == t:
-            return 1.0
-        while t0 + dt <= t:
-            for i in range(len(HBP_t0)):
-                for j in range(len(HBP_cp[t0 + dt])):
-                    if (HBP_t0[i][0] == HBP_cp[t0 + dt][j][0] and
-                        HBP_t0[i][1] == HBP_cp[t0 + dt][j][1]):
-                        newHBP.append(HBP_t0[i])
-                        break
-            C_c = len(newHBP)
-            t0 += dt
-            HBP_t0 = newHBP
-            newHBP = []
-        if len(HBP[begt0]) == 0:
-            return 0
-        else:
-            return C_c / float(len(HBP[begt0]))
-
-    def _intervC_c(self, HBP, t0, tf, dt):
-        """
-        This function gets all the data for the h(t0)h(t0+dt)', where
-        t0 = 1,2,3,...,tf. This function give us one point of the final plot
-        HBL vs t
-        """
-        a = 0
-        count = 0
-        for i in range(len(HBP)):
-            if (t0 + dt <= tf):
-                if t0 == t0 + dt:
-                    b = self._getC_c(HBP, t0, t0)
-                    break
-                b = self._getC_c(HBP, t0, t0 + dt)
-                t0 += dt
-                a += b
-                count += 1
-        if count == 0:
-            return 1.0
-        return a / count
-
-    def _intervC_i(self, HBP, t0, tf, dt):
-        """
-        This function gets all the data for the h(t0)h(t0+dt), where
-        t0 = 1,2,3,...,tf. This function give us a point of the final plot
-        HBL vs t
-        """
-        a = 0
-        count = 0
-        for i in range(len(HBP)):
-            if (t0 + dt <= tf):
-                b = self._getC_i(HBP, t0, t0 + dt)
-                t0 += dt
-                a += b
-                count += 1
-        return a / count
-
-    def _finalGraphGetC_i(self, HBP, t0, tf, maxdt):
-        """
-        This function gets the final data of the C_i graph.
-        """
-        output = []
-        for dt in range(maxdt):
-            a = self._intervC_i(HBP, t0, tf, dt)
-            output.append(a)
-        return output
-
-    def _finalGraphGetC_c(self, HBP, t0, tf, maxdt):
-        """
-        This function gets the final data of the C_c graph.
-        """
-        output = []
-        for dt in range(maxdt):
-            a = self._intervC_c(HBP, t0, tf, dt)
-            output.append(a)
-        return output
-
-    def _getGraphics(self, HBP, t0, tf, maxdt):
-        """
-        Function that join all the results into a plot.
-        """
-        a = []
-        cont = self._finalGraphGetC_c(HBP, t0, tf, maxdt)
-        inte = self._finalGraphGetC_i(HBP, t0, tf, maxdt)
-        for i in range(len(cont)):
-            fix = [cont[i], inte[i]]
-            a.append(fix)
-        return a
-
-
-    def run(self, **kwargs):
-        """Analyze trajectory and produce timeseries"""
-        h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
-                                                                 self.selection1,
-                                                                 self.selection2,
-                                                                 distance=3.5,
-                                                                 angle=120.0)
-        h_list.run(**kwargs)
-        self.timeseries = self._getGraphics(h_list.timeseries, self.t0,
-                                            self.tf, self.dtmax)
 
 
 class WaterOrientationalRelaxation(object):

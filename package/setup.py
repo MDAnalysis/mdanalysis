@@ -49,6 +49,7 @@ from distutils.sysconfig import customize_compiler
 import codecs
 import os
 import sys
+import re
 import shutil
 import tempfile
 import warnings
@@ -424,8 +425,9 @@ def extensions(config):
     if use_cython:
         extensions = cythonize(
             pre_exts,
-            compiler_directives={'linetrace' : cython_linetrace,
-                                 'embedsignature' : False},
+            compiler_directives={'linetrace': cython_linetrace,
+                                 'embedsignature': False,
+                                 'language_level': '3'},
         )
         if cython_linetrace:
             print("Cython coverage will be enabled")
@@ -515,14 +517,32 @@ def dynamic_author_list():
         print(template.format(author_string), file=outfile)
 
 
+def long_description(readme):
+    """Create reST SUMMARY file for PyPi."""
+
+    with open(abspath(readme)) as summary:
+        buffer = summary.read()
+    # remove top heading that messes up pypi display
+    m = re.search('====*\n[^\n]*README[^\n]*\n=====*\n', buffer,
+                  flags=re.DOTALL)
+    assert m, "README.rst does not contain a level-1 heading"
+    return buffer[m.end():]
+
+
 if __name__ == '__main__':
     try:
         dynamic_author_list()
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    with open(abspath('SUMMARY.txt')) as summary:
-        LONG_DESCRIPTION = summary.read()
+    try:
+        # when building from repository for creating the distribution
+        LONG_DESCRIPTION = long_description("../README.rst")
+    except OSError:
+        # when building from a tar file for installation
+        # (LONG_DESCRIPTION is not really needed)
+        LONG_DESCRIPTION = "MDAnalysis -- https://www.mdanalysis.org/"
+
     CLASSIFIERS = [
         'Development Status :: 6 - Mature',
         'Environment :: Console',

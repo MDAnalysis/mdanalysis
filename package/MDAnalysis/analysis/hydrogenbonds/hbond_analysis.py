@@ -175,7 +175,7 @@ protein-water and protein-protein hydrogen bonds will be found, but
 no water-water hydrogen bonds.
 
 In order to compute the hydrogen bond lifetime, after finding hydrogen bonds
-one can use the :attr:`lifetime` function:
+one can use the :attr:`lifetime` function::
 
     ...
     hbonds.run()
@@ -219,6 +219,7 @@ from .. import base
 from MDAnalysis.lib.distances import capped_distance, calc_angles
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 from MDAnalysis.exceptions import NoDataError
+from MDAnalysis.core.groups import AtomGroup
 
 from ...due import due, Doi
 
@@ -504,7 +505,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
                                   'can be used.')
 
             hydrogens = self.u.select_atoms(self.hydrogens_sel)
-            donors = sum(h.bonded_atoms[0] for h in hydrogens)
+            donors = sum(h.bonded_atoms[0] for h in hydrogens) if hydrogens \
+                else AtomGroup([], self.u)
 
         # Otherwise, use d_h_cutoff as a cutoff distance
         else:
@@ -633,9 +635,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         self.hbonds = np.asarray(self.hbonds).T
 
     def lifetime(self, tau_max=20, window_step=1, intermittency=0):
-        """
-        Computes and returns the time-autocorrelation (HydrogenBondLifetimes)
-         of hydrogen bonds.
+        """Computes and returns the time-autocorrelation
+        (HydrogenBondLifetimes) of hydrogen bonds.
 
         Before calling this method, the hydrogen bonds must first be computed
         with the `run()` function. The same `start`, `stop` and `step`

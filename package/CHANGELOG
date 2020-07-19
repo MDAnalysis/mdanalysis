@@ -19,6 +19,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Bond attribute is no longer set if PDB file contains no CONECT records
+    (Issue #2832)
   * ResidueAttrs now have Atom as a target class by default; ICodes and 
     Molnums now have default target_classes (#2803, PR #2805)
   * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
@@ -34,8 +36,15 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
+  * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError 
+    was thrown when finding D-H pairs via the topology if `hydrogens` was an 
+    empty AtomGroup (Issue #2848)
 
 Enhancements
+  * Refactored analysis.helanal into analysis.helix_analysis
+    (Issue #2452, PR #2622)
+  * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
+    and improved docs (Issue #2784)
   * Added the RDKitParser which creates a `core.topology.Topology` object from
     an `rdkit.Chem.rdchem.Mol` object, and the RDKitReader to read coordinates
     from RDKit conformers (Issue #2468, PR #2707)
@@ -47,6 +56,7 @@ Enhancements
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
+  * Dead code removed from the TPR parser and increased test coverage (PR #2840)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
@@ -68,6 +78,7 @@ Changes
   * Dropped Python 2 support
   * Changes the minimal NumPy version to 1.16.0 (Issue #2827, PR #2831)
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
+  * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
 
 Deprecations
 
@@ -269,6 +280,7 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
+  * analysis.helanal is deprecated in 1.0 (remove in 2.0)
   * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
   * analysis.density.density_from_Universe() (remove in 2.0)
