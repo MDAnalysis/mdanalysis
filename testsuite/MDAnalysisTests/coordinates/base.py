@@ -503,7 +503,7 @@ class MultiframeReaderTest(BaseReaderTest):
         assert_equal(next(reader), next(reader_p),
                      "Next timestep is changed after pickling")
 
-    #  To make sure pickle works for last frame. 
+    #  To make sure pickle works for last frame.
     def test_pickle_last_ts_reader(self, reader):
         #  move current ts to last frame.
         reader[-1]
