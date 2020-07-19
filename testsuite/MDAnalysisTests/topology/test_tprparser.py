@@ -56,7 +56,7 @@ BONDED_TPRS = (
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names',
+    expected_attrs = ['ids', 'names', 'elements',
                       'resids', 'resnames',
                       'moltypes', 'molnums', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
@@ -258,3 +258,14 @@ def test_fail_for_unsupported_files(tpr_path, expected_exception):
     with pytest.raises(expected_exception):
         parser.parse()
 
+
+@pytest.mark.parametrize('tpr_path', BONDED_TPRS)
+def test_no_elements(tpr_path):
+    """
+    If the TPR does not contain element information, the element topology
+    attribute is not defined.
+    """
+    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
+    topology = parser.parse()
+    with pytest.raises(AttributeError):
+        _ = topology.elements
