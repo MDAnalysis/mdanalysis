@@ -208,6 +208,11 @@
 <span class="sd">.. versionchanged:: 0.11.0</span>
 <span class="sd">   Moved mathematical functions into lib.mdamath</span>
 
+<span class="sd">.. versionchanged::2.0.0</span>
+<span class="sd">   The following aliases, that existed for compatibility with python versions</span>
+<span class="sd">   older than 3.6, were removed: `callable` for the built-in of the same name,</span>
+<span class="sd">   `PathLike` for :class:`os.PathLike`, and `bz_open` for :func:`bz2.open`.</span>
+
 
 <span class="sd">Files and directories</span>
 <span class="sd">---------------------</span>
@@ -391,22 +396,6 @@
                       <span class="s2">&quot;This can happen if your C extensions &quot;</span>
                       <span class="s2">&quot;have not been built.&quot;</span><span class="p">)</span>
 
-<span class="c1"># Python 3.0, 3.1 do not have the builtin callable()</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">callable</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
-    <span class="c1"># http://bugs.python.org/issue10518</span>
-    <span class="kn">import</span> <span class="nn">collections</span>
-
-    <span class="k">def</span> <span class="nf">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Callable</span><span class="p">)</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">os</span> <span class="kn">import</span> <span class="n">PathLike</span>
-<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="k">class</span> <span class="nc">PathLike</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-        <span class="k">pass</span>
-
 
 <div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return a new name that has suffix attached; replaces other extensions.</span>
@@ -492,25 +481,6 @@
         <span class="n">stream</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<span class="c1"># On python 3, we want to use bz2.open to open and uncompress bz2 files. That</span>
-<span class="c1"># function allows to specify the type of the uncompressed file (bytes ot text).</span>
-<span class="c1"># The function does not exist in python 2, thus we must use bz2.BZFile to</span>
-<span class="c1"># which we cannot tell if the uncompressed file contains bytes or text.</span>
-<span class="c1"># Therefore, on python 2 we use a proxy function that removes the type of the</span>
-<span class="c1"># uncompressed file from the `mode` argument.</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">bz2</span><span class="o">.</span><span class="n">open</span>
-<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-    <span class="c1"># We are on python 2 and bz2.open is not available</span>
-    <span class="k">def</span> <span class="nf">bz2_open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Open and uncompress a BZ2 file&quot;&quot;&quot;</span>
-        <span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">bz2</span><span class="o">.</span><span class="n">BZ2File</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># We are on python 3 so we can use bz2.open</span>
-    <span class="n">bz2_open</span> <span class="o">=</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span>
-
-
 <div class="viewcode-block" id="anyopen"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.anyopen">[docs]</a><span class="k">def</span> <span class="nf">anyopen</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rt&#39;</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Open datasource (gzipped, bzipped, uncompressed) and return a stream.</span>
 
@@ -548,7 +518,7 @@
 <span class="sd">       behavior to return a tuple ``(stream, filename)``.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2_open</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">}</span>
+    <span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">datasource</span><span class="p">):</span>
@@ -749,7 +719,7 @@
 
 
 <div class="viewcode-block" id="NamedStream"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.NamedStream">[docs]</a><span class="nd">@functools</span><span class="o">.</span><span class="n">total_ordering</span>
-<span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">PathLike</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">NamedStream</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">PathLike</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Stream that also provides a (fake) name.</span>
 
 <span class="sd">    By wrapping a stream `stream` in this class, it can be passed to</span>
