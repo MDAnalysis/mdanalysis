@@ -29,6 +29,11 @@ Small helper functions that don't fit anywhere else.
 .. versionchanged:: 0.11.0
    Moved mathematical functions into lib.mdamath
 
+.. versionchanged::2.0.0
+   The following aliases, that existed for compatibility with python versions
+   older than 3.6, were removed: `callable` for the built-in of the same name,
+   `PathLike` for :class:`os.PathLike`, and `bz_open` for :func:`bz2.open`.
+
 
 Files and directories
 ---------------------
@@ -212,22 +217,6 @@ except ImportError:
                       "This can happen if your C extensions "
                       "have not been built.")
 
-# Python 3.0, 3.1 do not have the builtin callable()
-try:
-    callable(list)
-except NameError:
-    # http://bugs.python.org/issue10518
-    import collections
-
-    def callable(obj):
-        return isinstance(obj, collections.Callable)
-
-try:
-    from os import PathLike
-except ImportError:
-    class PathLike(object):
-        pass
-
 
 def filename(name, ext=None, keep=False):
     """Return a new name that has suffix attached; replaces other extensions.
@@ -313,25 +302,6 @@ def openany(datasource, mode='rt', reset=True):
         stream.close()
 
 
-# On python 3, we want to use bz2.open to open and uncompress bz2 files. That
-# function allows to specify the type of the uncompressed file (bytes ot text).
-# The function does not exist in python 2, thus we must use bz2.BZFile to
-# which we cannot tell if the uncompressed file contains bytes or text.
-# Therefore, on python 2 we use a proxy function that removes the type of the
-# uncompressed file from the `mode` argument.
-try:
-    bz2.open
-except AttributeError:
-    # We are on python 2 and bz2.open is not available
-    def bz2_open(filename, mode):
-        """Open and uncompress a BZ2 file"""
-        mode = mode.replace('t', '').replace('b', '')
-        return bz2.BZ2File(filename, mode)
-else:
-    # We are on python 3 so we can use bz2.open
-    bz2_open = bz2.open
-
-
 def anyopen(datasource, mode='rt', reset=True):
     """Open datasource (gzipped, bzipped, uncompressed) and return a stream.
 
@@ -369,7 +339,7 @@ def anyopen(datasource, mode='rt', reset=True):
        behavior to return a tuple ``(stream, filename)``.
 
     """
-    handlers = {'bz2': bz2_open, 'gz': gzip.open, '': open}
+    handlers = {'bz2': bz2.open, 'gz': gzip.open, '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):
@@ -570,7 +540,7 @@ def which(program):
 
 
 @functools.total_ordering
-class NamedStream(io.IOBase, PathLike):
+class NamedStream(io.IOBase, os.PathLike):
     """Stream that also provides a (fake) name.
 
     By wrapping a stream `stream` in this class, it can be passed to
