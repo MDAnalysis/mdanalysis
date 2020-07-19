@@ -25,10 +25,7 @@ import pickle
 import os
 import subprocess
 
-try:
-    from cStringIO import StringIO
-except:
-    from io import StringIO
+from io import StringIO
 
 import numpy as np
 from numpy.testing import (

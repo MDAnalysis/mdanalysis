@@ -52,7 +52,7 @@ class TestRotationMatrix(object):
     @pytest.mark.parametrize('a, b, weights', (
             (a, b, None),
             (a, b, w),
-            (a.astype(np.int), b.astype(np.int), w.astype(np.float32))
+            (a.astype(int), b.astype(int), w.astype(np.float32))
     ))
     def test_rotation_matrix_input(self, a, b, weights):
         rot, rmsd = align.rotation_matrix(a, b, weights)

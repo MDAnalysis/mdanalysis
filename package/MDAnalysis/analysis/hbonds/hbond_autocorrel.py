@@ -386,12 +386,12 @@ class HydrogenBondAutoCorrel(object):
         if self.solution['results'] is not None and not force:
             return
 
-        master_results = np.zeros_like(np.arange(self._starts[0],
+        main_results = np.zeros_like(np.arange(self._starts[0],
                                                        self._stops[0],
                                                        self._skip),
                                           dtype=np.float32)
         # for normalising later
-        counter = np.zeros_like(master_results, dtype=np.float32)
+        counter = np.zeros_like(main_results, dtype=np.float32)
 
         for i, (start, stop) in ProgressBar(enumerate(zip(self._starts,
                                             self._stops)), total=self.nruns,
@@ -401,19 +401,19 @@ class HydrogenBondAutoCorrel(object):
             results = self._single_run(int(start), int(stop))
 
             nresults = len(results)
-            if nresults == len(master_results):
-                master_results += results
+            if nresults == len(main_results):
+                main_results += results
                 counter += 1.0
             else:
-                master_results[:nresults] += results
+                main_results[:nresults] += results
                 counter[:nresults] += 1.0
 
-        master_results /= counter
+        main_results /= counter
 
         self.solution['time'] = np.arange(
-            len(master_results),
+            len(main_results),
             dtype=np.float32) * self.u.trajectory.dt * self._skip
-        self.solution['results'] = master_results
+        self.solution['results'] = main_results
 
     def _single_run(self, start, stop):
         """Perform a single pass of the trajectory"""

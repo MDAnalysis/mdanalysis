@@ -1,0 +1,153 @@
+; This topology describes a system with a test molecule that intends to
+; use all the bonded interactions available in gromacs.
+; Most of the parameter values make no sense; here only the presence of the
+; interaction in the final TPR matters.
+
+[ defaults ]
+2 1
+
+[ atomtypes ]
+; name mass charge ptype a b b
+TA     72.0 0.000  A     1 1 1
+TS     72.0 0.000  S     1 1 1
+
+[ moleculetype ]
+; molname  	nrexcl
+TEST 	    	1
+
+[ atoms ]
+;id 	type 	resnr 	residu 	atom 	cgnr 	charge   mass
+1       TS      1       T       T1      1       0
+2       TA      1       T       T2      1       0 
+3       TA      1       T       T3      1       0
+4       TA      1       T       T4      1       0 
+5       TA      1       T       T5      1       0 
+6       TA      1       T       T6      1       0 
+7       TA      1       T       T7      1       0
+8       TA      1       T       T8      1       0         0
+9       TA      1       T       T9      1       0         0
+10      TA      1       T       T10     1       0         0
+11      TA      1       T       T11     1       0
+12      TA      1       T       T12     1       0
+13      TA      1       T       T13     1       0
+14      TA      1       T       T14     1       0         0
+15      TA      1       T       T15     1       0         0
+16      TA      1       T       T16     1       0         0
+17      TA      1       T       T17     1       0         0
+
+;[ polarization ]
+; Atom i  j  type  alpha
+;1         2  1     0.001
+
+[ virtual_sites2 ]
+; Site  from        funct  a
+14      1     2     1      0.7439756
+
+[ virtual_sites3 ]
+; Site  from               funct   a          b
+17      4     5     6      1       0.7439756  0.128012
+; Site  from               funct   a          d
+8       4     5     6      2       0.5        -0.105
+; Site  from               funct   theta      d
+9       4     5     6      3       120        0.5
+; Site  from               funct   a          b          c
+10      4     5     6      4       -0.4       -0.4       6.9281
+
+[ virtual_sites4 ]
+; Site  from                      funct   a          b          c
+16       1    2    3    4         2       1.0        0.9       0.105
+
+[ virtual_sitesn ]
+; Site   funct    from
+15        1        1     2     3     4
+
+[ pairs ]
+; i  j funct v w
+ 14 15 1     1 1
+; i  j funct fudgeQQ qi qj v w
+ 15 16 2     1       1  1  1 1
+
+[ position_restraints ]
+; i funct kx ky kz
+  1 1     1  1  1
+
+[ distance_restraints ]
+; i j funct type label low up1 up2 weight
+  3 4 1     1    1     1   1   1   1
+
+[ dihedral_restraints ]
+; i j k l funct phi0 delta-phi k
+  4 5 6 7 1     1    1         1 1 1
+
+[ orientation_restraints ]
+; i j funct exp label alpha c obs weigth
+  3 4 1     1   1     1     1 1   1
+
+[ angle_restraints ]
+; i j  k  l funct theta0 kc multiplicity
+  8 9 10 11 1     1      1  1
+
+[ angle_restraints_z ]
+; i j funct theta0 kc multiplicity
+  8 9 1     1      1  1
+
+[bonds]
+; i j 	funct 	length 	force.c.
+  1 2   1       0.470   1250        ; regular bond
+  2 3   2       0.470   1250        ; G96 bond
+; i j 	funct 	length 	D     beta
+  3 4   3       0.470   1250  0.1   ; Morse
+; i j 	funct 	length 	C
+  4 5   4       0.470   1250 1250   ; cubic bond
+; i j   funct
+  5 6   5                           ; connection
+; i j 	funct 	length 	force.c.
+  6 7   6       0.470   1250        ; harmonic potential
+  7 8   7       0.470   1250        ; FENE bond
+; i  j   funct table.number force.c
+  9 10   8     0            1       ; tabulated
+ 10 11   9     0            1       ; tabulated no exclusion
+
+[constraints]
+; i  j   funct   length
+  11 12  1       0.470
+  12 13  2       0.470
+
+[angles]
+;  i     j    k     funct   angle  force.c.
+   1     2    3     1       30     1000      ; regular angle
+   2     3    4     2       30     1000      ; G96 angle
+;  i     j    k     funct   r1    r2   k
+   3     4    5     3       1     1    1     ; cross bond-bond
+;  i     j    k     funct   r1    r2   r3  k
+   4     5    6     4       1     1    1   1 ; cross bond-angle
+;  i     j    k     funct   tetha ktheta r13 kUB
+   5     6    7     5       1     1      1   1   ; Urey-Bradley
+;  i     j    k     funct   theta C0 C1 C2 C3 C4
+   6     7    8     6       1     1  1  1  1  1  ; quartic angle
+;  i     j    k     funct   table.number force.c
+   8     9    10    8       0            1   ; tabulated angle
+
+[dihedrals]
+; i  j  k  l  funct
+  1  2  3  4  1     1 1 1             ; proper dihedrals (3 params)
+  2  3  4  5  1     1 1 1 1 1 1       ; proper dihedrals (6 params)
+  5  6  7  8  3     1 1 1 1 1 1       ; Ryckaert-Bellemans dihedral
+  7  8  9  10 5     1 1 1 1           ; Fourier dihedral
+  8  9  10 11 9     1 1 1             ; proper dihedral (multiple)
+  11 12 13 14 8     0 1               ; tabulated dihedral
+
+[dihedrals]
+; i  j  k  l  funct
+  3  4  5  6  2     1 1               ; improper dihedrals (2 params)
+  4  5  6  7  2     1 1 1 1           ; improper dihedrals (4 params)
+
+[ exclusions ] 
+; i others
+  1 13  14  15
+
+[system]
+Topology test
+
+[molecules]
+TEST  1
