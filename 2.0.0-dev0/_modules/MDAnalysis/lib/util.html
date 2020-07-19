@@ -298,6 +298,7 @@
 <span class="sd">.. autofunction:: unique_int_1d(values)</span>
 <span class="sd">.. autofunction:: unique_rows</span>
 <span class="sd">.. autofunction:: blocks_of</span>
+<span class="sd">.. autofunction:: group_same_or_consecutive_integers</span>
 
 <span class="sd">File parsing</span>
 <span class="sd">------------</span>
@@ -405,7 +406,6 @@
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">class</span> <span class="nc">PathLike</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
         <span class="k">pass</span>
-
 
 
 <div class="viewcode-block" id="filename"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.filename">[docs]</a><span class="k">def</span> <span class="nf">filename</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ext</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -1248,6 +1248,7 @@
         <span class="n">obj</span> <span class="o">=</span> <span class="p">[</span><span class="n">obj</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">obj</span></div>
 
+
 <span class="c1">#: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.</span>
 <span class="c1">#: ``(?P&lt;repeat&gt;\d?)(?P&lt;format&gt;[IFELAX])(?P&lt;numfmt&gt;(?P&lt;length&gt;\d+)(\.(?P&lt;decimals&gt;\d+))?)?``</span>
 <span class="c1">#:</span>
@@ -1535,14 +1536,14 @@
     <span class="k">if</span> <span class="n">iterable</span><span class="p">(</span><span class="n">weights</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must be a 1D array, not with shape &quot;</span>
-                            <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+                             <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights (length </span><span class="si">{0}</span><span class="s2">) must be of same length as &quot;</span>
-                            <span class="s2">&quot;the atoms (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
+                             <span class="s2">&quot;the atoms (</span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                 <span class="nb">len</span><span class="p">(</span><span class="n">weights</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)))</span>
     <span class="k">elif</span> <span class="n">weights</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;weights must be {&#39;mass&#39;, None} or an iterable of the &quot;</span>
-                        <span class="s2">&quot;same size as the atomgroup.&quot;</span><span class="p">)</span>
+                         <span class="s2">&quot;same size as the atomgroup.&quot;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">weights</span></div>
 
@@ -1560,7 +1561,8 @@
     <span class="s1">&#39;THR&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;VAL&#39;</span><span class="p">:</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;TRP&#39;</span><span class="p">:</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;TYR&#39;</span><span class="p">:</span> <span class="s1">&#39;Y&#39;</span><span class="p">}</span>
 <span class="c1">#: translation table for 1-letter codes --&gt; *canonical* 3-letter codes.</span>
 <span class="c1">#: The table is used for :func:`convert_aa_code`.</span>
-<span class="n">amino_acid_codes</span> <span class="o">=</span> <span class="p">{</span><span class="n">one</span><span class="p">:</span> <span class="n">three</span> <span class="k">for</span> <span class="n">three</span><span class="p">,</span> <span class="n">one</span> <span class="ow">in</span> <span class="n">canonical_inverse_aa_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">amino_acid_codes</span> <span class="o">=</span> <span class="p">{</span><span class="n">one</span><span class="p">:</span> <span class="n">three</span> <span class="k">for</span> <span class="n">three</span><span class="p">,</span>
+                    <span class="n">one</span> <span class="ow">in</span> <span class="n">canonical_inverse_aa_codes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 <span class="c1">#: non-default charge state amino acids or special charge state descriptions</span>
 <span class="c1">#: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)</span>
 <span class="n">alternative_inverse_aa_codes</span> <span class="o">=</span> <span class="p">{</span>
@@ -1855,8 +1857,30 @@
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">stride_tricks</span><span class="o">.</span><span class="n">as_strided</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">new_shape</span><span class="p">,</span> <span class="n">new_strides</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="group_same_or_consecutive_integers"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.group_same_or_consecutive_integers">[docs]</a><span class="k">def</span> <span class="nf">group_same_or_consecutive_integers</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split an array of integers into a list of same or consecutive</span>
+<span class="sd">    sequences.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr: :class:`numpy.ndarray`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list of :class:`numpy.ndarray`</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    &gt;&gt;&gt; arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])</span>
+<span class="sd">    &gt;&gt;&gt; group_same_or_consecutive_integers(arr)</span>
+<span class="sd">    [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ediff1d</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Class to allow storing attributes in new namespace. &quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="c1"># a.this causes a __getattr__ call for key = &#39;this&#39;</span>
         <span class="k">try</span><span class="p">:</span>
@@ -2012,7 +2036,8 @@
         <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">isunique</span> <span class="ow">or</span> <span class="n">warn_if_not_unique</span><span class="o">.</span><span class="n">warned</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">groupmethod</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="c1"># Otherwise, throw a DuplicateWarning and execute the method.</span>
-        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">group</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">groupmethod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="n">method_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">groupmethod</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
         <span class="c1"># Try to get the group&#39;s variable name(s):</span>
         <span class="n">caller_locals</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">currentframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_locals</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="n">group_names</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2135,7 +2160,7 @@
     <span class="n">convert_single</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;convert_single&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">reduce_result_if_single</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reduce_result_if_single&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
     <span class="n">check_lengths_match</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;check_lengths_match&#39;</span><span class="p">,</span>
-                                     <span class="nb">len</span><span class="p">(</span><span class="n">coord_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+                                      <span class="nb">len</span><span class="p">(</span><span class="n">coord_names</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">coord_names</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Decorator check_coords() cannot be used without &quot;</span>
                          <span class="s2">&quot;positional arguments.&quot;</span><span class="p">)</span>
@@ -2177,7 +2202,8 @@
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">(): </span><span class="si">{}</span><span class="s2">.shape must be (n, 3), got </span><span class="si">{}</span><span class="s2">.&quot;</span>
                                      <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">argname</span><span class="p">,</span> <span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">enforce_copy</span><span class="p">)</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="n">enforce_copy</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2">(): </span><span class="si">{</span><span class="n">argname</span><span class="si">}</span><span class="s2">.dtype must be convertible to &quot;</span>
                           <span class="sa">f</span><span class="s2">&quot;float32, got </span><span class="si">{</span><span class="n">coords</span><span class="o">.</span><span class="n">dtype</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
@@ -2235,7 +2261,7 @@
     <span class="k">return</span> <span class="n">check_coords_decorator</span></div>
 
 
-<span class="c1">#------------------------------------------------------------------</span>
+<span class="c1"># ------------------------------------------------------------------</span>
 <span class="c1">#</span>
 <span class="c1"># our own deprecate function, derived from numpy (see</span>
 <span class="c1"># https://github.com/MDAnalysis/mdanalysis/pull/1763#issuecomment-403231136)</span>
@@ -2246,6 +2272,7 @@
 <span class="k">def</span> <span class="nf">_set_function_name</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
     <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">name</span>
     <span class="k">return</span> <span class="n">func</span>
+
 
 <div class="viewcode-block" id="_Deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util._Deprecate">[docs]</a><span class="k">class</span> <span class="nc">_Deprecate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -2342,6 +2369,7 @@
             <span class="n">newfunc</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">newfunc</span></div>
 
+
 <div class="viewcode-block" id="deprecate"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.deprecate">[docs]</a><span class="k">def</span> <span class="nf">deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Issues a DeprecationWarning, adds warning to `old_name`&#39;s</span>
 <span class="sd">    docstring, rebinds ``old_name.__name__`` and returns the new</span>
@@ -2436,7 +2464,8 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">_Deprecate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 <span class="c1">#</span>
-<span class="c1">#------------------------------------------------------------------</span>
+<span class="c1"># ------------------------------------------------------------------</span>
+
 
 <div class="viewcode-block" id="dedent_docstring"><a class="viewcode-back" href="../../../documentation_pages/lib/util.html#MDAnalysis.lib.util.dedent_docstring">[docs]</a><span class="k">def</span> <span class="nf">dedent_docstring</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Dedent typical python doc string.</span>

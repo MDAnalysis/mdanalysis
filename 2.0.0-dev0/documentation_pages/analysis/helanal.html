@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>4.7.1.2. HELANAL — analysis of protein helices &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>4.7.1.2. HELANAL (Deprecated) — analysis of protein helices &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -44,7 +44,7 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" href="dihedrals.html" />
+    <link rel="next" title="4.7.1.3. HELANAL — analysis of protein helices" href="helix_analysis.html" />
     <link rel="prev" title="4.7.1.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" href="gnm.html" /> 
 </head>
 
@@ -111,8 +111,9 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../analysis_modules.html#macromolecules">4.7.1. Macromolecules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.1.2. HELANAL — analysis of protein helices</a></li>
-<li class="toctree-l4"><a class="reference internal" href="dihedrals.html">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.1.2. HELANAL (Deprecated) — analysis of protein helices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="helix_analysis.html">4.7.1.3. HELANAL — analysis of protein helices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dihedrals.html">4.7.1.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../analysis_modules.html#liquids">4.7.2. Liquids</a></li>
@@ -185,7 +186,7 @@
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
-      <li>4.7.1.2. HELANAL — analysis of protein helices</li>
+      <li>4.7.1.2. HELANAL (Deprecated) — analysis of protein helices</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -204,8 +205,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-MDAnalysis.analysis.helanal"></span><div class="section" id="helanal-analysis-of-protein-helices">
-<h1>4.7.1.2. HELANAL — analysis of protein helices<a class="headerlink" href="#helanal-analysis-of-protein-helices" title="Permalink to this headline">¶</a></h1>
+  <span class="target" id="module-MDAnalysis.analysis.helanal"></span><div class="section" id="helanal-deprecated-analysis-of-protein-helices">
+<h1>4.7.1.2. HELANAL (Deprecated) — analysis of protein helices<a class="headerlink" href="#helanal-deprecated-analysis-of-protein-helices" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -218,6 +219,11 @@
 </tr>
 </tbody>
 </table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This module was deprecated in 1.0 and will be removed in 2.0.
+Please use MDAnalysis.analysis.helix_analysis instead.</p>
+</div>
 <p>The <a class="reference internal" href="#module-MDAnalysis.analysis.helanal" title="MDAnalysis.analysis.helanal"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.helanal</span></code></a> module is a Python implementation of the
 <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.html">HELANAL</a> algorithm <a class="reference internal" href="#bansal2000" id="id1">[Bansal2000]</a> in <a class="reference external" href="http://www.ccrnp.ncifcrf.gov/users/kumarsan/HELANAL/helanal.f">helanal.f</a>, which is also available
 through the <a class="reference external" href="http://nucleix.mbu.iisc.ernet.in/helanal/helanal.shtml">HELANAL webserver</a>.</p>
@@ -435,7 +441,7 @@ be accomplished more transparently with <cite>select</cite>.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dihedrals.html" class="btn btn-neutral float-right" title="4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="helix_analysis.html" class="btn btn-neutral float-right" title="4.7.1.3. HELANAL — analysis of protein helices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="gnm.html" class="btn btn-neutral float-left" title="4.7.1.1. Elastic network analysis of MD trajectories — MDAnalysis.analysis.gnm" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

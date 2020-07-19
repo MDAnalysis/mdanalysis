@@ -209,12 +209,18 @@
 
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">HELANAL --- analysis of protein helices</span>
-<span class="sd">=======================================</span>
+<span class="sd">HELANAL (Deprecated) --- analysis of protein helices</span>
+<span class="sd">====================================================</span>
 
 <span class="sd">:Author:  Benjamin Hall &lt;benjamin.a.hall@ucl.ac.uk&gt;, Oliver Beckstein, Xavier Deupi</span>
 <span class="sd">:Year:    2009, 2011, 2013</span>
 <span class="sd">:License: GNU General Public License v2 (or higher)</span>
+
+<span class="sd">.. note::</span>
+
+<span class="sd">    This module was deprecated in 1.0 and will be removed in 2.0.</span>
+<span class="sd">    Please use MDAnalysis.analysis.helix_analysis instead.</span>
+
 
 <span class="sd">The :mod:`MDAnalysis.analysis.helanal` module is a Python implementation of the</span>
 <span class="sd">HELANAL_ algorithm [Bansal2000]_ in `helanal.f`_, which is also available</span>
@@ -306,6 +312,11 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.helanal&quot;</span><span class="p">)</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This module is deprecated as of MDAnalysis version 1.0. &quot;</span>
+              <span class="s2">&quot;It will be removed in MDAnalysis version 2.0.&quot;</span>
+              <span class="s2">&quot;Please use MDAnalysis.analysis.helix_analysis instead.&quot;</span><span class="p">,</span>
+              <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return the geometric center (centroid) of the coordinates.</span>
@@ -420,6 +431,12 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed `selection` keyword to `select`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This function is deprecated as of MDAnalysis version 1.0. &quot;</span>
+                  <span class="s2">&quot;It will be removed in MDAnalysis version 2.0. Please use &quot;</span>
+                  <span class="s2">&quot;MDAnalysis.analysis.helix_analysis.HELANAL instead.&quot;</span><span class="p">,</span>
+                  <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">ref_axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">ref_axis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
@@ -758,6 +775,12 @@
 <span class="sd">       Changed `selection` keyword to `select`</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;This function is deprecated as of MDAnalysis version 1.0. &quot;</span>
+                  <span class="s2">&quot;It will be removed in MDAnalysis version 2.0. Please use &quot;</span>
+                  <span class="s2">&quot;MDAnalysis.analysis.helix_analysis.helix_analysis on &quot;</span>
+                  <span class="s2">&quot;a Universe instead.&quot;</span><span class="p">,</span>
+                  <span class="n">category</span><span class="o">=</span><span class="ne">DeprecationWarning</span><span class="p">)</span>
 
     <span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">)</span>
     <span class="n">ca</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
