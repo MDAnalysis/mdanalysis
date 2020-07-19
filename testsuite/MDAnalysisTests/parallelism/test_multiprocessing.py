@@ -28,7 +28,6 @@ import pickle
 from numpy.testing import assert_equal
 
 import MDAnalysis as mda
-from MDAnalysis.lib.picklable_file_io import pickle_open
 from MDAnalysis.coordinates.core import get_reader_for
 
 from MDAnalysisTests.datafiles import (
@@ -59,21 +58,6 @@ from MDAnalysisTests.datafiles import (
     XPDB_small,
     XYZ_mini, XYZ, XYZ_bz2,
 )
-
-
-def textio_line(file, i):
-    return file.readlines()[i]
-
-
-def test_multiprocess_fileio():
-    p = multiprocessing.Pool(2)
-    with pickle_open(PDB) as PDB_file:
-        ref = PDB_file.readlines()[:4]
-    with pickle_open(PDB) as PDB_file:
-        res = np.array([p.apply(textio_line, args=(PDB_file, i))
-                        for i in range(4)])
-    p.close()
-    assert_equal(res, ref)
 
 
 @pytest.fixture(params=[
@@ -108,19 +92,6 @@ def cog(u, ag, frame_id):
     return ag.center_of_geometry()
 
 
-def getnames(u, ix):
-    # Check topology stuff works
-    return u.atoms[ix].name
-
-
-def test_trajectory_next(u):
-    u.trajectory.next()
-    u_p = pickle.loads(pickle.dumps(u))
-    u.trajectory.next()
-    u_p.trajectory.next()
-    assert_equal(u.atoms.positions[0], u_p.atoms.positions[0])
-
-
 def test_multiprocess_COG(u):
     ag = u.atoms[2:5]
 
@@ -134,12 +105,13 @@ def test_multiprocess_COG(u):
     assert_equal(ref, res)
 
 
-def test_multiprocess_names(u):
-    if u.trajectory.__class__ in (mda.coordinates.TRJ.NCDFReader,
-                                  mda.coordinates.memory.MemoryReader,
-                                  mda.coordinates.chain.ChainReader):
-        # These Readers contain no information on atom name
-        return True
+def getnames(u, ix):
+    # Check topology stuff works
+    return u.atoms[ix].name
+
+
+def test_multiprocess_names():
+    u = mda.Universe(GRO, XTC)
     ref = [getnames(u, i)
            for i in range(3)]
 
@@ -196,14 +168,10 @@ def test_readers_pickle(ref_reader):
     ps = pickle.dumps(ref_reader)
     reanimated = pickle.loads(ps)
     assert len(ref_reader) == len(reanimated)
-
-
-def test_timestep_pickle(ref_reader):
     try:
         ref_reader[2]
+        ref_reader[0]
     except IndexError:
         # single frame files
         pass
-    ps = pickle.dumps(ref_reader)
-    reanimated = pickle.loads(ps)
     assert_equal(reanimated.ts, ref_reader.ts)

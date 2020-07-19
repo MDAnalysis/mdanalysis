@@ -42,6 +42,10 @@ random access. But if error occurs during testing, find a way to make the offset
 Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O 
 class supports offset?
 
+For example, in `TRZReader`, `_read_frame` is implemented by `_seek`ing the file into
+its previous frame and `_read_next_timestep`, so the offset of the file is crucial
+for such machinery to work.
+
 Miscellaneous
 ^^^^^^^^^^^^^
 If pickle still fails due to some unpicklable attributes, try to find a way
