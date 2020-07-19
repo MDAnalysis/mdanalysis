@@ -34,13 +34,21 @@ class TestUnwrap(object):
     which is specifically designed for wrapping and unwrapping tests.
     """
     precision = 5
+    reference_point_pos = (None,
+                           np.array([4.2, 8.1, 4.5], dtype=np.float32),
+                           np.array([15.1, 15.45, 15.67], dtype=np.float32),
+                           np.array([-14.34, -15.45, -16.76], dtype=np.float32),
+                           np.array([-12.34, 11.65, 11.34], dtype=np.float32),
+                           np.array([17.34, -13.54, 11.23], dtype=np.float32),
+                           np.array([15.45, 14.34, -12.76], dtype=np.float32))
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('is_triclinic', (False, True))
-    def test_unwrap_pass(self, level, compound, reference, is_triclinic):
+    def test_unwrap_pass(self, level, compound, reference, reference_point, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         # select group appropriate for compound:
@@ -58,21 +66,21 @@ class TestUnwrap(object):
         # store original positions:
         orig_pos = group.atoms.positions
         # get the expected result:
-        ref_unwrapped_pos = u.unwrapped_coords(compound, reference)
+        ref_unwrapped_pos = u.unwrapped_coords(compound, reference, reference_point=reference_point)
         if compound == 'group':
             ref_unwrapped_pos = ref_unwrapped_pos[39:47] # molecule 12
         elif compound == 'segments':
             ref_unwrapped_pos = ref_unwrapped_pos[23:47] # molecules 10, 11, 12
         # first, do the unwrapping out-of-place:
         unwrapped_pos = group.unwrap(compound=compound, reference=reference,
-                                     inplace=False)
+                                     reference_point=reference_point, inplace=False)
         # check for correct result:
         assert_almost_equal(unwrapped_pos, ref_unwrapped_pos,
                             decimal=self.precision)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
         # now, do the unwrapping inplace:
-        unwrapped_pos2 = group.unwrap(compound=compound, reference=reference,
+        unwrapped_pos2 = group.unwrap(compound=compound, reference=reference, reference_point=reference_point,
                                      inplace=True)
         # check that result is the same as for out-of-place computation:
         assert_array_equal(unwrapped_pos, unwrapped_pos2)
@@ -83,8 +91,9 @@ class TestUnwrap(object):
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('is_triclinic', (False, True))
-    def test_wrap_unwrap_cycle(self, level, compound, reference, is_triclinic):
+    def test_wrap_unwrap_cycle(self, level, compound, reference, reference_point, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         # select group appropriate for compound:
@@ -104,7 +113,7 @@ class TestUnwrap(object):
         # store original wrapped positions:
         orig_wrapped_pos = group.atoms.positions
         # unwrap:
-        group.unwrap(compound=compound, reference=reference, inplace=True)
+        group.unwrap(compound=compound, reference=reference, reference_point=reference_point, inplace=True)
         # wrap again:
         group.wrap()
         # make sure wrapped atom positions are as before:
@@ -136,8 +145,9 @@ class TestUnwrap(object):
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('is_triclinic', (False, True))
-    def test_unwrap_empty_group(self, level, compound, reference, is_triclinic):
+    def test_unwrap_empty_group(self, level, compound, reference, reference_point, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         if level == 'atoms':
@@ -146,7 +156,7 @@ class TestUnwrap(object):
             group = mda.ResidueGroup([], u)
         elif level == 'segments':
             group = mda.SegmentGroup([], u)
-        group.unwrap(compound=compound, reference=reference, inplace=True)
+        group.unwrap(compound=compound, reference=reference, reference_point=reference_point, inplace=True)
         # check for correct (empty) result:
         assert_array_equal(group.atoms.positions,
                            np.empty((0, 3), dtype=np.float32))
@@ -155,8 +165,9 @@ class TestUnwrap(object):
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('is_triclinic', (False, True))
-    def test_unwrap_duplicates(self, level, compound, reference, is_triclinic):
+    def test_unwrap_duplicates(self, level, compound, reference, reference_point, is_triclinic):
         # get a pristine test universe:
         u = UnWrapUniverse(is_triclinic=is_triclinic)
         # select molecule 12:
@@ -173,10 +184,10 @@ class TestUnwrap(object):
         # store original positions of the rest:
         orig_rest_pos = rest.positions
         # get the expected result with duplicates:
-        ref_unwrapped_pos = u.unwrapped_coords(compound, reference)[39:47]
+        ref_unwrapped_pos = u.unwrapped_coords(compound, reference, reference_point=reference_point)[39:47]
         ref_unwrapped_pos = np.vstack((ref_unwrapped_pos, ref_unwrapped_pos))
         # unwrap:
-        group.unwrap(compound=compound, reference=reference, inplace=True)
+        group.unwrap(compound=compound, reference=reference, reference_point=reference_point, inplace=True)
         # check for correct result:
         assert_almost_equal(group.atoms.positions, ref_unwrapped_pos,
                             decimal=self.precision)
@@ -198,15 +209,15 @@ class TestUnwrap(object):
         group.masses = [100.0, 1.0, 1.0]
         # unwrap with center of geometry as reference:
         unwrapped_pos_cog = group.unwrap(compound=compound, reference='cog',
-                                         inplace=False)
+                                         reference_point=None, inplace=False)
         # get expected result:
-        ref_unwrapped_pos = u.unwrapped_coords(compound, 'cog')[6:9]
+        ref_unwrapped_pos = u.unwrapped_coords(compound, 'cog', reference_point=None)[6:9]
         # check for correctness:
         assert_almost_equal(unwrapped_pos_cog, ref_unwrapped_pos,
                             decimal=self.precision)
         # unwrap with center of mass as reference:
         unwrapped_pos_com = group.unwrap(compound=compound, reference='com',
-                                         inplace=False)
+                                         reference_point=None, inplace=False)
         # assert that the com result is shifted with respect to the cog result
         # by one box length in the x-direction:
         shift = np.array([10.0, 0.0, 0.0], dtype=np.float32)
@@ -214,9 +225,10 @@ class TestUnwrap(object):
                             decimal=self.precision)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
-    def test_unwrap_zero_mass_exception_safety(self, level, compound):
+    def test_unwrap_zero_mass_exception_safety(self, level, reference_point, compound):
         # get a pristine test universe:
         u = UnWrapUniverse()
         # set masses of molecule 12 to zero:
@@ -237,15 +249,16 @@ class TestUnwrap(object):
         orig_pos = group.atoms.positions
         # try to unwrap:
         with pytest.raises(ValueError):
-            group.unwrap(compound=compound, reference='com',
+            group.unwrap(compound=compound, reference='com', reference_point=reference_point,
                          inplace=True)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
-    def test_unwrap_wrong_reference_exception_safety(self, level, compound):
+    def test_unwrap_wrong_reference_exception_safety(self, level, reference_point, compound):
         # get a pristine test universe:
         u = UnWrapUniverse()
         # select group appropriate for compound:
@@ -264,13 +277,14 @@ class TestUnwrap(object):
         orig_pos = group.atoms.positions
         # try to unwrap:
         with pytest.raises(ValueError):
-            group.unwrap(compound=compound, reference='wrong', inplace=True)
+            group.unwrap(compound=compound, reference='wrong', reference_point=reference_point, inplace=True)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
-    def test_unwrap_wrong_compound_exception_safety(self, level, reference):
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
+    def test_unwrap_wrong_compound_exception_safety(self, level, reference,reference_point):
         # get a pristine test universe:
         u = UnWrapUniverse()
         group = u.atoms
@@ -283,14 +297,15 @@ class TestUnwrap(object):
         orig_pos = group.atoms.positions
         # try to unwrap:
         with pytest.raises(ValueError):
-            group.unwrap(compound='wrong', reference=reference, inplace=True)
+            group.unwrap(compound='wrong', reference=reference, reference_point=reference_point, inplace=True)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
-    def test_unwrap_no_masses_exception_safety(self, level, compound):
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
+    def test_unwrap_no_masses_exception_safety(self, level, compound,reference_point):
         # universe without masses:
         u = UnWrapUniverse(have_masses=False)
         # select group appropriate for compound:
@@ -309,7 +324,7 @@ class TestUnwrap(object):
         orig_pos = group.atoms.positions
         # try to unwrap:
         with pytest.raises(NoDataError):
-            group.unwrap(compound=compound, reference='com', inplace=True)
+            group.unwrap(compound=compound, reference='com', reference_point=reference_point, inplace=True)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
 
@@ -317,7 +332,8 @@ class TestUnwrap(object):
     @pytest.mark.parametrize('compound', ('fragments', 'molecules', 'residues',
                                           'group', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
-    def test_unwrap_no_bonds_exception_safety(self, level, compound, reference):
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
+    def test_unwrap_no_bonds_exception_safety(self, level, compound, reference, reference_point):
         # universe without bonds:
         u = UnWrapUniverse(have_bonds=False)
         # select group appropriate for compound:
@@ -335,13 +351,15 @@ class TestUnwrap(object):
         # store original positions:
         orig_pos = group.atoms.positions
         with pytest.raises(NoDataError):
-            group.unwrap(compound=compound, reference=reference, inplace=True)
+            group.unwrap(compound=compound, reference=reference, reference_point=reference_point,
+                         inplace=True)
         # make sure atom positions are unchanged:
         assert_array_equal(group.atoms.positions, orig_pos)
 
     @pytest.mark.parametrize('level', ('atoms', 'residues', 'segments'))
     @pytest.mark.parametrize('reference', ('com', 'cog', None))
-    def test_unwrap_no_molnums_exception_safety(self, level, reference):
+    @pytest.mark.parametrize('reference_point', reference_point_pos)
+    def test_unwrap_no_molnums_exception_safety(self, level, reference, reference_point):
         # universe without molnums:
         u = UnWrapUniverse(have_molnums=False)
         group = u.atoms
@@ -353,6 +371,7 @@ class TestUnwrap(object):
         # store original positions:
         orig_pos = group.atoms.positions
         with pytest.raises(NoDataError):
-            group.unwrap(compound='molecules', reference=reference,
+            group.unwrap(compound='molecules', reference=reference, reference_point=reference_point,
                          inplace=True)
         assert_array_equal(group.atoms.positions, orig_pos)
+

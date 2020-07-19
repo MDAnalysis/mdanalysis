@@ -1556,7 +1556,7 @@ class GroupBase(_MutableBase):
             positions = positions[restore_mask]
         return positions
 
-    def unwrap(self, compound='fragments', reference='com', inplace=True):
+    def unwrap(self, compound='fragments', reference='com', reference_point=None, inplace=True):
         """Move atoms of this group so that bonds within the
         group's compounds aren't split across periodic boundaries.
 
@@ -1587,6 +1587,8 @@ class GroupBase(_MutableBase):
             unwrapped compounds will be shifted so that their individual
             reference point lies within the primary unit cell.
             If ``None``, no such shift is performed.
+        reference_point: coordinate, option
+            position where molecule should be unwrapped
         inplace : bool, optional
             If ``True``, coordinates are modified in place.
 
@@ -1651,6 +1653,7 @@ class GroupBase(_MutableBase):
                              "use one of 'group', 'residues', 'segments', "
                              "'molecules', or 'fragments'.".format(compound))
         # The 'group' needs no splitting:
+
         if comp == 'group':
             positions = mdamath.make_whole(unique_atoms, inplace=False)
             # Apply reference shift if required:
@@ -1669,6 +1672,7 @@ class GroupBase(_MutableBase):
                 refpos = refpos.astype(np.float32, copy=False)
                 target = distances.apply_PBC(refpos, self.dimensions)
                 positions += target - refpos
+
         # We need to split the group into compounds:
         else:
             if comp == 'fragments':
@@ -1687,10 +1691,12 @@ class GroupBase(_MutableBase):
             # Now process every compound:
             unique_compound_indices = unique_int_1d(compound_indices)
             positions = unique_atoms.positions
+
             for i in unique_compound_indices:
                 mask = np.where(compound_indices == i)
                 c = unique_atoms[mask]
                 positions[mask] = mdamath.make_whole(c, inplace=False)
+
                 # Apply reference shift if required:
                 if reference is not None:
                     if ref == 'com':
@@ -1704,16 +1710,25 @@ class GroupBase(_MutableBase):
                         refpos = np.sum(positions[mask] * masses[:, None],
                                         axis=0)
                         refpos /= total_mass
+
                     else:  # ref == 'cog'
                         refpos = positions[mask].mean(axis=0)
                     refpos = refpos.astype(np.float32, copy=False)
-                    target = distances.apply_PBC(refpos, self.dimensions)
+
+                    if reference_point is None:
+                        target = distances.apply_PBC(refpos, self.dimensions)
+                    else:
+                        target = distances.minimize_periodic_vector(reference_point=reference_point, ctrpos=refpos,
+                                                                    box=self.dimensions)
                     positions[mask] += target - refpos
+
+
         if inplace:
             unique_atoms.positions = positions
         if not atoms.isunique:
             positions = positions[atoms._unique_restore_mask]
         return positions
+
 
     def copy(self):
         """Get another group identical to this one.
