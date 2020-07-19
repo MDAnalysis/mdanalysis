@@ -55,7 +55,7 @@ from . import selection
 from .groups import (ComponentBase, GroupBase,
                      Atom, Residue, Segment,
                      AtomGroup, ResidueGroup, SegmentGroup,
-                     check_pbc_and_unwrap)
+                     check_wrap_and_unwrap, _pbc_to_wrap)
 from .. import _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES
 
 
@@ -1451,9 +1451,10 @@ class Masses(AtomAttr):
         return masses
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def center_of_mass(group, pbc=False, compound='group', unwrap=False):
-        r"""Center of mass of (compounds of) the group.
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def center_of_mass(group, wrap=False, unwrap=False, compound='group'):
+        """Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
         Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
@@ -1464,14 +1465,17 @@ class Masses(AtomAttr):
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True`` and `compound` is ``'group'``, move all atoms to the
             primary unit cell before calculation.
-            If ``True`` and `compound` is ``'segments'`` or ``'residues'``, the
+            If ``True`` and `compound` is not ``group``, the
             centers of mass of each compound will be calculated without moving
             any atoms to keep the compounds intact. Instead, the resulting
             center-of-mass position vectors will be moved to the primary unit
             cell after calculation.
+        unwrap : bool, optional
+            If ``True``, compounds will be unwrapped before computing their
+            centers.
         compound : {'group', 'segments', 'residues', 'molecules', 'fragments'},\
                    optional
             If ``'group'``, the center of mass of all atoms in the group will
@@ -1481,8 +1485,6 @@ class Masses(AtomAttr):
             array.
             Note that, in any case, *only* the positions of :class:`Atoms<Atom>`
             *belonging to the group* will be taken into account.
-        unwrap : bool, optional
-            If ``True``, compounds will be unwrapped before computing their centers.
 
         Returns
         -------
@@ -1505,9 +1507,11 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
+        .. versionchanged:: x.y.z  Renamed `pbc` parameter to `wrap`
         """
         atoms = group.atoms
-        return atoms.center(weights=atoms.masses, pbc=pbc, compound=compound, unwrap=unwrap)
+        return atoms.center(weights=atoms.masses, wrap=wrap, compound=compound,
+                            unwrap=unwrap)
 
     transplants[GroupBase].append(
         ('center_of_mass', center_of_mass))
@@ -1549,33 +1553,34 @@ class Masses(AtomAttr):
         ('total_mass', total_mass))
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def moment_of_inertia(group, pbc=False, **kwargs):
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def moment_of_inertia(group, wrap=False, **kwargs):
         """Tensor moment of inertia relative to center of mass as 3x3 numpy
         array.
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-
+        .. versionchanged:: x.y.z Renamed `pbc` kwarg to `wrap`
         """
         atomgroup = group.atoms
         unwrap = kwargs.pop('unwrap', False)
         compound = kwargs.pop('compound', 'group')
 
         com = atomgroup.center_of_mass(
-            pbc=pbc, unwrap=unwrap, compound=compound)
+            wrap=wrap, unwrap=unwrap, compound=compound)
         if compound != 'group':
             com = (com * group.masses[:, None]
                    ).sum(axis=0) / group.masses.sum()
 
-        if pbc:
+        if wrap:
             pos = atomgroup.pack_into_box(inplace=False) - com
         elif unwrap:
             pos = atomgroup.unwrap(compound=compound, inplace=False) - com
@@ -1612,24 +1617,26 @@ class Masses(AtomAttr):
         ('moment_of_inertia', moment_of_inertia))
 
     @warn_if_not_unique
-    def radius_of_gyration(group, pbc=False, **kwargs):
+    @_pbc_to_wrap
+    def radius_of_gyration(group, wrap=False, **kwargs):
         """Radius of gyration.
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
-
+        .. versionchanged:: x.y.z
+           Renamed `pbc` kwarg to `wrap`
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(pbc=pbc)
-        if pbc:
+        com = atomgroup.center_of_mass(wrap=wrap)
+        if wrap:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - com
         else:
             recenteredpos = atomgroup.positions - com
@@ -1643,27 +1650,29 @@ class Masses(AtomAttr):
         ('radius_of_gyration', radius_of_gyration))
 
     @warn_if_not_unique
-    def shape_parameter(group, pbc=False, **kwargs):
+    @_pbc_to_wrap
+    def shape_parameter(group, wrap=False, **kwargs):
         """Shape parameter.
 
         See [Dima2004a]_ for background information.
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
 
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
-
+        .. versionchanged:: x.y.z
+           Renamed `pbc` kwarg to `wrap`
         """
         atomgroup = group.atoms
         masses = atomgroup.masses
 
-        com = atomgroup.center_of_mass(pbc=pbc)
-        if pbc:
+        com = atomgroup.center_of_mass(wrap=wrap)
+        if wrap:
             recenteredpos = atomgroup.pack_into_box(inplace=False) - com
         else:
             recenteredpos = atomgroup.positions - com
@@ -1683,15 +1692,16 @@ class Masses(AtomAttr):
         ('shape_parameter', shape_parameter))
 
     @warn_if_not_unique
-    @check_pbc_and_unwrap
-    def asphericity(group, pbc=False, unwrap=None, compound='group'):
+    @_pbc_to_wrap
+    @check_wrap_and_unwrap
+    def asphericity(group, wrap=False, unwrap=None, compound='group'):
         """Asphericity.
 
         See [Dima2004b]_ for background information.
 
         Parameters
         ----------
-        pbc : bool, optional
+        wrap : bool, optional
             If ``True``, move all atoms within the primary unit cell before
             calculation. [``False``]
         unwrap : bool, optional
@@ -1709,12 +1719,12 @@ class Masses(AtomAttr):
         masses = atomgroup.masses
 
         com = atomgroup.center_of_mass(
-            pbc=pbc, unwrap=unwrap, compound=compound)
+            wrap=wrap, unwrap=unwrap, compound=compound)
         if compound != 'group':
             com = (com * group.masses[:, None]
                    ).sum(axis=0) / group.masses.sum()
 
-        if pbc:
+        if wrap:
             recenteredpos = (atomgroup.pack_into_box(inplace=False) - com)
         elif unwrap:
             recenteredpos = (atomgroup.unwrap(inplace=False) - com)
@@ -1737,7 +1747,8 @@ class Masses(AtomAttr):
         ('asphericity', asphericity))
 
     @warn_if_not_unique
-    def principal_axes(group, pbc=False):
+    @_pbc_to_wrap
+    def principal_axes(group, wrap=False):
         """Calculate the principal axes from the moment of inertia.
 
         e1,e2,e3 = AtomGroup.principal_axes()
@@ -1767,7 +1778,7 @@ class Masses(AtomAttr):
 
         """
         atomgroup = group.atoms
-        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(pbc=pbc))
+        e_val, e_vec = np.linalg.eig(atomgroup.moment_of_inertia(wrap=wrap))
 
         # Sort
         indices = np.argsort(e_val)[::-1]
