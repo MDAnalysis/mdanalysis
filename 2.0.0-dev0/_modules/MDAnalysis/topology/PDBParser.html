@@ -346,6 +346,7 @@
 <span class="sd">     - resnames</span>
 <span class="sd">     - segids</span>
 <span class="sd">     - elements</span>
+<span class="sd">     - bonds</span>
 
 <span class="sd">    Guesses the following Attributes:</span>
 <span class="sd">     - masses</span>
@@ -354,11 +355,14 @@
 <span class="sd">    --------</span>
 <span class="sd">    :class:`MDAnalysis.coordinates.PDB.PDBReader`</span>
 
+
 <span class="sd">    .. versionadded:: 0.8</span>
 <span class="sd">    .. versionchanged:: 0.18.0</span>
 <span class="sd">       Added parsing of Record types</span>
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Added parsing of valid Elements</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Bonds attribute is not added if no bonds are present in PDB file</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PDB&#39;</span><span class="p">,</span> <span class="s1">&#39;ENT&#39;</span><span class="p">]</span>
 
@@ -377,7 +381,9 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Invalid atom serials were present, &quot;</span>
                           <span class="s2">&quot;bonds will not be parsed&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
+            <span class="c1"># Issue 2832: don&#39;t append Bonds if there are no bonds</span>
+            <span class="k">if</span> <span class="n">bonds</span><span class="p">:</span>
+                <span class="n">top</span><span class="o">.</span><span class="n">add_TopologyAttr</span><span class="p">(</span><span class="n">bonds</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div>
 

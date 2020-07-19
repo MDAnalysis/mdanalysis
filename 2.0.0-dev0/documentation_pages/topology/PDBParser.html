@@ -258,6 +258,7 @@ valid.</p>
 <li>resnames</li>
 <li>segids</li>
 <li>elements</li>
+<li>bonds</li>
 </ul>
 </dd>
 <dt>Guesses the following Attributes:</dt>
@@ -268,13 +269,19 @@ valid.</p>
 </dl>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p><a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a>, <code class="xref py py-class docutils literal notranslate"></code></p>
-<dl class="last docutils">
-<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
-<dd>Added parsing of Record types</dd>
-<dt><code class="xref py py-class docutils literal notranslate"></code></dt>
-<dd>Added parsing of valid Elements</dd>
-</dl>
+<p class="last"><a class="reference internal" href="../coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.18.0: </span>Added parsing of Record types</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Added parsing of valid Elements</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Bonds attribute is not added if no bonds are present in PDB file</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.topology.PDBParser.PDBParser.close">
