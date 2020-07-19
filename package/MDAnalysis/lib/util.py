@@ -119,6 +119,7 @@ Arrays
 .. autofunction:: unique_int_1d(values)
 .. autofunction:: unique_rows
 .. autofunction:: blocks_of
+.. autofunction:: group_same_or_consecutive_integers
 
 File parsing
 ------------
@@ -226,7 +227,6 @@ try:
 except ImportError:
     class PathLike(object):
         pass
-
 
 
 def filename(name, ext=None, keep=False):
@@ -1069,6 +1069,7 @@ def asiterable(obj):
         obj = [obj]
     return obj
 
+
 #: Regular expresssion (see :mod:`re`) to parse a simple `FORTRAN edit descriptor`_.
 #: ``(?P<repeat>\d?)(?P<format>[IFELAX])(?P<numfmt>(?P<length>\d+)(\.(?P<decimals>\d+))?)?``
 #:
@@ -1356,14 +1357,14 @@ def get_weights(atoms, weights):
     if iterable(weights):
         if len(np.asarray(weights).shape) != 1:
             raise ValueError("weights must be a 1D array, not with shape "
-                            "{0}".format(np.asarray(weights).shape))
+                             "{0}".format(np.asarray(weights).shape))
         elif len(weights) != len(atoms):
             raise ValueError("weights (length {0}) must be of same length as "
-                            "the atoms ({1})".format(
-                                len(weights), len(atoms)))
+                             "the atoms ({1})".format(
+                                 len(weights), len(atoms)))
     elif weights is not None:
         raise ValueError("weights must be {'mass', None} or an iterable of the "
-                        "same size as the atomgroup.")
+                         "same size as the atomgroup.")
 
     return weights
 
@@ -1381,7 +1382,8 @@ canonical_inverse_aa_codes = {
     'THR': 'T', 'VAL': 'V', 'TRP': 'W', 'TYR': 'Y'}
 #: translation table for 1-letter codes --> *canonical* 3-letter codes.
 #: The table is used for :func:`convert_aa_code`.
-amino_acid_codes = {one: three for three, one in canonical_inverse_aa_codes.items()}
+amino_acid_codes = {one: three for three,
+                    one in canonical_inverse_aa_codes.items()}
 #: non-default charge state amino acids or special charge state descriptions
 #: (Not fully synchronized with :class:`MDAnalysis.core.selection.ProteinSelection`.)
 alternative_inverse_aa_codes = {
@@ -1676,8 +1678,30 @@ def blocks_of(a, n, m):
 
     return np.lib.stride_tricks.as_strided(a, new_shape, new_strides)
 
+
+def group_same_or_consecutive_integers(arr):
+    """Split an array of integers into a list of same or consecutive
+    sequences.
+
+    Parameters
+    ----------
+    arr: :class:`numpy.ndarray`
+
+    Returns
+    -------
+    list of :class:`numpy.ndarray`
+
+    Examples
+    >>> arr = np.array([ 2,  3,  4,  7,  8,  9, 10, 11, 15, 16])
+    >>> group_same_or_consecutive_integers(arr)
+    [array([2, 3, 4]), array([ 7,  8,  9, 10, 11]), array([15, 16])]
+    """
+    return np.split(arr, np.where(np.ediff1d(arr)-1 > 0)[0] + 1)
+
+
 class Namespace(dict):
     """Class to allow storing attributes in new namespace. """
+
     def __getattr__(self, key):
         # a.this causes a __getattr__ call for key = 'this'
         try:
@@ -1833,7 +1857,8 @@ def warn_if_not_unique(groupmethod):
         if group.isunique or warn_if_not_unique.warned:
             return groupmethod(group, *args, **kwargs)
         # Otherwise, throw a DuplicateWarning and execute the method.
-        method_name = ".".join((group.__class__.__name__, groupmethod.__name__))
+        method_name = ".".join(
+            (group.__class__.__name__, groupmethod.__name__))
         # Try to get the group's variable name(s):
         caller_locals = inspect.currentframe().f_back.f_locals.items()
         group_names = []
@@ -1956,7 +1981,7 @@ def check_coords(*coord_names, **options):
     convert_single = options.get('convert_single', True)
     reduce_result_if_single = options.get('reduce_result_if_single', True)
     check_lengths_match = options.get('check_lengths_match',
-                                     len(coord_names) > 1)
+                                      len(coord_names) > 1)
     if not coord_names:
         raise ValueError("Decorator check_coords() cannot be used without "
                          "positional arguments.")
@@ -1998,7 +2023,8 @@ def check_coords(*coord_names, **options):
                     raise ValueError("{}(): {}.shape must be (n, 3), got {}."
                                      "".format(fname, argname, coords.shape))
             try:
-                coords = coords.astype(np.float32, order='C', copy=enforce_copy)
+                coords = coords.astype(
+                    np.float32, order='C', copy=enforce_copy)
             except ValueError:
                 errmsg = (f"{fname}(): {argname}.dtype must be convertible to "
                           f"float32, got {coords.dtype}.")
@@ -2056,7 +2082,7 @@ def check_coords(*coord_names, **options):
     return check_coords_decorator
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 #
 # our own deprecate function, derived from numpy (see
 # https://github.com/MDAnalysis/mdanalysis/pull/1763#issuecomment-403231136)
@@ -2067,6 +2093,7 @@ def check_coords(*coord_names, **options):
 def _set_function_name(func, name):
     func.__name__ = name
     return func
+
 
 class _Deprecate(object):
     """
@@ -2163,6 +2190,7 @@ class _Deprecate(object):
             newfunc.__dict__.update(d)
         return newfunc
 
+
 def deprecate(*args, **kwargs):
     """Issues a DeprecationWarning, adds warning to `old_name`'s
     docstring, rebinds ``old_name.__name__`` and returns the new
@@ -2257,7 +2285,8 @@ def deprecate(*args, **kwargs):
     else:
         return _Deprecate(*args, **kwargs)
 #
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
+
 
 def dedent_docstring(text):
     """Dedent typical python doc string.
