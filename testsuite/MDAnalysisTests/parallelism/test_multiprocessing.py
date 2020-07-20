@@ -110,7 +110,7 @@ def getnames(u, ix):
     return u.atoms[ix].name
 
 
-def test_multiprocess_names():
+def test_universe_unpickle_in_new_process():
     u = mda.Universe(GRO, XTC)
     ref = [getnames(u, i)
            for i in range(3)]
