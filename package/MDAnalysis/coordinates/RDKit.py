@@ -297,9 +297,9 @@ class RDKitConverter(base.ConverterBase):
             # other properties
             for attr in other_attrs.keys():
                 value = other_attrs[attr][i]
-                attr = _TOPOLOGY_ATTRS[attr].singular
+                attr = "_MDAnalysis_%s" % _TOPOLOGY_ATTRS[attr].singular
                 _set_atom_property(rdatom, attr, value)
-            _set_atom_property(rdatom, "index", int(atom.ix))
+            _set_atom_property(rdatom, "_MDAnalysis_index", int(atom.ix))
             # add atom
             index = mol.AddAtom(rdatom)
             atom_mapper[atom.ix] = index
@@ -374,13 +374,13 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
 
 
 def _set_atom_property(atom, attr, value):
-    """Converts an MDAnalysis atom attribute into an RDKit atom property"""
+    """Saves any attribute and value into an RDKit atom property"""
     if isinstance(value, (float, np.float)):
-        atom.SetDoubleProp("_MDAnalysis_%s" % attr, float(value))
+        atom.SetDoubleProp(attr, float(value))
     elif isinstance(value, (int, np.int)):
-        atom.SetIntProp("_MDAnalysis_%s" % attr, int(value))
+        atom.SetIntProp(attr, int(value))
     else:
-        atom.SetProp("_MDAnalysis_%s" % attr, value)
+        atom.SetProp(attr, value)
 
 
 def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
@@ -539,7 +539,5 @@ def _reassign_props_after_reaction(reactant, product):
             idx = atom.GetUnsignedProp("react_atom_idx")
             old_atom = reactant.GetAtomWithIdx(idx)
             for prop, value in old_atom.GetPropsAsDict().items():
-                if prop.startswith("_MDAnalysis"):
-                    attr = prop.split("_")[-1]
-                    _set_atom_property(atom, attr, value)
+                _set_atom_property(atom, prop, value)
         atom.ClearProp("react_atom_idx")

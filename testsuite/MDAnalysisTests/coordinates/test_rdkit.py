@@ -373,8 +373,9 @@ class TestRDKitFunctions(object):
     ])
     def test_set_atom_property(self, attr, value, getter):
         atom = Chem.Atom(1)
-        _set_atom_property(atom, attr, value)
-        assert getattr(atom, getter)("_MDAnalysis_%s" % attr) == value
+        prop = "_MDAnalysis_%s" % attr
+        _set_atom_property(atom, prop, value)
+        assert getattr(atom, getter)(prop) == value
 
     @pytest.mark.parametrize("reactant, product, name", [
         (dummy_reactant(), dummy_product(), "props"),
@@ -385,8 +386,7 @@ class TestRDKitFunctions(object):
         _reassign_props_after_reaction(reactant, product)
         atom = product.GetAtomWithIdx(0)
         if name == "props":
-            with pytest.raises(KeyError, match="foo"):
-                atom.GetProp("foo")
+            assert atom.GetProp("foo") == "bar"
             assert atom.GetIntProp("_MDAnalysis_index") == 1
             assert atom.GetDoubleProp("_MDAnalysis_charge") == 4.2
             assert atom.GetProp("_MDAnalysis_type") == "C.3"
