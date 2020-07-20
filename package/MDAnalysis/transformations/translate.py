@@ -41,7 +41,7 @@ from functools import partial
 
 from ..lib.mdamath import triclinic_vectors
 
-def translate(vector):
+class translate(object):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance by a given vector.
@@ -60,20 +60,20 @@ def translate(vector):
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
     """
-    if len(vector)>2:
-        vector = np.float32(vector)
-    else:
-        raise ValueError("{} vector is too short".format(vector))
+    def __init__(self, vector):
+        self.vector = vector
 
-    def wrapped(ts):
+    def __call__(self, ts):
+        if len(self.vector)>2:
+            vector = np.float32(self.vector)
+        else:
+            raise ValueError("{} vector is too short".format(self.vector))
+
         ts.positions += vector
 
         return ts
 
-    return wrapped
-
-
-def center_in_box(ag, center='geometry', point=None, wrap=False):
+class center_in_box(object):
     """
     Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`
     instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`
@@ -109,28 +109,33 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
     """
+    def __init__(self, ag, center='geometry', point=None, wrap=False):
+        self.ag = ag
+        self.center = center
+        self.point = point
+        self.wrap = wrap
 
-    pbc_arg = wrap
-    if point:
-        point = np.asarray(point, np.float32)
-        if point.shape != (3, ) and point.shape != (1, 3):
-            raise ValueError('{} is not a valid point'.format(point))
-    try:
-        if center == 'geometry':
-            center_method = partial(ag.center_of_geometry, pbc=pbc_arg)
-        elif center == 'mass':
-            center_method = partial(ag.center_of_mass, pbc=pbc_arg)
-        else:
-            raise ValueError('{} is not a valid argument for center'.format(center))
-    except AttributeError:
-        if center == 'mass':
-            errmsg = f'{ag} is not an AtomGroup object with masses'
-            raise AttributeError(errmsg) from None
-        else:
-            raise ValueError(f'{ag} is not an AtomGroup object') from None
+    def __call__(self, ts):
+        pbc_arg = self.wrap
+        if self.point:
+            point = np.asarray(self.point, np.float32)
+            if point.shape != (3, ) and point.shape != (1, 3):
+                raise ValueError('{} is not a valid point'.format(point))
+        try:
+            if self.center == 'geometry':
+                center_method = partial(self.ag.center_of_geometry, pbc=pbc_arg)
+            elif self.center == 'mass':
+                center_method = partial(self.ag.center_of_mass, pbc=pbc_arg)
+            else:
+                raise ValueError('{} is not a valid argument for center'.format(self.center))
+        except AttributeError:
+            if self.center == 'mass':
+                errmsg = f'{self.ag} is not an AtomGroup object with masses'
+                raise AttributeError(errmsg) from None
+            else:
+                raise ValueError(f'{self.ag} is not an AtomGroup object') from None
 
-    def wrapped(ts):
-        if point is None:
+        if self.point is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
             boxcenter = point
@@ -141,6 +146,3 @@ def center_in_box(ag, center='geometry', point=None, wrap=False):
         ts.positions += vector
 
         return ts
-
-    return wrapped
-

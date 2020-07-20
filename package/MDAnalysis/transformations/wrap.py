@@ -37,7 +37,7 @@ atoms of each molecule so that bons don't split over images.
 from ..lib._cutil import make_whole
 
 
-def wrap(ag, compound='atoms'):
+class wrap(object):
     """
     Shift the contents of a given AtomGroup back into the unit cell. ::
     
@@ -81,16 +81,15 @@ def wrap(ag, compound='atoms'):
     MDAnalysis.coordinates.base.Timestep
     
     """
-    
-    def wrapped(ts):
-        ag.wrap(compound=compound)
-        
+    def __init__(self, ag, compound='atoms'):
+        self.ag = ag
+        self.compound = compound
+
+    def __call__(self, ts):
+        self.ag.wrap(compound=self.compound)
         return ts
-    
-    return wrapped
 
-
-def unwrap(ag):
+class unwrap(object):
     """
     Move all atoms in an AtomGroup so that bonds don't split over images
 
@@ -131,17 +130,14 @@ def unwrap(ag):
     MDAnalysis.coordinates.base.Timestep
     
     """
-    
-    try:
-        ag.fragments
-    except AttributeError:
-        raise AttributeError("{} has no fragments".format(ag))
-    
-    def wrapped(ts):
-        for frag in ag.fragments:
-            make_whole(frag)
-            
-        return ts
-    
-    return wrapped
+    def __init__(self, ag):
+        self.ag = ag
 
+    def __call__(self, ts):
+        try:
+            self.ag.fragments
+        except AttributeError:
+            raise AttributeError("{} has no fragments".format(self.ag))
+        for frag in self.ag.fragments:
+            make_whole(frag)
+        return ts

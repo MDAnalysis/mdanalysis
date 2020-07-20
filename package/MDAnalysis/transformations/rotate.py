@@ -25,8 +25,8 @@
 Trajectory rotation --- :mod:`MDAnalysis.transformations.rotate`
 ================================================================
 
-Rotates the coordinates by a given angle arround an axis formed by a direction and a
-point 
+Rotates the coordinates by a given angle arround an axis formed by a direction
+and a point.
 
 .. autofunction:: rotateby
 
@@ -38,7 +38,8 @@ from functools import partial
 from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
 
-def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
+
+class rotateby(object):
     '''
     Rotates the trajectory by a given angle on a given axis. The axis is defined by 
     the user, combining the direction vector and a point. This point can be the center
@@ -104,37 +105,47 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     after rotating the trajectory.
 
     '''
-    angle = np.deg2rad(angle)
-    try:
-        direction = np.asarray(direction, np.float32)
-        if direction.shape != (3, ) and direction.shape != (1, 3):
-            raise ValueError('{} is not a valid direction'.format(direction))
-        direction = direction.reshape(3, )
-    except ValueError:
-        raise ValueError(f'{direction} is not a valid direction') from None
-    if point is not None:
-        point = np.asarray(point, np.float32)
-        if point.shape != (3, ) and point.shape != (1, 3):
-            raise ValueError('{} is not a valid point'.format(point))
-        point = point.reshape(3, )
-    elif ag:
+    def __init__(self, angle, direction, point=None, ag=None, weights=None, wrap=False):
+        self.angle = angle
+        self.direction = direction
+        self.point = point
+        self.ag = ag
+        self.weights = weights
+        self.wrap = wrap
+
+    def __call__(self, ts):
+        angle = np.deg2rad(self.angle)
         try:
-            atoms = ag.atoms
-        except AttributeError:
-            raise ValueError(f'{ag} is not an AtomGroup object') from None
-        else:
+            direction = np.asarray(self.direction, np.float32)
+            if direction.shape != (3, ) and direction.shape != (1, 3):
+                raise ValueError('{} is not a valid direction'
+                                 .format(direction))
+            direction = direction.reshape(3, )
+        except ValueError:
+            raise ValueError(f'{self.direction} is not a valid direction') from None
+        if self.point is not None:
+            point = np.asarray(self.point, np.float32)
+            if point.shape != (3, ) and point.shape != (1, 3):
+                raise ValueError('{} is not a valid point'.format(point))
+            point = point.reshape(3, )
+        elif self.ag:
             try:
-                weights = get_weights(atoms, weights=weights)
-            except (ValueError, TypeError):
-                errmsg = ("weights must be {'mass', None} or an iterable of "
-                          "the same size as the atomgroup.")
-                raise TypeError(errmsg) from None
-        center_method = partial(atoms.center, weights, pbc=wrap)
-    else:
-        raise ValueError('A point or an AtomGroup must be specified')
-    
-    def wrapped(ts):
-        if point is None:
+                atoms = self.ag.atoms
+            except AttributeError:
+                raise ValueError(f'{self.ag} is not an AtomGroup object') \
+                                from None
+            else:
+                try:
+                    weights = get_weights(atoms, weights=self.weights)
+                except (ValueError, TypeError):
+                    errmsg = ("weights must be {'mass', None} or an iterable of"
+                              "the same size as the atomgroup.")
+                    raise TypeError(errmsg) from None
+            center_method = partial(atoms.center, weights, pbc=self.wrap)
+        else:
+            raise ValueError('A point or an AtomGroup must be specified')
+
+        if self.point is None:
             position = center_method()
         else:
             position = point
@@ -143,8 +154,4 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         translation = matrix[:3, 3]
         ts.positions= np.dot(ts.positions, rotation)
         ts.positions += translation
-        
         return ts
-    
-    return wrapped
-    

@@ -142,6 +142,7 @@ class PositionAverager(object):
         self.check_reset = check_reset
         self.current_avg = 0
         self.resetarrays()
+        self.current_frame = 0
     
     def resetarrays(self):
         self.idx_array = np.empty(self.avg_frames)
@@ -164,24 +165,31 @@ class PositionAverager(object):
         
     
     def __call__(self, ts):
+        #  calling the same timestep will not add new data to coord_array
+        #  This can prevent from getting different values when 
+        #  call `u.trajectory[i]` multiple times.
+        if (ts.frame == self.current_frame
+                and hasattr(self, 'coord_array')
+                    and not np.isnan(self.idx_array).all()):
+            test = ~np.isnan(self.idx_array)
+            ts.positions = np.mean(self.coord_array[...,test], axis=2)
+            return ts
+        else:
+            self.current_frame = ts.frame
+
         self.rollidx(ts)
         test = ~np.isnan(self.idx_array)
         self.current_avg = sum(test)
-        if self.current_avg == 1:
-            return ts
-          
         if self.check_reset:
             sign = np.sign(np.diff(self.idx_array[test]))
-            
             if not (np.all(sign == 1) or np.all(sign==-1)):
                 warnings.warn('Cannot average position for non sequential'
                               'iterations. Averager will be reset.',
                               Warning)
                 self.resetarrays()
                 return self(ts)
-        
+
         self.rollposx(ts)
         ts.positions = np.mean(self.coord_array[...,test], axis=2)
-            
+
         return ts
-    

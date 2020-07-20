@@ -40,8 +40,7 @@ from ..lib.util import get_weights
 from ..lib.transformations import euler_from_matrix, euler_matrix
 
 
-def fit_translation(ag, reference, plane=None, weights=None):
-
+class fit_translation(object):
     """Translates a given AtomGroup so that its center of geometry/mass matches
     the respective center of the given reference. A plane can be given by the
     user using the option `plane`, and will result in the removal of
@@ -82,38 +81,42 @@ def fit_translation(ag, reference, plane=None, weights=None):
     -------
     MDAnalysis.coordinates.base.Timestep
     """
+    def __init__(self, ag, reference, plane=None, weights=None):
+        self.ag = ag
+        self.reference = reference
+        self.plane = plane
+        self.weights = weights
 
-    if plane is not None:
-        axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+
+    def __call__(self, ts):
+        if self.plane is not None:
+            axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+            try:
+                plane = axes[self.plane]
+            except (TypeError, KeyError):
+                raise ValueError(f'{self.plane} is not a valid plane') from None
         try:
-            plane = axes[plane]
-        except (TypeError, KeyError):
-            raise ValueError(f'{plane} is not a valid plane') from None
-    try:
-        if ag.atoms.n_residues != reference.atoms.n_residues:
-            errmsg = f"{ag} and {reference} have mismatched number of residues"
-            raise ValueError(errmsg)
-    except AttributeError:
-        errmsg = f"{ag} or {reference} is not valid Universe/AtomGroup"
-        raise AttributeError(errmsg) from None
-    ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
-    weights = align.get_weights(ref.atoms, weights=weights)
-    ref_com = ref.center(weights)
-    ref_coordinates = ref.atoms.positions - ref_com
+            if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
+                errmsg = f"{self.ag} and {self.reference} have mismatched number of residues"
+                raise ValueError(errmsg)
+        except AttributeError:
+            errmsg = f"{self.ag} or {self.reference} is not valid Universe/AtomGroup"
+            raise AttributeError(errmsg) from None
+        ref, mobile = align.get_matching_atoms(self.reference.atoms, self.ag.atoms)
+        weights = align.get_weights(ref.atoms, weights=self.weights)
+        ref_com = ref.center(weights)
+        ref_coordinates = ref.atoms.positions - ref_com
 
-    def wrapped(ts):
         mobile_com = np.asarray(mobile.atoms.center(weights), np.float32)
         vector = ref_com - mobile_com
-        if plane is not None:
+        if self.plane is not None:
             vector[plane] = 0
         ts.positions += vector
 
         return ts
 
-    return wrapped
 
-
-def fit_rot_trans(ag, reference, plane=None, weights=None):
+class fit_rot_trans(object):
     """Perform a spatial superposition by minimizing the RMSD.
 
     Spatially align the group of atoms `ag` to `reference` by doing a RMSD
@@ -160,30 +163,35 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
     -------
     MDAnalysis.coordinates.base.Timestep
     """
-    if plane is not None:
-        axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+    def __init__(self, ag, reference, plane=None, weights=None):
+        self.ag = ag
+        self.reference = reference
+        self.plane = plane
+        self.weights = weights
+    def __call__(self, ts):
+        if self.plane is not None:
+            axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+            try:
+                plane = axes[self.plane]
+            except (TypeError, KeyError):
+                raise ValueError(f'{self.plane} is not a valid plane') from None
         try:
-            plane = axes[plane]
-        except (TypeError, KeyError):
-            raise ValueError(f'{plane} is not a valid plane') from None
-    try:
-        if ag.atoms.n_residues != reference.atoms.n_residues:
-            errmsg = f"{ag} and {reference} have mismatched number of residues"
-            raise ValueError(errmsg)
-    except AttributeError:
-        errmsg = f"{ag} or {reference} is not valid Universe/AtomGroup"
-        raise AttributeError(errmsg) from None
-    ref, mobile = align.get_matching_atoms(reference.atoms, ag.atoms)
-    weights = align.get_weights(ref.atoms, weights=weights)
-    ref_com = ref.center(weights)
-    ref_coordinates = ref.atoms.positions - ref_com
+            if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
+                errmsg = f"{self.ag} and {self.reference} have mismatched number of residues"
+                raise ValueError(errmsg)
+        except AttributeError:
+            errmsg = f"{self.ag} or {self.reference} is not valid Universe/AtomGroup"
+            raise AttributeError(errmsg) from None
+        ref, mobile = align.get_matching_atoms(self.reference.atoms, self.ag.atoms)
+        weights = align.get_weights(ref.atoms, weights=self.weights)
+        ref_com = ref.center(self.weights)
+        ref_coordinates = ref.atoms.positions - ref_com
 
-    def wrapped(ts):
-        mobile_com = mobile.atoms.center(weights)
+        mobile_com = mobile.atoms.center(self.weights)
         mobile_coordinates = mobile.atoms.positions - mobile_com
-        rotation, dump = align.rotation_matrix(mobile_coordinates, ref_coordinates, weights=weights)
+        rotation, dump = align.rotation_matrix(mobile_coordinates, ref_coordinates, weights=self.weights)
         vector = ref_com
-        if plane is not None:
+        if self.plane is not None:
             matrix = np.r_[rotation, np.zeros(3).reshape(1,3)]
             matrix = np.c_[matrix, np.zeros(4)]
             euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'), np.float32)
@@ -196,5 +204,3 @@ def fit_rot_trans(ag, reference, plane=None, weights=None):
         ts.positions = ts.positions + vector
 
         return ts
-
-    return wrapped
