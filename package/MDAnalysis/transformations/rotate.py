@@ -31,7 +31,6 @@ and a point.
 .. autofunction:: rotateby
 
 """
-import math
 import numpy as np
 from functools import partial
 
@@ -105,7 +104,13 @@ class rotateby(object):
     after rotating the trajectory.
 
     '''
-    def __init__(self, angle, direction, point=None, ag=None, weights=None, wrap=False):
+    def __init__(self,
+                 angle,
+                 direction,
+                 point=None,
+                 ag=None,
+                 weights=None,
+                 wrap=False):
         self.angle = angle
         self.direction = direction
         self.point = point
@@ -113,45 +118,48 @@ class rotateby(object):
         self.weights = weights
         self.wrap = wrap
 
-    def __call__(self, ts):
-        angle = np.deg2rad(self.angle)
+        self.angle = np.deg2rad(self.angle)
         try:
-            direction = np.asarray(self.direction, np.float32)
-            if direction.shape != (3, ) and direction.shape != (1, 3):
+            self.direction = np.asarray(self.direction, np.float32)
+            if self.direction.shape != (3, ) and self.direction.shape != (1, 3):
                 raise ValueError('{} is not a valid direction'
-                                 .format(direction))
-            direction = direction.reshape(3, )
+                                 .format(self.direction))
+            self.direction = self.direction.reshape(3, )
         except ValueError:
-            raise ValueError(f'{self.direction} is not a valid direction') from None
+            raise ValueError(f'{self.direction} is not a valid direction') \
+                             from None
         if self.point is not None:
-            point = np.asarray(self.point, np.float32)
-            if point.shape != (3, ) and point.shape != (1, 3):
-                raise ValueError('{} is not a valid point'.format(point))
-            point = point.reshape(3, )
+            self.point = np.asarray(self.point, np.float32)
+            if self.point.shape != (3, ) and self.point.shape != (1, 3):
+                raise ValueError('{} is not a valid point'.format(self.point))
+            self.point = self.point.reshape(3, )
         elif self.ag:
             try:
-                atoms = self.ag.atoms
+                self.atoms = self.ag.atoms
             except AttributeError:
                 raise ValueError(f'{self.ag} is not an AtomGroup object') \
                                 from None
             else:
                 try:
-                    weights = get_weights(atoms, weights=self.weights)
+                    self.weights = get_weights(self.atoms, weights=self.weights)
                 except (ValueError, TypeError):
                     errmsg = ("weights must be {'mass', None} or an iterable of"
                               "the same size as the atomgroup.")
                     raise TypeError(errmsg) from None
-            center_method = partial(atoms.center, weights, pbc=self.wrap)
+            self.center_method = partial(self.atoms.center,
+                                         self.weights,
+                                         pbc=self.wrap)
         else:
             raise ValueError('A point or an AtomGroup must be specified')
 
+    def __call__(self, ts):
         if self.point is None:
-            position = center_method()
+            position = self.center_method()
         else:
-            position = point
-        matrix = rotation_matrix(angle, direction, position)
+            position = self.point
+        matrix = rotation_matrix(self.angle, self.direction, position)
         rotation = matrix[:3, :3].T
         translation = matrix[:3, 3]
-        ts.positions= np.dot(ts.positions, rotation)
+        ts.positions = np.dot(ts.positions, rotation)
         ts.positions += translation
         return ts
