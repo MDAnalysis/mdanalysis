@@ -34,7 +34,7 @@ env:
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
     - PIP_DEPENDENCIES="duecredit parmed"
-    - NUMPY_VERSION=stable
+    - NUMPY_VERSION=1.19.0
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
     - MPLBACKEND=agg
