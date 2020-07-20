@@ -181,7 +181,8 @@ class fit_rot_trans(object):
             try:
                 self.plane = axes[self.plane]
             except (TypeError, KeyError):
-                raise ValueError(f'{self.plane} is not a valid plane') from None
+                raise ValueError(f'{self.plane} is not a valid plane') \
+                                 from None
         try:
             if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
                 errmsg = (
@@ -196,7 +197,7 @@ class fit_rot_trans(object):
             )
             raise AttributeError(errmsg) from None
         self.ref, self.mobile = align.get_matching_atoms(self.reference.atoms,
-                                               self.ag.atoms)
+                                                         self.ag.atoms)
         self.weights = align.get_weights(self.ref.atoms, weights=self.weights)
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
@@ -215,7 +216,7 @@ class fit_rot_trans(object):
                                     np.float32)
             for i in range(0, euler_angs.size):
                 euler_angs[i] = (euler_angs[self.plane] if i == self.plane
-                                                        else 0)
+                                 else 0)
             rotation = euler_matrix(euler_angs[0],
                                     euler_angs[1],
                                     euler_angs[2],

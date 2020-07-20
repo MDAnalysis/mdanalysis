@@ -121,7 +121,8 @@ class rotateby(object):
         self.angle = np.deg2rad(self.angle)
         try:
             self.direction = np.asarray(self.direction, np.float32)
-            if self.direction.shape != (3, ) and self.direction.shape != (1, 3):
+            if self.direction.shape != (3, ) and \
+               self.direction.shape != (1, 3):
                 raise ValueError('{} is not a valid direction'
                                  .format(self.direction))
             self.direction = self.direction.reshape(3, )
@@ -141,10 +142,11 @@ class rotateby(object):
                                 from None
             else:
                 try:
-                    self.weights = get_weights(self.atoms, weights=self.weights)
+                    self.weights = get_weights(self.atoms,
+                                               weights=self.weights)
                 except (ValueError, TypeError):
-                    errmsg = ("weights must be {'mass', None} or an iterable of"
-                              "the same size as the atomgroup.")
+                    errmsg = ("weights must be {'mass', None} or an iterable "
+                              "of the same size as the atomgroup.")
                     raise TypeError(errmsg) from None
             self.center_method = partial(self.atoms.center,
                                          self.weights,
