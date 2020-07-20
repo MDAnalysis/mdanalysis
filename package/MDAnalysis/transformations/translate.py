@@ -39,7 +39,6 @@ or defined by centering an AtomGroup in the unit cell using the function
 import numpy as np
 from functools import partial
 
-from ..lib.mdamath import triclinic_vectors
 
 class translate(object):
     """
@@ -63,15 +62,15 @@ class translate(object):
     def __init__(self, vector):
         self.vector = vector
 
-    def __call__(self, ts):
-        if len(self.vector)>2:
-            vector = np.float32(self.vector)
+        if len(self.vector) > 2:
+            self.vector = np.float32(self.vector)
         else:
             raise ValueError("{} vector is too short".format(self.vector))
 
-        ts.positions += vector
-
+    def __call__(self, ts):
+        ts.positions += self.vector
         return ts
+
 
 class center_in_box(object):
     """
@@ -115,32 +114,35 @@ class center_in_box(object):
         self.point = point
         self.wrap = wrap
 
-    def __call__(self, ts):
         pbc_arg = self.wrap
         if self.point:
-            point = np.asarray(self.point, np.float32)
-            if point.shape != (3, ) and point.shape != (1, 3):
-                raise ValueError('{} is not a valid point'.format(point))
+            self.point = np.asarray(self.point, np.float32)
+            if self.point.shape != (3, ) and self.point.shape != (1, 3):
+                raise ValueError('{} is not a valid point'.format(self.point))
         try:
             if self.center == 'geometry':
-                center_method = partial(self.ag.center_of_geometry, pbc=pbc_arg)
+                self.center_method = partial(self.ag.center_of_geometry,
+                                             pbc=pbc_arg)
             elif self.center == 'mass':
-                center_method = partial(self.ag.center_of_mass, pbc=pbc_arg)
+                self.center_method = partial(self.ag.center_of_mass,
+                                             pbc=pbc_arg)
             else:
-                raise ValueError('{} is not a valid argument for center'.format(self.center))
+                raise ValueError(f'{self.center} is valid for center')
         except AttributeError:
             if self.center == 'mass':
                 errmsg = f'{self.ag} is not an AtomGroup object with masses'
                 raise AttributeError(errmsg) from None
             else:
-                raise ValueError(f'{self.ag} is not an AtomGroup object') from None
+                raise ValueError(f'{self.ag} is not an AtomGroup object') \
+                                 from None
 
+    def __call__(self, ts):
         if self.point is None:
             boxcenter = np.sum(ts.triclinic_dimensions, axis=0) / 2
         else:
-            boxcenter = point
+            boxcenter = self.point
 
-        ag_center = center_method()
+        ag_center = self.center_method()
 
         vector = boxcenter - ag_center
         ts.positions += vector
