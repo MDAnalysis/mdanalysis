@@ -148,7 +148,7 @@ class PositionAverager(object):
         self.idx_array[:] = np.nan
 
     def rollidx(self, ts):
-        self.idx_array = np.roll(self.idx_array, 1) 
+        self.idx_array = np.roll(self.idx_array, 1)
         self.idx_array[0] = ts.frame
 
     def rollposx(self, ts):
