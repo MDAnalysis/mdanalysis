@@ -24,7 +24,7 @@ env:
     - PYTHON_VERSION=3.6
     - BUILD_DOCS=false
     - CODECOV=false
-    - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+    - PYTEST_FLAGS="-v --disable-pytest-warnings --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
