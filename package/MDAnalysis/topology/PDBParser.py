@@ -167,6 +167,7 @@ class PDBParser(TopologyReaderBase):
      - resnames
      - segids
      - elements
+     - bonds
 
     Guesses the following Attributes:
      - masses
@@ -175,11 +176,14 @@ class PDBParser(TopologyReaderBase):
     --------
     :class:`MDAnalysis.coordinates.PDB.PDBReader`
 
+
     .. versionadded:: 0.8
     .. versionchanged:: 0.18.0
        Added parsing of Record types
     .. versionchanged:: 1.0.0
        Added parsing of valid Elements
+    .. versionchanged:: 2.0.0
+       Bonds attribute is not added if no bonds are present in PDB file
     """
     format = ['PDB', 'ENT']
 
@@ -198,7 +202,9 @@ class PDBParser(TopologyReaderBase):
             warnings.warn("Invalid atom serials were present, "
                           "bonds will not be parsed")
         else:
-            top.add_TopologyAttr(bonds)
+            # Issue 2832: don't append Bonds if there are no bonds
+            if bonds:
+                top.add_TopologyAttr(bonds)
 
         return top
 

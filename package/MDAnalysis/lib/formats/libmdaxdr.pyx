@@ -62,7 +62,7 @@ own please see the source code in `lib/formats/libmdaxdr.pyx`_ for the time bein
 
 cimport numpy as np
 cimport cython
-from cython_util cimport ptr_to_ndarray
+from MDAnalysis.lib.formats.cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
