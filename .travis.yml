@@ -24,7 +24,7 @@ env:
     - PYTHON_VERSION=3.6
     - BUILD_DOCS=false
     - CODECOV=false
-    - PYTEST_FLAGS="--disable-pytest-warnings --durations=50"
+    - PYTEST_FLAGS="-n2 --disable-pytest-warnings --durations=50"
     - PYTEST_LIST="testsuite/MDAnalysisTests"
     - MAIN_CMD="pytest ${PYTEST_LIST}"
     - SETUP_CMD="${PYTEST_FLAGS}"
@@ -33,7 +33,7 @@ env:
     - CONDA_DEPENDENCIES="${CONDA_MIN_DEPENDENCIES} seaborn>=0.7.0 clustalw=2.1 netcdf4 scikit-learn joblib>=0.12 chemfiles tqdm>=4.43.0 tidynamics>=1.0.0 rdkit>=2020.03.1"
     - CONDA_CHANNELS='biobuilds conda-forge'
     - CONDA_CHANNEL_PRIORITY=True
-    - PIP_DEPENDENCIES="duecredit parmed"
+    - PIP_DEPENDENCIES="duecredit parmed pytest-xdist"
     - NUMPY_VERSION=1.19.0
     - INSTALL_HOLE="true"
     - CYTHON_TRACE_NOGIL=1
