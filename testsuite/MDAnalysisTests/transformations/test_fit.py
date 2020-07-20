@@ -183,7 +183,9 @@ def test_fit_rot_trans_shorter_universe(fit_universe):
     bad_u =fit_universe[0].atoms[0:5]
     test_u= bad_u
     with pytest.raises(ValueError):
-        fit_rot_trans(test_u, ref_u)(test_u.trajectory.ts)
+        #  To make sure we catch the right error
+        #  test_u is changed to ref_u here.
+        fit_rot_trans(test_u, ref_u)(ref_u.trajectory.ts)
 
 
 @pytest.mark.parametrize('weights', (

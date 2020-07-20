@@ -33,10 +33,8 @@ a given AtomGroup to a reference structure.
 
 """
 import numpy as np
-from functools import partial
 
 from ..analysis import align
-from ..lib.util import get_weights
 from ..lib.transformations import euler_from_matrix, euler_matrix
 
 
@@ -48,8 +46,8 @@ class fit_translation(object):
 
     Example
     -------
-    Removing the translations of a given AtomGroup `ag` on the XY plane by fitting
-    its center of mass to the center of mass of a reference `ref`:
+    Removing the translations of a given AtomGroup `ag` on the XY plane by
+    fitting its center of mass to the center of mass of a reference `ref`:
 
     .. code-block:: python
 
@@ -66,11 +64,12 @@ class fit_translation(object):
        :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
        :class:`~MDAnalysis.core.universe.Universe`
     reference : Universe or AtomGroup
-       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a whole
-       :class:`~MDAnalysis.core.universe.Universe`
+       reference structure, a :class:`~MDAnalysis.core.groups.AtomGroup` or a
+       whole :class:`~MDAnalysis.core.universe.Universe`
     plane: str, optional
-        used to define the plane on which the translations will be removed. Defined as a
-        string of the plane. Suported planes are yz, xz and xy planes.
+        used to define the plane on which the translations will be removed.
+        Defined as a string of the plane.
+        Suported planes are yz, xz and xy planes.
     weights : {"mass", ``None``} or array_like, optional
        choose weights. With ``"mass"`` uses masses as weights; with ``None``
        weigh each atom equally. If a float array of the same length as
@@ -87,22 +86,30 @@ class fit_translation(object):
         self.plane = plane
         self.weights = weights
 
-
     def __call__(self, ts):
         if self.plane is not None:
-            axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+            axes = {'yz': 0, 'xz': 1, 'xy': 2}
             try:
                 plane = axes[self.plane]
             except (TypeError, KeyError):
-                raise ValueError(f'{self.plane} is not a valid plane') from None
+                raise ValueError(f'{self.plane} is not a valid plane') \
+                                 from None
         try:
             if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
-                errmsg = f"{self.ag} and {self.reference} have mismatched number of residues"
+                errmsg = (
+                          f"{self.ag} and {self.reference} have mismatched"
+                          f"number of residues"
+                )
+
                 raise ValueError(errmsg)
         except AttributeError:
-            errmsg = f"{self.ag} or {self.reference} is not valid Universe/AtomGroup"
+            errmsg = (
+                      f"{self.ag} or {self.reference} is not valid"
+                      f"Universe/AtomGroup"
+            )
             raise AttributeError(errmsg) from None
-        ref, mobile = align.get_matching_atoms(self.reference.atoms, self.ag.atoms)
+        ref, mobile = align.get_matching_atoms(self.reference.atoms,
+                                               self.ag.atoms)
         weights = align.get_weights(ref.atoms, weights=self.weights)
         ref_com = ref.center(weights)
         ref_coordinates = ref.atoms.positions - ref_com
@@ -168,36 +175,50 @@ class fit_rot_trans(object):
         self.reference = reference
         self.plane = plane
         self.weights = weights
+
     def __call__(self, ts):
         if self.plane is not None:
-            axes = {'yz' : 0, 'xz' : 1, 'xy' : 2}
+            axes = {'yz': 0, 'xz': 1, 'xy': 2}
             try:
                 plane = axes[self.plane]
             except (TypeError, KeyError):
                 raise ValueError(f'{self.plane} is not a valid plane') from None
         try:
             if self.ag.atoms.n_residues != self.reference.atoms.n_residues:
-                errmsg = f"{self.ag} and {self.reference} have mismatched number of residues"
+                errmsg = (
+                    f"{self.ag} and {self.reference} have mismatched "
+                    f"number of residues"
+                )
                 raise ValueError(errmsg)
         except AttributeError:
-            errmsg = f"{self.ag} or {self.reference} is not valid Universe/AtomGroup"
+            errmsg = (
+                      f"{self.ag} or {self.reference} is not valid "
+                      f"Universe/AtomGroup"
+            )
             raise AttributeError(errmsg) from None
-        ref, mobile = align.get_matching_atoms(self.reference.atoms, self.ag.atoms)
+        ref, mobile = align.get_matching_atoms(self.reference.atoms,
+                                               self.ag.atoms)
         weights = align.get_weights(ref.atoms, weights=self.weights)
         ref_com = ref.center(self.weights)
         ref_coordinates = ref.atoms.positions - ref_com
 
         mobile_com = mobile.atoms.center(self.weights)
         mobile_coordinates = mobile.atoms.positions - mobile_com
-        rotation, dump = align.rotation_matrix(mobile_coordinates, ref_coordinates, weights=self.weights)
+        rotation, dump = align.rotation_matrix(mobile_coordinates,
+                                               ref_coordinates,
+                                               weights=weights)
         vector = ref_com
         if self.plane is not None:
-            matrix = np.r_[rotation, np.zeros(3).reshape(1,3)]
+            matrix = np.r_[rotation, np.zeros(3).reshape(1, 3)]
             matrix = np.c_[matrix, np.zeros(4)]
-            euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'), np.float32)
+            euler_angs = np.asarray(euler_from_matrix(matrix, axes='sxyz'),
+                                    np.float32)
             for i in range(0, euler_angs.size):
-                euler_angs[i] = ( euler_angs[plane] if i == plane else 0)
-            rotation = euler_matrix(euler_angs[0], euler_angs[1], euler_angs[2], axes='sxyz')[:3, :3]
+                euler_angs[i] = (euler_angs[plane] if i == plane else 0)
+            rotation = euler_matrix(euler_angs[0],
+                                    euler_angs[1],
+                                    euler_angs[2],
+                                    axes='sxyz')[:3, :3]
             vector[plane] = mobile_com[plane]
         ts.positions = ts.positions - mobile_com
         ts.positions = np.dot(ts.positions, rotation.T)
