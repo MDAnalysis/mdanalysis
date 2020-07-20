@@ -121,12 +121,9 @@ class AtomKind(object):
         """
         The symbol of the atom element.
 
-        Returns
-        -------
-        str:
-            The symbol corresponding to the atomic number. If the atomic number
-            is not recognized, which appends if a particle is not really an
-            atom (e.g a coarse-grained particle), an empty string is returned.
+        The symbol corresponding to the atomic number. If the atomic number
+        is not recognized, which appends if a particle is not really an
+        atom (e.g a coarse-grained particle), an empty string is returned.
         """
         return Z2SYMB.get(self.atomic_number, '')
 
