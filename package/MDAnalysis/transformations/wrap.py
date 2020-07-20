@@ -133,11 +133,12 @@ class unwrap(object):
     def __init__(self, ag):
         self.ag = ag
 
-    def __call__(self, ts):
         try:
             self.ag.fragments
         except AttributeError:
             raise AttributeError("{} has no fragments".format(self.ag))
+
+    def __call__(self, ts):
         for frag in self.ag.fragments:
             make_whole(frag)
         return ts
