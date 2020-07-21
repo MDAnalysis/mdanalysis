@@ -485,13 +485,13 @@ def _standardize_patterns(mol):
                         ">>[S;v6:1](=[O;+0:2])=[O;+0:3]"),
             ("nitro", "[N;v3:1](-[O-;v1:2])-[O-;v1:3]"
                       ">>[N;+1:1](-[O;-1:2])=[O;+0:3]"),
-            ("anion-*=*-anion", "[*-:1]-[*:2]=[*:3]-[*-:4]"
-                                ">>[*;+0:1]=[*:2]-[*:3]=[*;+0:4]"),
-            ("anion-*=*-*=*-anion", "[*-:1][*:2]=[*:3][*:4]=[*:5][*-:6]"
-             ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*;+0:6]"),
-            ("anion-*=*-*=*-*=*-anion",
-             "[*-:1][*:2]=[*:3][*:4]=[*:5][*:6]=[*:7][*-:8]"
-             ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*:6]-[*:7]=[*;+0:8]"),
+            # ("anion-*=*-anion", "[*-:1]-[*:2]=[*:3]-[*-:4]"
+            #                     ">>[*;+0:1]=[*:2]-[*:3]=[*;+0:4]"),
+            # ("anion-*=*-*=*-anion", "[*-:1][*:2]=[*:3][*:4]=[*:5][*-:6]"
+            #  ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*;+0:6]"),
+            # ("anion-*=*-*=*-*=*-anion",
+            #  "[*-:1][*:2]=[*:3][*:4]=[*:5][*:6]=[*:7][*-:8]"
+            #  ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*:6]-[*:7]=[*;+0:8]"),
         ]:
             # count how many times the reaction should be run
             pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
@@ -522,7 +522,69 @@ def _standardize_patterns(mol):
     for fragment in fragments:
         mol = Chem.CombineMols(mol, fragment)
 
+    # fix successive single and double bonds
+    global conjugated_anion_smarts
+    conjugated_anion_smarts = Chem.MolFromSmarts("[*-:1][*;+0:2]=[*;+0;!O:3]")
+    mol = _iterative_conjugated_bonds(mol)
+
     return mol
+
+from IPython.display import display
+def _iterative_conjugated_bonds(mol, max_iter=50):
+    rxn = AllChem.ReactionFromSmarts(
+        "[*-:1][*;+0:2]=[*;+0;!O:3]>>[*;+0:1]=[*:2]-[*-:3]")
+    end_rxn = AllChem.ReactionFromSmarts(
+        "[*-:1]-[*:2]=[*:3]-[*-:4]>>[*;+0:1]=[*:2]-[*:3]=[*;+0:4]")
+    # 
+    previous_paths = []
+
+    for _ in range(max_iter):
+        end_prod = end_rxn.RunReactants((mol,))
+        if end_prod:
+            product = end_prod[0][0]
+            _reassign_props_after_reaction(mol, product)
+            # continue if other groups that match the pattern are present
+            mol = product
+            continue
+
+        products = rxn.RunReactants((mol,))
+        if products:
+            product, path = _choose_optimal_product(products, previous_paths)
+            previous_paths.append(path)
+            _reassign_props_after_reaction(mol, product)
+            # keep going until we trigger the end_rxn
+            mol = product
+            continue
+        
+        # reactions not applicable to the molecule: all patterns were
+        # standardized or their was no pattern to standardize
+        return mol
+    
+    # iterative procedure could not be completed within max_iter iterations
+    warnings.warn("The standardization could not be completed within a "
+                 "reasonable ammount of iterations")
+    return mol
+
+
+def _choose_optimal_product(products, previous_paths):
+    # paths = []
+    # for n, product in enumerate(products):
+    #     mol = product[0]
+    #     paths.append([])
+    #     anions = np.unique([m[0]
+    #                         for m in mol.GetSubstructMatches(
+    #                             conjugated_anion_smarts)]).tolist()
+    #     for idx, i in enumerate(anions, start=1):
+    #         for j in anions[idx:]:
+    #             path = Chem.GetShortestPath(mol, i, j)
+    #             if path not in previous_paths:
+    #                 paths[n].append(path)
+    #     paths[n] = min(paths[n], key=len, default=[])
+    # best = np.argmin([len(p) for p in paths])
+    # if not paths[best]:
+    #     best = np.random.randint(len(paths))
+    # return products[best][0], paths[best]
+    return products[1][0], ()
 
 
 def _reassign_props_after_reaction(reactant, product):
@@ -540,4 +602,8 @@ def _reassign_props_after_reaction(reactant, product):
             old_atom = reactant.GetAtomWithIdx(idx)
             for prop, value in old_atom.GetPropsAsDict().items():
                 _set_atom_property(atom, prop, value)
+            # fix bonds with "crossed" stereo
+            for bond in atom.GetBonds():
+                if bond.GetStereo() == Chem.BondStereo.STEREOANY:
+                    bond.SetStereo(Chem.BondStereo.STEREONONE)
         atom.ClearProp("react_atom_idx")
