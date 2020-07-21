@@ -1507,7 +1507,7 @@ class Masses(AtomAttr):
         .. versionchanged:: 0.20.0 Added ``'molecules'`` and ``'fragments'``
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged:: x.y.z  Renamed `pbc` parameter to `wrap`
+        .. versionchanged:: 2.0.0  Renamed `pbc` parameter to `wrap`
         """
         atoms = group.atoms
         return atoms.center(weights=atoms.masses, wrap=wrap, compound=compound,
@@ -1568,7 +1568,7 @@ class Masses(AtomAttr):
 
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
-        .. versionchanged:: x.y.z Renamed `pbc` kwarg to `wrap`
+        .. versionchanged:: 2.0.0 Renamed `pbc` kwarg to `wrap`
         """
         atomgroup = group.atoms
         unwrap = kwargs.pop('unwrap', False)
@@ -1629,7 +1629,7 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: x.y.z
+        .. versionchanged:: 2.0.0
            Renamed `pbc` kwarg to `wrap`
         """
         atomgroup = group.atoms
@@ -1665,7 +1665,7 @@ class Masses(AtomAttr):
 
         .. versionadded:: 0.7.7
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: x.y.z
+        .. versionchanged:: 2.0.0
            Renamed `pbc` kwarg to `wrap`
         """
         atomgroup = group.atoms
