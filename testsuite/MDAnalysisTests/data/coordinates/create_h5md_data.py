@@ -1,11 +1,9 @@
 import MDAnalysis as mda
 from MDAnalysis.tests.datafiles import COORDINATES_TRR, COORDINATES_TOPOLOGY
-try:
-    import pyh5md
-except ImportError:
-    HAS_PYH5MD = False
-else:
-    HAS_PYH5MD = True
+# To create the test trajectory, install pyh5md
+# from https://github.com/pdebuyl/pyh5md
+# with 'pip install pyh5md'
+import pyh5md
 
 """
 This script converts the file test.trr to test.h5md, where

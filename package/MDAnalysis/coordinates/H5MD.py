@@ -23,13 +23,26 @@
 """H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
 ========================================================
 
+The `H5MD`_ trajectory file format is based upon the general, high performance
+`HDF5`_ file format.
+HDF5 files are self documenting and can be accessed with the `h5py`_ library.
+The HDF5 library (and `H5PY`_) must be installed; otherwise, H5MD files
+cannot be read by MDAnalysis. If `H5PY`_ is not installed, a ``RuntimeError``
+is raised.
+
+HDF5 can make use of parallel file system features through the MPI-IO
+interface of the HDF5 library to improve parallel reads and writes.
+
+
 The `H5MD`_ file format is based upon `HDF5`_, which makes use of parallel
 file system features through the MPI-IO interface of the HDF5 library.
 The reader currently uses the `H5PY`_ library to access data from an H5MD file.
 
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`HDF5`: https://www.hdfgroup.org/solutions/hdf5/
-.. _`H5PY`: http://docs.h5py.org/en/stable/
+.. _`H5PY`: http://docs.h5py.org/
+.. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html
+.. _`MDAnalysis notation`: https://userguide.mdanalysis.org/1.0.0/units.html
 
 
 Classes
@@ -47,13 +60,13 @@ Classes
 
       velocities of the atoms as a :class:`numpy.ndarray` of shape
       `(n_atoms, 3)`; only available if the trajectory contains velocities
-      or if the *velocities* = ``True`` keyword has been supplied.
+      or if the `velocities` = ``True`` keyword has been supplied.
 
    .. attribute:: forces
 
       forces of the atoms as a :class:`numpy.ndarray` of shape
       `(n_atoms, 3)`; only available if the trajectory contains forces
-      or if the *forces* = ``True`` keyword has been supplied.
+      or if the `forces` = ``True`` keyword has been supplied.
 
 
 .. autoclass:: H5MDReader
@@ -102,8 +115,19 @@ class Timestep(base.Timestep):
 
 class H5MDReader(base.ReaderBase):
     """Reader for the H5MD format.
-    (See `h5md documentation <https://nongnu.org/h5md/h5md.html#>`_
-    for a detailed overview)
+
+    See `h5md documentation <https://nongnu.org/h5md/h5md.html>`_
+    for a detailed overview of the H5MD file format.
+
+    .. rubric:: Units
+
+    Units are read from the attributes of the position, velocity, force,
+    and time datasets. The unit string is translated from `H5MD notation`_ to
+    `MDAnalysis notation`_. If MDAnalysis does not recognize the unit
+    provided by the H5MD file, a ``RuntimeError`` is raised. If MDAnalysis
+    does not recognize the units, it is likely because that unit string is
+    not defined in MDAnalysis. If no units are provided,
+    MDAnalysis stores a value of ``None`` for each unit.
 
     Currently reads .h5md files with the following HDF5 hierarchy:
 
@@ -167,25 +191,25 @@ class H5MDReader(base.ReaderBase):
 
 
     .. note::
-        The reader does not currently read mass data.
+        The reader does not currently read mass or charge data.
+
+    .. versionadded:: 2.0.0
 
     """
 
     format = 'H5MD'
-    # units are added from h5md file
-    units = {'time': None,
-             'length': None,
-             'velocity': None,
-             'force': None}
-    # Translate H5MD units (https://nongnu.org/h5md/modules/units.html)
-    # to MDAnalysis units.
+    # units is defined as instance-level variable and set from the
+    # H5MD file in __init__() below
+
+    # This dictionary is used to translate H5MD units to MDAnalysis units.
+    # (https://nongnu.org/h5md/modules/units.html)
     _unit_translation = {
         'time': {
             'ps': 'ps',
             'fs': 'fs',
             'ns': 'ns',
-            'second': 'second',
-            'sec': 'sec',
+            'second': 's',
+            'sec': 's',
             's': 's',
             'AKMA': 'AKMA',
             },
@@ -220,17 +244,28 @@ class H5MDReader(base.ReaderBase):
             }
     }
     _Timestep = Timestep
+    _data_keywords = ('time', 'step', 'lambda', 'dt')
 
     def __init__(self, filename, convert_units=True, **kwargs):
         """
         Parameters
         ----------
-        filename : str or h5py.File
+        filename : str or :class:`h5py.File`
             trajectory filename or open h5py file
         convert_units : bool (optional)
             convert units to MDAnalysis units
         **kwargs : dict
             General reader arguments.
+
+        Raises
+        ------
+        RuntimeError
+            when `H5PY`_ is not installed
+        RuntimeError
+            when a unit is not recognized by MDAnalysis
+        ValueError
+            when ``n_atoms`` changes values between timesteps
+
         """
         if not HAS_H5PY:
             raise RuntimeError("Please install h5py")
@@ -247,6 +282,10 @@ class H5MDReader(base.ReaderBase):
                                  velocities=self.has_velocities,
                                  forces=self.has_forces,
                                  **self._ts_kwargs)
+        self.units = {'time': None,
+                      'length': None,
+                      'velocity': None,
+                      'force': None}
         self._translate_h5md_units()  # fills units dictionary
         self._read_next_timestep()
 
@@ -297,14 +336,9 @@ class H5MDReader(base.ReaderBase):
 
         # set data dictionary values
         if 'data' in particle_group:
-            if 'time' in particle_group['data']:
-                ts.data['time'] = particle_group['data/time/value'][frame]
-            if 'step' in particle_group['data']:
-                ts.data['step'] = particle_group['data/step/value'][frame]
-            if 'lambda' in particle_group['data']:
-                ts.data['lambda'] = particle_group['data/lambda/value'][frame]
-            if 'dt' in particle_group['data']:
-                ts.data['dt'] = particle_group['data/dt/value'][frame]
+            data = particle_group['data']
+            for name in self._data_keywords:
+                self._copy_data(name, data, frame)
 
         # set frame box dimensions
         # set triclinic box vectors
@@ -418,3 +452,7 @@ class H5MDReader(base.ReaderBase):
                                        "mdanalysis/issues".format(
                                         self._particle_group['force'].
                                         attrs['units'])) from None
+
+    def _copy_data(self, name, particle_group, frame):
+        """assigns values to keys in data dictionary"""
+        self.ts.data[name] = particle_group[name]['value'][frame]
