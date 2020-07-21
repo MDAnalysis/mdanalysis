@@ -17,12 +17,12 @@ and are not needed for daily use of MDAnalysis so they are distributed
 separately from the main package.
 
 For installation instruction please have a look at INSTALL and the
-instructions online at https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
+instructions online at https://userguide.mdanalysis.org/contributing_code.html
 
 The tests are described at https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests
 
 For further information please see the `documentation for MDAnalysis`_
-itself.
+itself and the `UserGuide: Contributing`_.
 
 
 Contact 
@@ -30,28 +30,31 @@ Contact
 
 Please report bugs and feature requests through the `Issue Tracker`_.
 
-Help is also available through the mailing list at https://groups.google.com/group/mdnalysis-discussion
+Help is also available through the user mailing list at https://groups.google.com/group/mdnalysis-discussion.
+
+For questions and discussions for code development, join the developer list https://groups.google.com/group/mdnalysis-devel.
 
 .. Links
 .. _MDAnalysis: https://www.mdanalysis.org
 .. _Issue Tracker: https://github.com/mdanalysis/mdanalysis/issues
 .. _`documentation for MDAnalysis`: https://www.mdanalysis.org/docs/
+.. _`UserGuide: Contributing`: https://userguide.mdanalysis.org/contributing.html
 
 
 .. badges
-   
-.. |build| image:: https://travis-ci.org/MDAnalysis/mdanalysis.svg?branch=develop
+
+.. |build| image:: https://travis-ci.com/MDAnalysis/mdanalysis.svg?branch=develop
    :alt: Build Status
-   :target: https://travis-ci.org/MDAnalysis/mdanalysis
+   :target: https://travis-ci.com/MDAnalysis/mdanalysis
 
 .. |cov|   image:: https://codecov.io/gh/MDAnalysis/mdanalysis/branch/develop/graph/badge.svg
    :alt: Coverage Status
-   :target: https://codecov.io/gh/MDAnalysis/mdanalysis	     
+   :target: https://codecov.io/gh/MDAnalysis/mdanalysis
 
 .. |devdocs| image:: https://img.shields.io/badge/docs-development-yellow.svg
    :alt: Documentation (development version)
-   :target: https://docs.mdanalysis.org/dev/
-	     
+   :target: https://docs.mdanalysis.org/dev
+
 .. |developergroup| image:: https://img.shields.io/badge/Google%20Group-Developers-lightgrey.svg
    :alt: Developer Google Group
-   :target: http://developers.mdanalysis.org
+   :target: https://groups.google.com/group/mdnalysis-devel

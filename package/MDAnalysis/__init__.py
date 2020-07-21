@@ -40,7 +40,7 @@ Help is also available through the mailinglist at
 http://groups.google.com/group/mdnalysis-discussion
 
 Please report bugs and feature requests through the issue tracker at
-http://issues.mdanalysis.org
+https://github.com/MDAnalysis/mdanalysis/issues
 
 Citation
 --------

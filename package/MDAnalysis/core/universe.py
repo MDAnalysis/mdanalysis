@@ -832,9 +832,11 @@ class Universe(object):
                 errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
-                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "To raise an issue go to: "
+                    "https://github.com/MDAnalysis/mdanalysis/issues"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys()))))
+                        topologyattr, ', '.join(
+                            sorted(_TOPOLOGY_ATTRS.keys()))))
                 raise ValueError(errmsg) from None
             else:
                 topologyattr = tcls.from_blank(
@@ -1285,10 +1287,10 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
-    
+
     @classmethod
-    def from_smiles(cls, smiles, sanitize=True, addHs=True, 
-                    generate_coordinates=True, numConfs=1, 
+    def from_smiles(cls, smiles, sanitize=True, addHs=True,
+                    generate_coordinates=True, numConfs=1,
                     rdkit_kwargs={}, **kwargs):
         """Create a Universe from a SMILES string with rdkit
 
@@ -1346,7 +1348,7 @@ class Universe(object):
             from rdkit.Chem import AllChem
         except ImportError as e:
             raise ImportError(
-                "Creating a Universe from a SMILES string requires RDKit but " 
+                "Creating a Universe from a SMILES string requires RDKit but "
                 "it does not appear to be installed") from e
 
         mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
@@ -1358,7 +1360,7 @@ class Universe(object):
             if not addHs:
                 raise ValueError("Generating coordinates requires adding "
                 "hydrogens with `addHs=True`")
-            
+
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
             if not (type(numConfs) is int and numConfs > 0):
                 raise SyntaxError("numConfs must be a non-zero positive "
