@@ -597,10 +597,10 @@ is avoided.</p>
 <p>The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:</p>
 <ul class="simple">
-<li>Atoms: number, name, type, resname, resid, segid, mass, charge,
+<li>Atoms: number, name, type, resname, resid, segid, mass, charge, element
 [residue, segment, radius, bfactor, resnum, moltype]</li>
 <li>Bonds</li>
-<li>Angels</li>
+<li>Angles</li>
 <li>Dihedrals</li>
 <li>Impropers</li>
 </ul>
@@ -618,6 +618,13 @@ parser. Currently the following sections of the topology are parsed:</p>
 <code class="docutils literal notranslate"><span class="pre">read_</span></code> or <code class="docutils literal notranslate"><span class="pre">do_</span></code> are trying to be similar to those in
 <code class="file docutils literal notranslate"><span class="pre">gmxdump.c</span></code> or <code class="file docutils literal notranslate"><span class="pre">tpxio.c</span></code>, those with <code class="docutils literal notranslate"><span class="pre">extract_</span></code> are new.</p>
 <p>Versions prior to Gromacs 4.0.x are not supported.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The <cite>elements</cite> topology attribute is now exposed if at least one atom has
+a valid element symbol. In that case, atoms for which the element is not
+recognized have their element attribute set to an empty string. If none of
+the elements are recognized, then the <cite>elements</cite> attribute is not set in the
+topology.</p>
+</div>
 </div>
 </div>
 

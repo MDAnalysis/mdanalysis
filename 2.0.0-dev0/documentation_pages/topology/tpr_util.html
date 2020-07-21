@@ -896,8 +896,17 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.AtomKind">
-<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">AtomKind</code><span class="sig-paren">(</span><em>id</em>, <em>name</em>, <em>type</em>, <em>resid</em>, <em>resname</em>, <em>mass</em>, <em>charge</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#AtomKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">AtomKind</code><span class="sig-paren">(</span><em>id</em>, <em>name</em>, <em>type</em>, <em>resid</em>, <em>resname</em>, <em>mass</em>, <em>charge</em>, <em>atomic_number</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/topology/tpr/obj.html#AtomKind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="MDAnalysis.topology.tpr.obj.AtomKind.element_symbol">
+<code class="descname">element_symbol</code><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.AtomKind.element_symbol" title="Permalink to this definition">¶</a></dt>
+<dd><p>The symbol of the atom element.</p>
+<p>The symbol corresponding to the atomic number. If the atomic number
+is not recognized, which happens if a particle is not really an
+atom (e.g a coarse-grained particle), an empty string is returned.</p>
+</dd></dl>
+
+</dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.Atoms">

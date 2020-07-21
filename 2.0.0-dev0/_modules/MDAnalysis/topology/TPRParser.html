@@ -289,10 +289,10 @@
 <span class="sd">The TPR reader is a pure-python implementation of a basic TPR</span>
 <span class="sd">parser. Currently the following sections of the topology are parsed:</span>
 
-<span class="sd">* Atoms: number, name, type, resname, resid, segid, mass, charge,</span>
+<span class="sd">* Atoms: number, name, type, resname, resid, segid, mass, charge, element</span>
 <span class="sd">  [residue, segment, radius, bfactor, resnum, moltype]</span>
 <span class="sd">* Bonds</span>
-<span class="sd">* Angels</span>
+<span class="sd">* Angles</span>
 <span class="sd">* Dihedrals</span>
 <span class="sd">* Impropers</span>
 
@@ -323,6 +323,13 @@
 <span class="sd">.. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment</span>
 <span class="sd">.. _`Issue 2428`: https://github.com/MDAnalysis/mdanalysis/issues/2428</span>
 
+
+<span class="sd">.. versionchanged:: 2.0.0</span>
+<span class="sd">   The `elements` topology attribute is now exposed if at least one atom has</span>
+<span class="sd">   a valid element symbol. In that case, atoms for which the element is not</span>
+<span class="sd">   recognized have their element attribute set to an empty string. If none of</span>
+<span class="sd">   the elements are recognized, then the `elements` attribute is not set in the</span>
+<span class="sd">   topology.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Zhuyi Xue&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;GNU Public Licence, v2&quot;</span>
