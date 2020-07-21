@@ -437,7 +437,9 @@ def _pbc_to_wrap(function):
     @functools.wraps(function)
     def wrapped(group, *args, **kwargs):
         if kwargs.get('pbc', None) is not None:
-            warnings.warn("Use 'wrap' kwarg not 'pbc'", DeprecationWarning)
+            warnings.warn("The 'pbc' kwarg has been deprecated, "
+                          "please use 'wrap' instead",
+                          DeprecationWarning)
             kwargs['wrap'] = kwargs.pop('pbc')
 
         return function(group, *args, **kwargs)
@@ -1036,7 +1038,7 @@ class GroupBase(_MutableBase):
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
-        .. versionchanged:: x.y.z Renamed `pbc` to `wrap`
+        .. versionchanged:: 2.0.0 Renamed `pbc` kwarg to `wrap`
         """
         atoms = self.atoms
 
@@ -1144,7 +1146,7 @@ class GroupBase(_MutableBase):
             compounds
         .. versionchanged:: 0.20.0 Added `unwrap` parameter
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
-        .. versionchanged:: x.y.z Renamed 'pbc' kwarg to 'wrap'
+        .. versionchanged:: 2.0.0 Renamed 'pbc' kwarg to 'wrap'
         """
         return self.center(None, wrap=wrap, compound=compound, unwrap=unwrap)
 
@@ -1287,7 +1289,7 @@ class GroupBase(_MutableBase):
         .. versionadded:: 0.7.2
         .. versionchanged:: 0.8 Added *pbc* keyword
         .. versionchanged:: 1.0.0 Removed flags affecting default behaviour
-        .. versionchanged:: x.y.z Renamed 'pbc' kwarg to 'wrap'
+        .. versionchanged:: 2.0.0 Renamed 'pbc' kwarg to 'wrap'
         """
         # TODO: Add unwrap/compounds treatment
         atomgroup = self.atoms
@@ -1322,7 +1324,7 @@ class GroupBase(_MutableBase):
 
         .. versionadded:: 0.7.3
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: x.y.z Renamed 'pbc' kwarg to 'wrap'
+        .. versionchanged:: 2.0.0 Renamed 'pbc' kwarg to 'wrap'
         """
         atomgroup = self.atoms.unsorted_unique
 

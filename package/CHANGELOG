@@ -52,6 +52,8 @@ Changes
     (NEP29)
 
 Deprecations
+  * Deprecated the 'pbc' kwarg for various Group methods, the 'wrap' kwarg
+    should be used instead. (Issue #1760)
 
 
 08/21/21 tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
