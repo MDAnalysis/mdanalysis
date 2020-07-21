@@ -413,7 +413,8 @@ class TestRDKitFunctions(object):
         "c1csc(c1)-c1ccoc1-c1cc[nH]c1",
         "C1=C2C(=NC=N1)N=CN2",
         "CN1C=NC(=C1SC2=NC=NC3=C2NC=N3)[N+](=O)[O-]",
-        #"c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
+        "c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
+        "C=CC=CC=CC=CC=CC=C",
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
@@ -424,7 +425,7 @@ class TestRDKitFunctions(object):
         for bond in template.GetBonds():
             bond.SetIsAromatic(False)
             bond.SetBondType(Chem.BondType.SINGLE)
-        Chem.SanitizeMol(template)
+
         # go through each possible starting atom
         for a in template.GetAtoms():
             smi = Chem.MolToSmiles(template, rootedAtAtom=a.GetIdx())
