@@ -28,6 +28,7 @@ from MDAnalysis.core.topology import Topology
 mandatory_attrs = ['ids', 'masses', 'types', 
                    'resids', 'resnums', 'segids']
 
+
 class ParserBase(object):
     """Base class for testing Topology parsers.
 
