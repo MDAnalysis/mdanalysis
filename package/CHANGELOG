@@ -53,8 +53,8 @@ Enhancements
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
   * Dead code removed from the TPR parser and increased test coverage (PR #2840)
-  * Added a converter that works for any input with all hydrogens explicit in 
-    the topology (Issue #2468, PR #2775)
+  * Added an RDKit converter that works for any input with all hydrogens
+    explicit in the topology (Issue #2468, PR #2775)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
