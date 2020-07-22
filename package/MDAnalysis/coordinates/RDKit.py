@@ -602,16 +602,15 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         matches = mol.GetSubstructMatches(pattern)
         if matches:
             # check if we haven't already transformed this triplet
-            i = 0
-            while i < len(matches):
+            for match in matches:
                 # sort the indices for the comparison
-                g = sorted(matches[i])
+                g = tuple(sorted(match))
                 if g in backtrack:
                     # already transformed
-                    i += 1
+                    continue
                 else:
                     # take the first one that hasn't been tried
-                    anion, a1, a2 = matches[i]
+                    anion, a1, a2 = match
                     backtrack.append(g)
                     break
             else:
