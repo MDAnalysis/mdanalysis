@@ -412,15 +412,16 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     for atom in mol.GetAtoms():
         # get NUE for each possible valence
         expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
-        current_v = atom.GetTotalValence()
+        current_v = atom.GetTotalValence() - atom.GetFormalCharge()
         nue = [v - current_v for v in expected_vs]
-
         # if there's only one possible valence state and the corresponding
         # NUE is negative, it means we can only add a positive charge to
         # the atom
         if (len(nue) == 1) and (nue[0] < 0):
             atom.SetFormalCharge(-nue[0])
             mol.UpdatePropertyCache(strict=False)
+        # go to next atom if above case or atom has no unpaired electron
+        if (len(nue) == 1) and (nue[0] <= 0):
             continue
         else:
             neighbors = atom.GetNeighbors()
@@ -429,7 +430,7 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
                 # get NUE for the neighbor
                 na_expected_vs = PERIODIC_TABLE.GetValenceList(
                     na.GetAtomicNum())
-                na_current_v = na.GetTotalValence()
+                na_current_v = na.GetTotalValence() - na.GetFormalCharge()
                 na_nue = [v - na_current_v for v in na_expected_vs]
                 # smallest common NUE
                 common_nue = min(
@@ -450,7 +451,7 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
                         nue = [v - current_v for v in expected_vs]
 
             # if the atom still has unpaired electrons
-            current_v = atom.GetTotalValence()
+            current_v = atom.GetTotalValence() - atom.GetFormalCharge()
             nue = [v - current_v for v in expected_vs][0]
             if nue > 0:
                 # keep the radical if it's a terminal atom
