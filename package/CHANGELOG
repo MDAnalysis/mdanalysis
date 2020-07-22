@@ -19,6 +19,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * Bond attribute is no longer set if PDB file contains no CONECT records
+    (Issue #2832)
   * ResidueAttrs now have Atom as a target class by default; ICodes and 
     Molnums now have default target_classes (#2803, PR #2805)
   * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
@@ -39,6 +41,8 @@ Fixes
     empty AtomGroup (Issue #2848)
 
 Enhancements
+  * Refactored analysis.helanal into analysis.helix_analysis
+    (Issue #2452, PR #2622)
   * Improved MSD code to accept `AtomGroup` and reject `UpdatingAtomGroup`
     and improved docs (Issue #2784)
   * Added the RDKitParser which creates a `core.topology.Topology` object from
@@ -53,6 +57,7 @@ Enhancements
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
   * Dead code removed from the TPR parser and increased test coverage (PR #2840)
+  * TPR parser exposes the elements topology attribute (PR #2858, see Issue #2553)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
 
@@ -278,6 +283,7 @@ Changes
     function calls. (Issue #782)
 
 Deprecations
+  * analysis.helanal is deprecated in 1.0 (remove in 2.0)
   * analysis.hole is deprecated in 1.0 (remove in 2.0)
   * analysis.hbonds.HydrogenBondAnalysis is deprecated in 1.0 (remove in 2.0)
   * analysis.density.density_from_Universe() (remove in 2.0)
