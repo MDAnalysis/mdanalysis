@@ -464,7 +464,8 @@ class TestDownshiftArrays(object):
 
     @pytest.fixture()
     def ragged_result(self):
-        return np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]])
+        return np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]],
+                        dtype=object)
 
     @staticmethod
     def assert_rows_match(a, b):

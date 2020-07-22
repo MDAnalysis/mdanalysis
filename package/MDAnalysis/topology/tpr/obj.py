@@ -32,6 +32,7 @@ Class definitions for the TPRParser
 
 """
 from collections import namedtuple
+from ..tables import Z2SYMB
 
 TpxHeader = namedtuple(
     "TpxHeader", [
@@ -103,7 +104,8 @@ class MoleculeKind(object):
 
 
 class AtomKind(object):
-    def __init__(self, id, name, type, resid, resname, mass, charge):
+    def __init__(
+            self, id, name, type, resid, resname, mass, charge, atomic_number):
         # id is only within the scope of a single molecule, not the whole system
         self.id = id
         self.name = name
@@ -112,6 +114,18 @@ class AtomKind(object):
         self.resname = resname
         self.mass = mass
         self.charge = charge
+        self.atomic_number = atomic_number
+
+    @property
+    def element_symbol(self):
+        """
+        The symbol of the atom element.
+
+        The symbol corresponding to the atomic number. If the atomic number
+        is not recognized, which happens if a particle is not really an
+        atom (e.g a coarse-grained particle), an empty string is returned.
+        """
+        return Z2SYMB.get(self.atomic_number, '')
 
     def __repr__(self):
         return (
