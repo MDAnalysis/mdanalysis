@@ -251,9 +251,8 @@ def test_has_position(h5md_file, ref, tmpdir):
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
                 del g['particles/trajectory/position']
-        # check if proper error is raised due to missing 'position' group
-        with pytest.raises(ValueError):
-            u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+
+        u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
