@@ -446,6 +446,6 @@ class TestRDKitFunctions(object):
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
         mol = Chem.MolFromSmiles(smi)
-        with pytest.warns(UserWarning, 
+        with pytest.warns(UserWarning,
                           match="reasonable ammount of iterations"):
             _rebuild_conjugated_bonds(mol, 2)
