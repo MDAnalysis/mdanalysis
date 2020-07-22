@@ -463,12 +463,18 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
 
 
 def _standardize_patterns(mol):
-    """Standardize functional groups using reactions from SMARTS patterns
+    """Standardizes functional groups
 
+    Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,
+    and SMARTS reactions for other functional groups.
     Due to the way reactions work, we first have to split the molecule by
     fragments. Then, for each fragment, we apply the standardization reactions.
     Finally, the fragments are recombined.
     """
+
+    # standardize conjugated systems
+    _rebuild_conjugated_bonds(mol)
+
     fragments = []
     for reactant in Chem.GetMolFrags(mol, asMols=True):
 
@@ -482,21 +488,6 @@ def _standardize_patterns(mol):
                         ">>[S;v6:1](=[O;+0:2])=[O;+0:3]"),
             ("nitro", "[N;v3:1](-[O-;v1:2])-[O-;v1:3]"
                       ">>[N;+1:1](-[O;-1:2])=[O;+0:3]"),
-            ("conjugated1", "[*-:1]-[*:2]=[*:3]-[*-:4]"
-                            ">>[*;+0:1]=[*:2]-[*:3]=[*;+0:4]"),
-            ("conjugated2", "[*-:1]-[*:2]=[*:3]-[*:4]=[*:5]-[*-:6]"
-                            ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*;+0:6]"),
-            ("conjugated3", "[*-:1]-[*:2]=[*:3]-[*:4]=[*:5]-[*:6]=[*:7]-[*-:8]"
-                            ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*:6]"
-                            "-[*:7]=[*;+0:8]"),
-            ("conjugated4", "[*-:1]-[*:2]=[*:3]-[*:4]=[*:5]-[*:6]=[*:7]-[*:8]"
-                            "=[*:9]-[*-:10]"
-                            ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*:6]"
-                            "-[*:7]=[*:8]-[*:9]=[*;+0:10]"),
-            ("conjugated5", "[*-:1]-[*:2]=[*:3]-[*:4]=[*:5]-[*:6]=[*:7]-[*:8]"
-                            "=[*:9]-[*:10]=[*:11]-[*-:12]"
-                            ">>[*;+0:1]=[*:2]-[*:3]=[*:4]-[*:5]=[*:6]"
-                            "-[*:7]=[*:8]-[*:9]=[*:10]-[*:11]=[*;+0:12]"),
         ]:
             reactant.UpdatePropertyCache(strict=False)
             Chem.Kekulize(reactant)
@@ -553,6 +544,95 @@ def _run_reaction(reaction, reactant):
             # pattern 6 times but the reaction is only needed once
             break
     return reactant
+
+
+def _rebuild_conjugated_bonds(mol, max_iter=200):
+    """Rebuild conjugated bonds without negatively charged atoms at the
+    begining and end of the conjugated system
+
+    Depending on the order in which atoms are read during the conversion, the
+    :func:`_infer_bo_and_charges` function might write conjugated systems with
+    a double bond less and both edges of the system as anions instead of the
+    usual alternating single and double bonds. This function corrects this
+    behaviour by using an iterative procedure.
+    The problematic molecules always follow the same pattern: 
+    `anion(-*=*)n-anion` instead of `*=(*-*=)n*`, where `n` is the number of
+    successive single and double bonds. The goal of the iterative procedure is
+    to make `n` as small as possible by consecutively transforming
+    `anion-*=*` into `*=*-anion` until it reaches the smallest pattern with
+    `n=1`. This last pattern is then transformed from `anion-*=*-anion` to
+    `*=*-*=*`.
+    Since `anion-*=*` is the same as `*=*-anion` in terms of SMARTS, we can
+    control that we don't tranform the same triplet of atoms back and forth by
+    adding their indices to a list.
+    The molecule needs to be kekulized first to also cover systems
+    with aromatic rings.
+
+    Parameters
+    ----------
+
+    mol : rdkit.Chem.rdchem.RWMol
+        The molecule to transform
+    max_iter : int
+        Maximum number of iterations performed by the function
+    """
+    mol.UpdatePropertyCache(strict=False)
+    Chem.Kekulize(mol)
+    pattern = Chem.MolFromSmarts("[*-]-[*;+0]=[*;+0;!O]")
+    end_pattern = Chem.MolFromSmarts("[*-]-[*]=[*]-[*-]")
+    backtrack = []
+    for _ in range(max_iter):
+        # simplest case where n=1
+        end_match = mol.GetSubstructMatch(end_pattern)
+        if end_match:
+            # index of each atom
+            anion1, a1, a2, anion2 = end_match
+            # charges
+            mol.GetAtomWithIdx(anion1).SetFormalCharge(0)
+            mol.GetAtomWithIdx(anion2).SetFormalCharge(0)
+            # bonds
+            mol.GetBondBetweenAtoms(anion1, a1).SetBondType(
+                Chem.BondType.DOUBLE)
+            mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
+            mol.GetBondBetweenAtoms(a2, anion2).SetBondType(
+                Chem.BondType.DOUBLE)
+            mol.UpdatePropertyCache(strict=False)
+
+        # shorten the anion-anion pattern from n to n-1
+        matches = mol.GetSubstructMatches(pattern)
+        if matches:
+            # check if we haven't already transformed this triplet
+            i = 0
+            while i < len(matches):
+                # sort the indices for the comparison
+                g = sorted(matches[i])
+                if g in backtrack:
+                    # already transformed
+                    i += 1
+                else:
+                    # take the first one that hasn't been tried
+                    anion, a1, a2 = matches[i]
+                    backtrack.append(g)
+                    break
+            else:
+                anion, a1, a2 = matches[0]
+            # charges
+            mol.GetAtomWithIdx(anion).SetFormalCharge(0)
+            mol.GetAtomWithIdx(a2).SetFormalCharge(-1)
+            # bonds
+            mol.GetBondBetweenAtoms(anion, a1).SetBondType(
+                Chem.BondType.DOUBLE)
+            mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
+            mol.UpdatePropertyCache(strict=False)
+            # start new iteration
+            continue
+
+        # no more changes to apply
+        return
+
+    # reached max_iter
+    warnings.warn("The standardization could not be completed within a "
+                  "reasonable ammount of iterations")
 
 
 def _reassign_props_after_reaction(reactant, product):

@@ -49,6 +49,7 @@ try:
         _add_mda_attr_to_rdkit,
         _infer_bo_and_charges,
         _standardize_patterns,
+        _rebuild_conjugated_bonds,
         _set_atom_property,
         _reassign_props_after_reaction,
     )
@@ -441,3 +442,10 @@ class TestRDKitFunctions(object):
             assert m.HasSubstructMatch(ref) and ref.HasSubstructMatch(
                 m), "Failed when starting from atom %s%d" % (
                     a.GetSymbol(), a.GetIndex())
+
+    def test_warn_conjugated_max_iter(self):
+        smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
+        mol = Chem.MolFromSmiles(smi)
+        with pytest.warns(UserWarning, 
+                          match="reasonable ammount of iterations"):
+            _rebuild_conjugated_bonds(mol, 2)
