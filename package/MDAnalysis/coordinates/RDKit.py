@@ -479,14 +479,14 @@ def _standardize_patterns(mol):
     for reactant in Chem.GetMolFrags(mol, asMols=True):
 
         for name, reaction in [
-            ("Cterm", "[C-;v3:1]=[O:2]>>[C;+0:1]=[O:2]"),
-            ("Nterm", "[N-;v2;H1:1]>>[N;+0:1]"),
+            ("Cterm", "[C-;X2:1]=[O:2]>>[C;+0:1]=[O:2]"),
+            ("Nterm", "[N-;X2;H1:1]>>[N;+0:1]"),
             ("keto-enolate", "[C-:1]-[C:2]=[O:3]>>[C;+0:1]=[C:2]-[O;-1:3]"),
-            ("ARG", "[N;H1:1]-[C-;v3:2](-[N;H2:3])-[N;H2:4]"
+            ("ARG", "[N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]"
                     ">>[N:1]-[C;+0:2](-[N:3])=[N;+1:4]"),
-            ("sulfone", "[S;v4:1](-[O-;v1:2])-[O-;v1:3]"
-                        ">>[S;v6:1](=[O;+0:2])=[O;+0:3]"),
-            ("nitro", "[N;v3:1](-[O-;v1:2])-[O-;v1:3]"
+            ("sulfone", "[S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]"
+                        ">>[S:1](=[O;+0:2])=[O;+0:3]"),
+            ("nitro", "[N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]"
                       ">>[N;+1:1](-[O;-1:2])=[O;+0:3]"),
         ]:
             reactant.UpdatePropertyCache(strict=False)
@@ -579,7 +579,21 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
     pattern = Chem.MolFromSmarts("[*-]-[*;+0]=[*;+0;!O]")
-    end_pattern = Chem.MolFromSmarts("[*-]-[*]=[*]-[*-]")
+    # number of unique matches with the pattern
+    n_matches = len(set([match[0]
+                         for match in mol.GetSubstructMatches(pattern)]))
+    if n_matches == 0:
+        # nothing to standardize
+        return
+    # check if there's an even number of anion-*=* patterns
+    elif n_matches % 2 == 0:
+        end_pattern = Chem.MolFromSmarts("[*-]-[*]=[*]-[*-]")
+        end_charge = 0
+    else:
+        # the only way to standardize is to find a nitrogen that can accept
+        # a double bond and a positive charge
+        end_pattern = Chem.MolFromSmarts("[*-]-[*]=[*]-[N;X3;v3]")
+        end_charge = 1
     backtrack = []
     for _ in range(max_iter):
         # simplest case where n=1
@@ -589,7 +603,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
             anion1, a1, a2, anion2 = end_match
             # charges
             mol.GetAtomWithIdx(anion1).SetFormalCharge(0)
-            mol.GetAtomWithIdx(anion2).SetFormalCharge(0)
+            mol.GetAtomWithIdx(anion2).SetFormalCharge(end_charge)
             # bonds
             mol.GetBondBetweenAtoms(anion1, a1).SetBondType(
                 Chem.BondType.DOUBLE)

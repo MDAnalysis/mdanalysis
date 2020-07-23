@@ -417,6 +417,7 @@ class TestRDKitFunctions(object):
         "c1c[nH]c(c1)-c1ccc(s1)-c1ccoc1-c1c[nH]cc1-c1ccccc1",
         "C=CC=CC=CC=CC=CC=C",
         "NCCCCC([NH3+])C(=O)[O-]",
+        "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
@@ -433,6 +434,7 @@ class TestRDKitFunctions(object):
             smi = Chem.MolToSmiles(template, rootedAtAtom=a.GetIdx())
             m = Chem.MolFromSmiles(smi, sanitize=False)
             for atom in m.GetAtoms():
+                atom.SetFormalCharge(0)
                 atom.SetNoImplicit(True)
             m.UpdatePropertyCache(strict=False)
             _infer_bo_and_charges(m)
@@ -441,7 +443,7 @@ class TestRDKitFunctions(object):
             m = Chem.RemoveHs(m)
             assert m.HasSubstructMatch(ref) and ref.HasSubstructMatch(
                 m), "Failed when starting from atom %s%d" % (
-                    a.GetSymbol(), a.GetIndex())
+                    a.GetSymbol(), a.GetIdx())
 
     def test_warn_conjugated_max_iter(self):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
