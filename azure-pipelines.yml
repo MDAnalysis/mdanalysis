@@ -20,7 +20,7 @@ jobs:
   pool:
     vmImage: 'VS2017-Win2016'
   variables:
-    MPLBACKEND: agg    
+    MPLBACKEND: agg
   strategy:
     maxParallel: 4
     matrix:
@@ -46,6 +46,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
+      h5py
     displayName: 'Install dependencies'
   - powershell: |
       cd package

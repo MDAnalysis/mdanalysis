@@ -257,6 +257,9 @@ also recognized when they are compressed with :program:`gzip` or
    | FHIAIMS       | in        |  r/w  | FHI-AIMS file format for coordinates                 |
    |               |           |       | :mod:`MDAnalysis.coordinates.FHIAIMS`                |
    +---------------+-----------+-------+------------------------------------------------------+
+   | H5MD          | h5md      |  r/w  | H5MD_ file format for coordinates                    |
+   |               |           |       | :mod:`MDAnalysis.coordinates.H5MD`                   |
+   +---------------+-----------+-------+------------------------------------------------------+
 
 .. [#a] This format can also be used to provide basic *topology*
    information (i.e. the list of atoms); it is possible to create a
@@ -264,6 +267,7 @@ also recognized when they are compressed with :program:`gzip` or
    providing a file of this format: ``u = Universe(filename)``
 
 .. _`netcdf4-python`: https://github.com/Unidata/netcdf4-python
+.. _`H5MD`: https://nongnu.org/h5md/index.html
 
 .. _Trajectory API:
 
@@ -728,6 +732,7 @@ from . import PDBQT
 from . import PQR
 from . import TRJ
 from . import TRR
+from . import H5MD
 from . import TRZ
 from . import XTC
 from . import XYZ
