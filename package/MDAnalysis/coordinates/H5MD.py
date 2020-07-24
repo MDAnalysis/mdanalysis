@@ -1088,4 +1088,3 @@ class H5MDWriter(base.WriterBase):
         file['particles/trajectory/box/edges/value'][ts.frame] = ts._unitcell
         file['particles/trajectory/box/edges/step'][ts.frame] = ts.data['step']
         file['particles/trajectory/box/edges/time'][ts.frame] = ts.time
-        
