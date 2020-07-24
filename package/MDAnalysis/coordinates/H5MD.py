@@ -826,3 +826,266 @@ class H5PYPicklable(h5py.File):
     def __getnewargs__(self):
         """Override the h5py getnewargs to skip its error message"""
         return ()
+
+
+class H5MDWriter(base.WriterBase):
+    """Writer for the H5MD format.
+
+    Classes
+    -------
+
+    .. autoclass:: Timestep
+       :members:
+
+       .. attribute:: positions
+
+          coordinates of the atoms as a :class:`numpy.ndarray` of shape
+          `(n_atoms, 3)`; only available if the trajectory contains positions
+          or if the ``positions = True`` keyword has been supplied.
+
+       .. attribute:: velocities
+
+          velocities of the atoms as a :class:`numpy.ndarray` of shape
+          `(n_atoms, 3)`; only available if the trajectory contains velocities
+          or if the ``velocities = True`` keyword has been supplied.
+
+       .. attribute:: forces
+
+          forces of the atoms as a :class:`numpy.ndarray` of shape
+          `(n_atoms, 3)`; only available if the trajectory contains forces
+          or if the ``forces = True`` keyword has been supplied.
+
+
+    .. autoclass:: H5MDReader
+       :members:
+
+    .. versionadded:: 2.0.0
+
+    """
+
+    format = 'H5MD'
+    multiframe = True
+    _unit_translation_dict = {
+        'time': {
+            'ps': 'ps',
+            'fs': 'fs',
+            'ns': 'ns',
+            'second': 's',
+            'sec': 's',
+            's': 's',
+            'AKMA': 'AKMA',
+            },
+        'length': {
+            'Angstrom': 'Angstrom',
+            'angstrom': 'Angstrom',
+            'A': 'Angstrom',
+            'nm': 'nm',
+            'pm': 'pm',
+            'fm': 'fm',
+            },
+        'velocity': {
+            'Angstrom/ps': 'Angstrom ps-1',
+            'A/ps': 'Angstrom ps-1',
+            'Angstrom/fs': 'Angstrom fs-1',
+            'A/fs': 'Angstrom fs-1',
+            'Angstrom/AKMA': 'Angstrom AKMA-1',
+            'A/AKMA': 'Angstrom AKMA-1',
+            'nm/ps': 'nm ps-1',
+            'nm/ns': 'nm ns-1',
+            'pm/ps': 'pm ps-1',
+            'm/s': 'm s-1'
+            },
+        'force':  {
+            'kJ/(mol*Angstrom)': 'kJ mol-1 Angstrom-1',
+            'kJ/(mol*nm)': 'kJ mol-1 nm-1',
+            'Newton': 'Newton',
+            'N': 'N',
+            'J/m': 'J m-1',
+            'kcal/(mol*Angstrom)': 'kcal mol-1 Angstrom-1',
+            'kcal/(mol*A)': 'kcal mol-1 Angstrom-1'
+            }
+    }
+
+    def __init__(self,
+                 filename,
+                 n_atoms,
+                 n_frames,
+                 driver=None,
+                 comm=None,
+                 convert_units=True,
+                 units=None,
+                 **kwargs):
+        """
+        Parameters
+        ----------
+        filename : str or :class:`h5py.File`
+            trajectory filename or open h5py file
+        n_atoms : int
+            number of atoms in trajectory
+        n_frames: int
+            number of frames in trajectory
+        convert_units : bool (optional)
+            convert units from MDAnalysis to desired units
+        **kwargs : dict
+
+        """
+
+        self.filename = filename
+        if n_atoms == 0:
+            raise ValueError("H5MDWriter: no atoms in output trajectory")
+        self._driver = driver
+        self._comm = comm
+        self.n_atoms = n_atoms
+        self.n_frames = n_frames
+        self.units = None
+        self.convert_units = convert_units
+
+        self.h5md_file = None
+        self.has_positions = kwargs.get('positions', False)
+        self.has_velocities = kwargs.get('velocities', False)
+        self.has_forces = kwargs.get('forces', False)
+        self._has = {'position': self.has_positions,
+                     'velocity': self.has_velocities,
+                     'force': self.has_forces}
+        self.chunks = kwargs.get('chunks', None)
+
+        # Pull out various keywords to store in 'h5md' group
+        self.author = kwargs.pop('author', 'N/A')
+        self.author_email = kwargs.pop('author_email', None)
+        self.creator = kwargs.pop('creator', 'MDAnalysis')
+        self.creator_version = kwargs.pop('creator_version', mda.__version__)
+
+    def _write_next_frame(self, ag):
+        """Write information associated with ``ag`` at current frame
+        into trajectory
+
+        Parameters
+        ----------
+        ag : AtomGroup or Universe
+
+        .. versionadded:: 2.0.0
+
+        """
+        try:
+            # Atomgroup?
+            ts = ag.ts
+            self.units = ag.universe.trajectory.units
+        except AttributeError:
+            try:
+                # Universe?
+                ts = ag.trajectory.ts
+                self.units = ag.trajectory.units
+            except AttributeError:
+                errmsg = "Input obj is neither an AtomGroup or Universe"
+                raise TypeError(errmsg) from None
+
+        if ts.n_atoms != self.n_atoms:
+            raise IOError("H5MDWriter: Timestep does not have"
+                          " the correct number of atoms")
+
+        # Opens H5MD file to write with H5PY library and initializes
+        # 'h5md' group and checks if unitcell is periodic
+        if self.h5md_file is None:
+            self._init_h5md(ts)
+
+        return self._write_next_timestep(ts)
+
+    def is_periodic(self, ts):
+        """Test if timestep ``ts`` contains a periodic box.
+
+        Parameters
+        ----------
+        ts : :class:`Timestep`
+             :class:`Timestep` instance containing coordinates to
+             be written to trajectory file
+
+        Returns
+        -------
+        bool
+            Return ``True`` if `ts` contains a valid simulation box
+        """
+        return np.all(ts.dimensions > 0)
+
+    def _init_h5md(self, ts):
+        """Initializes H5MD trajectory.
+
+        The `H5MD`_ file is opened using the `H5PY`_ library. """
+
+        if self._comm is not None:
+            h5md_file = h5py.File(self.filename, 'w',
+                                  driver=self._driver,
+                                  comm=self._comm)
+        else:
+            h5md_file = h5py.File(self.filename, 'w')
+        self.h5md_file = h5md_file
+
+        # fill in H5MD file metadata
+        h5md_group = h5md_file.create_group('h5md')
+        h5md_group.attrs['version'] = np.array([1,1])
+        author_group = h5md_file.create_group('h5md/author')
+        author_group.attrs['name'] = self.author
+        if self.author_email is not None:
+            author_group.attrs['email'] = self.author_email
+        creator_group = h5md_file.create_group('h5md/creator')
+        creator_group.attrs['name'] = self.creator
+        creator_group.attrs['version'] = self.creator_version
+
+        h5md_file.require_group('particles').require_group('trajectory')
+        trajectory = self.h5md_file['particles/trajectory']
+        trajectory.create_group('box').create_group('edges')
+        trajectory['box'].attrs['dimension'] = 3
+        if self.is_periodic(ts):
+            trajectory.create_dataset('box/edges/value', shape=(self.n_frames, 3, 3), dtype=np.float32)
+            trajectory.create_dataset('box/edges/step', shape=(self.n_frames), dtype=np.int32)
+            trajectory.create_dataset('box/edges/time', shape=(self.n_frames), dtype=np.float32)
+            trajectory['box'].attrs['boundary'] = ['periodic', 'periodic', 'periodic']
+        else:
+            trajectory['box'].attrs['boundary'] = [None, None, None]
+
+        for name, value in self._has.items():
+            if value:
+                self._create_dataset(name)
+
+    def _create_dataset(self, group):
+        """ """
+
+        # need this dictionary to associate 'position': 'length'
+        _group_unit_dict = {'position': 'length',
+                            'velocity': 'velocity',
+                            'force': 'force'}
+
+        trajectory = self.h5md_file['particles/trajectory']
+
+        trajectory.create_group(group)
+        trajectory.create_dataset(f'{group}/value', shape=(self.n_frames, self.n_atoms, 3), dtype=np.float32, chunks=self.chunks)
+        trajectory.create_dataset(f'{group}/step', shape=(self.n_frames), dtype=np.int32)
+        trajectory.create_dataset(f'{group}/time', shape=(self.n_frames), dtype=np.float32)
+        if self.units is not None:
+            trajectory[f'{group}/value'].attrs['unit'] = self._unit_translation_dict[_group_unit_dict[group]][self.units[_group_unit_dict[group]]]
+            trajectory[f'{group}/time'].attrs['unit'] = self._unit_translation_dict['time'][self.units['time']]
+
+    def _write_next_timestep(self, ts):
+        """Write coordinates and unitcell information to H5MD file.
+
+        Do not call this method directly; instead use
+        :meth:`write` because some essential setup is done
+        there before writing the first frame.
+
+        """
+
+        file = self.h5md_file
+
+        _group_ts_dict = {'position': ts._pos,
+                          'velocity': ts._velocities,
+                          'force': ts._forces}
+
+        for name, value in self._has.items():
+            if value:
+                file[f'particles/trajectory/{name}/value'][ts.frame] = _group_ts_dict[name]
+                file[f'particles/trajectory/{name}/step'][ts.frame] = ts.data['step']
+                file[f'particles/trajectory/{name}/time'][ts.frame] = ts.time
+
+        file['particles/trajectory/box/edges/value'][ts.frame] = ts._unitcell
+        file['particles/trajectory/box/edges/step'][ts.frame] = ts.data['step']
+        file['particles/trajectory/box/edges/time'][ts.frame] = ts.time
+        
