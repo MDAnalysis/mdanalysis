@@ -186,6 +186,15 @@ class DMSParser(TopologyReaderBase):
         
         if any(res_segids) and not any(val == None for val in res_segids):
             res_segidx, (res_segids,) = change_squash((res_segids,), (res_segids,))
+            
+            unique_segments = np.unique(res_segids)
+            idx2segment = {idx : res_segids[idx] for idx in res_segidx}
+            res_segids = unique_segments
+            new_indices = {segid : newidx for newidx, segid in enumerate(unique_segments)}
+            
+            move_to_new_index = lambda idx : new_indices[idx2segment[idx]]
+            res_segidx = np.array([move_to_new_index(idx) for idx in res_segidx])
+            
             n_segments = len(res_segids)
             topattrs.append(Segids(res_segids))
         else:
