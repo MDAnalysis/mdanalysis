@@ -45,7 +45,7 @@ import sqlite3
 import os
 
 from . import guessers
-from .base import TopologyReaderBase, squash_by
+from .base import TopologyReaderBase, squash_by, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -139,8 +139,8 @@ class DMSParser(TopologyReaderBase):
                                 ''.format(attrname))
                     vals = cur.fetchall()
                 except sqlite3.DatabaseError:
-                    errmsg = "Failed reading the atoms from DMS Database"
-                    raise IOError(errmsg) from None
+                    raise IOError(
+                        "Failed reading the atoms from DMS Database")
                 else:
                     attrs[attrname] = np.array(vals, dtype=dt)
 
@@ -149,8 +149,7 @@ class DMSParser(TopologyReaderBase):
                 cur.execute('SELECT * FROM bond')
                 bonds = cur.fetchall()
             except sqlite3.DatabaseError:
-                errmsg = "Failed reading the bonds from DMS Database"
-                raise IOError(errmsg) from None
+                raise IOError("Failed reading the bonds from DMS Database")
             else:
                 bondlist = []
                 bondorder = {}
@@ -176,23 +175,27 @@ class DMSParser(TopologyReaderBase):
         topattrs.append(Atomtypes(atomtypes, guessed=True))
 
         # Residues
-        atom_residx, res_resids, (res_resnames, res_segids) = squash_by(
-            attrs['resid'], attrs['resname'], attrs['segid'])
+        
+        atom_residx, (res_resids, res_resnames, res_segids) = change_squash(
+            (attrs['resid'], attrs['resname'], attrs['chain']), (attrs['resid'], attrs['resname'], attrs['chain']))
+        n_residues = len(res_resids)
         topattrs.append(Resids(res_resids))
-        topattrs.append(Resnums(res_resids.copy()))
         topattrs.append(Resnames(res_resnames))
 
-        # Segments
-        res_segidx, seg_segids = squash_by(
-            res_segids)[:2]
-        topattrs.append(Segids(seg_segids))
+        
+        if any(res_segids) and not any(val == None for val in res_segids):
+            res_segidx, (res_segids,) = change_squash((res_segids,), (res_segids,))
+            n_segments = len(res_segids)
+            topattrs.append(Segids(res_segids))
+        else:
+            n_segments = 1
+            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+            res_segidx = None
 
-        # Bonds
-        topattrs.append(Bonds(attrs['bond']))
-
-        top = Topology(len(attrs['id']), len(res_resids), len(seg_segids),
+        top = Topology(len(attrs['id']), n_residues, n_segments,
                        attrs=topattrs,
                        atom_resindex=atom_residx,
                        residue_segindex=res_segidx)
 
         return top
+
