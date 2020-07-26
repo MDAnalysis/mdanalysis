@@ -176,10 +176,11 @@ class DMSParser(TopologyReaderBase):
 
         # Residues
         
-        atom_residx, (res_resids, res_resnames, res_segids) = change_squash(
-            (attrs['resid'], attrs['resname'], attrs['chain']), (attrs['resid'], attrs['resname'], attrs['chain']))
+        atom_residx, (res_resids, res_resnums, res_resnames, res_segids) = change_squash(
+            (attrs['resid'], attrs['resname'], attrs['segid']), (attrs['resid'], attrs['resid'].copy(), attrs['resname'], attrs['segid']))
         n_residues = len(res_resids)
         topattrs.append(Resids(res_resids))
+        topattrs.append(Resnums(res_resnums))
         topattrs.append(Resnames(res_resnames))
 
         
