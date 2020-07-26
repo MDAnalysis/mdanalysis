@@ -23,19 +23,19 @@
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import DMS
+from MDAnalysisTests.datafiles import DMS_DOMAINS
 
 
 class TestDMSParser(ParserBase):
     parser = mda.topology.DMSParser.DMSParser
-    ref_filename = DMS
+    ref_filename = DMS_DOMAINS
     expected_attrs = ['ids', 'names', 'bonds', 'charges',
                       'masses', 'resids', 'resnames', 'segids',
                       'chainIDs', 'atomnums']
     guessed_attrs = ['types']
     expected_n_atoms = 3341
     expected_n_residues = 214
-    expected_n_segments = 1
+    expected_n_segments = 3
 
     def test_number_of_bonds(self, top):
         assert len(top.bonds.values) == 3365
@@ -50,8 +50,14 @@ class TestDMSParser(ParserBase):
         s1 = u.select_atoms("resid 33")
         assert len(s1) == 12
 
-        s2 = u.select_atoms("segid 4AKE")
-        assert len(s2) == 3341
+        s2 = u.select_atoms("segid NMP")
+        assert len(s2) == 437
+        
+        s3 = u.select_atoms("segid LID")
+        assert len(s3) == 598
+        
+        s4 = u.select_atoms("segid CORE")
+        assert len(s4) == 2306
 
-        s3 = u.select_atoms("resname ALA")
-        assert len(s3) == 190
+        s5 = u.select_atoms("resname ALA")
+        assert len(s5) == 190
