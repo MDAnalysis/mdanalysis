@@ -419,6 +419,7 @@ PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
+DMS_DOMAINS = resource_filename(__name__, 'data/adk_closed_domains.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
 
