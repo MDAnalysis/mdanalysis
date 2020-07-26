@@ -209,18 +209,19 @@ class TestResidueAttr(TopologyAttrMixin):
     """Test residue-level TopologyAttrs.
 
     """
+    single_value = 2
     values = np.array([15.2, 395.6, 0.1, 9.8])
     attrclass = tpattrs.ResidueAttr
 
-    def test_set_residue_VE(self):
-        u = make_Universe(('resnames',))
-        res = u.residues[0]
+    def test_set_residue_VE(self, universe):
+        # setting e.g. resname to 2 values should fail with VE
+        res = universe.residues[0]
         with pytest.raises(ValueError):
-            setattr(res, 'resname', ['wrong', 'length'])
+            setattr(res, self.attrclass.singular, self.values[:2])
 
     def test_get_atoms(self, attr):
         assert_equal(attr.get_atoms(DummyGroup([7, 3, 9])),
-                           self.values[[3, 2, 2]])
+                     self.values[[3, 2, 2]])
 
     def test_get_atom(self, universe):
         attr = getattr(universe.atoms[0], self.attrclass.singular)
@@ -228,14 +229,14 @@ class TestResidueAttr(TopologyAttrMixin):
 
     def test_get_residues(self, attr):
         assert_equal(attr.get_residues(DummyGroup([1, 2, 1, 3])),
-                           self.values[[1, 2, 1, 3]])
+                     self.values[[1, 2, 1, 3]])
 
     def test_set_residues_singular(self, attr):
         dg = DummyGroup([3, 0, 1])
-        attr.set_residues(dg, 2)
+        attr.set_residues(dg, self.single_value)
 
-        assert_almost_equal(attr.get_residues(dg),
-                                  np.array([2, 2, 2]))
+        assert_equal(attr.get_residues(dg),
+                     np.array([self.single_value]*3, dtype=self.values.dtype))
 
     def test_set_residues_plural(self, attr):
         attr.set_residues(DummyGroup([3, 0, 1]),
@@ -257,9 +258,16 @@ class TestResidueAttr(TopologyAttrMixin):
         assert_equal(attr.get_segments(DummyGroup([0, 1, 1])),
                            [self.values[[0, 3]], self.values[[1, 2]], self.values[[1, 2]]])
 
-class TestICodes(TestResidueAttr):
-    values = np.array(['a', 'b', '', 'd'])
+
+class TestResnames(TestResidueAttr):
+    attrclass = tpattrs.Resnames
+    single_value = 'xyz'
+    values = np.array(['a', 'b', '', 'd'], dtype=object)
+
+
+class TestICodes(TestResnames):
     attrclass = tpattrs.ICodes
+
 
 class TestResids(TestResidueAttr):
     values = np.array([10, 11, 18, 20])
