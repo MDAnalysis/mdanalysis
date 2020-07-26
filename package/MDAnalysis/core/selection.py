@@ -536,7 +536,7 @@ class _ProtoStringSelection(Selection):
         matches = []  # list of passing indices
         # iterate through set of known atom names, check which pass
         for nm, ix in nmattr.namedict.items():
-            if any(fnmatch.fnmatch(nm, val) for val in self.values):
+            if any(fnmatch.fnmatchcase(nm, val) for val in self.values):
                 matches.append(ix)
 
         # atomname indices for members of this group
