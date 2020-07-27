@@ -199,7 +199,7 @@ class DMSParser(TopologyReaderBase):
             topattrs.append(Segids(res_segids))
         else:
             n_segments = 1
-            attrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
+            topattrs.append(Segids(np.array(['SYSTEM'], dtype=object)))
             res_segidx = None
 
         topattrs.append(Bonds(attrs['bond']))
