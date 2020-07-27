@@ -60,6 +60,7 @@ Enhancements
   * Added pickle function to `Universe` and all Readers (without transformation)
     (PR #2723)
   * Dead code removed from the TPR parser and increased test coverage (PR #2840)
+  * TPR parser exposes the elements topology attribute (PR #2858, see Issue #2553)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
