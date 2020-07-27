@@ -32,15 +32,6 @@ from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO, PDB_helix
 from MDAnalysisTests.util import block_import, import_not_available
 
 
-@block_import('rdkit')
-class TestRequiresRDKit(object):
-    def test_converter_requires_rdkit(self):
-        u = mda.Universe(mol2_molecule)
-        with pytest.raises(ImportError,
-                           match="RDKit is required for the RDKitConverter"):
-            u.atoms.convert_to("RDKIT")
-
-
 try:
     from rdkit import Chem
     from rdkit.Chem import AllChem
@@ -54,6 +45,8 @@ try:
         _reassign_props_after_reaction,
     )
 except ImportError:
+    rdkit_installed = False
+
     def mol2_mol():
         pass
 
@@ -72,6 +65,8 @@ except ImportError:
     def dummy_reactant_noprops():
         pass
 else:
+    rdkit_installed = True
+
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
@@ -115,6 +110,16 @@ else:
 
 requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
                                     reason="requires RDKit")
+
+
+@pytest.mark.skipif(rdkit_installed, 
+                    reason="only for min dependencies build")
+class TestRequiresRDKit(object):
+    def test_converter_requires_rdkit(self):
+        u = mda.Universe(PDB_full)
+        with pytest.raises(ImportError,
+                           match="RDKit is required for the RDKitConverter"):
+            u.atoms.convert_to("RDKIT")
 
 
 @requires_rdkit
