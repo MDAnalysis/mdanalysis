@@ -28,7 +28,7 @@ import numpy as np
 from numpy.testing import (assert_equal,
                            assert_almost_equal)
 
-from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO
+from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO, PDB_helix
 from MDAnalysisTests.util import block_import, import_not_available
 
 
@@ -228,13 +228,11 @@ class TestRDKitConverter(object):
         ):
             u.atoms.convert_to("RDKIT")
 
-    def test_warn_guess_bonds(self, pdb):
-        pdb.delete_bonds(pdb.bonds)
-        ag = pdb.select_atoms("resnum 101 and segid A")
-        pdb.delete_bonds(ag.bonds)
+    def test_warn_guess_bonds(self):
+        u = mda.Universe(PDB_helix)
         with pytest.warns(UserWarning,
                           match="No `bonds` attribute in this AtomGroup"):
-            ag.convert_to("RDKIT")
+            u.atoms.convert_to("RDKIT")
 
     def test_warn_no_hydrogen(self):
         u = mda.Universe.from_smiles("O=O")
@@ -449,5 +447,5 @@ class TestRDKitFunctions(object):
         smi = "[C-]C=CC=CC=CC=CC=CC=C[C-]"
         mol = Chem.MolFromSmiles(smi)
         with pytest.warns(UserWarning,
-                          match="reasonable ammount of iterations"):
+                          match="reasonable number of iterations"):
             _rebuild_conjugated_bonds(mol, 2)

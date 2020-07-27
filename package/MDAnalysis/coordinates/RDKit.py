@@ -305,9 +305,7 @@ class RDKitConverter(base.ConverterBase):
             atom_mapper[atom.ix] = index
 
         try:
-            if (len(ag.bonds) == 0) and (ag.n_atoms > 1):
-                # force guessing bonds
-                raise NoDataError
+            ag.bonds
         except NoDataError:
             warnings.warn(
                 "No `bonds` attribute in this AtomGroup. Guessing bonds based "
@@ -360,7 +358,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
         # convert numpy types to python standard types
         value = value.item()
     if attr == "names":
-        # RDKit needs the name to be properly formated for a
+        # RDKit needs the name to be properly formatted for a
         # PDB file (1 letter elements start at col 14)
         name = re.findall(r'(\D+|\d+)', value)
         if len(name) == 2:
@@ -386,7 +384,7 @@ def _set_atom_property(atom, attr, value):
 def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     """Infer bond orders and formal charges from a molecule.
 
-    Since most MD topology files don't explicitely retain informations on bond
+    Since most MD topology files don't explicitly retain information on bond
     orders or charges, it has to be guessed from the topology. This is done by
     looping other each atom and comparing its expected valence to the current
     valence to get the Number of Unpaired Electrons (NUE).
@@ -394,8 +392,8 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     If two neighbouring atoms have UEs, the bond between them most
     likely has to be increased by the value of the smallest NUE.
     If after this process, an atom still has UEs, it's either a radical
-    (because one its bonds was cut when creating the AtomGroup) or it needs a
-    negative formal charge of -NUE. Since these radical atoms can be detected
+    (because one of its bonds was cut when creating the AtomGroup) or it needs
+    a negative formal charge of -NUE. Since these radical atoms can be detected
     when looping over the bonds of the AtomGroup, only atoms that are not part
     of this "terminal_atoms" list will be assigned a negative formal charge.
 
@@ -548,7 +546,7 @@ def _run_reaction(reaction, reactant):
 
 def _rebuild_conjugated_bonds(mol, max_iter=200):
     """Rebuild conjugated bonds without negatively charged atoms at the
-    begining and end of the conjugated system
+    beginning and end of the conjugated system
 
     Depending on the order in which atoms are read during the conversion, the
     :func:`_infer_bo_and_charges` function might write conjugated systems with
@@ -563,7 +561,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     `n=1`. This last pattern is then transformed from `anion-*=*-anion` to
     `*=*-*=*`.
     Since `anion-*=*` is the same as `*=*-anion` in terms of SMARTS, we can
-    control that we don't tranform the same triplet of atoms back and forth by
+    control that we don't transform the same triplet of atoms back and forth by
     adding their indices to a list.
     The molecule needs to be kekulized first to also cover systems
     with aromatic rings.
@@ -645,7 +643,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
 
     # reached max_iter
     warnings.warn("The standardization could not be completed within a "
-                  "reasonable ammount of iterations")
+                  "reasonable number of iterations")
 
 
 def _reassign_props_after_reaction(reactant, product):
