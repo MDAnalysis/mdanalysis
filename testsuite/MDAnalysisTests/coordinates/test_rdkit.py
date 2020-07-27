@@ -29,7 +29,7 @@ from numpy.testing import (assert_equal,
                            assert_almost_equal)
 
 from MDAnalysisTests.datafiles import mol2_molecule, PDB_full, GRO, PDB_helix
-from MDAnalysisTests.util import block_import, import_not_available
+from MDAnalysisTests.util import import_not_available
 
 
 try:
@@ -45,28 +45,25 @@ try:
         _reassign_props_after_reaction,
     )
 except ImportError:
-    rdkit_installed = False
+    pass
 
-    def mol2_mol():
-        pass
 
-    def smiles_mol():
-        pass
+requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
+                                    reason="requires RDKit")
 
-    def dummy_product():
-        pass
 
-    def dummy_product_nomap():
-        pass
+@pytest.mark.skipif(not import_not_available("rdkit"),
+                    reason="only for min dependencies build")
+class TestRequiresRDKit(object):
+    def test_converter_requires_rdkit(self):
+        u = mda.Universe(PDB_full)
+        with pytest.raises(ImportError,
+                           match="RDKit is required for the RDKitConverter"):
+            u.atoms.convert_to("RDKIT")
 
-    def dummy_reactant():
-        pass
 
-    def dummy_reactant_noprops():
-        pass
-else:
-    rdkit_installed = True
-
+@requires_rdkit
+class MolFactory:
     def mol2_mol():
         return Chem.MolFromMol2File(mol2_molecule, removeHs=False)
 
@@ -108,26 +105,22 @@ else:
         return mol
 
 
-requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
-                                    reason="requires RDKit")
+@pytest.fixture(scope="function")
+def rdmol(request):
+    return getattr(MolFactory, request.param)()
 
 
-@pytest.mark.skipif(rdkit_installed, 
-                    reason="only for min dependencies build")
-class TestRequiresRDKit(object):
-    def test_converter_requires_rdkit(self):
-        u = mda.Universe(PDB_full)
-        with pytest.raises(ImportError,
-                           match="RDKit is required for the RDKitConverter"):
-            u.atoms.convert_to("RDKIT")
+@pytest.fixture(scope="function")
+def product(request):
+    return getattr(MolFactory, request.param)()
 
 
 @requires_rdkit
 class TestRDKitReader(object):
     @pytest.mark.parametrize("rdmol, n_frames", [
-        (mol2_mol(), 1),
-        (smiles_mol(), 3),
-    ])
+        ("mol2_mol", 1),
+        ("smiles_mol", 3),
+    ], indirect=["rdmol"])
     def test_coordinates(self, rdmol, n_frames):
         universe = mda.Universe(rdmol)
         assert universe.trajectory.n_frames == n_frames
@@ -144,7 +137,7 @@ class TestRDKitReader(object):
         assert_equal(u.trajectory.coordinate_array, expected)
 
     def test_compare_mol2reader(self):
-        universe = mda.Universe(mol2_mol())
+        universe = mda.Universe(MolFactory.mol2_mol())
         mol2 = mda.Universe(mol2_molecule)
         assert universe.trajectory.n_frames == mol2.trajectory.n_frames
         assert_equal(universe.trajectory.ts.positions,
@@ -212,15 +205,9 @@ class TestRDKitConverter(object):
                     rd_value = rd_value.strip()
                 assert rd_value == mda_value
 
-    def test_identical_topology_mol2(self, mol2):
-        """Check stereochemistry on atoms and bonds (but not yet)"""
-        rdmol = mol2_mol()
-        umol = mol2.atoms.convert_to("RDKIT")
-        assert rdmol.HasSubstructMatch(umol, useChirality=False)
-        assert umol.HasSubstructMatch(rdmol, useChirality=False)
-
-    def test_identical_topology(self):
-        rdmol = smiles_mol()
+    @pytest.mark.parametrize("rdmol", ["mol2_mol", "smiles_mol"],
+                             indirect=True)
+    def test_identical_topology(self, rdmol):
         u = mda.Universe(rdmol)
         umol = u.atoms.convert_to("RDKIT")
         assert rdmol.HasSubstructMatch(umol) and umol.HasSubstructMatch(rdmol)
@@ -381,13 +368,13 @@ class TestRDKitFunctions(object):
         _set_atom_property(atom, prop, value)
         assert getattr(atom, getter)(prop) == value
 
-    @pytest.mark.parametrize("reactant, product, name", [
-        (dummy_reactant(), dummy_product(), "props"),
-        (dummy_reactant_noprops(), dummy_product(), "noprops"),
-        (dummy_reactant(), dummy_product_nomap(), "nomap"),
-    ])
-    def test_reassign_props_after_reaction(self, reactant, product, name):
-        _reassign_props_after_reaction(reactant, product)
+    @pytest.mark.parametrize("rdmol, product, name", [
+        ("dummy_reactant", "dummy_product", "props"),
+        ("dummy_reactant_noprops", "dummy_product", "noprops"),
+        ("dummy_reactant", "dummy_product_nomap", "nomap"),
+    ], indirect=["rdmol", "product"])
+    def test_reassign_props_after_reaction(self, rdmol, product, name):
+        _reassign_props_after_reaction(rdmol, product)
         atom = product.GetAtomWithIdx(0)
         if name == "props":
             assert atom.GetProp("foo") == "bar"
