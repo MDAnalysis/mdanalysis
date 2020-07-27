@@ -75,7 +75,7 @@ class FileIOPicklable(io.FileIO):
     Note
     ----
     This class only supports reading files in binary mode. If you need to open
-    to open a file in text mode, use the :func:`pickle_open`.
+    a file in text mode, use the :func:`pickle_open`.
 
     Parameters
     ----------
@@ -389,8 +389,8 @@ def pickle_open(name, mode='rt'):
     .. versionadded:: 2.0.0
     """
     if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') \
-                         files can be pickled.")
+        raise ValueError("Only read mode ('r', 'rt', 'rb') "
+                         "iles can be pickled.")
     name = os.fspath(name)
     raw = FileIOPicklable(name)
     if mode == 'rb':
@@ -457,8 +457,8 @@ def bz2_pickle_open(name, mode='rb'):
     .. versionadded:: 2.0.0
     """
     if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') \
-                         files can be pickled.")
+        raise ValueError("Only read mode ('r', 'rt', 'rb') "
+                         "files can be pickled.")
     bz_mode = mode.replace("t", "")
     binary_file = BZ2Picklable(name, bz_mode)
     if "t" in mode:
@@ -525,8 +525,8 @@ def gzip_pickle_open(name, mode='rb'):
     .. versionadded:: 2.0.0
     """
     if mode not in {'r', 'rt', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rt', 'rb') \
-                         files can be pickled.")
+        raise ValueError("Only read mode ('r', 'rt', 'rb') "
+                         "files can be pickled.")
     gz_mode = mode.replace("t", "")
     binary_file = GzipPicklable(name, gz_mode)
     if "t" in mode:

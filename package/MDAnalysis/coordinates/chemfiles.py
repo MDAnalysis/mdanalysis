@@ -401,7 +401,7 @@ if HAS_CHEMFILES:
 
         Note
         ----
-        Can only be used with readling ('r') mode.
+        Can only be used with reading ('r') mode.
         Upon pickling, the current frame is reset. `universe.trajectory[i]` has
         to be used to return to its original frame.
 

@@ -257,8 +257,8 @@ def gsd_pickle_open(name, mode='rb'):
     gsd_version = gsd.__version__
     schema_version = [1, 4] if gsd_version >= '1.9.0' else [1, 3]
     if mode not in {'r', 'rb'}:
-        raise ValueError("Only read mode ('r', 'rb') \
-                         files can be pickled.")
+        raise ValueError("Only read mode ('r', 'rb') "
+                         "files can be pickled.")
     gsdfileobj = fl.open(name=name,
                          mode=mode,
                          application='gsd.hoomd ' + gsd_version,
