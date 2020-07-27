@@ -23,7 +23,7 @@
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import DMS_DOMAINS
+from MDAnalysisTests.datafiles import DMS_DOMAINS, DMS_NO_SEGID
 
 
 class TestDMSParser(ParserBase):
@@ -58,6 +58,25 @@ class TestDMSParser(ParserBase):
         
         s4 = u.select_atoms("segid CORE")
         assert len(s4) == 2306
+
+        s5 = u.select_atoms("resname ALA")
+        assert len(s5) == 190
+
+class TestDMSParserNoSegid(TestDMSParser):
+    ref_filename = DMS_NO_SEGID
+    expected_n_segments = 1
+    
+    def test_atomsels(self, filename):
+        u = mda.Universe(filename)
+
+        s0 = u.select_atoms("name CA")
+        assert len(s0) == 214
+
+        s1 = u.select_atoms("resid 33")
+        assert len(s1) == 12
+
+        s2 = u.select_atoms("segid SYSTEM")
+        assert len(s2) == 3341
 
         s5 = u.select_atoms("resname ALA")
         assert len(s5) == 190
