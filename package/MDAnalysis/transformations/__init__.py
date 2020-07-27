@@ -53,7 +53,30 @@ So, a transformation can be roughly defined as follows:
 
 See `MDAnalysis.transformations.translate` for a simple example.
 
+To meet the need of serialization of universe, transformations are converted
+into classes. They retain the similar API and functionality by implementing the
+aforementioned `wrapped(ts)` as a special method `__call__`. For example:
 
+.. code-blocks:: python
+
+    class transfomrations(object):
+        def __init__(self, *args, **kwargs):
+            #  do some things
+            #  save needed args as attributes.
+            self.needed_var = args[0]
+
+        def __call__(self, ts):
+            #  apply changes to the Timestep object
+            return ts
+
+
+Note it does not mean that the old closure/wrapped function implementation will fail.
+They can still be used if one does not need serialization, which is a prerequisite for parallel
+analysis.
+
+
+.. versionchanged:: 2.0.0
+    All transformations are classes now.
 """
 
 from .translate import translate, center_in_box

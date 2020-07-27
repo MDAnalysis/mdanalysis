@@ -27,9 +27,9 @@ Fitting transformations --- :mod:`MDAnalysis.transformations.fit`
 Translate and/or rotates the coordinates of a given trajectory to align
 a given AtomGroup to a reference structure.
 
-.. autofunction:: fit_translation
+.. autoclass:: fit_translation
 
-.. autofunction:: fit_rot_trans
+.. autoclass:: fit_rot_trans
 
 """
 import numpy as np
@@ -79,6 +79,10 @@ class fit_translation(object):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
+
+
+    .. versionchanged:: 2.0.0
+        Now it is a class with `__call__`.
     """
     def __init__(self, ag, reference, plane=None, weights=None):
         self.ag = ag

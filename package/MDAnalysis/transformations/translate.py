@@ -30,9 +30,9 @@ The vector can either be user defined, using the function :func:`translate`
 or defined by centering an AtomGroup in the unit cell using the function
 :func:`center_in_box`
 
-.. autofunction:: translate
+.. autoclass:: translate
 
-.. autofunction:: center_in_box
+.. autoclass:: center_in_box
 
 
 """
@@ -107,6 +107,9 @@ class center_in_box(object):
     -------
     :class:`~MDAnalysis.coordinates.base.Timestep` object
 
+
+    .. versionchanged:: 2.0.0
+        Now it is a class with `__call__`.
     """
     def __init__(self, ag, center='geometry', point=None, wrap=False):
         self.ag = ag

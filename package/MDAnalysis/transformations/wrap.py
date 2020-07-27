@@ -28,9 +28,9 @@ Wrap/unwrap the atoms of a given AtomGroup in the unit cell. :func:`wrap`
 translates the atoms back in the unit cell. :func:`unwrap` translates the
 atoms of each molecule so that bons don't split over images.
 
-.. autofunction:: wrap
+.. autoclass:: wrap
 
-.. autofunction:: unwrap
+.. autoclass:: unwrap
 
 """
 
@@ -80,6 +80,9 @@ class wrap(object):
     -------
     MDAnalysis.coordinates.base.Timestep
     
+
+    .. versionchanged:: 2.0.0
+        Now it is a class with `__call__`.
     """
     def __init__(self, ag, compound='atoms'):
         self.ag = ag

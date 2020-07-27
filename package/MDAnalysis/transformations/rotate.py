@@ -28,7 +28,7 @@ Trajectory rotation --- :mod:`MDAnalysis.transformations.rotate`
 Rotates the coordinates by a given angle arround an axis formed by a direction
 and a point.
 
-.. autofunction:: rotateby
+.. autoclass:: rotateby
 
 """
 import numpy as np
@@ -103,6 +103,9 @@ class rotateby(object):
     Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible 
     after rotating the trajectory.
 
+
+    .. versionchanged:: 2.0.0
+        Now it is a class with `__call__`.
     '''
     def __init__(self,
                  angle,
