@@ -533,10 +533,24 @@ class RMSD(AnalysisBase):
                         len(atoms['reference']), len(atoms['mobile'])))
 
         # check weights type
-        if iterable(self.weights) and (np.array(weights).dtype
-                                not in (np.dtype('float64'),np.dtype('int64'))):
-            raise TypeError("weights should only be 'mass', None or 1D float array."
-                                 "For weights on groupselections, use **weight_groupselections** ")
+        acceptable_dtypes = (np.dtype('float64'), np.dtype('int64'))
+        msg = ("weights should only be 'mass', None or 1D float array."
+              "For weights on groupselections, "
+              "use **weight_groupselections**")
+
+        if iterable(self.weights):
+            element_lens = []
+            for element in self.weights:
+                if iterable(element):
+                    element_lens.append(len(element))
+                else:
+                    element_lens.append(1)
+            if np.unique(element_lens).size > 1:
+                # jagged data structure
+                raise TypeError(msg)
+            if np.array(element).dtype not in acceptable_dtypes:
+                raise TypeError(msg)
+
         if iterable(self.weights) or self.weights != "mass":
             get_weights(self.mobile_atoms, self.weights)
 

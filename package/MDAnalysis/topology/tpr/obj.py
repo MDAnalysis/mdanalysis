@@ -32,6 +32,7 @@ Class definitions for the TPRParser
 
 """
 from collections import namedtuple
+from ..tables import Z2SYMB
 
 TpxHeader = namedtuple(
     "TpxHeader", [
@@ -40,7 +41,7 @@ TpxHeader = namedtuple(
         "bIr", "bTop", "bX", "bV", "bF", "bBox", "sizeOfTprBody"])
 Box = namedtuple("Box", "size rel v")
 Mtop = namedtuple("Mtop", "nmoltype moltypes nmolblock")
-Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ iparams")
+Params = namedtuple("Params", "atnr ntypes functype reppow fudgeQQ")
 Atom = namedtuple("Atom", ["m", "q", "mB", "qB", "tp", "typeB", "ptype", "resind", "atomnumber"])
 Atoms = namedtuple("Atoms", "atoms nr nres type typeB atomnames resnames")
 Ilist = namedtuple("Ilist", "nr ik, iatoms")
@@ -62,8 +63,11 @@ class MoleculeKind(object):
         self.acceptors = acceptors
 
     def __repr__(self):
-        return "Molecule: {0:<20s} #atoms: {1:<10d} #residues: {2:<10d}".format(
-            self.name, self.number_of_atoms(), self.number_of_residues())
+        return (
+            f"Molecule: {self.name:<20s} "
+            f"#atoms: {self.number_of_atoms():<10d} "
+            f"#residues: {self.number_of_residues():<10d}"
+        )
 
     def number_of_atoms(self):
         return len(self.atomkinds)
@@ -100,7 +104,8 @@ class MoleculeKind(object):
 
 
 class AtomKind(object):
-    def __init__(self, id, name, type, resid, resname, mass, charge):
+    def __init__(
+            self, id, name, type, resid, resname, mass, charge, atomic_number):
         # id is only within the scope of a single molecule, not the whole system
         self.id = id
         self.name = name
@@ -109,12 +114,31 @@ class AtomKind(object):
         self.resname = resname
         self.mass = mass
         self.charge = charge
+        self.atomic_number = atomic_number
+
+    @property
+    def element_symbol(self):
+        """
+        The symbol of the atom element.
+
+        The symbol corresponding to the atomic number. If the atomic number
+        is not recognized, which happens if a particle is not really an
+        atom (e.g a coarse-grained particle), an empty string is returned.
+        """
+        return Z2SYMB.get(self.atomic_number, '')
 
     def __repr__(self):
-        return \
-            ("< AtomKind: id {0:6d}, name {1:5s}, type {2:10s}, resid {3:6d}, resname {4:4s}, mass {5:8.4f}, "
-             "charge {6:12.3f} >".format(self.id, self.name, self.type, self.resid,
-                                         self.resname, self.mass, self.charge))
+        return (
+            f"< AtomKind: "
+            f"id {self.id:6d}, "
+            f"name {self.name:5s}, "
+            f"type {self.type:10s}, "
+            f"resid {self.resid:6d}, "
+            f"resname {self.resname:4s}, "
+            f"mass {self.mass:8.4f}, "
+            f"charge {6:12.3f} "
+            ">"
+        )
 
 
 class InteractionKind(object):

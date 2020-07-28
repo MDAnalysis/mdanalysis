@@ -26,8 +26,8 @@ import cython
 import numpy as np
 from .mdamath import triclinic_vectors
 cimport numpy as np
-cimport _cutil
-from _cutil cimport _dot ,_norm, _cross
+cimport MDAnalysis.lib._cutil
+from MDAnalysis.lib._cutil cimport _dot ,_norm, _cross
 
 from libcpp.vector cimport vector
 
