@@ -45,7 +45,7 @@ import sqlite3
 import os
 
 from . import guessers
-from .base import TopologyReaderBase, squash_by, change_squash
+from .base import TopologyReaderBase, change_squash
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -139,8 +139,8 @@ class DMSParser(TopologyReaderBase):
                                 ''.format(attrname))
                     vals = cur.fetchall()
                 except sqlite3.DatabaseError:
-                    raise IOError(
-                        "Failed reading the atoms from DMS Database")
+                    errmsg = "Failed reading the atoms from DMS Database"
+                    raise IOError(errmsg) from None
                 else:
                     attrs[attrname] = np.array(vals, dtype=dt)
 
@@ -149,7 +149,8 @@ class DMSParser(TopologyReaderBase):
                 cur.execute('SELECT * FROM bond')
                 bonds = cur.fetchall()
             except sqlite3.DatabaseError:
-                raise IOError("Failed reading the bonds from DMS Database")
+                errmsg = "Failed reading the bonds from DMS Database"
+                raise IOError(errmsg) from None
             else:
                 bondlist = []
                 bondorder = {}
@@ -175,26 +176,33 @@ class DMSParser(TopologyReaderBase):
         topattrs.append(Atomtypes(atomtypes, guessed=True))
 
         # Residues
-        
-        atom_residx, (res_resids, res_resnums, res_resnames, res_segids) = change_squash(
-            (attrs['resid'], attrs['resname'], attrs['segid']), (attrs['resid'], attrs['resid'].copy(), attrs['resname'], attrs['segid']))
+        atom_residx, (res_resids,
+                      res_resnums,
+                      res_resnames,
+                      res_segids) = change_squash(
+            (attrs['resid'], attrs['resname'], attrs['segid']),
+            (attrs['resid'],
+             attrs['resid'].copy(),
+             attrs['resname'],
+             attrs['segid']),
+            )
+
         n_residues = len(res_resids)
         topattrs.append(Resids(res_resids))
         topattrs.append(Resnums(res_resnums))
         topattrs.append(Resnames(res_resnames))
 
-        
-        if any(res_segids) and not any(val == None for val in res_segids):
-            res_segidx, (res_segids,) = change_squash((res_segids,), (res_segids,))
-            
-            unique_segments = np.unique(res_segids)
-            idx2segment = {idx : res_segids[idx] for idx in res_segidx}
-            res_segids = unique_segments
-            new_indices = {segid : newidx for newidx, segid in enumerate(unique_segments)}
-            
-            move_to_new_index = lambda idx : new_indices[idx2segment[idx]]
-            res_segidx = np.array([move_to_new_index(idx) for idx in res_segidx])
-            
+        if any(res_segids) and not any(val is None for val in res_segids):
+            res_segidx, (res_segids,) = change_squash((res_segids,),
+                                                      (res_segids,))
+
+            uniq_seg = np.unique(res_segids)
+            idx2seg = {idx: res_segids[idx] for idx in res_segidx}
+            res_segids = uniq_seg
+            nidx = {segid: nidx for nidx, segid in enumerate(uniq_seg)}
+
+            res_segidx = np.array([nidx[idx2seg[idx]] for idx in res_segidx])
+
             n_segments = len(res_segids)
             topattrs.append(Segids(res_segids))
         else:
@@ -210,4 +218,3 @@ class DMSParser(TopologyReaderBase):
                        residue_segindex=res_segidx)
 
         return top
-
