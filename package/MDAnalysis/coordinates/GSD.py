@@ -122,8 +122,8 @@ class GSDReader(base.ReaderBase):
 
         # set frame box dimensions
         self.ts.dimensions = myframe.configuration.box
-        for i in range(3, 6):
-            self.ts.dimensions[i] = np.arccos(self.ts.dimensions[i]) * 180.0 / np.pi
+        self.ts.dimensions[3:] = np.rad2deg(np.arccos(self.ts.dimensions[3:]))
+
 
         # set particle positions
         frame_positions = myframe.particles.position
