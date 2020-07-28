@@ -54,6 +54,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
+      tqdm
       h5py
       tqdm
     displayName: 'Install dependencies'
