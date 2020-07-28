@@ -52,6 +52,8 @@ Enhancements
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
+  * Added `H5MDReader` to coordinate readers, `test_h5md` to test it, and added
+    `test.h5md` and `cobrotoxin.h5md` test files (Issue #762, PR #2787) 
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
