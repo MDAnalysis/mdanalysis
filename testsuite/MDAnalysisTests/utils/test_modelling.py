@@ -249,7 +249,7 @@ class TestMergeTopology(object):
 
         # merge_protein doesn't contain bond topology, so merged universe
         # shouldn't have one either
-        print(u_merge.atoms.bonds)
+        assert not hasattr(u_merge.atoms, 'bonds')
         # PDB reader yields empty Bonds group, which means bonds from
         # PSF/DCD survive the merge
         # assert(not hasattr(u_merge.atoms, 'bonds') or len(u_merge.atoms.bonds) == 0)

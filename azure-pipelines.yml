@@ -22,12 +22,19 @@ jobs:
   variables:
     MPLBACKEND: agg
   strategy:
-    maxParallel: 4
     matrix:
         Python37-32bit-full:
           PYTHON_VERSION: '3.7'
           PYTHON_ARCH: 'x86'
-          BITS: 32
+        Python36-64bit-full:
+          PYTHON_VERSION: '3.6'
+          PYTHON_ARCH: 'x64'
+        Python37-64bit-full:
+          PYTHON_VERSION: '3.7'
+          PYTHON_ARCH: 'x64'
+        Python38-64bit-full:
+          PYTHON_VERSION: '3.8'
+          PYTHON_ARCH: 'x64'
   steps:
   - task: UsePythonVersion@0
     inputs:
@@ -39,6 +46,7 @@ jobs:
   - script: >-
       python -m pip install
       cython
+      hypothesis
       matplotlib
       numpy
       pytest
@@ -48,6 +56,21 @@ jobs:
       scipy
       h5py
     displayName: 'Install dependencies'
+  # TODO: recent rdkit is not on PyPI
+  - script: >-
+      python -m pip install
+      biopython
+      chemfiles
+      duecredit
+      gsd==1.9.3
+      joblib
+      GridDataFormats
+      mmtf-python
+      networkx
+      parmed
+      tidynamics>=1.0.0
+    displayName: 'Install additional dependencies for 64-bit tests'
+    condition: and(succeeded(), eq(variables['PYTHON_ARCH'], 'x64'))
   - powershell: |
       cd package
       python setup.py install

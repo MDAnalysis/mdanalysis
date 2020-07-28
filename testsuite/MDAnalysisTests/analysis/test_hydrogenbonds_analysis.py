@@ -195,7 +195,7 @@ class TestHydrogenBondAnalysisIdeal(object):
             h = HydrogenBondAnalysis(universe, **kwargs)
             h._get_dh_pairs()
 
-    def test_first(self, hydrogen_bonds):
+    def test_first_hbond(self, hydrogen_bonds):
         assert len(hydrogen_bonds.hbonds) == 2
 
         frame_no, donor_index, hydrogen_index, acceptor_index, da_dst, angle =\
@@ -383,6 +383,20 @@ class TestHydrogenBondAnalysisTIP3P_GuessAcceptors_GuessHydrogens_UseTopology_(T
         'd_a_cutoff': 3.0,
         'd_h_a_angle_cutoff': 120.0
     }
+
+    def test_no_hydrogens(self, universe):
+        # If no hydrogens are identified at a given frame, check an
+        # empty donor atom group is created
+        test_kwargs = TestHydrogenBondAnalysisTIP3P.kwargs.copy()
+        test_kwargs['donors_sel'] = None         # use topology to find pairs
+        test_kwargs['hydrogens_sel'] = "name H"  # no atoms have name H
+
+        h = HydrogenBondAnalysis(universe, **test_kwargs)
+        h.run()
+
+        assert h._hydrogens.n_atoms == 0
+        assert h._donors.n_atoms == 0
+        assert h.hbonds.size == 0
 
 class TestHydrogenBondAnalysisTIP3P_GuessDonors_NoTopology(object):
     """Guess the donor atoms involved in hydrogen bonds using the partial charges of the atoms.

@@ -63,6 +63,7 @@ from ..core.topologyattrs import (
     Segids,
     AltLocs,
     ChainIDs,
+    ICodes,
     Occupancies,
     Tempfactors,
 )
@@ -94,9 +95,46 @@ class RDKitParser(TopologyReaderBase):
      - Resnames
      - AltLocs
      - ChainIDs
+     - ICodes
      - Occupancies
      - Tempfactors
-    
+
+    Attributes table:
+
+    +---------------------------------------------+-------------------------+
+    | RDKit attribute                             | MDAnalysis equivalent   |
+    +=============================================+=========================+
+    | atom.GetMonomerInfo().GetAltLoc()           | altLocs                 |
+    +---------------------------------------------+-------------------------+
+    | atom.GetIsAromatic()                        | aromaticities           |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetChainId()          | chainIDs                |
+    +---------------------------------------------+-------------------------+
+    | atom.GetDoubleProp('_GasteigerCharge')      | charges                 |
+    | atom.GetDoubleProp('_TriposPartialCharge')  |                         |
+    +---------------------------------------------+-------------------------+
+    | atom.GetSymbol()                            | elements                |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetInsertionCode()    | icodes                  |
+    +---------------------------------------------+-------------------------+
+    | atom.GetIdx()                               | indices                 |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMass()                              | masses                  |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetName()             | names                   |
+    | atom.GetProp('_TriposAtomName')             |                         |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetOccupancy()        | occupancies             |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetResidueName()      | resnames                |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetResidueNumber()    | resnums                 |
+    +---------------------------------------------+-------------------------+
+    | atom.GetMonomerInfo().GetTempFactor()       | tempfactors             |
+    +---------------------------------------------+-------------------------+
+    | atom.GetProp('_TriposAtomType')             | types                   |
+    +---------------------------------------------+-------------------------+
+
 
     .. versionadded:: 2.0.0
     """
@@ -135,6 +173,7 @@ class RDKitParser(TopologyReaderBase):
         segids = []
         altlocs = []
         chainids = []
+        icodes = []
         occupancies = []
         tempfactors = []
 
@@ -160,6 +199,7 @@ class RDKitParser(TopologyReaderBase):
                 segids.append(mi.GetSegmentNumber())
                 altlocs.append(mi.GetAltLoc().strip())
                 chainids.append(mi.GetChainId().strip())
+                icodes.append(mi.GetInsertionCode().strip())
                 occupancies.append(mi.GetOccupancy())
                 tempfactors.append(mi.GetTempFactor())
             else:
@@ -250,14 +290,16 @@ class RDKitParser(TopologyReaderBase):
             resnums = np.array(resnums, dtype=np.int32)
             resnames = np.array(resnames, dtype=object)
             segids = np.array(segids, dtype=object)
-            residx, (resnums, resnames, segids) = change_squash(
-                (resnums, resnames, segids), 
-                (resnums, resnames, segids))
+            icodes = np.array(icodes, dtype=object)
+            residx, (resnums, resnames, icodes, segids) = change_squash(
+                (resnums, resnames, icodes, segids),
+                (resnums, resnames, icodes, segids))
             n_residues = len(resnums)
             for vals, Attr, dtype in (
                 (resnums, Resids, np.int32),
                 (resnums.copy(), Resnums, np.int32),
-                (resnames, Resnames, object)
+                (resnames, Resnames, object),
+                (icodes, ICodes, object),
             ):
                 attrs.append(Attr(np.array(vals, dtype=dtype)))
         else:
