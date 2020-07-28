@@ -178,8 +178,6 @@ class H5MDWriter(base.WriterBase):
         self.creator = kwargs.pop('creator', 'MDAnalysis')
         self.creator_version = kwargs.pop('creator_version', mda.__version__)
 
-        # Units stored as instance variable
-        # Will be filled after translated from ts object
         self.units = units
 
     def _init_h5md(self, periodic=True):
@@ -199,7 +197,7 @@ class H5MDWriter(base.WriterBase):
         creator_group.attrs['version'] = self.creator_version
 
         self.h5mdfile = h5md_file
-        self._trajectory_group = self._create_particles_group(name='trajectory')
+        self._trajectory_group = h5mdfile.require_group('particles').require_group('trajectory')
 
     def is_periodic(self, ts):
         """Test if timestep ``ts`` contains a periodic box.
@@ -351,8 +349,3 @@ class H5MDWriter(base.WriterBase):
         self.box.edges.append(value=ts.triclinic_dimensions,
                               step=ts.frame,
                               time=ts.time)
-
-
-    def _create_particles_group(self, name):
-        """ """
-        return self.h5mdfile.require_group('particles').require_group(name)

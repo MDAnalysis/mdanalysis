@@ -54,6 +54,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
+      tqdm
       h5py
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
