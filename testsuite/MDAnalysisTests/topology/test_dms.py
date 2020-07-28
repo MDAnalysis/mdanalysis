@@ -52,20 +52,21 @@ class TestDMSParser(ParserBase):
 
         s2 = u.select_atoms("segid NMP")
         assert len(s2) == 437
-        
+
         s3 = u.select_atoms("segid LID")
         assert len(s3) == 598
-        
+
         s4 = u.select_atoms("segid CORE")
         assert len(s4) == 2306
 
         s5 = u.select_atoms("resname ALA")
         assert len(s5) == 190
 
+
 class TestDMSParserNoSegid(TestDMSParser):
     ref_filename = DMS_NO_SEGID
     expected_n_segments = 1
-    
+
     def test_atomsels(self, filename):
         u = mda.Universe(filename)
 

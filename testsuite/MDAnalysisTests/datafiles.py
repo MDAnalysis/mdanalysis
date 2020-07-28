@@ -115,8 +115,8 @@ __all__ = [
     "PDB_HOLE",  # gramicidin A
     "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
-    "DMS_DOMAINS", # ADK closed with multiple segids
-    "DMS_NO_SEGID", # ADK closed with no segids or chains
+    "DMS_DOMAINS",  # ADK closed with multiple segids
+    "DMS_NO_SEGID",  # ADK closed with no segids or chains
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
