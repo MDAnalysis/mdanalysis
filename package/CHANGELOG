@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
-         calcraven
+         calcraven, ianmkenney
 
   * 1.0.1
 
@@ -38,6 +38,8 @@ Fixes
     empty AtomGroup (Issue #2848)
   * Fixed reading in masses and charges from a hoomdxml file
     (Issue #2888, PR #2889)
+  * Fixed the DMSParser, allowing the creation of multiple segids sharing
+    residues with identical resids (Issue #1387, PR #2872)
 
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
