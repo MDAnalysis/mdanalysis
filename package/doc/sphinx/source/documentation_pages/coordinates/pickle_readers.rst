@@ -26,16 +26,16 @@ How to serialize a new reader
 File Access
 ^^^^^^^^^^^
 If the new reader uses :func:`util.anyopen()` 
-(e.g. :class:MDAnalysis.coordinates.PDB.PDBReader),
+(e.g. :class:`MDAnalysis.coordinates.PDB.PDBReader`),
 the reading handler can be pickled without modification.
 If the new reader uses I/O classes from other package
-(e.g. :class:MDAnalysis.coordinates.GSD.GSDReader)),
+(e.g. :class:`MDAnalysis.coordinates.GSD.GSDReader`)),
 and cannot be pickled natively, create a new picklable class inherited from 
 the file class in that package
-(e.g. :class:MDAnalysis.coordinates.GSD.GSDPicklable),
+(e.g. :class:`MDAnalysis.coordinates.GSD.GSDPicklable`),
 adding :func:`__getstate__`,
 :func:`__setstate__` functions (or :func:`__reduce__` if needed. Consult the
-pickle [documentation](https://docs.python.org/3/library/pickle.html) of python)
+pickle `documentation <https://docs.python.org/3/library/pickle.html>`_ of python)
 to allow file handler serialization.
 
 To seek or not to seek
@@ -46,8 +46,9 @@ random access. But if error occurs during testing, find a way to make the offset
 Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O 
 class supports offset?
 
-For example, in `TRZReader`, `_read_frame` is implemented by `_seek`ing the file into
-its previous frame and `_read_next_timestep`, so the offset of the file is crucial
+For example, in :class:`MDAnalysis.coordinates.TRZ.TRZReader`,
+:func:`_read_frame` is implemented by :func:`_seek` ing the file into
+its previous frame and :func:`_read_next_timestep`, so the offset of the file is crucial
 for such machinery to work.
 
 Miscellaneous
