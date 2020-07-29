@@ -193,8 +193,7 @@ class TestRDKitConverter(object):
         sel = pdb.select_atoms(sel_str)
         umol = sel.convert_to("RDKIT")
         atom = umol.GetAtomWithIdx(atom_index)
-        mda_index = np.where(
-            sel.indices == atom.GetIntProp("_MDAnalysis_index"))
+        mda_index = atom.GetIntProp("_MDAnalysis_index")
         mi = atom.GetMonomerInfo()
 
         for mda_attr, rd_attr in RDATTRIBUTES.items():
@@ -268,10 +267,12 @@ class TestRDKitConverter(object):
     @pytest.mark.parametrize("idx", [0, 10, 42])
     def test_other_attributes(self, mol2, idx):
         mol = mol2.atoms.convert_to("RDKIT")
-        rdprops = mol.GetAtomWithIdx(idx).GetPropsAsDict()
+        rdatom = mol.GetAtomWithIdx(idx)
+        rdprops = rdatom.GetPropsAsDict()
+        mda_idx = int(rdprops["_MDAnalysis_index"])
         for prop in ["charge", "segid", "type"]:
             rdprop = rdprops["_MDAnalysis_%s" % prop]
-            mdaprop = getattr(mol2.atoms[idx], prop)
+            mdaprop = getattr(mol2.atoms[mda_idx], prop)
             assert rdprop == mdaprop
 
     @pytest.mark.parametrize("sel_str", [
@@ -281,11 +282,36 @@ class TestRDKitConverter(object):
     def test_index_property(self, pdb, sel_str):
         ag = pdb.select_atoms(sel_str)
         mol = ag.convert_to("RDKIT")
-        expected = ag.indices
-        indices = np.array([a.GetIntProp("_MDAnalysis_index")
-                            for a in mol.GetAtoms()], dtype=np.int32)
-        indices.sort()
+        expected = [i for i in range(len(ag))]
+        indices = sorted([a.GetIntProp("_MDAnalysis_index")
+                          for a in mol.GetAtoms()])
         assert_equal(indices, expected)
+
+    def test_assign_coordinates(self, pdb):
+        mol = pdb.atoms.convert_to("RDKIT")
+        positions = mol.GetConformer().GetPositions()
+        indices = sorted(mol.GetAtoms(),
+                         key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+        indices = [a.GetIdx() for a in indices]
+        assert_equal(positions[indices], pdb.atoms.positions)
+
+    def test_assign_stereochemistry(self, mol2):
+        umol = mol2.atoms.convert_to("RDKIT")
+        rdmol = Chem.MolFromMol2File(mol2_molecule, removeHs=False)
+        assert rdmol.HasSubstructMatch(
+            umol, useChirality=True) and umol.HasSubstructMatch(
+            rdmol, useChirality=True)
+
+    def test_trajectory_coords(self):
+        u = mda.Universe.from_smiles(
+            "CCO", numConfs=3, rdkit_kwargs=dict(randomSeed=42))
+        for ts in u.trajectory:
+            mol = u.atoms.convert_to("RDKIT")
+            positions = mol.GetConformer().GetPositions()
+            indices = sorted(mol.GetAtoms(),
+                            key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+            indices = [a.GetIdx() for a in indices]
+            assert_equal(positions[indices], ts.positions)
 
 
 @requires_rdkit
@@ -408,6 +434,7 @@ class TestRDKitFunctions(object):
         "C=CC=CC=CC=CC=CC=C",
         "NCCCCC([NH3+])C(=O)[O-]",
         "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
+
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders

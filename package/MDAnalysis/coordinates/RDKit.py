@@ -299,7 +299,7 @@ class RDKitConverter(base.ConverterBase):
                 value = other_attrs[attr][i]
                 attr = "_MDAnalysis_%s" % _TOPOLOGY_ATTRS[attr].singular
                 _set_atom_property(rdatom, attr, value)
-            _set_atom_property(rdatom, "_MDAnalysis_index", int(atom.ix))
+            _set_atom_property(rdatom, "_MDAnalysis_index", i)
             # add atom
             index = mol.AddAtom(rdatom)
             atom_mapper[atom.ix] = index
@@ -336,6 +336,18 @@ class RDKitConverter(base.ConverterBase):
 
         # sanitize
         Chem.SanitizeMol(mol)
+
+        if hasattr(ag, "positions") and not np.isnan(ag.positions).any():
+            # assign coordinates
+            conf = Chem.Conformer(mol.GetNumAtoms())
+            for atom in mol.GetAtoms():
+                idx = atom.GetIntProp("_MDAnalysis_index")
+                xyz = [float(pos) for pos in ag.positions[idx]]
+                conf.SetAtomPosition(atom.GetIdx(), xyz)
+            mol.AddConformer(conf)
+            # assign R/S to atoms and Z/E to bonds
+            Chem.AssignStereochemistryFrom3D(mol)
+            Chem.SetDoubleBondNeighborDirections(mol)
 
         return mol
 
