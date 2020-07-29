@@ -6,7 +6,7 @@
 Serialization of Coordinate Readers
 *********************************************************
 
-To achieve a flawless implementation of parallelism, this document illustrates
+To achieve a working implementation of parallelism, this document illustrates
 the basic idea of how different coordinate readers are being serialized in MDAnalysis,
 and what developers should do to serialize a new reader.
 
@@ -25,18 +25,22 @@ How to serialize a new reader
 
 File Access
 ^^^^^^^^^^^
-If the new reader uses :func:`util.anyopen()` (e.g. PDB), the reading handler
-can be pickled without modification.
-If the new reader uses I/O classes from other package (e.g. GSD), and cannot
-be pickled natively, create a new picklable class inherited from 
-the file class in that package (e.g. GSDPicklable), adding :func:`__getstate__`,
+If the new reader uses :func:`util.anyopen()` 
+(e.g. :class:MDAnalysis.coordinates.PDB.PDBReader),
+the reading handler can be pickled without modification.
+If the new reader uses I/O classes from other package
+(e.g. :class:MDAnalysis.coordinates.GSD.GSDReader)),
+and cannot be pickled natively, create a new picklable class inherited from 
+the file class in that package
+(e.g. :class:MDAnalysis.coordinates.GSD.GSDPicklable),
+adding :func:`__getstate__`,
 :func:`__setstate__` functions (or :func:`__reduce__` if needed. Consult the
 pickle [documentation](https://docs.python.org/3/library/pickle.html) of python)
 to allow file handler serialization.
 
 To seek or not to seek
 ^^^^^^^^^^^^^^^^^^^^^^
-Some I/O class supports :func:`seek` and :func:`tell` functions to allow the file 
+Some I/O classes support :func:`seek` and :func:`tell` functions to allow the file 
 to be pickled with an offset. It is normally not needed for MDAnalysis with
 random access. But if error occurs during testing, find a way to make the offset work.
 Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O 
@@ -59,14 +63,14 @@ Tests
 ^^^^^
 If the test for the new reader uses :class:`BaseReaderTest`, whether
 the current timestep information is saved, and whether its relative
-position is maintained, i.e. next() read the right next timestep,
+position is maintained, i.e. next() reads the right next timestep,
 are already tested.
 
 If the new reader accesses the file with :func:`util.anyopen`, add necessary
-testes inside ``parallelism/test_multiprocessing.py`` for the reader.
+tests inside ``parallelism/test_multiprocessing.py`` for the reader.
 
-If the new reader accessed the file with new picklable I/O class,
-add necessary tests inside ``utils/test_pickleio.py`` for I/O class,
+If the new reader accessed the file with a new picklable I/O class,
+add necessary tests inside ``utils/test_pickleio.py`` for the I/O class,
 ``parallelism/test_multiprocessing.py`` for the reader.
 
 .. _implemented-fileio:
