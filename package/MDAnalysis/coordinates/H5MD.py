@@ -76,8 +76,8 @@ Classes
 
 import numpy as np
 import MDAnalysis as mda
-from MDAnalysis.coordinates import base, core
-from MDAnalysis.exceptions import NoDataError
+from . import base, core
+from ..exceptions import NoDataError
 try:
     import h5py
 except ImportError:
@@ -195,6 +195,13 @@ class H5MDReader(base.ReaderBase):
     .. note::
         The reader does not currently read mass or charge data.
 
+    .. note::
+        The ``_reopen()`` method does not explicity close and reopen
+        the file like most other coordinate readers, as this would
+        cause problems with reopening the file with the ``driver``
+        and ``comm`` arguments for parallel reads. Instead, it rewinds
+        the trajectory back to the first timstep.
+
     .. versionadded:: 2.0.0
 
     """
@@ -246,7 +253,6 @@ class H5MDReader(base.ReaderBase):
             }
     }
     _Timestep = Timestep
-    _data_keywords = ('step', 'lambda')
 
     def __init__(self, filename, convert_units=True, **kwargs):
         """
@@ -256,6 +262,10 @@ class H5MDReader(base.ReaderBase):
             trajectory filename or open h5py file
         convert_units : bool (optional)
             convert units to MDAnalysis units
+        driver : str (optional)
+            MPI file driver used to open H5MD file
+        comm : :class:`MPI.Comm` (optional)
+            MPI communicator used to open H5MD file
         **kwargs : dict
             General reader arguments.
 
@@ -269,6 +279,8 @@ class H5MDReader(base.ReaderBase):
             when ``n_atoms`` changes values between timesteps
         ValueError
             when ``convert_units=True`` but the H5MD file contains no units
+        ValueError
+            when dimension of unitcell is not 3
         NoDataError
             when the H5MD file has no 'position', 'velocity', or
             'force' group
@@ -283,11 +295,15 @@ class H5MDReader(base.ReaderBase):
         self.comm = kwargs.get('comm', None)
         self.parallel = self.driver and self.comm
         self.open_trajectory()
+        if self._particle_group['box'].attrs['dimension'] != 3:
+            raise ValueError("MDAnalysis only supports 3-dimensional"
+                             " simulation boxes")
 
         # _has dictionary used for checking whether h5md file has
         # 'position', 'velocity', or 'force' groups in the file
         self._has = {name: name in self._particle_group for
                      name in ('position', 'velocity', 'force')}
+
 
         # Gets n_atoms from first available group
         for name, value in self._has.items():
@@ -297,10 +313,13 @@ class H5MDReader(base.ReaderBase):
         else:
             raise NoDataError("Provide at least a position, velocity"
                               " or force group in the h5md file.")
+
         self.ts = self._Timestep(self.n_atoms,
+                                 positions=self.has_positions,
                                  velocities=self.has_velocities,
                                  forces=self.has_forces,
                                  **self._ts_kwargs)
+
         self.units = {'time': None,
                       'length': None,
                       'velocity': None,
@@ -335,8 +354,6 @@ class H5MDReader(base.ReaderBase):
     def close(self):
         """close reader"""
         self._file.close()
-        ## need to change this so it doesnt close the file, since
-        ## file might not be reopened in the same away
 
     @property
     def has_positions(self):
@@ -373,13 +390,20 @@ class H5MDReader(base.ReaderBase):
                 return self._particle_group[name]['value'].shape[0]
 
     def _reopen(self):
-        """reopen trajectory"""
-        if self.parallel:
-            self._frame = -1
-            self._read_next_timestep()
-        else:
-            self.close()
-            self.open_trajectory()
+        """reopen trajectory
+
+        Note
+        ----
+        This method does close the and reopen the file like most other
+        coordinate readers, as this would cause problems with reopening
+        the file with the ``driver`` and ``comm`` arguments for parallel
+        reads. Instead, it rewinds the trajectory back to the first timstep.
+
+        """
+
+        self._frame = -1
+        self._read_next_timestep()
+
 
     def _read_frame(self, frame):
         """reads data from h5md file and copies to current timestep"""
@@ -399,20 +423,18 @@ class H5MDReader(base.ReaderBase):
         particle_group = self._particle_group
         ts.frame = frame
 
-        # this block populates the data dictionary
-        # DT not read
-        if 'observables' in self._file:
-            data = self._file['observables']
-            for name in self._data_keywords:
-                self._copy_data(name, data)
-        for name, value in self._has.items():
-            if value:
-                self.ts.data['time'] = particle_group[name]['time'][frame]
-                break
+        # fills data dictionary from 'observables' group
+        # Note: dt is not read into data as it is not decided whether
+        # Timestep should have a dt attribute (see Issue #2825)
+        self._copy_to_data()
 
-        # set frame box dimensions
-        # H5MD files must contain 'box' group in each particle group
-        ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
+
+        # Sets frame box dimensions
+        # Note: H5MD files must contain 'box' group in each particle group
+        if 'edges' in particle_group['box']:
+            ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
+        else:
+            ts._unitcell[:] = None
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset
@@ -423,9 +445,7 @@ class H5MDReader(base.ReaderBase):
         if self._has['force']:
             ts.forces = self._get_frame_dataset('force')
 
-        # unit conversion
         if self.convert_units:
-            # converts units if convert_units=True
             self._convert_units()
 
         return ts
@@ -435,20 +455,26 @@ class H5MDReader(base.ReaderBase):
         return self._read_frame(self._frame + 1)
 
     def _get_frame_dataset(self, dataset):
+        """retrieves dataset array at current frame"""
+
         frame_dataset = self._particle_group[
-                        dataset]['value'][self.frame, :]
+                        dataset]['value'][self._frame, :]
         n_atoms_now = frame_dataset.shape[0]
         if n_atoms_now != self.n_atoms:
             raise ValueError("Frame {} has {} atoms but the initial frame"
                              " has {} atoms. MDAnalysis is unable to deal"
                              " with variable topology!"
-                             "".format(self.frame,
+                             "".format(self._frame,
                                        n_atoms_now,
                                        self.n_atoms))
-        else:
-            return frame_dataset
+        return frame_dataset
 
     def _convert_units(self):
+        """converts time, position, velocity, and force values if they
+        are not given in MDAnalysis standard units
+
+        See https://userguide.mdanalysis.org/1.0.0/units.html
+        """
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
@@ -479,24 +505,24 @@ class H5MDReader(base.ReaderBase):
             self._check_units(group, unit)
 
     def _check_units(self, group, unit):
-        """checks to see if readable units are provided from H5MD file
-        if convert_units=True"""
+        """Raises error if no units are provided from H5MD file
+        and convert_units=True"""
 
-        if self.convert_units:
-            errmsg = "H5MD file must have readable units if ``convert_units`` is"
-            " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
-            " Set ``convert_units=False`` to load Universe without units."
+        if not self.convert_units:
+            return
 
-            if unit == 'time':
-                if self.units['time'] == None:
-                    raise ValueError(errmsg)
+        errmsg = "H5MD file must have readable units if ``convert_units`` is"
+        " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
+        " Set ``convert_units=False`` to load Universe without units."
 
-            else:
-                if self._has[group]:
-                    if self.units[unit] == None:
-                        raise ValueError(errmsg)
+        if unit == 'time':
+            if self.units['time'] is None:
+                raise ValueError(errmsg)
+
         else:
-            pass
+            if self._has[group]:
+                if self.units[unit] is None:
+                    raise ValueError(errmsg)
 
     def _translate_h5md_units(self, group, unit):
         """stores the translated unit string into the units dictionary"""
@@ -505,7 +531,7 @@ class H5MDReader(base.ReaderBase):
         " an issue in https://github.com/MDAnalysis/mdanalysis/issues"
 
         # doing time unit separately because time has to fish for
-        # first available parent group, either position, velocity, or force
+        # first available parent group - either position, velocity, or force
         if unit == 'time':
             for name, value in self._has.items():
                 if value:
@@ -532,6 +558,18 @@ class H5MDReader(base.ReaderBase):
                                            self._particle_group[group].attrs[
                                            'units'])) from None
 
-    def _copy_data(self, name, group):
+    def _copy_to_data(self):
         """assigns values to keys in data dictionary"""
-        self.ts.data[name] = group[name]['value'][self.frame]
+
+        if 'observables' in self._file:
+            for key in self._file['observables'].keys():
+                self.ts.data[key] = self._file['observables'][key][
+                                    'value'][self._frame]
+
+        # pulls 'time' out of first available parent group
+        for name, value in self._has.items():
+            if value:
+                if 'time' in self._particle_group[name]:
+                    self.ts.data['time'] = self._particle_group[name][
+                                           'time'][self._frame]
+                    break

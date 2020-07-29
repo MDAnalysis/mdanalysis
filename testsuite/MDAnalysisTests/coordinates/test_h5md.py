@@ -378,3 +378,30 @@ def test_changing_n_atoms3(h5md_file, ref, tmpdir):
                 g['particles/trajectory/force/value'].resize((3, 10000, 3))
         with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_2D_box(h5md_file, ref, tmpdir):
+    outfile = 'test_2D_box' + ref.ext
+    with tmpdir.as_cwd():
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                new_box = np.ones(shape=(3,2,2))
+                g['particles/trajectory/box'].attrs['dimension'] = 2
+                del g['particles/trajectory/box/edges/value']
+                g['particles/trajectory/box/edges'].create_dataset('value', data=new_box)
+        with pytest.raises(ValueError):
+            u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_no_box(h5md_file, ref, tmpdir):
+    outfile = 'test_no_box' + ref.ext
+    with tmpdir.as_cwd():
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                del g['particles/trajectory/box/edges']
+        u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+        assert_array_equal(u.trajectory.ts.dimensions, np.zeros((6,)))
