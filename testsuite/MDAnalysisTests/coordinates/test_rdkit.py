@@ -309,9 +309,29 @@ class TestRDKitConverter(object):
             mol = u.atoms.convert_to("RDKIT")
             positions = mol.GetConformer().GetPositions()
             indices = sorted(mol.GetAtoms(),
-                            key=lambda a: a.GetIntProp("_MDAnalysis_index"))
+                             key=lambda a: a.GetIntProp("_MDAnalysis_index"))
             indices = [a.GetIdx() for a in indices]
             assert_equal(positions[indices], ts.positions)
+
+    def test_cache(self):
+        u = mda.Universe.from_smiles("CCO", numConfs=5)
+        ag = u.atoms
+        cache = mda.coordinates.RDKit.RDKitConverter._cache
+        previous_cache = None
+        for ts in u.trajectory:
+            mol = ag.convert_to("RDKIT")
+            if previous_cache:
+                # the cache shouldn't change when iterating on timesteps
+                assert cache == previous_cache
+                previous_cache = cache
+        # cached molecule shouldn't store coordinates
+        mol = list(cache.values())[0]
+        with pytest.raises(ValueError, match="Bad Conformer Id"):
+            mol.GetConformer()
+        # only 1 molecule should be cached
+        u = mda.Universe.from_smiles("C")
+        assert len(cache) == 1
+        assert cache != previous_cache
 
 
 @requires_rdkit

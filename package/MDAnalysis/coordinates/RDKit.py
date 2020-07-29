@@ -60,6 +60,7 @@ Classes
 
 import warnings
 import re
+import copy
 
 import numpy as np
 
@@ -219,8 +220,9 @@ class RDKitConverter(base.ConverterBase):
 
     lib = 'RDKIT'
     units = {'time': None, 'length': 'Angstrom'}
+    _cache = dict()
 
-    def convert(self, obj, NoImplicit=True):
+    def convert(self, obj, **kwargs):
         """Write selection at current trajectory frame to
         :class:`rdkit.Chem.rdchem.Mol`.
 
@@ -244,7 +246,45 @@ class RDKitConverter(base.ConverterBase):
             raise TypeError("No `atoms` attribute in object of type {}, "
                             "please use a valid AtomGroup or Universe".format(
                                 type(obj))) from None
+        
+        # create the topology
+        key = id(ag)
+        # search for it in the cache first
+        try:
+            mol = self._cache[key]
+        except KeyError:
+            # only keep the current molecule in cache
+            self._cache.clear()
+            self._cache[key] = mol = self.atomgroup_to_mol(ag, **kwargs)
+        # continue on copy of the cached molecule
+        mol = copy.deepcopy(mol)
 
+        # add a conformer for the current Timestep
+        if hasattr(ag, "positions") and not np.isnan(ag.positions).any():
+            # assign coordinates
+            conf = Chem.Conformer(mol.GetNumAtoms())
+            for atom in mol.GetAtoms():
+                idx = atom.GetIntProp("_MDAnalysis_index")
+                xyz = [float(pos) for pos in ag.positions[idx]]
+                conf.SetAtomPosition(atom.GetIdx(), xyz)
+            mol.AddConformer(conf)
+            # assign R/S to atoms and Z/E to bonds
+            Chem.AssignStereochemistryFrom3D(mol)
+            Chem.SetDoubleBondNeighborDirections(mol)
+
+        return mol
+
+
+    def atomgroup_to_mol(self, ag, NoImplicit=True):
+        """Converts an AtomGroup to an RDKit molecule.
+        
+        Parameters
+        -----------
+        ag : AtomGroup
+
+        NoImplicit : bool
+            Prevent adding hydrogens to the molecule
+        """
         try:
             elements = ag.elements
         except NoDataError:
@@ -321,8 +361,8 @@ class RDKitConverter(base.ConverterBase):
                 # can happen for terminal atoms.
                 # save the bond atom that is in the atomgroup for later
                 terminal_atom_indices.extend([atom_mapper[i]
-                                              for i in bond.indices
-                                              if i in atom_mapper.keys()])
+                                                for i in bond.indices
+                                                if i in atom_mapper.keys()])
                 # skip adding this bond
                 continue
             bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
@@ -336,18 +376,6 @@ class RDKitConverter(base.ConverterBase):
 
         # sanitize
         Chem.SanitizeMol(mol)
-
-        if hasattr(ag, "positions") and not np.isnan(ag.positions).any():
-            # assign coordinates
-            conf = Chem.Conformer(mol.GetNumAtoms())
-            for atom in mol.GetAtoms():
-                idx = atom.GetIntProp("_MDAnalysis_index")
-                xyz = [float(pos) for pos in ag.positions[idx]]
-                conf.SetAtomPosition(atom.GetIdx(), xyz)
-            mol.AddConformer(conf)
-            # assign R/S to atoms and Z/E to bonds
-            Chem.AssignStereochemistryFrom3D(mol)
-            Chem.SetDoubleBondNeighborDirections(mol)
 
         return mol
 
