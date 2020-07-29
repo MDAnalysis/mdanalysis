@@ -224,7 +224,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
-<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">squash_by</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
 <span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Atomids</span><span class="p">,</span>
@@ -355,21 +355,43 @@
         <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atomtypes</span><span class="p">(</span><span class="n">atomtypes</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
 
         <span class="c1"># Residues</span>
-        <span class="n">atom_residx</span><span class="p">,</span> <span class="n">res_resids</span><span class="p">,</span> <span class="p">(</span><span class="n">res_resnames</span><span class="p">,</span> <span class="n">res_segids</span><span class="p">)</span> <span class="o">=</span> <span class="n">squash_by</span><span class="p">(</span>
-            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resid&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segid&#39;</span><span class="p">])</span>
+        <span class="n">atom_residx</span><span class="p">,</span> <span class="p">(</span><span class="n">res_resids</span><span class="p">,</span>
+                      <span class="n">res_resnums</span><span class="p">,</span>
+                      <span class="n">res_resnames</span><span class="p">,</span>
+                      <span class="n">res_segids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resid&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segid&#39;</span><span class="p">]),</span>
+            <span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resid&#39;</span><span class="p">],</span>
+             <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+             <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span>
+             <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segid&#39;</span><span class="p">]),</span>
+            <span class="p">)</span>
+
+        <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_resids</span><span class="p">)</span>
         <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">res_resids</span><span class="p">))</span>
-        <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">res_resids</span><span class="o">.</span><span class="n">copy</span><span class="p">()))</span>
+        <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnums</span><span class="p">(</span><span class="n">res_resnums</span><span class="p">))</span>
         <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resnames</span><span class="p">(</span><span class="n">res_resnames</span><span class="p">))</span>
 
-        <span class="c1"># Segments</span>
-        <span class="n">res_segidx</span><span class="p">,</span> <span class="n">seg_segids</span> <span class="o">=</span> <span class="n">squash_by</span><span class="p">(</span>
-            <span class="n">res_segids</span><span class="p">)[:</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">seg_segids</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">res_segids</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">res_segids</span><span class="p">):</span>
+            <span class="n">res_segidx</span><span class="p">,</span> <span class="p">(</span><span class="n">res_segids</span><span class="p">,)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">((</span><span class="n">res_segids</span><span class="p">,),</span>
+                                                      <span class="p">(</span><span class="n">res_segids</span><span class="p">,))</span>
 
-        <span class="c1"># Bonds</span>
+            <span class="n">uniq_seg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">res_segids</span><span class="p">)</span>
+            <span class="n">idx2seg</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="n">res_segids</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">res_segidx</span><span class="p">}</span>
+            <span class="n">res_segids</span> <span class="o">=</span> <span class="n">uniq_seg</span>
+            <span class="n">nidx</span> <span class="o">=</span> <span class="p">{</span><span class="n">segid</span><span class="p">:</span> <span class="n">nidx</span> <span class="k">for</span> <span class="n">nidx</span><span class="p">,</span> <span class="n">segid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">uniq_seg</span><span class="p">)}</span>
+
+            <span class="n">res_segidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nidx</span><span class="p">[</span><span class="n">idx2seg</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">res_segidx</span><span class="p">])</span>
+
+            <span class="n">n_segments</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_segids</span><span class="p">)</span>
+            <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">res_segids</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n_segments</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)))</span>
+            <span class="n">res_segidx</span> <span class="o">=</span> <span class="kc">None</span>
+
         <span class="n">topattrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bonds</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;bond&#39;</span><span class="p">]))</span>
 
-        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]),</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_resids</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">seg_segids</span><span class="p">),</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]),</span> <span class="n">n_residues</span><span class="p">,</span> <span class="n">n_segments</span><span class="p">,</span>
                        <span class="n">attrs</span><span class="o">=</span><span class="n">topattrs</span><span class="p">,</span>
                        <span class="n">atom_resindex</span><span class="o">=</span><span class="n">atom_residx</span><span class="p">,</span>
                        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">res_segidx</span><span class="p">)</span>
