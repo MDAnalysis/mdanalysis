@@ -14,7 +14,7 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
-         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney
 
   * 2.0.0
 
@@ -39,6 +39,8 @@ Fixes
   * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError 
     was thrown when finding D-H pairs via the topology if `hydrogens` was an 
     empty AtomGroup (Issue #2848)
+  * Fixed the DMSParser, allowing the creation of multiple segids sharing
+    residues with identical resids (Issue #1387, PR #2872)    
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
@@ -82,7 +84,6 @@ Changes
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
 
 Deprecations
-
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,
