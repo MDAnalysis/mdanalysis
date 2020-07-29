@@ -1419,6 +1419,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.0.0
+       Now supports (un)pickle. Upon unpickling,
+       the current timestep is retained by reconstrunction.
     """
 
     #: The appropriate Timestep class, e.g.
@@ -2079,6 +2082,10 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         return ts
 
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self[self.ts.frame]
+
 
 class ReaderBase(ProtoReader):
     """Base class for trajectory readers that extends :class:`ProtoReader` with a
@@ -2107,9 +2114,6 @@ class ReaderBase(ProtoReader):
        Provides kwargs to be passed to :class:`Timestep`
     .. versionchanged:: 1.0
        Removed deprecated flags functionality, use convert_units kwarg instead
-    .. versionchanged:: 2.0.0
-       Now supports (un)pickle. Upon unpickling,
-       the current timestep is retained by reconstrunction.
     """
 
     def __init__(self, filename, convert_units=True, **kwargs):
@@ -2155,10 +2159,6 @@ class ReaderBase(ProtoReader):
         for aux in self.aux_list:
             self._auxs[aux].close()
         self.close()
-
-    def __setstate__(self, state):
-        self.__dict__ = state
-        self[self.ts.frame]
 
 
 class _Writermeta(type):

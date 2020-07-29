@@ -130,22 +130,29 @@ def test_fileio_pickle():
 
 
 @pytest.fixture(params=[
-    # filename mode
-    (PDB, 'w', pickle_open),
-    (PDB, 'x', pickle_open),
-    (PDB, 'a', pickle_open),
-    (XYZ_bz2, 'w', bz2_pickle_open),
-    (MMTF_gz, 'w', gzip_pickle_open)
+    # filename mode open_func open_class
+    ('test.pdb', 'w', pickle_open, FileIOPicklable),
+    ('test.pdb', 'x', pickle_open, FileIOPicklable),
+    ('test.pdb', 'a', pickle_open, FileIOPicklable),
+    ('test.bz2', 'w', bz2_pickle_open, BZ2Picklable),
+    ('test.gz', 'w', gzip_pickle_open, GzipPicklable),
 ])
 def unpicklable_f(request):
-    filename, mode, open_func = request.param
-    return filename, mode, open_func
+    filename, mode, open_func, open_class = request.param
+    return filename, mode, open_func, open_class
 
 
-def test_unpicklable_open_mode(unpicklable_f):
-    filename, mode, open_func = unpicklable_f
-    with pytest.raises(ValueError, match=r"Only read mode *"):
-        open_func(filename, mode)
+def test_unpicklable_open_mode(unpicklable_f, tmpdir):
+    filename, mode, open_func, open_class = unpicklable_f
+    with pytest.raises(ValueError, match=r"Only read mode"):
+        open_func(tmpdir.mkdir("pickle").join(filename), mode)
+
+
+def test_pickle_with_write_mode(unpicklable_f, tmpdir):
+    filename, mode, open_func, open_class = unpicklable_f
+    f_open_by_class = open_class(tmpdir.mkdir("pickle").join(filename), mode)
+    with pytest.raises(RuntimeError, match=r"Can only pickle"):
+        f_pickled = pickle.loads(pickle.dumps(f_open_by_class))
 
 
 def test_GSD_pickle():
@@ -153,6 +160,12 @@ def test_GSD_pickle():
     gsd_io_pickled = pickle.loads(pickle.dumps(gsd_io))
     assert_equal(gsd_io.read_frame(0).particles.position,
                  gsd_io_pickled.read_frame(0).particles.position)
+
+
+def test_GSD_with_write_mode(tmpdir):
+    with pytest.raises(ValueError, match=r"Only read mode"):
+        gsd_io = gsd_pickle_open(tmpdir.mkdir("gsd").join('t.gsd'),
+                                 mode='w')
 
 
 def test_NCDF_pickle():
@@ -179,3 +192,11 @@ def test_Chemfiles_pickle():
     frame_pickled = chemfiles_io_pickled.read()
     assert_equal(frame.positions[:],
                  frame_pickled.positions[:])
+
+
+@pytest.mark.skipif(not check_chemfiles_version(),
+                    reason="Wrong version of chemfiles")
+def test_Chemfiles_with_write_mode(tmpdir):
+    with pytest.raises(ValueError, match=r"Only read mode"):
+        chemfiles_io = ChemfilesPicklable(tmpdir.mkdir("xyz").join('t.xyz'),
+                                          mode='w')
