@@ -211,6 +211,9 @@ class RDKitConverter(base.ConverterBase):
     guessed if not present.
     If both `tempfactors` and `bfactors` attributes are present, the conversion
     will fail, since only one of these should be present.
+    Hydrogens should be explicit in the topology file. If this is not the case,
+    use the parameter `NoImplicit=False` when using the converter to allow
+    implicit hydrogens and disable inferring bond orders and charges.
 
 
     .. versionadded:: 2.0.0
@@ -265,7 +268,7 @@ class RDKitConverter(base.ConverterBase):
             conf = Chem.Conformer(mol.GetNumAtoms())
             for atom in mol.GetAtoms():
                 idx = atom.GetIntProp("_MDAnalysis_index")
-                xyz = [float(pos) for pos in ag.positions[idx]]
+                xyz = ag.positions[idx].astype(float)
                 conf.SetAtomPosition(atom.GetIdx(), xyz)
             mol.AddConformer(conf)
             # assign R/S to atoms and Z/E to bonds
@@ -300,7 +303,10 @@ class RDKitConverter(base.ConverterBase):
                 "converter requires all hydrogens to be explicit. Please "
                 "check carefully the output molecule as the converter is "
                 "likely to add negative charges and assign incorrect bond "
-                "orders to structures with implicit hydrogens."
+                "orders to structures with implicit hydrogens. Alternatively, "
+                "you can use the parameter `NoImplicit=False` when using the "
+                "converter to allow implicit hydrogens and disable inferring "
+                "bond orders and charges."
             )
 
         # attributes accepted in PDBResidueInfo object
