@@ -103,6 +103,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from ..lib.accessors import Accessor, ConverterAccessor
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -3146,48 +3147,50 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package, **kwargs):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
+    # def convert_to(self, package, **kwargs):
+    #     """
+    #     Convert :class:`AtomGroup` to a structure from another Python package.
 
-        Example
-        -------
+    #     Example
+    #     -------
 
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
+    #     The code below converts a Universe to a :class:`parmed.structure.Structure`.
 
-        .. code-block:: python
+    #     .. code-block:: python
 
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-        **kwargs:
-            Other parameters passed to the converter
+    #         >>> import MDAnalysis as mda
+    #         >>> from MDAnalysis.tests.datafiles import GRO
+    #         >>> u = mda.Universe(GRO)
+    #         >>> parmed_structure = u.atoms.convert_to('PARMED')
+    #         >>> parmed_structure
+    #         <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
 
 
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
+    #     Parameters
+    #     ----------
+    #     package: str
+    #         The name of the package to convert to, e.g. ``"PARMED"``
+    #     **kwargs:
+    #         Other parameters passed to the converter
 
 
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package.upper())
-        return converter().convert(self.atoms, **kwargs)
+    #     Returns
+    #     -------
+    #     output:
+    #         An instance of the structure type from another package.
+
+    #     Raises
+    #     ------
+    #     TypeError:
+    #         No converter was found for the required package
+
+
+    #     .. versionadded:: 1.0.0
+    #     """
+    #     converter = get_converter_for(package.upper())
+    #     return converter().convert(self.atoms, **kwargs)
+
+    convert_to = Accessor(ConverterAccessor)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
