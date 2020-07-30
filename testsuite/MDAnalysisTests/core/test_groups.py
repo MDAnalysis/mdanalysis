@@ -1251,6 +1251,17 @@ class TestAtomGroup(object):
         mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
         assert mol.GetAtomWithIdx(0).GetNoImplicit() == False
 
+    @requires_rdkit
+    def test_convert_to_lib_as_method(self):
+        u = mda.Universe.from_smiles("CCO")
+        mol = u.atoms.convert_to.rdkit()
+
+    @requires_rdkit
+    def test_convert_to_lib_method_kwargs(self):
+        u = mda.Universe.from_smiles("CCO")
+        mol = u.atoms.convert_to.rdkit(NoImplicit=False)
+        assert mol.GetAtomWithIdx(0).GetNoImplicit() == False
+
 
 @pytest.fixture()
 def attr_universe():
