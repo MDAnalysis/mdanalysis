@@ -43,3 +43,4 @@ from .picklable_file_io import (FileIOPicklable,
                                 BufferIOPicklable,
                                 TextIOPicklable)
 from . import converters
+from . import accessors
