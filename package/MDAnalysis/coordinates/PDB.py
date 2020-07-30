@@ -1034,6 +1034,7 @@ class PDBWriter(base.WriterBase):
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
 
+        no_record_type = False
         for i, atom in enumerate(atoms):
             vals = {}
             vals['serial'] = util.ltruncate_int(i + 1, 5)  # check for overflow here?
@@ -1049,11 +1050,21 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
-            if atom.record_type == 'ATOM':
+            if hasattr(atom, 'record_type'):
+                if atom.record_type == 'HETATM':
+                    # .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#HETATM
+                    self.pdbfile.write(self.fmt['HETATM'].format(**vals))
+                else:
+                    # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
+                    self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            else:
                 # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
+                no_record_type = True
                 self.pdbfile.write(self.fmt['ATOM'].format(**vals))
-            elif atom.record_type == 'HETATM':
-                self.pdbfile.write(self.fmt['HETATM'].format(**vals))
+
+        if no_record_type:
+            warnings.warn("PDBWriter: No record type found for an atom - HETATM may be written out as ATOM")
+
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
