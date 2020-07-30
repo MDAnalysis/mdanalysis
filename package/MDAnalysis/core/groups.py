@@ -3187,7 +3187,7 @@ class AtomGroup(GroupBase):
         .. versionadded:: 1.0.0
         """
         converter = get_converter_for(package.upper())
-        return converter().convert(self.atoms)
+        return converter().convert(self.atoms, **kwargs)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):

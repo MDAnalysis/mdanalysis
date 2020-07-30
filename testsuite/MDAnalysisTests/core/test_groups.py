@@ -1242,13 +1242,14 @@ class TestAtomGroup(object):
     @requires_rdkit
     def test_convert_to_case_insensitive(self):
         u = mda.Universe.from_smiles("CCO")
-        mol = u.atoms.convert_to("RDKit")
+        mol = u.atoms.convert_to("rdkit")
 
     @requires_rdkit
     def test_convert_to_kwargs(self):
-        u = mda.Universe.from_smiles("[C][C][O]")
+        u = mda.Universe.from_smiles("[C][C][O]", addHs=False, 
+            generate_coordinates=False, sanitize=False)
         mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
-        assert mol.GetNumAtoms() == 9
+        assert mol.GetAtomWithIdx(0).GetNoImplicit() == False
 
 
 @pytest.fixture()
