@@ -34,6 +34,11 @@ from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
+from MDAnalysisTests.util import import_not_available
+
+
+requires_rdkit = pytest.mark.skipif(import_not_available("rdkit"),
+                                    reason="requires RDKit")
 
 
 class TestGroupProperties(object):
@@ -1233,6 +1238,17 @@ class TestAtomGroup(object):
     def test_PDB_atom_repr(self):
         u = make_Universe(extras=('altLocs', 'names', 'types', 'resnames', 'resids', 'segids'))
         assert_equal("<Atom 1: AAA of type TypeA of resname RsA, resid 1 and segid SegA and altLoc A>", u.atoms[0].__repr__())
+    
+    @requires_rdkit
+    def test_convert_to_case_insensitive(self):
+        u = mda.Universe.from_smiles("CCO")
+        mol = u.atoms.convert_to("RDKit")
+
+    @requires_rdkit
+    def test_convert_to_kwargs(self):
+        u = mda.Universe.from_smiles("[C][C][O]")
+        mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
+        assert mol.GetNumAtoms() == 9
 
 
 @pytest.fixture()
