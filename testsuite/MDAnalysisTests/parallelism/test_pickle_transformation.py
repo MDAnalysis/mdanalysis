@@ -41,8 +41,8 @@ def test_u():
     return u
 
 
-u = mda.Universe(TPR, XTC)
-ag = u.atoms[0:10]
+uni = mda.Universe(TPR, XTC)
+ag = uni.atoms[0:10]
 
 
 @pytest.fixture(params=[
@@ -52,8 +52,8 @@ ag = u.atoms[0:10]
     (rotateby, [90, [0, 0, 1], [1, 2, 3]]),
     (translate, [[1, 2, 3]]),
     (center_in_box, [ag]),
-    (wrap, [u.atoms]),
-    (unwrap, [u.atoms])
+    (wrap, [uni.atoms]),
+    (unwrap, [uni.atoms])
 ])
 def transformation(request):
     transform = request.param[0](*request.param[1])
