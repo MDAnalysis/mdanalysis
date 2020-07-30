@@ -41,6 +41,7 @@ Classes
 """
 import numpy as np
 from distutils.version import LooseVersion
+import sys
 import warnings
 
 from . import base, core
@@ -50,6 +51,14 @@ try:
 except ImportError:
     HAS_CHEMFILES = False
 else:
+    HAS_CHEMFILES = True
+
+# Allow building documentation even if chemfiles is not installed
+if not HAS_CHEMFILES and 'sphinx' in sys.modules:
+    import imp
+    class MockTrajectory: pass
+    chemfiles = imp.new_module("chemfiles")
+    chemfiles.Trajectory = MockTrajectory
     HAS_CHEMFILES = True
 
 
