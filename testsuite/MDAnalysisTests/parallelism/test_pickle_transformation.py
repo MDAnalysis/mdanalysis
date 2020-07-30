@@ -32,16 +32,16 @@ from MDAnalysis.transformations.rotate import rotateby
 from MDAnalysis.transformations.translate import translate, center_in_box
 from MDAnalysis.transformations.wrap import wrap, unwrap
 
-from MDAnalysisTests.datafiles import TPR, XTC
+from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 
 
 @pytest.fixture()
 def test_u():
-    u = mda.Universe(TPR, XTC)
+    u = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
     return u
 
 
-uni = mda.Universe(TPR, XTC)
+uni = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
 ag = uni.atoms[0:10]
 
 
