@@ -528,6 +528,11 @@ class PDBWriter(base.WriterBase):
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
             "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+        'HETATM': (
+            "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
+            "{chainID:1s}{resSeq:4d}{iCode:1s}"
+            "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
         'REMARK': "REMARK     {0}\n",
         'COMPND': "COMPND    {0}\n",
         'HEADER': "HEADER    {0}\n",
@@ -1044,8 +1049,11 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
-            # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-            self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            if atom.record_type == 'ATOM':
+                # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
+                self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            elif atom.record_type == 'HETATM':
+                self.pdbfile.write(self.fmt['HETATM'].format(**vals))
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
