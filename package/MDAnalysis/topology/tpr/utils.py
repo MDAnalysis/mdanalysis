@@ -60,6 +60,7 @@ from ...core.topologyattrs import (
     Atomtypes,
     Masses,
     Charges,
+    Elements,
     Resids,
     Resnames,
     Moltypes,
@@ -68,7 +69,7 @@ from ...core.topologyattrs import (
     Bonds,
     Angles,
     Dihedrals,
-    Impropers
+    Impropers,
 )
 
 
@@ -314,6 +315,7 @@ def do_mtop(data, fver):
     molnums = []
     charges = []
     masses = []
+    elements = []
 
     atom_start_ndx = 0
     res_start_ndx = 0
@@ -338,6 +340,7 @@ def do_mtop(data, fver):
                 molnums.append(molnum)
                 charges.append(atomkind.charge)
                 masses.append(atomkind.mass)
+                elements.append(atomkind.element_symbol)
             molnum += 1
 
             # remap_ method returns [blah, blah, ..] or []
@@ -403,11 +406,15 @@ def do_mtop(data, fver):
     top.add_TopologyAttr(Impropers([improper for improper in impropers
                                     if improper]))
 
+    if any(elements):
+        elements = Elements(np.array(elements, dtype=object))
+        top.add_TopologyAttr(elements)
+
     return top
 
 
 def do_symstr(data, symtab):
-    #do_symstr: get a string based on index from the symtab
+    # do_symstr: get a string based on index from the symtab
     ndx = data.unpack_int()
     return symtab[ndx]
 
@@ -690,7 +697,9 @@ def do_moltype(data, symtab, fver):
             a.resind,
             atoms_obj.resnames[a.resind],
             a.m,
-            a.q))
+            a.q,
+            a.atomnumber,
+        ))
     #### end: MDAnalysis specific
 
     # key info: about bonds, angles, dih, improp dih.
