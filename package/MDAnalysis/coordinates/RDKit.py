@@ -249,9 +249,10 @@ class RDKitConverter(base.ConverterBase):
             raise TypeError("No `atoms` attribute in object of type {}, "
                             "please use a valid AtomGroup or Universe".format(
                                 type(obj))) from None
-        
+
         # create the topology
-        key = id(ag)
+        key = "<%x>" % id(ag) + ",".join(
+            ["%s=%s" % (str(k), str(v)) for k, v in kwargs.items()])
         # search for it in the cache first
         try:
             mol = self._cache[key]
@@ -277,10 +278,9 @@ class RDKitConverter(base.ConverterBase):
 
         return mol
 
-
     def atomgroup_to_mol(self, ag, NoImplicit=True):
         """Converts an AtomGroup to an RDKit molecule.
-        
+
         Parameters
         -----------
         ag : AtomGroup
@@ -367,8 +367,8 @@ class RDKitConverter(base.ConverterBase):
                 # can happen for terminal atoms.
                 # save the bond atom that is in the atomgroup for later
                 terminal_atom_indices.extend([atom_mapper[i]
-                                                for i in bond.indices
-                                                if i in atom_mapper.keys()])
+                                              for i in bond.indices
+                                              if i in atom_mapper.keys()])
                 # skip adding this bond
                 continue
             bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
