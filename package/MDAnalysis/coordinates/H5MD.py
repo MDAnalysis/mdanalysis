@@ -291,9 +291,12 @@ class H5MDReader(base.ReaderBase):
         super(H5MDReader, self).__init__(filename, **kwargs)
         self.filename = filename
         self.convert_units = convert_units
-        self.driver = kwargs.get('driver', None)
-        self.comm = kwargs.get('comm', None)
-        self.parallel = self.driver and self.comm
+
+        # if comm is in *kwargs, driver must be 'mpio' and file will be
+        # opened with parallel h5py/hdf5 enabled
+        self._driver = kwargs.get('driver', None)
+        self._comm = kwargs.get('comm', None)
+
         self.open_trajectory()
         if self._particle_group['box'].attrs['dimension'] != 3:
             raise ValueError("MDAnalysis only supports 3-dimensional"
@@ -303,7 +306,6 @@ class H5MDReader(base.ReaderBase):
         # 'position', 'velocity', or 'force' groups in the file
         self._has = {name: name in self._particle_group for
                      name in ('position', 'velocity', 'force')}
-
 
         # Gets n_atoms from first available group
         for name, value in self._has.items():
@@ -339,11 +341,16 @@ class H5MDReader(base.ReaderBase):
         self._frame = -1
         if isinstance(self.filename, h5py.File):
             self._file = self.filename
+            self._driver = self._file.driver
         else:
-            if self.parallel:
+            if self._comm is not None:
+                # can only pass comm argument to h5py.File if driver='mpio'
+                assert self._driver == 'mpio'
                 self._file = h5py.File(self.filename, 'r',
                                        driver=self.driver,
                                        comm=self.comm)
+            elif self._driver is not None:
+                self._file = h5py.File(self.filename, 'r', driver=self._driver)
             else:
                 self._file = h5py.File(self.filename, 'r')
         # pulls first key out of 'particles'
@@ -353,7 +360,27 @@ class H5MDReader(base.ReaderBase):
 
     def close(self):
         """close reader"""
-        self._file.close()
+        if self._driver != 'mpio':
+            self._file.close()
+
+    def _reopen(self):
+        """reopen trajectory
+
+        Note
+        ----
+        This method does close the and reopen the file like most other
+        coordinate readers, as this would cause problems with reopening
+        the file with the ``driver`` and ``comm`` arguments for parallel
+        reads. Instead, it rewinds the trajectory back to the first timstep
+        if 'mpio' is passed for the driver.
+
+        """
+        if self._driver != 'mpio':
+            self.close()
+            self.open_trajectory()
+        else:
+            self._frame = -2
+            self._read_next_timestep()
 
     @property
     def has_positions(self):
@@ -389,22 +416,6 @@ class H5MDReader(base.ReaderBase):
             if value:
                 return self._particle_group[name]['value'].shape[0]
 
-    def _reopen(self):
-        """reopen trajectory
-
-        Note
-        ----
-        This method does close the and reopen the file like most other
-        coordinate readers, as this would cause problems with reopening
-        the file with the ``driver`` and ``comm`` arguments for parallel
-        reads. Instead, it rewinds the trajectory back to the first timstep.
-
-        """
-
-        self._frame = -1
-        self._read_next_timestep()
-
-
     def _read_frame(self, frame):
         """reads data from h5md file and copies to current timestep"""
         try:
@@ -434,6 +445,7 @@ class H5MDReader(base.ReaderBase):
         if 'edges' in particle_group['box']:
             ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
         else:
+            # sets ts.dimensions = [0, 0, 0, 0, 0, 0]
             ts._unitcell[:] = None
 
         # set the timestep positions, velocities, and forces with
