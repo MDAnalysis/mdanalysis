@@ -42,6 +42,7 @@ from MDAnalysis.tests.datafiles import (
     TRZ_psf, TRZ,
     PDB_icodes,
     PDB_HOLE,
+    PDB_helix,
 )
 from MDAnalysisTests import make_Universe
 
@@ -526,15 +527,33 @@ class TestSelectionRDKit(object):
         u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
                                             generate_coordinates=False)
         return u
-        
+
+    @pytest.fixture
+    def u2(self):
+        u = MDAnalysis.Universe.from_smiles("[O-]C(C=O)Cc1cNc(N)c1", 
+                                            generate_coordinates=False)
+        return u
+
     @pytest.mark.parametrize("sel_str, n_atoms", [
         ("aromatic", 5),
         ("not aromatic", 1),
         ("type N and aromatic", 1),
         ("type C and aromatic", 4),
     ])
-    def test_selection(self, u, sel_str, n_atoms):
+    def test_aromatic_selection(self, u, sel_str, n_atoms):
         sel = u.select_atoms(sel_str)
+        assert sel.n_atoms == n_atoms
+
+    @pytest.mark.parametrize("sel_str, n_atoms", [
+        ("n", 1),
+        ("[#7]", 2),
+        ("a", 5),
+        ("c", 4),
+        ("[*-]", 1),
+        ("[$([!#1]);$([!R][R])]", 2),
+    ])
+    def test_smarts_selection(self, u2, sel_str, n_atoms):
+        sel = u2.select_atoms(sel_str, smarts=True)
         assert sel.n_atoms == n_atoms
 
 

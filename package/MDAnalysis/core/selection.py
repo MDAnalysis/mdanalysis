@@ -600,6 +600,32 @@ class AromaticSelection(Selection):
         return group[group.aromaticities].unique
 
 
+class SmartsSelection(Selection):
+    """Select atoms based on SMARTS queries"""
+    def __init__(self, sel_strs):
+        self.sel_strs = sel_strs
+
+    def apply(self, group):
+        try:
+            from rdkit import Chem
+        except ImportError:
+            raise ImportError("RDKit is required for SMARTS-based atom "
+                              "selection but it's not installed. Try "
+                              "installing it with \n"
+                              "conda install -c conda-forge rdkit")
+        mol = group.convert_to("RDKIT")
+        indices = []
+        for pattern in self.sel_strs:
+            pattern = Chem.MolFromSmarts(pattern)
+            matches = mol.GetSubstructMatches(pattern)
+            if matches:
+                indices.extend([idx for match in matches for idx in match])
+        indices = [mol.GetAtomWithIdx(i).GetIntProp("_MDAnalysis_index")
+                   for i in indices]
+        mask = np.in1d(range(group.n_atoms), np.unique(indices))
+        return group[mask]
+
+
 class ResidSelection(Selection):
     """Select atoms based on numerical fields
 

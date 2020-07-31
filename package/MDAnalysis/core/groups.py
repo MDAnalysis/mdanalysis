@@ -2574,6 +2574,8 @@ class AtomGroup(GroupBase):
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
           [``True``]
+        smarts : bool (optional)
+            specify if the selection is a SMARTS query
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -2835,6 +2837,8 @@ class AtomGroup(GroupBase):
            equivalent ``global group`` selection.
            Removed flags affecting default behaviour for periodic selections;
            periodic are now on by default (as with default flags)
+        .. versionchanged:: 2.0.0
+            Added smarts kwarg (default False)
         """
 
         if not sel:
@@ -2845,6 +2849,8 @@ class AtomGroup(GroupBase):
         periodic = selgroups.pop('periodic', True)
 
         updating = selgroups.pop('updating', False)
+
+        smarts = selgroups.pop('smarts', False)
         sel_strs = (sel,) + othersel
 
         for group, thing in selgroups.items():
@@ -2852,6 +2858,9 @@ class AtomGroup(GroupBase):
                 raise TypeError("Passed groups must be AtomGroups. "
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
+
+        if smarts:
+            return selection.SmartsSelection(sel_strs).apply(self)
 
         selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
                             for s in sel_strs))
