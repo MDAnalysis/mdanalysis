@@ -602,8 +602,14 @@ class AromaticSelection(Selection):
 
 class SmartsSelection(Selection):
     """Select atoms based on SMARTS queries"""
-    def __init__(self, sel_strs):
-        self.sel_strs = sel_strs
+    token = 'smarts'
+
+    def __init__(self, parser, tokens):
+        pattern = []
+        while not is_keyword(tokens[0]) or tokens[0] in ["(", ")"]:
+            val = tokens.popleft()
+            pattern.append(val)
+        self.pattern = "".join(pattern)
 
     def apply(self, group):
         try:
@@ -613,13 +619,13 @@ class SmartsSelection(Selection):
                               "selection but it's not installed. Try "
                               "installing it with \n"
                               "conda install -c conda-forge rdkit")
+        pattern = Chem.MolFromSmarts(self.pattern)
+        if not pattern:
+            raise ValueError("{!r} is not a valid SMARTS query".format(
+                self.pattern))
         mol = group.convert_to("RDKIT")
-        indices = []
-        for pattern in self.sel_strs:
-            pattern = Chem.MolFromSmarts(pattern)
-            matches = mol.GetSubstructMatches(pattern)
-            if matches:
-                indices.extend([idx for match in matches for idx in match])
+        matches = mol.GetSubstructMatches(pattern, useChirality=True)
+        indices = [idx for match in matches for idx in match]
         indices = [mol.GetAtomWithIdx(i).GetIntProp("_MDAnalysis_index")
                    for i in indices]
         mask = np.in1d(range(group.n_atoms), np.unique(indices))

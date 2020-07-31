@@ -545,15 +545,17 @@ class TestSelectionRDKit(object):
         assert sel.n_atoms == n_atoms
 
     @pytest.mark.parametrize("sel_str, n_atoms", [
-        ("n", 1),
-        ("[#7]", 2),
-        ("a", 5),
-        ("c", 4),
-        ("[*-]", 1),
-        ("[$([!#1]);$([!R][R])]", 2),
+        ("smarts n", 1),
+        ("smarts [#7]", 2),
+        ("smarts a", 5),
+        ("smarts c", 4),
+        ("smarts [*-]", 1),
+        ("smarts [$([!#1]);$([!R][R])]", 2),
+        ("smarts a and type C", 4),
+        ("smarts a and type N", 1),
     ])
     def test_smarts_selection(self, u2, sel_str, n_atoms):
-        sel = u2.select_atoms(sel_str, smarts=True)
+        sel = u2.select_atoms(sel_str)
         assert sel.n_atoms == n_atoms
 
 

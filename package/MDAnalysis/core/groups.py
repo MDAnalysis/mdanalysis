@@ -103,6 +103,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
+from ..converters.accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
@@ -2574,8 +2575,6 @@ class AtomGroup(GroupBase):
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
           [``True``]
-        smarts : bool (optional)
-            specify if the selection is a SMARTS query
         **selgroups : keyword arguments of str: AtomGroup (optional)
           when using the "group" keyword in selections, groups are defined by
           passing them as keyword arguments.  See section on **preexisting
@@ -2691,6 +2690,10 @@ class AtomGroup(GroupBase):
             record_type *record_type*
                 for selecting either ATOM or HETATM from PDB-like files.
                 e.g. ``select_atoms('name CA and not record_type HETATM')``
+            smarts *SMARTS-query*
+                select atoms using Daylight's SMARTS queries, e.g. ``smarts
+                [#7;R]`` to find nitrogen atoms in rings. Restricted to 1000
+                matches.
 
         **Boolean**
 
@@ -2838,7 +2841,7 @@ class AtomGroup(GroupBase):
            Removed flags affecting default behaviour for periodic selections;
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
-            Added smarts kwarg (default False)
+            Added the *smarts* selection.
         """
 
         if not sel:
@@ -2850,7 +2853,6 @@ class AtomGroup(GroupBase):
 
         updating = selgroups.pop('updating', False)
 
-        smarts = selgroups.pop('smarts', False)
         sel_strs = (sel,) + othersel
 
         for group, thing in selgroups.items():
@@ -2858,9 +2860,6 @@ class AtomGroup(GroupBase):
                 raise TypeError("Passed groups must be AtomGroups. "
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
-
-        if smarts:
-            return selection.SmartsSelection(sel_strs).apply(self)
 
         selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
                             for s in sel_strs))
@@ -3060,46 +3059,7 @@ class AtomGroup(GroupBase):
                 "cmap only makes sense for a group with exactly 5 atoms")
         return topologyobjects.CMap(self.ix, self.universe)
 
-    def convert_to(self, package):
-        """
-        Convert :class:`AtomGroup` to a structure from another Python package.
-
-        Example
-        -------
-
-        The code below converts a Universe to a :class:`parmed.structure.Structure`.
-
-        .. code-block:: python
-
-            >>> import MDAnalysis as mda
-            >>> from MDAnalysis.tests.datafiles import GRO
-            >>> u = mda.Universe(GRO)
-            >>> parmed_structure = u.atoms.convert_to('PARMED')
-            >>> parmed_structure
-            <Structure 47681 atoms; 11302 residues; 0 bonds; PBC (triclinic); NOT parametrized>
-
-
-        Parameters
-        ----------
-        package: str
-            The name of the package to convert to, e.g. ``"PARMED"``
-
-
-        Returns
-        -------
-        output:
-            An instance of the structure type from another package.
-
-        Raises
-        ------
-        TypeError:
-            No converter was found for the required package
-
-
-        .. versionadded:: 1.0.0
-        """
-        converter = get_converter_for(package)
-        return converter().convert(self.atoms)
+    convert_to = Accessor(ConverterWrapper)
 
     def write(self, filename=None, file_format=None,
               filenamefmt="{trjname}_{frame}", frames=None, **kwargs):
