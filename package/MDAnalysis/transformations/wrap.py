@@ -79,10 +79,11 @@ class wrap(object):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
+
 
     .. versionchanged:: 2.0.0
-        Now it is a class with `__call__`.
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
     """
     def __init__(self, ag, compound='atoms'):
         self.ag = ag
@@ -132,7 +133,11 @@ class unwrap(object):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
+
+
+    .. versionchanged:: 2.0.0
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
     """
     def __init__(self, ag):
         self.ag = ag

@@ -82,7 +82,8 @@ class fit_translation(object):
 
 
     .. versionchanged:: 2.0.0
-        Now it is a class with `__call__`.
+        The transformation was changed from a function/closure to a class
+        with ``__call__``.
     """
     def __init__(self, ag, reference, plane=None, weights=None):
         self.ag = ag

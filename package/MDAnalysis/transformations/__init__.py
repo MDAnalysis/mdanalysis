@@ -26,40 +26,17 @@
 Trajectory transformations --- :mod:`MDAnalysis.transformations`
 ================================================================
 
-The transformations submodule contains a collection of functions to modify the
-trajectory. Coordinate transformations, such as PBC corrections and molecule fitting
-are often required for some analyses and visualization, and the functions in this
-module allow transformations to be applied on-the-fly.
-These transformation functions can be called by the user for any given
-timestep of the trajectory, added as a workflow using :meth:`add_transformations`
-of the :mod:`~MDAnalysis.coordinates.base` module, or upon Universe creation using
-the keyword argument `transformations`. Note that in the two latter cases, the
-workflow cannot be changed after being defined.
+The transformations submodule contains a collection of function-like classes to
+modify the trajectory.
+Coordinate transformations, such as PBC corrections and molecule fitting
+are often required for some analyses and visualization, and the functions in
+this module allow transformations to be applied on-the-fly.
 
-In addition to the specific arguments that each transformation can take, they also
-contain a wrapped function that takes a `Timestep` object as argument.
-So, a transformation can be roughly defined as follows:
-
-.. code-block:: python
-
-    def transformations(*args,**kwargs):
-        # do some things
-            def wrapped(ts):
-                # apply changes to the Timestep object
-                return ts
-
-            return wrapped
-
-
-See `MDAnalysis.transformations.translate` for a simple example.
-
-To meet the need of serialization of universe, transformations are converted
-into classes. They retain the similar API and functionality by implementing the
-aforementioned `wrapped(ts)` as a special method `__call__`. For example:
+A typical transformation class looks like this:
 
 .. code-blocks:: python
 
-    class transfomrations(object):
+    class transfomration(object):
         def __init__(self, *args, **kwargs):
             #  do some things
             #  save needed args as attributes.
@@ -69,14 +46,50 @@ aforementioned `wrapped(ts)` as a special method `__call__`. For example:
             #  apply changes to the Timestep object
             return ts
 
+See `MDAnalysis.transformations.translate` for a simple example.
 
-Note it does not mean that the old closure/wrapped function implementation will fail.
-They can still be used if one does not need serialization, which is a prerequisite for parallel
-analysis.
+These transformation functions can be called by the user for any given timestep
+of the trajectory, added as a workflow using :meth:`add_transformations`
+of the :mod:`~MDAnalysis.coordinates.base`, or upon Universe creation using
+the keyword argument `transformations`. Note that in the two latter cases, the
+workflow cannot be changed after being defined. for example:
+
+.. code-block:: python
+
+    u = mda.Universe(GRO, XTC)
+    ts = u.trajectory[0]
+    trans = transformation(args)
+    ts = trans(ts)
+
+    #  or add as a workflow
+    u.trajectory.add_transformations(trans)
+
+Transformations can also be created as a closure/nested function.
+In addition to the specific arguments that each transformation can take, they
+also contain a wrapped function that takes a `Timestep` object as argument.
+So, a closure-style transformation can be roughly defined as follows:
+
+.. code-block:: python
+
+    def transformation(*args,**kwargs):
+        # do some things
+            def wrapped(ts):
+                # apply changes to the Timestep object
+                return ts
+
+            return wrapped
+
+Note, to meet the need of serialization of universe, only transformation class
+are used after MDAnlaysis 2.0.0. One can still write functions (closures) as in
+MDA 1.x, but that these cannot be serialized and thus will not work with all
+forms of parallel analysis. For detailed descriptions about how to write a
+closure-style transformation, read the code in MDA 1.x as a reference
+or read MDAnalysis UserGuide.
 
 
 .. versionchanged:: 2.0.0
-    All transformations are classes now.
+    Transformations should now be created as classes with a :meth:`__call__`
+    method instead of being written as a function/closure.
 """
 
 from .translate import translate, center_in_box
