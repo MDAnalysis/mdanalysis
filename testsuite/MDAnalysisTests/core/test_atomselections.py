@@ -530,7 +530,7 @@ class TestSelectionRDKit(object):
 
     @pytest.fixture
     def u2(self):
-        u = MDAnalysis.Universe.from_smiles("[O-]C(C=O)Cc1cNc(N)c1", 
+        u = MDAnalysis.Universe.from_smiles("[O-]C(C=O)Cc1cNc(N)c1",
                                             generate_coordinates=False)
         return u
 
