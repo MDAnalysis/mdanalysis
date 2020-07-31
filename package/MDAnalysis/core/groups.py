@@ -103,7 +103,7 @@ from ..lib.util import cached, warn_if_not_unique, unique_int_1d
 from ..lib import distances
 from ..lib import transformations
 from ..lib import mdamath
-from ..lib.accessors import Accessor, ConverterWrapper
+from ..converters.accessors import Accessor, ConverterWrapper
 from ..selections import get_writer as get_selection_writer_for
 from . import selection
 from ..exceptions import NoDataError
