@@ -251,8 +251,8 @@ class RDKitConverter(base.ConverterBase):
                                 type(obj))) from None
 
         # create the topology
-        key = "<%x>" % id(ag) + ",".join(
-            ["%s=%s" % (str(k), str(v)) for k, v in kwargs.items()])
+        key = f"<{id(ag):#x}>" + ",".join(f"{key}={value}"
+                                          for key, value in kwargs.items())
         # search for it in the cache first
         try:
             mol = self._cache[key]
