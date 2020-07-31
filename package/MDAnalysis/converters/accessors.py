@@ -60,7 +60,7 @@ from ..core._get_readers import get_converter_for
 
 
 class Accessor:
-    """Class that adds a wrapper to an object. 
+    """Class that adds a wrapper to an object.
 
     Parameters
     ----------
@@ -83,7 +83,7 @@ class ConverterWrapper:
 
     `ag.convert_to` will return this ConverterWrapper, which can be called
     directly with the name of the destination package as a string (similarly
-    to the old API), or through custom methods named after the package (in 
+    to the old API), or through custom methods named after the package (in
     lowercase) that are automatically constructed thanks to metaclass magic.
 
     Parameters
@@ -104,7 +104,7 @@ class ConverterWrapper:
             setattr(self, method_name, fconvert)
 
     def __call__(self, package, **kwargs):
-        """Convert :class:`AtomGroup` to a structure from another Python 
+        """Convert :class:`AtomGroup` to a structure from another Python
         package.
 
         Example
