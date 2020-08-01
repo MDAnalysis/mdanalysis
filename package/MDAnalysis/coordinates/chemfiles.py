@@ -39,9 +39,7 @@ Classes
 
 .. autoclass:: ChemfilesPicklable
 """
-import numpy as np
 from distutils.version import LooseVersion
-import sys
 import warnings
 
 from . import base, core
@@ -50,15 +48,15 @@ try:
     import chemfiles
 except ImportError:
     HAS_CHEMFILES = False
-else:
-    HAS_CHEMFILES = True
 
-# Allow building documentation even if chemfiles is not installed
-if not HAS_CHEMFILES and 'sphinx' in sys.modules:
+    # Allow building documentation even if chemfiles is not installed
     import imp
-    class MockTrajectory: pass
+
+    class MockTrajectory:
+        pass
     chemfiles = imp.new_module("chemfiles")
     chemfiles.Trajectory = MockTrajectory
+else:
     HAS_CHEMFILES = True
 
 
@@ -393,70 +391,69 @@ class ChemfilesWriter(base.WriterBase):
         return topology
 
 
-if HAS_CHEMFILES:
-    class ChemfilesPicklable(chemfiles.Trajectory):
-        """Chemfiles file object (read-only) that can be pickled.
+class ChemfilesPicklable(chemfiles.Trajectory):
+    """Chemfiles file object (read-only) that can be pickled.
 
-        This class provides a file-like object (as returned by
-        :class:`chemfiles.Trajectory`) that,
-        unlike standard Python file objects,
-        can be pickled. Only read mode is supported.
+    This class provides a file-like object (as returned by
+    :class:`chemfiles.Trajectory`) that,
+    unlike standard Python file objects,
+    can be pickled. Only read mode is supported.
 
-        When the file is pickled, path, mode, and format of the file handle
-        are saved. On unpickling, the file is opened by path with mode,
-        and saved format.
-        This means that for a successful unpickle, the original file still has
-        to be accessible with its filename.
+    When the file is pickled, path, mode, and format of the file handle
+    are saved. On unpickling, the file is opened by path with mode,
+    and saved format.
+    This means that for a successful unpickle, the original file still has
+    to be accessible with its filename.
 
-        Note
-        ----
-        Can only be used with reading ('r') mode.
-        Upon pickling, the current frame is reset. `universe.trajectory[i]` has
-        to be used to return to its original frame.
+    Note
+    ----
+    Can only be used with reading ('r') mode.
+    Upon pickling, the current frame is reset. `universe.trajectory[i]` has
+    to be used to return to its original frame.
 
-        Parameters
-        ----------
-        filename : str
-            a filename given a text or byte string.
-        mode : 'r' , optional
-            only 'r' can be used for pickling.
-        format : '', optional
-            guessed from the file extension if empty.
+    Parameters
+    ----------
+    filename : str
+        a filename given a text or byte string.
+    mode : 'r' , optional
+        only 'r' can be used for pickling.
+    format : '', optional
+        guessed from the file extension if empty.
 
-        Example
-        -------
-        ::
+    Example
+    -------
+    ::
 
-            f = ChemfilesPicklable(XYZ, 'r', '')
+        f = ChemfilesPicklable(XYZ, 'r', '')
+        print(f.read())
+        f.close()
+
+    can also be used as context manager::
+
+        with ChemfilesPicklable(XYZ) as f:
             print(f.read())
-            f.close()
 
-        can also be used as context manager::
-
-            with ChemfilesPicklable(XYZ) as f:
-                print(f.read())
-
-        See Also
-        ---------
-        :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
-        :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
-        :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
-        :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
-        :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
+    See Also
+    ---------
+    :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`
+    :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`
 
 
-        .. versionadded:: 2.0.0
-        """
-        def __init__(self, path, mode="r", format=""):
-            if mode != 'r':
-                raise ValueError("Only read mode ('r') "
-                                 "files can be pickled.")
-            super().__init__(path=path,
-                             mode=mode,
-                             format=format)
+    .. versionadded:: 2.0.0
+    """
+    def __init__(self, path, mode="r", format=""):
+        if mode != 'r':
+            raise ValueError("Only read mode ('r') "
+                             "files can be pickled.")
+        super().__init__(path=path,
+                         mode=mode,
+                         format=format)
 
-        def __getstate__(self):
-            return self.path, self._Trajectory__mode, self._Trajectory__format
+    def __getstate__(self):
+        return self.path, self._Trajectory__mode, self._Trajectory__format
 
-        def __setstate__(self, args):
-            self.__init__(*args)
+    def __setstate__(self, args):
+        self.__init__(*args)
