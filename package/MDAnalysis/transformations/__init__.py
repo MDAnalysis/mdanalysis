@@ -79,12 +79,14 @@ So, a closure-style transformation can be roughly defined as follows:
 
             return wrapped
 
-Note, to meet the need of serialization of universe, only transformation class
-are used after MDAnlaysis 2.0.0. One can still write functions (closures) as in
-MDA 1.x, but that these cannot be serialized and thus will not work with all
-forms of parallel analysis. For detailed descriptions about how to write a
-closure-style transformation, read the code in MDA 1.x as a reference
-or read MDAnalysis UserGuide.
+.. Note::
+   Although functions (closures) work as transformations, they are not used in
+   in MDAnalysis from release 2.0.0 onwards because they cannot be reliably
+   serialized and thus a :class:`Universe` with such transformations cannot be
+   used with common parallelization schemes (e.g., ones based on
+   :mod:`multiprocessing`).
+   For detailed descriptions about how to write a closure-style transformation,
+   please refer to MDAnalysis 1.x documentation.
 
 
 .. versionchanged:: 2.0.0
