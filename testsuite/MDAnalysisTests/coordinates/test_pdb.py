@@ -20,12 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
-from io import StringIO
 import os
+from io import StringIO
 
 import MDAnalysis as mda
 import numpy as np
+import pytest
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
@@ -36,7 +36,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2,
-                                       PDB_CRYOEM_BOX, MMTF_NOCRYST)
+                                       PDB_CRYOEM_BOX, MMTF_NOCRYST,
+                                       PDB_HOLE, mol2_molecule)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -187,6 +188,14 @@ class TestPDBWriter(object):
     @pytest.fixture
     def universe3(self):
         return mda.Universe(PDB)
+
+    @pytest.fixture
+    def universe4(self):
+        return mda.Universe(PDB_HOLE, PDB_HOLE)
+
+    @pytest.fixture
+    def universe5(self):
+        return mda.Universe(mol2_molecule, mol2_molecule)
 
     @pytest.fixture(params=[
             [PDB_CRYOEM_BOX, np.zeros(6)],
@@ -445,6 +454,62 @@ class TestPDBWriter(object):
         with pytest.raises(ValueError, match=errmsg):
             with mda.coordinates.PDB.PDBWriter(outstring) as writer:
                 writer.write(u.atoms)
+
+    def test_hetatm_written(self, universe4, tmpdir):
+        """
+        Checks that HETATM record types are written.
+        """
+
+        u = universe4
+        u_atoms = u.select_atoms("resname ETA and record_type HETATM")
+        assert_equal(len(u_atoms), 8)
+
+        outfile = str(tmpdir.join('test-hetatm.pdb'))
+        u.atoms.write(outfile)
+        written = mda.Universe(outfile, outfile)
+        written_atoms = written.select_atoms("resname ETA and "
+                                             "record_type HETATM")
+
+        assert_equal(len(u_atoms), len(written_atoms))
+
+    def test_default_atom_record_type_written(self, universe5, tmpdir):
+        """
+        Checks that ATOM record types are written when there is no
+        record_type attribute.
+        """
+
+        u = universe5
+        outfile = str(tmpdir.join('test-mol2-to-pdb.pdb'))
+
+        expected_msg = "Found no information for attr: " \
+                       "'record_types' Using default value of 'ATOM'"
+        with pytest.warns(UserWarning, match=expected_msg):
+            u.atoms.write(outfile)
+
+        written = mda.Universe(outfile, outfile)
+        assert_equal(len(u.atoms), len(written.atoms))
+
+        atms = written.select_atoms("record_type ATOM")
+        assert_equal(len(atms.atoms), len(u.atoms))
+
+        hetatms = written.select_atoms("record_type HETATM")
+        assert_equal(len(hetatms.atoms), 0)
+
+    def test_abnormal_record_type(self, universe5, tmpdir):
+        """
+        Checks whether KeyError is raised when record type is
+        neither ATOM or HETATM.
+        """
+        u = universe5
+        u.add_TopologyAttr('record_type', ['ABNORM']*len(u.atoms))
+        outfile = str(tmpdir.join('test-abnormal-record_type.pdb'))
+
+        expected_msg = "Found 'ABNORM' for record type, but allowed " \
+                       "types are ATOM or HETATM"
+
+        with pytest.raises(ValueError):
+            with pytest.warns(UserWarning, match=expected_msg):
+                u.atoms.write(outfile)
 
 
 class TestMultiPDBReader(object):

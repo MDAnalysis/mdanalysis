@@ -475,6 +475,8 @@ class PDBWriter(base.WriterBase):
     .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
     .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
     .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
+    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
+    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#HETATM
 
 
     Note
@@ -492,6 +494,10 @@ class PDBWriter(base.WriterBase):
     unitary values (cubic box with sides of 1 Å) if unit cell dimensions
     are not set (:code:`None` or :code:`np.zeros(6)`,
     see Issue #2698).
+
+    When atom's record_type attribute is present (i.e. Universe object was
+    created by loading a PDB file), ATOM and HETATM record type keywords
+    are written out accordingly.
 
     See Also
     --------
@@ -1000,6 +1006,10 @@ class PDBWriter(base.WriterBase):
            ChainID now comes from the last character of segid, as stated in the documentation.
            An indexing issue meant it previously used the first charater (Issue #2224)
 
+        .. versionchanged:: 2.0.0
+           when only record_type attribute is present, instead of using ATOM for both ATOM
+           and HETATM, HETATM record type keyword is properly written out (Issue #1753)
+
         """
         atoms = self.obj.atoms
         pos = atoms.positions
@@ -1033,8 +1043,8 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        record_types = get_attr('record_types', 'ATOM')
 
-        no_record_type = False
         for i, atom in enumerate(atoms):
             vals = {}
             vals['serial'] = util.ltruncate_int(i + 1, 5)  # check for overflow here?
@@ -1050,20 +1060,13 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
-            if hasattr(atom, 'record_type'):
-                if atom.record_type == 'HETATM':
-                    # .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#HETATM
-                    self.pdbfile.write(self.fmt['HETATM'].format(**vals))
-                else:
-                    # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-                    self.pdbfile.write(self.fmt['ATOM'].format(**vals))
-            else:
-                # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-                no_record_type = True
-                self.pdbfile.write(self.fmt['ATOM'].format(**vals))
-
-        if no_record_type:
-            warnings.warn("PDBWriter: No record type found for an atom - HETATM may be written out as ATOM")
+            # record_type attribute, if exists, can be ATOM or HETATM
+            try:
+                self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
+            except KeyError:
+                warnings.warn("Found '{}' for record type, but allowed types "
+                              "are ATOM or HETATM".format(record_types[i]))
+                raise ValueError
 
         if multiframe:
             self.ENDMDL()
