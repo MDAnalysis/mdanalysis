@@ -644,7 +644,7 @@ class H5MDReader(base.ReaderBase):
         it rewinds the trajectory back to the first timstep.
 
         """
-        if self._driver == "mpio":
+        if self._driver == "mpio":  # pragma: no cover
             self._read_frame(-1)
             return
 

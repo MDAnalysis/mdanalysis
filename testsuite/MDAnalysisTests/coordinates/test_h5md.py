@@ -464,3 +464,7 @@ def test_no_units(h5md_file, ref, tmpdir):
                 del g['particles/trajectory/position/time'].attrs['units']
         with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format="H5MD")
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_open_with_driver():
+    u = mda.Universe(TPR_xvf, H5MD_xvf, driver="core")
