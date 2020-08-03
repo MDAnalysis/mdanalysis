@@ -80,9 +80,12 @@ class FileIOPicklable(io.FileIO):
     Parameters
     ----------
     name : str
-        a filename given a text or byte string.
+        either a text or byte string giving the name (and the path
+        if the file isn't in the current working directory) of the file to
+        be opened.
     mode : str
-        only reading ('r') mode works.
+        only reading ('r') mode works. It exists to be consistent
+        with a wider API.
 
     Example
     -------
@@ -227,12 +230,14 @@ class BZ2Picklable(bz2.BZ2File):
     Note
     ----
     This class only supports reading files in binary mode. If you need to open
-    to open a compressed file in text mode, use the :func:`bz2_pickle_open`.
+    to open a compressed file in text mode, use :func:`bz2_pickle_open`.
 
     Parameters
     ----------
     name : str
-        a filename given a text or byte string.
+        either a text or byte string giving the name (and the path
+        if the file isn't in the current working directory) of the file to
+        be opened.
     mode : str
         can only be 'r', 'rb' to make pickle work.
 
@@ -292,7 +297,9 @@ class GzipPicklable(gzip.GzipFile):
     Parameters
     ----------
     name : str
-        a filename given a text or byte string.
+        either a text or byte string giving the name (and the path
+        if the file isn't in the current working directory) of the file to
+        be opened.
     mode : str
         can only be 'r', 'rb' to make pickle work.
 
@@ -334,14 +341,16 @@ class GzipPicklable(gzip.GzipFile):
 def pickle_open(name, mode='rt'):
     """Open file and return a stream with pickle function implemented.
 
-    This function returns either BufferIOPicklable or TextIOPicklable wrapped
-    FileIOPicklable object given different reading mode. It can be used as a
-    context manager, and replace the built-in :func:`open` function
-    in read mode that only returns an unpicklable file object.
+    This function returns a FileIOPicklable object wrapped in a
+    BufferIOPicklable class when given the "rb" reading mode,
+    or a FileIOPicklable object wrapped in a TextIOPicklable class with the "r"
+    or "rt" reading mode. It can be used as a context manager, and replace the
+    built-in :func:`open` function in read mode that only returns an
+    unpicklable file object.
     In order to serialize a :class:`MDAnalysis.core.Universe`, this function
-    can used to open trajectory/topology files--an object composition approach,
-    as opposed to class inheritance, which is more flexible and easier for
-    pickle implementation for new readers.
+    can used to open trajectory/topology files. This object composition is more
+    flexible and easier than class inheritance to implement pickling
+    for new readers.
 
     Note
     ----
@@ -350,7 +359,9 @@ def pickle_open(name, mode='rt'):
     Parameters
     ----------
     name : str
-        a filename given a text or byte string.
+        either a text or byte string giving the name (and the path
+        if the file isn't in the current working directory) of the file to
+        be opened.
     mode: {'r', 'rt', 'rb'} (optional)
         'r':  open for reading in text mode;
         'rt': read in text mode (default);
@@ -390,7 +401,7 @@ def pickle_open(name, mode='rt'):
     """
     if mode not in {'r', 'rt', 'rb'}:
         raise ValueError("Only read mode ('r', 'rt', 'rb') "
-                         "iles can be pickled.")
+                         "files can be pickled.")
     name = os.fspath(name)
     raw = FileIOPicklable(name)
     if mode == 'rb':
@@ -403,10 +414,12 @@ def bz2_pickle_open(name, mode='rb'):
     """Open a bzip2-compressed file in binary or text mode
     with pickle function implemented.
 
-    This function returns either BZ2Picklable or TextIOPicklable wrapped
-    BZ2Picklable object given different reading mode. It can be used as a
-    context manager, and replace the built-in :func:`bz2.open` function
-    in read mode that only returns an unpicklable file object.
+    This function returns a BZ2Picklable object when given the "rb" or "r"
+    reading mode, or a BZ2Picklable object wrapped in a TextIOPicklable class
+    with the "rt" reading mode.
+    It can be used as a context manager, and replace the built-in
+    :func:`bz2.open` function in read mode that only returns an
+    unpicklable file object.
 
     Note
     ----
@@ -415,7 +428,9 @@ def bz2_pickle_open(name, mode='rb'):
     Parameters
     ----------
     name : str
-        a filename given a text or byte string.
+        either a text or byte string giving the name (and the path
+        if the file isn't in the current working directory) of the file to
+        be opened.
     mode: {'r', 'rt', 'rb'} (optional)
         'r':  open for reading in binary mode;
         'rt': read in text mode;
@@ -471,10 +486,12 @@ def gzip_pickle_open(name, mode='rb'):
     """Open a gzip-compressed file in binary or text mode
     with pickle function implemented.
 
-    This function returns either GzipPicklable or TextIOPicklable wrapped
-    GzipPicklable object given different reading mode. It can be used as a
-    context manager, and replace the built-in :func:`gzip.open` function
-    in read mode that only returns an unpicklable file object.
+    This function returns a GzipPicklable object when given the "rb" or "r"
+    reading mode, or a GzipPicklable object wrapped in a TextIOPicklable class
+    with the "rt" reading mode.
+    It can be used as a context manager, and replace the built-in
+    :func:`gzip.open` function in read mode that only returns an
+    unpicklable file object.
 
     Note
     ----
@@ -483,7 +500,9 @@ def gzip_pickle_open(name, mode='rb'):
     Parameters
     ----------
     name : str
-        a filename given a text or byte string.
+        either a text or byte string giving the name (and the path
+        if the file isn't in the current working directory) of the file to
+        be opened.
     mode: {'r', 'rt', 'rb'} (optional)
         'r':  open for reading in binary mode;
         'rt': read in text mode;

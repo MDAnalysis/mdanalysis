@@ -29,7 +29,7 @@ If the new reader uses :func:`util.anyopen()`
 (e.g. :class:`MDAnalysis.coordinates.PDB.PDBReader`),
 the reading handler can be pickled without modification.
 If the new reader uses I/O classes from other package
-(e.g. :class:`MDAnalysis.coordinates.GSD.GSDReader`)),
+(e.g. :class:`MDAnalysis.coordinates.GSD.GSDReader`),
 and cannot be pickled natively, create a new picklable class inherited from 
 the file class in that package
 (e.g. :class:`MDAnalysis.coordinates.GSD.GSDPicklable`),
