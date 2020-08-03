@@ -497,7 +497,7 @@ class H5MDReader(base.ReaderBase):
             if self._comm is not None:
                 # can only pass comm argument to h5py.File if driver='mpio'
                 assert self._driver == 'mpio'
-                self._file = h5py.File(self.filename, 'r',
+                self._file = h5py.File(self.filename, 'r',  # pragma: no cover
                                        driver=self._driver,
                                        comm=self._comm)
             elif self._driver is not None:
