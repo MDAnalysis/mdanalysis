@@ -405,3 +405,30 @@ def test_no_box(h5md_file, ref, tmpdir):
                 del g['particles/trajectory/box/edges']
         u = mda.Universe(TPR_xvf, outfile, format='H5MD')
         assert_array_equal(u.trajectory.ts.dimensions, np.zeros((6,)))
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_no_groups(h5md_file, ref, tmpdir):
+    outfile = 'test_no_groups' + ref.ext
+    from MDAnalysis.exceptions import NoDataError
+    with tmpdir.as_cwd():
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                del g['particles/trajectory/position']
+                del g['particles/trajectory/velocity']
+                del g['particles/trajectory/force']
+        with pytest.raises(NoDataError):
+            u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_open_filestream(h5md_file):
+    with h5md_file as f:
+        from MDAnalysis.lib.util import NamedStream
+        stream = h5md_file
+        u = mda.Universe(TPR_xvf, NamedStream(stream, stream.filename))
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_wrong_driver():
+    with pytest.raises(ValueError):
+        u = mda.Universe(TPR_xvf, H5MD_xvf, driver='wrong_driver', comm="MPI.COMM_WORLD")

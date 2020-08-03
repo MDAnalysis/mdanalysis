@@ -26,8 +26,8 @@
 The `H5MD`_ trajectory file format is based upon the general, high performance
 `HDF5`_ file format.
 HDF5 files are self documenting and can be accessed with the `h5py`_ library.
-The HDF5 library (and `H5PY`_) must be installed; otherwise, H5MD files
-cannot be read by MDAnalysis. If `H5PY`_ is not installed, a ``RuntimeError``
+The HDF5 library (and `h5py`_) must be installed; otherwise, H5MD files
+cannot be read by MDAnalysis. If `h5py`_ is not installed, a ``RuntimeError``
 is raised.
 
 HDF5 can make use of parallel file system features through the MPI-IO
@@ -36,11 +36,99 @@ interface of the HDF5 library to improve parallel reads and writes.
 
 The `H5MD`_ file format is based upon `HDF5`_, which makes use of parallel
 file system features through the MPI-IO interface of the HDF5 library.
-The reader currently uses the `H5PY`_ library to access data from an H5MD file.
+The reader currently uses the `h5py`_ library to access data from an H5MD file.
+
+
+Units
+-----
+
+Units are read from the attributes of the position, velocity, force,
+and time datasets provided by the H5MD file. The unit string is translated
+from `H5MD notation`_ to `MDAnalysis notation`_. If MDAnalysis does not
+recognize the unit (likely because that unit string is
+not defined in MDAnalysis) provided, a ``RuntimeError`` is raised. If no
+units are provided, MDAnalysis stores a value of ``None`` for each unit. If
+the H5MD file does not contain units and ``convert_units=True``, MDAnalysis
+will raise a ``ValueError``. To load a universe from an H5MD file with no
+units, set  ``convert_units=False``.
+
+Example: Loading an H5MD simulation
+-----------------------------------
+
+To load an H5MD simulation from an H5MD trajectory data file (using the
+:class:`~MDAnalysis.coordinates.H5MD.H5MDReader`), pass the topology
+and trajectory files to :class:`~MDAnalysis.core.universe.Universe`:
+
+    >>> import MDAnalysis as mda
+    >>> u = mda.Universe("topology.tpr", "trajectory.h5md")
+
+It is also possible to pass an :class:`h5py.File` object into the reader
+using the :class:`~MDAnalysis.lib.util.NamedStream` wrapper:
+
+    >>> import MDAnalysis as mda
+    >>> from MDAnalysis.lib.util import NamedStream
+    >>> stream = h5py.File("trajectory.h5md", 'r')
+    >>> u = mda.Universe("topology.tpr",
+    ...                   NamedStream(stream, stream.filename))
+
+
+Example: Opening an H5MD file in parallel
+-----------------------------------------
+
+The parallel features of HDF5 can be accessed through h5py
+(see `parallel h5py docs`_ for more detail) by using the `mpi4py`_ Python
+package with a Parallel build of HDF5. To load a an H5MD simulation with
+parallel HDF5, pass `driver` and `comm` arguments to
+:class:`~MDAnalysis.core.universe.Universe`:
+
+    >>> import MDAnalysis as mda
+    >>> from mpi4py import MPI
+    >>> u = mda.Universe("topology.tpr", "trajectory.h5md",
+    ...                   driver="mpio", comm=MPI.COMM_WORLD)
+
+.. Note::
+    h5py must be built with parallel features enabled on top of a parallel
+    HDF5 build, and HDF5 and mpi4py must be built with a working MPI
+    implementation. See instructions below.
+
+Building parallel h5py and HDF5
+-------------------------------
+
+    1. `Build MPI from sources`_
+    2. `Build HDF5 from sources`_ with parallel settings enabled:
+
+        >>> ./configure --enable-parallel --enable-shared
+        >>> make
+        >>> make install
+
+    3. `Install mpi4py`_, making sure to point `mpicc` to where you've
+    installed your MPI implemenation:
+
+        >>> env MPICC=/path/to/mpicc pip install mpi4py
+
+    4. `Build h5py from sources`_, making sure to enable mpi and to point
+    to your parallel build of HDF5:
+
+        >>> export HDF5_PATH=path-to-parallel-hdf5
+        >>> python setup.py clean --all
+        >>> python setup.py configure -r --hdf5-version=X.Y.Z --mpi --hdf5=$HDF5_PATH
+        >>> export gcc=gcc
+        >>> CC=mpicc HDF5_DIR=$HDF5_PATH python setup.py build
+        >>> python setup.py install
+
+.. Warning::
+    You may have to play around with different combinations of
+    versions of h5py/HDF5 to get a working parallel build.
 
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`HDF5`: https://www.hdfgroup.org/solutions/hdf5/
 .. _`H5PY`: http://docs.h5py.org/
+.. _`parallel h5py docs`: https://docs.h5py.org/en/stable/mpi.html
+.. _`mpi4py`: https://mpi4py.readthedocs.io/en/stable/index.html
+.. _`Build MPI from sources`: https://mpi4py.readthedocs.io/en/stable/appendix.html#building-mpi-from-sources
+.. _`Build HDF5 from sources`: https://support.hdfgroup.org/ftp/HDF5/current/src/unpacked/release_docs/INSTALL_parallel
+.. _`Install mpi4py`: https://mpi4py.readthedocs.io/en/stable/install.html#requirements
+.. _`Build h5py from sources`: https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5
 .. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html
 .. _`MDAnalysis notation`: https://userguide.mdanalysis.org/1.0.0/units.html
 
@@ -120,18 +208,7 @@ class H5MDReader(base.ReaderBase):
     See `h5md documentation <https://nongnu.org/h5md/h5md.html>`_
     for a detailed overview of the H5MD file format.
 
-    .. rubric:: Units
 
-    Units are read from the attributes of the position, velocity, force,
-    and time datasets. The unit string is translated from `H5MD notation`_ to
-    `MDAnalysis notation`_. If MDAnalysis does not recognize the unit
-    provided by the H5MD file, a ``RuntimeError`` is raised. If MDAnalysis
-    does not recognize the units, it is likely because that unit string is
-    not defined in MDAnalysis. If no units are provided,
-    MDAnalysis stores a value of ``None`` for each unit. MDAnalysis will raise
-    a ``ValueError`` if ``convert_units`` is set to ``True``, yet the
-    `H5MD`_ file does not contain units. Set ``convert_units=False`` if
-    the `H5MD`_ file contains no units.
 
     Currently reads .h5md files with the following HDF5 hierarchy:
 
@@ -196,11 +273,12 @@ class H5MDReader(base.ReaderBase):
         The reader does not currently read mass or charge data.
 
     .. note::
-        The ``_reopen()`` method does not explicity close and reopen
-        the file like most other coordinate readers, as this would
-        cause problems with reopening the file with the ``driver``
-        and ``comm`` arguments for parallel reads. Instead, it rewinds
-        the trajectory back to the first timstep.
+        If the `driver` and `comm` arguments were used to open the
+        hdf5 file (specifically, ``driver="mpio"``) then the ``_reopen()``
+        method does *not* close and open the file like most readers because
+        the information about the MPI communicator would be lost; instead
+        it rewinds the trajectory back to the first timstep.
+
 
     .. versionadded:: 2.0.0
 
@@ -263,9 +341,10 @@ class H5MDReader(base.ReaderBase):
         convert_units : bool (optional)
             convert units to MDAnalysis units
         driver : str (optional)
-            MPI file driver used to open H5MD file
+            H5PY file driver used to open H5MD file
         comm : :class:`MPI.Comm` (optional)
             MPI communicator used to open H5MD file
+            Must be passed with `'mpio'` file driver
         **kwargs : dict
             General reader arguments.
 
@@ -296,6 +375,9 @@ class H5MDReader(base.ReaderBase):
         # opened with parallel h5py/hdf5 enabled
         self._driver = kwargs.get('driver', None)
         self._comm = kwargs.get('comm', None)
+        if (self._comm is not None) and (self._driver != 'mpio'):
+            raise ValueError("If MPI communicator object is used to open"
+                            " h5md file, ``driver='mpio'`` must be passed.")
 
         self.open_trajectory()
         if self._particle_group['box'].attrs['dimension'] != 3:
@@ -329,178 +411,6 @@ class H5MDReader(base.ReaderBase):
         self._set_translated_units()  # fills units dictionary
         self._read_next_timestep()
 
-    @staticmethod
-    def _format_hint(thing):
-        """Can this Reader read *thing*"""
-        # nb, filename strings can still get passed through if
-        # format='H5MD' is used
-        return HAS_H5PY and isinstance(thing, h5py.File)
-
-    def open_trajectory(self):
-        """opens the trajectory file using h5py library"""
-        self._frame = -1
-        if isinstance(self.filename, h5py.File):
-            self._file = self.filename
-            self._driver = self._file.driver
-        else:
-            if self._comm is not None:
-                # can only pass comm argument to h5py.File if driver='mpio'
-                assert self._driver == 'mpio'
-                self._file = h5py.File(self.filename, 'r',
-                                       driver=self._driver,
-                                       comm=self._comm)
-            elif self._driver is not None:
-                self._file = h5py.File(self.filename, 'r', driver=self._driver)
-            else:
-                self._file = h5py.File(self.filename, 'r')
-        # pulls first key out of 'particles'
-        # allows for arbitrary name of group1 in 'particles'
-        self._particle_group = self._file['particles'][
-                               list(self._file['particles'])[0]]
-
-    def close(self):
-        """close reader"""
-        if self._driver != 'mpio':
-            self._file.close()
-
-    def _reopen(self):
-        """reopen trajectory
-
-        Note
-        ----
-        This method does close the and reopen the file like most other
-        coordinate readers, as this would cause problems with reopening
-        the file with the ``driver`` and ``comm`` arguments for parallel
-        reads. Instead, it rewinds the trajectory back to the first timstep
-        if 'mpio' is passed for the driver.
-
-        """
-        if self._driver != 'mpio':
-            self.close()
-            self.open_trajectory()
-        else:
-            self._frame = -2
-            self._read_next_timestep()
-
-    @property
-    def has_positions(self):
-        """True if 'position' group is in trajectory."""
-        return self._has['position']
-
-    @has_positions.setter
-    def has_positions(self, value: bool):
-        self._has['position'] = value
-
-    @property
-    def has_velocities(self):
-        """True if 'velocity' group is in trajectory."""
-        return self._has['velocity']
-
-    @has_velocities.setter
-    def has_velocities(self, value: bool):
-        self._has['velocity'] = value
-
-    @property
-    def has_forces(self):
-        """True if 'force' group is in trajectory."""
-        return self._has['force']
-
-    @has_forces.setter
-    def has_forces(self, value: bool):
-        self._has['force'] = value
-
-    @property
-    def n_frames(self):
-        """number of frames in trajectory"""
-        for name, value in self._has.items():
-            if value:
-                return self._particle_group[name]['value'].shape[0]
-
-    def _read_frame(self, frame):
-        """reads data from h5md file and copies to current timestep"""
-        try:
-            for name, value in self._has.items():
-                if value:
-                    myframe = self._particle_group[name]['step'][frame]
-                    break
-            else:
-                raise NoDataError("Provide at least a position, velocity"
-                                  " or force group in the h5md file.")
-        except ValueError:
-            raise IOError from None
-
-        self._frame = frame
-        ts = self.ts
-        particle_group = self._particle_group
-        ts.frame = frame
-
-        # fills data dictionary from 'observables' group
-        # Note: dt is not read into data as it is not decided whether
-        # Timestep should have a dt attribute (see Issue #2825)
-        self._copy_to_data()
-
-
-        # Sets frame box dimensions
-        # Note: H5MD files must contain 'box' group in each particle group
-        if 'edges' in particle_group['box']:
-            ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
-        else:
-            # sets ts.dimensions = [0, 0, 0, 0, 0, 0]
-            ts._unitcell[:] = None
-
-        # set the timestep positions, velocities, and forces with
-        # current frame dataset
-        if self._has['position']:
-            ts.positions = self._get_frame_dataset('position')
-        if self._has['velocity']:
-            ts.velocities = self._get_frame_dataset('velocity')
-        if self._has['force']:
-            ts.forces = self._get_frame_dataset('force')
-
-        if self.convert_units:
-            self._convert_units()
-
-        return ts
-
-    def _read_next_timestep(self):
-        """read next frame in trajectory"""
-        return self._read_frame(self._frame + 1)
-
-    def _get_frame_dataset(self, dataset):
-        """retrieves dataset array at current frame"""
-
-        frame_dataset = self._particle_group[
-                        dataset]['value'][self._frame, :]
-        n_atoms_now = frame_dataset.shape[0]
-        if n_atoms_now != self.n_atoms:
-            raise ValueError("Frame {} has {} atoms but the initial frame"
-                             " has {} atoms. MDAnalysis is unable to deal"
-                             " with variable topology!"
-                             "".format(self._frame,
-                                       n_atoms_now,
-                                       self.n_atoms))
-        return frame_dataset
-
-    def _convert_units(self):
-        """converts time, position, velocity, and force values if they
-        are not given in MDAnalysis standard units
-
-        See https://userguide.mdanalysis.org/1.0.0/units.html
-        """
-
-        self.ts.time = self.convert_time_from_native(self.ts.time)
-
-        if self._has['position']:
-            self.convert_pos_from_native(self.ts.positions)
-            self.convert_pos_from_native(self.ts.dimensions[:3])
-
-        if self._has['velocity']:
-            self.convert_velocities_from_native(self.ts.velocities)
-
-        if self._has['force']:
-            self.convert_forces_from_native(self.ts.forces)
-
-
     def _set_translated_units(self):
         """converts units from H5MD to MDAnalysis notation
         and fills units dictionary"""
@@ -515,26 +425,6 @@ class H5MDReader(base.ReaderBase):
         for group, unit in _group_unit_dict.items():
             self._translate_h5md_units(group, unit)
             self._check_units(group, unit)
-
-    def _check_units(self, group, unit):
-        """Raises error if no units are provided from H5MD file
-        and convert_units=True"""
-
-        if not self.convert_units:
-            return
-
-        errmsg = "H5MD file must have readable units if ``convert_units`` is"
-        " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
-        " Set ``convert_units=False`` to load Universe without units."
-
-        if unit == 'time':
-            if self.units['time'] is None:
-                raise ValueError(errmsg)
-
-        else:
-            if self._has[group]:
-                if self.units[unit] is None:
-                    raise ValueError(errmsg)
 
     def _translate_h5md_units(self, group, unit):
         """stores the translated unit string into the units dictionary"""
@@ -570,6 +460,107 @@ class H5MDReader(base.ReaderBase):
                                            self._particle_group[group].attrs[
                                            'units'])) from None
 
+    def _check_units(self, group, unit):
+        """Raises error if no units are provided from H5MD file
+        and convert_units=True"""
+
+        if not self.convert_units:
+            return
+
+        errmsg = "H5MD file must have readable units if ``convert_units`` is"
+        " set to ``True``. MDAnalysis sets ``convert_units=True`` by default."
+        " Set ``convert_units=False`` to load Universe without units."
+
+        if unit == 'time':
+            if self.units['time'] is None:
+                raise ValueError(errmsg)
+
+        else:
+            if self._has[group]:
+                if self.units[unit] is None:
+                    raise ValueError(errmsg)
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Reader read *thing*"""
+        # nb, filename strings can still get passed through if
+        # format='H5MD' is used
+        return HAS_H5PY and isinstance(thing, h5py.File)
+
+    def open_trajectory(self):
+        """opens the trajectory file using h5py library"""
+        self._frame = -1
+        if isinstance(self.filename, h5py.File):
+            self._file = self.filename
+            self._driver = self._file.driver
+        else:
+            if self._comm is not None:
+                # can only pass comm argument to h5py.File if driver='mpio'
+                assert self._driver == 'mpio'
+                self._file = h5py.File(self.filename, 'r',
+                                       driver=self._driver,
+                                       comm=self._comm)
+            elif self._driver is not None:
+                self._file = h5py.File(self.filename, 'r', driver=self._driver)
+            else:
+                self._file = h5py.File(self.filename, 'r')
+        # pulls first key out of 'particles'
+        # allows for arbitrary name of group1 in 'particles'
+        self._particle_group = self._file['particles'][
+                               list(self._file['particles'])[0]]
+
+    @property
+    def n_frames(self):
+        """number of frames in trajectory"""
+        for name, value in self._has.items():
+            if value:
+                return self._particle_group[name]['value'].shape[0]
+
+    def _read_frame(self, frame):
+        """reads data from h5md file and copies to current timestep"""
+        try:
+            for name, value in self._has.items():
+                if value:
+                    _ = self._particle_group[name]['step'][frame]
+                    break
+            else:
+                raise NoDataError("Provide at least a position, velocity"
+                                  " or force group in the h5md file.")
+        except ValueError:
+            raise IOError from None
+
+        self._frame = frame
+        ts = self.ts
+        particle_group = self._particle_group
+        ts.frame = frame
+
+        # fills data dictionary from 'observables' group
+        # Note: dt is not read into data as it is not decided whether
+        # Timestep should have a dt attribute (see Issue #2825)
+        self._copy_to_data()
+
+        # Sets frame box dimensions
+        # Note: H5MD files must contain 'box' group in each particle group
+        if 'edges' in particle_group['box']:
+            ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
+        else:
+            # sets ts.dimensions = [0, 0, 0, 0, 0, 0]
+            ts._unitcell[:] = None
+
+        # set the timestep positions, velocities, and forces with
+        # current frame dataset
+        if self._has['position']:
+            ts.positions = self._get_frame_dataset('position')
+        if self._has['velocity']:
+            ts.velocities = self._get_frame_dataset('velocity')
+        if self._has['force']:
+            ts.forces = self._get_frame_dataset('force')
+
+        if self.convert_units:
+            self._convert_units()
+
+        return ts
+
     def _copy_to_data(self):
         """assigns values to keys in data dictionary"""
 
@@ -585,3 +576,104 @@ class H5MDReader(base.ReaderBase):
                     self.ts.data['time'] = self._particle_group[name][
                                            'time'][self._frame]
                     break
+
+    def _get_frame_dataset(self, dataset):
+        """retrieves dataset array at current frame"""
+
+        frame_dataset = self._particle_group[
+                        dataset]['value'][self._frame, :]
+        n_atoms_now = frame_dataset.shape[0]
+        if n_atoms_now != self.n_atoms:
+            raise ValueError("Frame {} has {} atoms but the initial frame"
+                             " has {} atoms. MDAnalysis is unable to deal"
+                             " with variable topology!"
+                             "".format(self._frame,
+                                       n_atoms_now,
+                                       self.n_atoms))
+        return frame_dataset
+
+    def _convert_units(self):
+        """converts time, position, velocity, and force values if they
+        are not given in MDAnalysis standard units
+
+        See https://userguide.mdanalysis.org/1.0.0/units.html
+        """
+
+        self.ts.time = self.convert_time_from_native(self.ts.time)
+
+        if self._has['position']:
+            self.convert_pos_from_native(self.ts.positions)
+            self.convert_pos_from_native(self.ts.dimensions[:3])
+
+        if self._has['velocity']:
+            self.convert_velocities_from_native(self.ts.velocities)
+
+        if self._has['force']:
+            self.convert_forces_from_native(self.ts.forces)
+
+    def _read_next_timestep(self):
+        """read next frame in trajectory"""
+        return self._read_frame(self._frame + 1)
+
+    def close(self):
+        """close reader if ``driver="mpio"`` is not used to open file
+
+        Note
+        ----
+
+        If the `driver` and `comm` arguments were used to open the
+        hdf5 file (specifically, ``driver="mpio"``), then this method
+        does *not* close the file like most readers because
+        the information about the MPI communicator would be lost; instead
+        it leaves the file open by doing nothing.
+
+        """
+        if self._driver != 'mpio':
+            self._file.close()
+
+    def _reopen(self):
+        """reopen trajectory
+
+        Note
+        ----
+
+        If the `driver` and `comm` arguments were used to open the
+        hdf5 file (specifically, ``driver="mpio"``) then this method
+        does *not* close and open the file like most readers because
+        the information about the MPI communicator would be lost; instead
+        it rewinds the trajectory back to the first timstep.
+
+        """
+        if self._driver == "mpio":
+            self._read_frame(-1)
+            return
+
+        self.close()
+        self.open_trajectory()
+
+    @property
+    def has_positions(self):
+        """True if 'position' group is in trajectory."""
+        return self._has['position']
+
+    @has_positions.setter
+    def has_positions(self, value: bool):
+        self._has['position'] = value
+
+    @property
+    def has_velocities(self):
+        """True if 'velocity' group is in trajectory."""
+        return self._has['velocity']
+
+    @has_velocities.setter
+    def has_velocities(self, value: bool):
+        self._has['velocity'] = value
+
+    @property
+    def has_forces(self):
+        """True if 'force' group is in trajectory."""
+        return self._has['force']
+
+    @has_forces.setter
+    def has_forces(self, value: bool):
+        self._has['force'] = value
