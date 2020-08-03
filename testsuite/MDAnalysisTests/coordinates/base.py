@@ -120,6 +120,13 @@ class _SingleFrameReader(TestCase, RefAdKSmall):
         frames = [ts.frame for ts in trj_iter]
         assert_equal(frames, np.arange(self.universe.trajectory.n_frames))
 
+    def test_pickle_singleframe_reader(self):
+        reader = self.universe.trajectory
+        reader_p = pickle.loads(pickle.dumps(reader))
+        assert_equal(len(reader), len(reader_p))
+        assert_equal(reader.ts, reader_p.ts,
+                     "Single-frame timestep is changed after pickling")
+
 
 class BaseReference(object):
     def __init__(self):
