@@ -115,6 +115,8 @@ __all__ = [
     "PDB_HOLE",  # gramicidin A
     "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
+    "DMS_DOMAINS",  # ADK closed with multiple segids
+    "DMS_NO_SEGID",  # ADK closed with no segids or chains
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
@@ -419,6 +421,8 @@ PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
+DMS_DOMAINS = resource_filename(__name__, 'data/adk_closed_domains.dms')
+DMS_NO_SEGID = resource_filename(__name__, 'data/adk_closed_no_segid.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
 
