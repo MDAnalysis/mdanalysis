@@ -36,7 +36,7 @@ A typical transformation class looks like this:
 
 .. code-blocks:: python
 
-    class transfomration(object):
+    class transformation(object):
         def __init__(self, *args, **kwargs):
             #  do some things
             #  save needed args as attributes.
