@@ -530,8 +530,7 @@ class TestSelectionRDKit(object):
 
     @pytest.fixture
     def u2(self):
-        u = MDAnalysis.Universe.from_smiles("[O-]C(C=O)Cc1cNc(N)c1",
-                                            generate_coordinates=False)
+        u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
         return u
 
     @pytest.mark.parametrize("sel_str, n_atoms", [
@@ -551,12 +550,19 @@ class TestSelectionRDKit(object):
         ("smarts c", 4),
         ("smarts [*-]", 1),
         ("smarts [$([!#1]);$([!R][R])]", 2),
+        ("smarts [$([C@H](-[CH2])(-[O-])-C=O)]", 1),
+        ("smarts [$([C@@H](-[CH2])(-[O-])-C=O)]", 0),
         ("smarts a and type C", 4),
+        ("(smarts a) and (type C)", 4),
         ("smarts a and type N", 1),
     ])
     def test_smarts_selection(self, u2, sel_str, n_atoms):
         sel = u2.select_atoms(sel_str)
         assert sel.n_atoms == n_atoms
+    
+    def test_invalid_smarts_sel_raises_error(self, u2):
+        with pytest.raises(ValueError, match="not a valid SMARTS"):
+            u2.select_atoms("smarts foo")
 
 
 class TestSelectionsNucleicAcids(object):
