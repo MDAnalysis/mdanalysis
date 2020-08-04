@@ -290,9 +290,23 @@ def test_unknown_position_unit(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 g['particles'
                   '/trajectory'
-                  '/position'].attrs['units'] = 'random string'
+                  '/position'
+                  '/value'].attrs['unit'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_length_unit_from_box(h5md_file, ref, tmpdir):
+    outfile = 'test_length_unit_from_box' + ref.ext
+    with tmpdir.as_cwd():
+        with h5md_file as f:
+            with h5py.File(outfile, 'w') as g:
+                f.copy(source='particles', dest=g)
+                f.copy(source='h5md', dest=g)
+                del g['particles/trajectory/position']
+        u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+        assert u.trajectory.units['length'] == 'Angstrom'
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
@@ -306,7 +320,7 @@ def test_unknown_time_unit(h5md_file, ref, tmpdir):
                 g['particles'
                   '/trajectory'
                   '/position'
-                  '/time'].attrs['units'] = 'random string'
+                  '/time'].attrs['unit'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
@@ -321,7 +335,8 @@ def test_unknown_velocity_unit(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 g['particles'
                   '/trajectory'
-                  '/velocity'].attrs['units'] = 'random string'
+                  '/velocity'
+                  '/value'].attrs['unit'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
@@ -336,7 +351,8 @@ def test_unknown_force_unit(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 g['particles'
                   '/trajectory'
-                  '/force'].attrs['units'] = 'random string'
+                  '/force'
+                  '/value'].attrs['unit'] = 'random string'
         with pytest.raises(RuntimeError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
@@ -379,6 +395,7 @@ def test_changing_n_atoms3(h5md_file, ref, tmpdir):
         with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_2D_box(h5md_file, ref, tmpdir):
     outfile = 'test_2D_box' + ref.ext
@@ -395,6 +412,7 @@ def test_2D_box(h5md_file, ref, tmpdir):
         with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_no_box(h5md_file, ref, tmpdir):
     outfile = 'test_no_box' + ref.ext
@@ -405,7 +423,8 @@ def test_no_box(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 del g['particles/trajectory/box/edges']
         u = mda.Universe(TPR_xvf, outfile, format='H5MD')
-        assert_array_equal(u.trajectory.ts.dimensions, np.zeros((6,)))
+        assert u.trajectory.ts.dimensions is None
+
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_no_groups(h5md_file, ref, tmpdir):
@@ -422,17 +441,20 @@ def test_no_groups(h5md_file, ref, tmpdir):
         with pytest.raises(NoDataError):
             u = mda.Universe(TPR_xvf, outfile, format='H5MD')
 
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_open_filestream(h5md_file):
     with h5md_file as f:
         from MDAnalysis.lib.util import NamedStream
         u = mda.Universe(TPR_xvf, NamedStream(f, f.filename))
 
+
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_wrong_driver():
     with pytest.raises(ValueError):
         u = mda.Universe(TPR_xvf, H5MD_xvf,
                          driver='wrong_driver', comm="MPI.COMM_WORLD")
+
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_no_convert_units(h5md_file, ref, tmpdir):
@@ -444,11 +466,12 @@ def test_no_convert_units(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 groups = ['position', 'velocity', 'force']
                 for name in groups:
-                    del g['particles/trajectory'][name].attrs['units']
-                del g['particles/trajectory/position/time'].attrs['units']
+                    del g['particles/trajectory'][name]['value'].attrs['unit']
+                del g['particles/trajectory/position/time'].attrs['unit']
         u = mda.Universe(TPR_xvf, outfile, convert_units=False, format="H5MD")
         for unit in u.trajectory.units:
             assert u.trajectory.units[unit] is None
+
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_no_units(h5md_file, ref, tmpdir):
@@ -460,10 +483,12 @@ def test_no_units(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 groups = ['position', 'velocity', 'force']
                 for name in groups:
-                    del g['particles/trajectory'][name].attrs['units']
-                del g['particles/trajectory/position/time'].attrs['units']
+                    del g['particles/trajectory'][name]['value'].attrs['unit']
+                del g['particles/trajectory/position/time'].attrs['unit']
+                del g['particles/trajectory/box/edges/value'].attrs['unit']
         with pytest.raises(ValueError):
             u = mda.Universe(TPR_xvf, outfile, format="H5MD")
+
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_open_with_driver():

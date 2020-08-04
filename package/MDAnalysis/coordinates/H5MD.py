@@ -195,7 +195,8 @@ class Timestep(base.Timestep):
         the box is of triclinic shape with the edge vectors given by
         the rows of the matrix.
         """
-        return core.triclinic_box(*self._unitcell)
+        if self._unitcell is not None:
+            return core.triclinic_box(*self._unitcell)
 
     @dimensions.setter
     def dimensions(self, box):
@@ -238,27 +239,28 @@ class H5MDReader(base.ReaderBase):
                     \-- (edges)
                         \-- [step] <int>, gives frame
                         \-- [value] <float>, gives box dimensions
+                            +-- unit <str>
                 \-- (position)
                     \-- [step] <int>, gives frame
                     \-- [time] <float>, gives time
                         +-- units <str>
                     \-- [value] <float>, gives numpy arrary of positions
                                          with shape (n_atoms, 3)
-                        +-- units <str>
+                        +-- unit <str>
                 \-- (velocity)
                     \-- [step] <int>, gives frame
                     \-- [time] <float>, gives time
                         +-- units <str>
                     \-- [value] <float>, gives numpy arrary of velocities
                                          with shape (n_atoms, 3)
-                        +-- units <str>
+                        +-- unit <str>
                 \-- (force)
                     \-- [step] <int>, gives frame
                     \-- [time] <float>, gives time
                         +-- units <str>
                     \-- [value] <float>, gives numpy arrary of forces
                                          with shape (n_atoms, 3)
-                        +-- units <str>
+                        +-- unit <str>
          \-- (observables)
             \-- (lambda)
                 \-- [step] <int>, gives frame
@@ -332,7 +334,11 @@ class H5MDReader(base.ReaderBase):
     }
     _Timestep = Timestep
 
-    def __init__(self, filename, convert_units=True, **kwargs):
+    def __init__(self, filename,
+                 convert_units=True,
+                 driver=None,
+                 comm=None,
+                 **kwargs):
         """
         Parameters
         ----------
@@ -360,6 +366,9 @@ class H5MDReader(base.ReaderBase):
             when ``convert_units=True`` but the H5MD file contains no units
         ValueError
             when dimension of unitcell is not 3
+        ValueError
+            when an MPI communicator object is passed to the reader
+            but ``driver != 'mpio'``
         NoDataError
             when the H5MD file has no 'position', 'velocity', or
             'force' group
@@ -373,8 +382,8 @@ class H5MDReader(base.ReaderBase):
 
         # if comm is in *kwargs, driver must be 'mpio' and file will be
         # opened with parallel h5py/hdf5 enabled
-        self._driver = kwargs.get('driver', None)
-        self._comm = kwargs.get('comm', None)
+        self._driver = driver
+        self._comm = comm
         if (self._comm is not None) and (self._driver != 'mpio'):
             raise ValueError("If MPI communicator object is used to open"
                             " h5md file, ``driver='mpio'`` must be passed.")
@@ -437,28 +446,40 @@ class H5MDReader(base.ReaderBase):
         if unit == 'time':
             for name, value in self._has.items():
                 if value:
-                    if 'units' in self._particle_group[name]['time'].attrs:
+                    if 'unit' in self._particle_group[name]['time'].attrs:
                         try:
                             self.units['time'] = self._unit_translation[
                             'time'][self._particle_group[name][
-                            'time'].attrs['units']]
+                            'time'].attrs['unit']]
                             break
                         except KeyError:
                             raise RuntimeError(errmsg.format(unit,
                                                self._particle_group[
                                                name]['time'].attrs[
-                                               'units'])) from None
+                                               'unit'])) from None
 
         else:
             if self._has[group]:
-                if 'units' in self._particle_group[group].attrs:
+                if 'unit' in self._particle_group[group]['value'].attrs:
                     try:
                         self.units[unit] = self._unit_translation[unit][
-                        self._particle_group[group].attrs['units']]
+                        self._particle_group[group]['value'].attrs['unit']]
                     except KeyError:
                         raise RuntimeError(errmsg.format(unit,
-                                           self._particle_group[group].attrs[
-                                           'units'])) from None
+                                           self._particle_group[group][
+                                           'value'].attrs['unit'])) from None
+
+            # if postion group is not provided, can still get 'length' unit
+            # from unitcell box
+            if (not self._has['position']) and ('edges' in self._particle_group['box']):
+                if 'unit' in self._particle_group['box/edges/value'].attrs:
+                    try:
+                        self.units['length'] = self._unit_translation['length'][
+                        self._particle_group['box/edges/value'].attrs['unit']]
+                    except KeyError:
+                        raise RuntimeError(errmsg.format(unit,
+                                           self._particle_group['box/edges/value'].attrs[
+                                           'unit'])) from None
 
     def _check_units(self, group, unit):
         """Raises error if no units are provided from H5MD file
@@ -540,12 +561,12 @@ class H5MDReader(base.ReaderBase):
         self._copy_to_data()
 
         # Sets frame box dimensions
-        # Note: H5MD files must contain 'box' group in each particle group
-        if 'edges' in particle_group['box']:
+        # Note: H5MD files must contain 'box' group in each 'particles' group
+        if 'edges' in particle_group['box'] and ts._unitcell is not None:
             ts._unitcell[:] = particle_group['box/edges/value'][frame, :]
         else:
-            # sets ts.dimensions = [0, 0, 0, 0, 0, 0]
-            ts._unitcell[:] = None
+            # sets ts.dimensions = None
+            ts._unitcell = None
 
         # set the timestep positions, velocities, and forces with
         # current frame dataset
@@ -601,9 +622,11 @@ class H5MDReader(base.ReaderBase):
 
         self.ts.time = self.convert_time_from_native(self.ts.time)
 
+        if 'edges' in self._particle_group['box']:
+            self.convert_pos_from_native(self.ts.dimensions[:3])
+
         if self._has['position']:
             self.convert_pos_from_native(self.ts.positions)
-            self.convert_pos_from_native(self.ts.dimensions[:3])
 
         if self._has['velocity']:
             self.convert_velocities_from_native(self.ts.velocities)
