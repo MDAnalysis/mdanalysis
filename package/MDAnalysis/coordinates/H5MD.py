@@ -52,6 +52,7 @@ the H5MD file does not contain units and ``convert_units=True``, MDAnalysis
 will raise a ``ValueError``. To load a universe from an H5MD file with no
 units, set  ``convert_units=False``.
 
+
 Example: Loading an H5MD simulation
 -----------------------------------
 
@@ -62,15 +63,15 @@ and trajectory files to :class:`~MDAnalysis.core.universe.Universe`:
     >>> import MDAnalysis as mda
     >>> u = mda.Universe("topology.tpr", "trajectory.h5md")
 
-It is also possible to pass an :class:`h5py.File` object into the reader
-using the :class:`~MDAnalysis.lib.util.NamedStream` wrapper:
+It is also possible to pass an open :class:`h5py.File` file stream
+into the reader:
 
     >>> import MDAnalysis as mda
     >>> from MDAnalysis.lib.util import NamedStream
-    >>> stream = h5py.File("trajectory.h5md", 'r')
-    >>> u = mda.Universe("topology.tpr",
-    ...                   NamedStream(stream, stream.filename))
+    >>> with h5py.File("trajectory.h5md", 'r') as f:
+    ...     u = mda.Universe("topology.tpr", f)
 
+.. Note:: This does not work yet. See issue #2884
 
 Example: Opening an H5MD file in parallel
 -----------------------------------------
@@ -92,7 +93,7 @@ parallel HDF5, pass `driver` and `comm` arguments to
     implementation. See instructions below.
 
 Building parallel h5py and HDF5
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     1. `Build MPI from sources`_
     2. `Build HDF5 from sources`_ with parallel settings enabled:
@@ -380,7 +381,7 @@ class H5MDReader(base.ReaderBase):
         self.filename = filename
         self.convert_units = convert_units
 
-        # if comm is in *kwargs, driver must be 'mpio' and file will be
+        # if comm is provided, driver must be 'mpio' and file will be
         # opened with parallel h5py/hdf5 enabled
         self._driver = driver
         self._comm = comm

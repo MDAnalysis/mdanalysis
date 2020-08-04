@@ -443,10 +443,11 @@ def test_no_groups(h5md_file, ref, tmpdir):
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+@pytest.mark.xfail(reason='Issue #2884')
 def test_open_filestream(h5md_file):
     with h5md_file as f:
         from MDAnalysis.lib.util import NamedStream
-        u = mda.Universe(TPR_xvf, NamedStream(f, f.filename))
+        u = mda.Universe(TPR_xvf, h5md_file)
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
