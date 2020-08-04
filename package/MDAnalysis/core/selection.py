@@ -601,12 +601,35 @@ class AromaticSelection(Selection):
 
 
 class SmartsSelection(Selection):
-    """Select atoms based on SMARTS queries"""
+    """Select atoms based on SMARTS queries.
+    
+    Uses RDKit to run the query and converts the result to MDAnalysis.
+    Supports chirality.
+    """
     token = 'smarts'
 
     def __init__(self, parser, tokens):
+        # The parser will add spaces around parentheses and then split the
+        # selection based on spaces to create the tokens
+        # If the input SMARTS query contained parentheses, the query will be
+        # split because of that and we need to reconstruct it
+        # We also need to keep the parentheses that are not part of the smarts
+        # query intact
         pattern = []
-        while not is_keyword(tokens[0]) or tokens[0] in ["(", ")"]:
+        counter = {"(": 0, ")": 0}
+        # loop until keyword but ignore parentheses as a keyword
+        while tokens[0] in ["(", ")"] or not is_keyword(tokens[0]):
+            # keep track of the number of open and closed parentheses
+            if tokens[0] in ["(", ")"]:
+                counter[tokens[0]] += 1
+            # if the next char is a closing ")" but there's no corresponding
+            # open "(" then we've reached then end of the smarts query and
+            # the ")" is part of a grouping parenthesis
+            if tokens[1] == ")" and counter["("] != (counter[")"] + 1):
+                val = tokens.popleft()
+                pattern.append(val)
+                break
+            # add the token to the pattern and remove it from the tokens
             val = tokens.popleft()
             pattern.append(val)
         self.pattern = "".join(pattern)
@@ -625,9 +648,11 @@ class SmartsSelection(Selection):
                 self.pattern))
         mol = group.convert_to("RDKIT")
         matches = mol.GetSubstructMatches(pattern, useChirality=True)
-        indices = [idx for match in matches for idx in match]
-        indices = [mol.GetAtomWithIdx(i).GetIntProp("_MDAnalysis_index")
-                   for i in indices]
+        # convert rdkit indices to mdanalysis'
+        indices = [
+            mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
+            for match in matches for idx in match]
+        # create boolean mask for atoms based on index
         mask = np.in1d(range(group.n_atoms), np.unique(indices))
         return group[mask]
 
