@@ -495,9 +495,10 @@ class PDBWriter(base.WriterBase):
     are not set (:code:`None` or :code:`np.zeros(6)`,
     see Issue #2698).
 
-    When atom's record_type attribute is present (i.e. Universe object was
-    created by loading a PDB file), ATOM and HETATM record type keywords
-    are written out accordingly.
+    When the record_types attribute is present (e.g. Universe object was
+    created by loading a PDB file), ATOM_ and HETATM_ record type keywords
+    are written out accordingly. Otherwise, the ATOM_ record type is the
+    default output.
 
     See Also
     --------
@@ -998,17 +999,19 @@ class PDBWriter(base.WriterBase):
 
         .. versionchanged:: 0.7.6
            The *multiframe* keyword was added, which completely determines if
-           MODEL records are written. (Previously, this was decided based on the
-           underlying trajectory and only if ``len(traj) > 1`` would MODEL records
-           have been written.)
+           MODEL records are written. (Previously, this was decided based on
+           the underlying trajectory and only if ``len(traj) > 1`` would
+           MODEL records have been written.)
 
         .. versionchanged:: 1.0.0
-           ChainID now comes from the last character of segid, as stated in the documentation.
-           An indexing issue meant it previously used the first charater (Issue #2224)
+           ChainID now comes from the last character of segid, as stated in
+           the documentation. An indexing issue meant it previously used the
+           first charater (Issue #2224)
 
         .. versionchanged:: 2.0.0
-           when only record_type attribute is present, instead of using ATOM for both ATOM
-           and HETATM, HETATM record type keyword is properly written out (Issue #1753)
+           When only record_type attribute is present, instead of using ATOM
+           for both ATOM and HETATM, HETATM record types are properly written
+           out (Issue #1753).
 
         """
         atoms = self.obj.atoms
@@ -1064,9 +1067,9 @@ class PDBWriter(base.WriterBase):
             try:
                 self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
             except KeyError:
-                warnings.warn("Found '{}' for record type, but allowed types "
-                              "are ATOM or HETATM".format(record_types[i]))
-                raise ValueError
+                errmsg = (f"Found {record_types[i]} for the record type, but "
+                          f"only allowed types are ATOM or HETATM")
+                raise ValueError(errmsg) from None
 
         if multiframe:
             self.ENDMDL()
