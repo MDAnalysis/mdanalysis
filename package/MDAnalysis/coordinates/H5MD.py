@@ -67,11 +67,11 @@ It is also possible to pass an open :class:`h5py.File` file stream
 into the reader:
 
     >>> import MDAnalysis as mda
-    >>> from MDAnalysis.lib.util import NamedStream
     >>> with h5py.File("trajectory.h5md", 'r') as f:
     ...     u = mda.Universe("topology.tpr", f)
 
-.. Note:: This does not work yet. See issue #2884
+.. Note:: Directly using a `h5py.File` does not work yet.
+ See issue `#2884 <https://github.com/MDAnalysis/mdanalysis/issues/2884>`_.
 
 Example: Opening an H5MD file in parallel
 -----------------------------------------
@@ -92,34 +92,42 @@ parallel HDF5, pass `driver` and `comm` arguments to
     HDF5 build, and HDF5 and mpi4py must be built with a working MPI
     implementation. See instructions below.
 
-Building parallel h5py and HDF5
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Example: Building parallel h5py and HDF5 on Linux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+These instructions successfully built parallel HDF5/h5py
+with `OpenMPI 4.0.4`, `HDF5 1.10.6`, `h5py 2.9.0`, and `mpi4py 3.0.3`
+on `Ubuntu 16.0.6`. You may have to play around with different combinations of
+versions of h5py/HDF5 to get a working parallel build.
 
     1. `Build MPI from sources`_
     2. `Build HDF5 from sources`_ with parallel settings enabled:
 
-        >>> ./configure --enable-parallel --enable-shared
-        >>> make
-        >>> make install
+    .. code-block:: bash
+
+        ./configure --enable-parallel --enable-shared
+        make
+        make install
 
     3. `Install mpi4py`_, making sure to point `mpicc` to where you've
     installed your MPI implemenation:
 
-        >>> env MPICC=/path/to/mpicc pip install mpi4py
+    .. code-block:: bash
+
+        env MPICC=/path/to/mpicc pip install mpi4py
 
     4. `Build h5py from sources`_, making sure to enable mpi and to point
     to your parallel build of HDF5:
 
-        >>> export HDF5_PATH=path-to-parallel-hdf5
-        >>> python setup.py clean --all
-        >>> python setup.py configure -r --hdf5-version=X.Y.Z --mpi --hdf5=$HDF5_PATH
-        >>> export gcc=gcc
-        >>> CC=mpicc HDF5_DIR=$HDF5_PATH python setup.py build
-        >>> python setup.py install
+    .. code-block:: bash
 
-.. Warning::
-    You may have to play around with different combinations of
-    versions of h5py/HDF5 to get a working parallel build.
+        export HDF5_PATH=path-to-parallel-hdf5
+        python setup.py clean --all
+        python setup.py configure -r --hdf5-version=X.Y.Z --mpi --hdf5=$HDF5_PATH
+        export gcc=gcc
+        CC=mpicc HDF5_DIR=$HDF5_PATH python setup.py build
+        python setup.py install
+
+
 
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`HDF5`: https://www.hdfgroup.org/solutions/hdf5/
@@ -131,7 +139,7 @@ Building parallel h5py and HDF5
 .. _`Install mpi4py`: https://mpi4py.readthedocs.io/en/stable/install.html#requirements
 .. _`Build h5py from sources`: https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5
 .. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html
-.. _`MDAnalysis notation`: https://userguide.mdanalysis.org/1.0.0/units.html
+.. _`MDAnalysis notation`: https://userguide.mdanalysis.org/units.html
 
 
 Classes
@@ -160,6 +168,8 @@ Classes
 
 .. autoclass:: H5MDReader
    :members:
+
+   .. automethod:: H5MDReader._reopen
 
 """
 
@@ -302,7 +312,7 @@ class H5MDReader(base.ReaderBase):
             'sec': 's',
             's': 's',
             'AKMA': 'AKMA',
-            },
+        },
         'length': {
             'Angstrom': 'Angstrom',
             'angstrom': 'Angstrom',
@@ -310,7 +320,7 @@ class H5MDReader(base.ReaderBase):
             'nm': 'nm',
             'pm': 'pm',
             'fm': 'fm',
-            },
+        },
         'velocity': {
             'Angstrom ps-1': 'Angstrom/ps',
             'A ps-1': 'Angstrom/ps',
@@ -322,7 +332,7 @@ class H5MDReader(base.ReaderBase):
             'nm ns-1': 'nm/ns',
             'pm ps-1': 'pm/ps',
             'm s-1': 'm/s'
-            },
+        },
         'force':  {
             'kJ mol-1 Angstrom-1': 'kJ/(mol*Angstrom)',
             'kJ mol-1 nm-1': 'kJ/(mol*nm)',
@@ -331,7 +341,7 @@ class H5MDReader(base.ReaderBase):
             'J m-1': 'J/m',
             'kcal mol-1 Angstrom-1': 'kcal/(mol*Angstrom)',
             'kcal mol-1 A-1': 'kcal/(mol*Angstrom)'
-            }
+        }
     }
     _Timestep = Timestep
 
@@ -387,7 +397,7 @@ class H5MDReader(base.ReaderBase):
         self._comm = comm
         if (self._comm is not None) and (self._driver != 'mpio'):
             raise ValueError("If MPI communicator object is used to open"
-                            " h5md file, ``driver='mpio'`` must be passed.")
+                             " h5md file, ``driver='mpio'`` must be passed.")
 
         self.open_trajectory()
         if self._particle_group['box'].attrs['dimension'] != 3:
@@ -450,36 +460,40 @@ class H5MDReader(base.ReaderBase):
                     if 'unit' in self._particle_group[name]['time'].attrs:
                         try:
                             self.units['time'] = self._unit_translation[
-                            'time'][self._particle_group[name][
-                            'time'].attrs['unit']]
+                                'time'][self._particle_group[name][
+                                    'time'].attrs['unit']]
                             break
                         except KeyError:
-                            raise RuntimeError(errmsg.format(unit,
-                                               self._particle_group[
-                                               name]['time'].attrs[
-                                               'unit'])) from None
+                            raise RuntimeError(errmsg.format(
+                                               unit, self._particle_group[
+                                               name]['time'].attrs['unit'])
+                                               ) from None
 
         else:
             if self._has[group]:
                 if 'unit' in self._particle_group[group]['value'].attrs:
                     try:
                         self.units[unit] = self._unit_translation[unit][
-                        self._particle_group[group]['value'].attrs['unit']]
+                            self._particle_group[group]['value'].attrs['unit']]
                     except KeyError:
-                        raise RuntimeError(errmsg.format(unit,
-                                           self._particle_group[group][
-                                           'value'].attrs['unit'])) from None
+                        raise RuntimeError(errmsg.format(
+                                           unit, self._particle_group[group][
+                                           'value'].attrs['unit'])
+                                           ) from None
 
-            # if postion group is not provided, can still get 'length' unit
+            # if position group is not provided, can still get 'length' unit
             # from unitcell box
             if (not self._has['position']) and ('edges' in self._particle_group['box']):
                 if 'unit' in self._particle_group['box/edges/value'].attrs:
                     try:
-                        self.units['length'] = self._unit_translation['length'][
-                        self._particle_group['box/edges/value'].attrs['unit']]
+                        self.units['length'] = self._unit_translation[
+                                               'length'][self._particle_group[
+                                               'box/edges/value'
+                                               ].attrs['unit']]
                     except KeyError:
                         raise RuntimeError(errmsg.format(unit,
-                                           self._particle_group['box/edges/value'].attrs[
+                                           self._particle_group[
+                                           'box/edges/value'].attrs[
                                            'unit'])) from None
 
     def _check_units(self, group, unit):
@@ -529,7 +543,7 @@ class H5MDReader(base.ReaderBase):
         # pulls first key out of 'particles'
         # allows for arbitrary name of group1 in 'particles'
         self._particle_group = self._file['particles'][
-                               list(self._file['particles'])[0]]
+            list(self._file['particles'])[0]]
 
     @property
     def n_frames(self):
@@ -589,21 +603,21 @@ class H5MDReader(base.ReaderBase):
         if 'observables' in self._file:
             for key in self._file['observables'].keys():
                 self.ts.data[key] = self._file['observables'][key][
-                                    'value'][self._frame]
+                    'value'][self._frame]
 
         # pulls 'time' out of first available parent group
         for name, value in self._has.items():
             if value:
                 if 'time' in self._particle_group[name]:
                     self.ts.data['time'] = self._particle_group[name][
-                                           'time'][self._frame]
+                        'time'][self._frame]
                     break
 
     def _get_frame_dataset(self, dataset):
         """retrieves dataset array at current frame"""
 
         frame_dataset = self._particle_group[
-                        dataset]['value'][self._frame, :]
+            dataset]['value'][self._frame, :]
         n_atoms_now = frame_dataset.shape[0]
         if n_atoms_now != self.n_atoms:
             raise ValueError("Frame {} has {} atoms but the initial frame"
@@ -640,20 +654,8 @@ class H5MDReader(base.ReaderBase):
         return self._read_frame(self._frame + 1)
 
     def close(self):
-        """close reader if ``driver="mpio"`` is not used to open file
-
-        Note
-        ----
-
-        If the `driver` and `comm` arguments were used to open the
-        hdf5 file (specifically, ``driver="mpio"``), then this method
-        does *not* close the file like most readers because
-        the information about the MPI communicator would be lost; instead
-        it leaves the file open by doing nothing.
-
-        """
-        if self._driver != 'mpio':
-            self._file.close()
+        """close reader"""
+        self._file.close()
 
     def _reopen(self):
         """reopen trajectory

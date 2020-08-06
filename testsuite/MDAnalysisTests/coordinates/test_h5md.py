@@ -5,6 +5,7 @@ import MDAnalysis as mda
 from MDAnalysis.coordinates.H5MD import HAS_H5PY
 if HAS_H5PY:
     import h5py
+from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests.datafiles import (H5MD_xvf, TPR_xvf,
                                        COORDINATES_TOPOLOGY,
                                        COORDINATES_H5MD)
@@ -17,6 +18,7 @@ from MDAnalysisTests.coordinates.base import (MultiframeReaderTest,
 class H5MDReference(BaseReference):
     """Reference synthetic trajectory that was
     copied from test_xdr.TRRReference"""
+
     def __init__(self):
         super(H5MDReference, self).__init__()
         self.trajectory = COORDINATES_H5MD
@@ -243,8 +245,8 @@ def h5md_file():
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
-def test_has_position(h5md_file, ref, tmpdir):
-    outfile = 'test_has_position' + ref.ext
+def test_no_positions(h5md_file, ref, tmpdir):
+    outfile = 'test_no_positions' + ref.ext
     with tmpdir.as_cwd():
         with h5md_file as f:
             with h5py.File(outfile, 'w') as g:
@@ -253,24 +255,27 @@ def test_has_position(h5md_file, ref, tmpdir):
                 del g['particles/trajectory/position']
 
         u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+        with pytest.raises(NoDataError):
+            u.trajectory.ts.positions
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
-def test_has_velocities(h5md_file, ref, tmpdir):
-    outfile = 'test_has_velocities' + ref.ext
+def test_no_velocities(h5md_file, ref, tmpdir):
+    outfile = 'test_no_velocities' + ref.ext
     with tmpdir.as_cwd():
         with h5md_file as f:
             with h5py.File(outfile, 'w') as g:
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
                 del g['particles/trajectory/velocity']
-
         u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+        with pytest.raises(NoDataError):
+            u.trajectory.ts.velocities
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
-def test_has_forces(h5md_file, ref, tmpdir):
-    outfile = 'test_has_forces' + ref.ext
+def test_no_forces(h5md_file, ref, tmpdir):
+    outfile = 'test_no_forces' + ref.ext
     with tmpdir.as_cwd():
         with h5md_file as f:
             with h5py.File(outfile, 'w') as g:
@@ -278,6 +283,8 @@ def test_has_forces(h5md_file, ref, tmpdir):
                 f.copy(source='h5md', dest=g)
                 del g['particles/trajectory/force']
         u = mda.Universe(TPR_xvf, outfile, format='H5MD')
+        with pytest.raises(NoDataError):
+            u.trajectory.ts.forces
 
 
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
@@ -404,7 +411,7 @@ def test_2D_box(h5md_file, ref, tmpdir):
             with h5py.File(outfile, 'w') as g:
                 f.copy(source='particles', dest=g)
                 f.copy(source='h5md', dest=g)
-                new_box = np.ones(shape=(3,2,2))
+                new_box = np.ones(shape=(3, 2, 2))
                 g['particles/trajectory/box'].attrs['dimension'] = 2
                 del g['particles/trajectory/box/edges/value']
                 g['particles/trajectory'
@@ -429,7 +436,6 @@ def test_no_box(h5md_file, ref, tmpdir):
 @pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
 def test_no_groups(h5md_file, ref, tmpdir):
     outfile = 'test_no_groups' + ref.ext
-    from MDAnalysis.exceptions import NoDataError
     with tmpdir.as_cwd():
         with h5md_file as f:
             with h5py.File(outfile, 'w') as g:
@@ -446,7 +452,6 @@ def test_no_groups(h5md_file, ref, tmpdir):
 @pytest.mark.xfail(reason='Issue #2884')
 def test_open_filestream(h5md_file):
     with h5md_file as f:
-        from MDAnalysis.lib.util import NamedStream
         u = mda.Universe(TPR_xvf, h5md_file)
 
 
