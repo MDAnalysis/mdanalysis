@@ -60,8 +60,10 @@ methods for the reader.
 If the new reader is written in Cython, read :class:`lib.formats.libmdaxdr` and
 :class:`lib.formats.libdcd` files as references.
 
+.. _test_pickle:
+
 Tests
-^^^^^
+-----
 _SingleFrameReader Test
 ~~~~~~~~~~~~~~~~~~~~~~~
 If the new reader is a single-frame reader, the basic test should normally
