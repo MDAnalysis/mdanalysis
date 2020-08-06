@@ -65,12 +65,12 @@ If the new reader is written in Cython, read :class:`lib.formats.libmdaxdr` and
 Tests
 -----
 _SingleFrameReader Test
-~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^
 If the new reader is a single-frame reader, the basic test should normally
 inherited from :class:`_SingleFrameReader`, where the pickliablity is tested.
 
 BaseReaderTest and MultiframeReaderTest
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 If the test for the new reader uses :class:`BaseReaderTest` or
 :class:`MultiframeReaderTest`, whether the current timestep information is
 saved (the former), whether its relative position is maintained,
@@ -78,7 +78,7 @@ i.e. next() reads the right next timestep, and whether its last timestep
 can be pickled, are already tested.
 
 File handler Test
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 If the new reader accesses the file with :func:`util.anyopen`, add necessary
 tests inside ``parallelism/test_multiprocessing.py`` for the reader.
 
