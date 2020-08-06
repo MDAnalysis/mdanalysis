@@ -475,7 +475,6 @@ class PDBWriter(base.WriterBase):
     .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
     .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#COMPND
     .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-    .. _CRYST1: http://www.wwpdb.org/documentation/file-format-content/format32/sect8.html#CRYST1
     .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END
     .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
     .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
