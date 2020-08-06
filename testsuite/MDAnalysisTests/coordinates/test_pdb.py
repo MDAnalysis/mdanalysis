@@ -191,11 +191,11 @@ class TestPDBWriter(object):
 
     @pytest.fixture
     def universe4(self):
-        return mda.Universe(PDB_HOLE, PDB_HOLE)
+        return mda.Universe(PDB_HOLE)
 
     @pytest.fixture
     def universe5(self):
-        return mda.Universe(mol2_molecule, mol2_molecule)
+        return mda.Universe(mol2_molecule)
 
     @pytest.fixture(params=[
             [PDB_CRYOEM_BOX, np.zeros(6)],
@@ -461,16 +461,17 @@ class TestPDBWriter(object):
         """
 
         u = universe4
-        u_atoms = u.select_atoms("resname ETA and record_type HETATM")
-        assert_equal(len(u_atoms), 8)
+        u_hetatms = u.select_atoms("resname ETA and record_type HETATM")
+        assert_equal(len(u_hetatms), 8)
 
         outfile = str(tmpdir.join('test-hetatm.pdb'))
         u.atoms.write(outfile)
-        written = mda.Universe(outfile, outfile)
+        written = mda.Universe(outfile)
         written_atoms = written.select_atoms("resname ETA and "
                                              "record_type HETATM")
 
-        assert_equal(len(u_atoms), len(written_atoms))
+        assert len(u_hetatms) == len(written_atoms), "mismatched HETATM number"
+        assert_almost_equal(u_hetatms.atoms.positions, written_atoms.atoms.positions)
 
     def test_default_atom_record_type_written(self, universe5, tmpdir):
         """
@@ -481,19 +482,19 @@ class TestPDBWriter(object):
         u = universe5
         outfile = str(tmpdir.join('test-mol2-to-pdb.pdb'))
 
-        expected_msg = "Found no information for attr: " \
-                       "'record_types' Using default value of 'ATOM'"
+        expected_msg = ("Found no information for attr: "
+                        "'record_types' Using default value of 'ATOM'")
         with pytest.warns(UserWarning, match=expected_msg):
             u.atoms.write(outfile)
 
-        written = mda.Universe(outfile, outfile)
-        assert_equal(len(u.atoms), len(written.atoms))
+        written = mda.Universe(outfile)
+        assert len(u.atoms) == len(written.atoms), "mismatched number of atoms"
 
         atms = written.select_atoms("record_type ATOM")
-        assert_equal(len(atms.atoms), len(u.atoms))
+        assert len(atms.atoms) == len(u.atoms), "mismatched ATOM number"
 
         hetatms = written.select_atoms("record_type HETATM")
-        assert_equal(len(hetatms.atoms), 0)
+        assert len(hetatms.atoms) == 0, "mismatched HETATM number"
 
     def test_abnormal_record_type(self, universe5, tmpdir):
         """
@@ -504,8 +505,8 @@ class TestPDBWriter(object):
         u.add_TopologyAttr('record_type', ['ABNORM']*len(u.atoms))
         outfile = str(tmpdir.join('test-abnormal-record_type.pdb'))
 
-        expected_msg = "Found 'ABNORM' for record type, but allowed " \
-                       "types are ATOM or HETATM"
+        expected_msg = ("Found 'ABNORM' for record type, but allowed "
+                        "types are ATOM or HETATM")
 
         with pytest.raises(ValueError):
             with pytest.warns(UserWarning, match=expected_msg):

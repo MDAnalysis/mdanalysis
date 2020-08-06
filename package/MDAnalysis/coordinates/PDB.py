@@ -477,7 +477,9 @@ class PDBWriter(base.WriterBase):
     .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
     .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
     .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#HETATM
-
+    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
+    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
 
     Note
     ----
@@ -620,10 +622,6 @@ class PDBWriter(base.WriterBase):
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
 
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-
         """
         # n_atoms = None : dummy keyword argument
         # (not used, but Writer() always provides n_atoms as the second argument)
@@ -679,9 +677,6 @@ class PDBWriter(base.WriterBase):
         The CRYST1_ record specifies the unit cell. This record is set to
         unitary values (cubic box with sides of 1 Å) if unit cell dimensions
         are not set.
-
-        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
-        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
 
         .. versionchanged: 1.0.0
            Fix writing of PDB file without unit cell dimensions (Issue #2679).
@@ -993,13 +988,9 @@ class PDBWriter(base.WriterBase):
         :class:`PDBWriter` is in single frame mode and no MODEL_
         records are written.
 
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
-
         .. versionchanged:: 0.7.6
            The *multiframe* keyword was added, which completely determines if
-           MODEL records are written. (Previously, this was decided based on
+           MODEL_ records are written. (Previously, this was decided based on
            the underlying trajectory and only if ``len(traj) > 1`` would
            MODEL records have been written.)
 
@@ -1009,8 +1000,8 @@ class PDBWriter(base.WriterBase):
            first charater (Issue #2224)
 
         .. versionchanged:: 2.0.0
-           When only record_type attribute is present, instead of using ATOM
-           for both ATOM and HETATM, HETATM record types are properly written
+           When only record_type attribute is present, instead of using ATOM_
+           for both ATOM_ and HETATM_, HETATM_ record types are properly written
            out (Issue #1753).
 
         """
