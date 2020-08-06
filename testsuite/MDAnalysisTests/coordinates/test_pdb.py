@@ -230,7 +230,6 @@ class TestPDBWriter(object):
     def u_no_names(self):
         return make_Universe(['resids', 'resnames'], trajectory=True)
 
-
     def test_writer(self, universe, outfile):
         "Test writing from a single frame PDB file to a PDB file." ""
         universe.atoms.write(outfile)
@@ -455,7 +454,7 @@ class TestPDBWriter(object):
             with mda.coordinates.PDB.PDBWriter(outstring) as writer:
                 writer.write(u.atoms)
 
-    def test_hetatm_written(self, universe4, tmpdir):
+    def test_hetatm_written(self, universe4, tmpdir, outfile):
         """
         Checks that HETATM record types are written.
         """
@@ -464,7 +463,6 @@ class TestPDBWriter(object):
         u_hetatms = u.select_atoms("resname ETA and record_type HETATM")
         assert_equal(len(u_hetatms), 8)
 
-        outfile = str(tmpdir.join('test-hetatm.pdb'))
         u.atoms.write(outfile)
         written = mda.Universe(outfile)
         written_atoms = written.select_atoms("resname ETA and "
@@ -473,17 +471,17 @@ class TestPDBWriter(object):
         assert len(u_hetatms) == len(written_atoms), "mismatched HETATM number"
         assert_almost_equal(u_hetatms.atoms.positions, written_atoms.atoms.positions)
 
-    def test_default_atom_record_type_written(self, universe5, tmpdir):
+    def test_default_atom_record_type_written(self, universe5, tmpdir, outfile):
         """
         Checks that ATOM record types are written when there is no
         record_type attribute.
         """
 
         u = universe5
-        outfile = str(tmpdir.join('test-mol2-to-pdb.pdb'))
 
         expected_msg = ("Found no information for attr: "
                         "'record_types' Using default value of 'ATOM'")
+
         with pytest.warns(UserWarning, match=expected_msg):
             u.atoms.write(outfile)
 
@@ -496,14 +494,13 @@ class TestPDBWriter(object):
         hetatms = written.select_atoms("record_type HETATM")
         assert len(hetatms.atoms) == 0, "mismatched HETATM number"
 
-    def test_abnormal_record_type(self, universe5, tmpdir):
+    def test_abnormal_record_type(self, universe5, tmpdir, outfile):
         """
         Checks whether KeyError is raised when record type is
         neither ATOM or HETATM.
         """
         u = universe5
         u.add_TopologyAttr('record_type', ['ABNORM']*len(u.atoms))
-        outfile = str(tmpdir.join('test-abnormal-record_type.pdb'))
 
         expected_msg = ("Found 'ABNORM' for record type, but allowed "
                         "types are ATOM or HETATM")
