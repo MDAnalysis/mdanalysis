@@ -20,37 +20,37 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-"""H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
+"""
+H5MD trajectories --- :mod:`MDAnalysis.coordinates.H5MD`
 ========================================================
 
 The `H5MD`_ trajectory file format is based upon the general, high performance
 `HDF5`_ file format.
 HDF5 files are self documenting and can be accessed with the `h5py`_ library.
-The HDF5 library (and `h5py`_) must be installed; otherwise, H5MD files
-cannot be read by MDAnalysis. If `h5py`_ is not installed, a ``RuntimeError``
-is raised.
-
 HDF5 can make use of parallel file system features through the MPI-IO
 interface of the HDF5 library to improve parallel reads and writes.
 
-
-The `H5MD`_ file format is based upon `HDF5`_, which makes use of parallel
-file system features through the MPI-IO interface of the HDF5 library.
-The reader currently uses the `h5py`_ library to access data from an H5MD file.
-
+The HDF5 library and `h5py`_ must be installed; otherwise, H5MD files
+cannot be read by MDAnalysis. If `h5py`_ is not installed, a 
+:exc:`RuntimeError` is raised.
 
 Units
 -----
 
-Units are read from the attributes of the position, velocity, force,
-and time datasets provided by the H5MD file. The unit string is translated
-from `H5MD notation`_ to `MDAnalysis notation`_. If MDAnalysis does not
-recognize the unit (likely because that unit string is
-not defined in MDAnalysis) provided, a ``RuntimeError`` is raised. If no
-units are provided, MDAnalysis stores a value of ``None`` for each unit. If
-the H5MD file does not contain units and ``convert_units=True``, MDAnalysis
-will raise a ``ValueError``. To load a universe from an H5MD file with no
-units, set  ``convert_units=False``.
+H5MD files are very flexible and can store data in a wide range of physical
+units. The :class:`H5MDReader` will attempt to match the units in order to
+convert all data to the standard MDAnalysis units (see
+:mod:`MDAnalysis.units`).
+
+Units are read from the attributes of the position, velocity, force, and time
+datasets provided by the H5MD file. The unit string is translated from `H5MD
+notation`_ to `MDAnalysis notation`_. If MDAnalysis does not recognize the unit
+(likely because that unit string is not defined in :mod:`MDAnalysis.units`)
+provided, a :exc:`RuntimeError` is raised.  If no units are provided,
+MDAnalysis stores a value of ``None`` for each unit.  If the H5MD file does not
+contain units and ``convert_units=True``, MDAnalysis will raise a
+:exc`ValueError`. To load a universe from an H5MD file with no units, set
+``convert_units=False``.
 
 
 Example: Loading an H5MD simulation
@@ -58,20 +58,20 @@ Example: Loading an H5MD simulation
 
 To load an H5MD simulation from an H5MD trajectory data file (using the
 :class:`~MDAnalysis.coordinates.H5MD.H5MDReader`), pass the topology
-and trajectory files to :class:`~MDAnalysis.core.universe.Universe`:
+and trajectory files to :class:`~MDAnalysis.core.universe.Universe`::
 
-    >>> import MDAnalysis as mda
-    >>> u = mda.Universe("topology.tpr", "trajectory.h5md")
+    import MDAnalysis as mda
+    u = mda.Universe("topology.tpr", "trajectory.h5md")
 
 It is also possible to pass an open :class:`h5py.File` file stream
-into the reader:
+into the reader::
 
-    >>> import MDAnalysis as mda
-    >>> with h5py.File("trajectory.h5md", 'r') as f:
-    ...     u = mda.Universe("topology.tpr", f)
+    import MDAnalysis as mda
+    with h5py.File("trajectory.h5md", 'r') as f:
+         u = mda.Universe("topology.tpr", f)
 
 .. Note:: Directly using a `h5py.File` does not work yet.
- See issue `#2884 <https://github.com/MDAnalysis/mdanalysis/issues/2884>`_.
+   See issue `#2884 <https://github.com/MDAnalysis/mdanalysis/issues/2884>`_.
 
 Example: Opening an H5MD file in parallel
 -----------------------------------------
@@ -80,54 +80,62 @@ The parallel features of HDF5 can be accessed through h5py
 (see `parallel h5py docs`_ for more detail) by using the `mpi4py`_ Python
 package with a Parallel build of HDF5. To load a an H5MD simulation with
 parallel HDF5, pass `driver` and `comm` arguments to
-:class:`~MDAnalysis.core.universe.Universe`:
+:class:`~MDAnalysis.core.universe.Universe`::
 
-    >>> import MDAnalysis as mda
-    >>> from mpi4py import MPI
-    >>> u = mda.Universe("topology.tpr", "trajectory.h5md",
-    ...                   driver="mpio", comm=MPI.COMM_WORLD)
+    import MDAnalysis as mda
+    from mpi4py import MPI
+    u = mda.Universe("topology.tpr", "trajectory.h5md",
+                     driver="mpio", comm=MPI.COMM_WORLD)
 
 .. Note::
-    h5py must be built with parallel features enabled on top of a parallel
-    HDF5 build, and HDF5 and mpi4py must be built with a working MPI
-    implementation. See instructions below.
+   :mod:`h5py` must be built with parallel features enabled on top of a parallel
+   HDF5 build, and HDF5 and :mod:`mpi4py` must be built with a working MPI
+   implementation. See instructions below.
 
-Example: Building parallel h5py and HDF5 on Linux
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Building parallel h5py and HDF5 on Linux
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Building a working parallel HDF5/h5py/mpi4py environment can be 
+challenging and is often specific to your local computing resources,
+e.g., the supercomputer that you're running on typically already has
+its preferred MPI installation. As a starting point we provide 
+instructions that worked in a specific, fairly generic environment.
+
 These instructions successfully built parallel HDF5/h5py
-with `OpenMPI 4.0.4`, `HDF5 1.10.6`, `h5py 2.9.0`, and `mpi4py 3.0.3`
-on `Ubuntu 16.0.6`. You may have to play around with different combinations of
+with *OpenMPI 4.0.4*, *HDF5 1.10.6*, *h5py 2.9.0*, and *mpi4py 3.0.3*
+on *Ubuntu 16.0.6*. You may have to play around with different combinations of
 versions of h5py/HDF5 to get a working parallel build.
 
     1. `Build MPI from sources`_
     2. `Build HDF5 from sources`_ with parallel settings enabled:
 
-    .. code-block:: bash
+       .. code-block:: bash
 
-        ./configure --enable-parallel --enable-shared
-        make
-        make install
+          ./configure --enable-parallel --enable-shared
+          make
+          make install
 
     3. `Install mpi4py`_, making sure to point `mpicc` to where you've
-    installed your MPI implemenation:
+       installed your MPI implemenation:
 
-    .. code-block:: bash
+       .. code-block:: bash
 
-        env MPICC=/path/to/mpicc pip install mpi4py
+          env MPICC=/path/to/mpicc pip install mpi4py
 
     4. `Build h5py from sources`_, making sure to enable mpi and to point
-    to your parallel build of HDF5:
+       to your parallel build of HDF5:
 
-    .. code-block:: bash
+       .. code-block:: bash
 
-        export HDF5_PATH=path-to-parallel-hdf5
-        python setup.py clean --all
-        python setup.py configure -r --hdf5-version=X.Y.Z --mpi --hdf5=$HDF5_PATH
-        export gcc=gcc
-        CC=mpicc HDF5_DIR=$HDF5_PATH python setup.py build
-        python setup.py install
+          export HDF5_PATH=path-to-parallel-hdf5
+          python setup.py clean --all
+          python setup.py configure -r --hdf5-version=X.Y.Z --mpi --hdf5=$HDF5_PATH
+          export gcc=gcc
+          CC=mpicc HDF5_DIR=$HDF5_PATH python setup.py build
+          python setup.py install
 
-
+If you have questions or want to share how you managed to build 
+parallel hdf5/h5py/mpi4py please let everyone know on the 
+`MDAnalysis forums`_.
 
 .. _`H5MD`: https://nongnu.org/h5md/index.html
 .. _`HDF5`: https://www.hdfgroup.org/solutions/hdf5/
@@ -140,6 +148,7 @@ versions of h5py/HDF5 to get a working parallel build.
 .. _`Build h5py from sources`: https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5
 .. _`H5MD notation`: https://nongnu.org/h5md/modules/units.html
 .. _`MDAnalysis notation`: https://userguide.mdanalysis.org/units.html
+.. _`MDAnalysis forums`: https://www.mdanalysis.org/#participating
 
 
 Classes
@@ -219,10 +228,24 @@ class H5MDReader(base.ReaderBase):
 
     See `h5md documentation <https://nongnu.org/h5md/h5md.html>`_
     for a detailed overview of the H5MD file format.
+    
+    The reader attempts to convert units in the trajectory file to 
+    the standard MDAnalysis units (:mod:`MDAnalysis.units`) if 
+    `convert_units` is set to ``True``.
+    
+    Additional data in the *observables* group of the H5MD file are
+    loaded into the :attr:`Timestep.data` dictionary.
+    
+    Only 3D-periodic boxes or no periodicity are supported; for no
+    periodicity, :attr:`Timestep.dimensions` will return ``None``.
+    
+    Although H5MD can store varying numbers of particles per time step
+    as produced by, e.g., GCMC simulations, MDAnalysis can currently
+    only process a fixed number of particles per step. If the number
+    of particles changes a :exc:`ValueError` is raised.
 
-
-
-    Currently reads .h5md files with the following HDF5 hierarchy:
+    The :class:`H5MDReader` reads .h5md files with the following 
+    HDF5 hierarchy:
 
     .. code-block:: text
 
@@ -282,15 +305,16 @@ class H5MDReader(base.ReaderBase):
                 \-- [time] <float>, gives time
                 \-- [value] <int>, gives integration step
 
+
     .. note::
         The reader does not currently read mass or charge data.
 
     .. note::
         If the `driver` and `comm` arguments were used to open the
-        hdf5 file (specifically, ``driver="mpio"``) then the ``_reopen()``
+        hdf5 file (specifically, ``driver="mpio"``) then the :meth:`_reopen`
         method does *not* close and open the file like most readers because
         the information about the MPI communicator would be lost; instead
-        it rewinds the trajectory back to the first timstep.
+        it rewinds the trajectory back to the first timestep.
 
 
     .. versionadded:: 2.0.0
@@ -679,7 +703,7 @@ class H5MDReader(base.ReaderBase):
 
     @property
     def has_positions(self):
-        """True if 'position' group is in trajectory."""
+        """``True`` if 'position' group is in trajectory."""
         return self._has['position']
 
     @has_positions.setter
@@ -688,7 +712,7 @@ class H5MDReader(base.ReaderBase):
 
     @property
     def has_velocities(self):
-        """True if 'velocity' group is in trajectory."""
+        """``True`` if 'velocity' group is in trajectory."""
         return self._has['velocity']
 
     @has_velocities.setter
@@ -697,7 +721,7 @@ class H5MDReader(base.ReaderBase):
 
     @property
     def has_forces(self):
-        """True if 'force' group is in trajectory."""
+        """``True`` if 'force' group is in trajectory."""
         return self._has['force']
 
     @has_forces.setter
