@@ -74,6 +74,7 @@ __all__ = [
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
     "GRO_sameresid_diffresname", # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
@@ -115,6 +116,8 @@ __all__ = [
     "PDB_HOLE",  # gramicidin A
     "MULTIPDB_HOLE", # gramicidin A, normal mode 7 from ElNemo
     "DMS",
+    "DMS_DOMAINS",  # ADK closed with multiple segids
+    "DMS_NO_SEGID",  # ADK closed with no segids or chains
     "CONECT",  # HIV Reverse Transcriptase with inhibitor
     "TRZ", "TRZ_psf",
     "TRIC",
@@ -152,6 +155,7 @@ __all__ = [
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
+    "COORDINATES_H5MD",
     "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
@@ -193,7 +197,7 @@ __all__ = [
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
-    "SDF_molecule" # MDL SDFile for rdkit 
+    "SDF_molecule"  # MDL SDFile for rdkit
 ]
 
 from pkg_resources import resource_filename
@@ -232,6 +236,7 @@ COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
 COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_H5MD = resource_filename(__name__, 'data/coordinates/test.h5md')
 COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
@@ -311,6 +316,7 @@ TRR_multi_frame = resource_filename(
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
+H5MD_xvf = resource_filename(__name__, 'data/cobrotoxin.h5md')
 XVG_BZ2 = resource_filename(__name__, 'data/cobrotoxin_protein_forces.xvg.bz2')
 
 XPDB_small = resource_filename(__name__, 'data/5digitResid.pdb')
@@ -419,6 +425,8 @@ PDB_HOLE = resource_filename(__name__, 'data/1grm_single.pdb')
 MULTIPDB_HOLE = resource_filename(__name__, 'data/1grm_elNemo_mode7.pdb.bz2')
 
 DMS = resource_filename(__name__, 'data/adk_closed.dms')
+DMS_DOMAINS = resource_filename(__name__, 'data/adk_closed_domains.dms')
+DMS_NO_SEGID = resource_filename(__name__, 'data/adk_closed_no_segid.dms')
 
 CONECT = resource_filename(__name__, 'data/1hvr.pdb')
 

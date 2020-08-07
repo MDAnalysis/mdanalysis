@@ -26,7 +26,7 @@ unpack and check that the content is the same as test.xyz
 test.xtc
 --------
 ## Creation
-Written with MDAnalysis using the 'create_data.py script
+Written with MDAnalysis using the 'create_data.py' script
 
 ## Validation
 With `gmx dump -f test.xtc` you can look at the content of the file in
@@ -35,8 +35,19 @@ plain text using Gromacs utilities.
 test.trr
 --------
 ## Creation
-Written with MDAnalysis using the 'create_data.py script
+Written with MDAnalysis using the 'create_data.py' script
 
 ## Validation
 With `gmx dump -f test.trr` you can look at the content of the file in
 plain text using Gromacs utilities.
+
+test.h5md
+---------
+## Creation
+Converted test.trr to test.h5md with MDAnalysis and pyh5md
+using the 'create_h5md_data.py' script.
+See https://github.com/pdebuyl/pyh5md for pyh5md repository.
+
+## Validation
+Manually examined contents of test.trr with MDAnalysis and test.h5md
+with h5py and checked that the contents were the same.
