@@ -1,0 +1,657 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>6.9. H5MD trajectories — MDAnalysis.coordinates.H5MD &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 2.0.0-dev0 documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="6.10. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" href="INPCRD.html" />
+    <link rel="prev" title="6.8. GRO file format — MDAnalysis.coordinates.GRO" href="GRO.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0-dev0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">6.1. Trajectory Readers and Writers  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="CRD.html">6.2. CRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.CRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DCD.html">6.3. DCD trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DCD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPoly.html">6.4. DL_Poly format reader <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DLPoly</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMS.html">6.5. DESRES file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.DMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMS.html">6.6. GAMESS trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSD.html">6.7. GSD trajectory reader  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GRO.html">6.8. GRO file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GRO</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.9. H5MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#units">6.9.1. Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-loading-an-h5md-simulation">6.9.2. Example: Loading an H5MD simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-opening-an-h5md-file-in-parallel">6.9.3. Example: Opening an H5MD file in parallel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#building-parallel-h5py-and-hdf5-on-linux">6.9.3.1. Building parallel h5py and HDF5 on Linux</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#classes">6.9.4. Classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.10. INPCRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.11. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQT.html">6.16. PDBQT structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDBQT</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQR.html">6.17. PQR file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PQR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRJ.html">6.18. AMBER trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRR.html">6.19. TRR trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TRZ.html">6.20. TRZ trajectory I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZ.html">6.21. TXYZ file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TXYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XTC.html">6.22. XTC trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XTC</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZ.html">6.23. XYZ trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XYZ</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMS.html">6.24. FHI-AIMS file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.FHIAIMS</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory.html">6.25. Reading trajectories from memory — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chemfiles.html">6.26. Reading trajectory with Chemfiles — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.30. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.31. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
+        
+      <li>6.9. H5MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/coordinates/H5MD.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.coordinates.H5MD"></span><div class="section" id="h5md-trajectories-mdanalysis-coordinates-h5md">
+<h1>6.9. H5MD trajectories — <a class="reference internal" href="#module-MDAnalysis.coordinates.H5MD" title="MDAnalysis.coordinates.H5MD"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a><a class="headerlink" href="#h5md-trajectories-mdanalysis-coordinates-h5md" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference external" href="https://nongnu.org/h5md/index.html">H5MD</a> trajectory file format is based upon the general, high performance
+<a class="reference external" href="https://www.hdfgroup.org/solutions/hdf5/">HDF5</a> file format.
+HDF5 files are self documenting and can be accessed with the <a class="reference external" href="http://docs.h5py.org/">h5py</a> library.
+HDF5 can make use of parallel file system features through the MPI-IO
+interface of the HDF5 library to improve parallel reads and writes.</p>
+<p>The HDF5 library and <a class="reference external" href="http://docs.h5py.org/">h5py</a> must be installed; otherwise, H5MD files
+cannot be read by MDAnalysis. If <a class="reference external" href="http://docs.h5py.org/">h5py</a> is not installed, a
+<a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.</p>
+<div class="section" id="units">
+<h2>6.9.1. Units<a class="headerlink" href="#units" title="Permalink to this headline">¶</a></h2>
+<p>H5MD files are very flexible and can store data in a wide range of physical
+units. The <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="MDAnalysis.coordinates.H5MD.H5MDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDReader</span></code></a> will attempt to match the units in order to
+convert all data to the standard MDAnalysis units (see
+<a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a>).</p>
+<p>Units are read from the attributes of the position, velocity, force, and time
+datasets provided by the H5MD file. The unit string is translated from <a class="reference external" href="https://nongnu.org/h5md/modules/units.html">H5MD
+notation</a> to <a class="reference external" href="https://userguide.mdanalysis.org/units.html">MDAnalysis notation</a>. If MDAnalysis does not recognize the unit
+(likely because that unit string is not defined in <a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a>)
+provided, a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> is raised.  If no units are provided,
+MDAnalysis stores a value of <code class="docutils literal notranslate"><span class="pre">None</span></code> for each unit.  If the H5MD file does not
+contain units and <code class="docutils literal notranslate"><span class="pre">convert_units=True</span></code>, MDAnalysis will raise a
+:exc`ValueError`. To load a universe from an H5MD file with no units, set
+<code class="docutils literal notranslate"><span class="pre">convert_units=False</span></code>.</p>
+</div>
+<div class="section" id="example-loading-an-h5md-simulation">
+<h2>6.9.2. Example: Loading an H5MD simulation<a class="headerlink" href="#example-loading-an-h5md-simulation" title="Permalink to this headline">¶</a></h2>
+<p>To load an H5MD simulation from an H5MD trajectory data file (using the
+<a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="MDAnalysis.coordinates.H5MD.H5MDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDReader</span></code></a>), pass the topology
+and trajectory files to <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to pass an open <code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code> file stream
+into the reader:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="k">with</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+     <span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Directly using a <cite>h5py.File</cite> does not work yet.
+See issue <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues/2884">#2884</a>.</p>
+</div>
+</div>
+<div class="section" id="example-opening-an-h5md-file-in-parallel">
+<h2>6.9.3. Example: Opening an H5MD file in parallel<a class="headerlink" href="#example-opening-an-h5md-file-in-parallel" title="Permalink to this headline">¶</a></h2>
+<p>The parallel features of HDF5 can be accessed through h5py
+(see <a class="reference external" href="https://docs.h5py.org/en/stable/mpi.html">parallel h5py docs</a> for more detail) by using the <a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/index.html">mpi4py</a> Python
+package with a Parallel build of HDF5. To load a an H5MD simulation with
+parallel HDF5, pass <cite>driver</cite> and <cite>comm</cite> arguments to
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;topology.tpr&quot;</span><span class="p">,</span> <span class="s2">&quot;trajectory.h5md&quot;</span><span class="p">,</span>
+                 <span class="n">driver</span><span class="o">=</span><span class="s2">&quot;mpio&quot;</span><span class="p">,</span> <span class="n">comm</span><span class="o">=</span><span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="xref py py-mod docutils literal notranslate"><span class="pre">h5py</span></code> must be built with parallel features enabled on top of a parallel
+HDF5 build, and HDF5 and <code class="xref py py-mod docutils literal notranslate"><span class="pre">mpi4py</span></code> must be built with a working MPI
+implementation. See instructions below.</p>
+</div>
+<div class="section" id="building-parallel-h5py-and-hdf5-on-linux">
+<h3>6.9.3.1. Building parallel h5py and HDF5 on Linux<a class="headerlink" href="#building-parallel-h5py-and-hdf5-on-linux" title="Permalink to this headline">¶</a></h3>
+<p>Building a working parallel HDF5/h5py/mpi4py environment can be
+challenging and is often specific to your local computing resources,
+e.g., the supercomputer that you’re running on typically already has
+its preferred MPI installation. As a starting point we provide
+instructions that worked in a specific, fairly generic environment.</p>
+<p>These instructions successfully built parallel HDF5/h5py
+with <em>OpenMPI 4.0.4</em>, <em>HDF5 1.10.6</em>, <em>h5py 2.9.0</em>, and <em>mpi4py 3.0.3</em>
+on <em>Ubuntu 16.0.6</em>. You may have to play around with different combinations of
+versions of h5py/HDF5 to get a working parallel build.</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p class="first"><a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/appendix.html#building-mpi-from-sources">Build MPI from sources</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="https://support.hdfgroup.org/ftp/HDF5/current/src/unpacked/release_docs/INSTALL_parallel">Build HDF5 from sources</a> with parallel settings enabled:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./configure --enable-parallel --enable-shared
+make
+make install
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/install.html#requirements">Install mpi4py</a>, making sure to point <cite>mpicc</cite> to where you’ve
+installed your MPI implemenation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>env <span class="nv">MPICC</span><span class="o">=</span>/path/to/mpicc pip install mpi4py
+</pre></div>
+</div>
+</li>
+<li><p class="first"><a class="reference external" href="https://docs.h5py.org/en/stable/mpi.html#building-against-parallel-hdf5">Build h5py from sources</a>, making sure to enable mpi and to point
+to your parallel build of HDF5:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">HDF5_PATH</span><span class="o">=</span>path-to-parallel-hdf5
+python setup.py clean --all
+python setup.py configure -r --hdf5-version<span class="o">=</span>X.Y.Z --mpi --hdf5<span class="o">=</span><span class="nv">$HDF5_PATH</span>
+<span class="nb">export</span> <span class="nv">gcc</span><span class="o">=</span>gcc
+<span class="nv">CC</span><span class="o">=</span>mpicc <span class="nv">HDF5_DIR</span><span class="o">=</span><span class="nv">$HDF5_PATH</span> python setup.py build
+python setup.py install
+</pre></div>
+</div>
+</li>
+</ol>
+</div></blockquote>
+<p>If you have questions or want to share how you managed to build
+parallel hdf5/h5py/mpi4py please let everyone know on the
+<a class="reference external" href="https://www.mdanalysis.org/#participating">MDAnalysis forums</a>.</p>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>6.9.4. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.H5MD.</code><code class="descname">Timestep</code><span class="sig-paren">(</span><em>n_atoms</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#Timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>H5MD Timestep</p>
+<p>Create a Timestep, representing a frame of a trajectory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – The total number of atoms this Timestep describes</li>
+<li><strong>positions</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Whether this Timestep has position information [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
+<li><strong>velocities</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has velocity information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>forces</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether this Timestep has force information [<code class="docutils literal notranslate"><span class="pre">False</span></code>]</li>
+<li><strong>reader</strong> (<em>Reader</em><em> (</em><em>optional</em><em>)</em>) – A weak reference to the owning Reader.  Used for
+when attributes require trajectory manipulation (e.g. dt)</li>
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The time difference between frames (ps).  If <code class="xref py py-attr docutils literal notranslate"><span class="pre">time</span></code>
+is set, then <cite>dt</cite> will be ignored.</li>
+<li><strong>time_offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – The starting time from which to calculate time (in ps)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.11.0: </span>Added keywords for <cite>positions</cite>, <cite>velocities</cite> and <cite>forces</cite>.
+Can add and remove position/velocity/force information by using
+the <code class="docutils literal notranslate"><span class="pre">has_*</span></code> attribute.</p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.positions">
+<code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>coordinates of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape
+<cite>(n_atoms, 3)</cite></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.velocities">
+<code class="descname">velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p>velocities of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape
+<cite>(n_atoms, 3)</cite>; only available if the trajectory contains velocities
+or if the <cite>velocities</cite> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.forces">
+<code class="descname">forces</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.forces" title="Permalink to this definition">¶</a></dt>
+<dd><p>forces of the atoms as a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape
+<cite>(n_atoms, 3)</cite>; only available if the trajectory contains forces
+or if the <cite>forces</cite> = <code class="docutils literal notranslate"><span class="pre">True</span></code> keyword has been supplied.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.Timestep.dimensions">
+<code class="descname">dimensions</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.Timestep.dimensions" title="Permalink to this definition">¶</a></dt>
+<dd><p>unitcell dimensions (<em>A</em>, <em>B</em>, <em>C</em>, <em>alpha</em>, <em>beta</em>, <em>gamma</em>)</p>
+<p>lengths <em>A</em>, <em>B</em>, <em>C</em> are in the MDAnalysis length unit (Å), and
+angles are in degrees.</p>
+<p>Setting dimensions will populate the underlying native format
+description (triclinic box vectors). If <a class="reference external" href="https://nongnu.org/h5md/h5md.html#simulation-box">edges</a> is a matrix,
+the box is of triclinic shape with the edge vectors given by
+the rows of the matrix.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.H5MD.</code><code class="descname">H5MDReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>driver=None</em>, <em>comm=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5MDReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reader for the H5MD format.</p>
+<p>See <a class="reference external" href="https://nongnu.org/h5md/h5md.html">h5md documentation</a>
+for a detailed overview of the H5MD file format.</p>
+<p>The reader attempts to convert units in the trajectory file to
+the standard MDAnalysis units (<a class="reference internal" href="../units.html#module-MDAnalysis.units" title="MDAnalysis.units"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a>) if
+<cite>convert_units</cite> is set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<p>Additional data in the <em>observables</em> group of the H5MD file are
+loaded into the <code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.data</span></code> dictionary.</p>
+<p>Only 3D-periodic boxes or no periodicity are supported; for no
+periodicity, <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.Timestep.dimensions" title="MDAnalysis.coordinates.H5MD.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Timestep.dimensions</span></code></a> will return <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>Although H5MD can store varying numbers of particles per time step
+as produced by, e.g., GCMC simulations, MDAnalysis can currently
+only process a fixed number of particles per step. If the number
+of particles changes a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> is raised.</p>
+<p>The <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader" title="MDAnalysis.coordinates.H5MD.H5MDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">H5MDReader</span></code></a> reads .h5md files with the following
+HDF5 hierarchy:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Notation:
+(name) is an HDF5 group that the reader recognizes
+{name} is an HDF5 group with arbitrary name
+[variable] is an HDF5 dataset
+&lt;dtype&gt; is dataset datatype
++-- is an attribute of a group or dataset
+
+H5MD root
+ \-- (h5md)
+    +-- version &lt;int&gt;
+    \-- author
+        +-- name &lt;str&gt;, author&#39;s name
+        +-- email &lt;str&gt;, optional email address
+    \-- creator
+        +-- name &lt;str&gt;, file that created .h5md file
+        +-- version
+ \-- (particles)
+    \-- {group1}
+        \-- (box)
+            +-- dimension : &lt;int&gt;, number of spatial dimensions
+            +-- boundary : &lt;str&gt;, boundary conditions of unit cell
+            \-- (edges)
+                \-- [step] &lt;int&gt;, gives frame
+                \-- [value] &lt;float&gt;, gives box dimensions
+                    +-- unit &lt;str&gt;
+        \-- (position)
+            \-- [step] &lt;int&gt;, gives frame
+            \-- [time] &lt;float&gt;, gives time
+                +-- units &lt;str&gt;
+            \-- [value] &lt;float&gt;, gives numpy arrary of positions
+                                 with shape (n_atoms, 3)
+                +-- unit &lt;str&gt;
+        \-- (velocity)
+            \-- [step] &lt;int&gt;, gives frame
+            \-- [time] &lt;float&gt;, gives time
+                +-- units &lt;str&gt;
+            \-- [value] &lt;float&gt;, gives numpy arrary of velocities
+                                 with shape (n_atoms, 3)
+                +-- unit &lt;str&gt;
+        \-- (force)
+            \-- [step] &lt;int&gt;, gives frame
+            \-- [time] &lt;float&gt;, gives time
+                +-- units &lt;str&gt;
+            \-- [value] &lt;float&gt;, gives numpy arrary of forces
+                                 with shape (n_atoms, 3)
+                +-- unit &lt;str&gt;
+ \-- (observables)
+    \-- (lambda)
+        \-- [step] &lt;int&gt;, gives frame
+        \-- [time] &lt;float&gt;, gives time
+        \-- [value] &lt;float&gt;
+    \-- (step)
+        \-- [step] &lt;int&gt;, gives frame
+        \-- [time] &lt;float&gt;, gives time
+        \-- [value] &lt;int&gt;, gives integration step
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The reader does not currently read mass or charge data.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the <cite>driver</cite> and <cite>comm</cite> arguments were used to open the
+hdf5 file (specifically, <code class="docutils literal notranslate"><span class="pre">driver=&quot;mpio&quot;</span></code>) then the <a class="reference internal" href="#MDAnalysis.coordinates.H5MD.H5MDReader._reopen" title="MDAnalysis.coordinates.H5MD.H5MDReader._reopen"><code class="xref py py-meth docutils literal notranslate"><span class="pre">_reopen()</span></code></a>
+method does <em>not</em> close and open the file like most readers because
+the information about the MPI communicator would be lost; instead
+it rewinds the trajectory back to the first timestep.</p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> (str or <code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code>) – trajectory filename or open h5py file</li>
+<li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – convert units to MDAnalysis units</li>
+<li><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – H5PY file driver used to open H5MD file</li>
+<li><strong>comm</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">MPI.Comm</span></code> (optional)) – MPI communicator used to open H5MD file
+Must be passed with <cite>‘mpio’</cite> file driver</li>
+<li><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)"><em>dict</em></a>) – General reader arguments.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> – when <a class="reference external" href="http://docs.h5py.org/">H5PY</a> is not installed</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#RuntimeError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code></a> – when a unit is not recognized by MDAnalysis</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – when <code class="docutils literal notranslate"><span class="pre">n_atoms</span></code> changes values between timesteps</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – when <code class="docutils literal notranslate"><span class="pre">convert_units=True</span></code> but the H5MD file contains no units</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – when dimension of unitcell is not 3</li>
+<li><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – when an MPI communicator object is passed to the reader
+but <code class="docutils literal notranslate"><span class="pre">driver</span> <span class="pre">!=</span> <span class="pre">'mpio'</span></code></li>
+<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">NoDataError</span></code> – when the H5MD file has no ‘position’, ‘velocity’, or
+‘force’ group</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader._reopen">
+<code class="descname">_reopen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5MDReader._reopen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader._reopen" title="Permalink to this definition">¶</a></dt>
+<dd><p>reopen trajectory</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If the <cite>driver</cite> and <cite>comm</cite> arguments were used to open the
+hdf5 file (specifically, <code class="docutils literal notranslate"><span class="pre">driver=&quot;mpio&quot;</span></code>) then this method
+does <em>not</em> close and open the file like most readers because
+the information about the MPI communicator would be lost; instead
+it rewinds the trajectory back to the first timstep.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5MDReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>close reader</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader.has_forces">
+<code class="descname">has_forces</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.has_forces" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if ‘force’ group is in trajectory.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader.has_positions">
+<code class="descname">has_positions</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.has_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if ‘position’ group is in trajectory.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader.has_velocities">
+<code class="descname">has_velocities</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.has_velocities" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if ‘velocity’ group is in trajectory.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader.n_frames">
+<code class="descname">n_frames</code><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.n_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of frames in trajectory</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.coordinates.H5MD.H5MDReader.open_trajectory">
+<code class="descname">open_trajectory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5MDReader.open_trajectory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5MDReader.open_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>opens the trajectory file using h5py library</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="INPCRD.html" class="btn btn-neutral float-right" title="6.10. INPCRD structure files in MDAnalysis — MDAnalysis.coordinates.INPCRD" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="GRO.html" class="btn btn-neutral float-left" title="6.8. GRO file format — MDAnalysis.coordinates.GRO" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div>
+ 
+<div class="footer"><p>Please see
+    our <a href="https://www.mdanalysis.org/pages/privacy/">Privacy Policy</a>
+    to learn how <a href="https://www.mdanalysis.org">MDAnalysis</a> collects data.</p>
+    <script data-goatcounter="https://mdanalysis.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
+</div>
+
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        2.0.0-dev0
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
