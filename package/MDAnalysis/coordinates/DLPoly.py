@@ -32,6 +32,7 @@ import numpy as np
 
 from . import base
 from . import core
+from ..lib import util
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -149,7 +150,7 @@ class HistoryReader(base.ReaderBase):
         super(HistoryReader, self).__init__(filename, **kwargs)
 
         # "private" file handle
-        self._file = open(self.filename, 'r')
+        self._file = util.anyopen(self.filename, 'r')
         self.title = self._file.readline().strip()
         self._levcfg, self._imcon, self.n_atoms = np.int64(self._file.readline().split()[:3])
         self._has_vels = True if self._levcfg > 0 else False
