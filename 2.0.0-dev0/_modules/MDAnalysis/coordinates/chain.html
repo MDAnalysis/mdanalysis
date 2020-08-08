@@ -390,6 +390,9 @@
 <span class="sd">       added ``continuous`` trajectory option</span>
 <span class="sd">    .. versionchanged:: 0.19.0</span>
 <span class="sd">       limit output of __repr__</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Now ChainReader can be (un)pickled. Upon unpickling,</span>
+<span class="sd">       current timestep is retained.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">format</span> <span class="o">=</span> <span class="s1">&#39;CHAIN&#39;</span>
@@ -592,6 +595,25 @@
         <span class="c1"># local frame index f in trajectory i (frame indices are 0-based)</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_frames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span></div>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1">#  save ts temporarily otherwise it will be changed during rewinding.</span>
+        <span class="n">state</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">__deepcopy__</span><span class="p">()</span>
+
+        <span class="c1">#  the ts.frame of each reader is set to the chained frame index during</span>
+        <span class="c1">#  iteration, thus we need to rewind the readers that have been used.</span>
+        <span class="c1">#  PR #2723</span>
+        <span class="k">for</span> <span class="n">reader</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;readers&#39;</span><span class="p">][:</span><span class="bp">self</span><span class="o">.</span><span class="n">__active_reader_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">reader</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+
+        <span class="c1">#  retrieve the current ts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__current_frame</span>
 
     <span class="c1"># methods that can change with the current reader</span>
 <div class="viewcode-block" id="ChainReader.convert_time_from_native"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.convert_time_from_native">[docs]</a>    <span class="k">def</span> <span class="nf">convert_time_from_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>

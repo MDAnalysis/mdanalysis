@@ -335,13 +335,15 @@ trajectory)</p>
 <dd><p>principal ConnectivityGroups for each connectivity type</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<code class="descname">.. versionchanged:: 1.0.0</code></dt>
-<dd><p>Universe() now raises an error. Use Universe(None) or <a class="reference internal" href="#MDAnalysis.core.universe.Universe.empty" title="MDAnalysis.core.universe.Universe.empty"><code class="xref py py-func docutils literal notranslate"><span class="pre">Universe.empty()</span></code></a> instead.
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Universe() now raises an error. Use Universe(None) or <a class="reference internal" href="#MDAnalysis.core.universe.Universe.empty" title="MDAnalysis.core.universe.Universe.empty"><code class="xref py py-func docutils literal notranslate"><span class="pre">Universe.empty()</span></code></a> instead.
 Removed instant selectors.</p>
-</dd></dl>
-
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Universe now can be (un)pickled.
+<code class="docutils literal notranslate"><span class="pre">topology</span></code>, <code class="docutils literal notranslate"><span class="pre">trajectory</span></code> and <code class="docutils literal notranslate"><span class="pre">anchor_name</span></code> are reserved
+upon unpickle.</p>
+</div>
 <dl class="method">
 <dt id="MDAnalysis.core.universe.Universe.add_Residue">
 <code class="descname">add_Residue</code><span class="sig-paren">(</span><em>segment=None</em>, <em>**attrs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.add_Residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.add_Residue" title="Permalink to this definition">¶</a></dt>

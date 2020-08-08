@@ -223,12 +223,19 @@
 <span class="sd">.. autoclass:: GSDReader</span>
 <span class="sd">   :inherited-members:</span>
 
+<span class="sd">.. autoclass:: GSDPicklable</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autofunction:: gsd_pickle_open</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gsd</span>
+<span class="kn">import</span> <span class="nn">gsd.fl</span>
 <span class="kn">import</span> <span class="nn">gsd.hoomd</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
+
 
 <div class="viewcode-block" id="GSDReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.GSDReader">[docs]</a><span class="k">class</span> <span class="nc">GSDReader</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">ReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reader for the GSD format.</span>
@@ -248,6 +255,10 @@
 
 
 <span class="sd">        .. versionadded:: 0.17.0</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">            Now use a picklable :class:`gsd.hoomd.HOOMDTrajectory`--</span>
+<span class="sd">            :class:`GSDPicklable`</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">GSDReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span>
@@ -256,10 +267,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Timestep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts_kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_timestep</span><span class="p">()</span>
 
-<div class="viewcode-block" id="GSDReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.GSDReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">:</span>
+<div class="viewcode-block" id="GSDReader.open_trajectory"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.GSDReader.open_trajectory">[docs]</a>    <span class="k">def</span> <span class="nf">open_trajectory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;opens the trajectory file using gsd.hoomd module&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">hoomd</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span><span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">gsd_pickle_open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GSDReader.close"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.GSDReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
@@ -276,7 +287,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">open_trajectory</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
-        <span class="k">try</span> <span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
             <span class="n">myframe</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">IOError</span> <span class="kn">from</span> <span class="bp">None</span>
@@ -290,23 +301,148 @@
 
         <span class="c1"># set frame box dimensions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span> <span class="o">=</span> <span class="n">myframe</span><span class="o">.</span><span class="n">configuration</span><span class="o">.</span><span class="n">box</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">)</span> <span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="mf">180.0</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]))</span>
 
         <span class="c1"># set particle positions</span>
         <span class="n">frame_positions</span> <span class="o">=</span> <span class="n">myframe</span><span class="o">.</span><span class="n">particles</span><span class="o">.</span><span class="n">position</span>
         <span class="n">n_atoms_now</span> <span class="o">=</span> <span class="n">frame_positions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">n_atoms_now</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_atoms_now</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Frame </span><span class="si">%d</span><span class="s2"> has </span><span class="si">%d</span><span class="s2"> atoms but the initial frame has </span><span class="si">%d</span><span class="s2">&quot;</span>
                 <span class="s2">&quot; atoms. MDAnalysis in unable to deal with variable&quot;</span>
                 <span class="s2">&quot; topology!&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">n_atoms_now</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">))</span>
-        <span class="k">else</span> <span class="p">:</span>
+        <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">=</span> <span class="n">frame_positions</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ts</span>
 
-    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_read_next_timestep</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;read next frame in trajectory&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GSDPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.GSDPicklable">[docs]</a><span class="k">class</span> <span class="nc">GSDPicklable</span><span class="p">(</span><span class="n">gsd</span><span class="o">.</span><span class="n">hoomd</span><span class="o">.</span><span class="n">HOOMDTrajectory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Hoomd GSD file object (read-only) that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as by :func:`gsd.hoomd.open`,</span>
+<span class="sd">    namely :class:`gsd.hoodm.HOOMDTrajectory`) that, unlike file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, filename and mode of :class:`gsd.fl.GSDFile` in</span>
+<span class="sd">    the file are saved. On unpickling, the file is opened by filename.</span>
+<span class="sd">    This means that for a successful unpickle, the original file still has to</span>
+<span class="sd">    be accessible with its filename.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Open hoomd GSD files with `gsd_pickle_open`.</span>
+<span class="sd">    After pickling, the current frame is reset. `universe.trajectory[i]` has</span>
+<span class="sd">    to be used to return to its original frame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    file: :class:`gsd.fl.GSDFile`</span>
+<span class="sd">        File to access.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        gsdfileobj = gsd.fl.open(name=filename,</span>
+<span class="sd">                                     mode=&#39;rb&#39;,</span>
+<span class="sd">                                     application=&#39;gsd.hoomd &#39;+gsd.__version__,</span>
+<span class="sd">                                     schema=&#39;hoomd&#39;,</span>
+<span class="sd">                                     schema_version=[1, 3])</span>
+<span class="sd">        file = GSDPicklable(gsdfileobj)</span>
+<span class="sd">        file_pickled = pickle.loads(pickle.dumps(file))</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.GzipPicklable`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="o">.</span><span class="n">mode</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">gsd_version</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">__version__</span>
+        <span class="n">schema_version</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="k">if</span> <span class="n">gsd_version</span> <span class="o">&gt;=</span> <span class="s1">&#39;1.9.0&#39;</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                 <span class="n">mode</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                 <span class="n">application</span><span class="o">=</span><span class="s1">&#39;gsd.hoomd &#39;</span> <span class="o">+</span> <span class="n">gsd_version</span><span class="p">,</span>
+                                 <span class="n">schema</span><span class="o">=</span><span class="s1">&#39;hoomd&#39;</span><span class="p">,</span>
+                                 <span class="n">schema_version</span><span class="o">=</span><span class="n">schema_version</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">gsdfileobj</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gsd_pickle_open"><a class="viewcode-back" href="../../../documentation_pages/coordinates/GSD.html#MDAnalysis.coordinates.GSD.gsd_pickle_open">[docs]</a><span class="k">def</span> <span class="nf">gsd_pickle_open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;rb&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Open hoomd schema GSD file with pickle function implemented.</span>
+
+<span class="sd">    This function returns a GSDPicklable object. It can be used as a</span>
+<span class="sd">    context manager, and replace the built-in :func:`gsd.hoomd.open` function</span>
+<span class="sd">    in read mode that only returns an unpicklable file object.</span>
+
+<span class="sd">    Schema version will depend on the version of gsd module.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Can be only used with read mode.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        a filename given a text or byte string.</span>
+<span class="sd">    mode: {&#39;r&#39;, &#39;rb&#39;} (optional)</span>
+<span class="sd">        &#39;r&#39;, &#39;rb&#39;:  open for reading;</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    stream-like object: GSDPicklable</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        if `mode` is not one of the allowed read modes</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    -------</span>
+<span class="sd">    open as context manager::</span>
+
+<span class="sd">        with gsd_pickle_open(&#39;filename&#39;) as f:</span>
+<span class="sd">            line = f.readline()</span>
+
+<span class="sd">    open as function::</span>
+
+<span class="sd">        f = gsd_pickle_open(&#39;filename&#39;)</span>
+<span class="sd">        line = f.readline()</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`MDAnalysis.lib.util.anyopen`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.pickle_open`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.bz2_pickle_open`</span>
+<span class="sd">    :func:`MDAnalysis.lib.picklable_file_io.gzip_pickle_open`</span>
+<span class="sd">    :func:`gsd.hoomd.open`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">gsd_version</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">__version__</span>
+    <span class="n">schema_version</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="k">if</span> <span class="n">gsd_version</span> <span class="o">&gt;=</span> <span class="s1">&#39;1.9.0&#39;</span> <span class="k">else</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode (&#39;r&#39;, &#39;rb&#39;) &quot;</span>
+                         <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
+    <span class="n">gsdfileobj</span> <span class="o">=</span> <span class="n">gsd</span><span class="o">.</span><span class="n">fl</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                             <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+                             <span class="n">application</span><span class="o">=</span><span class="s1">&#39;gsd.hoomd &#39;</span> <span class="o">+</span> <span class="n">gsd_version</span><span class="p">,</span>
+                             <span class="n">schema</span><span class="o">=</span><span class="s1">&#39;hoomd&#39;</span><span class="p">,</span>
+                             <span class="n">schema_version</span><span class="o">=</span><span class="n">schema_version</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">GSDPicklable</span><span class="p">(</span><span class="n">gsdfileobj</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -388,6 +388,8 @@
 <span class="kn">from</span> <span class="nn">numpy.testing</span> <span class="kn">import</span> <span class="n">assert_equal</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 
+<span class="kn">from</span> <span class="nn">.picklable_file_io</span> <span class="kn">import</span> <span class="n">pickle_open</span><span class="p">,</span> <span class="n">bz2_pickle_open</span><span class="p">,</span> <span class="n">gzip_pickle_open</span>
+
 <span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">StreamWarning</span><span class="p">,</span> <span class="n">DuplicateWarning</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">._cutil</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
@@ -517,8 +519,19 @@
 <span class="sd">       Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous</span>
 <span class="sd">       behavior to return a tuple ``(stream, filename)``.</span>
 
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       New read handlers support pickle functionality</span>
+<span class="sd">       if `datasource` is a filename.</span>
+<span class="sd">       They return a custom picklable file stream in</span>
+<span class="sd">       :class:`MDAnalysis.lib.picklable_file_io`.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">}</span>
+    <span class="n">read_handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2_pickle_open</span><span class="p">,</span>
+                     <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip_pickle_open</span><span class="p">,</span>
+                     <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="n">pickle_open</span><span class="p">}</span>
+    <span class="n">write_handlers</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bz2&#39;</span><span class="p">:</span> <span class="n">bz2</span><span class="o">.</span><span class="n">open</span><span class="p">,</span>
+                      <span class="s1">&#39;gz&#39;</span><span class="p">:</span> <span class="n">gzip</span><span class="o">.</span><span class="n">open</span><span class="p">,</span>
+                      <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="nb">open</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">isstream</span><span class="p">(</span><span class="n">datasource</span><span class="p">):</span>
@@ -541,7 +554,7 @@
             <span class="n">stream</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="n">filename</span> <span class="o">=</span> <span class="n">datasource</span>
             <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bz2&#39;</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>  <span class="c1"># file == &#39;&#39; should be last</span>
-                <span class="n">openfunc</span> <span class="o">=</span> <span class="n">handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
+                <span class="n">openfunc</span> <span class="o">=</span> <span class="n">read_handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
                 <span class="n">stream</span> <span class="o">=</span> <span class="n">_get_stream</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">openfunc</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">break</span>
@@ -562,7 +575,7 @@
                 <span class="n">ext</span> <span class="o">=</span> <span class="n">ext</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bz2&#39;</span><span class="p">,</span> <span class="s1">&#39;gz&#39;</span><span class="p">):</span>
                 <span class="n">ext</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># anything else but bz2 or gz is just a normal file</span>
-            <span class="n">openfunc</span> <span class="o">=</span> <span class="n">handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
+            <span class="n">openfunc</span> <span class="o">=</span> <span class="n">write_handlers</span><span class="p">[</span><span class="n">ext</span><span class="p">]</span>
             <span class="n">stream</span> <span class="o">=</span> <span class="n">openfunc</span><span class="p">(</span><span class="n">datasource</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="n">errno</span><span class="o">.</span><span class="n">EIO</span><span class="p">,</span> <span class="s2">&quot;Cannot open file or stream in mode=</span><span class="si">{mode!r}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="nb">vars</span><span class="p">()),</span> <span class="nb">repr</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>

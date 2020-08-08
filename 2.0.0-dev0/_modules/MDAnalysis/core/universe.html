@@ -490,9 +490,15 @@
 <span class="sd">    bonds, angles, dihedrals</span>
 <span class="sd">        principal ConnectivityGroups for each connectivity type</span>
 
+
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.</span>
 <span class="sd">        Removed instant selectors.</span>
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        Universe now can be (un)pickled.</span>
+<span class="sd">        ``topology``, ``trajectory`` and ``anchor_name`` are reserved</span>
+<span class="sd">        upon unpickle.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 <span class="c1"># Py3 TODO</span>
 <span class="c1">#    def __init__(self, topology=None, *coordinates, all_coordinates=False,</span>
@@ -880,7 +886,7 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_uuid</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="c1"># store this so we can later recall it if needed</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_uuid</span> <span class="o">=</span> <span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_uuid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="o">.</span><span class="n">uuid4</span><span class="p">())</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_uuid</span>
 
     <span class="nd">@anchor_name</span><span class="o">.</span><span class="n">setter</span>
@@ -917,10 +923,18 @@
             <span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+        <span class="c1"># Universe&#39;s two &quot;legs&quot; of topology and traj both serialise themselves</span>
+        <span class="c1"># the only other state held in Universe is anchor name?</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">anchor_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_anchor_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_anchor</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 
     <span class="c1"># Properties</span>
     <span class="nd">@property</span>

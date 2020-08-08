@@ -264,6 +264,8 @@
 <span class="sd">.. autoclass:: NCDFWriter</span>
 <span class="sd">   :members:</span>
 
+<span class="sd">.. autoclass:: NCDFPicklable</span>
+<span class="sd">   :members:</span>
 
 <span class="sd">.. _ascii-trajectories:</span>
 
@@ -337,7 +339,6 @@
 <span class="kn">import</span> <span class="nn">MDAnalysis</span>
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">base</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
-
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.coordinates.AMBER&quot;</span><span class="p">)</span>
 
 
@@ -629,6 +630,9 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Support for reading `degrees` units for `cell_angles` has now been</span>
 <span class="sd">       removed (Issue #2327)</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Now use a picklable :class:`scipy.io.netcdf.netcdf_file`--</span>
+<span class="sd">       :class:`NCDFPicklable`.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -648,8 +652,8 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">NCDFReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
-                                                   <span class="n">mmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mmap</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="n">NCDFPicklable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                                     <span class="n">mmap</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mmap</span><span class="p">)</span>
 
         <span class="c1"># AMBER NetCDF files should always have a convention</span>
         <span class="k">try</span><span class="p">:</span>
@@ -1254,6 +1258,59 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">trjfile</span> <span class="o">=</span> <span class="kc">None</span></div></div>
+
+
+<div class="viewcode-block" id="NCDFPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/TRJ.html#MDAnalysis.coordinates.TRJ.NCDFPicklable">[docs]</a><span class="k">class</span> <span class="nc">NCDFPicklable</span><span class="p">(</span><span class="n">scipy</span><span class="o">.</span><span class="n">io</span><span class="o">.</span><span class="n">netcdf</span><span class="o">.</span><span class="n">netcdf_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;NetCDF file object (read-only) that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as returned by</span>
+<span class="sd">    :class:`scipy.io.netcdf.netcdf_file`) that,</span>
+<span class="sd">    unlike standard Python file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, filename and mmap of the open file handle in</span>
+<span class="sd">    the file are saved. On unpickling, the file is opened by filename,</span>
+<span class="sd">    and the mmap file is loaded.</span>
+<span class="sd">    This means that for a successful unpickle, the original file still has to</span>
+<span class="sd">    be accessible with its filename.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or file-like</span>
+<span class="sd">        a filename given a text or byte string.</span>
+<span class="sd">    mmap : None or bool, optional</span>
+<span class="sd">        Whether to mmap `filename` when reading. True when `filename`</span>
+<span class="sd">        is a file name, False when `filename` is a file-like object.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        f = NCDFPicklable(NCDF)</span>
+<span class="sd">        print(f.variables[&#39;coordinates&#39;].data)</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    can also be used as context manager::</span>
+
+<span class="sd">        with NCDFPicklable(NCDF) as f:</span>
+<span class="sd">            print(f.variables[&#39;coordinates&#39;].data)</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_mmap</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mmap</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span></div>
 </pre></div>
 
            </div>

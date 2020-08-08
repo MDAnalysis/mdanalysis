@@ -136,8 +136,9 @@
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.30. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.31. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -289,6 +290,58 @@ timesteps to the file</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.chemfiles.ChemfilesPicklable">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.chemfiles.</code><code class="descname">ChemfilesPicklable</code><span class="sig-paren">(</span><em>path</em>, <em>mode='r'</em>, <em>format=''</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/chemfiles.html#ChemfilesPicklable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.chemfiles.ChemfilesPicklable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chemfiles file object (read-only) that can be pickled.</p>
+<p>This class provides a file-like object (as returned by
+<code class="xref py py-class docutils literal notranslate"><span class="pre">chemfiles.Trajectory</span></code>) that,
+unlike standard Python file objects,
+can be pickled. Only read mode is supported.</p>
+<p>When the file is pickled, path, mode, and format of the file handle
+are saved. On unpickling, the file is opened by path with mode,
+and saved format.
+This means that for a successful unpickle, the original file still has
+to be accessible with its filename.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Can only be used with reading (‘r’) mode.
+Upon pickling, the current frame is reset. <cite>universe.trajectory[i]</cite> has
+to be used to return to its original frame.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – a filename given a text or byte string.</li>
+<li><strong>mode</strong> (<em>'r'</em><em> , </em><em>optional</em>) – only ‘r’ can be used for pickling.</li>
+<li><strong>format</strong> (<em>''</em><em>, </em><em>optional</em>) – guessed from the file extension if empty.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">ChemfilesPicklable</span><span class="p">(</span><span class="n">XYZ</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>can also be used as context manager:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">ChemfilesPicklable</span><span class="p">(</span><span class="n">XYZ</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
 </dd></dl>
 
 </div>

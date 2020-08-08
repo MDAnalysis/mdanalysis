@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>6.30. ChainReader — MDAnalysis.coordinates.chain &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>6.31. ChainReader — MDAnalysis.coordinates.chain &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -44,8 +44,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.31. XDR based trajectory files — MDAnalysis.coordinates.XDR" href="XDR.html" />
-    <link rel="prev" title="6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
+    <link rel="next" title="6.32. XDR based trajectory files — MDAnalysis.coordinates.XDR" href="XDR.html" />
+    <link rel="prev" title="6.30. Serialization of Coordinate Readers" href="pickle_readers.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -133,8 +133,9 @@
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.30. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.31. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -196,7 +197,7 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.30. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></li>
+      <li>6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -216,7 +217,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.coordinates.chain"></span><div class="section" id="chainreader-mdanalysis-coordinates-chain">
-<h1>6.30. ChainReader — <a class="reference internal" href="#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a><a class="headerlink" href="#chainreader-mdanalysis-coordinates-chain" title="Permalink to this headline">¶</a></h1>
+<h1>6.31. ChainReader — <a class="reference internal" href="#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a><a class="headerlink" href="#chainreader-mdanalysis-coordinates-chain" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainReader</span></code></a> is used by MDAnalysis internally to represent multiple
 trajectories as one virtual trajectory. Users typically do not need to use the
 <a class="reference internal" href="#MDAnalysis.coordinates.chain.ChainReader" title="MDAnalysis.coordinates.chain.ChainReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">ChainReader</span></code></a> explicitly and the following documentation is primarily of
@@ -270,6 +271,10 @@ frames and individual <code class="xref py py-attr docutils literal notranslate"
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.19.0: </span>limit output of __repr__</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Now ChainReader can be (un)pickled. Upon unpickling,
+current timestep is retained.</p>
 </div>
 <p>Set up the chain reader.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -606,10 +611,10 @@ returned.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="XDR.html" class="btn btn-neutral float-right" title="6.31. XDR based trajectory files — MDAnalysis.coordinates.XDR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="XDR.html" class="btn btn-neutral float-right" title="6.32. XDR based trajectory files — MDAnalysis.coordinates.XDR" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="core.html" class="btn btn-neutral float-left" title="6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="pickle_readers.html" class="btn btn-neutral float-left" title="6.30. Serialization of Coordinate Readers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

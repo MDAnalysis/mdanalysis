@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>6.12. MMTF trajectory reader — MDAnalysis.coordinates.MMTF &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>6.30. Serialization of Coordinate Readers &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -44,8 +44,8 @@
           href="../../_static/opensearch.xml"/>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="6.13. MOL2 file format — MDAnalysis.coordinates.MOL2" href="MOL2.html" />
-    <link rel="prev" title="6.11. LAMMPS DCD trajectory and DATA I/O — MDAnalysis.coordinates.LAMMPS" href="LAMMPS.html" /> 
+    <link rel="next" title="6.31. ChainReader — MDAnalysis.coordinates.chain" href="chain.html" />
+    <link rel="prev" title="6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core" href="core.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,10 +115,7 @@
 <li class="toctree-l2"><a class="reference internal" href="H5MD.html">6.9. H5MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.H5MD</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="INPCRD.html">6.10. INPCRD structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.INPCRD</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="LAMMPS.html">6.11. LAMMPS DCD trajectory and DATA I/O  — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.LAMMPS</span></code></a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#classes">6.12.1. Classes</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="MMTF.html">6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="MOL2.html">6.13. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="NAMDBIN.html">6.14. NAMDBIN files format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.NAMDBIN</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="PDB.html">6.15. PDB structure files in MDAnalysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></li>
@@ -136,7 +133,22 @@
 <li class="toctree-l2"><a class="reference internal" href="null.html">6.27. Null output — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.null</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="base.html">6.28. Base classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.30. Serialization of Coordinate Readers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#how-to-serialize-a-new-reader">6.30.1. How to serialize a new reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#file-access">6.30.1.1. File Access</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#to-seek-or-not-to-seek">6.30.1.2. To seek or not to seek</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#miscellaneous">6.30.1.3. Miscellaneous</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tests">6.30.2. Tests</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#singleframereader-test">6.30.2.1. _SingleFrameReader Test</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basereadertest-and-multiframereadertest">6.30.2.2. BaseReaderTest and MultiframeReaderTest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#file-handler-test">6.30.2.3. File handler Test</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#currently-implemented-picklable-io-formats">6.30.3. Currently implemented picklable IO Formats</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
@@ -200,13 +212,13 @@
         
           <li><a href="../coordinates_modules.html">6. Coordinates modules</a> &raquo;</li>
         
-      <li>6.12. MMTF trajectory reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></li>
+      <li>6.30. Serialization of Coordinate Readers</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/documentation_pages/coordinates/MMTF.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/documentation_pages/coordinates/pickle_readers.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -219,52 +231,92 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <span class="target" id="module-MDAnalysis.coordinates.MMTF"></span><div class="section" id="mmtf-trajectory-reader-mdanalysis-coordinates-mmtf">
-<h1>6.12. MMTF trajectory reader — <a class="reference internal" href="#module-MDAnalysis.coordinates.MMTF" title="MDAnalysis.coordinates.MMTF"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MMTF</span></code></a><a class="headerlink" href="#mmtf-trajectory-reader-mdanalysis-coordinates-mmtf" title="Permalink to this headline">¶</a></h1>
-<p>Reads coordinates data from the Macromolecular Transmission Format format
-(<a class="reference external" href="https://mmtf.rcsb.org/">MMTF</a>). This should generally be a quicker alternative to PDB.</p>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.16.0.</span></p>
+  <div class="section" id="serialization-of-coordinate-readers">
+<span id="serialization"></span><h1>6.30. Serialization of Coordinate Readers<a class="headerlink" href="#serialization-of-coordinate-readers" title="Permalink to this headline">¶</a></h1>
+<p>To achieve a working implementation of parallelism, this document illustrates
+the basic idea of how different coordinate readers are being serialized in MDAnalysis,
+and what developers should do to serialize a new reader.</p>
+<p>To make sure every Trajectory reader can be successfully
+serialized, we implement picklable I/O classes (see <a class="reference internal" href="#implemented-fileio"><span class="std std-ref">Currently implemented picklable IO Formats</span></a>).
+When the file is pickled, filename and other necessary attributes of the open
+file handle are saved. On unpickling, the file is opened by filename.
+This means that for a successful unpickle, the original file still has to
+be accessible with its filename. To retain the current frame of the trajectory,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_read_frame(previous</span> <span class="pre">frame)()</span></code> will be called during unpickling.</p>
+<div class="section" id="how-to-serialize-a-new-reader">
+<span id="id1"></span><h2>6.30.1. How to serialize a new reader<a class="headerlink" href="#how-to-serialize-a-new-reader" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="file-access">
+<h3>6.30.1.1. File Access<a class="headerlink" href="#file-access" title="Permalink to this headline">¶</a></h3>
+<p>If the new reader uses <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>
+(e.g. <a class="reference internal" href="PDB.html#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB.PDBReader</span></code></a>),
+the reading handler can be pickled without modification.
+If the new reader uses I/O classes from other package
+(e.g. <a class="reference internal" href="GSD.html#MDAnalysis.coordinates.GSD.GSDReader" title="MDAnalysis.coordinates.GSD.GSDReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD.GSDReader</span></code></a>),
+and cannot be pickled natively, create a new picklable class inherited from
+the file class in that package
+(e.g. <a class="reference internal" href="GSD.html#MDAnalysis.coordinates.GSD.GSDPicklable" title="MDAnalysis.coordinates.GSD.GSDPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD.GSDPicklable</span></code></a>),
+adding <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">__setstate__()</span></code> functions (or <code class="xref py py-func docutils literal notranslate"><span class="pre">__reduce__()</span></code> if needed. Consult the
+pickle <a class="reference external" href="https://docs.python.org/3/library/pickle.html">documentation</a> of python)
+to allow file handler serialization.</p>
 </div>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 0.20.0: </span>Unit cell is now properly treated as optional</p>
+<div class="section" id="to-seek-or-not-to-seek">
+<h3>6.30.1.2. To seek or not to seek<a class="headerlink" href="#to-seek-or-not-to-seek" title="Permalink to this headline">¶</a></h3>
+<p>Some I/O classes support <code class="xref py py-func docutils literal notranslate"><span class="pre">seek()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">tell()</span></code> functions to allow the file
+to be pickled with an offset. It is normally not needed for MDAnalysis with
+random access. But if error occurs during testing, find a way to make the offset work.
+Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O
+class supports offset?</p>
+<p>For example, in <a class="reference internal" href="TRZ.html#MDAnalysis.coordinates.TRZ.TRZReader" title="MDAnalysis.coordinates.TRZ.TRZReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRZ.TRZReader</span></code></a>,
+<code class="xref py py-func docutils literal notranslate"><span class="pre">_read_frame()</span></code> is implemented by <code class="xref py py-func docutils literal notranslate"><span class="pre">_seek()</span></code> ing the file into
+its previous frame and <code class="xref py py-func docutils literal notranslate"><span class="pre">_read_next_timestep()</span></code>, so the offset of the file is crucial
+for such machinery to work.</p>
 </div>
-<div class="section" id="classes">
-<h2>6.12.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="MDAnalysis.coordinates.MMTF.MMTFReader">
-<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.MMTF.</code><code class="descname">MMTFReader</code><span class="sig-paren">(</span><em>filename</em>, <em>convert_units=True</em>, <em>n_atoms=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MMTF.html#MMTFReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.MMTF.MMTFReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Coordinate reader for the Macromolecular Transmission Format format (<a class="reference external" href="https://mmtf.rcsb.org/">MMTF</a>).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="MDAnalysis.coordinates.MMTF.fetch_mmtf">
-<code class="descclassname">MDAnalysis.coordinates.MMTF.</code><code class="descname">fetch_mmtf</code><span class="sig-paren">(</span><em>pdb_id</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/MMTF.html#fetch_mmtf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.MMTF.fetch_mmtf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a Universe from the RCSB Protein Data Bank using mmtf format</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pdb_id</strong> (<em>string</em>) – PDB code of the desired data, eg ‘4UCP’</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">MDAnalysis Universe of the corresponding PDB system</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe">Universe</a></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">mmtf.fetch()</span></code></dt>
-<dd>Function for fetching raw mmtf data</dd>
-</dl>
+<div class="section" id="miscellaneous">
+<h3>6.30.1.3. Miscellaneous<a class="headerlink" href="#miscellaneous" title="Permalink to this headline">¶</a></h3>
+<p>If pickle still fails due to some unpicklable attributes, try to find a way
+to pickle those, or write custom <code class="xref py py-func docutils literal notranslate"><span class="pre">__getstate__()</span></code> and <code class="xref py py-func docutils literal notranslate"><span class="pre">__setstate__()</span></code>
+methods for the reader.</p>
+<p>If the new reader is written in Cython, read <code class="xref py py-class docutils literal notranslate"><span class="pre">lib.formats.libmdaxdr</span></code> and
+<code class="xref py py-class docutils literal notranslate"><span class="pre">lib.formats.libdcd</span></code> files as references.</p>
 </div>
-<div class="versionadded">
-<p><span class="versionmodified">New in version 0.16.0.</span></p>
 </div>
-</dd></dl>
-
+<div class="section" id="tests">
+<span id="test-pickle"></span><h2>6.30.2. Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="singleframereader-test">
+<h3>6.30.2.1. _SingleFrameReader Test<a class="headerlink" href="#singleframereader-test" title="Permalink to this headline">¶</a></h3>
+<p>If the new reader is a single-frame reader, the basic test should normally
+inherited from <code class="xref py py-class docutils literal notranslate"><span class="pre">_SingleFrameReader</span></code>, where the pickliablity is tested.</p>
+</div>
+<div class="section" id="basereadertest-and-multiframereadertest">
+<h3>6.30.2.2. BaseReaderTest and MultiframeReaderTest<a class="headerlink" href="#basereadertest-and-multiframereadertest" title="Permalink to this headline">¶</a></h3>
+<p>If the test for the new reader uses <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseReaderTest</span></code> or
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MultiframeReaderTest</span></code>, whether the current timestep information is
+saved (the former), whether its relative position is maintained,
+i.e. next() reads the right next timestep, and whether its last timestep
+can be pickled, are already tested.</p>
+</div>
+<div class="section" id="file-handler-test">
+<h3>6.30.2.3. File handler Test<a class="headerlink" href="#file-handler-test" title="Permalink to this headline">¶</a></h3>
+<p>If the new reader accesses the file with <code class="xref py py-func docutils literal notranslate"><span class="pre">util.anyopen()</span></code>, add necessary
+tests inside <code class="docutils literal notranslate"><span class="pre">parallelism/test_multiprocessing.py</span></code> for the reader.</p>
+<p>If the new reader accessed the file with a new picklable I/O class,
+add necessary tests inside <code class="docutils literal notranslate"><span class="pre">utils/test_pickleio.py</span></code> for the I/O class,
+<code class="docutils literal notranslate"><span class="pre">parallelism/test_multiprocessing.py</span></code> for the reader.</p>
+</div>
+</div>
+<div class="section" id="currently-implemented-picklable-io-formats">
+<span id="implemented-fileio"></span><h2>6.30.3. Currently implemented picklable IO Formats<a class="headerlink" href="#currently-implemented-picklable-io-formats" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a></li>
+<li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a></li>
+<li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a></li>
+<li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></li>
+<li><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a></li>
+<li><a class="reference internal" href="GSD.html#MDAnalysis.coordinates.GSD.GSDPicklable" title="MDAnalysis.coordinates.GSD.GSDPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.GSD.GSDPicklable</span></code></a></li>
+<li><a class="reference internal" href="TRJ.html#MDAnalysis.coordinates.TRJ.NCDFPicklable" title="MDAnalysis.coordinates.TRJ.NCDFPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.TRJ.NCDFPicklable</span></code></a></li>
+<li><a class="reference internal" href="chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesPicklable" title="MDAnalysis.coordinates.chemfiles.ChemfilesPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chemfiles.ChemfilesPicklable</span></code></a></li>
+</ul>
 </div>
 </div>
 
@@ -276,10 +328,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="MOL2.html" class="btn btn-neutral float-right" title="6.13. MOL2 file format — MDAnalysis.coordinates.MOL2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chain.html" class="btn btn-neutral float-right" title="6.31. ChainReader — MDAnalysis.coordinates.chain" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="LAMMPS.html" class="btn btn-neutral float-left" title="6.11. LAMMPS DCD trajectory and DATA I/O — MDAnalysis.coordinates.LAMMPS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="core.html" class="btn btn-neutral float-left" title="6.29. Common functions for coordinate reading — MDAnalysis.coordinates.core" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -216,8 +216,8 @@
 
 <span class="sd">.. autoclass:: ChemfilesWriter</span>
 
+<span class="sd">.. autoclass:: ChemfilesPicklable</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">distutils.version</span> <span class="kn">import</span> <span class="n">LooseVersion</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -227,6 +227,14 @@
     <span class="kn">import</span> <span class="nn">chemfiles</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Allow building documentation even if chemfiles is not installed</span>
+    <span class="kn">import</span> <span class="nn">imp</span>
+
+    <span class="k">class</span> <span class="nc">MockTrajectory</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">chemfiles</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">new_module</span><span class="p">(</span><span class="s2">&quot;chemfiles&quot;</span><span class="p">)</span>
+    <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span> <span class="o">=</span> <span class="n">MockTrajectory</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -311,7 +319,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">ChemfilesPicklable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;close reader&quot;&quot;&quot;</span>
@@ -560,6 +568,74 @@
             <span class="n">topology</span><span class="o">.</span><span class="n">add_bond</span><span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">bond</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">topology</span></div>
+
+
+<div class="viewcode-block" id="ChemfilesPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/chemfiles.html#MDAnalysis.coordinates.chemfiles.ChemfilesPicklable">[docs]</a><span class="k">class</span> <span class="nc">ChemfilesPicklable</span><span class="p">(</span><span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Chemfiles file object (read-only) that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as returned by</span>
+<span class="sd">    :class:`chemfiles.Trajectory`) that,</span>
+<span class="sd">    unlike standard Python file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, path, mode, and format of the file handle</span>
+<span class="sd">    are saved. On unpickling, the file is opened by path with mode,</span>
+<span class="sd">    and saved format.</span>
+<span class="sd">    This means that for a successful unpickle, the original file still has</span>
+<span class="sd">    to be accessible with its filename.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Can only be used with reading (&#39;r&#39;) mode.</span>
+<span class="sd">    Upon pickling, the current frame is reset. `universe.trajectory[i]` has</span>
+<span class="sd">    to be used to return to its original frame.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        a filename given a text or byte string.</span>
+<span class="sd">    mode : &#39;r&#39; , optional</span>
+<span class="sd">        only &#39;r&#39; can be used for pickling.</span>
+<span class="sd">    format : &#39;&#39;, optional</span>
+<span class="sd">        guessed from the file extension if empty.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        f = ChemfilesPicklable(XYZ, &#39;r&#39;, &#39;&#39;)</span>
+<span class="sd">        print(f.read())</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    can also be used as context manager::</span>
+
+<span class="sd">        with ChemfilesPicklable(XYZ) as f:</span>
+<span class="sd">            print(f.read())</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Only read mode (&#39;r&#39;) &quot;</span>
+                             <span class="s2">&quot;files can be pickled.&quot;</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                         <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span>
+                         <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Trajectory__mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Trajectory__format</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

@@ -405,6 +405,7 @@
 
 <span class="sd">         create a timestep object with space for n_atoms</span>
 
+
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Added :meth:`from_timestep` and :meth:`from_coordinates` constructor</span>
 <span class="sd">       methods.</span>
@@ -412,6 +413,9 @@
 <span class="sd">       :attr:`n_atoms` now a read only property.</span>
 <span class="sd">       :attr:`frame` now 0-based instead of 1-based.</span>
 <span class="sd">       Attributes `status` and `step` removed.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Timestep now can be (un)pickled. Weakref for Reader</span>
+<span class="sd">       will be dropped.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">order</span> <span class="o">=</span> <span class="s1">&#39;F&#39;</span>
 
@@ -478,7 +482,6 @@
 
         <span class="c1"># set up aux namespace for adding auxiliary data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">aux</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span></div>
-
 
 <div class="viewcode-block" id="Timestep.from_timestep"><a class="viewcode-back" href="../../../documentation_pages/coordinates/memory.html#MDAnalysis.topology.ParmEdParser.Timestep.from_timestep">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_timestep</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -560,6 +563,22 @@
 
         <span class="k">return</span> <span class="n">ts</span></div>
 
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#  The `dt` property is lazy loaded.</span>
+        <span class="c1">#  We need to load it once from the `_reader` (if exists)</span>
+        <span class="c1">#  attached to this timestep to get the dt value.</span>
+        <span class="c1">#  This will help to (un)pickle a `Timestep` without pickling `_reader`</span>
+        <span class="c1">#  and retain its dt value.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span>
+
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;_reader&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+
 <div class="viewcode-block" id="Timestep._init_unitcell"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.Timestep._init_unitcell">[docs]</a>    <span class="k">def</span> <span class="nf">_init_unitcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create custom datastructure for :attr:`_unitcell`.&quot;&quot;&quot;</span>
         <span class="c1"># override for other Timesteps</span>
@@ -621,7 +640,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pos</span><span class="p">[</span><span class="n">atoms</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span></div>
-    
+
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># special-case timestep info</span>
         <span class="k">if</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;velocities&#39;</span><span class="p">,</span> <span class="s1">&#39;forces&#39;</span><span class="p">,</span> <span class="s1">&#39;positions&#39;</span><span class="p">):</span>
@@ -1579,6 +1598,9 @@
 
 <span class="sd">    .. versionchanged:: 0.11.0</span>
 <span class="sd">       Frames now 0-based instead of 1-based</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       Now supports (un)pickle. Upon unpickling,</span>
+<span class="sd">       the current timestep is retained by reconstrunction.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1">#: The appropriate Timestep class, e.g.</span>
@@ -2237,8 +2259,11 @@
         <span class="k">for</span> <span class="n">transform</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformations</span><span class="p">:</span>
             <span class="n">ts</span> <span class="o">=</span> <span class="n">transform</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">ts</span></div>
+        <span class="k">return</span> <span class="n">ts</span>
 
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="ReaderBase"><a class="viewcode-back" href="../../../documentation_pages/coordinates/base.html#MDAnalysis.topology.ParmEdParser.ReaderBase">[docs]</a><span class="k">class</span> <span class="nc">ReaderBase</span><span class="p">(</span><span class="n">ProtoReader</span><span class="p">):</span>

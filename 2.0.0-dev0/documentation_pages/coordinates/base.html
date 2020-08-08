@@ -141,8 +141,9 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="core.html">6.29. Common functions for coordinate reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="chain.html">6.30. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.31. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pickle_readers.html">6.30. Serialization of Coordinate Readers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="chain.html">6.31. ChainReader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.chain</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XDR.html">6.32. XDR based trajectory files — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.XDR</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
@@ -2055,6 +2056,10 @@ methods.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.11.0: </span>Frames now 0-based instead of 1-based</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Now supports (un)pickle. Upon unpickling,
+the current timestep is retained by reconstrunction.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.base.ProtoReader.OtherWriter">
