@@ -32,7 +32,6 @@ reduction algorithms, wrapping them to allow them to be used interchangably.
 .. versionadded:: 0.16.0
 
 """
-from __future__ import absolute_import
 import numpy as np
 from ..confdistmatrix import get_distance_matrix
 from ..utils import ParallelCalculation, merge_universes

@@ -319,10 +319,6 @@ Classes
    .. automethod:: _get_bonded_hydrogens_list
 
 """
-from __future__ import division, absolute_import
-import six
-from six.moves import range, zip
-
 import warnings
 import logging
 from collections import defaultdict
@@ -383,10 +379,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
        DEFAULT_DONORS/ACCEPTORS is now embedded in a dict to switch between
        default values for different force fields.
 
-    .. versionchanged:: 0.21.0
-        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
-
     .. versionchanged:: 1.0.0
+        Added autocorrelation (MDAnalysis.lib.correlations.py) for calculating hydrogen bond lifetime
        ``save_table()`` method has been removed. You can use ``np.save()`` or
        ``cPickle.dump()`` on :attr:`HydrogenBondAnalysis.table` instead.
     """
@@ -899,8 +893,8 @@ class HydrogenBondAnalysis(base.AnalysisBase):
             read every `step` between `start` (included) and `stop` (excluded),
             ``None`` selects 1. [``None``]
         verbose : bool (optional)
-             toggle progress meter output :class:`~MDAnalysis.lib.log.ProgressMeter`
-             [``True``]
+             toggle progress meter output
+             :class:`~MDAnalysis.lib.log.ProgressBar` [``True``]
         debug : bool (optional)
              enable detailed logging of debugging information; this can create
              *very big* log files so it is disabled (``False``) by default; setting
@@ -1254,7 +1248,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         # float because of division later
         tsteps = float(len(self.timesteps))
-        for cursor, (key, count) in enumerate(six.iteritems(hbonds)):
+        for cursor, (key, count) in enumerate(hbonds.items()):
             out[cursor] = key + (count / tsteps,)
 
         # return array as recarray
@@ -1312,7 +1306,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
 
         out_nrows = 0
         # count number of timesteps per key to get length of output table
-        for ts_list in six.itervalues(hbonds):
+        for ts_list in hbonds.values():
             out_nrows += len(ts_list)
 
         # build empty output table
@@ -1324,7 +1318,7 @@ class HydrogenBondAnalysis(base.AnalysisBase):
         out = np.empty((out_nrows,), dtype=dtype)
 
         out_row = 0
-        for (key, times) in six.iteritems(hbonds):
+        for (key, times) in hbonds.items():
             for tstep in times:
                 out[out_row] = key + (tstep,)
                 out_row += 1

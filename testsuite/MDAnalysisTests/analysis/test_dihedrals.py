@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
 import numpy as np
 from numpy.testing import assert_almost_equal
 import matplotlib
@@ -106,11 +104,18 @@ class TestRamachandran(object):
 
     def test_outside_protein_length(self, universe):
         with pytest.raises(ValueError):
-            rama = Ramachandran(universe.select_atoms("resid 220")).run()
+            rama = Ramachandran(universe.select_atoms("resid 220"),
+                                check_protein=True).run()
+    
+    def test_outside_protein_unchecked(self, universe):
+        rama = Ramachandran(universe.select_atoms("resid 220"),
+                            check_protein=False).run()
 
     def test_protein_ends(self, universe):
-        with pytest.warns(UserWarning):
-            rama = Ramachandran(universe.select_atoms("protein")).run()
+        with pytest.warns(UserWarning) as record:
+            rama = Ramachandran(universe.select_atoms("protein"),
+                                check_protein=True).run()
+        assert len(record) == 1
 
     def test_None_removal(self):
         with pytest.warns(UserWarning):

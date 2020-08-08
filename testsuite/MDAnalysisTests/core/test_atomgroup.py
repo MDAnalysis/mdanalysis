@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
 from glob import glob
 import itertools
 from os import path
@@ -610,9 +608,9 @@ class TestAtomGroupProperties(object):
                            'charges', 'masses', 'radii', 'bfactors',
                            'occupancies'))
         u.atoms.occupancies = 1.0
-        master = u.atoms
+        main = u.atoms
         idx = [0, 1, 4, 7, 11, 14]
-        return master[idx]
+        return main[idx]
 
     attributes = (('name', 'names', 'string'),
                   ('type', 'types', 'string'),
@@ -746,48 +744,208 @@ class TestDihedralSelections(object):
 
     @staticmethod
     @pytest.fixture(scope='module')
+    def GRO():
+        return mda.Universe(GRO)
+
+    @staticmethod
+    @pytest.fixture(scope='module')
     def PSFDCD():
         return mda.Universe(PSF, DCD)
 
-    def test_phi_selection(self, PSFDCD):
-        phisel = PSFDCD.segments[0].residues[9].phi_selection()
+    @staticmethod
+    @pytest.fixture(scope='class')
+    def resgroup(GRO):
+        return GRO.segments[0].residues[8:10]
+
+    def test_phi_selection(self, GRO):
+        phisel = GRO.segments[0].residues[9].phi_selection()
         assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
         assert_equal(phisel.residues.resids, [9, 10])
         assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
 
-    def test_psi_selection(self, PSFDCD):
-        psisel = PSFDCD.segments[0].residues[9].psi_selection()
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'c_name': 'O'}, ['O', 'N', 'CA', 'O']),
+        ({'n_name': 'O'}, ['C', 'O', 'CA', 'C']),
+        ({'ca_name': 'O'}, ['C', 'N', 'O', 'C'])
+    ])
+    def test_phi_selection_name(self, GRO, kwargs, names):
+        phisel = GRO.segments[0].residues[9].phi_selection(**kwargs)
+        assert_equal(phisel.names, names)
+        assert_equal(phisel.residues.resids, [9, 10])
+        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
+
+    def test_phi_selections_single(self, GRO):
+        rgsel = GRO.segments[0].residues[[9]].phi_selections()
+        assert len(rgsel) == 1
+        phisel = rgsel[0]
+        assert_equal(phisel.names, ['C', 'N', 'CA', 'C'])
+        assert_equal(phisel.residues.resids, [9, 10])
+        assert_equal(phisel.residues.resnames, ['PRO', 'GLY'])
+
+    def test_phi_selections(self, resgroup):
+        rgsel = resgroup.phi_selections()
+        rssel = [r.phi_selection() for r in resgroup]
+        assert_equal(rgsel, rssel)
+
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'c_name': 'O'}, ['O', 'N', 'CA', 'O']),
+        ({'n_name': 'O'}, ['C', 'O', 'CA', 'C']),
+        ({'ca_name': 'O'}, ['C', 'N', 'O', 'C'])
+    ])
+    def test_phi_selections_name(self, resgroup, kwargs, names):
+        rgsel = resgroup.phi_selections(**kwargs)
+        for ag in rgsel:
+            assert_equal(ag.names, names)
+
+    def test_psi_selection(self, GRO):
+        psisel = GRO.segments[0].residues[9].psi_selection()
         assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
         assert_equal(psisel.residues.resids, [10, 11])
         assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
 
-    def test_omega_selection(self, PSFDCD):
-        osel = PSFDCD.segments[0].residues[7].omega_selection()
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'c_name': 'O'}, ['N', 'CA', 'O', 'N']),
+        ({'n_name': 'O'}, ['O', 'CA', 'C', 'O']),
+        ({'ca_name': 'O'}, ['N', 'O', 'C', 'N']),
+    ])
+    def test_psi_selection_name(self, GRO, kwargs, names):
+        psisel = GRO.segments[0].residues[9].psi_selection(**kwargs)
+        assert_equal(psisel.names, names)
+        assert_equal(psisel.residues.resids, [10, 11])
+        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
+
+    def test_psi_selections_single(self, GRO):
+        rgsel = GRO.segments[0].residues[[9]].psi_selections()
+        assert len(rgsel) == 1
+        psisel = rgsel[0]
+        assert_equal(psisel.names, ['N', 'CA', 'C', 'N'])
+        assert_equal(psisel.residues.resids, [10, 11])
+        assert_equal(psisel.residues.resnames, ['GLY', 'ALA'])
+
+    def test_psi_selections(self, resgroup):
+        rgsel = resgroup.psi_selections()
+        rssel = [r.psi_selection() for r in resgroup]
+        assert_equal(rgsel, rssel)
+
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'c_name': 'O'}, ['N', 'CA', 'O', 'N']),
+        ({'n_name': 'O'}, ['O', 'CA', 'C', 'O']),
+        ({'ca_name': 'O'}, ['N', 'O', 'C', 'N']),
+    ])
+    def test_psi_selections_name(self, resgroup, kwargs, names):
+        rgsel = resgroup.psi_selections(**kwargs)
+        for ag in rgsel:
+            assert_equal(ag.names, names)
+
+    def test_omega_selection(self, GRO):
+        osel = GRO.segments[0].residues[7].omega_selection()
         assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
         assert_equal(osel.residues.resids, [8, 9])
         assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
 
-    def test_chi1_selection(self, PSFDCD):
-        sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'c_name': 'O'}, ['CA', 'O', 'N', 'CA']),
+        ({'n_name': 'O'}, ['CA', 'C', 'O', 'CA']),
+        ({'ca_name': 'O'}, ['O', 'C', 'N', 'O']),
+    ])
+    def test_omega_selection_name(self, GRO, kwargs, names):
+        osel = GRO.segments[0].residues[7].omega_selection(**kwargs)
+        assert_equal(osel.names, names)
+        assert_equal(osel.residues.resids, [8, 9])
+        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
+
+    def test_omega_selections_single(self, GRO):
+        rgsel = GRO.segments[0].residues[[7]].omega_selections()
+        assert len(rgsel) == 1
+        osel = rgsel[0]
+        assert_equal(osel.names, ['CA', 'C', 'N', 'CA'])
+        assert_equal(osel.residues.resids, [8, 9])
+        assert_equal(osel.residues.resnames, ['ALA', 'PRO'])
+
+    def test_omega_selections(self, resgroup):
+        rgsel = resgroup.omega_selections()
+        rssel = [r.omega_selection() for r in resgroup]
+        assert_equal(rgsel, rssel)
+
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'c_name': 'O'}, ['CA', 'O', 'N', 'CA']),
+        ({'n_name': 'O'}, ['CA', 'C', 'O', 'CA']),
+        ({'ca_name': 'O'}, ['O', 'C', 'N', 'O']),
+    ])
+    def test_omega_selections_name(self, resgroup, kwargs, names):
+        rgsel = resgroup.omega_selections(**kwargs)
+        for ag in rgsel:
+            assert_equal(ag.names, names)
+
+    def test_chi1_selection(self, GRO):
+        sel = GRO.segments[0].residues[12].chi1_selection()  # LYS
         assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
         assert_equal(sel.residues.resids, [13])
         assert_equal(sel.residues.resnames, ['LYS'])
 
-    def test_phi_sel_fail(self, PSFDCD):
-        sel = PSFDCD.residues[0].phi_selection()
+    @pytest.mark.parametrize('kwargs,names', [
+        ({'n_name': 'O'}, ['O', 'CA', 'CB', 'CG']),
+        ({'ca_name': 'O'}, ['N', 'O', 'CB', 'CG']),
+        ({'cb_name': 'O'}, ['N', 'CA', 'O', 'CG']),
+        ({'cg_name': 'O'}, ['N', 'CA', 'CB', 'O']),
+    ])
+    def test_chi1_selection_name(self, GRO, kwargs, names):
+        sel = GRO.segments[0].residues[12].chi1_selection(**kwargs)  # LYS
+        assert_equal(sel.names, names)
+        assert_equal(sel.residues.resids, [13])
+        assert_equal(sel.residues.resnames, ['LYS'])
+
+    def test_chi1_selections_single(self, GRO):
+        rgsel = GRO.segments[0].residues[[12]].chi1_selections()
+        assert len(rgsel) == 1
+        sel = rgsel[0]
+        assert_equal(sel.names, ['N', 'CA', 'CB', 'CG'])
+        assert_equal(sel.residues.resids, [13])
+        assert_equal(sel.residues.resnames, ['LYS'])
+
+    def test_chi1_selections(self, resgroup):
+        rgsel = resgroup.chi1_selections()
+        rssel = [r.chi1_selection() for r in resgroup]
+        assert_equal(rgsel, rssel)
+
+    def test_phi_sel_fail(self, GRO):
+        sel = GRO.residues[0].phi_selection()
         assert sel is None
 
-    def test_psi_sel_fail(self, PSFDCD):
-        sel = PSFDCD.residues[-1].psi_selection()
+    def test_phi_sels_fail(self, GRO):
+        rgsel = GRO.residues[212:216].phi_selections()
+        assert rgsel[0] is not None
+        assert rgsel[1] is not None
+        assert_equal(rgsel[-2:], [None, None])
+
+    def test_psi_sel_fail(self, GRO):
+        sel = GRO.residues[-1].psi_selection()
         assert sel is None
 
-    def test_omega_sel_fail(self, PSFDCD):
-        sel = PSFDCD.residues[-1].omega_selection()
+    def test_psi_sels_fail(self, GRO):
+        rgsel = GRO.residues[211:215].psi_selections()
+        assert rgsel[0] is not None
+        assert rgsel[1] is not None
+        assert_equal(rgsel[-2:], [None, None])
+
+    def test_omega_sel_fail(self, GRO):
+        sel = GRO.residues[-1].omega_selection()
         assert sel is None
 
-    def test_ch1_sel_fail(self, PSFDCD):
-        sel = PSFDCD.segments[0].residues[7].chi1_selection()
+    def test_omega_sels_fail(self, GRO):
+        rgsel = GRO.residues[211:215].omega_selections()
+        assert rgsel[0] is not None
+        assert rgsel[1] is not None
+        assert_equal(rgsel[-2:], [None, None])
+
+    def test_ch1_sel_fail(self, GRO):
+        sel = GRO.segments[0].residues[7].chi1_selection()
         assert sel is None  # ALA
+
+    def test_chi1_sels_fail(self, GRO):
+        rgsel = GRO.residues[12:14].chi1_selections()
+        assert rgsel[0] is not None
+        assert rgsel[1] is None
 
     def test_dihedral_phi(self, PSFDCD):
         phisel = PSFDCD.segments[0].residues[9].phi_selection()
@@ -805,21 +963,21 @@ class TestDihedralSelections(object):
         sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
         assert_almost_equal(sel.dihedral.value(), -58.428127, self.dih_prec)
 
-    def test_phi_nodep(self, PSFDCD):
+    def test_phi_nodep(self, GRO):
         with no_deprecated_call():
-            phisel = PSFDCD.segments[0].residues[9].phi_selection()
+            phisel = GRO.segments[0].residues[9].phi_selection()
 
-    def test_psi_nodep(self, PSFDCD):
+    def test_psi_nodep(self, GRO):
         with no_deprecated_call():
-            psisel = PSFDCD.segments[0].residues[9].psi_selection()
+            psisel = GRO.segments[0].residues[9].psi_selection()
 
-    def test_omega_nodep(self, PSFDCD):
+    def test_omega_nodep(self, GRO):
         with no_deprecated_call():
-            osel = PSFDCD.segments[0].residues[7].omega_selection()
+            osel = GRO.segments[0].residues[7].omega_selection()
 
-    def test_chi1_nodep(self, PSFDCD):
+    def test_chi1_nodep(self, GRO):
         with no_deprecated_call():
-            sel = PSFDCD.segments[0].residues[12].chi1_selection()  # LYS
+            sel = GRO.segments[0].residues[12].chi1_selection()  # LYS
 
 
 class TestUnwrapFlag(object):

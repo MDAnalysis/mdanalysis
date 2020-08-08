@@ -30,12 +30,18 @@
 
 
 """
-HELANAL --- analysis of protein helices
-=======================================
+HELANAL (Deprecated) --- analysis of protein helices
+====================================================
 
 :Author:  Benjamin Hall <benjamin.a.hall@ucl.ac.uk>, Oliver Beckstein, Xavier Deupi
 :Year:    2009, 2011, 2013
 :License: GNU General Public License v2 (or higher)
+
+.. note::
+
+    This module was deprecated in 1.0 and will be removed in 2.0.
+    Please use MDAnalysis.analysis.helix_analysis instead.
+
 
 The :mod:`MDAnalysis.analysis.helanal` module is a Python implementation of the
 HELANAL_ algorithm [Bansal2000]_ in `helanal.f`_, which is also available
@@ -116,9 +122,6 @@ Functions
 .. autofunction:: helanal_main
 
 """
-from __future__ import print_function, division, absolute_import
-from six.moves import range, zip
-
 import os
 
 import numpy as np
@@ -130,6 +133,11 @@ from MDAnalysis.lib import mdamath
 import warnings
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.helanal")
+
+warnings.warn("This module is deprecated as of MDAnalysis version 1.0. "
+              "It will be removed in MDAnalysis version 2.0."
+              "Please use MDAnalysis.analysis.helix_analysis instead.",
+              category=DeprecationWarning)
 
 def center(coordinates):
     """Return the geometric center (centroid) of the coordinates.
@@ -244,6 +252,12 @@ def helanal_trajectory(universe, select="name CA",
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
     """
+
+    warnings.warn("This function is deprecated as of MDAnalysis version 1.0. "
+                  "It will be removed in MDAnalysis version 2.0. Please use "
+                  "MDAnalysis.analysis.helix_analysis.HELANAL instead.",
+                  category=DeprecationWarning)
+
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
     else:
@@ -582,6 +596,12 @@ def helanal_main(pdbfile, select="name CA", ref_axis=None):
        Changed `selection` keyword to `select`
 
     """
+
+    warnings.warn("This function is deprecated as of MDAnalysis version 1.0. "
+                  "It will be removed in MDAnalysis version 2.0. Please use "
+                  "MDAnalysis.analysis.helix_analysis.helix_analysis on "
+                  "a Universe instead.",
+                  category=DeprecationWarning)
 
     universe = MDAnalysis.Universe(pdbfile)
     ca = universe.select_atoms(select)

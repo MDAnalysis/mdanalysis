@@ -81,52 +81,12 @@ Example use of the analysis classes
 HydrogenBondLifetimes
 ~~~~~~~~~~~~~~~~~~~~~
 
-Analyzing hydrogen bond lifetimes (HBL) :class:`HydrogenBondLifetimes`, both
-continuos and intermittent. In this case we are analyzing how residue 38
-interact with a water sphere of radius 6.0 centered on the geometric center of
-protein and residue 42. If the hydrogen bond lifetimes are very stable, we can
-assume that residue 38 is hydrophilic, on the other hand, if the are very
-unstable, we can assume that residue 38 is hydrophobic::
+To analyse hydrogen bond lifetime, use
+:meth:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis.HydrogenBondAnalysis.liftetime`.
 
-  import MDAnalysis
-  from MDAnalysis.analysis.waterdynamics import HydrogenBondLifetimes as HBL
-
-  u = MDAnalysis.Universe(pdb, trajectory)
-  selection1 = "byres name OH2 and sphzone 6.0 protein and resid 42"
-  selection2 = "resid 38"
-  HBL_analysis = HBL(universe, selection1, selection2, 0, 2000, 30)
-  HBL_analysis.run()
-  time = 0
-  #now we print the data ready to plot. The first two columns are the HBLc vs t
-  #plot and the second two columns are the HBLi vs t graph
-  for HBLc, HBLi in HBL_analysis.timeseries:
-      print("{time} {HBLc} {time} {HBLi}".format(time=time, HBLc=HBLc, HBLi=HBLi))
-      time += 1
-
-  #we can also plot our data
-  plt.figure(1,figsize=(18, 6))
-
-  #HBL continuos
-  plt.subplot(121)
-  plt.xlabel('time')
-  plt.ylabel('HBLc')
-  plt.title('HBL Continuos')
-  plt.plot(range(0,time),[column[0] for column in HBL_analysis.timeseries])
-
-  #HBL intermitent
-  plt.subplot(122)
-  plt.xlabel('time')
-  plt.ylabel('HBLi')
-  plt.title('HBL Intermitent')
-  plt.plot(range(0,time),[column[1] for column in HBL_analysis.timeseries])
-
-  plt.show()
-
-where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is
-the value for the intermittent hydrogen bond lifetime, t0 = 0, tf = 2000 and
-dtmax = 30. In this way we create 30 windows timestep (30 values in x
-axis). The continuos hydrogen bond lifetimes should decay faster than
-intermittent.
+See Also
+--------
+:mod:`MDAnalysis.analysis.hydrogenbonds.hbond_analysis`
 
 
 WaterOrientationalRelaxation
@@ -289,7 +249,7 @@ the zone, on the other hand, a fast decay means a short permanence time::
   universe = MDAnalysis.Universe(pdb, trajectory)
   select = "byres name OH2 and sphzone 12.3 (resid 42 or resid 26) "
   sp = SP(universe, select, verbose=True)
-  sp.run(start=0, stop=100, tau_max=20)
+  sp.run(start=0, stop=101, tau_max=20)
   tau_timeseries = sp.tau_timeseries
   sp_timeseries = sp.sp_timeseries
 
@@ -303,6 +263,12 @@ the zone, on the other hand, a fast decay means a short permanence time::
   plt.title('Survival Probability')
   plt.plot(tau_timeseries, sp_timeseries)
   plt.show()
+
+One should note that the `stop` keyword as used in the above example has an
+`exclusive` behaviour, i.e. here the final frame used will be 100 not 101.
+This behaviour is aligned with :class:`AnalysisBase` but currently differs from
+other :mod:`MDAnalysis.analysis.waterdynamics` classes, which all exhibit
+`inclusive` behaviour for their final frame selections.
 
 Another example applies to the situation where you work with many different "residues".
 Here we calculate the SP of a potassium ion around each lipid in a membrane and
@@ -342,23 +308,6 @@ simulation is not being reloaded into memory for each lipid::
 
 Output
 ------
-
-HydrogenBondLifetimes
-~~~~~~~~~~~~~~~~~~~~~
-
-Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is
-stored in :attr:`HydrogenBondLifetimes.timeseries` (in all the following
-descriptions, # indicates comments that are not part of the output)::
-
-    results = [
-        [ # time t0
-            <HBL_c>, <HBL_i>
-        ],
-        [ # time t1
-            <HBL_c>, <HBL_i>
-        ],
-        ...
-     ]
 
 WaterOrientationalRelaxation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -422,10 +371,6 @@ a list of all SPs calculated for each tau. This can be used to compute the distr
 Classes
 --------
 
-.. autoclass:: HydrogenBondLifetimes
-   :members:
-   :inherited-members:
-
 .. autoclass:: WaterOrientationalRelaxation
    :members:
    :inherited-members:
@@ -443,11 +388,9 @@ Classes
    :inherited-members:
 
 """
-from __future__ import print_function, division, absolute_import
-
 from MDAnalysis.lib.correlations import autocorrelation, correct_intermittency
 import MDAnalysis.analysis.hbonds
-from six.moves import range, zip_longest
+from itertools import zip_longest
 import logging
 import warnings
 import numpy as np
@@ -455,193 +398,6 @@ import numpy as np
 
 logger = logging.getLogger('MDAnalysis.analysis.waterdynamics')
 from MDAnalysis.lib.log import ProgressBar
-
-
-class HydrogenBondLifetimes(object):
-    r"""Hydrogen bond lifetime analysis
-
-    This is a autocorrelation function that gives the "Hydrogen Bond Lifetimes"
-    (HBL) proposed by D.C. Rapaport [Rapaport1983]_. From this function we can
-    obtain the continuous and intermittent behavior of hydrogen bonds in
-    time. A fast decay in these parameters indicate a fast change in HBs
-    connectivity. A slow decay indicate very stables hydrogen bonds, like in
-    ice. The HBL is also know as "Hydrogen Bond Population Relaxation"
-    (HBPR). In the continuos case we have:
-
-    .. math::
-       C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
-
-    where :math:`h'_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
-    :math:`ij` during time interval :math:`t_0+\tau` (continuos) and
-    :math:`h'_{ij}(t_0+\tau)=0` otherwise. In the intermittent case we have:
-
-    .. math::
-       C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}
-
-    where :math:`h_{ij}(t_0+\tau)=1` if there is a H-bond between a pair
-    :math:`ij` at time :math:`t_0+\tau` (intermittent) and
-    :math:`h_{ij}(t_0+\tau)=0` otherwise.
-
-
-    Parameters
-    ----------
-    universe : Universe
-      Universe object
-    selection1 : str
-      Selection string for first selection [‘byres name OH2’].
-      It could be any selection available in MDAnalysis, not just water.
-    selection2 : str
-      Selection string to analize its HBL against selection1
-    t0 : int
-      frame  where analysis begins
-    tf : int
-      frame where analysis ends
-    dtmax : int
-      Maximum dt size, `dtmax` < `tf` or it will crash.
-
-
-    .. versionadded:: 0.11.0
-    .. versionchanged:: 1.0.0
-       The ``nproc`` keyword was removed as it linked to a portion of code that
-       may have failed in some cases.
-    """
-
-
-    def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
-                 nproc=1):
-        self.universe = universe
-        self.selection1 = selection1
-        self.selection2 = selection2
-        self.t0 = t0
-        self.tf = tf - 1
-        self.dtmax = dtmax
-        self.timeseries = None
-
-    def _getC_i(self, HBP, t0, t):
-        """
-        This function give the intermitent Hydrogen Bond Lifetime
-        C_i = <h(t0)h(t)>/<h(t0)> between t0 and t
-        """
-        C_i = 0
-        for i in range(len(HBP[t0])):
-            for j in range(len(HBP[t])):
-                if (HBP[t0][i][0] == HBP[t][j][0] and HBP[t0][i][1] == HBP[t][j][1]):
-                    C_i += 1
-                    break
-        if len(HBP[t0]) == 0:
-            return 0.0
-        else:
-            return float(C_i) / len(HBP[t0])
-
-    def _getC_c(self, HBP, t0, t):
-        """
-        This function give the continous Hydrogen Bond Lifetime
-        C_c = <h(t0)h'(t)>/<h(t0)> between t0 and t
-        """
-        C_c = 0
-        dt = 1
-        begt0 = t0
-        HBP_cp = HBP
-        HBP_t0 = HBP[t0]
-        newHBP = []
-        if t0 == t:
-            return 1.0
-        while t0 + dt <= t:
-            for i in range(len(HBP_t0)):
-                for j in range(len(HBP_cp[t0 + dt])):
-                    if (HBP_t0[i][0] == HBP_cp[t0 + dt][j][0] and
-                        HBP_t0[i][1] == HBP_cp[t0 + dt][j][1]):
-                        newHBP.append(HBP_t0[i])
-                        break
-            C_c = len(newHBP)
-            t0 += dt
-            HBP_t0 = newHBP
-            newHBP = []
-        if len(HBP[begt0]) == 0:
-            return 0
-        else:
-            return C_c / float(len(HBP[begt0]))
-
-    def _intervC_c(self, HBP, t0, tf, dt):
-        """
-        This function gets all the data for the h(t0)h(t0+dt)', where
-        t0 = 1,2,3,...,tf. This function give us one point of the final plot
-        HBL vs t
-        """
-        a = 0
-        count = 0
-        for i in range(len(HBP)):
-            if (t0 + dt <= tf):
-                if t0 == t0 + dt:
-                    b = self._getC_c(HBP, t0, t0)
-                    break
-                b = self._getC_c(HBP, t0, t0 + dt)
-                t0 += dt
-                a += b
-                count += 1
-        if count == 0:
-            return 1.0
-        return a / count
-
-    def _intervC_i(self, HBP, t0, tf, dt):
-        """
-        This function gets all the data for the h(t0)h(t0+dt), where
-        t0 = 1,2,3,...,tf. This function give us a point of the final plot
-        HBL vs t
-        """
-        a = 0
-        count = 0
-        for i in range(len(HBP)):
-            if (t0 + dt <= tf):
-                b = self._getC_i(HBP, t0, t0 + dt)
-                t0 += dt
-                a += b
-                count += 1
-        return a / count
-
-    def _finalGraphGetC_i(self, HBP, t0, tf, maxdt):
-        """
-        This function gets the final data of the C_i graph.
-        """
-        output = []
-        for dt in range(maxdt):
-            a = self._intervC_i(HBP, t0, tf, dt)
-            output.append(a)
-        return output
-
-    def _finalGraphGetC_c(self, HBP, t0, tf, maxdt):
-        """
-        This function gets the final data of the C_c graph.
-        """
-        output = []
-        for dt in range(maxdt):
-            a = self._intervC_c(HBP, t0, tf, dt)
-            output.append(a)
-        return output
-
-    def _getGraphics(self, HBP, t0, tf, maxdt):
-        """
-        Function that join all the results into a plot.
-        """
-        a = []
-        cont = self._finalGraphGetC_c(HBP, t0, tf, maxdt)
-        inte = self._finalGraphGetC_i(HBP, t0, tf, maxdt)
-        for i in range(len(cont)):
-            fix = [cont[i], inte[i]]
-            a.append(fix)
-        return a
-
-
-    def run(self, **kwargs):
-        """Analyze trajectory and produce timeseries"""
-        h_list = MDAnalysis.analysis.hbonds.HydrogenBondAnalysis(self.universe,
-                                                                 self.selection1,
-                                                                 self.selection2,
-                                                                 distance=3.5,
-                                                                 angle=120.0)
-        h_list.run(**kwargs)
-        self.timeseries = self._getGraphics(h_list.timeseries, self.t0,
-                                            self.tf, self.dtmax)
 
 
 class WaterOrientationalRelaxation(object):
@@ -1171,85 +927,94 @@ class SurvivalProbability(object):
       When True, prints progress and comments to the console.
 
 
+    Notes
+    -----
+    Currently :class:`SurvivalProbability` is the only on in
+    :mod:`MDAnalysis.analysis.waterdynamics` to support an `exclusive`
+    behaviour (i.e. similar to the current behaviour of :class:`AnalysisBase`
+    to the `stop` keyword passed to :meth:`SurvivalProbability.run`. Unlike
+    other :mod:`MDAnalysis.analysis.waterdynamics` final frame definitions
+    which are `inclusive`.
+
+
     .. versionadded:: 0.11.0
-    .. versionchanged:: 0.21.0
-        Using the MDAnalysis.lib.correlations.py to carry out the intermittency and autocorrelation calculations
     .. versionchanged:: 1.0.0
-       Changed `selection` keyword to `select`
+       Using the MDAnalysis.lib.correlations.py to carry out the intermittency
+       and autocorrelation calculations.
+       Changed `selection` keyword to `select`.
+       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
+       These should instead be passed to :meth:`SurvivalProbability.run` as
+       the `start`, `stop`, and `tau_max` keywords respectively.
+       The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now
+       changed behaviour and will act in an `exclusive` manner (instead of it's
+       previous `inclusive` behaviour),
     """
 
-    def __init__(self, universe, select, t0=None, tf=None, dtmax=None, verbose=False):
+    def __init__(self, universe, select, verbose=False):
         self.universe = universe
         self.selection = select
         self.verbose = verbose
 
-        # backward compatibility
-        self.start = self.stop = self.tau_max = None
-        if t0 is not None:
-            self.start = t0
-            warnings.warn("t0 is deprecated, use run(start=t0) instead", category=DeprecationWarning)
-
-        if tf is not None:
-            self.stop = tf
-            warnings.warn("tf is deprecated, use run(stop=tf) instead", category=DeprecationWarning)
-
-        if dtmax is not None:
-            self.tau_max = dtmax
-            warnings.warn("dtmax is deprecated, use run(tau_max=dtmax) instead", category=DeprecationWarning)
-
-
-    def run(self, tau_max=20, start=0, stop=None, step=1, residues=False, intermittency=0, verbose=False):
+    def run(self, tau_max=20, start=None, stop=None, step=None, residues=False,
+            intermittency=0, verbose=False):
         """
         Computes and returns the Survival Probability (SP) timeseries
 
         Parameters
         ----------
         start : int, optional
-            Zero-based index of the first frame to be analysed
+            Zero-based index of the first frame to be analysed, Default: None
+            (first frame).
         stop : int, optional
-            Zero-based index of the last frame to be analysed (inclusive)
+            Zero-based index of the last frame to be analysed (exclusive),
+            Default: None (last frame).
         step : int, optional
-            Jump every `step`-th frame. This is compatible but independant of the taus used, and it is good to consider
-            using the  `step` equal to `tau_max` to remove the overlap.
-            Note that `step` and `tau_max` work consistently with intermittency.
+            Jump every `step`-th frame. This is compatible but independant of
+            the taus used, and it is good to consider using the  `step` equal
+            to `tau_max` to remove the overlap. Note that `step` and `tau_max`
+            work consistently with intermittency. Default: None
+            (use every frame).
         tau_max : int, optional
-            Survival probability is calculated for the range 1 <= `tau` <= `tau_max`
+            Survival probability is calculated for the range
+            1 <= `tau` <= `tau_max`.
         residues : Boolean, optional
-            If true, the analysis will be carried out on the residues (.resids) rather than on atom (.ids).
-            A single atom is sufficient to classify the residue as within the distance.
+            If true, the analysis will be carried out on the residues
+            (.resids) rather than on atom (.ids). A single atom is sufficient
+            to classify the residue as within the distance.
         intermittency : int, optional
-            The maximum number of consecutive frames for which an atom can leave but be counted as present if it returns
-            at the next frame. An intermittency of `0` is equivalent to a continuous survival probability, which does
-            not allow for the leaving and returning of atoms. For example, for `intermittency=2`, any given atom may
-            leave a region of interest for up to two consecutive frames yet be treated as being present at all frames.
-            The default is continuous (0).
+            The maximum number of consecutive frames for which an atom can
+            leave but be counted as present if it returns at the next frame.
+            An intermittency of `0` is equivalent to a continuous survival
+            probability, which does not allow for the leaving and returning of
+            atoms. For example, for `intermittency=2`, any given atom may leave
+            a region of interest for up to two consecutive frames yet be
+            treated as being present at all frames. The default is continuous
+            (0).
         verbose : Boolean, optional
-            Print the progress to the console
+            Print the progress to the console.
 
         Returns
         -------
         tau_timeseries : list
             tau from 1 to `tau_max`. Saved in the field tau_timeseries.
         sp_timeseries : list
-            survival probability for each value of `tau`. Saved in the field sp_timeseries.
+            survival probability for each value of `tau`. Saved in the field
+            sp_timeseries.
         sp_timeseries_data: list
             raw datapoints from which the average is taken (sp_timeseries).
             Time dependancy and distribution can be extracted.
+
+
+        .. versionchanged:: 1.0.0
+           To math other analysis methods, the `stop` keyword is now exclusive
+           rather than inclusive.
         """
 
-        # backward compatibility (and priority)
-        start = self.start if self.start is not None else start
-        stop = self.stop if self.stop is not None else stop
-        tau_max = self.tau_max if self.tau_max is not None else tau_max
-
-        # sanity checks
-        if stop is not None and stop >= len(self.universe.trajectory):
-            raise ValueError("\"stop\" must be smaller than the number of frames in the trajectory.")
-
-        if stop is None:
-            stop = len(self.universe.trajectory)
-        else:
-            stop = stop + 1
+        start, stop, step = self.universe.trajectory.check_slice_indices(
+            start,
+            stop,
+            step
+        )
 
         if tau_max > (stop - start):
             raise ValueError("Too few frames selected for given tau_max.")
