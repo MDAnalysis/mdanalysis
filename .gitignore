@@ -7,6 +7,7 @@
 MDAnalysis.egg-info
 MDAnalysisTests.egg-info
 *.egg
+*.profraw
 # Ignore build dir
 build/
 dist/

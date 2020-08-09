@@ -20,10 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-
-
-from __future__ import print_function, absolute_import, division
-
 import pytest
 import scipy
 import scipy.spatial
@@ -66,7 +62,7 @@ class TestContactMatrix(object):
                            [0, 1, 0, 0, 0],
                            [1, 0, 1, 0, 0],
                            [0, 0, 0, 1, 0],
-                           [0, 0, 0, 0, 1]], dtype=np.bool)
+                           [0, 0, 0, 0, 1]], dtype=bool)
     
     @staticmethod
     @pytest.fixture()
@@ -75,7 +71,7 @@ class TestContactMatrix(object):
                         [0, 1, 0, 0, 0],
                         [1, 0, 1, 1, 1],
                         [1, 0, 1, 1, 1],
-                        [1, 0, 1, 1, 1]], dtype=np.bool)
+                        [1, 0, 1, 1, 1]], dtype=bool)
 
     def test_np(self, coord, shape, res_no_pbc):
         contacts = MDAnalysis.analysis.distances.contact_matrix(

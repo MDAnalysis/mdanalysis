@@ -179,6 +179,8 @@ __all__ = [
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
     "PDB_metal", # PDB with metal atoms
+    "Asph_gro"
+    "Asph_xtc"
     "BATArray", # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
@@ -198,8 +200,6 @@ __all__ = [
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
     "SDF_molecule"  # MDL SDFile for rdkit
-	"Asph_gro"
-    "Asph_xtc"
 ]
 
 from pkg_resources import resource_filename
@@ -407,6 +407,10 @@ PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
 PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
 PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2ea0642ba9dcfbfd3ca918570aeca869df8150c0
 PRM_UreyBradley = resource_filename(__name__, 'data/Amber/parmed_fad.prmtop')
 PRM7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.parm7')
 RST7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.rst7')
@@ -549,6 +553,21 @@ SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 Asph_gro = resource_filename(__name__, 'data/Asph.gro')
 Asph_xtc = resource_filename(__name__, 'data/Asph.xtc')
+BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
+
+ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
+ITP_nomass = resource_filename(__name__, 'data/itp_nomass.itp')
+ITP_edited = resource_filename(__name__, 'data/edited_itp.itp')
+ITP_tip5p = resource_filename(__name__, "data/tip5p.itp")
+ITP_spce = resource_filename(__name__, 'data/spce.itp')
+GMX_TOP = resource_filename(__name__, 'data/gromacs_ala10.top')
+GMX_DIR = resource_filename(__name__, 'data/gromacs/')
+GMX_TOP_BAD = resource_filename(__name__, 'data/bad_top.top')
+ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
+
+NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
+
+SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 # This should be the last line: clean up namespace
 del resource_filename

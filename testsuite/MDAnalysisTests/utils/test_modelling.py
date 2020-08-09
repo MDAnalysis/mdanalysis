@@ -20,8 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function
-
 import os
 import MDAnalysis
 import pytest
@@ -251,7 +249,7 @@ class TestMergeTopology(object):
 
         # merge_protein doesn't contain bond topology, so merged universe
         # shouldn't have one either
-        print(u_merge.atoms.bonds)
+        assert not hasattr(u_merge.atoms, 'bonds')
         # PDB reader yields empty Bonds group, which means bonds from
         # PSF/DCD survive the merge
         # assert(not hasattr(u_merge.atoms, 'bonds') or len(u_merge.atoms.bonds) == 0)

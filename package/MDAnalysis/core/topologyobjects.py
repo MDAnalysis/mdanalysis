@@ -28,10 +28,6 @@ Core Topology Objects --- :mod:`MDAnalysis.core.topologyobjects`
 The building blocks for MDAnalysis' description of topology
 
 """
-from __future__ import print_function, absolute_import, division
-
-from six.moves import zip
-from six import raise_from
 import numbers
 import numpy as np
 import functools
@@ -337,7 +333,7 @@ class UreyBradley(TopologyObject):
     ``!=`` operators. A UreyBradley angle is equal to another if the same atom
     numbers are involved.
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     btype = 'ureybradley'
 
@@ -369,7 +365,7 @@ class CMap(TopologyObject):
     Coupled-torsion correction map term between five 
     :class:`~MDAnalysis.core.groups.Atom` instances.
 
-    .. versionadded:: 0.21.0
+    .. versionadded:: 1.0.0
     """
     btype = 'cmap'
 
@@ -568,7 +564,7 @@ class TopologyGroup(object):
     .. versionchanged:: 0.19.0
        Empty TopologyGroup now returns correctly shaped empty array via
        indices property and to_indices()
-    .. versionchanged::0.21.0
+    .. versionchanged::1.0.0
        ``type``, ``guessed``, and ``order`` are no longer reshaped to arrays
        with an extra dimension
     """
@@ -597,7 +593,7 @@ class TopologyGroup(object):
         elif guessed is True or guessed is False:
             guessed = np.repeat(guessed, nbonds)
         else:
-            guessed = np.asarray(guessed, dtype=np.bool)
+            guessed = np.asarray(guessed, dtype=bool)
         if order is None:
             order = np.repeat(None, nbonds)
 
@@ -864,11 +860,9 @@ class TopologyGroup(object):
             return self._ags[2]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise_from(
-                IndexError(
-                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
-                        self.btype, nvert)),
-                None)
+            errmsg = (f"TopologyGroup of {self.btype}s only has {nvert} "
+                      f"vertical AtomGroups")
+            raise IndexError(errmsg) from None
 
     @property
     def atom4(self):
@@ -877,11 +871,9 @@ class TopologyGroup(object):
             return self._ags[3]
         except IndexError:
             nvert = _BTYPE_TO_SHAPE[self.btype]
-            raise_from(
-                IndexError(
-                    "TopologyGroup of {}s only has {} vertical AtomGroups".format(
-                        self.btype, nvert)),
-                None)
+            errmsg = (f"TopologyGroup of {self.btype}s only has {nvert} "
+                      f"vertical AtomGroups")
+            raise IndexError(errmsg) from None
 
     # Distance calculation methods below
     # "Slow" versions exist as a way of testing the Cython implementations

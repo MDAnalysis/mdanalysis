@@ -20,14 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, division
-
 import pytest
 
 from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
-from MDAnalysis.analysis.rdf import InterRDF_s
+from MDAnalysis.analysis.rdf import InterRDF_s, InterRDF
 
 from MDAnalysisTests.datafiles import GRO_MEMPROT, XTC_MEMPROT
 
@@ -40,15 +38,18 @@ def u():
 @pytest.fixture(scope='module')
 def sels(u):
     s1 = u.select_atoms('name ZND and resid 289')
-    s2 = u.select_atoms('(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
+    s2 = u.select_atoms(
+         '(name OD1 or name OD2) and resid 51 and sphzone 5.0 (resid 289)')
     s3 = u.select_atoms('name ZND and (resid 291 or resid 292)')
     s4 = u.select_atoms('(name OD1 or name OD2) and sphzone 5.0 (resid 291)')
     ags = [[s1, s2], [s3, s4]]
     return ags
 
+
 @pytest.fixture(scope='module')
 def rdf(u, sels):
     return InterRDF_s(u, sels).run()
+
 
 def test_nbins(u, sels):
     rdf = InterRDF_s(u, sels, nbins=412).run()
@@ -92,15 +93,24 @@ def test_double_run(rdf):
     assert len(rdf.count[0][0][1][rdf.count[0][0][1] == 5]) == 1
     assert len(rdf.count[1][1][0][rdf.count[1][1][0] == 3]) == 1
 
+
 def test_cdf(rdf):
     rdf.get_cdf()
     assert rdf.cdf[0][0][0][-1] == rdf.count[0][0][0].sum()/rdf.n_frames
 
 
 @pytest.mark.parametrize("density, value", [
-    (True, 13275.775440503656),
-    (False, 0.021915460340071267)])
-
+    (None, 26551.55088100731),    # default, like False (no kwarg, see below)
+    (False, 26551.55088100731),
+    (True, 0.021915460340071267)])
 def test_density(u, sels, density, value):
-    rdf = InterRDF_s(u, sels, density=density).run()
+    kwargs = {'density': density} if density is not None else {}
+    rdf = InterRDF_s(u, sels, **kwargs).run()
     assert_almost_equal(max(rdf.rdf[0][0][0]), value)
+    if not density:
+        s1 = u.select_atoms('name ZND and resid 289')
+        s2 = u.select_atoms(
+                'name OD1 and resid 51 and sphzone 5.0 (resid 289)')
+        rdf_ref = InterRDF(s1, s2).run()
+        assert_almost_equal(rdf_ref.rdf, rdf.rdf[0][0][0])
+

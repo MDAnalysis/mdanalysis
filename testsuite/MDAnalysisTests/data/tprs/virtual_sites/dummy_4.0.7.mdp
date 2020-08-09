@@ -1,0 +1,9 @@
+; Activate distance and orientation restraints
+; If these restraints are not activated, they are trimmed from the TPR
+disre = simple
+orire = yes
+orire-fitgrp = System
+; Activate implicit solvents
+; The feature is not supported by the Verlet cutoff scheme.
+; Implicit solvents where removed in gromacs 2020.
+implicit-solvent = GBSA

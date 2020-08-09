@@ -385,7 +385,7 @@ cdef class NSResults(object):
             and initial atom coordinates of shape ``(N, 2)``
         """
 
-        return np.asarray(self.pairs_buffer, dtype=np.int64).reshape(self.npairs, 2)
+        return np.asarray(self.pairs_buffer, dtype=np.intp).reshape(self.npairs, 2)
 
     def get_pair_distances(self):
         """Returns all the distances corresponding to each pair of neighbors
@@ -535,7 +535,7 @@ cdef class _NSGrid(object):
 
     """
 
-    cdef readonly dreal cutoff  # cutoff
+    cdef readonly dreal used_cutoff  # cutoff used for cell creation
     cdef ns_int size  # total cells
     cdef ns_int ncoords  # number of coordinates
     cdef ns_int[DIM] ncells  # individual cells in every dimension
@@ -570,27 +570,30 @@ cdef class _NSGrid(object):
         cdef ns_int xi, yi, zi
         cdef real bbox_vol
         cdef dreal relative_cutoff_margin
+        cdef dreal original_cutoff
 
         self.ncoords = ncoords
 
-        # Calculate best cutoff
-        self.cutoff = cutoff
         if not force:
+            # Calculate best cutoff, with 0.01A minimum
+            cutoff = max(cutoff, 0.01)
+            original_cutoff = cutoff
             # First, we add a small margin to the cell size so that we can safely
             # use the condition d <= cutoff (instead of d < cutoff) for neighbor
             # search.
             relative_cutoff_margin = 1.0e-8
-            while self.cutoff == cutoff:
-                self.cutoff = cutoff * (1.0 + relative_cutoff_margin)
+            while cutoff == original_cutoff:
+                cutoff = cutoff * (1.0 + relative_cutoff_margin)
                 relative_cutoff_margin *= 10.0
             bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
-            while bbox_vol/self.cutoff**3 > max_size:
-                self.cutoff *= 1.2
+            while bbox_vol / cutoff**3 > max_size:
+                cutoff *= 1.2
 
         for i in range(DIM):
-            self.ncells[i] = <ns_int> (box.c_pbcbox.box[i][i] / self.cutoff)
+            self.ncells[i] = <ns_int> (box.c_pbcbox.box[i][i] / cutoff)
             self.cellsize[i] = box.c_pbcbox.box[i][i] / self.ncells[i]
         self.size = self.ncells[XX] * self.ncells[YY] * self.ncells[ZZ]
+        self.used_cutoff = cutoff
 
         self.cell_offsets[XX] = 0
         self.cell_offsets[YY] = self.ncells[XX]
@@ -660,7 +663,7 @@ cdef class _NSGrid(object):
 
         cdef ns_int i, cellindex = -1
         cdef ns_int ncoords = coords.shape[0]
-        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=np.int)
+        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=int)
 
         with nogil:
             # Initialize buffers
@@ -706,6 +709,7 @@ cdef class FastNS(object):
     cdef real[:, ::1] coords
     cdef real[:, ::1] coords_bbox
     cdef readonly dreal cutoff
+
     cdef _NSGrid grid
     cdef ns_int max_gridsize
     cdef bint periodic
@@ -863,8 +867,7 @@ cdef class FastNS(object):
         # Generate another grid to search
         searchcoords = search_coords.astype(np.float32, order='C', copy=False)
         searchcoords_bbox = self.box.fast_put_atoms_in_bbox(searchcoords)
-        searchgrid = _NSGrid(searchcoords_bbox.shape[0], self.grid.cutoff, self.box, self.max_gridsize, force=True)
-        searchgrid.fill_grid(searchcoords_bbox)
+        searchgrid = _NSGrid(searchcoords_bbox.shape[0], self.grid.used_cutoff, self.box, self.max_gridsize, force=True)
 
         size_search = searchcoords.shape[0]
 

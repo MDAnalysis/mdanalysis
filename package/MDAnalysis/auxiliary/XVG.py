@@ -66,10 +66,6 @@ supported (the readers will stop at the first line starting '&').
 .. autofunction:: uncomment
 
 """
-from __future__ import absolute_import
-
-from six import raise_from
-
 import numbers
 import os
 import numpy as np
@@ -150,13 +146,9 @@ class XVGStep(base.AuxStep):
             try:
                 return self._data[key]
             except IndexError:
-                raise_from(
-                    ValueError(
-                        '{} not a valid index for data with {} '
-                        'columns'.format(key, len(self._data))
-                        ),
-                    None
-                    )
+                errmsg = (f'{key} not a valid index for data with '
+                          f'{len(self._data)} columns')
+                raise ValueError(errmsg) from None
         else:
             return np.array([self._select_data(i) for i in key])
 

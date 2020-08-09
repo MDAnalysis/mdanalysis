@@ -62,13 +62,9 @@ from VMD's `molfile`_ plugin and `catdcd`_.
 .. _catdcd: http://www.ks.uiuc.edu/Development/MDTools/catdcd/
 
 """
-from six.moves import range
-
-
 from os import path
 import numpy as np
 from collections import namedtuple
-import six
 import string
 import sys
 
@@ -265,8 +261,8 @@ cdef class DCDFile:
             return
 
         current_frame = state[1]
-        self.seek(current_frame)
-
+        self.seek(current_frame - 1)
+        self.current_frame = current_frame
 
     def tell(self):
         """
@@ -497,7 +493,7 @@ cdef class DCDFile:
             self.charmm = DCD_HAS_EXTRA_BLOCK | DCD_IS_CHARMM
         self.natoms = natoms
 
-        if isinstance(remarks, six.string_types):
+        if isinstance(remarks, str):
             try:
                 remarks = bytearray(remarks, 'ascii')
             except UnicodeDecodeError:
