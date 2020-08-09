@@ -67,7 +67,6 @@ def test_transformation_pickle(transformation, test_u):
     assert_equal(ref_result, result)
 
 
-@pytest.mark.skip(reason="`Universe` cannot be picked now")
 def test_add_transformation_pickle(transformation, test_u):
     test_u.trajectory.add_transformations(transformation)
     test_u_p = pickle.loads(pickle.dumps(test_u))
