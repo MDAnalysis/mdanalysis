@@ -110,16 +110,7 @@ from . import topologyobjects
 from ._get_readers import get_writer_for, get_converter_for
 
 
-def _unpickle(uhash, ix):
-    try:
-        u = _ANCHOR_UNIVERSES[uhash]
-    except KeyError:
-        # doesn't provide as nice an error message as before as only hash of universe is stored
-        # maybe if we pickled the filename too we could do better...
-        errmsg = (f"Couldn't find a suitable Universe to unpickle AtomGroup "
-                  f"onto with Universe hash '{uhash}'. Availble hashes: "
-                  f"{', '.join([str(k) for k in _ANCHOR_UNIVERSES.keys()])}")
-        raise RuntimeError(errmsg) from None
+def _unpickle(u, ix):
     return u.atoms[ix]
 
 
@@ -2252,10 +2243,16 @@ class AtomGroup(GroupBase):
     :class:`AtomGroup` instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
+    During serialization, :class:`AtomGroup` will be pickled with its bound
+    :class:`MDAnalysis.core.universe.Universe`. If multiple :class:`AtomGroup`
+    are bound to the same :class:`MDAnalysis.core.universe.Universe`, they
+    will bound to the same one after serialization.
+
 
     See Also
     --------
     :class:`MDAnalysis.core.universe.Universe`
+
 
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0
@@ -2263,10 +2260,13 @@ class AtomGroup(GroupBase):
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms('name ...') to select
        atoms by name.
+    .. versionchanged:: 2.0.0
+       :class:`AtomGroup` can always be pickled with or without its universe,
+       instead of failing when not finding its anchored universe.
     """
 
     def __reduce__(self):
-        return (_unpickle, (self.universe.anchor_name, self.ix))
+        return (_unpickle, (self.universe, self.ix))
 
     def __getattr__(self, attr):
         # special-case timestep info
