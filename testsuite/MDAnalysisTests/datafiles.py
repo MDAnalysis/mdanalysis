@@ -407,10 +407,7 @@ PRMErr1 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error1.parm7')
 PRMErr2 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error2.parm7')
 PRMErr3 = resource_filename(__name__, 'data/Amber/ace_mbondi3.error3.parm7')
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 2ea0642ba9dcfbfd3ca918570aeca869df8150c0
 PRM_UreyBradley = resource_filename(__name__, 'data/Amber/parmed_fad.prmtop')
 PRM7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.parm7')
 RST7_ala2 = resource_filename(__name__, 'data/Amber/parmed_ala2_solv.rst7')
