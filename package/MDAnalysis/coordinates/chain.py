@@ -211,6 +211,9 @@ class ChainReader(base.ProtoReader):
        added ``continuous`` trajectory option
     .. versionchanged:: 0.19.0
        limit output of __repr__
+    .. versionchanged:: 2.0.0
+       Now ChainReader can be (un)pickled. Upon unpickling,
+       current timestep is retained.
 
     """
     format = 'CHAIN'
@@ -413,6 +416,25 @@ class ChainReader(base.ProtoReader):
         # local frame index f in trajectory i (frame indices are 0-based)
         f = k - self._start_frames[i]
         return i, f
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+        #  save ts temporarily otherwise it will be changed during rewinding.
+        state['ts'] = self.ts.__deepcopy__()
+
+        #  the ts.frame of each reader is set to the chained frame index during
+        #  iteration, thus we need to rewind the readers that have been used.
+        #  PR #2723
+        for reader in state['readers'][:self.__active_reader_index + 1]:
+            reader.rewind()
+
+        #  retrieve the current ts
+        self.ts = state['ts']
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+        self.ts.frame = self.__current_frame
 
     # methods that can change with the current reader
     def convert_time_from_native(self, t):
