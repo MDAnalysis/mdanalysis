@@ -101,8 +101,9 @@ class Cluster(object):
         if metadata:
             for name, data in metadata.items():
                 if len(data) != self.size:
-                    raise TypeError("Size of metadata having label \"{0}\"\
-is not equal to the number of cluster elmements".format(name))
+                    raise TypeError('Size of metadata having label "{0}"'
+                                    'is not equal to the number of cluster '
+                                    'elements'.format(name))
             self.add_metadata(name, data)
 
     def __iter__(self):
@@ -119,8 +120,8 @@ is not equal to the number of cluster elmements".format(name))
 
     def add_metadata(self, name, data):
         if len(data) != self.size:
-            raise TypeError("Size of metadata is not equal to the number of\
- cluster elmements")
+            raise TypeError("Size of metadata is not equal to the number of"
+                            "cluster elmements")
         self.metadata[name] = np.array(data)
 
     def __repr__(self):
@@ -192,8 +193,9 @@ class ClusterCollection(object):
         centroids = np.unique(elements_array)
         for i in centroids:
             if elements[i] != i:
-                raise ValueError("element {0}, which is a centroid, doesn't \
-belong to its own cluster".format(elements[i]))
+                raise ValueError("element {0}, which is a centroid, doesn't "
+                                 "belong to its own cluster".format(
+                                     elements[i]))
         for c in centroids:
             this_metadata = {}
             this_array = np.where(elements_array == c)
