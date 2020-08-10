@@ -311,9 +311,15 @@ class Universe(object):
     bonds, angles, dihedrals
         principal ConnectivityGroups for each connectivity type
 
+
     .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
         Removed instant selectors.
+
+    .. versionchanged:: 2.0.0
+        Universe now can be (un)pickled.
+        ``topology``, ``trajectory`` and ``anchor_name`` are reserved
+        upon unpickle.
     """
 # Py3 TODO
 #    def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -701,7 +707,7 @@ class Universe(object):
                 return self._anchor_uuid
             except AttributeError:
                 # store this so we can later recall it if needed
-                self._anchor_uuid = uuid.uuid4()
+                self._anchor_uuid = str(uuid.uuid4())
                 return self._anchor_uuid
 
     @anchor_name.setter
@@ -738,10 +744,18 @@ class Universe(object):
             n_atoms=len(self.atoms))
 
     def __getstate__(self):
-        raise NotImplementedError
+        # Universe's two "legs" of topology and traj both serialise themselves
+        # the only other state held in Universe is anchor name?
+        return self.anchor_name, self._topology, self._trajectory
 
-    def __setstate__(self, state):
-        raise NotImplementedError
+    def __setstate__(self, args):
+        self._anchor_name = args[0]
+        self.make_anchor()
+
+        self._topology = args[1]
+        _generate_from_topology(self)
+
+        self._trajectory = args[2]
 
     # Properties
     @property
