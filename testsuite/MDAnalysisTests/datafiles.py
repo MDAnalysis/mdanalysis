@@ -179,8 +179,8 @@ __all__ = [
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
     "PDB_metal", # PDB with metal atoms
-    "Asph_gro"
-    "Asph_xtc"
+    "Asph_gro",
+    "Asph_xtc",
     "BATArray", # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
