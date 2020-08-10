@@ -180,6 +180,9 @@ Classes
 
    .. automethod:: H5MDReader._reopen
 
+.. autoclass:: H5PYPicklable
+   :members:
+
 """
 
 import numpy as np
@@ -190,6 +193,15 @@ try:
     import h5py
 except ImportError:
     HAS_H5PY = False
+
+    # Allow building documentation even if h5py is not installed
+    import imp
+
+    class MockH5pyFile:
+        pass
+    h5py = imp.new_module("h5py")
+    h5py.File = MockH5pyFile
+
 else:
     HAS_H5PY = True
 
@@ -737,7 +749,8 @@ class H5MDReader(base.ReaderBase):
     def __setstate__(self, state):
         self.__dict__ = state
         self._particle_group = self._file['particles'][
-                                list(self._file['particles'])[0]]
+                               list(self._file['particles'])[0]]
+        self[self.ts.frame]
 
 
 class H5PYPicklable(h5py.File):
@@ -792,9 +805,8 @@ class H5PYPicklable(h5py.File):
         try:
             driver = self._driver
             comm = self._comm
-        except AttributeError:  # is this error necessary?
-            driver = None
-            comm = None
+        except AttributeError:
+            comm and not (driver == 'mpio')
 
         return {
                     'name': self.filename,
