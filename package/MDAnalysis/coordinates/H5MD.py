@@ -803,18 +803,13 @@ class H5PYPicklable(h5py.File):
     """
     def __getstate__(self):
         try:
-            driver = self._driver
-            comm = self._comm
+            driver = self.driver
         except AttributeError:
             driver = None
-            comm = None
 
-        return {
-                    'name': self.filename,
-                    'mode': self.mode,
-                    'driver': driver,
-                    'comm': comm
-                   }
+        return {'name': self.filename,
+                'mode': self.mode,
+                'driver': driver}
 
     def __setstate__(self, state):
         if state['driver'] == 'mpio':
