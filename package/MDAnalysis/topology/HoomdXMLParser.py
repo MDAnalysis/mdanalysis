@@ -121,7 +121,7 @@ class HoomdXMLParser(TopologyReaderBase):
         ):
             try:
                 val = configuration.find(attrname)
-                vals = [mapper(el) for el in val.text.strip().split('\n')]
+                vals = [mapper(el) for el in val.text.strip().split()]
             except:
                 pass
             else:
@@ -142,7 +142,6 @@ class HoomdXMLParser(TopologyReaderBase):
             attrs[attrname] = attr(vals)
 
         if not 'mass' in attrs:
-            print('Ive got no masses!')
             attrs['mass'] = Masses(np.zeros(natoms))
         if not 'charge' in attrs:
             attrs['charge'] = Charges(np.zeros(natoms, dtype=np.float32))
