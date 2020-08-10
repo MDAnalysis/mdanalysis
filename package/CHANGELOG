@@ -14,14 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
-         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney
 
   * 2.0.0
 
 Fixes
   * Bond attribute is no longer set if PDB file contains no CONECT records
     (Issue #2832)
-  * ResidueAttrs now have Atom as a target class by default; ICodes and 
+  * ResidueAttrs now have Atom as a target class by default; ICodes and
     Molnums now have default target_classes (#2803, PR #2805)
   * Selections on emtpy AtomGroups now return an empty AtomGroup instead of an
     error (Issue #2765)
@@ -36,9 +36,11 @@ Fixes
     density=True; the keyword was available since 0.19.0 but with incorrect
     semantics and not documented and did not produce correct results (Issue
     #2811, PR #2812)
-  * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError 
-    was thrown when finding D-H pairs via the topology if `hydrogens` was an 
+  * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError
+    was thrown when finding D-H pairs via the topology if `hydrogens` was an
     empty AtomGroup (Issue #2848)
+  * Fixed the DMSParser, allowing the creation of multiple segids sharing
+    residues with identical resids (Issue #1387, PR #2872)    
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
@@ -56,8 +58,12 @@ Enhancements
   * Added converter between Cartesian and Bond-Angle-Torsion coordinates (PR #2668)
   * Added Hydrogen Bond Lifetime via existing autocorrelation features (PR #2791)
   * Added Hydrogen Bond Lifetime keyword "between" (PR #2791)
+  * Added lib.pickle_file_io module for pickling file handlers. (PR #2723)
+  * Added pickle function to `Universe` and all Readers (without transformation)
+    (PR #2723)
   * Dead code removed from the TPR parser and increased test coverage (PR #2840)
   * TPR parser exposes the elements topology attribute (PR #2858, see Issue #2553)
+  * Added `H5MDReader` to coordinate readers (Issue #762, PR #2787)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
 
@@ -79,12 +85,12 @@ Changes
   * Removes deprecated ProgressMeter (Issue #2739)
   * Removes deprecated MDAnalysis.units.N_Avogadro (PR #2737)
   * Dropped Python 2 support
+  * Set Python 3.6 as the minimum supported version (Issue #2541)
   * Changes the minimal NumPy version to 1.16.0 (Issue #2827, PR #2831)
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
 
 Deprecations
-
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
          PicoCentauri, davidercruz, jbarnoud, RMeli, IAlibay, mtiberti, CCook96,

@@ -20,7 +20,7 @@ jobs:
   pool:
     vmImage: 'VS2017-Win2016'
   variables:
-    MPLBACKEND: agg    
+    MPLBACKEND: agg
   strategy:
     matrix:
         Python37-32bit-full:
@@ -54,6 +54,7 @@ jobs:
       pytest-xdist
       scikit-learn
       scipy
+      h5py
       tqdm
     displayName: 'Install dependencies'
   # TODO: recent rdkit is not on PyPI
@@ -64,7 +65,7 @@ jobs:
       duecredit
       gsd==1.9.3
       joblib
-      GridDataFormats 
+      GridDataFormats
       mmtf-python
       networkx
       parmed
