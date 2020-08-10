@@ -559,7 +559,7 @@ class TestSelectionRDKit(object):
     def test_smarts_selection(self, u2, sel_str, n_atoms):
         sel = u2.select_atoms(sel_str)
         assert sel.n_atoms == n_atoms
-    
+
     def test_invalid_smarts_sel_raises_error(self, u2):
         with pytest.raises(ValueError, match="not a valid SMARTS"):
             u2.select_atoms("smarts foo")

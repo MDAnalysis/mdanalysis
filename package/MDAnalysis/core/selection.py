@@ -602,7 +602,7 @@ class AromaticSelection(Selection):
 
 class SmartsSelection(Selection):
     """Select atoms based on SMARTS queries.
-    
+
     Uses RDKit to run the query and converts the result to MDAnalysis.
     Supports chirality.
     """
@@ -625,7 +625,7 @@ class SmartsSelection(Selection):
             # if the next char is a closing ")" but there's no corresponding
             # open "(" then we've reached then end of the smarts query and
             # the ")" is part of a grouping parenthesis
-            if tokens[1] == ")" and counter["("] != (counter[")"] + 1):
+            if tokens[1] == ")" and counter["("] < (counter[")"] + 1):
                 val = tokens.popleft()
                 pattern.append(val)
                 break
