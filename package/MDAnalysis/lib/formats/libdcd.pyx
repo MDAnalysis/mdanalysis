@@ -261,8 +261,8 @@ cdef class DCDFile:
             return
 
         current_frame = state[1]
-        self.seek(current_frame)
-
+        self.seek(current_frame - 1)
+        self.current_frame = current_frame
 
     def tell(self):
         """

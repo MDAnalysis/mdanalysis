@@ -74,6 +74,7 @@ __all__ = [
     "GRO_residwrap_0base",  # corner case of #728 with resid=0 for first atom
     "GRO_sameresid_diffresname", # Case where two residues share the same resid
     "PDB_xvf", "TPR_xvf", "TRR_xvf",  # Gromacs coords/veloc/forces (cobrotoxin, OPLS-AA, Gromacs 4.5.5 tpr)
+    "H5MD_xvf",  # TPR_xvf + TRR_xvf converted to h5md format
     "XVG_BZ2",  # Compressed xvg file about cobrotoxin
     "PDB_xlserial",
     "TPR400", "TPR402", "TPR403", "TPR404", "TPR405", "TPR406", "TPR407",
@@ -154,6 +155,7 @@ __all__ = [
     "Martini_membrane_gro", # for testing the leaflet finder
     "COORDINATES_XTC",
     "COORDINATES_TRR",
+    "COORDINATES_H5MD",
     "COORDINATES_DCD",
     "COORDINATES_TOPOLOGY",
     "NUCLsel",
@@ -170,7 +172,7 @@ __all__ = [
     "legacy_DCD_ADK_coords", # frames 5 and 29 read in for adk_dims.dcd using legacy DCD reader
     "legacy_DCD_NAMD_coords", # frame 0 read in for SiN_tric_namd.dcd using legacy DCD reader
     "legacy_DCD_c36_coords", # frames 1 and 4 read in for tip125_tric_C36.dcd using legacy DCD reader
-    "GSD", "GSD_bonds",
+    "GSD", "GSD_bonds", "GSD_long",
     "GRO_MEMPROT", "XTC_MEMPROT", # YiiP transporter in POPE:POPG lipids with Na+, Cl-, Zn2+ dummy model without water
     "DihedralArray", "DihedralsArray", # time series of single dihedral
     "RamaArray", "GLYRamaArray", # time series of phi/psi angles
@@ -195,7 +197,7 @@ __all__ = [
     "PDB_CHECK_RIGHTHAND_PA", # for testing right handedness of principal_axes
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
-    "SDF_molecule" # MDL SDFile for rdkit 
+    "SDF_molecule"  # MDL SDFile for rdkit
 ]
 
 from pkg_resources import resource_filename
@@ -234,6 +236,7 @@ COORDINATES_XYZ_BZ2 = resource_filename(
     __name__, 'data/coordinates/test.xyz.bz2')
 COORDINATES_XTC = resource_filename(__name__, 'data/coordinates/test.xtc')
 COORDINATES_TRR = resource_filename(__name__, 'data/coordinates/test.trr')
+COORDINATES_H5MD = resource_filename(__name__, 'data/coordinates/test.h5md')
 COORDINATES_DCD = resource_filename(__name__, 'data/coordinates/test.dcd')
 COORDINATES_TOPOLOGY = resource_filename(__name__, 'data/coordinates/test_topology.pdb')
 
@@ -313,6 +316,7 @@ TRR_multi_frame = resource_filename(
 PDB_xvf = resource_filename(__name__, 'data/cobrotoxin.pdb')
 TPR_xvf = resource_filename(__name__, 'data/cobrotoxin.tpr')
 TRR_xvf = resource_filename(__name__, 'data/cobrotoxin.trr')
+H5MD_xvf = resource_filename(__name__, 'data/cobrotoxin.h5md')
 XVG_BZ2 = resource_filename(__name__, 'data/cobrotoxin_protein_forces.xvg.bz2')
 
 XPDB_small = resource_filename(__name__, 'data/5digitResid.pdb')
@@ -514,6 +518,7 @@ ALIGN_UNBOUND = resource_filename(__name__, 'data/analysis/align_unbound.pdb.gz'
 
 GSD = resource_filename(__name__, 'data/example.gsd')
 GSD_bonds = resource_filename(__name__, 'data/example_bonds.gsd')
+GSD_long = resource_filename(__name__, 'data/example_longer.gsd')
 
 DihedralArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral.npy')
 DihedralsArray = resource_filename(__name__, 'data/adk_oplsaa_dihedral_list.npy')
