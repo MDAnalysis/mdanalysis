@@ -225,7 +225,7 @@ class RDKitConverter(base.ConverterBase):
     units = {'time': None, 'length': 'Angstrom'}
     _cache = dict()
 
-    def convert(self, obj, **kwargs):
+    def convert(self, obj, cache=True, **kwargs):
         """Write selection at current trajectory frame to
         :class:`rdkit.Chem.rdchem.Mol`.
 
@@ -233,8 +233,14 @@ class RDKitConverter(base.ConverterBase):
         -----------
         obj : AtomGroup or Universe
 
+        cache : bool
+            Use a cached copy of the molecule's topology when available. To be
+            used, the cached molecule and the new one have to be made from the
+            same AtomGroup object (same id) and with the same arguments passed
+            to the converter (with the exception of this `cache` argument)
+
         NoImplicit : bool
-            Prevent adding hydrogens to the molecule
+            Prevent adding hydrogens to the molecule (default: True)
         """
         try:
             from rdkit import Chem
@@ -250,18 +256,22 @@ class RDKitConverter(base.ConverterBase):
                             "please use a valid AtomGroup or Universe".format(
                                 type(obj))) from None
 
-        # create the topology
-        key = f"<{id(ag):#x}>" + ",".join(f"{key}={value}"
-                                          for key, value in kwargs.items())
-        # search for it in the cache first
-        try:
-            mol = self._cache[key]
-        except KeyError:
-            # only keep the current molecule in cache
+        if cache:
+            # key used to search the cache
+            key = f"<{id(ag):#x}>" + ",".join(f"{key}={value}"
+                                            for key, value in kwargs.items())
+            try:
+                mol = self._cache[key]
+            except KeyError:
+                # only keep the current molecule in cache
+                self._cache.clear()
+                # create the topology
+                self._cache[key] = mol = self.atomgroup_to_mol(ag, **kwargs)
+            # continue on copy of the cached molecule
+            mol = copy.deepcopy(mol)
+        else:
             self._cache.clear()
-            self._cache[key] = mol = self.atomgroup_to_mol(ag, **kwargs)
-        # continue on copy of the cached molecule
-        mol = copy.deepcopy(mol)
+            mol = self.atomgroup_to_mol(ag, **kwargs)
 
         # add a conformer for the current Timestep
         if hasattr(ag, "positions") and not np.isnan(ag.positions).any():

@@ -21,6 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+import copy
 import pytest
 import MDAnalysis as mda
 from MDAnalysis.topology.guessers import guess_atom_element
@@ -323,15 +324,23 @@ class TestRDKitConverter(object):
             if previous_cache:
                 # the cache shouldn't change when iterating on timesteps
                 assert cache == previous_cache
-                previous_cache = cache
+                previous_cache = copy.deepcopy(cache)
         # cached molecule shouldn't store coordinates
         mol = list(cache.values())[0]
         with pytest.raises(ValueError, match="Bad Conformer Id"):
             mol.GetConformer()
         # only 1 molecule should be cached
         u = mda.Universe.from_smiles("C")
+        mol = u.atoms.convert_to("RDKIT")
         assert len(cache) == 1
         assert cache != previous_cache
+        # cache should depend on passed arguments
+        previous_cache = copy.deepcopy(cache)
+        mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
+        assert cache != previous_cache
+        # skip cache
+        mol = u.atoms.convert_to("RDKIT", cache=False)
+        assert cache == {}
 
 
 @requires_rdkit
