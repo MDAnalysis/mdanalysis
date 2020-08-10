@@ -806,7 +806,8 @@ class H5PYPicklable(h5py.File):
             driver = self._driver
             comm = self._comm
         except AttributeError:
-            comm and not (driver == 'mpio')
+            driver = None
+            comm = None
 
         return {
                     'name': self.filename,
