@@ -586,14 +586,14 @@ class H5MDReader(base.ReaderBase):
             if self._comm is not None:
                 # can only pass comm argument to h5py.File if driver='mpio'
                 assert self._driver == 'mpio'
-                self._file = H5PYPicklable(self.filename, 'r',  # pragma: no cover
+                self._file = H5PYPicklable(name = self.filename, mode='r',  # pragma: no cover
                                            driver=self._driver,
                                            comm=self._comm)
             elif self._driver is not None:
-                self._file = H5PYPicklable(self.filename, 'r',
+                self._file = H5PYPicklable(name=self.filename, mode='r',
                                            driver=self._driver)
             else:
-                self._file = H5PYPicklable(self.filename, 'r')
+                self._file = H5PYPicklable(name=self.filename, mode='r')
         # pulls first key out of 'particles'
         # allows for arbitrary name of group1 in 'particles'
         self._particle_group = self._file['particles'][
@@ -820,36 +820,23 @@ class H5PYPicklable(h5py.File):
     """
 
     def __getstate__(self):
-        try:
-            driver = self.driver
-        except AttributeError:
-            driver = None
-
+        driver = self.driver
         if driver == 'mpio':
-            if HAS_MPI:
-                try:
-                    # find comm object from h5py.File
-                    comm = self.id.get_access_plist().get_fapl_mpio()[0]
-                except AttributeError:
-                    comm = None
-
+            comm = self.id.get_access_plist().get_fapl_mpio()[0]
             return {'name': self.filename,
                     'mode': self.mode,
                     'driver': driver,
                     'comm': comm}
-
         return {'name': self.filename,
                 'mode': self.mode,
                 'driver': driver}
 
     def __setstate__(self, state):
-
         if state['driver'] == 'mpio':
             self.__init__(name=state['name'],
                           mode=state['mode'],
                           driver=state['driver'],
                           comm=state['comm'])
-
         else:
             self.__init__(name=state['name'],
                           mode=state['mode'],
@@ -858,3 +845,24 @@ class H5PYPicklable(h5py.File):
     def __getnewargs__(self):
         """Override the h5py getnewargs to skip its error message"""
         return ()
+
+
+def comm_unpickle(name):
+    return getattr(MPI, name)
+
+
+def comm_pickle(obj):
+    if obj == MPI.COMM_NULL:
+        return comm_unpickle, ('COMM_NULL',)
+    if obj == MPI.COMM_SELF:
+        return comm_unpickle, ('COMM_SELF',)
+    if obj == MPI.COMM_WORLD:
+        return comm_unpickle, ('COMM_WORLD',)
+    if isinstance(obj, MPI.Comm):
+        return comm_unpickle, ('COMM_WORLD')
+    raise TypeError("cannot pickle object")
+
+
+if HAS_MPI:
+    copyreg.pickle(MPI.Intracomm, comm_pickle, comm_unpickle)
+    copyreg.pickle(MPI.Comm, comm_pickle, comm_unpickle)
