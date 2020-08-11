@@ -480,45 +480,65 @@ class Janin(Ramachandran):
     ----
     If the residue selection is beyond the scope of the protein, then an error
     will be raised. If the residue selection includes the residues ALA, CYS*,
-    GLY, PRO, SER, THR, or VAL, then a warning will be raised and they will be
-    removed from the list of residues, but the analysis will still run. Some
-    topologies have altloc attribues which can add duplicate atoms to the
-    selection and must be removed.
+    GLY, PRO, SER, THR, or VAL (the default of the `select_remove` keyword
+    argument) then a warning will be raised and they will be removed from the
+    list of residues, but the analysis will still run. Some topologies have
+    altloc attribues which can add duplicate atoms to the selection and must be
+    removed.
 
     """
 
-    def __init__(self, atomgroup, **kwargs):
+    def __init__(self, atomgroup,
+                 select_remove="resname ALA CYS* GLY PRO SER THR VAL",
+                 select_protein="protein",
+                 **kwargs):
         r"""Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
             atoms for residues for which :math:`\chi_1` and :math:`\chi_2` are
             calculated
 
+        select_remove : str
+            selection string to remove residues that do not have :math:`chi_2`
+            angles
+
+        select_protein : str
+            selection string to subselect protein-only residues from
+            `atomgroup` to check that only amino acids are selected; if you
+            have non-standard amino acids then adjust this selection to include
+            them
+
         Raises
         ------
         ValueError
-             If the selection of residues is not contained within the protein
+             if the final selection of residues is not contained within the
+             protein (as determined by
+             ``atomgroup.select_atoms(select_protein)``)
 
         ValueError
-             If not enough or too many atoms are found for a residue in the
-             selection, usually due to missing atoms or alternative locations
+             if not enough or too many atoms are found for a residue in the
+             selection, usually due to missing atoms or alternative locations,
+             or due to non-standard residues
 
+
+        .. versionchanged:: 2.0.0
+           `select_remove` and `select_protein` keywords were added
         """
         super(Ramachandran, self).__init__(
             atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = atomgroup.residues
-        protein = atomgroup.select_atoms("protein").residues
-        remove = residues.atoms.select_atoms("resname ALA CYS* GLY PRO SER"
-                                             " THR VAL").residues
+        protein = atomgroup.select_atoms(select_protein).residues
+        remove = residues.atoms.select_atoms(select_remove).residues
 
         if not residues.issubset(protein):
             raise ValueError("Found atoms outside of protein. Only atoms "
-                             "inside of a 'protein' selection can be used to "
-                             "calculate dihedrals.")
+                             "inside of a protein "
+                             f"(select_protein='{select_protein}') can be "
+                             "used to calculate dihedrals.")
         elif len(remove) != 0:
-            warnings.warn("All ALA, CYS*, GLY, PRO, SER, THR, and VAL residues"
-                          " have been removed from the selection.")
+            warnings.warn(f"All residues selected with '{select_remove}' "
+                          "have been removed from the selection.")
             residues = residues.difference(remove)
 
         self.ag1 = residues.atoms.select_atoms("name N")
