@@ -211,7 +211,8 @@ References
 .. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard
    Maigret. (1978). "Conformation of amino acid side-chains in
    proteins". *Journal of Molecular Biology* 125(3): 357-386. doi:
-   `10.1016/0022-2836(78)90408-4 <https://doi.org/10.1016/0022-2836(78)90408-4>`_
+   `10.1016/0022-2836(78)90408-4
+   <https://doi.org/10.1016/0022-2836(78)90408-4>`_
 
 .. [Lovell2003] Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III,
    Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant,
@@ -289,7 +290,8 @@ class Dihedral(AnalysisBase):
         self.angles = np.rad2deg(np.array(self.angles))
 
 class Ramachandran(AnalysisBase):
-    r"""Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.
+    r"""Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected
+    residues.
 
     :math:`\phi` and :math:`\psi` angles will be calculated for each residue
     corresponding to `atomgroup` for each time step in the trajectory. A
@@ -383,9 +385,9 @@ class Ramachandran(AnalysisBase):
         # find n, c, ca
         keep_prev = [sum(r.atoms.names==c_name)==1 for r in prev]
         rnames = [n_name, c_name, ca_name]
-        keep_res = [all(sum(r.atoms.names==n)==1 for n in rnames)
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in rnames)
                     for r in residues]
-        keep_next = [sum(r.atoms.names==n_name)==1 for r in nxt]
+        keep_next = [sum(r.atoms.names == n_name) == 1 for r in nxt]
 
         # alright we'll keep these
         keep = np.array(keep_prev) & np.array(keep_res) & np.array(keep_next)
@@ -449,7 +451,8 @@ class Ramachandran(AnalysisBase):
         ax.axvline(0, color='k', lw=1)
         ax.set(xticks=range(-180, 181, 60), yticks=range(-180, 181, 60),
                xlabel=r"$\phi$", ylabel=r"$\psi$")
-        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(r"{x:g}$\degree$")
+        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(
+            r"{x:g}$\degree$")
         ax.xaxis.set_major_formatter(degree_formatter)
         ax.yaxis.set_major_formatter(degree_formatter)
 
@@ -465,7 +468,8 @@ class Ramachandran(AnalysisBase):
 
 
 class Janin(Ramachandran):
-    r"""Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.
+    r"""Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of
+    selected residues.
 
     :math:`\chi_1` and :math:`\chi_2` angles will be calculated for each residue
     corresponding to `atomgroup` for each time step in the trajectory. A
@@ -566,7 +570,8 @@ class Janin(Ramachandran):
         ax.axvline(180, color='k', lw=1)
         ax.set(xticks=range(0, 361, 60), yticks=range(0, 361, 60),
                xlabel=r"$\chi_1$", ylabel=r"$\chi_2$")
-        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(r"{x:g}$\degree$")
+        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(
+            r"{x:g}$\degree$")
         ax.xaxis.set_major_formatter(degree_formatter)
         ax.yaxis.set_major_formatter(degree_formatter)
 
