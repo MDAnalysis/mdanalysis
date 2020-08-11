@@ -569,7 +569,8 @@ class H5MDReader(base.ReaderBase):
             if self._comm is not None:
                 # can only pass comm argument to h5py.File if driver='mpio'
                 assert self._driver == 'mpio'
-                self._file = H5PYPicklable(name = self.filename, mode='r',  # pragma: no cover
+                self._file = H5PYPicklable(name=self.filename,  # pragma: no cover
+                                           mode='r',
                                            driver=self._driver,
                                            comm=self._comm)
             elif self._driver is not None:
