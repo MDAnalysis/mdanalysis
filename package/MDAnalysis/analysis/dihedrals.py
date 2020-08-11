@@ -123,8 +123,8 @@ Janin plots [Janin1978]_ for side chain conformations (:math:`\chi_1` and
 only needing a list of residues; see the :ref:`Janin plot figure
 <figure-janin>` as an example.
 
-The data for the angles can be accessed in the attribute or
- :attr:`Janin.angles`.
+The data for the angles can be accessed in the attribute
+:attr:`Janin.angles`.
 
 .. _figure-janin:
 
@@ -160,7 +160,7 @@ obtained from a large selection of 500 PDB files, and were analyzed using these
 classes [Mull2018]_. The allowed and marginally allowed regions of the
 Ramachandran reference plot have cutoffs set to include 90% and 99% of the data
 points, and the Janin reference plot has cutoffs for 90% and 98% of the data
-points. The list of PDB files used for the referece plots was taken from
+points. The list of PDB files used for the reference plots was taken from
 [Lovell2003]_ and information about general Janin regions was taken from
 [Janin1978]_.
 
@@ -206,7 +206,7 @@ References
    V. Sasisekharan. (1963) Stereochemistry of polypeptide chain
    configurations. *Journal of Molecular Biology*, 7(1):95 – 99. doi:
    `10.1016/S0022-2836(63)80023-6
-   <https://doi.org/10.1016/S0022-2836(63)80023-6`_
+   <https://doi.org/10.1016/S0022-2836(63)80023-6>`_
 
 .. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard
    Maigret. (1978). "Conformation of amino acid side-chains in
@@ -420,7 +420,7 @@ class Ramachandran(AnalysisBase):
         self.angles = np.rad2deg(np.array(self.angles))
 
     def plot(self, ax=None, ref=False, **kwargs):
-        """Plots data into standard ramachandran plot.
+        """Plots data into standard Ramachandran plot.
 
         Each time step in :attr:`Ramachandran.angles` is plotted onto
         the same graph.
@@ -508,7 +508,7 @@ class Janin(Ramachandran):
             atomgroup.universe.trajectory, **kwargs)
         self.atomgroup = atomgroup
         residues = atomgroup.residues
-        protein = atomgroup.universe.select_atoms("protein").residues
+        protein = atomgroup.select_atoms("protein").residues
         remove = residues.atoms.select_atoms("resname ALA CYS* GLY PRO SER"
                                              " THR VAL").residues
 
