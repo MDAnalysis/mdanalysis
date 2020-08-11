@@ -55,9 +55,9 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     
         ts = u.trajectory.ts
         angle = 90
-        ag = u.atoms()
+        ag = u.atoms
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, direction=d, ag=ag)(ts)
+        rotated = MDAnalysis.transformations.rotate.rotateby(angle, direction=d, ag=ag)(ts)
     
     e.g. rotate the coordinates by a custom axis:
     
@@ -67,7 +67,7 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         angle = 90
         p = [1,2,3]
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, direction=d, point=point)(ts) 
+        rotated = MDAnalysis.transformations.rotate.rotateby(angle, direction=d, point=point)(ts) 
     
     Parameters
     ----------
