@@ -49,6 +49,7 @@ from distutils.sysconfig import customize_compiler
 import codecs
 import os
 import sys
+import re
 import shutil
 import tempfile
 import warnings
@@ -126,7 +127,7 @@ class Config(object):
     def __init__(self, fname='setup.cfg'):
         fname = abspath(fname)
         if os.path.exists(fname):
-            self.config = configparser.SafeConfigParser()
+            self.config = configparser.ConfigParser()
             self.config.read(fname)
 
     def get(self, option_name, default=None):
@@ -188,7 +189,7 @@ def get_numpy_include():
         import numpy as np
     except ImportError:
         print('*** package "numpy" not found ***')
-        print('MDAnalysis requires a version of NumPy (>=1.13.3), even for setup.')
+        print('MDAnalysis requires a version of NumPy (>=1.16.0), even for setup.')
         print('Please get it from http://numpy.scipy.org/ or install it through '
               'your package manager.')
         sys.exit(-1)
@@ -424,8 +425,9 @@ def extensions(config):
     if use_cython:
         extensions = cythonize(
             pre_exts,
-            compiler_directives={'linetrace' : cython_linetrace,
-                                 'embedsignature' : False},
+            compiler_directives={'linetrace': cython_linetrace,
+                                 'embedsignature': False,
+                                 'language_level': '3'},
         )
         if cython_linetrace:
             print("Cython coverage will be enabled")
@@ -515,14 +517,32 @@ def dynamic_author_list():
         print(template.format(author_string), file=outfile)
 
 
+def long_description(readme):
+    """Create reST SUMMARY file for PyPi."""
+
+    with open(abspath(readme)) as summary:
+        buffer = summary.read()
+    # remove top heading that messes up pypi display
+    m = re.search('====*\n[^\n]*README[^\n]*\n=====*\n', buffer,
+                  flags=re.DOTALL)
+    assert m, "README.rst does not contain a level-1 heading"
+    return buffer[m.end():]
+
+
 if __name__ == '__main__':
     try:
         dynamic_author_list()
     except (OSError, IOError):
         warnings.warn('Cannot write the list of authors.')
 
-    with open(abspath('SUMMARY.txt')) as summary:
-        LONG_DESCRIPTION = summary.read()
+    try:
+        # when building from repository for creating the distribution
+        LONG_DESCRIPTION = long_description("../README.rst")
+    except OSError:
+        # when building from a tar file for installation
+        # (LONG_DESCRIPTION is not really needed)
+        LONG_DESCRIPTION = "MDAnalysis -- https://www.mdanalysis.org/"
+
     CLASSIFIERS = [
         'Development Status :: 6 - Mature',
         'Environment :: Console',
@@ -546,7 +566,7 @@ if __name__ == '__main__':
     exts, cythonfiles = extensions(config)
 
     install_requires = [
-          'numpy>=1.13.3',
+          'numpy>=1.16.0',
           'biopython>=1.71',
           'networkx>=1.0',
           'GridDataFormats>=0.4.0',
@@ -587,13 +607,13 @@ if __name__ == '__main__':
                         ],
           },
           ext_modules=exts,
-          requires=['numpy (>=1.13.3)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
+          requires=['numpy (>=1.16.0)', 'biopython (>= 1.71)', 'mmtf (>=1.0.0)',
                     'networkx (>=1.0)', 'GridDataFormats (>=0.3.2)', 'joblib',
                     'scipy (>=1.0.0)', 'matplotlib (>=1.5.1)', 'tqdm (>=4.43.0)'],
           # all standard requirements are available through PyPi and
           # typically can be installed without difficulties through setuptools
           setup_requires=[
-              'numpy>=1.13.3',
+              'numpy>=1.16.0',
           ],
           install_requires=install_requires,
           # extras can be difficult to install through setuptools and/or

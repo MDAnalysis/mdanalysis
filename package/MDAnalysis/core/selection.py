@@ -151,7 +151,7 @@ class OrOperation(LogicOperation):
         rsel = self.rsel.apply(group)
 
         # Find unique indices from both these AtomGroups
-        # and slice master list using them
+        # and slice main list using them
         idx = np.union1d(lsel.indices, rsel.indices).astype(np.int32)
 
         return group.universe.atoms[idx]
@@ -665,7 +665,7 @@ class ResidSelection(Selection):
 
     def _sel_without_icodes(self, vals):
         # Final mask that gets applied to group
-        mask = np.zeros(len(vals), dtype=np.bool)
+        mask = np.zeros(len(vals), dtype=bool)
 
         for (u_resid, _), (l_resid, _) in zip(self.uppers, self.lowers):
             if u_resid is not None:  # range selection
@@ -680,7 +680,7 @@ class ResidSelection(Selection):
 
     def _sel_with_icodes(self, vals, icodes):
         # Final mask that gets applied to group
-        mask = np.zeros(len(vals), dtype=np.bool)
+        mask = np.zeros(len(vals), dtype=bool)
 
         for (u_resid, u_icode), (l_resid, l_icode) in zip(self.uppers, self.lowers):
             if u_resid is not None:  # Selecting a range
@@ -753,7 +753,7 @@ class RangeSelection(Selection):
         self.uppers = uppers
 
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
+        mask = np.zeros(len(group), dtype=bool)
         vals = getattr(group, self.field) + self.value_offset
 
         for upper, lower in zip(self.uppers, self.lowers):

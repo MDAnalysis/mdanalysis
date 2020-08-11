@@ -307,13 +307,19 @@ class Universe(object):
         current system dimensions (simulation unit cell, if set in the
         trajectory)
     atoms, residues, segments
-        master Groups for each topology level
+        principal Groups for each topology level
     bonds, angles, dihedrals
-        master ConnectivityGroups for each connectivity type
+        principal ConnectivityGroups for each connectivity type
+
 
     .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
         Removed instant selectors.
+
+    .. versionchanged:: 2.0.0
+        Universe now can be (un)pickled.
+        ``topology``, ``trajectory`` and ``anchor_name`` are reserved
+        upon unpickle.
     """
 # Py3 TODO
 #    def __init__(self, topology=None, *coordinates, all_coordinates=False,
@@ -701,7 +707,7 @@ class Universe(object):
                 return self._anchor_uuid
             except AttributeError:
                 # store this so we can later recall it if needed
-                self._anchor_uuid = uuid.uuid4()
+                self._anchor_uuid = str(uuid.uuid4())
                 return self._anchor_uuid
 
     @anchor_name.setter
@@ -738,10 +744,18 @@ class Universe(object):
             n_atoms=len(self.atoms))
 
     def __getstate__(self):
-        raise NotImplementedError
+        # Universe's two "legs" of topology and traj both serialise themselves
+        # the only other state held in Universe is anchor name?
+        return self.anchor_name, self._topology, self._trajectory
 
-    def __setstate__(self, state):
-        raise NotImplementedError
+    def __setstate__(self, args):
+        self._anchor_name = args[0]
+        self.make_anchor()
+
+        self._topology = args[1]
+        _generate_from_topology(self)
+
+        self._trajectory = args[2]
 
     # Properties
     @property
@@ -832,9 +846,11 @@ class Universe(object):
                 errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
-                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "To raise an issue go to: "
+                    "https://github.com/MDAnalysis/mdanalysis/issues"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys()))))
+                        topologyattr, ', '.join(
+                            sorted(_TOPOLOGY_ATTRS.keys()))))
                 raise ValueError(errmsg) from None
             else:
                 topologyattr = tcls.from_blank(
@@ -1285,10 +1301,10 @@ class Universe(object):
                 fragdict[a.ix] = fraginfo(i, f)
 
         return fragdict
-    
+
     @classmethod
-    def from_smiles(cls, smiles, sanitize=True, addHs=True, 
-                    generate_coordinates=True, numConfs=1, 
+    def from_smiles(cls, smiles, sanitize=True, addHs=True,
+                    generate_coordinates=True, numConfs=1,
                     rdkit_kwargs={}, **kwargs):
         """Create a Universe from a SMILES string with rdkit
 
@@ -1346,7 +1362,7 @@ class Universe(object):
             from rdkit.Chem import AllChem
         except ImportError as e:
             raise ImportError(
-                "Creating a Universe from a SMILES string requires RDKit but " 
+                "Creating a Universe from a SMILES string requires RDKit but "
                 "it does not appear to be installed") from e
 
         mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
@@ -1358,7 +1374,7 @@ class Universe(object):
             if not addHs:
                 raise ValueError("Generating coordinates requires adding "
                 "hydrogens with `addHs=True`")
-            
+
             numConfs = rdkit_kwargs.pop("numConfs", numConfs)
             if not (type(numConfs) is int and numConfs > 0):
                 raise SyntaxError("numConfs must be a non-zero positive "

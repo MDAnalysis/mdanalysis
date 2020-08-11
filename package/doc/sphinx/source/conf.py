@@ -133,7 +133,7 @@ html_theme = 'msmb_theme'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# styles/fonts to match http://mdanalysis.org (see public/css)
+# styles/fonts to match https://userguide.mdanalysis.org
 #
 # /* MDAnalysis orange: #FF9200 */
 # /* MDAnalysis gray: #808080 */
@@ -345,4 +345,5 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://www.mdanalysis.org/GridDataFormats/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
                        'https://parmed.github.io/ParmEd/html/': None,
+                       'https://docs.h5py.org/en/stable': None,
                        }
