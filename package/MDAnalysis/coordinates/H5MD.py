@@ -186,7 +186,6 @@ Classes
 """
 
 import numpy as np
-import copyreg
 import MDAnalysis as mda
 from . import base, core
 from ..exceptions import NoDataError
@@ -205,22 +204,6 @@ except ImportError:
 
 else:
     HAS_H5PY = True
-
-try:
-    from mpi4py import MPI
-except ImportError:
-    HAS_MPI = False
-
-    # Allow building documentation even if mpi4py is not installed
-    import types
-
-    class MockMPI:
-        pass
-    mpi4py = types.ModuleType("mpi4py")
-    MPI = MockMPI
-
-else:
-    HAS_MPI = True
 
 
 class Timestep(base.Timestep):
@@ -780,9 +763,8 @@ class H5PYPicklable(h5py.File):
 
     When the file is pickled, filename, mode, driver, and comm of
     :class:`h5py.File` in the file are saved. On unpickling, the file
-    is opened by filename, mode, driver, and comm (driver and comm are
-    optional arguments). This means that for a successful unpickle, the
-    original file still has to be accessible with its filename.
+    is opened by filename, mode, driver. This means that for a successful
+    unpickle, the original file still has to be accessible with its filename.
 
     Parameters
     ----------
@@ -790,9 +772,6 @@ class H5PYPicklable(h5py.File):
         a filename given a text or byte string.
     driver : str (optional)
         H5PY file driver used to open H5MD file
-    comm : :class:`MPI.Comm` (optional)
-        MPI communicator used to open H5MD file
-        Must be passed with `'mpio'` file driver
 
     Example
     -------
@@ -806,6 +785,11 @@ class H5PYPicklable(h5py.File):
 
         with H5PYPicklable('filename', 'r'):
             print(f['particles/trajectory/position/value'][0])
+
+    Note
+    ----
+    Pickling of an `h5py.File` opened with `driver="mpio"` and an MPI
+    communicator is currently not supported
 
     See Also
     ---------
@@ -822,47 +806,18 @@ class H5PYPicklable(h5py.File):
     def __getstate__(self):
         driver = self.driver
         if driver == 'mpio':
-            comm = self.id.get_access_plist().get_fapl_mpio()[0]
-            return {'name': self.filename,
-                    'mode': self.mode,
-                    'driver': driver,
-                    'comm': comm}
+            raise TypeError("Parallel pickling of `h5py.File` with"
+                            " 'mpio' driver is currently not supported.")
+
         return {'name': self.filename,
                 'mode': self.mode,
                 'driver': driver}
 
     def __setstate__(self, state):
-        if state['driver'] == 'mpio':
-            self.__init__(name=state['name'],
-                          mode=state['mode'],
-                          driver=state['driver'],
-                          comm=state['comm'])
-        else:
-            self.__init__(name=state['name'],
-                          mode=state['mode'],
-                          driver=state['driver'])
+        self.__init__(name=state['name'],
+                      mode=state['mode'],
+                      driver=state['driver'])
 
     def __getnewargs__(self):
         """Override the h5py getnewargs to skip its error message"""
         return ()
-
-
-def comm_unpickle(name):
-    return getattr(MPI, name)
-
-
-def comm_pickle(obj):
-    if obj == MPI.COMM_NULL:
-        return comm_unpickle, ('COMM_NULL',)
-    if obj == MPI.COMM_SELF:
-        return comm_unpickle, ('COMM_SELF',)
-    if obj == MPI.COMM_WORLD:
-        return comm_unpickle, ('COMM_WORLD',)
-    if isinstance(obj, MPI.Comm):
-        return comm_unpickle, ('COMM_WORLD',)
-    raise TypeError("cannot pickle object")
-
-
-if HAS_MPI:
-    copyreg.pickle(MPI.Intracomm, comm_pickle, comm_unpickle)
-    copyreg.pickle(MPI.Comm, comm_pickle, comm_unpickle)
