@@ -179,6 +179,8 @@ _CONVERTERS = {}
 _TOPOLOGY_ATTRS = {}  # {attrname: cls}
 _TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
 _TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
+# Registry for custom IPython formatters
+_FORMATTERS = {}
 
 
 # Storing anchor universes for unpickling groups

@@ -21,11 +21,13 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-try:
-    get_ipython()
-except NameError:
-    raise ImportError("You must be in an interactive python shell (IPython or "
-                      "Notebook) to use this")
+"""RDKit Drawer --- :mod:`MDAnalysis.visualization.rdkit`
+=============================================================
+
+A module to wrap RDKit's drawing code and modify the representation of small
+AtomGroups in interactive notebooks.
+"""
+
 try:
     from rdkit import Chem
     from rdkit.Chem import Draw
@@ -42,37 +44,79 @@ from base64 import b64encode
 from IPython.display import display, HTML, SVG
 from PIL import Image
 
+from .base import FormatterBase
 from ..core.groups import AtomGroup
+from .. import _FORMATTERS
 
 
-class RDKitDrawer:
-    shell = get_ipython()
-    _repr_format = {}
+class RDKitDrawer(FormatterBase):
+    """Wrapper class to RDKit's drawing code
+    
+    .. versionadded:: 2.0.0
+    """
+    format = "RDKIT"
 
     def __init__(self, size=(450, 250), max_atoms=200, removeHs=True,
                  kekulize=True, drawOptions=None, useSVG=False):
+        """Set default parameters for the drawer
+
+        Parameters
+        ----------
+        size : tuple
+            default size for images
+        max_atoms : int
+            AtomGroups with more atoms that this limit won't be displayed as
+            images and will use the default representation instead
+        removeHs : bool
+            Remove hydrogens from the image
+        kekulize : bool
+            Use the Kekule representation for aromatic systems
+        drawOptions : None or an instance of :class:`rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions`
+            RDKit MolDrawOption object passed when calling the drawing code.
+            Use it to set the label size, highlight color...etc.
+        useSVG : bool
+            Use SVG images instead of PNG
+        """
         self.size = size
         self.max_atoms = max_atoms
         self.removeHs = removeHs
         self.kekulize = kekulize
         self.drawOptions = drawOptions or MolDrawOptions()
+        # remove any previous RDKIT formatters
         self.reset_all_repr()
         self.useSVG = useSVG
+        # add the new formatter
         if useSVG:
             self.add_repr(AtomGroup, 'image/svg+xml', self._repr_atomgroup)
         else:
             self.add_repr(AtomGroup, 'image/png', self._repr_atomgroup)
 
     def _repr_atomgroup(self, ag):
+        """Wrapper method to :meth:`~atomgroup_to_image`
+
+        Returns
+        -------
+        An image (PNG or SVG) if the AtomGroup has less atoms than `max_atoms`
+        or else the default AtomGroup representation
+        """
         if ag.n_atoms <= self.max_atoms:
             return self.atomgroup_to_image(ag)
 
-    def _prepare_atomgroup_for_drawing(self, ag, traj=False):
+    def _prepare_atomgroup_for_drawing(self, ag, keep_3D=False):
+        """Prepare the AtomGroup and resulting mol for the drawing code
+
+        Parameters
+        ----------
+        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+            The AtomGroup to prepare
+        keep_3D : bool
+            Keep or remove 3D coordinates to generate the image
+        """
         mol = ag.convert_to("RDKIT")
         if self.removeHs:
             mol = Chem.RemoveHs(mol)
         # remove 3D coordinates for a clearer image
-        if not traj:
+        if not keep_3D:
             mol.RemoveAllConformers()
         try:
             mol = PrepareMolForDrawing(mol, kekulize=self.kekulize)
@@ -81,8 +125,31 @@ class RDKitDrawer:
         return mol
 
     def atomgroup_to_image(self, ag, **kwargs):
-        traj = kwargs.pop("traj", False)
-        mol = self._prepare_atomgroup_for_drawing(ag, traj)
+        """Create an image from an AtomGroup
+
+        Parameters
+        ----------
+        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+            The AtomGroup to display
+        keep_3D : bool
+            Keep or remove 3D coordinates to generate the image
+        size : tuple
+            size of the output image
+        useSVG : bool
+            Output an SVG instead of a PNG
+        drawOptions : ``None`` or an instance of RDKit's ``MolDrawOptions``
+            Parameters passed to RDKit for drawing the molecule
+        legend : str
+            Legend displayed on the image
+        \** kwargs : Other parameters passed to RDKit's 
+            :meth:`rdkit.Chem.Draw.rdMolDraw2D.MolDraw2D.DrawMolecule` method
+
+        Returns
+        -------
+        Raw PNG or SVG code
+        """
+        keep_3D = kwargs.pop("keep_3D", False)
+        mol = self._prepare_atomgroup_for_drawing(ag, keep_3D)
         size = kwargs.pop("size", self.size)
         useSVG = kwargs.pop("useSVG", self.useSVG)
         drawer = MolDraw2DSVG if useSVG else MolDraw2DCairo
@@ -97,11 +164,30 @@ class RDKitDrawer:
     def atomgroup_to_gif(self, ag, output=None, legend="Frame {}",
                          frame_duration=200, traj_slice=slice(0, None, None),
                          **kwargs):
-        mol = self._prepare_atomgroup_for_drawing(ag, traj=True)
+        """Create a GIF from an AtomGroup
+
+        Parameters
+        ----------
+        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+            The AtomGroup to display
+        output : None or str
+            Either a path to save the gif (str), or ``None`` to display the GIF
+            inline
+        legend : str
+            Format string used for the legend of the GIF. ``{}`` will be
+            replaced by the frame number
+        frame_duration : int or list of ints
+            Duration of each frame for the GIF
+        traj_slice : slice(start, end, step)
+            Display only a part of the trajectory, from frames ``start`` to
+            ``end`` using 1 frame every ``step`` frames.
+        \**kwargs : Other parameters used by :meth:`~atomgroup_to_image`
+        """
+        mol = self._prepare_atomgroup_for_drawing(ag, keep_3D=True)
         if mol and hasattr(ag.universe, "trajectory"):
             pngs = []
             for ts in ag.universe.trajectory[traj_slice]:
-                img = self.atomgroup_to_image(ag, traj=True, useSVG=False,
+                img = self.atomgroup_to_image(ag, keep_3D=True, useSVG=False,
                                               legend=legend.format(ts.frame),
                                               **kwargs)
                 pngs.append(img)
@@ -110,25 +196,10 @@ class RDKitDrawer:
             buffer = partial(open, output, "wb") if output else BytesIO
             with buffer() as fp:
                 img.save(fp=fp, format='GIF', append_images=imgs,
-                        save_all=True, duration=frame_duration, loop=0)
+                         save_all=True, duration=frame_duration, loop=0)
                 if isinstance(fp, BytesIO):
                     b64 = b64encode(fp.getvalue()).decode("ascii")
                     display(HTML(f"<img src='data:image/gif;base64,{b64}' />"))
-
-    def reset_repr(self, obj=AtomGroup, fmt="image/png"):
-        self.shell.display_formatter.formatters[fmt].pop(obj)
-        self._repr_format.pop(obj)
-
-    def reset_all_repr(self):
-        for obj, fmt in self._repr_format.items():
-            self.shell.display_formatter.formatters[fmt].pop(obj)
-        self._repr_format.clear()
-
-    def add_repr(self, obj, fmt, func):
-        # adds a new formatter to obj
-        formatters = self.shell.display_formatter.formatters
-        formatters[fmt].for_type(obj, func)
-        self._repr_format[obj] = fmt
 
 
 # add default AtomGroup rich display on import
