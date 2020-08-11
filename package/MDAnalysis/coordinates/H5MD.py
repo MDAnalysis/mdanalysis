@@ -819,22 +819,6 @@ class H5PYPicklable(h5py.File):
     .. versionadded:: 2.0.0
     """
 
-    if HAS_MPI:
-        def comm_unpickle(self, name):
-            return getattr(MPI, name)
-
-        def comm_pickle(self, obj):
-            if obj == MPI.COMM_NULL:
-                return self.comm_unpickle('COMM_NULL',)
-            if obj == MPI.COMM_SELF:
-                return self.comm_unpickle('COMM_SELF',)
-            if obj == MPI.COMM_WORLD:
-                return self.comm_unpickle('COMM_WORLD',)
-            raise TypeError("cannot pickle MPI.Comm object")
-
-        copyreg.pickle(MPI.Intracomm, comm_pickle, comm_unpickle)
-        copyreg.pickle(MPI.Comm, comm_pickle, comm_unpickle)
-
     def __getstate__(self):
         try:
             driver = self.driver
