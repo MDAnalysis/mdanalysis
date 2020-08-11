@@ -186,6 +186,7 @@ Classes
 """
 
 import numpy as np
+import copyreg
 import MDAnalysis as mda
 from . import base, core
 from ..exceptions import NoDataError
@@ -195,15 +196,31 @@ except ImportError:
     HAS_H5PY = False
 
     # Allow building documentation even if h5py is not installed
-    import imp
+    import types
 
     class MockH5pyFile:
         pass
-    h5py = imp.new_module("h5py")
+    h5py = types.ModuleType("h5py")
     h5py.File = MockH5pyFile
 
 else:
     HAS_H5PY = True
+
+try:
+    from mpi4py import MPI
+except ImportError:
+    HAS_MPI = False
+
+    # Allow building documentation even if mpi4py is not installed
+    import types
+
+    class MockMPI:
+        pass
+    mpi4py = types.ModuleType("mpi4py")
+    MPI = MockMPI
+
+else:
+    HAS_MPI = True
 
 
 class Timestep(base.Timestep):
@@ -801,17 +818,49 @@ class H5PYPicklable(h5py.File):
 
     .. versionadded:: 2.0.0
     """
+
+    if HAS_MPI:
+        def comm_unpickle(self, name):
+            return getattr(MPI, name)
+
+        def comm_pickle(self, obj):
+            if obj == MPI.COMM_NULL:
+                return self.comm_unpickle('COMM_NULL',)
+            if obj == MPI.COMM_SELF:
+                return self.comm_unpickle('COMM_SELF',)
+            if obj == MPI.COMM_WORLD:
+                return self.comm_unpickle('COMM_WORLD',)
+            raise TypeError("cannot pickle MPI.Comm object")
+
+
     def __getstate__(self):
         try:
             driver = self.driver
         except AttributeError:
             driver = None
 
+        if driver == 'mpio':
+            if HAS_MPI:
+                try:
+                    # find comm object from h5py.File
+                    comm = self.id.get_access_plist().get_fapl_mpio()[0]
+                except AttributeError:
+                    comm = None
+
+                copyreg.pickle(MPI.Intracomm, self.comm_pickle, self.comm_unpickle)
+                copyreg.pickle(MPI.Comm, self.comm_pickle, self.comm_unpickle)
+
+            return {'name': self.filename,
+                    'mode': self.mode,
+                    'driver': driver,
+                    'comm': comm}
+
         return {'name': self.filename,
                 'mode': self.mode,
                 'driver': driver}
 
     def __setstate__(self, state):
+
         if state['driver'] == 'mpio':
             self.__init__(name=state['name'],
                           mode=state['mode'],
