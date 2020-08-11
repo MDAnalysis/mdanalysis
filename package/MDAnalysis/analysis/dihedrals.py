@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 r"""Dihedral angles analysis --- :mod:`MDAnalysis.analysis.dihedrals`
-===========================================================================
+=================================================================
 
 :Author: Henry Mull
 :Year: 2018
@@ -35,7 +35,7 @@ atoms or residues. This can be done for selected frames or whole trajectories.
 A list of time steps that contain angles of interest is generated and can be
 easily plotted if desired. For the :class:`~MDAnalysis.analysis.dihedrals.Ramachandran`
 and :class:`~MDAnalysis.analysis.dihedrals.Janin` classes, basic plots can be
-generated using the method :meth:`Ramachandran.plot()` or :meth:`Janin.plot()`.
+generated using the method :meth:`Ramachandran.plot` or :meth:`Janin.plot`.
 These plots are best used as references, but they also allow for user customization.
 
 
@@ -72,9 +72,11 @@ Ramachandran analysis
 ~~~~~~~~~~~~~~~~~~~~~
 
 The :class:`~MDAnalysis.analysis.dihedrals.Ramachandran` class allows for the
-quick calculation of phi and psi angles. Unlike the :class:`~MDanalysis.analysis.dihedrals.Dihedral`
-class which takes a list of `atomgroups`, this class only needs a list of
-residues or atoms from those residues. The previous example can repeated with::
+quick calculation of classical Ramachandran plots [Ramachandran1963]_ in the
+backbone :math:`phi` and :math:`psi` angles. Unlike the
+:class:`~MDanalysis.analysis.dihedrals.Dihedral` class which takes a list of
+`atomgroups`, this class only needs a list of residues or atoms from those
+residues. The previous example can repeated with::
 
    u = mda.Universe(GRO, XTC)
    r = u.select_atoms("resid 5-10")
@@ -85,7 +87,8 @@ Then it can be plotted using the built-in plotting method :meth:`Ramachandran.pl
 
    import matplotlib.pyplot as plt
    fig, ax = plt.subplots(figsize=plt.figaspect(1))
-   R.plot(ax=ax, color='k', marker='s')
+   R.plot(ax=ax, color='k', marker='o', ref=True)
+   fig.tight_layout()
 
 as shown in the example :ref:`Ramachandran plot figure <figure-ramachandran>`.
 
@@ -99,28 +102,29 @@ as shown in the example :ref:`Ramachandran plot figure <figure-ramachandran>`.
    trajectory (XTC). The contours in the background are the "allowed region"
    and the "marginally allowed" regions.
 
-The Janin class works in the same way, only needing a list of residues; see the
-:ref:`Janin plot figure <figure-janin>` as an example. To plot the data
-yourself, the angles can be accessed using :attr:`Ramachandran.angles` or
-:attr:`Janin.angles`.
-
-Reference plots can be added to the axes for both the Ramachandran and Janin
-classes using the kwarg ``ref=True``. The Ramachandran reference data
-(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
-(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
-obtained from a large selection of 500 PDB files, and were analyzed using these
-classes. The allowed and marginally allowed regions of the Ramachandran reference
-plt have cutoffs set to include 90% and 99% of the data points, and the Janin
-reference plot has cutoffs for 90% and 98% of the data points. The list of PDB
-files used for the referece plots was taken from [Lovell2003]_ and information
-about general Janin regions was taken from [Janin1978]_.
+To plot the data yourself, the angles can be accessed using
+:attr:`Ramachandran.angles`.
 
 .. Note::
-   These classes are prone to errors if the topology contains duplicate or missing
-   atoms (e.g. atoms with `altloc` or incomplete residues). If the topology has as
-   an `altloc` attribute, you must specify only one `altloc` for the atoms with
-   more than one (``"protein and not altloc B"``).
 
+   The Ramachandran analysis is prone to errors if the topology contains
+   duplicate or missing atoms (e.g. atoms with `altloc` or incomplete
+   residues). If the topology has as an `altloc` attribute, you must specify
+   only one `altloc` for the atoms with more than one (``"protein and not
+   altloc B"``).
+
+
+Janin analysis
+~~~~~~~~~~~~~~
+
+Janin plots [Janin1978]_ for side chain conformations (:math:`\chi_1` and
+:math:`chi_2` angles) can be created with the
+:class:`~MDAnalysis.analysis.dihedrals.Janin` class. It works in the same way,
+only needing a list of residues; see the :ref:`Janin plot figure
+<figure-janin>` as an example.
+
+The data for the angles can be accessed in the attribute or
+ :attr:`Janin.angles`.
 
 .. _figure-janin:
 
@@ -128,9 +132,38 @@ about general Janin regions was taken from [Janin1978]_.
    :scale: 50 %
    :alt: Janin plot
 
-   Janin plot for residues 5 to 10 of AdK, sampled from the AdK test trajectory
+   Janin plot for all residues of AdK, sampled from the AdK test trajectory
    (XTC). The contours in the background are the "allowed region" and the
    "marginally allowed" regions for all possible residues.
+
+.. Note::
+
+   The Janin analysis is prone to errors if the topology contains duplicate or
+   missing atoms (e.g. atoms with `altloc` or incomplete residues). If the
+   topology has as an `altloc` attribute, you must specify only one `altloc`
+   for the atoms with more than one (``"protein and not altloc B"``).
+
+   Furthermore, many residues do not have a :math:`\chi_2` dihedral and if the
+   selections of residues is not carefully filtered to only include those
+   residues with *both* sidechain dihedrals then a :exc:`ValueError` with the
+   message *Too many or too few atoms selected* is raised.
+
+
+Reference plots
+~~~~~~~~~~~~~~~
+
+Reference plots can be added to the axes for both the Ramachandran and Janin
+classes using the kwarg ``ref=True``. The Ramachandran reference data
+(:data:`~MDAnalysis.analysis.data.filenames.Rama_ref`) and Janin reference data
+(:data:`~MDAnalysis.analysis.data.filenames.Janin_ref`) were made using data
+obtained from a large selection of 500 PDB files, and were analyzed using these
+classes [Mull2018]_. The allowed and marginally allowed regions of the
+Ramachandran reference plot have cutoffs set to include 90% and 99% of the data
+points, and the Janin reference plot has cutoffs for 90% and 98% of the data
+points. The list of PDB files used for the referece plots was taken from
+[Lovell2003]_ and information about general Janin regions was taken from
+[Janin1978]_.
+
 
 
 Analysis Classes
@@ -168,6 +201,18 @@ Analysis Classes
 
 References
 ----------
+
+.. [Ramachandran1963] G. Ramachandran, C. Ramakrishnan, and
+   V. Sasisekharan. (1963) Stereochemistry of polypeptide chain
+   configurations. *Journal of Molecular Biology*, 7(1):95 – 99. doi:
+   `10.1016/S0022-2836(63)80023-6
+   <https://doi.org/10.1016/S0022-2836(63)80023-6`_
+
+.. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard
+   Maigret. (1978). "Conformation of amino acid side-chains in
+   proteins". *Journal of Molecular Biology* 125(3): 357-386. doi:
+   `10.1016/0022-2836(78)90408-4 <https://doi.org/10.1016/0022-2836(78)90408-4>`_
+
 .. [Lovell2003] Simon C. Lovell, Ian W. Davis, W. Bryan Arendall III,
    Paul I. W. de Bakker, J. Michael Word, Michael G. Prisant,
    Jane S. Richardson, and David C. Richardson (2003). "Structure validation by
@@ -175,10 +220,10 @@ References
    :math:`C_{\beta}` deviation". *Proteins* 50(3): 437-450. doi:
    `10.1002/prot.10286 <https://doi.org/10.1002/prot.10286>`_
 
-.. [Janin1978] Joël Janin, Shoshanna Wodak, Michael Levitt, and Bernard
-   Maigret. (1978). "Conformation of amino acid side-chains in
-   proteins". *Journal of Molecular Biology* 125(3): 357-386. doi:
-   `10.1016/0022-2836(78)90408-4 <https://doi.org/10.1016/0022-2836(78)90408-4>`_
+.. [Mull2018] H. Mull and O. Beckstein. SPIDAL Summer REU 2018 Dihedral
+   Analysis in MDAnalysis. Technical report, Arizona State University, 8
+   2018. doi: `10.6084/m9.figshare.6957296
+   <https://doi.org/10.6084/m9.figshare.6957296>`_
 
 """
 import numpy as np
@@ -244,7 +289,7 @@ class Dihedral(AnalysisBase):
         self.angles = np.rad2deg(np.array(self.angles))
 
 class Ramachandran(AnalysisBase):
-    """Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.
+    r"""Calculate :math:`\phi` and :math:`\psi` dihedral angles of selected residues.
 
     :math:`\phi` and :math:`\psi` angles will be calculated for each residue
     corresponding to `atomgroup` for each time step in the trajectory. A
@@ -263,25 +308,25 @@ class Ramachandran(AnalysisBase):
     ca_name: str (optional)
         name for the alpha-carbon atom
     check_protein: bool (optional)
-        whether to raise an error if the provided atomgroup is not a 
+        whether to raise an error if the provided atomgroup is not a
         subset of protein atoms
 
     Example
     -------
-    For standard proteins, the default arguments will suffice to run a 
+    For standard proteins, the default arguments will suffice to run a
     Ramachandran analysis::
 
         r = Ramachandran(u.select_atoms('protein')).run()
 
-    For proteins with non-standard residues, or for calculating dihedral 
-    angles for other linear polymers, you can switch off the protein checking 
-    and provide your own atom names in place of the typical peptide backbone 
+    For proteins with non-standard residues, or for calculating dihedral
+    angles for other linear polymers, you can switch off the protein checking
+    and provide your own atom names in place of the typical peptide backbone
     atoms::
 
         r = Ramachandran(u.atoms, c_name='CX', n_name='NT', ca_name='S',
                          check_protein=False).run()
 
-    The above analysis will calculate angles from a "phi" selection of 
+    The above analysis will calculate angles from a "phi" selection of
     CX'-NT-S-CX and "psi" selections of NT-S-CX-NT'.
 
     Raises
@@ -292,12 +337,13 @@ class Ramachandran(AnalysisBase):
 
     Note
     ----
-    If ``check_protein`` is ``True`` and the residue selection is beyond 
-    the scope of the protein and, then an error will be raised. 
+    If ``check_protein`` is ``True`` and the residue selection is beyond
+    the scope of the protein and, then an error will be raised.
     If the residue selection includes the first or last residue,
     then a warning will be raised and they will be removed from the list of
     residues, but the analysis will still run. If a :math:`\phi` or :math:`\psi`
     selection cannot be made, that residue will be removed from the analysis.
+
 
     .. versionchanged:: 1.0.0
         added c_name, n_name, ca_name, and check_protein keyword arguments
@@ -337,7 +383,7 @@ class Ramachandran(AnalysisBase):
         # find n, c, ca
         keep_prev = [sum(r.atoms.names==c_name)==1 for r in prev]
         rnames = [n_name, c_name, ca_name]
-        keep_res = [all(sum(r.atoms.names==n)==1 for n in rnames) 
+        keep_res = [all(sum(r.atoms.names==n)==1 for n in rnames)
                     for r in residues]
         keep_next = [sum(r.atoms.names==n_name)==1 for r in nxt]
 
@@ -372,8 +418,10 @@ class Ramachandran(AnalysisBase):
         self.angles = np.rad2deg(np.array(self.angles))
 
     def plot(self, ax=None, ref=False, **kwargs):
-        """Plots data into standard ramachandran plot. Each time step in
-        :attr:`Ramachandran.angles` is plotted onto the same graph.
+        """Plots data into standard ramachandran plot.
+
+        Each time step in :attr:`Ramachandran.angles` is plotted onto
+        the same graph.
 
         Parameters
         ----------
@@ -384,6 +432,9 @@ class Ramachandran(AnalysisBase):
         ref : bool, optional
               Adds a general Ramachandran plot which shows allowed and
               marginally allowed regions
+
+        kwargs : optional
+              All other kwargs are passed to :func:`matplotlib.pyplot.scatter`.
 
         Returns
         -------
@@ -397,8 +448,12 @@ class Ramachandran(AnalysisBase):
         ax.axhline(0, color='k', lw=1)
         ax.axvline(0, color='k', lw=1)
         ax.set(xticks=range(-180, 181, 60), yticks=range(-180, 181, 60),
-               xlabel=r"$\phi$ (deg)", ylabel=r"$\psi$ (deg)")
-        if ref == True:
+               xlabel=r"$\phi$", ylabel=r"$\psi$")
+        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(r"{x:g}$\degree$")
+        ax.xaxis.set_major_formatter(degree_formatter)
+        ax.yaxis.set_major_formatter(degree_formatter)
+
+        if ref:
             X, Y = np.meshgrid(np.arange(-180, 180, 4),
                                np.arange(-180, 180, 4))
             levels = [1, 17, 15000]
@@ -410,7 +465,7 @@ class Ramachandran(AnalysisBase):
 
 
 class Janin(Ramachandran):
-    """Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.
+    r"""Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected residues.
 
     :math:`\chi_1` and :math:`\chi_2` angles will be calculated for each residue
     corresponding to `atomgroup` for each time step in the trajectory. A
@@ -420,7 +475,7 @@ class Janin(Ramachandran):
     Note
     ----
     If the residue selection is beyond the scope of the protein, then an error
-    will be raised. If the residue selection includes the residues ALA, CYS,
+    will be raised. If the residue selection includes the residues ALA, CYS*,
     GLY, PRO, SER, THR, or VAL, then a warning will be raised and they will be
     removed from the list of residues, but the analysis will still run. Some
     topologies have altloc attribues which can add duplicate atoms to the
@@ -429,7 +484,7 @@ class Janin(Ramachandran):
     """
 
     def __init__(self, atomgroup, **kwargs):
-        """Parameters
+        r"""Parameters
         ----------
         atomgroup : AtomGroup or ResidueGroup
             atoms for residues for which :math:`\chi_1` and :math:`\chi_2` are
@@ -450,7 +505,7 @@ class Janin(Ramachandran):
         self.atomgroup = atomgroup
         residues = atomgroup.residues
         protein = atomgroup.universe.select_atoms("protein").residues
-        remove = residues.atoms.select_atoms("resname ALA CYS GLY PRO SER"
+        remove = residues.atoms.select_atoms("resname ALA CYS* GLY PRO SER"
                                              " THR VAL").residues
 
         if not residues.issubset(protein):
@@ -458,7 +513,7 @@ class Janin(Ramachandran):
                              "inside of a 'protein' selection can be used to "
                              "calculate dihedrals.")
         elif len(remove) != 0:
-            warnings.warn("All ALA, CYS, GLY, PRO, SER, THR, and VAL residues"
+            warnings.warn("All ALA, CYS*, GLY, PRO, SER, THR, and VAL residues"
                           " have been removed from the selection.")
             residues = residues.difference(remove)
 
@@ -480,8 +535,10 @@ class Janin(Ramachandran):
         self.angles = (np.rad2deg(np.array(self.angles)) + 360) % 360
 
     def plot(self, ax=None, ref=False, **kwargs):
-        """Plots data into standard Janin plot. Each time step in
-        :attr:`Janin.angles` is plotted onto the same graph.
+        """Plots data into standard Janin plot.
+
+        Each time step in :attr:`Janin.angles` is plotted onto the
+        same graph.
 
         Parameters
         ----------
@@ -492,6 +549,9 @@ class Janin(Ramachandran):
         ref : bool, optional
               Adds a general Janin plot which shows allowed and marginally
               allowed regions
+
+        kwargs : optional
+              All other kwargs are passed to :func:`matplotlib.pyplot.scatter`.
 
         Returns
         -------
@@ -505,8 +565,12 @@ class Janin(Ramachandran):
         ax.axhline(180, color='k', lw=1)
         ax.axvline(180, color='k', lw=1)
         ax.set(xticks=range(0, 361, 60), yticks=range(0, 361, 60),
-               xlabel=r"$\chi1$ (deg)", ylabel=r"$\chi2$ (deg)")
-        if ref == True:
+               xlabel=r"$\chi_1$", ylabel=r"$\chi_2$")
+        degree_formatter = plt.matplotlib.ticker.StrMethodFormatter(r"{x:g}$\degree$")
+        ax.xaxis.set_major_formatter(degree_formatter)
+        ax.yaxis.set_major_formatter(degree_formatter)
+
+        if ref:
             X, Y = np.meshgrid(np.arange(0, 360, 6), np.arange(0, 360, 6))
             levels = [1, 6, 600]
             colors = ['#A1D4FF', '#35A1FF']
