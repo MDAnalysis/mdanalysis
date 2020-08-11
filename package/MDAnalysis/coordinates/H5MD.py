@@ -805,7 +805,11 @@ class H5PYPicklable(h5py.File):
 
     def __getstate__(self):
         driver = self.driver
-        if driver == 'mpio':
+        # Current issues: Need a way to retrieve MPI communicator object
+        # from self and pickle MPI.Comm object. Parallel driver is excluded
+        # from test because h5py call for an MPI configuration when driver is
+        # 'mpio', so this will need to be patched in the test function.
+        if driver == 'mpio':  # pragma: no cover
             raise TypeError("Parallel pickling of `h5py.File` with"
                             " 'mpio' driver is currently not supported.")
 
