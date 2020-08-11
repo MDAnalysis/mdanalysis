@@ -832,6 +832,8 @@ class H5PYPicklable(h5py.File):
                 return self.comm_unpickle('COMM_WORLD',)
             raise TypeError("cannot pickle MPI.Comm object")
 
+        copyreg.pickle(MPI.Intracomm, comm_pickle, comm_unpickle)
+        copyreg.pickle(MPI.Comm, comm_pickle, comm_unpickle)
 
     def __getstate__(self):
         try:
@@ -846,9 +848,6 @@ class H5PYPicklable(h5py.File):
                     comm = self.id.get_access_plist().get_fapl_mpio()[0]
                 except AttributeError:
                     comm = None
-
-                copyreg.pickle(MPI.Intracomm, self.comm_pickle, self.comm_unpickle)
-                copyreg.pickle(MPI.Comm, self.comm_pickle, self.comm_unpickle)
 
             return {'name': self.filename,
                     'mode': self.mode,
