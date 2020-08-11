@@ -23,5 +23,6 @@
 
 from . import streamlines
 from . import streamlines_3D
+from . import rdkit
 
-__all__ = ['streamlines', 'streamlines_3D']
+__all__ = ['streamlines', 'streamlines_3D', 'rdkit']
