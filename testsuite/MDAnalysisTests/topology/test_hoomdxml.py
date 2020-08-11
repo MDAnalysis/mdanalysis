@@ -75,8 +75,11 @@ class TestHoomdXMLParser(ParserBase):
         assert ((0, 250, 350, 450) not in vals)
 
     def test_read_masses(self, top):
-        for val in top.masses.values:
-            assert val == 1
-        assert ((0, -1, 250, 450) not in top.masses.values) 
+        assert_almost_equal(top.masses.values, 1.0)
+        assert ((0, -1, 250, 450) not in top.masses.values)
+
+    def test_read_charges(self, top):
+        assert_almost_equal(top.charges.values, 0.0)
+        assert ((1, -1, 0.5, -0.5) not in top.charges.values) 
 
         
