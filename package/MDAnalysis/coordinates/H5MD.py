@@ -859,7 +859,7 @@ def comm_pickle(obj):
     if obj == MPI.COMM_WORLD:
         return comm_unpickle, ('COMM_WORLD',)
     if isinstance(obj, MPI.Comm):
-        return comm_unpickle, ('COMM_WORLD')
+        return comm_unpickle, ('COMM_WORLD',)
     raise TypeError("cannot pickle object")
 
 
