@@ -810,7 +810,7 @@ class H5PYPicklable(h5py.File):
         # from test because h5py call for an MPI configuration when driver is
         # 'mpio', so this will need to be patched in the test function.
         if driver == 'mpio':  # pragma: no cover
-            raise TypeError("Parallel pickling of `h5py.File` with"
+            raise TypeError("Parallel pickling of `h5py.File` with"  # pragma: no cover
                             " 'mpio' driver is currently not supported.")
 
         return {'name': self.filename,
