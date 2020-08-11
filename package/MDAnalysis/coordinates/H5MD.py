@@ -289,21 +289,21 @@ class H5MDReader(base.ReaderBase):
                 \-- (position)
                     \-- [step] <int>, gives frame
                     \-- [time] <float>, gives time
-                        +-- units <str>
+                        +-- unit <str>
                     \-- [value] <float>, gives numpy arrary of positions
                                          with shape (n_atoms, 3)
                         +-- unit <str>
                 \-- (velocity)
                     \-- [step] <int>, gives frame
                     \-- [time] <float>, gives time
-                        +-- units <str>
+                        +-- unit <str>
                     \-- [value] <float>, gives numpy arrary of velocities
                                          with shape (n_atoms, 3)
                         +-- unit <str>
                 \-- (force)
                     \-- [step] <int>, gives frame
                     \-- [time] <float>, gives time
-                        +-- units <str>
+                        +-- unit <str>
                     \-- [value] <float>, gives numpy arrary of forces
                                          with shape (n_atoms, 3)
                         +-- unit <str>
@@ -807,7 +807,7 @@ class H5PYPicklable(h5py.File):
         driver = self.driver
         # Current issues: Need a way to retrieve MPI communicator object
         # from self and pickle MPI.Comm object. Parallel driver is excluded
-        # from test because h5py call for an MPI configuration when driver is
+        # from test because h5py calls for an MPI configuration when driver is
         # 'mpio', so this will need to be patched in the test function.
         if driver == 'mpio':  # pragma: no cover
             raise TypeError("Parallel pickling of `h5py.File` with"  # pragma: no cover
