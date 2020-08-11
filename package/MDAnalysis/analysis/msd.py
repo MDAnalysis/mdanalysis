@@ -263,7 +263,7 @@ class EinsteinMSD(AnalysisBase):
         Dimensionality :math:`d` of the MSD.
     timeseries : :class:`numpy.ndarray`
         The averaged MSD over all the particles with respect to lag-time.
-    msd_per_particle : :class:`numpy.ndarray`
+    msds_by_particle : :class:`numpy.ndarray`
         The MSD of each individual particle with respect to lag-time.
     ag : :class:`AtomGroup`
         The :class:`AtomGroup` resulting from your selection
