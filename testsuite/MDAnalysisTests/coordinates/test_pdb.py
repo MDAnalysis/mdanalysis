@@ -506,10 +506,10 @@ class TestPDBWriter(object):
         u = universe5
         u.add_TopologyAttr('record_type', ['ABNORM']*len(u.atoms))
 
-        expected_msg = ("Found 'ABNORM' for record type, but allowed "
-                        "types are ATOM or HETATM")
+        expected_msg = ("Found ABNORM for the record type, but only "
+                        "allowed types are ATOM or HETATM")
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=expected_msg):
             u.atoms.write(outfile)
 
 
