@@ -74,7 +74,11 @@ class AtomNeighborSearch(object):
           *radius* of *atoms*.
         """
         unique_idx = []
-        pairs = capped_distance(atoms.positions, self.atom_group.positions,
+        try:
+            position = atoms.positions
+        except AttributeError:
+            position = atoms.position
+        pairs = capped_distance(position, self.atom_group.positions,
                                 radius, box=self._box, return_distances=False)
 
         if pairs.size > 0:
