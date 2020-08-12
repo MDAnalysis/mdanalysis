@@ -43,7 +43,9 @@ A typical transformation class looks like this:
             self.needed_var = args[0]
 
         def __call__(self, ts):
-            #  apply changes to the Timestep object
+            #  apply changes to the Timestep,
+            #  or modify an AtomGroup and return Timestep
+
             return ts
 
 See `MDAnalysis.transformations.translate` for a simple example.
@@ -57,12 +59,12 @@ workflow cannot be changed after being defined. for example:
 .. code-block:: python
 
     u = mda.Universe(GRO, XTC)
-    ts = u.trajectory[0]
     trans = transformation(args)
-    ts = trans(ts)
-
-    #  or add as a workflow
     u.trajectory.add_transformations(trans)
+
+    #  it is equivalent to applying this transforamtion to each Timestep by
+    ts = u.trajectory[0]
+    ts_trans = trans(ts)
 
 Transformations can also be created as a closure/nested function.
 In addition to the specific arguments that each transformation can take, they
@@ -73,8 +75,11 @@ So, a closure-style transformation can be roughly defined as follows:
 
     def transformation(*args,**kwargs):
         # do some things
+
             def wrapped(ts):
-                # apply changes to the Timestep object
+                #  apply changes to the Timestep,
+                #  or modify an AtomGroup and return Timestep
+
                 return ts
 
             return wrapped
