@@ -50,11 +50,11 @@ except ImportError:
     HAS_CHEMFILES = False
 
     # Allow building documentation even if chemfiles is not installed
-    import imp
+    import types
 
     class MockTrajectory:
         pass
-    chemfiles = imp.new_module("chemfiles")
+    chemfiles = types.ModuleType("chemfiles")
     chemfiles.Trajectory = MockTrajectory
 else:
     HAS_CHEMFILES = True
