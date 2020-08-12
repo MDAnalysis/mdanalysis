@@ -13,6 +13,7 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+<<<<<<< HEAD
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney
 
@@ -296,6 +297,8 @@ Deprecations
   * Writer.write_next_timestep is deprecated, use write() instead (remove in 2.0)
   * Writer.write(Timestep) is deprecated, use either a Universe or AtomGroup
 
+=======
+>>>>>>> origin/master
 09/05/19 IAlibay, richardjgowers
 
   * 0.20.1
@@ -668,7 +671,6 @@ Testsuite
   * Unit tests for unwanted side effects when importing MDAnalysis
   * MDAnalysis.visualization is now tested
 
-
 01/24/18 richardjgowers, rathann, orbeckst, tylerjereddy, mtiberti, kain88-de,
          jbarnoud, nestorwendt, mmattaNU, jmborr, sobuelow, sseyler, rcortini,
          xiki-tempula, manuel.nuno.melo
@@ -777,6 +779,9 @@ Fixes
   * fixed GROWriter truncating long resids from the wrong end (Issue #1395)
   * Fixed dtype of numpy arrays to accomodate 32 bit architectures (Issue #1362)
   * Groups are hashable on python 3 (Issue #1397)
+
+Changes
+  * scipy and matplotlib are now required dependencies (Issue #1159)
 
 
 Changes
