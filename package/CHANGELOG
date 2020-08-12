@@ -14,7 +14,8 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/20 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
-         yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz
+         yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
+         calcraven
 
   * 1.0.1
 
@@ -35,6 +36,8 @@ Fixes
   * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError
     was thrown when finding D-H pairs via the topology if `hydrogens` was an
     empty AtomGroup (Issue #2848)
+  * Fixed reading in masses and charges from a hoomdxml file
+    (Issue #2888, PR #2889)
 
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
