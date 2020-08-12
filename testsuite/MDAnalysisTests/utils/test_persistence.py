@@ -76,17 +76,12 @@ class TestAtomGroupPickle(object):
 
     @staticmethod
     @pytest.fixture()
-    def pickle_str(ag):
-        return pickle.dumps(ag, protocol=pickle.HIGHEST_PROTOCOL)
-
-    @staticmethod
-    @pytest.fixture()
     def pickle_str_two_ag(ag, ag_2):
         return pickle.dumps((ag, ag_2), protocol=pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
     @pytest.fixture()
-    def pickle_str_ag_with_universe_first(ag, universe):
+    def pickle_str_ag_with_universe_f(ag, universe):
         return pickle.dumps((universe, ag), protocol=pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
@@ -115,22 +110,26 @@ class TestAtomGroupPickle(object):
 
     def test_unpickle_two_ag(self, pickle_str_two_ag):
         newag, newag2 = pickle.loads(pickle_str_two_ag)
-        assert (newag.universe is newag2.universe,
-            "Two AtomGroups are unpickled to two different Universe")
+        assert newag.universe is newag2.universe, (
+            "Two AtomGroups are unpickled to two different Universe"
+        )
 
-    def test_unpickle_ag_with_universe_first(self,
-                                             pickle_str_ag_with_universe_first):
-        newu, newag = pickle.loads(pickle_str_ag_with_universe_first)
-        assert (newag.universe is newu,
+    def test_unpickle_ag_with_universe_f(self,
+                                         pickle_str_ag_with_universe_f):
+        newu, newag = pickle.loads(pickle_str_ag_with_universe_f)
+        assert newag.universe is newu, (
             "AtomGroup is not unpickled to the bound Universe"
-            "when Universe is pickled first")
+            "when Universe is pickled first"
+        )
 
     def test_unpickle_ag_with_universe(self,
                                        pickle_str_ag_with_universe):
         newag, newu = pickle.loads(pickle_str_ag_with_universe)
-        assert (newag.universe is newu,
-            "AtomGroup is not unpickled to the bound Universe"
-            "when AtomGroup is pickled first")
+        assert newag.universe is newu, (
+                "AtomGroup is not unpickled to the bound Universe" +
+                "when AtomGroup is pickled first"
+        )
+
 
 class TestPicklingUpdatingAtomGroups(object):
 
