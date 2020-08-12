@@ -229,11 +229,11 @@
     <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="c1"># Allow building documentation even if chemfiles is not installed</span>
-    <span class="kn">import</span> <span class="nn">imp</span>
+    <span class="kn">import</span> <span class="nn">types</span>
 
     <span class="k">class</span> <span class="nc">MockTrajectory</span><span class="p">:</span>
         <span class="k">pass</span>
-    <span class="n">chemfiles</span> <span class="o">=</span> <span class="n">imp</span><span class="o">.</span><span class="n">new_module</span><span class="p">(</span><span class="s2">&quot;chemfiles&quot;</span><span class="p">)</span>
+    <span class="n">chemfiles</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="s2">&quot;chemfiles&quot;</span><span class="p">)</span>
     <span class="n">chemfiles</span><span class="o">.</span><span class="n">Trajectory</span> <span class="o">=</span> <span class="n">MockTrajectory</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">HAS_CHEMFILES</span> <span class="o">=</span> <span class="kc">True</span>
