@@ -50,6 +50,10 @@ if check_chemfiles_version():
     from MDAnalysis.coordinates.chemfiles import (
         ChemfilesPicklable
     )
+from MDAnalysis.coordinates.H5MD import HAS_H5PY
+from MDAnalysis.coordinates.H5MD import (
+    H5PYPicklable
+)
 
 from MDAnalysis.tests.datafiles import (
     PDB,
@@ -58,7 +62,9 @@ from MDAnalysis.tests.datafiles import (
     MMTF_gz,
     GMS_ASYMOPT,
     GSD,
-    NCDF
+    NCDF,
+    TPR_xvf,
+    H5MD_xvf
 )
 
 
@@ -200,3 +206,19 @@ def test_Chemfiles_with_write_mode(tmpdir):
     with pytest.raises(ValueError, match=r"Only read mode"):
         chemfiles_io = ChemfilesPicklable(tmpdir.mkdir("xyz").join('t.xyz'),
                                           mode='w')
+
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_H5MD_pickle():
+    h5md_io = H5PYPicklable(H5MD_xvf, 'r')
+    h5md_io_pickled = pickle.loads(pickle.dumps(h5md_io))
+    assert_equal(h5md_io['particles/trajectory/position/value'][0],
+                 h5md_io_pickled['particles/trajectory/position/value'][0])
+
+
+@pytest.mark.skipif(not HAS_H5PY, reason="h5py not installed")
+def test_H5MD_pickle_with_driver():
+    h5md_io = H5PYPicklable(H5MD_xvf, 'r', driver='core')
+    h5md_io_pickled = pickle.loads(pickle.dumps(h5md_io))
+    assert_equal(h5md_io['particles/trajectory/position/value'][0],
+                 h5md_io_pickled['particles/trajectory/position/value'][0])
