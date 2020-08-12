@@ -84,5 +84,3 @@ class TestHoomdXMLParser(ParserBase):
         # is the same as the default so this test does not fully test
         # reading of charges from the file (#2888)
         assert_almost_equal(top.charges.values, 0.0)
-
-

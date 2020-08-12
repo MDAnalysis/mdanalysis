@@ -141,9 +141,9 @@ class HoomdXMLParser(TopologyReaderBase):
                 vals = []
             attrs[attrname] = attr(vals)
 
-        if not 'mass' in attrs:
+        if 'mass' not in attrs:
             attrs['mass'] = Masses(np.zeros(natoms))
-        if not 'charge' in attrs:
+        if 'charge' not in attrs:
             attrs['charge'] = Charges(np.zeros(natoms, dtype=np.float32))
 
         attrs = list(attrs.values())
