@@ -41,6 +41,7 @@ Fixes
     empty AtomGroup (Issue #2848)
   * Fixed the DMSParser, allowing the creation of multiple segids sharing
     residues with identical resids (Issue #1387, PR #2872)
+  * H5MD files are now pickleable with H5PYPicklable (Issue #2890, PR #2894)
   * Fixed Janin analysis residue filtering (include CYSH) (Issue #2898)
 
 Enhancements
@@ -68,7 +69,7 @@ Enhancements
   * Added new kwargs `select_remove` and `select_protein` to
     analysis.dihedrals.Janin analysis to give user more fine grained control
     over selections (PR #2899)
- 
+
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
     (see upstream NumPy PR 14882), and our pytest configuration will raise an
