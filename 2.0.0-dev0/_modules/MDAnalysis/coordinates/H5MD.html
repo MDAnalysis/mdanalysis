@@ -210,7 +210,7 @@
 <span class="sd">interface of the HDF5 library to improve parallel reads and writes.</span>
 
 <span class="sd">The HDF5 library and `h5py`_ must be installed; otherwise, H5MD files</span>
-<span class="sd">cannot be read by MDAnalysis. If `h5py`_ is not installed, a </span>
+<span class="sd">cannot be read by MDAnalysis. If `h5py`_ is not installed, a</span>
 <span class="sd">:exc:`RuntimeError` is raised.</span>
 
 <span class="sd">Units</span>
@@ -273,10 +273,10 @@
 
 <span class="sd">Building parallel h5py and HDF5 on Linux</span>
 <span class="sd">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
-<span class="sd">Building a working parallel HDF5/h5py/mpi4py environment can be </span>
+<span class="sd">Building a working parallel HDF5/h5py/mpi4py environment can be</span>
 <span class="sd">challenging and is often specific to your local computing resources,</span>
 <span class="sd">e.g., the supercomputer that you&#39;re running on typically already has</span>
-<span class="sd">its preferred MPI installation. As a starting point we provide </span>
+<span class="sd">its preferred MPI installation. As a starting point we provide</span>
 <span class="sd">instructions that worked in a specific, fairly generic environment.</span>
 
 <span class="sd">These instructions successfully built parallel HDF5/h5py</span>
@@ -312,8 +312,8 @@
 <span class="sd">          CC=mpicc HDF5_DIR=$HDF5_PATH python setup.py build</span>
 <span class="sd">          python setup.py install</span>
 
-<span class="sd">If you have questions or want to share how you managed to build </span>
-<span class="sd">parallel hdf5/h5py/mpi4py please let everyone know on the </span>
+<span class="sd">If you have questions or want to share how you managed to build</span>
+<span class="sd">parallel hdf5/h5py/mpi4py please let everyone know on the</span>
 <span class="sd">`MDAnalysis forums`_.</span>
 
 <span class="sd">.. _`H5MD`: https://nongnu.org/h5md/index.html</span>
@@ -359,6 +359,9 @@
 
 <span class="sd">   .. automethod:: H5MDReader._reopen</span>
 
+<span class="sd">.. autoclass:: H5PYPicklable</span>
+<span class="sd">   :members:</span>
+
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -369,6 +372,15 @@
     <span class="kn">import</span> <span class="nn">h5py</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="n">HAS_H5PY</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Allow building documentation even if h5py is not installed</span>
+    <span class="kn">import</span> <span class="nn">types</span>
+
+    <span class="k">class</span> <span class="nc">MockH5pyFile</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">h5py</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">ModuleType</span><span class="p">(</span><span class="s2">&quot;h5py&quot;</span><span class="p">)</span>
+    <span class="n">h5py</span><span class="o">.</span><span class="n">File</span> <span class="o">=</span> <span class="n">MockH5pyFile</span>
+
 <span class="k">else</span><span class="p">:</span>
     <span class="n">HAS_H5PY</span> <span class="o">=</span> <span class="kc">True</span>
 
@@ -407,23 +419,23 @@
 
 <span class="sd">    See `h5md documentation &lt;https://nongnu.org/h5md/h5md.html&gt;`_</span>
 <span class="sd">    for a detailed overview of the H5MD file format.</span>
-<span class="sd">    </span>
-<span class="sd">    The reader attempts to convert units in the trajectory file to </span>
-<span class="sd">    the standard MDAnalysis units (:mod:`MDAnalysis.units`) if </span>
+
+<span class="sd">    The reader attempts to convert units in the trajectory file to</span>
+<span class="sd">    the standard MDAnalysis units (:mod:`MDAnalysis.units`) if</span>
 <span class="sd">    `convert_units` is set to ``True``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Additional data in the *observables* group of the H5MD file are</span>
 <span class="sd">    loaded into the :attr:`Timestep.data` dictionary.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Only 3D-periodic boxes or no periodicity are supported; for no</span>
 <span class="sd">    periodicity, :attr:`Timestep.dimensions` will return ``None``.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Although H5MD can store varying numbers of particles per time step</span>
 <span class="sd">    as produced by, e.g., GCMC simulations, MDAnalysis can currently</span>
 <span class="sd">    only process a fixed number of particles per step. If the number</span>
 <span class="sd">    of particles changes a :exc:`ValueError` is raised.</span>
 
-<span class="sd">    The :class:`H5MDReader` reads .h5md files with the following </span>
+<span class="sd">    The :class:`H5MDReader` reads .h5md files with the following</span>
 <span class="sd">    HDF5 hierarchy:</span>
 
 <span class="sd">    .. code-block:: text</span>
@@ -456,21 +468,21 @@
 <span class="sd">                \-- (position)</span>
 <span class="sd">                    \-- [step] &lt;int&gt;, gives frame</span>
 <span class="sd">                    \-- [time] &lt;float&gt;, gives time</span>
-<span class="sd">                        +-- units &lt;str&gt;</span>
+<span class="sd">                        +-- unit &lt;str&gt;</span>
 <span class="sd">                    \-- [value] &lt;float&gt;, gives numpy arrary of positions</span>
 <span class="sd">                                         with shape (n_atoms, 3)</span>
 <span class="sd">                        +-- unit &lt;str&gt;</span>
 <span class="sd">                \-- (velocity)</span>
 <span class="sd">                    \-- [step] &lt;int&gt;, gives frame</span>
 <span class="sd">                    \-- [time] &lt;float&gt;, gives time</span>
-<span class="sd">                        +-- units &lt;str&gt;</span>
+<span class="sd">                        +-- unit &lt;str&gt;</span>
 <span class="sd">                    \-- [value] &lt;float&gt;, gives numpy arrary of velocities</span>
 <span class="sd">                                         with shape (n_atoms, 3)</span>
 <span class="sd">                        +-- unit &lt;str&gt;</span>
 <span class="sd">                \-- (force)</span>
 <span class="sd">                    \-- [step] &lt;int&gt;, gives frame</span>
 <span class="sd">                    \-- [time] &lt;float&gt;, gives time</span>
-<span class="sd">                        +-- units &lt;str&gt;</span>
+<span class="sd">                        +-- unit &lt;str&gt;</span>
 <span class="sd">                    \-- [value] &lt;float&gt;, gives numpy arrary of forces</span>
 <span class="sd">                                         with shape (n_atoms, 3)</span>
 <span class="sd">                        +-- unit &lt;str&gt;</span>
@@ -736,13 +748,15 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="c1"># can only pass comm argument to h5py.File if driver=&#39;mpio&#39;</span>
                 <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="o">==</span> <span class="s1">&#39;mpio&#39;</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span>  <span class="c1"># pragma: no cover</span>
-                                       <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span>
-                                       <span class="n">comm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_comm</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>  <span class="c1"># pragma: no cover</span>
+                                           <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                                           <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">,</span>
+                                           <span class="n">comm</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_comm</span><span class="p">)</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_driver</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+                                           <span class="n">driver</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_driver</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_file</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="c1"># pulls first key out of &#39;particles&#39;</span>
         <span class="c1"># allows for arbitrary name of group1 in &#39;particles&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">][</span>
@@ -905,7 +919,92 @@
 
     <span class="nd">@has_forces</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">has_forces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">bool</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_has</span><span class="p">[</span><span class="s1">&#39;force&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_particle_group&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_particle_group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">][</span>
+                               <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_file</span><span class="p">[</span><span class="s1">&#39;particles&#39;</span><span class="p">])[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="H5PYPicklable"><a class="viewcode-back" href="../../../documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5PYPicklable">[docs]</a><span class="k">class</span> <span class="nc">H5PYPicklable</span><span class="p">(</span><span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;H5PY file object (read-only) that can be pickled.</span>
+
+<span class="sd">    This class provides a file-like object (as returned by</span>
+<span class="sd">    :class:`h5py.File`) that,</span>
+<span class="sd">    unlike standard Python file objects,</span>
+<span class="sd">    can be pickled. Only read mode is supported.</span>
+
+<span class="sd">    When the file is pickled, filename, mode, driver, and comm of</span>
+<span class="sd">    :class:`h5py.File` in the file are saved. On unpickling, the file</span>
+<span class="sd">    is opened by filename, mode, driver. This means that for a successful</span>
+<span class="sd">    unpickle, the original file still has to be accessible with its filename.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str or file-like</span>
+<span class="sd">        a filename given a text or byte string.</span>
+<span class="sd">    driver : str (optional)</span>
+<span class="sd">        H5PY file driver used to open H5MD file</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    ::</span>
+
+<span class="sd">        f = H5PYPicklable(&#39;filename&#39;, &#39;r&#39;)</span>
+<span class="sd">        print(f[&#39;particles/trajectory/position/value&#39;][0])</span>
+<span class="sd">        f.close()</span>
+
+<span class="sd">    can also be used as context manager::</span>
+
+<span class="sd">        with H5PYPicklable(&#39;filename&#39;, &#39;r&#39;):</span>
+<span class="sd">            print(f[&#39;particles/trajectory/position/value&#39;][0])</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Pickling of an `h5py.File` opened with `driver=&quot;mpio&quot;` and an MPI</span>
+<span class="sd">    communicator is currently not supported</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    ---------</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.FileIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.BufferIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.TextIOPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.GzipPicklable`</span>
+<span class="sd">    :class:`MDAnalysis.lib.picklable_file_io.BZ2Picklable`</span>
+
+
+<span class="sd">    .. versionadded:: 2.0.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">driver</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span>
+        <span class="c1"># Current issues: Need a way to retrieve MPI communicator object</span>
+        <span class="c1"># from self and pickle MPI.Comm object. Parallel driver is excluded</span>
+        <span class="c1"># from test because h5py calls for an MPI configuration when driver is</span>
+        <span class="c1"># &#39;mpio&#39;, so this will need to be patched in the test function.</span>
+        <span class="k">if</span> <span class="n">driver</span> <span class="o">==</span> <span class="s1">&#39;mpio&#39;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Parallel pickling of `h5py.File` with&quot;</span>  <span class="c1"># pragma: no cover</span>
+                            <span class="s2">&quot; &#39;mpio&#39; driver is currently not supported.&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                <span class="s1">&#39;mode&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span>
+                <span class="s1">&#39;driver&#39;</span><span class="p">:</span> <span class="n">driver</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                      <span class="n">mode</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">],</span>
+                      <span class="n">driver</span><span class="o">=</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;driver&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Override the h5py getnewargs to skip its error message&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">()</span></div>
 </pre></div>
 
            </div>

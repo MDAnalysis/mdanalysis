@@ -453,21 +453,21 @@ H5MD root
         \-- (position)
             \-- [step] &lt;int&gt;, gives frame
             \-- [time] &lt;float&gt;, gives time
-                +-- units &lt;str&gt;
+                +-- unit &lt;str&gt;
             \-- [value] &lt;float&gt;, gives numpy arrary of positions
                                  with shape (n_atoms, 3)
                 +-- unit &lt;str&gt;
         \-- (velocity)
             \-- [step] &lt;int&gt;, gives frame
             \-- [time] &lt;float&gt;, gives time
-                +-- units &lt;str&gt;
+                +-- unit &lt;str&gt;
             \-- [value] &lt;float&gt;, gives numpy arrary of velocities
                                  with shape (n_atoms, 3)
                 +-- unit &lt;str&gt;
         \-- (force)
             \-- [step] &lt;int&gt;, gives frame
             \-- [time] &lt;float&gt;, gives time
-                +-- units &lt;str&gt;
+                +-- unit &lt;str&gt;
             \-- [value] &lt;float&gt;, gives numpy arrary of forces
                                  with shape (n_atoms, 3)
                 +-- unit &lt;str&gt;
@@ -576,6 +576,110 @@ it rewinds the trajectory back to the first timstep.</p>
 <dd><p>opens the trajectory file using h5py library</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.coordinates.H5MD.H5PYPicklable">
+<em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.H5MD.</code><code class="descname">H5PYPicklable</code><span class="sig-paren">(</span><em>name</em>, <em>mode=None</em>, <em>driver=None</em>, <em>libver=None</em>, <em>userblock_size=None</em>, <em>swmr=False</em>, <em>rdcc_nslots=None</em>, <em>rdcc_nbytes=None</em>, <em>rdcc_w0=None</em>, <em>track_order=None</em>, <em>**kwds</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/H5MD.html#H5PYPicklable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.H5MD.H5PYPicklable" title="Permalink to this definition">¶</a></dt>
+<dd><p>H5PY file object (read-only) that can be pickled.</p>
+<p>This class provides a file-like object (as returned by
+<code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code>) that,
+unlike standard Python file objects,
+can be pickled. Only read mode is supported.</p>
+<p>When the file is pickled, filename, mode, driver, and comm of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">h5py.File</span></code> in the file are saved. On unpickling, the file
+is opened by filename, mode, driver. This means that for a successful
+unpickle, the original file still has to be accessible with its filename.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> or </em><em>file-like</em>) – a filename given a text or byte string.</li>
+<li><strong>driver</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – H5PY file driver used to open H5MD file</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;particles/trajectory/position/value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>can also be used as context manager:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">H5PYPicklable</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;particles/trajectory/position/value&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pickling of an <cite>h5py.File</cite> opened with <cite>driver=”mpio”</cite> and an MPI
+communicator is currently not supported</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.FileIOPicklable" title="MDAnalysis.lib.picklable_file_io.FileIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.FileIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BufferIOPicklable" title="MDAnalysis.lib.picklable_file_io.BufferIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BufferIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.TextIOPicklable" title="MDAnalysis.lib.picklable_file_io.TextIOPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.TextIOPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.GzipPicklable" title="MDAnalysis.lib.picklable_file_io.GzipPicklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.GzipPicklable</span></code></a>, <a class="reference internal" href="../lib/picklable_file_io.html#MDAnalysis.lib.picklable_file_io.BZ2Picklable" title="MDAnalysis.lib.picklable_file_io.BZ2Picklable"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.lib.picklable_file_io.BZ2Picklable</span></code></a></p>
+</div>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 2.0.0.</span></p>
+</div>
+<p>Create a new file object.</p>
+<p>See the h5py user guide for a detailed explanation of the options.</p>
+<dl class="docutils">
+<dt>name</dt>
+<dd>Name of the file on disk, or file-like object.  Note: for files
+created with the ‘core’ driver, HDF5 still requires this be
+non-empty.</dd>
+<dt>mode</dt>
+<dd>r        Readonly, file must exist
+r+       Read/write, file must exist
+w        Create file, truncate if exists
+w- or x  Create file, fail if exists
+a        Read/write if exists, create otherwise (default)</dd>
+<dt>driver</dt>
+<dd>Name of the driver to use.  Legal values are None (default,
+recommended), ‘core’, ‘sec2’, ‘stdio’, ‘mpio’.</dd>
+<dt>libver</dt>
+<dd>Library version bounds.  Supported values: ‘earliest’, ‘v108’,
+‘v110’,  and ‘latest’. The ‘v108’ and ‘v110’ options can only be
+specified with the HDF5 1.10.2 library or later.</dd>
+<dt>userblock</dt>
+<dd>Desired size of user block.  Only allowed when creating a new
+file (mode w, w- or x).</dd>
+<dt>swmr</dt>
+<dd>Open the file in SWMR read mode. Only used when mode = ‘r’.</dd>
+<dt>rdcc_nbytes</dt>
+<dd>Total size of the raw data chunk cache in bytes. The default size
+is 1024**2 (1 MB) per dataset.</dd>
+<dt>rdcc_w0</dt>
+<dd>The chunk preemption policy for all datasets.  This must be
+between 0 and 1 inclusive and indicates the weighting according to
+which chunks which have been fully read or written are penalized
+when determining which chunks to flush from cache.  A value of 0
+means fully read or written chunks are treated no differently than
+other chunks (the preemption is strictly LRU) while a value of 1
+means fully read or written chunks are always preempted before
+other chunks.  If your application only reads or writes data once,
+this can be safely set to 1.  Otherwise, this should be set lower
+depending on how often you re-read or re-write the same data.  The
+default value is 0.75.</dd>
+<dt>rdcc_nslots</dt>
+<dd>The number of chunk slots in the raw data chunk cache for this
+file. Increasing this value reduces the number of cache collisions,
+but slightly increases the memory used. Due to the hashing
+strategy, this value should ideally be a prime number. As a rule of
+thumb, this value should be at least 10 times the number of chunks
+that can fit in rdcc_nbytes bytes. For maximum performance, this
+value should be set approximately 100 times that number of
+chunks. The default value is 521.</dd>
+<dt>track_order</dt>
+<dd>Track dataset/group/attribute creation order under root group
+if True. If None use global default h5.get_config().track_order.</dd>
+<dt>Additional keywords</dt>
+<dd>Passed on to the selected file driver.</dd>
+</dl>
 </dd></dl>
 
 </div>
