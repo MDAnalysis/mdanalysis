@@ -473,7 +473,8 @@ class TestPDBWriter(object):
         assert_almost_equal(u_hetatms.atoms.positions,
                             written_atoms.atoms.positions)
 
-    def test_default_atom_record_type_written(self, universe5, tmpdir, outfile):
+    def test_default_atom_record_type_written(self, universe5, tmpdir,
+                                              outfile):
         """
         Checks that ATOM record types are written when there is no
         record_type attribute.
