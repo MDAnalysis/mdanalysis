@@ -111,7 +111,7 @@ class TestAtomGroupPickle(object):
     def test_unpickle_two_ag(self, pickle_str_two_ag):
         newag, newag2 = pickle.loads(pickle_str_two_ag)
         assert newag.universe is newag2.universe, (
-            "Two AtomGroups are unpickled to two different Universe"
+            "Two AtomGroups are unpickled to two different Universes"
         )
 
     def test_unpickle_ag_with_universe_f(self,
@@ -126,7 +126,7 @@ class TestAtomGroupPickle(object):
                                        pickle_str_ag_with_universe):
         newag, newu = pickle.loads(pickle_str_ag_with_universe)
         assert newag.universe is newu, (
-                "AtomGroup is not unpickled to the bound Universe" +
+                "AtomGroup is not unpickled to the bound Universe"
                 "when AtomGroup is pickled first"
         )
 
