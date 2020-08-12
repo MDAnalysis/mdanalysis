@@ -219,35 +219,39 @@
 
 <div class="viewcode-block" id="rotateby"><a class="viewcode-back" href="../../../documentation_pages/transformations/rotate.html#MDAnalysis.transformations.rotate.rotateby">[docs]</a><span class="k">def</span> <span class="nf">rotateby</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Rotates the trajectory by a given angle on a given axis. The axis is defined by </span>
+<span class="sd">    Rotates the trajectory by a given angle on a given axis. The axis is defined by</span>
 <span class="sd">    the user, combining the direction vector and a point. This point can be the center</span>
-<span class="sd">    of geometry or the center of mass of a user defined AtomGroup, or an array defining </span>
+<span class="sd">    of geometry or the center of mass of a user defined AtomGroup, or an array defining</span>
 <span class="sd">    custom coordinates.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
-<span class="sd">    </span>
-<span class="sd">    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and </span>
+
+<span class="sd">    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and</span>
 <span class="sd">    the center of geometry of a given AtomGroup:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
-<span class="sd">    </span>
+
+<span class="sd">        from MDAnalysis import transformations</span>
+
 <span class="sd">        ts = u.trajectory.ts</span>
 <span class="sd">        angle = 90</span>
-<span class="sd">        ag = u.atoms()</span>
+<span class="sd">        ag = u.atoms</span>
 <span class="sd">        d = [0,0,1]</span>
-<span class="sd">        rotated = MDAnalysis.transformations.rotate(angle, direction=d, ag=ag)(ts)</span>
-<span class="sd">    </span>
+<span class="sd">        rotated = transformations.rotate.rotateby(angle, direction=d, ag=ag)(ts)</span>
+
 <span class="sd">    e.g. rotate the coordinates by a custom axis:</span>
-<span class="sd">    </span>
+
 <span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        from MDAnalysis import transformations</span>
 
 <span class="sd">        ts = u.trajectory.ts</span>
 <span class="sd">        angle = 90</span>
 <span class="sd">        p = [1,2,3]</span>
 <span class="sd">        d = [0,0,1]</span>
-<span class="sd">        rotated = MDAnalysis.transformations.rotate(angle, direction=d, point=point)(ts) </span>
-<span class="sd">    </span>
+<span class="sd">        rotated = transformations.rotate.rotateby(angle, direction=d, point=p)(ts)</span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    angle: float</span>
@@ -276,7 +280,7 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    MDAnalysis.coordinates.base.Timestep</span>
-<span class="sd">    </span>
+
 <span class="sd">    Warning</span>
 <span class="sd">    -------</span>
 <span class="sd">    Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible </span>
@@ -311,7 +315,7 @@
         <span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">atoms</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">wrap</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;A point or an AtomGroup must be specified&#39;</span><span class="p">)</span>
-    
+
     <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">position</span> <span class="o">=</span> <span class="n">center_method</span><span class="p">()</span>
@@ -322,11 +326,11 @@
         <span class="n">translation</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">rotation</span><span class="p">)</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">translation</span>
-        
+
         <span class="k">return</span> <span class="n">ts</span>
-    
+
     <span class="k">return</span> <span class="n">wrapped</span></div>
-    
+
 </pre></div>
 
            </div>
