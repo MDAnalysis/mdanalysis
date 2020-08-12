@@ -468,8 +468,10 @@ class TestPDBWriter(object):
         written_atoms = written.select_atoms("resname ETA and "
                                              "record_type HETATM")
 
-        assert len(u_hetatms) == len(written_atoms), "mismatched HETATM number"
-        assert_almost_equal(u_hetatms.atoms.positions, written_atoms.atoms.positions)
+        assert len(u_hetatms) == len(written_atoms), \
+            "mismatched HETATM number"
+        assert_almost_equal(u_hetatms.atoms.positions,
+                            written_atoms.atoms.positions)
 
     def test_default_atom_record_type_written(self, universe5, tmpdir, outfile):
         """
@@ -486,10 +488,12 @@ class TestPDBWriter(object):
             u.atoms.write(outfile)
 
         written = mda.Universe(outfile)
-        assert len(u.atoms) == len(written.atoms), "mismatched number of atoms"
+        assert len(u.atoms) == len(written.atoms), \
+            "mismatched number of atoms"
 
         atms = written.select_atoms("record_type ATOM")
-        assert len(atms.atoms) == len(u.atoms), "mismatched ATOM number"
+        assert len(atms.atoms) == len(u.atoms), \
+            "mismatched ATOM number"
 
         hetatms = written.select_atoms("record_type HETATM")
         assert len(hetatms.atoms) == 0, "mismatched HETATM number"
@@ -506,8 +510,7 @@ class TestPDBWriter(object):
                         "types are ATOM or HETATM")
 
         with pytest.raises(ValueError):
-            with pytest.warns(UserWarning, match=expected_msg):
-                u.atoms.write(outfile)
+            u.atoms.write(outfile)
 
 
 class TestMultiPDBReader(object):

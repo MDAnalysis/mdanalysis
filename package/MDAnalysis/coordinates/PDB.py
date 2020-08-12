@@ -1003,9 +1003,9 @@ class PDBWriter(base.WriterBase):
            first charater (Issue #2224)
 
         .. versionchanged:: 2.0.0
-           When only record_type attribute is present, instead of using ATOM_
-           for both ATOM_ and HETATM_, HETATM_ record types are properly written
-           out (Issue #1753).
+           When only record_type attribute is present, instead of
+           using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
+           types are properly written out (Issue #1753).
 
         """
         atoms = self.obj.atoms
