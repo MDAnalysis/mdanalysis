@@ -73,16 +73,20 @@ class AtomNeighborSearch(object):
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
 
-        .. versionchanged:: 2.0.0
-
         Returns
         -------
-        AtomGroup : :class:`MDAnalysis.core.groups.AtomGroup`
+        AtomGroup : :class:`~MDAnalysis.core.groups.AtomGroup`
           When ``level='A'``, AtomGroup is being returned.
-        ResidueGroup : :class:`MDAnalysis.core.groups.ResidueGroup`
+        ResidueGroup : :class:`~MDAnalysis.core.groups.ResidueGroup`
           When ``level='R'``, ResidueGroup is being returned.
-        SegmentGroup : :class:`MDAnalysis.core.groups.SegmentGroup`
+        SegmentGroup : :class:`~MDAnalysis.core.groups.SegmentGroup`
           When ``level='S'``, SegmentGroup is being returned.
+          
+          
+        .. versionchanged:: 2.0.0
+           Now returns :class:`AtomGroup` (when empty this is now an empty
+           :class:`AtomGroup` instead of an empty list), :class:`ResidueGroup`,
+           or a :class:`SegmentGroup`
         """
         unique_idx = []
         try:
