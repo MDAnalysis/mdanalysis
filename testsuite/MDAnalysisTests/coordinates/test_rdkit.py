@@ -314,6 +314,15 @@ class TestRDKitConverter(object):
             indices = [a.GetIdx() for a in indices]
             assert_equal(positions[indices], ts.positions)
 
+    def test_nan_coords(self):
+        u = mda.Universe.from_smiles("CCO")
+        xyz = u.atoms.positions
+        xyz[0][2] = np.nan
+        u.atoms.positions = xyz
+        mol = u.atoms.convert_to("RDKIT")
+        with pytest.raises(ValueError, match="Bad Conformer Id"):
+            mol.GetConformer()
+
     def test_cache(self):
         u = mda.Universe.from_smiles("CCO", numConfs=5)
         ag = u.atoms
