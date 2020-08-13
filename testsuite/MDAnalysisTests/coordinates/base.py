@@ -25,7 +25,6 @@ import itertools
 import numpy as np
 import pytest
 from six.moves import zip, range
-from six.moves import cPickle as pickle
 from unittest import TestCase
 from numpy.testing import (assert_equal, assert_almost_equal,
                            assert_array_almost_equal, assert_allclose)
@@ -425,16 +424,6 @@ class BaseReaderTest(object):
         with pytest.raises(ValueError):
             transformed.add_transformations(translate([2,2,2]))
 
-    def test_pickle_reader(self, reader):
-        try:
-            reader_p = pickle.loads(pickle.dumps(reader))
-        except (TypeError, ValueError):
-            pytest.xfail("Pickling not yet implemented for format {}".format(
-                reader.format))
-        assert_equal(len(reader), len(reader_p))
-        assert_equal(reader.ts, reader_p.ts,
-                     "Timestep is changed after pickling")
-
 
 class MultiframeReaderTest(BaseReaderTest):
     def test_last_frame(self, ref, reader):
@@ -500,32 +489,6 @@ class MultiframeReaderTest(BaseReaderTest):
             assert_timestep_almost_equal(ts,
                                          ref.iter_ts(ref.aux_lowf_frames_with_steps[i]),
                                          decimal=ref.prec)
-
-    #  To make sure we not only save the current timestep information,
-    #  but also maintain its relative position.
-    def test_pickle_next_ts_reader(self, reader):
-        try:
-            reader_p = pickle.loads(pickle.dumps(reader))
-        except (TypeError, ValueError):
-            pytest.xfail("Pickling not yet implemented for format {}".format(
-                reader.format))
-        assert_equal(next(reader), next(reader_p),
-                     "Next timestep is changed after pickling")
-
-    #  To make sure pickle works for last frame.
-    def test_pickle_last_ts_reader(self, reader):
-        #  move current ts to last frame.
-        reader[-1]
-        try:
-            reader_p = pickle.loads(pickle.dumps(reader))
-        except (TypeError, ValueError):
-            pytest.xfail("Pickling not yet implemented for format {}".format(
-                reader.format))
-        assert_equal(len(reader), len(reader_p),
-                     "Last timestep is changed after pickling")
-        assert_equal(reader.ts, reader_p.ts,
-                     "Last timestep is changed after pickling")
-
 
 
 

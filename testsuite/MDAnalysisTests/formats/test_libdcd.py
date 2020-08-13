@@ -84,24 +84,47 @@ def dcd():
     with DCDFile(DCD) as dcd:
         yield dcd
 
+def _assert_compare_readers(old_reader, new_reader):
+    frame = old_reader.read()     # same as next(old_reader)
+    new_frame = new_reader.read() # same as next(new_reader)
+
+    assert old_reader.fname == new_reader.fname
+    assert old_reader.tell() == new_reader.tell()
+    assert_almost_equal(frame.xyz, new_frame.xyz)
+    assert_almost_equal(frame.unitcell, new_frame.unitcell)
 
 def test_pickle(dcd):
+    mid = len(dcd) // 2
+    dcd.seek(mid)
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+    _assert_compare_readers(dcd, new_dcd)
+
+def test_pickle_last(dcd):
     dcd.seek(len(dcd) - 1)
-    dump = pickle.dumps(dcd)
-    new_dcd = pickle.loads(dump)
-
-    assert dcd.fname == new_dcd.fname
-    assert dcd.tell() == new_dcd.tell()
-
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+    _assert_compare_readers(dcd, new_dcd)
 
 def test_pickle_closed(dcd):
     dcd.seek(len(dcd) - 1)
     dcd.close()
-    dump = pickle.dumps(dcd)
-    new_dcd = pickle.loads(dump)
+    new_dcd = pickle.loads(pickle.dumps(dcd))
 
     assert dcd.fname == new_dcd.fname
     assert dcd.tell() != new_dcd.tell()
+
+def test_pickle_after_read(dcd):
+    _ = dcd.read()
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+    _assert_compare_readers(dcd, new_dcd)
+
+#@pytest.mark.xfail
+def test_pickle_immediately(dcd):
+    # do not seek before pickling: this seems to leave the DCDFile
+    # object in weird state: is this supposed to work?
+    new_dcd = pickle.loads(pickle.dumps(dcd))
+
+    assert dcd.fname == new_dcd.fname
+    assert dcd.tell() == new_dcd.tell()
 
 
 @pytest.mark.parametrize("new_frame", (10, 42, 21))
