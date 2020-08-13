@@ -14,12 +14,14 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
-         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-	 xiki-tempula
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney, 
+         calcraven， xiki-tempula
 
   * 2.0.0
 
 Fixes
+  * Fixed reading in masses and charges from a hoomdxml file
+    (Issue #2888, PR #2889)
   * Bond attribute is no longer set if PDB file contains no CONECT records
     (Issue #2832)
   * ResidueAttrs now have Atom as a target class by default; ICodes and
