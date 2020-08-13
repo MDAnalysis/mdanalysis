@@ -334,41 +334,38 @@ class TestRDKitConverter(object):
         mol = u.atoms.convert_to("RDKIT")
         assert len(cache) == 1
         assert cache != previous_cache
-        # cache should depend on passed arguments
-        previous_cache = copy.deepcopy(cache)
-        mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
-        assert cache != previous_cache
-        # skip cache
-        mol = u.atoms.convert_to("RDKIT", cache=False)
-        assert cache == {}
+        # TODO: uncomment once the converters API accepts arguments
+        # # cache should depend on passed arguments
+        # previous_cache = copy.deepcopy(cache)
+        # mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
+        # assert cache != previous_cache
+        # # skip cache
+        # mol = u.atoms.convert_to("RDKIT", cache=False)
+        # assert cache == {}
 
 
 @requires_rdkit
 class TestRDKitFunctions(object):
-    @pytest.mark.parametrize("smi, edges, out", [
-        ("C(-[H])(-[H])(-[H])-[H]", [], "C"),
-        ("[C](-[H])(-[H])-[C](-[H])-[H]", [], "C=C"),
-        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])", [],
+    @pytest.mark.parametrize("smi, out", [
+        ("C(-[H])(-[H])(-[H])-[H]", "C"),
+        ("[C](-[H])(-[H])-[C](-[H])-[H]", "C=C"),
+        ("[C]1(-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C]1(-[H])",
          "c1ccccc1"),
-        ("C-[C](-[H])-[O]", [], "C(=O)C"),
-        ("[H]-[C](-[O])-[N](-[H])-[H]", [], "C(=O)N"),
-        ("[N]-[C]-[H]", [], "N#C"),
-        ("C-[C](-[O]-[H])-[O]", [], "CC(=O)O"),
-        ("[P](-[O]-[H])(-[O]-[H])(-[O]-[H])-[O]", [], "P(O)(O)(O)=O"),
-        ("[P](-[O]-[H])(-[O]-[H])(-[O])-[O]", [], "P([O-])(O)(O)=O"),
-        ("[P](-[O]-[H])(-[O])(-[O])-[O]", [], "P([O-])([O-])(O)=O"),
-        ("[P](-[O])(-[O])(-[O])-[O]", [], "P([O-])([O-])([O-])=O"),
-        ("[H]-[O]-[N]-[O]", [], "ON=O"),
-        ("[N]-[C]-[O]", [], "N#C[O-]"),
-        ("[C](-[H])(-[H])-[Cl]", [0], "[H][C]([H])Cl"),
-        ("[C](-[H])-[C](-[H])-[H]", [0], "[H][C]=C([H])[H]"),
-        ("[C](-[H])-[Cl]", [0], "[H][C]Cl"),
-        ("[C](-[O])-[Cl]", [0], "O=[C]Cl"),
+        ("C-[C](-[H])-[O]", "C(=O)C"),
+        ("[H]-[C](-[O])-[N](-[H])-[H]", "C(=O)N"),
+        ("[N]-[C]-[H]", "N#C"),
+        ("C-[C](-[O]-[H])-[O]", "CC(=O)O"),
+        ("[P](-[O]-[H])(-[O]-[H])(-[O]-[H])-[O]", "P(O)(O)(O)=O"),
+        ("[P](-[O]-[H])(-[O]-[H])(-[O])-[O]", "P([O-])(O)(O)=O"),
+        ("[P](-[O]-[H])(-[O])(-[O])-[O]", "P([O-])([O-])(O)=O"),
+        ("[P](-[O])(-[O])(-[O])-[O]", "P([O-])([O-])([O-])=O"),
+        ("[H]-[O]-[N]-[O]", "ON=O"),
+        ("[N]-[C]-[O]", "N#C[O-]"),
     ])
-    def test_infer_bond_orders(self, smi, edges, out):
+    def test_infer_bond_orders(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
         mol.UpdatePropertyCache(strict=False)
-        _infer_bo_and_charges(mol, edges)
+        _infer_bo_and_charges(mol)
         Chem.SanitizeMol(mol)
         mol = Chem.RemoveHs(mol)
         molref = Chem.MolFromSmiles(out)
@@ -398,6 +395,8 @@ class TestRDKitFunctions(object):
         ("C-[N](-[O])-[O]", "C[N+](=O)[O-]"),
         ("C(-[N](-[O])-[O])-[N](-[O])-[O]", "C([N+](=O)[O-])[N+](=O)[O-]"),
         ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
+        ("[C-](=O)-C", "[C](=O)-C"),
+        ("[H]-[N-]-C", "[H]-[N]-C"),
     ])
     def test_standardize_patterns(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)

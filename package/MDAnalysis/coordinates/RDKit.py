@@ -53,8 +53,11 @@ Classes
 .. autoclass:: RDKitConverter
    :members:
 
-.. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
+   .. automethod:: RDKitConverter._infer_bo_and_charges
+   .. automethod:: RDKitConverter._standardize_patterns
+   .. automethod:: RDKitConverter._rebuild_conjugated_bonds
 
+.. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
 
 """
 
@@ -128,7 +131,6 @@ class RDKitReader(memory.MemoryReader):
 
         Parameters
         ----------
-
         filename : rdkit.Chem.rdchem.Mol
             RDKit molecule
         """
@@ -207,13 +209,34 @@ class RDKitConverter(base.ConverterBase):
 
     The converter requires the :class:`~MDAnalysis.core.topologyattrs.Elements`
     attribute to be present in the topology, else it will fail.
+
     It also requires the `bonds` attribute, although they will be automatically
     guessed if not present.
-    If both `tempfactors` and `bfactors` attributes are present, the conversion
-    will fail, since only one of these should be present.
+
+    If both ``tempfactors`` and ``bfactors`` attributes are present, the
+    conversion will fail, since only one of these should be present.
+    TODO: Wait for Issue #1901 for a solution
+
     Hydrogens should be explicit in the topology file. If this is not the case,
-    use the parameter `NoImplicit=False` when using the converter to allow
+    use the parameter ``NoImplicit=False`` when using the converter to allow
     implicit hydrogens and disable inferring bond orders and charges.
+
+    Since one of the main use case of the converter is converting trajectories
+    and not just a topology, creating a new molecule from scratch for every
+    frame would be too slow so the converter uses a caching system. The cache
+    only remembers the id of the last AtomGroup that was converted, as well
+    as the arguments that were passed to the converter. This means that using
+    ``u.select_atoms("protein").convert_to("RDKIT")`` will not benefit from the
+    cache since the selection is deleted from memory as soon as the conversion
+    is finished. Instead, users should do this in two steps by first saving the
+    selection in a variable and then converting the saved AtomGroup. It also
+    means that ``ag.convert_to("RDKIT")`` followed by
+    ``ag.convert_to("RDKIT", NoImplicit=True)`` will not use the cache. 
+    Finally if you're modifying the AtomGroup in place between two conversions,
+    the id of the AtomGroup won't change and thus the converter will use the
+    cached molecule. For this reason, you can pass a ``cache=False`` argument
+    to the converter to bypass the caching system.
+    The cached molecule doesn't contain the coordinates of the atoms.
 
 
     .. versionadded:: 2.0.0
@@ -225,23 +248,25 @@ class RDKitConverter(base.ConverterBase):
     units = {'time': None, 'length': 'Angstrom'}
     _cache = dict()
 
-    def convert(self, obj, cache=True, **kwargs):
+    def convert(self, obj, cache=True, NoImplicit=True):
         """Write selection at current trajectory frame to
         :class:`rdkit.Chem.rdchem.Mol`.
 
         Parameters
         -----------
-        obj : AtomGroup or Universe
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
 
         cache : bool
             Use a cached copy of the molecule's topology when available. To be
             used, the cached molecule and the new one have to be made from the
             same AtomGroup object (same id) and with the same arguments passed
             to the converter (with the exception of this `cache` argument)
-
         NoImplicit : bool
-            Prevent adding hydrogens to the molecule (default: True)
+            Prevent adding hydrogens to the molecule
         """
+        # parameters passed to atomgroup_to_mol and used by the cache
+        kwargs = dict(NoImplicit=NoImplicit)
+
         try:
             from rdkit import Chem
         except ImportError:
@@ -293,8 +318,7 @@ class RDKitConverter(base.ConverterBase):
 
         Parameters
         -----------
-        ag : AtomGroup
-
+        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
         NoImplicit : bool
             Prevent adding hydrogens to the molecule
         """
@@ -368,27 +392,20 @@ class RDKitConverter(base.ConverterBase):
                 "on atoms coordinates")
             ag.guess_bonds()
 
-        terminal_atom_indices = []
         for bond in ag.bonds:
             try:
                 bond_indices = [atom_mapper[i] for i in bond.indices]
             except KeyError:
-                # one of the atoms of the bond is not part of the atomgroup.
-                # can happen for terminal atoms.
-                # save the bond atom that is in the atomgroup for later
-                terminal_atom_indices.extend([atom_mapper[i]
-                                              for i in bond.indices
-                                              if i in atom_mapper.keys()])
-                # skip adding this bond
                 continue
             bond_type = RDBONDORDER.get(bond.order, Chem.BondType.SINGLE)
             mol.AddBond(*bond_indices, bond_type)
 
         mol.UpdatePropertyCache(strict=False)
 
-        # infer bond orders and formal charges from the connectivity
-        _infer_bo_and_charges(mol, terminal_atom_indices)
-        mol = _standardize_patterns(mol)
+        if NoImplicit:
+            # infer bond orders and formal charges from the connectivity
+            _infer_bo_and_charges(mol)
+            mol = _standardize_patterns(mol)
 
         # sanitize
         Chem.SanitizeMol(mol)
@@ -402,12 +419,11 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
 
     Parameters
     ----------
-
     attr : str
         Name of the atom attribute in MDAnalysis in the singular form
     value : object, np.int or np.float
         Attribute value as found in the AtomGroup
-    mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
+    mi : :class:`rdkit.Chem.rdchem.AtomPDBResidueInfo`
         MonomerInfo object that will store the relevant atom attributes
     """
     if isinstance(value, np.generic):
@@ -437,7 +453,7 @@ def _set_atom_property(atom, attr, value):
         atom.SetProp(attr, value)
 
 
-def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
+def _infer_bo_and_charges(mol):
     """Infer bond orders and formal charges from a molecule.
 
     Since most MD topology files don't explicitly retain information on bond
@@ -447,20 +463,19 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
     If an atom has a negative NUE, it needs a positive formal charge (-NUE).
     If two neighbouring atoms have UEs, the bond between them most
     likely has to be increased by the value of the smallest NUE.
-    If after this process, an atom still has UEs, it's either a radical
-    (because one of its bonds was cut when creating the AtomGroup) or it needs
-    a negative formal charge of -NUE. Since these radical atoms can be detected
-    when looping over the bonds of the AtomGroup, only atoms that are not part
-    of this "terminal_atoms" list will be assigned a negative formal charge.
+    If after this process, an atom still has UEs, it needs a negative formal
+    charge of -NUE.
 
     Parameters
     ----------
-
-    mol : rdkit.Chem.rdchem.RWMol
+    mol : :class:`rdkit.Chem.rdchem.RWMol`
         The molecule is modified inplace and must have all hydrogens added
 
-    terminal_atom_indices : list
-        List of terminal atoms indices, i.e. atoms at the edges of a molecule
+    Notes
+    -----
+    This algorithm is order dependant. For example, for a carboxylate group
+    R-C(-O)-O the first oxygen read will receive a double bond and the other
+    one will be charged. It will also affect more complex conjugated systems.
     """
 
     for atom in mol.GetAtoms():
@@ -508,18 +523,16 @@ def _infer_bo_and_charges(mol, terminal_atom_indices=[]):
             current_v = atom.GetTotalValence() - atom.GetFormalCharge()
             nue = [v - current_v for v in expected_vs][0]
             if nue > 0:
-                # keep the radical if it's a terminal atom
-                # else transform it to a negative charge
-                if atom.GetIdx() not in terminal_atom_indices:
-                    atom.SetFormalCharge(-nue)
-                    atom.SetNumRadicalElectrons(0)
-                    mol.UpdatePropertyCache(strict=False)
+                # transform it to a negative charge
+                atom.SetFormalCharge(-nue)
+                atom.SetNumRadicalElectrons(0)
+                mol.UpdatePropertyCache(strict=False)
 
 
 def _standardize_patterns(mol):
     """Standardizes functional groups
 
-    Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,
+    Uses :func:`~_rebuild_conjugated_bonds` to standardize conjugated systems,
     and SMARTS reactions for other functional groups.
     Due to the way reactions work, we first have to split the molecule by
     fragments. Then, for each fragment, we apply the standardization reactions.
@@ -566,15 +579,14 @@ def _run_reaction(reaction, reactant):
 
     Parameters
     ----------
-
     reaction : str
         SMARTS reaction
-    reactant : rdkit.Chem.rdchem.RWMol
+    reactant : :class:`rdkit.Chem.rdchem.RWMol`
         The molecule to transform
 
     Returns
     -------
-    Final product of the reaction, as an rdkit.Chem.rdchem.RWMol
+    Final product of the reaction, as an :class:`rdkit.Chem.rdchem.RWMol`
     """
     # count how many times the reaction should be run
     pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
@@ -624,8 +636,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
 
     Parameters
     ----------
-
-    mol : rdkit.Chem.rdchem.RWMol
+    mol : :class:`rdkit.Chem.rdchem.RWMol`
         The molecule to transform
     max_iter : int
         Maximum number of iterations performed by the function
