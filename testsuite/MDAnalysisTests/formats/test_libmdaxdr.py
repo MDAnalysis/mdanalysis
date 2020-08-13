@@ -141,7 +141,6 @@ class TestCommonAPI(object):
         assert_almost_equal(frame.box, new_frame.box)
         assert frame.step == new_frame.step
         assert_almost_equal(frame.time, new_frame.time)
-        assert_almost_equal(frame.prec, new_frame.prec)
 
     def test_pickle(self, reader):
         mid = len(reader) // 2
