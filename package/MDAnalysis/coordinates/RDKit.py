@@ -387,7 +387,7 @@ class RDKitConverter(base.ConverterBase):
         for i, (atom, element) in enumerate(zip(ag, elements)):
             # create atom
             rdatom = Chem.Atom(element.capitalize())
-            # disable adding H to the molecule
+            # enable/disable adding implicit H to the molecule
             rdatom.SetNoImplicit(NoImplicit)
             # add PDB-like properties
             mi = Chem.AtomPDBResidueInfo()
@@ -478,7 +478,7 @@ def _infer_bo_and_charges(mol):
 
     Since most MD topology files don't explicitly retain information on bond
     orders or charges, it has to be guessed from the topology. This is done by
-    looping other each atom and comparing its expected valence to the current
+    looping over each atom and comparing its expected valence to the current
     valence to get the Number of Unpaired Electrons (NUE).
     If an atom has a negative NUE, it needs a positive formal charge (-NUE).
     If two neighbouring atoms have UEs, the bond between them most
@@ -500,9 +500,7 @@ def _infer_bo_and_charges(mol):
 
     for atom in mol.GetAtoms():
         # get NUE for each possible valence
-        expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
-        current_v = atom.GetTotalValence() - atom.GetFormalCharge()
-        nue = [v - current_v for v in expected_vs]
+        nue = _get_nb_unpaired_electrons(atom)
         # if there's only one possible valence state and the corresponding
         # NUE is negative, it means we can only add a positive charge to
         # the atom
@@ -517,10 +515,7 @@ def _infer_bo_and_charges(mol):
             # check if one of the neighbors has a common NUE
             for i, na in enumerate(neighbors, start=1):
                 # get NUE for the neighbor
-                na_expected_vs = PERIODIC_TABLE.GetValenceList(
-                    na.GetAtomicNum())
-                na_current_v = na.GetTotalValence() - na.GetFormalCharge()
-                na_nue = [v - na_current_v for v in na_expected_vs]
+                na_nue = _get_nb_unpaired_electrons(na)
                 # smallest common NUE
                 common_nue = min(
                     min([i for i in nue if i >= 0], default=0),
@@ -536,17 +531,33 @@ def _infer_bo_and_charges(mol):
                     mol.UpdatePropertyCache(strict=False)
                     if i < len(neighbors):
                         # recalculate nue for atom
-                        current_v = atom.GetTotalValence()
-                        nue = [v - current_v for v in expected_vs]
+                        nue = _get_nb_unpaired_electrons(atom)
 
             # if the atom still has unpaired electrons
-            current_v = atom.GetTotalValence() - atom.GetFormalCharge()
-            nue = [v - current_v for v in expected_vs][0]
+            nue = _get_nb_unpaired_electrons(atom)[0]
             if nue > 0:
                 # transform it to a negative charge
                 atom.SetFormalCharge(-nue)
                 atom.SetNumRadicalElectrons(0)
                 mol.UpdatePropertyCache(strict=False)
+
+
+def _get_nb_unpaired_electrons(atom):
+    """Calculate the number of unpaired electrons (NUE) of an atom
+
+    Parameters
+    ----------
+    atom: rdkit.Chem.rdchem.Atom
+        The atom for which the NUE will be computed
+
+    Returns
+    -------
+    nue : list
+        The NUE for each possible valence of the atom
+    """
+    expected_vs = PERIODIC_TABLE.GetValenceList(atom.GetAtomicNum())
+    current_v = atom.GetTotalValence() - atom.GetFormalCharge()
+    return [v - current_v for v in expected_vs]
 
 
 def _standardize_patterns(mol):
@@ -557,6 +568,30 @@ def _standardize_patterns(mol):
     Due to the way reactions work, we first have to split the molecule by
     fragments. Then, for each fragment, we apply the standardization reactions.
     Finally, the fragments are recombined.
+
+    Notes
+    -----
+    The following functional groups are transformed:
+
+    +--------------+----------------------------------------------------------------------------+
+    | Name         | Reaction                                                                   |
+    +==============+============================================================================+
+    | Cterm        | [C-;X2:1]=[O:2]>>[C;+0:1]=[O:2]                                            |
+    +--------------+----------------------------------------------------------------------------+
+    | Nterm        | [N-;X2;H1:1]>>[N;+0:1]                                                     |
+    +--------------+----------------------------------------------------------------------------+
+    | keto-enolate | [C-:1]-[C:2]=[O:3]>>[C;+0:1]=[C:2]-[O;-1:3]                                |
+    +--------------+----------------------------------------------------------------------------+
+    | arginine     | [N;H1:1]-[C-;X3;H0:2](-[N;H2:3])-[N;H2:4]>>[N:1]-[C;+0:2](-[N:3])=[N;+1:4] |
+    +--------------+----------------------------------------------------------------------------+
+    | sulfone      | [S;X4;v4:1](-[O-;X1:2])-[O-;X1:3]>>[S:1](=[O;+0:2])=[O;+0:3]               |
+    +--------------+----------------------------------------------------------------------------+
+    | nitro        | [N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]>>[N;+1:1](-[O;-1:2])=[O;+0:3]            |
+    +--------------+----------------------------------------------------------------------------+
+    | conjugated   | [*-:1]-[*:2]=[*:3]-[*-:4]>>[*;+0:1]=[*:2]-[*:3]=[*;+0:4]                   |
+    +--------------+----------------------------------------------------------------------------+
+    | conjugated-N | [N;X3;v3:1]-[*:2]=[*:3]-[*-:4]>>[N;+1:1]=[*:2]-[*:3]=[*;+0:4]              |
+    +--------------+----------------------------------------------------------------------------+
 
     Parameters
     ----------

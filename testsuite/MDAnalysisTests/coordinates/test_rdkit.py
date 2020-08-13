@@ -173,6 +173,7 @@ class TestRDKitConverter(object):
                                      generate_coordinates=False)
         mol = u.atoms.convert_to("RDKIT")
         assert mol.GetNumAtoms() == 1
+        assert mol.GetAtomWithIdx(0).GetSymbol() == smi.strip("[]")
 
     @pytest.mark.parametrize("resname, n_atoms, n_fragments", [
         ("PRO", 14, 1),
@@ -344,14 +345,15 @@ class TestRDKitConverter(object):
         mol = u.atoms.convert_to("RDKIT")
         assert len(cache) == 1
         assert cache != previous_cache
-        # TODO: uncomment once the converters API accepts arguments
-        # # cache should depend on passed arguments
-        # previous_cache = copy.deepcopy(cache)
-        # mol = u.atoms.convert_to("RDKIT", NoImplicit=False)
-        # assert cache != previous_cache
-        # # skip cache
-        # mol = u.atoms.convert_to("RDKIT", cache=False)
-        # assert cache == {}
+        # converter with kwargs
+        rdkit_converter = mda.coordinates.RDKit.RDKitConverter().convert
+        # cache should depend on passed arguments
+        previous_cache = copy.deepcopy(cache)
+        mol = rdkit_converter(u.atoms, NoImplicit=False)
+        assert cache != previous_cache
+        # skip cache
+        mol = rdkit_converter(u.atoms, cache=False)
+        assert cache == {}
 
 
 @requires_rdkit
