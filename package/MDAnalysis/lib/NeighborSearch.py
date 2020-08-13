@@ -81,8 +81,8 @@ class AtomNeighborSearch(object):
           When ``level='R'``, ResidueGroup is being returned.
         SegmentGroup : :class:`~MDAnalysis.core.groups.SegmentGroup`
           When ``level='S'``, SegmentGroup is being returned.
-          
-          
+
+
         .. versionchanged:: 2.0.0
            Now returns :class:`AtomGroup` (when empty this is now an empty
            :class:`AtomGroup` instead of an empty list), :class:`ResidueGroup`,
