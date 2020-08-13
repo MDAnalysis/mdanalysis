@@ -72,11 +72,24 @@ class AtomNeighborSearch(object):
         level : str
           char (A, R, S). Return atoms(A), residues(R) or segments(S) within
           *radius* of *atoms*.
+
+        .. versionchanged:: 2.0.0
+
+        Returns
+        -------
+        AtomGroup : :class:`MDAnalysis.core.groups.AtomGroup`
+          When ``level='A'``, AtomGroup is being returned.
+        ResidueGroup : :class:`MDAnalysis.core.groups.ResidueGroup`
+          When ``level='R'``, ResidueGroup is being returned.
+        SegmentGroup : :class:`MDAnalysis.core.groups.SegmentGroup`
+          When ``level='S'``, SegmentGroup is being returned.
         """
         unique_idx = []
         try:
+            # For atom groups, take the positions attribute
             position = atoms.positions
         except AttributeError:
+            # For atom, take the position attribute
             position = atoms.position
         pairs = capped_distance(position, self.atom_group.positions,
                                 radius, box=self._box, return_distances=False)
@@ -106,4 +119,3 @@ class AtomNeighborSearch(object):
             return atomgroup.segments
         else:
             raise NotImplementedError('{0}: level not implemented'.format(level))
-
