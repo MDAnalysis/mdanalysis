@@ -50,9 +50,10 @@ def test_search(universe):
     pns_res = pns.search(universe.atoms[20], 20)
     assert_equal(ns_res, pns_res)
 
+
 def test_zero(universe):
     """Check if empty atomgroup, residue, segments are returned"""
-    ns = NeighborSearch.AtomNeighborSearch(universe.atoms)
+    ns = NeighborSearch.AtomNeighborSearch(universe.atoms[:10])
     ns_res = ns.search(universe.atoms[20], 0.1, level='A')
     assert ns_res == universe.atoms[[]]
     ns_res = ns.search(universe.atoms[20], 0.1, level='R')
