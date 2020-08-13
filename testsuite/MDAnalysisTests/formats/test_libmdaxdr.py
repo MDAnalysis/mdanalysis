@@ -161,6 +161,16 @@ class TestCommonAPI(object):
         assert reader.fname == new_reader.fname
         assert reader.tell() != new_reader.tell()
 
+    #@pytest.mark.xfail
+    def test_pickle_immediately(self, reader):
+        # do not seek before pickling: this seems to leave the XDRFile
+        # object in weird state: is this supposed to work?
+        new_reader = pickle.loads(pickle.dumps(reader))
+
+        assert reader.fname == new_reader.fname
+        assert reader.tell() == new_reader.tell()
+
+
 
 @pytest.mark.parametrize("xdrfile, fname, offsets",
                          ((XTCFile, XTC_multi_frame, XTC_OFFSETS),
