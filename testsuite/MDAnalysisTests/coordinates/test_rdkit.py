@@ -319,7 +319,8 @@ class TestRDKitConverter(object):
         xyz = u.atoms.positions
         xyz[0][2] = np.nan
         u.atoms.positions = xyz
-        mol = u.atoms.convert_to("RDKIT")
+        with pytest.warns(UserWarning, match="NaN detected"):
+            mol = u.atoms.convert_to("RDKIT")
         with pytest.raises(ValueError, match="Bad Conformer Id"):
             mol.GetConformer()
 

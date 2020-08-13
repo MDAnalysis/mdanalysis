@@ -315,17 +315,21 @@ class RDKitConverter(base.ConverterBase):
             mol = self.atomgroup_to_mol(ag, **kwargs)
 
         # add a conformer for the current Timestep
-        if hasattr(ag, "positions") and not np.isnan(ag.positions).any():
-            # assign coordinates
-            conf = Chem.Conformer(mol.GetNumAtoms())
-            for atom in mol.GetAtoms():
-                idx = atom.GetIntProp("_MDAnalysis_index")
-                xyz = ag.positions[idx].astype(float)
-                conf.SetAtomPosition(atom.GetIdx(), xyz)
-            mol.AddConformer(conf)
-            # assign R/S to atoms and Z/E to bonds
-            Chem.AssignStereochemistryFrom3D(mol)
-            Chem.SetDoubleBondNeighborDirections(mol)
+        if hasattr(ag, "positions"):
+            if np.isnan(ag.positions).any():
+                warnings.warn("NaN detected in coordinates, the output "
+                              "molecule will not have 3D coordinates assigned")
+            else:
+                # assign coordinates
+                conf = Chem.Conformer(mol.GetNumAtoms())
+                for atom in mol.GetAtoms():
+                    idx = atom.GetIntProp("_MDAnalysis_index")
+                    xyz = ag.positions[idx].astype(float)
+                    conf.SetAtomPosition(atom.GetIdx(), xyz)
+                mol.AddConformer(conf)
+                # assign R/S to atoms and Z/E to bonds
+                Chem.AssignStereochemistryFrom3D(mol)
+                Chem.SetDoubleBondNeighborDirections(mol)
 
         return mol
 
