@@ -55,7 +55,7 @@ trajectory, while writing each frame::
           W.write(calphas)
 
 It is important to *always close the trajectory* when done because only at this
-step is the final END_ record written, which is required by the `PDB 3.2
+step is the final END_ record written, which is required by the `PDB 3.3
 standard`_. Using the writer as a context manager ensures that this always
 happens.
 
@@ -65,7 +65,7 @@ Capabilities
 
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and :class:`PDBWriter`. It
-only implements a subset of the `PDB 3.2 standard`_ and also allows some
+only implements a subset of the `PDB 3.3 standard`_ and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
 The :class:`PDBReader` can read multi-frame PDB files and represents
@@ -136,8 +136,8 @@ Classes
    :inherited-members:
 
 
-.. _`PDB 3.2 standard`:
-    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+.. _`PDB 3.3 standard`:
+    http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
 
 """
 from io import StringIO, BytesIO
@@ -177,11 +177,11 @@ class PDBReader(base.ReaderBase):
     Reads multi-`MODEL`_ PDB files as trajectories.
 
     .. _PDB-formatted:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
     .. _PDB coordinate section:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html
     .. _MODEL:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -459,7 +459,7 @@ class PDBReader(base.ReaderBase):
 
 
 class PDBWriter(base.WriterBase):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
@@ -470,19 +470,19 @@ class PDBWriter(base.WriterBase):
     PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
     multiple models (using the MODEL_ and ENDMDL_ records).
 
-    .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
-    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#COMPND
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-    .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
-    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#HETATM
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
-    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format32/remarks.html
-    .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#TITLE
+    .. _`PDB 3.3 standard`:
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
+    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM
+    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
+    .. _END: http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER
+    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#NUMMDL
+    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
+    .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE
 
     Note
     ----
@@ -1161,7 +1161,7 @@ class PDBWriter(base.WriterBase):
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
-    This reader does not conform to the `PDB 3.2 standard`_ because it allows
+    This reader does not conform to the `PDB 3.3 standard`_ because it allows
     five-digit residue numbers that may take up columns 23 to 27 (inclusive)
     instead of being confined to 23-26 (with column 27 being reserved for the
     insertion code in the PDB standard). PDB files in this format are written
@@ -1180,7 +1180,7 @@ class ExtendedPDBReader(PDBReader):
 
 
 class MultiPDBWriter(PDBWriter):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
     is written.
@@ -1190,9 +1190,9 @@ class MultiPDBWriter(PDBWriter):
     and ENDMDL_ records).
 
 
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
 
 
     See Also
