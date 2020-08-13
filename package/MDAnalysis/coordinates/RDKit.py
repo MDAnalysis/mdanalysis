@@ -24,8 +24,8 @@
 """RDKit molecule I/O --- :mod:`MDAnalysis.coordinates.RDKit`
 ================================================================
 
-Read coordinates data from an `RDKit`_ :class:`rdkit.Chem.rdchem.Mol` with
-:class:`RDKitReader` into an MDAnalysis Universe. Convert it back to an
+Read coordinates data from an `RDKit <https://www.rdkit.org/docs/>`_ :class:`rdkit.Chem.rdchem.Mol` with
+:class:`RDKitReader` into an MDAnalysis Universe. Convert it back to a
 :class:`rdkit.Chem.rdchem.Mol` with :class:`RDKitConverter`.
 
 
@@ -41,7 +41,7 @@ Example
 >>> u.trajectory
 <RDKitReader with 10 frames of 42 atoms>
 >>> u.atoms.convert_to("RDKIT")
-<rdkit.Chem.rdchem.RWMol object at 0x7fcebb958148>
+<rdkit.Chem.rdchem.Mol object at 0x7fcebb958148>
 
 
 Classes
@@ -53,11 +53,11 @@ Classes
 .. autoclass:: RDKitConverter
    :members:
 
-   .. automethod:: RDKitConverter._infer_bo_and_charges
-   .. automethod:: RDKitConverter._standardize_patterns
-   .. automethod:: RDKitConverter._rebuild_conjugated_bonds
+.. autofunction:: _infer_bo_and_charges
 
-.. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
+.. autofunction:: _standardize_patterns
+
+.. autofunction:: _rebuild_conjugated_bonds
 
 """
 
@@ -147,17 +147,18 @@ class RDKitReader(memory.MemoryReader):
 
 class RDKitConverter(base.ConverterBase):
     """Convert MDAnalysis :class:`~MDAnalysis.core.groups.AtomGroup` or
-    :class:`~MDAnalysis.core.universe.Universe` to `RDKit`_
-    :class:`rdkit.Chem.rdchem.Mol`
+    :class:`~MDAnalysis.core.universe.Universe` to RDKit
+    :class:`~rdkit.Chem.rdchem.Mol`
 
-    MDanalysis attributes are stored in each RDKit atom of the resulting
-    molecule in two different ways:
+    MDanalysis attributes are stored in each RDKit 
+    :class:`~rdkit.Chem.rdchem.Atom` of the resulting molecule in two different
+    ways:
 
-    * in an `AtomPDBResidueInfo` object available through the
-      ``atom.GetMonomerInfo()`` method if it's an attribute that is typically
-      found in a PDB file,
+    * in an :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo` object available
+      through the :meth:`~rdkit.Chem.rdchem.Atom.GetMonomerInfo` method if it's
+      an attribute that is typically found in a PDB file,
     * directly as an atom property available through the
-      ``atom.GetPropsAsDict()`` method for the others.
+      :meth:`~rdkit.Chem.rdchem.Atom.GetProp` methods for the others.
 
     Supported attributes:
 
@@ -196,12 +197,28 @@ class RDKitConverter(base.ConverterBase):
     Example
     -------
 
-    .. code-block:: python
+    To access MDAnalysis properties::
 
-        import MDAnalysis as mda
-        from MDAnalysis.tests.datafiles import PDB_full
-        u = mda.Universe(PDB_full)
-        mol = u.select_atoms('resname DMS').convert_to('RDKIT')
+        >>> import MDAnalysis as mda
+        >>> from MDAnalysis.tests.datafiles import PDB_full
+        >>> u = mda.Universe(PDB_full)
+        >>> mol = u.select_atoms('resname DMS').convert_to('RDKIT')
+        >>> mol.GetAtomWithIdx(0).GetMonomerInfo().GetResidueName()
+        'DMS'
+
+    To create a molecule for each frame of a trajectory::
+
+        from MDAnalysisTests.datafiles import PSF, DCD
+        from rdkit.Chem.Descriptors3D import Asphericity
+
+        u = mda.Universe(PSF, DCD)
+        elements = mda.topology.guessers.guess_types(u.atoms.names)
+        u.add_TopologyAttr('elements', elements)
+        ag = u.select_atoms("resid 1-10")
+
+        for ts in u.trajectory:
+            mol = ag.convert_to("RDKIT")
+            x = Asphericity(mol)
 
 
     Notes
@@ -215,7 +232,7 @@ class RDKitConverter(base.ConverterBase):
 
     If both ``tempfactors`` and ``bfactors`` attributes are present, the
     conversion will fail, since only one of these should be present.
-    TODO: Wait for Issue #1901 for a solution
+    Refer to Issue #1901 for a solution
 
     Hydrogens should be explicit in the topology file. If this is not the case,
     use the parameter ``NoImplicit=False`` when using the converter to allow
@@ -231,17 +248,16 @@ class RDKitConverter(base.ConverterBase):
     is finished. Instead, users should do this in two steps by first saving the
     selection in a variable and then converting the saved AtomGroup. It also
     means that ``ag.convert_to("RDKIT")`` followed by
-    ``ag.convert_to("RDKIT", NoImplicit=True)`` will not use the cache. 
+    ``ag.convert_to("RDKIT", NoImplicit=False)`` will not use the cache.
     Finally if you're modifying the AtomGroup in place between two conversions,
     the id of the AtomGroup won't change and thus the converter will use the
     cached molecule. For this reason, you can pass a ``cache=False`` argument
     to the converter to bypass the caching system.
-    The cached molecule doesn't contain the coordinates of the atoms.
+    Note that the cached molecule doesn't contain the coordinates of the atoms.
 
 
     .. versionadded:: 2.0.0
 
-    .. _RDKit: https://www.rdkit.org/docs/source/rdkit.Chem.rdchem.html#rdkit.Chem.rdchem.Mol
     """
 
     lib = 'RDKIT'
@@ -250,7 +266,7 @@ class RDKitConverter(base.ConverterBase):
 
     def convert(self, obj, cache=True, NoImplicit=True):
         """Write selection at current trajectory frame to
-        :class:`rdkit.Chem.rdchem.Mol`.
+        :class:`~rdkit.Chem.rdchem.Mol`.
 
         Parameters
         -----------
@@ -415,7 +431,7 @@ class RDKitConverter(base.ConverterBase):
 
 def _add_mda_attr_to_rdkit(attr, value, mi):
     """Converts an MDAnalysis atom attribute into the RDKit equivalent and
-    stores it into an RDKit AtomPDBResidueInfo object.
+    stores it into an RDKit :class:`~rdkit.Chem.rdchem.AtomPDBResidueInfo`.
 
     Parameters
     ----------
@@ -423,7 +439,7 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
         Name of the atom attribute in MDAnalysis in the singular form
     value : object, np.int or np.float
         Attribute value as found in the AtomGroup
-    mi : :class:`rdkit.Chem.rdchem.AtomPDBResidueInfo`
+    mi : rdkit.Chem.rdchem.AtomPDBResidueInfo
         MonomerInfo object that will store the relevant atom attributes
     """
     if isinstance(value, np.generic):
@@ -468,7 +484,7 @@ def _infer_bo_and_charges(mol):
 
     Parameters
     ----------
-    mol : :class:`rdkit.Chem.rdchem.RWMol`
+    mol : rdkit.Chem.rdchem.RWMol
         The molecule is modified inplace and must have all hydrogens added
 
     Notes
@@ -532,11 +548,21 @@ def _infer_bo_and_charges(mol):
 def _standardize_patterns(mol):
     """Standardizes functional groups
 
-    Uses :func:`~_rebuild_conjugated_bonds` to standardize conjugated systems,
+    Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,
     and SMARTS reactions for other functional groups.
     Due to the way reactions work, we first have to split the molecule by
     fragments. Then, for each fragment, we apply the standardization reactions.
     Finally, the fragments are recombined.
+
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.RWMol
+        The molecule to standardize
+
+    Returns
+    -------
+    mol : rdkit.Chem.rdchem.Mol
+        The standardized molecule
     """
 
     # standardize conjugated systems
@@ -581,12 +607,13 @@ def _run_reaction(reaction, reactant):
     ----------
     reaction : str
         SMARTS reaction
-    reactant : :class:`rdkit.Chem.rdchem.RWMol`
+    reactant : rdkit.Chem.rdchem.Mol
         The molecule to transform
 
     Returns
     -------
-    Final product of the reaction, as an :class:`rdkit.Chem.rdchem.RWMol`
+    product : rdkit.Chem.rdchem.Mol
+        The final product of the reaction
     """
     # count how many times the reaction should be run
     pattern = Chem.MolFromSmarts(reaction.split(">>")[0])
@@ -622,13 +649,13 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     usual alternating single and double bonds. This function corrects this
     behaviour by using an iterative procedure.
     The problematic molecules always follow the same pattern: 
-    `anion(-*=*)n-anion` instead of `*=(*-*=)n*`, where `n` is the number of
-    successive single and double bonds. The goal of the iterative procedure is
-    to make `n` as small as possible by consecutively transforming
-    `anion-*=*` into `*=*-anion` until it reaches the smallest pattern with
-    `n=1`. This last pattern is then transformed from `anion-*=*-anion` to
-    `*=*-*=*`.
-    Since `anion-*=*` is the same as `*=*-anion` in terms of SMARTS, we can
+    ``anion(-*=*)n-anion`` instead of ``*=(*-*=)n*``, where ``n`` is the number
+    of successive single and double bonds. The goal of the iterative procedure
+    is to make ``n`` as small as possible by consecutively transforming
+    ``anion-*=*`` into ``*=*-anion`` until it reaches the smallest pattern with
+    ``n=1``. This last pattern is then transformed from ``anion-*=*-anion`` to
+    ``*=*-*=*``.
+    Since ``anion-*=*`` is the same as ``*=*-anion`` in terms of SMARTS, we can
     control that we don't transform the same triplet of atoms back and forth by
     adding their indices to a list.
     The molecule needs to be kekulized first to also cover systems
@@ -636,8 +663,8 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
 
     Parameters
     ----------
-    mol : :class:`rdkit.Chem.rdchem.RWMol`
-        The molecule to transform
+    mol : rdkit.Chem.rdchem.RWMol
+        The molecule to transform, modified inplace
     max_iter : int
         Maximum number of iterations performed by the function
     """
