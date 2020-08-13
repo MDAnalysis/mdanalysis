@@ -45,6 +45,7 @@ Fixes
   * Fixed the DMSParser, allowing the creation of multiple segids sharing
     residues with identical resids (Issue #1387, PR #2872)
   * H5MD files are now pickleable with H5PYPicklable (Issue #2890, PR #2894)
+  * Fixed Janin analysis residue filtering (include CYSH) (Issue #2898)
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
@@ -68,6 +69,9 @@ Enhancements
   * Dead code removed from the TPR parser and increased test coverage (PR #2840)
   * TPR parser exposes the elements topology attribute (PR #2858, see Issue #2553)
   * Added `H5MDReader` to coordinate readers (Issue #762, PR #2787)
+  * Added new kwargs `select_remove` and `select_protein` to
+    analysis.dihedrals.Janin analysis to give user more fine grained control
+    over selections (PR #2899)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
