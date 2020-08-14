@@ -264,7 +264,7 @@ class RDKitConverter(base.ConverterBase):
     units = {'time': None, 'length': 'Angstrom'}
     _cache = dict()
 
-    def convert(self, obj, cache=True, NoImplicit=True):
+    def convert(self, obj, cache=True, NoImplicit=True, max_iter=200):
         """Write selection at current trajectory frame to
         :class:`~rdkit.Chem.rdchem.Mol`.
 
@@ -279,9 +279,12 @@ class RDKitConverter(base.ConverterBase):
             to the converter (with the exception of this `cache` argument)
         NoImplicit : bool
             Prevent adding hydrogens to the molecule
+        max_iter : int
+            Maximum number of iterations to standardize conjugated systems.
+            See :func:`_rebuild_conjugated_bonds`
         """
         # parameters passed to atomgroup_to_mol and used by the cache
-        kwargs = dict(NoImplicit=NoImplicit)
+        kwargs = dict(NoImplicit=NoImplicit, max_iter=max_iter)
 
         try:
             from rdkit import Chem
@@ -333,14 +336,18 @@ class RDKitConverter(base.ConverterBase):
 
         return mol
 
-    def atomgroup_to_mol(self, ag, NoImplicit=True):
+    def atomgroup_to_mol(self, ag, NoImplicit=True, max_iter=200):
         """Converts an AtomGroup to an RDKit molecule.
 
         Parameters
         -----------
-        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+        ag : MDAnalysis.core.groups.AtomGroup
+            The AtomGroup to convert
         NoImplicit : bool
             Prevent adding hydrogens to the molecule
+        max_iter : int
+            Maximum number of iterations to standardize conjugated systems.
+            See :func:`_rebuild_conjugated_bonds`
         """
         try:
             elements = ag.elements
@@ -425,7 +432,7 @@ class RDKitConverter(base.ConverterBase):
         if NoImplicit:
             # infer bond orders and formal charges from the connectivity
             _infer_bo_and_charges(mol)
-            mol = _standardize_patterns(mol)
+            mol = _standardize_patterns(mol, max_iter)
 
         # sanitize
         Chem.SanitizeMol(mol)
@@ -567,7 +574,7 @@ def _get_nb_unpaired_electrons(atom):
     return [v - current_v for v in expected_vs]
 
 
-def _standardize_patterns(mol):
+def _standardize_patterns(mol, max_iter=200):
     """Standardizes functional groups
 
     Uses :func:`_rebuild_conjugated_bonds` to standardize conjugated systems,
@@ -606,6 +613,8 @@ def _standardize_patterns(mol):
     ----------
     mol : rdkit.Chem.rdchem.RWMol
         The molecule to standardize
+    max_iter : int
+        Maximum number of iterations to standardize conjugated systems
 
     Returns
     -------
@@ -614,7 +623,7 @@ def _standardize_patterns(mol):
     """
 
     # standardize conjugated systems
-    _rebuild_conjugated_bonds(mol)
+    _rebuild_conjugated_bonds(mol, max_iter)
 
     fragments = []
     for reactant in Chem.GetMolFrags(mol, asMols=True):
