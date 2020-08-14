@@ -46,11 +46,6 @@ class TestAtomGroupPickle(object):
 
     @staticmethod
     @pytest.fixture()
-    def universe_n():
-        return mda.Universe(PDB_small, PDB_small, PDB_small, anchor_name="test1")
-
-    @staticmethod
-    @pytest.fixture()
     def ag(universe):
         return universe.atoms[:20]
 
@@ -61,18 +56,8 @@ class TestAtomGroupPickle(object):
 
     @staticmethod
     @pytest.fixture()
-    def ag_n(universe_n):
-        return universe_n.atoms[:10]
-
-    @staticmethod
-    @pytest.fixture()
     def pickle_str(ag):
         return pickle.dumps(ag, protocol=pickle.HIGHEST_PROTOCOL)
-
-    @staticmethod
-    @pytest.fixture()
-    def pickle_str_n(ag_n):
-        return pickle.dumps(ag_n, protocol=pickle.HIGHEST_PROTOCOL)
 
     @staticmethod
     @pytest.fixture()
@@ -94,12 +79,6 @@ class TestAtomGroupPickle(object):
         newag = pickle.loads(pickle_str)
         # Can unpickle
         assert_equal(ag.indices, newag.indices)
-
-    def test_unpickle_named(self, pickle_str_n, ag_n, universe_n):
-        """Test that an AtomGroup can be unpickled (Issue 293)"""
-        newag = pickle.loads(pickle_str_n)
-        # Can unpickle
-        assert_equal(ag_n.indices, newag.indices)
 
     def test_pickle_unpickle_empty(self, universe):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
