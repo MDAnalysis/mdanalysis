@@ -417,7 +417,7 @@ class TestRDKitFunctions(object):
         ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1", 
          "[O-]c1ccccc1"),
         ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]", 
-         "[O-]C1=CC=CC1[O-]"),
+         "[O-]C1=CC=CC1=O"),
         ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
         ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
     ])
@@ -485,6 +485,7 @@ class TestRDKitFunctions(object):
         "C=CC=CC=CC=CC=CC=C",
         "NCCCCC([NH3+])C(=O)[O-]",
         "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
+        "C#CC=C",
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
