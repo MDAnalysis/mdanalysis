@@ -716,7 +716,7 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
     """
     mol.UpdatePropertyCache(strict=False)
     Chem.Kekulize(mol)
-    pattern = Chem.MolFromSmarts("[*-]-[*+0]=[*+0]")
+    pattern = Chem.MolFromSmarts("[*-;!O]-[*+0]=[*+0]")
     # number of unique matches with the pattern
     n_matches = len(set([match[0]
                          for match in mol.GetSubstructMatches(pattern)]))
@@ -725,13 +725,13 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         return
     # check if there's an even number of anion-*=* patterns
     elif n_matches % 2 == 0:
-        end_pattern = Chem.MolFromSmarts("[*-]-[*]=[*]-[*-]")
-        end_charge = 0
+        end_pattern = Chem.MolFromSmarts("[*-;!O]-[*+0]=[*+0]-[*-]")
     else:
-        # the only way to standardize is to find a nitrogen that can accept
-        # a double bond and a positive charge
-        end_pattern = Chem.MolFromSmarts("[*-]-[*]=[*]-[N;X3;v3]")
-        end_charge = 1
+        # as a last resort, the only way to standardize is to find a nitrogen
+        # that can accept a double bond and a positive charge
+        # or a carbonyl that will become an enolate
+        end_pattern = Chem.MolFromSmarts(
+            "[*-;!O]-[*+0]=[*+0]-[$([#7;X3;v3]),$([#6+0]=O)]")
     backtrack = []
     for _ in range(max_iter):
         # simplest case where n=1
@@ -739,10 +739,24 @@ def _rebuild_conjugated_bonds(mol, max_iter=200):
         if end_match:
             # index of each atom
             anion1, a1, a2, anion2 = end_match
-            # charges
+            term_atom = mol.GetAtomWithIdx(anion2)
+            # [*-]-*=*-C=O
+            if term_atom.GetAtomicNum() == 6 and term_atom.GetFormalCharge() == 0:
+                for neighbor in term_atom.GetNeighbors():
+                    bond = mol.GetBondBetweenAtoms(anion2, neighbor.GetIdx())
+                    if neighbor.GetAtomicNum() == 8 and bond.GetBondTypeAsDouble() == 2:
+                        bond.SetBondType(Chem.BondType.SINGLE)
+                        neighbor.SetFormalCharge(-1)
+            else:
+                # [*-]-*=*-N
+                if term_atom.GetAtomicNum() == 7 and term_atom.GetFormalCharge() == 0:
+                    end_charge = 1
+                # [*-]-*=*-[*-]
+                else:
+                    end_charge = 0
+                mol.GetAtomWithIdx(anion2).SetFormalCharge(end_charge)
+            # common part of the conjugated systems: [*-]-*=*
             mol.GetAtomWithIdx(anion1).SetFormalCharge(0)
-            mol.GetAtomWithIdx(anion2).SetFormalCharge(end_charge)
-            # bonds
             mol.GetBondBetweenAtoms(anion1, a1).SetBondType(
                 Chem.BondType.DOUBLE)
             mol.GetBondBetweenAtoms(a1, a2).SetBondType(Chem.BondType.SINGLE)
