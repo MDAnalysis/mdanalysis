@@ -355,57 +355,161 @@
         <span class="k">pass</span></div></div>
 
 
-<div class="viewcode-block" id="echo"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.echo">[docs]</a><span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simple string output that immediately prints to the console.</span>
+<div class="viewcode-block" id="ProgressBar"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressBar">[docs]</a><span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Display a visual progress bar and time estimate.</span>
 
-<span class="sd">    The string `s` is modified according to the keyword arguments and then</span>
-<span class="sd">    printed to :const:`sys.stderr`, which is immediately flushed.</span>
+<span class="sd">    The :class:`ProgressBar` decorates an iterable object, returning an</span>
+<span class="sd">    iterator which acts exactly like the original iterable, but prints a</span>
+<span class="sd">    dynamically updating progressbar every time a value is requested. See the</span>
+<span class="sd">    example below for how to use it when iterating over the frames of a</span>
+<span class="sd">    trajectory.</span>
+
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    s : str</span>
-<span class="sd">        The string to output.</span>
-<span class="sd">    replace : bool</span>
-<span class="sd">        If ``True``, the string will be printed on top of the current line. In</span>
-<span class="sd">        practice, ``\r`` is added at the beginning of the string.</span>
-<span class="sd">    newline : bool</span>
-<span class="sd">        If ``True``, a newline is added at the end of the string.</span>
+<span class="sd">    iterable  : iterable, optional</span>
+<span class="sd">        Iterable to decorate with a progressbar.</span>
+<span class="sd">        Leave blank to manually manage the updates.</span>
+<span class="sd">    verbose : bool, optional</span>
+<span class="sd">        If ``True`` (the default) then show the progress bar, *unless* the</span>
+<span class="sd">        `disable` keyword is set to ``True`` (`disable` takes precedence over</span>
+<span class="sd">        `verbose`). If `verbose` is set to ``None`` then the progress bar is</span>
+<span class="sd">        displayed (like ``True``), *unless* this is a non-TTY output device</span>
+<span class="sd">        (see `disable`).</span>
+<span class="sd">    desc  : str, optional</span>
+<span class="sd">        Prefix for the progressbar.</span>
+<span class="sd">    total  : int or float, optional</span>
+<span class="sd">        The number of expected iterations. If unspecified,</span>
+<span class="sd">        ``len(iterable)`` is used if possible. If ``float(&quot;inf&quot;)`` or as a last</span>
+<span class="sd">        resort, only basic progress statistics are displayed</span>
+<span class="sd">        (no ETA, no progressbar).</span>
+<span class="sd">    leave  : bool, optional</span>
+<span class="sd">        If [default: ``True``], keeps all traces of the progressbar</span>
+<span class="sd">        upon termination of iteration.</span>
+<span class="sd">        If ``None``, will leave only if `position` is 0.</span>
+<span class="sd">    file  : :class:`io.TextIOWrapper` or :class:`io.StringIO`, optional</span>
+<span class="sd">        Specifies where to output the progress messages (default:</span>
+<span class="sd">        :data:`sys.stderr`). Uses :meth:`file.write` and :meth:`file.flush`</span>
+<span class="sd">        methods.  For encoding, see `write_bytes`.</span>
+<span class="sd">    ncols  : int, optional</span>
+<span class="sd">        The width of the entire output message. If specified,</span>
+<span class="sd">        dynamically resizes the progressbar to stay within this bound.</span>
+<span class="sd">        If unspecified, attempts to use environment width. The</span>
+<span class="sd">        fallback is a meter width of 10 and no limit for the counter and</span>
+<span class="sd">        statistics. If 0, will not print any meter (only stats).</span>
+<span class="sd">    mininterval  : float, optional</span>
+<span class="sd">        Minimum progress display update interval [default: 0.1] seconds.</span>
+<span class="sd">    maxinterval  : float, optional</span>
+<span class="sd">        Maximum progress display update interval [default: 10] seconds.</span>
+<span class="sd">        Automatically adjusts `miniters` to correspond to `mininterval`</span>
+<span class="sd">        after long display update lag. Only works if `dynamic_miniters`</span>
+<span class="sd">        or monitor thread is enabled.</span>
+<span class="sd">    miniters  : int or float, optional</span>
+<span class="sd">        Minimum progress display update interval, in iterations.</span>
+<span class="sd">        If 0 and `dynamic_miniters`, will automatically adjust to equal</span>
+<span class="sd">        `mininterval` (more CPU efficient, good for tight loops).</span>
+<span class="sd">        If &gt; 0, will skip display of specified number of iterations.</span>
+<span class="sd">        Tweak this and `mininterval` to get very efficient loops.</span>
+<span class="sd">        If your progress is erratic with both fast and slow iterations</span>
+<span class="sd">        (network, skipping items, etc) you should set miniters=1.</span>
+<span class="sd">    ascii  : bool or str, optional</span>
+<span class="sd">        If unspecified or ``False``, use unicode (smooth blocks) to fill</span>
+<span class="sd">        the meter. The fallback is to use ASCII characters &quot; 123456789#&quot;.</span>
+<span class="sd">    disable  : bool, optional</span>
+<span class="sd">        Whether to disable the entire progressbar wrapper</span>
+<span class="sd">        [default: ``False``]. If set to None, disable on non-TTY.</span>
+<span class="sd">    unit  : str, optional</span>
+<span class="sd">        String that will be used to define the unit of each iteration</span>
+<span class="sd">        [default: it].</span>
+<span class="sd">    unit_scale  : bool or int or float, optional</span>
+<span class="sd">        If 1 or True, the number of iterations will be reduced/scaled</span>
+<span class="sd">        automatically and a metric prefix following the</span>
+<span class="sd">        International System of Units standard will be added</span>
+<span class="sd">        (kilo, mega, etc.) [default: ``False``]. If any other non-zero</span>
+<span class="sd">        number, will scale `total` and `n`.</span>
+<span class="sd">    dynamic_ncols  : bool, optional</span>
+<span class="sd">        If set, constantly alters `ncols` and `nrows` to the</span>
+<span class="sd">        environment (allowing for window resizes) [default: ``False``].</span>
+<span class="sd">    smoothing  : float, optional</span>
+<span class="sd">        Exponential moving average smoothing factor for speed estimates</span>
+<span class="sd">        (ignored in GUI mode). Ranges from 0 (average speed) to 1</span>
+<span class="sd">        (current/instantaneous speed) [default: 0.3].</span>
+<span class="sd">    bar_format  : str, optional</span>
+<span class="sd">        Specify a custom bar string formatting. May impact performance.</span>
+<span class="sd">        [default: ``&#39;{l_bar}{bar}{r_bar}&#39;``], where ``l_bar=&#39;{desc}:</span>
+<span class="sd">        {percentage:3.0f}%|&#39;`` and ``r_bar=&#39;| {n_fmt}/{total_fmt}</span>
+<span class="sd">        [{elapsed}&lt;{remaining}, {rate_fmt}{postfix}]&#39;``</span>
+
+<span class="sd">        Possible vars: l_bar, bar, r_bar, n, n_fmt, total, total_fmt,</span>
+<span class="sd">        percentage, elapsed, elapsed_s, ncols, nrows, desc, unit,</span>
+<span class="sd">        rate, rate_fmt, rate_noinv, rate_noinv_fmt,</span>
+<span class="sd">        rate_inv, rate_inv_fmt, postfix, unit_divisor,</span>
+<span class="sd">        remaining, remaining_s.</span>
+
+<span class="sd">        Note that a trailing &quot;: &quot; is automatically removed after {desc}</span>
+<span class="sd">        if the latter is empty.</span>
+<span class="sd">    initial  : int or float, optional</span>
+<span class="sd">        The initial counter value. Useful when restarting a progress bar</span>
+<span class="sd">        [default: 0]. If using :class:`float`, consider specifying ``{n:.3f}``</span>
+<span class="sd">        or similar in `bar_format`, or specifying `unit_scale`.</span>
+<span class="sd">    position  : int, optional</span>
+<span class="sd">        Specify the line offset to print this bar (starting from 0)</span>
+<span class="sd">        Automatic if unspecified.</span>
+<span class="sd">        Useful to manage multiple bars at once (e.g., from threads).</span>
+<span class="sd">    postfix  : dict or \*, optional</span>
+<span class="sd">        Specify additional stats to display at the end of the bar.</span>
+<span class="sd">        Calls ``set_postfix(**postfix)`` if possible (:class:`dict`).</span>
+<span class="sd">    unit_divisor  : float, optional</span>
+<span class="sd">        [default: 1000], ignored unless `unit_scale` is ``True``.</span>
+<span class="sd">    write_bytes  : bool, optional</span>
+<span class="sd">        If (default: ``None``) and `file` is unspecified,</span>
+<span class="sd">        bytes will be written in Python 2. If `True` will also write</span>
+<span class="sd">        bytes. In all other cases will default to unicode.</span>
+<span class="sd">    lock_args  : tuple, optional</span>
+<span class="sd">        Passed to `refresh` for intermediate output</span>
+<span class="sd">        (initialisation, iterating, and updating).</span>
+<span class="sd">    nrows  : int, optional</span>
+<span class="sd">        The screen height. If specified, hides nested bars outside this</span>
+<span class="sd">        bound. If unspecified, attempts to use environment height.</span>
+<span class="sd">        The fallback is 20.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    out  : decorated iterator.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    To get a progress bar when analyzing a trajectory::</span>
+
+<span class="sd">      from MDAnalysis.lib.log import ProgressBar</span>
+
+<span class="sd">      ...</span>
+
+<span class="sd">      for ts in ProgressBar(u.trajectory):</span>
+<span class="sd">         # perform analysis</span>
+
+
+<span class="sd">    will produce something similar to ::</span>
+
+<span class="sd">       30%|███████████                       | 3/10 [00:13&lt;00:30,  4.42s/it]</span>
+
+<span class="sd">    in a terminal or Jupyter notebook.</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    The :class:`ProgressBar` is derived from :class:`tqdm.auto.tqdm`; see the</span>
+<span class="sd">    `tqdm documentation`_ for further details on how to use it.</span>
+
+
+
+<span class="sd">    .. _`tqdm documentation`: https://tqdm.github.io/</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\r</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">s</span>
-    <span class="k">if</span> <span class="n">newline</span><span class="p">:</span>
-        <span class="n">end</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
-
-
-<span class="k">def</span> <span class="nf">_new_format</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Format a string that follows the {}-based syntax.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">variables</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_legacy_format</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">variables</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Format a string that follows the %-based syntax.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="n">variables</span>
-
-
-<span class="k">def</span> <span class="nf">_guess_string_format</span><span class="p">(</span><span class="n">template</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Guess if the template follow {}-based or %-based syntax.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;%\((step|numsteps|percentage)\)&#39;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_new_format</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_legacy_format</span>
-
-
-<div class="viewcode-block" id="ProgressBar"><a class="viewcode-back" href="../../../documentation_pages/lib/log.html#MDAnalysis.ProgressBar">[docs]</a><span class="k">class</span> <span class="nc">ProgressBar</span><span class="p">(</span><span class="n">tqdm</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
+        <span class="c1"># ^^^^ keep the empty doc string to avoid Sphinx doc errors with the</span>
+        <span class="c1"># original doc string from tqdm.auto.tqdm</span>
         <span class="n">verbose</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
         <span class="c1"># disable: Whether to disable the entire progressbar wrapper [default: False].</span>
         <span class="c1"># If set to None, disable on non-TTY.</span>
