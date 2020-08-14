@@ -409,6 +409,12 @@ class TestRDKitFunctions(object):
         ("C-[N](-[O])-[O].C-[N](-[O])-[O]", "C[N+](=O)[O-].C[N+](=O)[O-]"),
         ("[C-](=O)-C", "[C](=O)-C"),
         ("[H]-[N-]-C", "[H]-[N]-C"),
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])-[C](-[H])1", 
+         "[O-]c1ccccc1"),
+        ("[O]-[C]1-[C](-[H])-[C](-[H])-[C](-[H])-[C]1-[O]", 
+         "[O-]C1=CC=CC1[O-]"),
+        ("[H]-[C]-[C]-[C](-[H])-[C](-[H])-[H]", "C#CC=C"),
+        ("[H]-[C]-[C]-[C]-[C]-[H]", "C#CC#C"),
     ])
     def test_standardize_patterns(self, smi, out):
         mol = Chem.MolFromSmiles(smi, sanitize=False)
@@ -474,7 +480,6 @@ class TestRDKitFunctions(object):
         "C=CC=CC=CC=CC=CC=C",
         "NCCCCC([NH3+])C(=O)[O-]",
         "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
-
     ])
     def test_order_independant(self, smi_in):
         # generate mol with hydrogens but without bond orders
@@ -482,6 +487,7 @@ class TestRDKitFunctions(object):
         template = Chem.AddHs(ref)
         for atom in template.GetAtoms():
             atom.SetIsAromatic(False)
+            atom.SetFormalCharge(0)
         for bond in template.GetBonds():
             bond.SetIsAromatic(False)
             bond.SetBondType(Chem.BondType.SINGLE)

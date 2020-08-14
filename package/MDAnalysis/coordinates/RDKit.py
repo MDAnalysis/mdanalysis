@@ -498,7 +498,8 @@ def _infer_bo_and_charges(mol):
     one will be charged. It will also affect more complex conjugated systems.
     """
 
-    for atom in mol.GetAtoms():
+    for atom in sorted(mol.GetAtoms(), reverse=True,
+                       key=lambda a: _get_nb_unpaired_electrons(a)[0]):
         # get NUE for each possible valence
         nue = _get_nb_unpaired_electrons(atom)
         # if there's only one possible valence state and the corresponding
@@ -511,7 +512,8 @@ def _infer_bo_and_charges(mol):
         if (len(nue) == 1) and (nue[0] <= 0):
             continue
         else:
-            neighbors = atom.GetNeighbors()
+            neighbors = sorted(atom.GetNeighbors(), reverse=True,
+                               key=lambda a: _get_nb_unpaired_electrons(a)[0])
             # check if one of the neighbors has a common NUE
             for i, na in enumerate(neighbors, start=1):
                 # get NUE for the neighbor
