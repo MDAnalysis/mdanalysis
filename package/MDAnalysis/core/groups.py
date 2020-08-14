@@ -96,7 +96,7 @@ import numbers
 import os
 import warnings
 
-from .. import (_ANCHOR_UNIVERSES, _CONVERTERS,
+from .. import (_CONVERTERS,
                 _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique, unique_int_1d
