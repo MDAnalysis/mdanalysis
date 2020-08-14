@@ -583,13 +583,31 @@ def _standardize_patterns(mol, max_iter=200):
     fragments. Then, for each fragment, we apply the standardization reactions.
     Finally, the fragments are recombined.
 
+    Parameters
+    ----------
+    mol : rdkit.Chem.rdchem.RWMol
+        The molecule to standardize
+    max_iter : int
+        Maximum number of iterations to standardize conjugated systems
+
+    Returns
+    -------
+    mol : rdkit.Chem.rdchem.Mol
+        The standardized molecule
+
     Notes
     -----
-    The following functional groups are transformed:
+    The following functional groups are transformed in this order:
 
     +---------------+-------------------------------------------------------------------------+
     | Name          | Reaction                                                                |
     +===============+=========================================================================+
+    | conjugated    | [*-;!O:1]-[*:2]=[*:3]-[*-:4]>>[*+0:1]=[*:2]-[*:3]=[*+0:4]               |
+    +---------------+-------------------------------------------------------------------------+
+    | conjugated-N+ | [N;X3;v3:1]-[*:2]=[*:3]-[*-:4]>>[N+:1]=[*:2]-[*:3]=[*+0:4]              |
+    +---------------+-------------------------------------------------------------------------+
+    | conjugated-O- | [O:1]=[#6:2]-[*:3]=[*:4]-[*-:5]>>[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]       |
+    +---------------+-------------------------------------------------------------------------+
     | Cterm         | [C-;X2:1]=[O:2]>>[C+0:1]=[O:2]                                          |
     +---------------+-------------------------------------------------------------------------+
     | Nterm         | [N-;X2;H1:1]>>[N+0:1]                                                   |
@@ -602,24 +620,7 @@ def _standardize_patterns(mol, max_iter=200):
     +---------------+-------------------------------------------------------------------------+
     | nitro         | [N;X3;v3:1](-[O-;X1:2])-[O-;X1:3]>>[N+:1](-[O-:2])=[O+0:3]              |
     +---------------+-------------------------------------------------------------------------+
-    | conjugated    | [*-;!O:1]-[*:2]=[*:3]-[*-:4]>>[*+0:1]=[*:2]-[*:3]=[*+0:4]               |
-    +---------------+-------------------------------------------------------------------------+
-    | conjugated-N+ | [N;X3;v3:1]-[*:2]=[*:3]-[*-:4]>>[N+:1]=[*:2]-[*:3]=[*+0:4]              |
-    +---------------+-------------------------------------------------------------------------+
-    | conjugated-O- | [O:1]=[#6:2]-[*:3]=[*:4]-[*-:5]>>[O-:1]-[*:2]=[*:3]-[*:4]=[*+0:5]       |
-    +---------------+-------------------------------------------------------------------------+
 
-    Parameters
-    ----------
-    mol : rdkit.Chem.rdchem.RWMol
-        The molecule to standardize
-    max_iter : int
-        Maximum number of iterations to standardize conjugated systems
-
-    Returns
-    -------
-    mol : rdkit.Chem.rdchem.Mol
-        The standardized molecule
     """
 
     # standardize conjugated systems
