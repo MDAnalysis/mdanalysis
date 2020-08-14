@@ -47,6 +47,7 @@ Enhancements
 Deprecations
   * waterdynamics.HydrogenBondLifetimes will be removed in 2.0.0 and
     replaced with hydrogenbonds.HydrogenBondAnalysis.lifetime() (#2547)
+  * lib.util.echo() will be removed in 2.0.0
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,

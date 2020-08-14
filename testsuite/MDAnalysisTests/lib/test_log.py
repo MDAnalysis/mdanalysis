@@ -25,7 +25,7 @@ from __future__ import absolute_import
 import warnings
 import pytest
 
-from MDAnalysis.lib.log import ProgressMeter, ProgressBar
+from MDAnalysis.lib.log import ProgressMeter, ProgressBar, echo
 
 
 class TestProgressMeter(object):
@@ -49,7 +49,10 @@ class TestProgressMeter(object):
         expected = 'Step    10/10 [100.0%]'
         actual = err.strip().split('\r')[-1]
         assert actual == expected
-    
+
+def test_echo_deprecated():
+    with pytest.deprecated_call():
+        echo("F=ma -- Isaac Newton")
 
 class TestProgressBar(object):
 
