@@ -212,6 +212,11 @@ class TestRDKitConverter(object):
         u = mda.Universe(rdmol)
         umol = u.atoms.convert_to("RDKIT")
         assert rdmol.HasSubstructMatch(umol) and umol.HasSubstructMatch(rdmol)
+        u2 = mda.Universe(umol)
+        assert_equal(u.atoms.bonds, u2.atoms.bonds)
+        assert_equal(u.atoms.elements, u2.atoms.elements)
+        assert_equal(u.atoms.names, u2.atoms.names)
+        assert_almost_equal(u.atoms.positions, u2.atoms.positions, decimal=7)
 
     def test_raise_requires_elements(self):
         u = mda.Universe(mol2_molecule)
@@ -295,7 +300,7 @@ class TestRDKitConverter(object):
         indices = sorted(mol.GetAtoms(),
                          key=lambda a: a.GetIntProp("_MDAnalysis_index"))
         indices = [a.GetIdx() for a in indices]
-        assert_equal(positions[indices], pdb.atoms.positions)
+        assert_almost_equal(positions[indices], pdb.atoms.positions)
 
     def test_assign_stereochemistry(self, mol2):
         umol = mol2.atoms.convert_to("RDKIT")
@@ -313,7 +318,7 @@ class TestRDKitConverter(object):
             indices = sorted(mol.GetAtoms(),
                              key=lambda a: a.GetIntProp("_MDAnalysis_index"))
             indices = [a.GetIdx() for a in indices]
-            assert_equal(positions[indices], ts.positions)
+            assert_almost_equal(positions[indices], ts.positions)
 
     def test_nan_coords(self):
         u = mda.Universe.from_smiles("CCO")
