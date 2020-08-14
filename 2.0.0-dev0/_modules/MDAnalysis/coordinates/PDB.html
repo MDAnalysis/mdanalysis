@@ -234,7 +234,7 @@
 <span class="sd">          W.write(calphas)</span>
 
 <span class="sd">It is important to *always close the trajectory* when done because only at this</span>
-<span class="sd">step is the final END_ record written, which is required by the `PDB 3.2</span>
+<span class="sd">step is the final END_ record written, which is required by the `PDB 3.3</span>
 <span class="sd">standard`_. Using the writer as a context manager ensures that this always</span>
 <span class="sd">happens.</span>
 
@@ -244,7 +244,7 @@
 
 <span class="sd">A pure-Python implementation for PDB files commonly encountered in MD</span>
 <span class="sd">simulations comes under the names :class:`PDBReader` and :class:`PDBWriter`. It</span>
-<span class="sd">only implements a subset of the `PDB 3.2 standard`_ and also allows some</span>
+<span class="sd">only implements a subset of the `PDB 3.3 standard`_ and also allows some</span>
 <span class="sd">typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).</span>
 
 <span class="sd">The :class:`PDBReader` can read multi-frame PDB files and represents</span>
@@ -315,8 +315,8 @@
 <span class="sd">   :inherited-members:</span>
 
 
-<span class="sd">.. _`PDB 3.2 standard`:</span>
-<span class="sd">    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
+<span class="sd">.. _`PDB 3.3 standard`:</span>
+<span class="sd">    http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span><span class="p">,</span> <span class="n">BytesIO</span>
@@ -356,11 +356,11 @@
 <span class="sd">    Reads multi-`MODEL`_ PDB files as trajectories.</span>
 
 <span class="sd">    .. _PDB-formatted:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html</span>
 <span class="sd">    .. _PDB coordinate section:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html</span>
 <span class="sd">    .. _MODEL:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL</span>
 
 <span class="sd">    =============  ============  ===========  =============================================</span>
 <span class="sd">    COLUMNS        DATA  TYPE    FIELD        DEFINITION</span>
@@ -638,7 +638,7 @@
 
 
 <div class="viewcode-block" id="PDBWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter">[docs]</a><span class="k">class</span> <span class="nc">PDBWriter</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">WriterBase</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;PDB writer that implements a subset of the `PDB 3.2 standard`_ .</span>
+    <span class="sd">&quot;&quot;&quot;PDB writer that implements a subset of the `PDB 3.3 standard`_ .</span>
 
 <span class="sd">    PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,</span>
 <span class="sd">    altLoc is written.</span>
@@ -649,12 +649,19 @@
 <span class="sd">    PDB &quot;movie&quot; (multi frame mode, *multiframe* = ``True``), consisting of</span>
 <span class="sd">    multiple models (using the MODEL_ and ENDMDL_ records).</span>
 
-<span class="sd">    .. _`PDB 3.2 standard`:</span>
-<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html</span>
-<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
-<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
-<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
-
+<span class="sd">    .. _`PDB 3.3 standard`:</span>
+<span class="sd">       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html</span>
+<span class="sd">    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM</span>
+<span class="sd">    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND</span>
+<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT</span>
+<span class="sd">    .. _END: http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END</span>
+<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL</span>
+<span class="sd">    .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER</span>
+<span class="sd">    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM</span>
+<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL</span>
+<span class="sd">    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#NUMMDL</span>
+<span class="sd">    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html</span>
+<span class="sd">    .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE</span>
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
@@ -671,6 +678,11 @@
 <span class="sd">    unitary values (cubic box with sides of 1 Å) if unit cell dimensions</span>
 <span class="sd">    are not set (:code:`None` or :code:`np.zeros(6)`,</span>
 <span class="sd">    see Issue #2698).</span>
+
+<span class="sd">    When the :attr:`record_types` attribute is present (e.g. Universe object</span>
+<span class="sd">    was created by loading a PDB file), ATOM_ and HETATM_ record type</span>
+<span class="sd">    keywords are written out accordingly. Otherwise, the ATOM_ record type</span>
+<span class="sd">    is the default output.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
@@ -704,6 +716,11 @@
     <span class="n">fmt</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">&#39;ATOM&#39;</span><span class="p">:</span> <span class="p">(</span>
             <span class="s2">&quot;ATOM  </span><span class="si">{serial:5d}</span><span class="s2"> </span><span class="si">{name:&lt;4s}{altLoc:&lt;1s}{resName:&lt;4s}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;</span><span class="si">{chainID:1s}{resSeq:4d}{iCode:1s}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;   </span><span class="si">{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;</span><span class="si">{tempFactor:6.2f}</span><span class="s2">      </span><span class="si">{segID:&lt;4s}{element:&gt;2s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="s1">&#39;HETATM&#39;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;HETATM</span><span class="si">{serial:5d}</span><span class="s2"> </span><span class="si">{name:&lt;4s}{altLoc:&lt;1s}{resName:&lt;4s}</span><span class="s2">&quot;</span>
             <span class="s2">&quot;</span><span class="si">{chainID:1s}{resSeq:4d}{iCode:1s}</span><span class="s2">&quot;</span>
             <span class="s2">&quot;   </span><span class="si">{pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}</span><span class="s2">&quot;</span>
             <span class="s2">&quot;</span><span class="si">{tempFactor:6.2f}</span><span class="s2">      </span><span class="si">{segID:&lt;4s}{element:&gt;2s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">),</span>
@@ -787,10 +804,6 @@
 <span class="sd">           multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_</span>
 <span class="sd">           records. If ``None``, then the class default is chosen.    [``None``]</span>
 
-<span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
-<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
-<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># n_atoms = None : dummy keyword argument</span>
         <span class="c1"># (not used, but Writer() always provides n_atoms as the second argument)</span>
@@ -846,9 +859,6 @@
 <span class="sd">        The CRYST1_ record specifies the unit cell. This record is set to</span>
 <span class="sd">        unitary values (cubic box with sides of 1 Å) if unit cell dimensions</span>
 <span class="sd">        are not set.</span>
-
-<span class="sd">        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND</span>
-<span class="sd">        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html</span>
 
 <span class="sd">        .. versionchanged: 1.0.0</span>
 <span class="sd">           Fix writing of PDB file without unit cell dimensions (Issue #2679).</span>
@@ -1160,19 +1170,21 @@
 <span class="sd">        :class:`PDBWriter` is in single frame mode and no MODEL_</span>
 <span class="sd">        records are written.</span>
 
-<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
-<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
-<span class="sd">        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL</span>
-
 <span class="sd">        .. versionchanged:: 0.7.6</span>
 <span class="sd">           The *multiframe* keyword was added, which completely determines if</span>
-<span class="sd">           MODEL records are written. (Previously, this was decided based on the</span>
-<span class="sd">           underlying trajectory and only if ``len(traj) &gt; 1`` would MODEL records</span>
-<span class="sd">           have been written.)</span>
+<span class="sd">           MODEL_ records are written. (Previously, this was decided based on</span>
+<span class="sd">           the underlying trajectory and only if ``len(traj) &gt; 1`` would</span>
+<span class="sd">           MODEL records have been written.)</span>
 
 <span class="sd">        .. versionchanged:: 1.0.0</span>
-<span class="sd">           ChainID now comes from the last character of segid, as stated in the documentation.</span>
-<span class="sd">           An indexing issue meant it previously used the first charater (Issue #2224)</span>
+<span class="sd">           ChainID now comes from the last character of segid, as stated in</span>
+<span class="sd">           the documentation. An indexing issue meant it previously used the</span>
+<span class="sd">           first charater (Issue #2224)</span>
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           When only :attr:`record_types` attribute is present, instead of</span>
+<span class="sd">           using ATOM_ for both ATOM_ and HETATM_, HETATM_ record</span>
+<span class="sd">           types are properly written out (Issue #1753).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span>
@@ -1207,6 +1219,7 @@
         <span class="n">occupancies</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;occupancies&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
         <span class="n">tempfactors</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;tempfactors&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="n">atomnames</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">)</span>
+        <span class="n">record_types</span> <span class="o">=</span> <span class="n">get_attr</span><span class="p">(</span><span class="s1">&#39;record_types&#39;</span><span class="p">,</span> <span class="s1">&#39;ATOM&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
             <span class="n">vals</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1223,16 +1236,20 @@
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;segID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">segids</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">4</span><span class="p">]</span>
             <span class="n">vals</span><span class="p">[</span><span class="s1">&#39;element&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atomnames</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())[:</span><span class="mi">2</span><span class="p">]</span>
 
-            <span class="c1"># .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ATOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">))</span>
+            <span class="c1"># record_type attribute, if exists, can be ATOM or HETATM</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="n">record_types</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="n">record_types</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2"> for the record type, but &quot;</span>
+                          <span class="sa">f</span><span class="s2">&quot;only allowed types are ATOM or HETATM&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+
         <span class="k">if</span> <span class="n">multiframe</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">ENDMDL</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frames_written</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
 <div class="viewcode-block" id="PDBWriter.HEADER"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.HEADER">[docs]</a>    <span class="k">def</span> <span class="nf">HEADER</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write HEADER_ record.</span>
-
-<span class="sd">        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER</span>
 
 <span class="sd">        .. versionchanged:: 0.20.0</span>
 <span class="sd">            Strip `trajectory.header` since it can be modified by the user and should be</span>
@@ -1246,22 +1263,15 @@
 <div class="viewcode-block" id="PDBWriter.TITLE"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.TITLE">[docs]</a>    <span class="k">def</span> <span class="nf">TITLE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">title</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write TITLE_ record.</span>
 
-<span class="sd">        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>  <span class="c1"># TODO: should do continuation automatically</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;TITLE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="PDBWriter.REMARK"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.REMARK">[docs]</a>    <span class="k">def</span> <span class="nf">REMARK</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">remarks</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Write generic REMARK_ record (without number).</span>
+        <span class="sd">&quot;&quot;&quot;Write generic REMARKS_ record (without number).</span>
 
-<span class="sd">        Each string provided in *remarks* is written as a separate REMARK_</span>
+<span class="sd">        Each string provided in *remarks* is written as a separate REMARKS_</span>
 <span class="sd">        record.</span>
-
-<span class="sd">        See also `REMARK (update)`_.</span>
-
-<span class="sd">        .. _REMARK: http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html</span>
-<span class="sd">        .. _REMARK (update): http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">remark</span> <span class="ow">in</span> <span class="n">remarks</span><span class="p">:</span>
@@ -1292,10 +1302,6 @@
 <span class="sd">           standard (i.e., 4 digits). If frame numbers are larger than</span>
 <span class="sd">           9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...</span>
 
-
-<span class="sd">        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
-
-
 <span class="sd">        .. versionchanged:: 0.19.0</span>
 <span class="sd">           Maximum model number is enforced.</span>
 
@@ -1310,8 +1316,6 @@
 <span class="sd">        method right before closing the file it is recommended to *not* call</span>
 <span class="sd">        :meth:`~PDBWriter.END` explicitly.</span>
 
-<span class="sd">        .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_END</span><span class="p">:</span>
             <span class="c1"># only write a single END record</span>
@@ -1321,15 +1325,11 @@
 <div class="viewcode-block" id="PDBWriter.ENDMDL"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.ENDMDL">[docs]</a>    <span class="k">def</span> <span class="nf">ENDMDL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write the ENDMDL_ record.</span>
 
-<span class="sd">        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pdbfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fmt</span><span class="p">[</span><span class="s1">&#39;ENDMDL&#39;</span><span class="p">])</span></div>
 
 <div class="viewcode-block" id="PDBWriter.CONECT"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.CONECT">[docs]</a>    <span class="k">def</span> <span class="nf">CONECT</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conect</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Write CONECT_ record.</span>
-
-<span class="sd">        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">conect</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;</span><span class="si">{0:5d}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">entry</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">conect</span><span class="p">]</span>
@@ -1340,7 +1340,7 @@
 <div class="viewcode-block" id="ExtendedPDBReader"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.ExtendedPDBReader">[docs]</a><span class="k">class</span> <span class="nc">ExtendedPDBReader</span><span class="p">(</span><span class="n">PDBReader</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;PDBReader that reads a PDB-formatted file with five-digit residue numbers.</span>
 
-<span class="sd">    This reader does not conform to the `PDB 3.2 standard`_ because it allows</span>
+<span class="sd">    This reader does not conform to the `PDB 3.3 standard`_ because it allows</span>
 <span class="sd">    five-digit residue numbers that may take up columns 23 to 27 (inclusive)</span>
 <span class="sd">    instead of being confined to 23-26 (with column 27 being reserved for the</span>
 <span class="sd">    insertion code in the PDB standard). PDB files in this format are written</span>
@@ -1359,7 +1359,7 @@
 
 
 <div class="viewcode-block" id="MultiPDBWriter"><a class="viewcode-back" href="../../../documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.MultiPDBWriter">[docs]</a><span class="k">class</span> <span class="nc">MultiPDBWriter</span><span class="p">(</span><span class="n">PDBWriter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;PDB writer that implements a subset of the `PDB 3.2 standard`_ .</span>
+    <span class="sd">&quot;&quot;&quot;PDB writer that implements a subset of the `PDB 3.3 standard`_ .</span>
 
 <span class="sd">    PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc</span>
 <span class="sd">    is written.</span>
@@ -1369,9 +1369,9 @@
 <span class="sd">    and ENDMDL_ records).</span>
 
 
-<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL</span>
-<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL</span>
-<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT</span>
+<span class="sd">    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL</span>
+<span class="sd">    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL</span>
+<span class="sd">    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT</span>
 
 
 <span class="sd">    See Also</span>
@@ -1400,7 +1400,7 @@
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>

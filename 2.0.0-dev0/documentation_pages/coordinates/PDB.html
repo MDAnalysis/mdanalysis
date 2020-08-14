@@ -250,14 +250,14 @@ trajectory, while writing each frame:</p>
 </pre></div>
 </div>
 <p>It is important to <em>always close the trajectory</em> when done because only at this
-step is the final <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END">END</a> record written, which is required by the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2
+step is the final <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END">END</a> record written, which is required by the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3
 standard</a>. Using the writer as a context manager ensures that this always
 happens.</p>
 <div class="section" id="capabilities">
 <h2>6.15.1. Capabilities<a class="headerlink" href="#capabilities" title="Permalink to this headline">¶</a></h2>
 <p>A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBReader</span></code></a> and <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a>. It
-only implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2 standard</a> and also allows some
+only implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3 standard</a> and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).</p>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBReader" title="MDAnalysis.coordinates.PDB.PDBReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBReader</span></code></a> can read multi-frame PDB files and represents
 them as a trajectory. The <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a> can write single and
@@ -306,8 +306,8 @@ removed.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBReader" title="Permalink to this definition">¶</a></dt>
-<dd><p>PDBReader that reads a <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB-formatted</a> file, no frills.</p>
-<p>The following <em>PDB records</em> are parsed (see <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html">PDB coordinate section</a> for
+<dd><p>PDBReader that reads a <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB-formatted</a> file, no frills.</p>
+<p>The following <em>PDB records</em> are parsed (see <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html">PDB coordinate section</a> for
 details):</p>
 <blockquote>
 <div><ul class="simple">
@@ -318,7 +318,7 @@ details):</p>
 <li>all other lines are ignored</li>
 </ul>
 </div></blockquote>
-<p>Reads multi-<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> PDB files as trajectories.</p>
+<p>Reads multi-<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> PDB files as trajectories.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="16%" />
@@ -510,27 +510,31 @@ frame numbers.</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">PDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2 standard</a> .</p>
+<dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
 altLoc is written.</p>
 <p>The <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a> can be used to either dump a coordinate
 set to a PDB file (operating as a “single frame writer”, selected with the
 constructor keyword <em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">False</span></code>, the default) or by writing a
 PDB “movie” (multi frame mode, <em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code>), consisting of
-multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a> records).</p>
+multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a> records).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Writing bonds currently only works when writing a whole <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>
 and if bond information is available in the topology.  (For selections
-smaller than the whole <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>, the atom numbering in the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a>
+smaller than the whole <code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code>, the atom numbering in the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a>
 records would not match the numbering of the atoms in the new PDB file and
 therefore a <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#NotImplementedError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">NotImplementedError</span></code></a> is raised.)</p>
 <p>The maximum frame number that can be stored in a PDB file is 9999 and it
 will wrap around (see <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.MODEL" title="MDAnalysis.coordinates.PDB.PDBWriter.MODEL"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MODEL()</span></code></a> for further details).</p>
-<p class="last">The <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> record specifies the unit cell. This record is set to
+<p>The <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect8.html#CRYST1">CRYST1</a> record specifies the unit cell. This record is set to
 unitary values (cubic box with sides of 1 Å) if unit cell dimensions
 are not set (<code class="code docutils literal notranslate"><span class="pre">None</span></code> or <code class="code docutils literal notranslate"><span class="pre">np.zeros(6)</span></code>,
 see Issue #2698).</p>
+<p class="last">When the <code class="xref py py-attr docutils literal notranslate"><span class="pre">record_types</span></code> attribute is present (e.g. Universe object
+was created by loading a PDB file), <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM">HETATM</a> record type
+keywords are written out accordingly. Otherwise, the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> record type
+is the default output.</p>
 </div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
@@ -543,7 +547,7 @@ exception that it defaults to writing single-frame PDB files as if
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added to select the writing mode. The
-writing of bond information (<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a> records) is now disabled by default
+writing of bond information (<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> records) is now disabled by default
 but can be enabled with the <em>bonds</em> keyword.</p>
 </div>
 <div class="versionchanged">
@@ -575,15 +579,12 @@ written to REMARK records with lines longer than <code class="xref py py-attr do
 characters) being wrapped.</li>
 <li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>bonds</strong> (<em>{&quot;conect&quot;</em><em>, </em><em>&quot;all&quot;</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – If set to “conect”, then only write those bonds that were already
-defined in an input PDB file as PDB <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a> record. If set to “all”,
+defined in an input PDB file as PDB <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> record. If set to “all”,
 write all bonds (including guessed ones) to the file. <code class="docutils literal notranslate"><span class="pre">None</span></code> does
 not write any bonds. The default is “conect”.</li>
 <li><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame to the file; <code class="docutils literal notranslate"><span class="pre">True</span></code>: create a
-multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a>
+multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a>
 records. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the class default is chosen.    [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>_CONECT</strong> (<em>.</em>) – </li>
-<li><strong>_MODEL</strong> (<em>.</em>) – </li>
-<li><strong>_ENDMDL</strong> (<em>.</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -641,28 +642,34 @@ current frame.</p>
 <code class="descname">_write_timestep</code><span class="sig-paren">(</span><em>ts</em>, <em>multiframe=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter._write_timestep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter._write_timestep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a new timestep <em>ts</em> to file</p>
 <p>Does unit conversion if necessary.</p>
-<p>By setting <em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a> records are
+<p>By setting <em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code>, <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a> records are
 written to represent trajectory frames in a multi-model PDB file. (At
-the moment we do <em>not</em> write the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL">NUMMDL</a> record.)</p>
+the moment we do <em>not</em> write the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#NUMMDL">NUMMDL</a> record.)</p>
 <p>The <em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">False</span></code> keyword signals that the
-<a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a> is in single frame mode and no <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a>
+<a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter" title="MDAnalysis.coordinates.PDB.PDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PDBWriter</span></code></a> is in single frame mode and no <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a>
 records are written.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.7.6: </span>The <em>multiframe</em> keyword was added, which completely determines if
-MODEL records are written. (Previously, this was decided based on the
-underlying trajectory and only if <code class="docutils literal notranslate"><span class="pre">len(traj)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> would MODEL records
-have been written.)</p>
+<a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> records are written. (Previously, this was decided based on
+the underlying trajectory and only if <code class="docutils literal notranslate"><span class="pre">len(traj)</span> <span class="pre">&gt;</span> <span class="pre">1</span></code> would
+MODEL records have been written.)</p>
 </div>
 <div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>ChainID now comes from the last character of segid, as stated in the documentation.
-An indexing issue meant it previously used the first charater (Issue #2224)</p>
+<p><span class="versionmodified">Changed in version 1.0.0: </span>ChainID now comes from the last character of segid, as stated in
+the documentation. An indexing issue meant it previously used the
+first charater (Issue #2224)</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>When only <code class="xref py py-attr docutils literal notranslate"><span class="pre">record_types</span></code> attribute is present, instead of
+using <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> for both <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM">ATOM</a> and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM">HETATM</a>, <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM">HETATM</a> record
+types are properly written out (Issue #1753).</p>
 </div>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.CONECT">
 <code class="descname">CONECT</code><span class="sig-paren">(</span><em>conect</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.CONECT"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.CONECT" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a> record.</p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> record.</p>
 </dd></dl>
 
 <dl class="method">
@@ -674,7 +681,7 @@ An indexing issue meant it previously used the first charater (Issue #2224)</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.END">
 <code class="descname">END</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.END"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.END" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END">END</a> record.</p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END">END</a> record.</p>
 <p>Only a single END record is written. Calling END multiple times has no
 effect. Because <a class="reference internal" href="#MDAnalysis.coordinates.PDB.PDBWriter.close" title="MDAnalysis.coordinates.PDB.PDBWriter.close"><code class="xref py py-meth docutils literal notranslate"><span class="pre">close()</span></code></a> also calls this
 method right before closing the file it is recommended to <em>not</em> call
@@ -684,13 +691,13 @@ method right before closing the file it is recommended to <em>not</em> call
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.ENDMDL">
 <code class="descname">ENDMDL</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.ENDMDL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.ENDMDL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a> record.</p>
+<dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a> record.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.HEADER">
 <code class="descname">HEADER</code><span class="sig-paren">(</span><em>trajectory</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.HEADER"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.HEADER" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER">HEADER</a> record.</p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER">HEADER</a> record.</p>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.20.0: </span>Strip <cite>trajectory.header</cite> since it can be modified by the user and should be
 sanitized (Issue #2324)</p>
@@ -700,7 +707,7 @@ sanitized (Issue #2324)</p>
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.MODEL">
 <code class="descname">MODEL</code><span class="sig-paren">(</span><em>modelnumber</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.MODEL"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.MODEL" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> record.</p>
+<dd><p>Write the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> record.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The maximum MODEL number is limited to 9999 in the PDB
@@ -715,16 +722,15 @@ standard (i.e., 4 digits). If frame numbers are larger than
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.REMARK">
 <code class="descname">REMARK</code><span class="sig-paren">(</span><em>*remarks</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.REMARK"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.REMARK" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write generic <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html">REMARK</a> record (without number).</p>
-<p>Each string provided in <em>remarks</em> is written as a separate <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html">REMARK</a>
+<dd><p>Write generic <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html">REMARKS</a> record (without number).</p>
+<p>Each string provided in <em>remarks</em> is written as a separate <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html">REMARKS</a>
 record.</p>
-<p>See also <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html">REMARK (update)</a>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="MDAnalysis.coordinates.PDB.PDBWriter.TITLE">
 <code class="descname">TITLE</code><span class="sig-paren">(</span><em>*title</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#PDBWriter.TITLE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.PDBWriter.TITLE" title="Permalink to this definition">¶</a></dt>
-<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html">TITLE</a> record.</p>
+<dd><p>Write <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE">TITLE</a> record.</p>
 </dd></dl>
 
 <dl class="method">
@@ -784,12 +790,12 @@ constructor). Thus, if <em>u</em> is a Universe then</p>
 <dl class="class">
 <dt id="MDAnalysis.coordinates.PDB.MultiPDBWriter">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">MultiPDBWriter</code><span class="sig-paren">(</span><em>filename</em>, <em>bonds='conect'</em>, <em>n_atoms=None</em>, <em>start=0</em>, <em>step=1</em>, <em>remarks='Created by PDBWriter'</em>, <em>convert_units=True</em>, <em>multiframe=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#MultiPDBWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="Permalink to this definition">¶</a></dt>
-<dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2 standard</a> .</p>
+<dd><p>PDB writer that implements a subset of the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3 standard</a> .</p>
 <p>PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
 is written.</p>
 <p>By default, <a class="reference internal" href="#MDAnalysis.coordinates.PDB.MultiPDBWriter" title="MDAnalysis.coordinates.PDB.MultiPDBWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">MultiPDBWriter</span></code></a> writes a PDB “movie” (multi frame mode,
-<em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code>), consisting of multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a>
-and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a> records).</p>
+<em>multiframe</em> = <code class="docutils literal notranslate"><span class="pre">True</span></code>), consisting of multiple models (using the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a>
+and <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a> records).</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><code class="xref py py-class docutils literal notranslate"><span class="pre">This</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">exception</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">single</span></code></p>
@@ -813,15 +819,12 @@ written to REMARK records with lines longer than <code class="xref py py-attr do
 characters) being wrapped.</li>
 <li><strong>convert_units</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – units are converted to the MDAnalysis base format; [<code class="docutils literal notranslate"><span class="pre">True</span></code>]</li>
 <li><strong>bonds</strong> (<em>{&quot;conect&quot;</em><em>, </em><em>&quot;all&quot;</em><em>, </em><em>None}</em><em> (</em><em>optional</em><em>)</em>) – If set to “conect”, then only write those bonds that were already
-defined in an input PDB file as PDB <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT">CONECT</a> record. If set to “all”,
+defined in an input PDB file as PDB <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT">CONECT</a> record. If set to “all”,
 write all bonds (including guessed ones) to the file. <code class="docutils literal notranslate"><span class="pre">None</span></code> does
 not write any bonds. The default is “conect”.</li>
 <li><strong>multiframe</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <code class="docutils literal notranslate"><span class="pre">False</span></code>: write a single frame to the file; <code class="docutils literal notranslate"><span class="pre">True</span></code>: create a
-multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL">ENDMDL</a>
+multi frame PDB file in which frames are written as <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL">MODEL</a> … <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL">ENDMDL</a>
 records. If <code class="docutils literal notranslate"><span class="pre">None</span></code>, then the class default is chosen.    [<code class="docutils literal notranslate"><span class="pre">None</span></code>]</li>
-<li><strong>_CONECT</strong> (<em>.</em>) – </li>
-<li><strong>_MODEL</strong> (<em>.</em>) – </li>
-<li><strong>_ENDMDL</strong> (<em>.</em>) – </li>
 </ul>
 </td>
 </tr>
@@ -833,7 +836,7 @@ records. If <code class="docutils literal notranslate"><span class="pre">None</s
 <dt id="MDAnalysis.coordinates.PDB.ExtendedPDBReader">
 <em class="property">class </em><code class="descclassname">MDAnalysis.coordinates.PDB.</code><code class="descname">ExtendedPDBReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/coordinates/PDB.html#ExtendedPDBReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.coordinates.PDB.ExtendedPDBReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>PDBReader that reads a PDB-formatted file with five-digit residue numbers.</p>
-<p>This reader does not conform to the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html">PDB 3.2 standard</a> because it allows
+<p>This reader does not conform to the <a class="reference external" href="http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html">PDB 3.3 standard</a> because it allows
 five-digit residue numbers that may take up columns 23 to 27 (inclusive)
 instead of being confined to 23-26 (with column 27 being reserved for the
 insertion code in the PDB standard). PDB files in this format are written
@@ -1528,7 +1531,7 @@ be considered to have a length of a single time step <cite>dt</cite> and a
   <div role="contentinfo">
     <p>
         
-        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Edis Jakupovic, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Mieczyslaw Torchala, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
 
     </p>
   </div>
