@@ -14,12 +14,15 @@ The rules for this file:
 
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
-         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney, 
-         calcraven， xiki-tempula
+         lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
+         calcraven，xiki-tempula, mieczyslaw
 
   * 2.0.0
 
 Fixes
+  * Instead of using ATOM for both ATOM and HETATM, HETATM record type
+    keyword is properly written out by PDB writer (Issue #1753, PR #2880).
+  * Change referenced PDB standard version to 3.3 (Issue #2906).
   * Fixed reading in masses and charges from a hoomdxml file
     (Issue #2888, PR #2889)
   * Bond attribute is no longer set if PDB file contains no CONECT records

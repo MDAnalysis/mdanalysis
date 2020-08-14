@@ -20,12 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-import pytest
-from io import StringIO
 import os
+from io import StringIO
 
 import MDAnalysis as mda
 import numpy as np
+import pytest
 from MDAnalysisTests import make_Universe
 from MDAnalysisTests.coordinates.base import _SingleFrameReader
 from MDAnalysisTests.coordinates.reference import (RefAdKSmall,
@@ -36,7 +36,8 @@ from MDAnalysisTests.datafiles import (PDB, PDB_small, PDB_multiframe,
                                        INC_PDB, PDB_xlserial, ALIGN, ENT,
                                        PDB_cm, PDB_cm_gz, PDB_cm_bz2,
                                        PDB_mc, PDB_mc_gz, PDB_mc_bz2,
-                                       PDB_CRYOEM_BOX, MMTF_NOCRYST)
+                                       PDB_CRYOEM_BOX, MMTF_NOCRYST,
+                                       PDB_HOLE, mol2_molecule)
 from numpy.testing import (assert_equal,
                            assert_array_almost_equal,
                            assert_almost_equal)
@@ -188,6 +189,14 @@ class TestPDBWriter(object):
     def universe3(self):
         return mda.Universe(PDB)
 
+    @pytest.fixture
+    def universe4(self):
+        return mda.Universe(PDB_HOLE)
+
+    @pytest.fixture
+    def universe5(self):
+        return mda.Universe(mol2_molecule)
+
     @pytest.fixture(params=[
             [PDB_CRYOEM_BOX, np.zeros(6)],
             [MMTF_NOCRYST, None]
@@ -220,7 +229,6 @@ class TestPDBWriter(object):
     @pytest.fixture
     def u_no_names(self):
         return make_Universe(['resids', 'resnames'], trajectory=True)
-
 
     def test_writer(self, universe, outfile):
         "Test writing from a single frame PDB file to a PDB file." ""
@@ -445,6 +453,65 @@ class TestPDBWriter(object):
         with pytest.raises(ValueError, match=errmsg):
             with mda.coordinates.PDB.PDBWriter(outstring) as writer:
                 writer.write(u.atoms)
+
+    def test_hetatm_written(self, universe4, tmpdir, outfile):
+        """
+        Checks that HETATM record types are written.
+        """
+
+        u = universe4
+        u_hetatms = u.select_atoms("resname ETA and record_type HETATM")
+        assert_equal(len(u_hetatms), 8)
+
+        u.atoms.write(outfile)
+        written = mda.Universe(outfile)
+        written_atoms = written.select_atoms("resname ETA and "
+                                             "record_type HETATM")
+
+        assert len(u_hetatms) == len(written_atoms), \
+            "mismatched HETATM number"
+        assert_almost_equal(u_hetatms.atoms.positions,
+                            written_atoms.atoms.positions)
+
+    def test_default_atom_record_type_written(self, universe5, tmpdir,
+                                              outfile):
+        """
+        Checks that ATOM record types are written when there is no
+        record_type attribute.
+        """
+
+        u = universe5
+
+        expected_msg = ("Found no information for attr: "
+                        "'record_types' Using default value of 'ATOM'")
+
+        with pytest.warns(UserWarning, match=expected_msg):
+            u.atoms.write(outfile)
+
+        written = mda.Universe(outfile)
+        assert len(u.atoms) == len(written.atoms), \
+            "mismatched number of atoms"
+
+        atms = written.select_atoms("record_type ATOM")
+        assert len(atms.atoms) == len(u.atoms), \
+            "mismatched ATOM number"
+
+        hetatms = written.select_atoms("record_type HETATM")
+        assert len(hetatms.atoms) == 0, "mismatched HETATM number"
+
+    def test_abnormal_record_type(self, universe5, tmpdir, outfile):
+        """
+        Checks whether KeyError is raised when record type is
+        neither ATOM or HETATM.
+        """
+        u = universe5
+        u.add_TopologyAttr('record_type', ['ABNORM']*len(u.atoms))
+
+        expected_msg = ("Found ABNORM for the record type, but only "
+                        "allowed types are ATOM or HETATM")
+
+        with pytest.raises(ValueError, match=expected_msg):
+            u.atoms.write(outfile)
 
 
 class TestMultiPDBReader(object):
