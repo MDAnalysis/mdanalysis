@@ -455,9 +455,14 @@ def _add_mda_attr_to_rdkit(attr, value, mi):
         name = re.findall(r'(\D+|\d+)', value)
         if len(name) == 2:
             symbol, number = name
+            if len(number) > 2 and len(symbol) == 1:
+                value = "{}{}".format(symbol, number)
+            else:
+                value = "{:>2.2}{:<2.2}".format(symbol, number)
         else:
-            symbol, number = name[0], ""
-        value = "{:>2.2}{:<2.2}".format(symbol, number)
+            # no number in the name
+            value = " {:<}".format(name[0])
+        
     # set attribute value in RDKit MonomerInfo
     rdattr = RDATTRIBUTES[attr]
     getattr(mi, "Set%s" % rdattr)(value)
