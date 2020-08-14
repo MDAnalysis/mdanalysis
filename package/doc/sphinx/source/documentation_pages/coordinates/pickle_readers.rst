@@ -1,4 +1,4 @@
-.. Contains the formatted docstrings for the serialization of universe located 
+.. Contains the formatted docstrings for the serialization of universe located
 .. mainly in 'MDAnalysis/libs/pickle_file_io.py'
 .. _serialization:
 
@@ -12,7 +12,7 @@ and what developers should do to serialize a new reader.
 
 To make sure every Trajectory reader can be successfully
 serialized, we implement picklable I/O classes (see :ref:`implemented-fileio`).
-When the file is pickled, filename and other necessary attributes of the open 
+When the file is pickled, filename and other necessary attributes of the open
 file handle are saved. On unpickling, the file is opened by filename.
 This means that for a successful unpickle, the original file still has to
 be accessible with its filename. To retain the current frame of the trajectory,
@@ -25,12 +25,12 @@ How to serialize a new reader
 
 File Access
 ^^^^^^^^^^^
-If the new reader uses :func:`util.anyopen()` 
+If the new reader uses :func:`util.anyopen()`
 (e.g. :class:`MDAnalysis.coordinates.PDB.PDBReader`),
 the reading handler can be pickled without modification.
 If the new reader uses I/O classes from other package
 (e.g. :class:`MDAnalysis.coordinates.GSD.GSDReader`),
-and cannot be pickled natively, create a new picklable class inherited from 
+and cannot be pickled natively, create a new picklable class inherited from
 the file class in that package
 (e.g. :class:`MDAnalysis.coordinates.GSD.GSDPicklable`),
 adding :func:`__getstate__`,
@@ -40,10 +40,10 @@ to allow file handler serialization.
 
 To seek or not to seek
 ^^^^^^^^^^^^^^^^^^^^^^
-Some I/O classes support :func:`seek` and :func:`tell` functions to allow the file 
+Some I/O classes support :func:`seek` and :func:`tell` functions to allow the file
 to be pickled with an offset. It is normally not needed for MDAnalysis with
 random access. But if error occurs during testing, find a way to make the offset work.
-Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O 
+Maybe this I/O class supports frame indexing? Maybe the file handler inside this I/O
 class supports offset?
 
 For example, in :class:`MDAnalysis.coordinates.TRZ.TRZReader`,
@@ -99,3 +99,4 @@ Currently implemented picklable IO Formats
 * :class:`MDAnalysis.coordinates.GSD.GSDPicklable`
 * :class:`MDAnalysis.coordinates.TRJ.NCDFPicklable`
 * :class:`MDAnalysis.coordinates.chemfiles.ChemfilesPicklable`
+* :class:`MDAnalysis.coordinates.H5MD.H5PYPicklable`
