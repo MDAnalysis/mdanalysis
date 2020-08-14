@@ -500,10 +500,10 @@ class PDBWriter(base.WriterBase):
     are not set (:code:`None` or :code:`np.zeros(6)`,
     see Issue #2698).
 
-    When the record_types attribute is present (e.g. Universe object was
-    created by loading a PDB file), ATOM_ and HETATM_ record type keywords
-    are written out accordingly. Otherwise, the ATOM_ record type is the
-    default output.
+    When the :attr:`record_types` attribute is present (e.g. Universe object
+    was created by loading a PDB file), ATOM_ and HETATM_ record type
+    keywords are written out accordingly. Otherwise, the ATOM_ record type
+    is the default output.
 
     See Also
     --------
@@ -1003,7 +1003,7 @@ class PDBWriter(base.WriterBase):
            first charater (Issue #2224)
 
         .. versionchanged:: 2.0.0
-           When only record_type attribute is present, instead of
+           When only :attr:`record_types` attribute is present, instead of
            using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
            types are properly written out (Issue #1753).
 
