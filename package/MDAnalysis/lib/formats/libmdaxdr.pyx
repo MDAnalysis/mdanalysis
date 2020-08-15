@@ -306,8 +306,7 @@ cdef class _XDRFile:
 
         # where was I
         current_frame = state[1]
-        self.seek(current_frame - 1)
-        self.current_frame = current_frame
+        self.seek(current_frame)
 
     def seek(self, frame):
         """Seek to Frame.
