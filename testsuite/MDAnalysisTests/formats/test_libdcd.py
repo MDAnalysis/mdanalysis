@@ -84,8 +84,10 @@ def dcd():
 
 
 def _assert_compare_readers(old_reader, new_reader):
-    frame = old_reader.read()     #  same as next(old_reader)
-    new_frame = new_reader.read() #  same as next(new_reader)
+    #  same as next(old_reader)
+    frame = old_reader.read()
+    #  same as next(new_reader)
+    new_frame = new_reader.read()
 
     assert old_reader.fname == new_reader.fname
     assert old_reader.tell() == new_reader.tell()
