@@ -148,9 +148,16 @@ class TestCommonAPI(object):
         self._assert_compare_readers(reader, new_reader)
 
     def test_pickle_last_frame(self, reader):
+        #  This is the file state when XDRReader is in its last frame.
+        #  (Issue #2878)
         reader.seek(len(reader) - 1)
+        _ = reader.read()
         new_reader = pickle.loads(pickle.dumps(reader))
-        self._assert_compare_readers(reader, new_reader)
+
+        assert reader.fname == new_reader.fname
+        assert reader.tell() == new_reader.tell()
+        with pytest.raises(StopIteration):
+            new_reader.read()
 
     def test_pickle_closed(self, reader):
         reader.seek(len(reader) - 1)
@@ -160,10 +167,7 @@ class TestCommonAPI(object):
         assert reader.fname == new_reader.fname
         assert reader.tell() != new_reader.tell()
 
-    #@pytest.mark.xfail
     def test_pickle_immediately(self, reader):
-        # do not seek before pickling: this seems to leave the XDRFile
-        # object in weird state: is this supposed to work?
         new_reader = pickle.loads(pickle.dumps(reader))
 
         assert reader.fname == new_reader.fname

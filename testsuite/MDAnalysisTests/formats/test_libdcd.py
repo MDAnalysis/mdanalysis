@@ -82,6 +82,7 @@ def dcd():
     with DCDFile(DCD) as dcd:
         yield dcd
 
+
 def _assert_compare_readers(old_reader, new_reader):
     frame = old_reader.read()     # same as next(old_reader)
     new_frame = new_reader.read() # same as next(new_reader)
@@ -91,16 +92,27 @@ def _assert_compare_readers(old_reader, new_reader):
     assert_almost_equal(frame.xyz, new_frame.xyz)
     assert_almost_equal(frame.unitcell, new_frame.unitcell)
 
+
 def test_pickle(dcd):
     mid = len(dcd) // 2
     dcd.seek(mid)
     new_dcd = pickle.loads(pickle.dumps(dcd))
     _assert_compare_readers(dcd, new_dcd)
 
+
 def test_pickle_last(dcd):
+    #  This is the file state when DCDReader is in its last frame.
+    #  (Issue #2878)
+
     dcd.seek(len(dcd) - 1)
+    _ = dcd.read()
     new_dcd = pickle.loads(pickle.dumps(dcd))
-    _assert_compare_readers(dcd, new_dcd)
+
+    assert dcd.fname == new_dcd.fname
+    assert dcd.tell() == new_dcd.tell()
+    with pytest.raises(StopIteration):
+        new_dcd.read()
+
 
 def test_pickle_closed(dcd):
     dcd.seek(len(dcd) - 1)
@@ -110,15 +122,14 @@ def test_pickle_closed(dcd):
     assert dcd.fname == new_dcd.fname
     assert dcd.tell() != new_dcd.tell()
 
+
 def test_pickle_after_read(dcd):
     _ = dcd.read()
     new_dcd = pickle.loads(pickle.dumps(dcd))
     _assert_compare_readers(dcd, new_dcd)
 
-#@pytest.mark.xfail
+
 def test_pickle_immediately(dcd):
-    # do not seek before pickling: this seems to leave the DCDFile
-    # object in weird state: is this supposed to work?
     new_dcd = pickle.loads(pickle.dumps(dcd))
 
     assert dcd.fname == new_dcd.fname

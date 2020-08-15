@@ -401,7 +401,7 @@ cdef class DCDFile:
             seek the file to given frame (0-based)
 
         """
-        if frame >= self.n_frames:
+        if frame >= self.n_frames + 1:
             raise EOFError('Trying to seek over max number of frames')
         self.reached_eof = False
 

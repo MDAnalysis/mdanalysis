@@ -306,7 +306,14 @@ cdef class _XDRFile:
 
         # where was I
         current_frame = state[1]
-        self.seek(current_frame)
+        if current_frame == self.offsets.size:
+            #  cannot seek to self.offsets.size (like in DCD file)
+            #  because here seeking depends on the offsets list size.
+            #  Instead, we seek to one frame ahead and read the next frame. 
+            self.seek(current_frame - 1)
+            _ = self.read()
+        else:
+            self.seek(current_frame)
 
     def seek(self, frame):
         """Seek to Frame.
