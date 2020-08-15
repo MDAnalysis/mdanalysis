@@ -25,7 +25,7 @@ import pickle
 import numpy as np
 
 from numpy.testing import (assert_almost_equal, assert_array_almost_equal,
-                           assert_array_equal)
+                           assert_array_equal, assert_equal)
 
 from MDAnalysis.lib.formats.libmdaxdr import TRRFile, XTCFile
 
@@ -127,23 +127,48 @@ class TestCommonAPI(object):
             with pytest.raises(IOError):
                 f.read()
 
-    def test_pickle(self, reader):
-        reader.seek(len(reader) - 1)
-        dump = pickle.dumps(reader)
-        new_reader = pickle.loads(dump)
+    @staticmethod
+    def _assert_compare_readers(old_reader, new_reader):
+        frame = old_reader.read()
+        new_frame = new_reader.read()
 
-        assert reader.fname == new_reader.fname
-        assert reader.tell() == new_reader.tell()
-        assert_almost_equal(reader.offsets, new_reader.offsets)
+        assert old_reader.fname == new_reader.fname
+        assert old_reader.tell() == new_reader.tell()
+
+        assert_equal(old_reader.offsets, new_reader.offsets)
+        assert_almost_equal(frame.x, new_frame.x)
+        assert_almost_equal(frame.box, new_frame.box)
+        assert frame.step == new_frame.step
+        assert_almost_equal(frame.time, new_frame.time)
+
+    def test_pickle(self, reader):
+        mid = len(reader) // 2
+        reader.seek(mid)
+        new_reader = pickle.loads(pickle.dumps(reader))
+        self._assert_compare_readers(reader, new_reader)
+
+    def test_pickle_last_frame(self, reader):
+        reader.seek(len(reader) - 1)
+        new_reader = pickle.loads(pickle.dumps(reader))
+        self._assert_compare_readers(reader, new_reader)
 
     def test_pickle_closed(self, reader):
         reader.seek(len(reader) - 1)
         reader.close()
-        dump = pickle.dumps(reader)
-        new_reader = pickle.loads(dump)
+        new_reader = pickle.loads(pickle.dumps(reader))
 
         assert reader.fname == new_reader.fname
         assert reader.tell() != new_reader.tell()
+
+    #@pytest.mark.xfail
+    def test_pickle_immediately(self, reader):
+        # do not seek before pickling: this seems to leave the XDRFile
+        # object in weird state: is this supposed to work?
+        new_reader = pickle.loads(pickle.dumps(reader))
+
+        assert reader.fname == new_reader.fname
+        assert reader.tell() == new_reader.tell()
+
 
 
 @pytest.mark.parametrize("xdrfile, fname, offsets",
