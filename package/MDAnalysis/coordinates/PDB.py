@@ -55,7 +55,7 @@ trajectory, while writing each frame::
           W.write(calphas)
 
 It is important to *always close the trajectory* when done because only at this
-step is the final END_ record written, which is required by the `PDB 3.2
+step is the final END_ record written, which is required by the `PDB 3.3
 standard`_. Using the writer as a context manager ensures that this always
 happens.
 
@@ -65,7 +65,7 @@ Capabilities
 
 A pure-Python implementation for PDB files commonly encountered in MD
 simulations comes under the names :class:`PDBReader` and :class:`PDBWriter`. It
-only implements a subset of the `PDB 3.2 standard`_ and also allows some
+only implements a subset of the `PDB 3.3 standard`_ and also allows some
 typical enhancements such as 4-letter resids (introduced by CHARMM/NAMD).
 
 The :class:`PDBReader` can read multi-frame PDB files and represents
@@ -136,8 +136,8 @@ Classes
    :inherited-members:
 
 
-.. _`PDB 3.2 standard`:
-    http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+.. _`PDB 3.3 standard`:
+    http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
 
 """
 from io import StringIO, BytesIO
@@ -177,11 +177,11 @@ class PDBReader(base.ReaderBase):
     Reads multi-`MODEL`_ PDB files as trajectories.
 
     .. _PDB-formatted:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
     .. _PDB coordinate section:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html
     .. _MODEL:
-       http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
+       http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
 
     =============  ============  ===========  =============================================
     COLUMNS        DATA  TYPE    FIELD        DEFINITION
@@ -459,7 +459,7 @@ class PDBReader(base.ReaderBase):
 
 
 class PDBWriter(base.WriterBase):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID are allowed,
     altLoc is written.
@@ -470,12 +470,19 @@ class PDBWriter(base.WriterBase):
     PDB "movie" (multi frame mode, *multiframe* = ``True``), consisting of
     multiple models (using the MODEL_ and ENDMDL_ records).
 
-    .. _`PDB 3.2 standard`:
-       http://www.wwpdb.org/documentation/file-format-content/format32/v3.2.html
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-
+    .. _`PDB 3.3 standard`:
+       http://www.wwpdb.org/documentation/file-format-content/format33/v3.3.html
+    .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ATOM
+    .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
+    .. _END: http://www.wwpdb.org/documentation/file-format-content/format33/sect11.html#END
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#HEADER
+    .. _HETATM: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#HETATM
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#NUMMDL
+    .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
+    .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#TITLE
 
     Note
     ----
@@ -492,6 +499,11 @@ class PDBWriter(base.WriterBase):
     unitary values (cubic box with sides of 1 Å) if unit cell dimensions
     are not set (:code:`None` or :code:`np.zeros(6)`,
     see Issue #2698).
+
+    When the :attr:`record_types` attribute is present (e.g. Universe object
+    was created by loading a PDB file), ATOM_ and HETATM_ record type
+    keywords are written out accordingly. Otherwise, the ATOM_ record type
+    is the default output.
 
     See Also
     --------
@@ -525,6 +537,11 @@ class PDBWriter(base.WriterBase):
     fmt = {
         'ATOM': (
             "ATOM  {serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
+            "{chainID:1s}{resSeq:4d}{iCode:1s}"
+            "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
+            "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
+        'HETATM': (
+            "HETATM{serial:5d} {name:<4s}{altLoc:<1s}{resName:<4s}"
             "{chainID:1s}{resSeq:4d}{iCode:1s}"
             "   {pos[0]:8.3f}{pos[1]:8.3f}{pos[2]:8.3f}{occupancy:6.2f}"
             "{tempFactor:6.2f}      {segID:<4s}{element:>2s}\n"),
@@ -608,10 +625,6 @@ class PDBWriter(base.WriterBase):
            multi frame PDB file in which frames are written as MODEL_ ... ENDMDL_
            records. If ``None``, then the class default is chosen.    [``None``]
 
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-
         """
         # n_atoms = None : dummy keyword argument
         # (not used, but Writer() always provides n_atoms as the second argument)
@@ -667,9 +680,6 @@ class PDBWriter(base.WriterBase):
         The CRYST1_ record specifies the unit cell. This record is set to
         unitary values (cubic box with sides of 1 Å) if unit cell dimensions
         are not set.
-
-        .. _COMPND: http://www.wwpdb.org/documentation/file-format-content/format33/sect2.html#COMPND
-        .. _REMARKS: http://www.wwpdb.org/documentation/file-format-content/format33/remarks.html
 
         .. versionchanged: 1.0.0
            Fix writing of PDB file without unit cell dimensions (Issue #2679).
@@ -981,19 +991,21 @@ class PDBWriter(base.WriterBase):
         :class:`PDBWriter` is in single frame mode and no MODEL_
         records are written.
 
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-        .. _NUMMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#NUMMDL
-
         .. versionchanged:: 0.7.6
            The *multiframe* keyword was added, which completely determines if
-           MODEL records are written. (Previously, this was decided based on the
-           underlying trajectory and only if ``len(traj) > 1`` would MODEL records
-           have been written.)
+           MODEL_ records are written. (Previously, this was decided based on
+           the underlying trajectory and only if ``len(traj) > 1`` would
+           MODEL records have been written.)
 
         .. versionchanged:: 1.0.0
-           ChainID now comes from the last character of segid, as stated in the documentation.
-           An indexing issue meant it previously used the first charater (Issue #2224)
+           ChainID now comes from the last character of segid, as stated in
+           the documentation. An indexing issue meant it previously used the
+           first charater (Issue #2224)
+
+        .. versionchanged:: 2.0.0
+           When only :attr:`record_types` attribute is present, instead of
+           using ATOM_ for both ATOM_ and HETATM_, HETATM_ record
+           types are properly written out (Issue #1753).
 
         """
         atoms = self.obj.atoms
@@ -1028,6 +1040,7 @@ class PDBWriter(base.WriterBase):
         occupancies = get_attr('occupancies', 1.0)
         tempfactors = get_attr('tempfactors', 0.0)
         atomnames = get_attr('names', 'X')
+        record_types = get_attr('record_types', 'ATOM')
 
         for i, atom in enumerate(atoms):
             vals = {}
@@ -1044,16 +1057,20 @@ class PDBWriter(base.WriterBase):
             vals['segID'] = segids[i][:4]
             vals['element'] = guess_atom_element(atomnames[i].strip())[:2]
 
-            # .. _ATOM: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ATOM
-            self.pdbfile.write(self.fmt['ATOM'].format(**vals))
+            # record_type attribute, if exists, can be ATOM or HETATM
+            try:
+                self.pdbfile.write(self.fmt[record_types[i]].format(**vals))
+            except KeyError:
+                errmsg = (f"Found {record_types[i]} for the record type, but "
+                          f"only allowed types are ATOM or HETATM")
+                raise ValueError(errmsg) from None
+
         if multiframe:
             self.ENDMDL()
         self.frames_written += 1
 
     def HEADER(self, trajectory):
         """Write HEADER_ record.
-
-        .. _HEADER: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html#HEADER
 
         .. versionchanged:: 0.20.0
             Strip `trajectory.header` since it can be modified by the user and should be
@@ -1067,22 +1084,15 @@ class PDBWriter(base.WriterBase):
     def TITLE(self, *title):
         """Write TITLE_ record.
 
-        .. _TITLE: http://www.wwpdb.org/documentation/file-format-content/format32/sect2.html
-
         """
         line = " ".join(title)  # TODO: should do continuation automatically
         self.pdbfile.write(self.fmt['TITLE'].format(line))
 
     def REMARK(self, *remarks):
-        """Write generic REMARK_ record (without number).
+        """Write generic REMARKS_ record (without number).
 
-        Each string provided in *remarks* is written as a separate REMARK_
+        Each string provided in *remarks* is written as a separate REMARKS_
         record.
-
-        See also `REMARK (update)`_.
-
-        .. _REMARK: http://www.wwpdb.org/documentation/file-format-content/format32/remarks1.html
-        .. _REMARK (update): http://www.wwpdb.org/documentation/file-format-content/format32/remarks2.html
 
         """
         for remark in remarks:
@@ -1113,10 +1123,6 @@ class PDBWriter(base.WriterBase):
            standard (i.e., 4 digits). If frame numbers are larger than
            9999, they will wrap around, i.e., 9998, 9999, 0, 1, 2, ...
 
-
-        .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-
-
         .. versionchanged:: 0.19.0
            Maximum model number is enforced.
 
@@ -1131,8 +1137,6 @@ class PDBWriter(base.WriterBase):
         method right before closing the file it is recommended to *not* call
         :meth:`~PDBWriter.END` explicitly.
 
-        .. _END: http://www.wwpdb.org/documentation/file-format-content/format32/sect11.html#END
-
         """
         if not self.has_END:
             # only write a single END record
@@ -1142,15 +1146,11 @@ class PDBWriter(base.WriterBase):
     def ENDMDL(self):
         """Write the ENDMDL_ record.
 
-        .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-
         """
         self.pdbfile.write(self.fmt['ENDMDL'])
 
     def CONECT(self, conect):
         """Write CONECT_ record.
-
-        .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
 
         """
         conect = ["{0:5d}".format(entry + 1) for entry in conect]
@@ -1161,7 +1161,7 @@ class PDBWriter(base.WriterBase):
 class ExtendedPDBReader(PDBReader):
     """PDBReader that reads a PDB-formatted file with five-digit residue numbers.
 
-    This reader does not conform to the `PDB 3.2 standard`_ because it allows
+    This reader does not conform to the `PDB 3.3 standard`_ because it allows
     five-digit residue numbers that may take up columns 23 to 27 (inclusive)
     instead of being confined to 23-26 (with column 27 being reserved for the
     insertion code in the PDB standard). PDB files in this format are written
@@ -1180,7 +1180,7 @@ class ExtendedPDBReader(PDBReader):
 
 
 class MultiPDBWriter(PDBWriter):
-    """PDB writer that implements a subset of the `PDB 3.2 standard`_ .
+    """PDB writer that implements a subset of the `PDB 3.3 standard`_ .
 
     PDB format as used by NAMD/CHARMM: 4-letter resnames and segID, altLoc
     is written.
@@ -1190,9 +1190,9 @@ class MultiPDBWriter(PDBWriter):
     and ENDMDL_ records).
 
 
-    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#MODEL
-    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format32/sect9.html#ENDMDL
-    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format32/sect10.html#CONECT
+    .. _MODEL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#MODEL
+    .. _ENDMDL: http://www.wwpdb.org/documentation/file-format-content/format33/sect9.html#ENDMDL
+    .. _CONECT: http://www.wwpdb.org/documentation/file-format-content/format33/sect10.html#CONECT
 
 
     See Also

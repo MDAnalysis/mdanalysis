@@ -26,9 +26,10 @@ import matplotlib
 import pytest
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import (GRO, XTC, DihedralArray, DihedralsArray,
-                                       RamaArray, GLYRamaArray, JaninArray,
-                                       LYSJaninArray, PDB_rama, PDB_janin)
+from MDAnalysisTests.datafiles import (GRO, XTC, TPR, DihedralArray,
+                                       DihedralsArray, RamaArray, GLYRamaArray,
+                                       JaninArray, LYSJaninArray, PDB_rama,
+                                       PDB_janin)
 from MDAnalysis.analysis.dihedrals import Dihedral, Ramachandran, Janin
 
 
@@ -106,7 +107,7 @@ class TestRamachandran(object):
         with pytest.raises(ValueError):
             rama = Ramachandran(universe.select_atoms("resid 220"),
                                 check_protein=True).run()
-    
+
     def test_outside_protein_unchecked(self, universe):
         rama = Ramachandran(universe.select_atoms("resid 220"),
                             check_protein=False).run()
@@ -134,14 +135,25 @@ class TestJanin(object):
         return mda.Universe(GRO, XTC)
 
     @pytest.fixture()
+    def universe_tpr(self):
+        return mda.Universe(TPR, XTC)
+
+    @pytest.fixture()
     def janin_ref_array(self):
         return np.load(JaninArray)
 
     def test_janin(self, universe, janin_ref_array):
-        janin = Janin(universe.select_atoms("protein")).run()
+        self._test_janin(universe, janin_ref_array)
+
+    def test_janin_tpr(self, universe_tpr, janin_ref_array):
+        """Test that CYSH are filtered (#2898)"""
+        self._test_janin(universe_tpr, janin_ref_array)
+
+    def _test_janin(self, u, ref_array):
+        janin = Janin(u.select_atoms("protein")).run()
 
         # Test precision lowered to account for platform differences with osx
-        assert_almost_equal(janin.angles, janin_ref_array, 3,
+        assert_almost_equal(janin.angles, ref_array, 3,
                             err_msg="error: dihedral angles should "
                             "match test values")
 
