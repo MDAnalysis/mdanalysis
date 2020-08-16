@@ -306,14 +306,21 @@ cdef class _XDRFile:
 
         # where was I
         current_frame = state[1]
-        if current_frame == self.offsets.size:
-            #  cannot seek to self.offsets.size (like in DCD file)
-            #  because here seeking depends on the offsets list size.
-            #  Instead, we seek to one frame ahead and read the next frame. 
+        if current_frame < self.offsets.size:
+            self.seek(current_frame)
+        elif current_frame == self.offsets.size:
+            #  cannot seek to self.offsets.size (a.k.a len(_XDRFile));
+            #  instead, we seek to the previous frame and read next. 
+            #  which is the state of the file when we need to serialize
+            #  at the end of the trajectory.
             self.seek(current_frame - 1)
             _ = self.read()
         else:
-            self.seek(current_frame)
+            #pragma: no cov
+            raise RuntimeError("Invalid frame number {} > {} -- this should"
+                               "not happen.".format(current_frame,
+                                                    self.offsets.size)
+                              )
 
     def seek(self, frame):
         """Seek to Frame.
