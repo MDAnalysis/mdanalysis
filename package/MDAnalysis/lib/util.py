@@ -209,6 +209,8 @@ import numpy as np
 from numpy.testing import assert_equal
 import inspect
 
+from .picklable_file_io import pickle_open, bz2_pickle_open, gzip_pickle_open
+
 from ..exceptions import StreamWarning, DuplicateWarning
 try:
     from ._cutil import unique_int_1d
@@ -338,8 +340,19 @@ def anyopen(datasource, mode='rt', reset=True):
        Only returns the ``stream`` and tries to set ``stream.name = filename`` instead of the previous
        behavior to return a tuple ``(stream, filename)``.
 
+    .. versionchanged:: 2.0.0
+       New read handlers support pickle functionality
+       if `datasource` is a filename.
+       They return a custom picklable file stream in
+       :class:`MDAnalysis.lib.picklable_file_io`.
+
     """
-    handlers = {'bz2': bz2.open, 'gz': gzip.open, '': open}
+    read_handlers = {'bz2': bz2_pickle_open,
+                     'gz': gzip_pickle_open,
+                     '': pickle_open}
+    write_handlers = {'bz2': bz2.open,
+                      'gz': gzip.open,
+                      '': open}
 
     if mode.startswith('r'):
         if isstream(datasource):
@@ -362,7 +375,7 @@ def anyopen(datasource, mode='rt', reset=True):
             stream = None
             filename = datasource
             for ext in ('bz2', 'gz', ''):  # file == '' should be last
-                openfunc = handlers[ext]
+                openfunc = read_handlers[ext]
                 stream = _get_stream(datasource, openfunc, mode=mode)
                 if stream is not None:
                     break
@@ -383,7 +396,7 @@ def anyopen(datasource, mode='rt', reset=True):
                 ext = ext[1:]
             if not ext in ('bz2', 'gz'):
                 ext = ''  # anything else but bz2 or gz is just a normal file
-            openfunc = handlers[ext]
+            openfunc = write_handlers[ext]
             stream = openfunc(datasource, mode=mode)
             if stream is None:
                 raise IOError(errno.EIO, "Cannot open file or stream in mode={mode!r}.".format(**vars()), repr(filename))
