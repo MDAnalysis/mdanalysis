@@ -2244,10 +2244,58 @@ class AtomGroup(GroupBase):
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
     During serialization, :class:`AtomGroup` will be pickled with its bound
-    :class:`MDAnalysis.core.universe.Universe`. If multiple :class:`AtomGroup`
-    are bound to the same :class:`MDAnalysis.core.universe.Universe`, they
-    will bound to the same one after serialization.
+    :class:`MDAnalysis.core.universe.Universe` which means after unpickling,
+    a new :class:`MDAnalysis.core.universe.Universe` will be created and
+    be attached by the new :class:`AtomGroup`. If the Universe is serialized
+    with its :class:`AtomGroup`, they will still be bound together afterwards:
 
+    .. code-block:: python
+
+        >>> u = mda.Universe(PSF, DCD)
+        >>> g = u.atoms
+
+        >>> g_pickled = pickle.loads(pickle.dumps(g))
+        >>> print("g_pickled.universe is u: ", u is g_pickled.universe)
+        g_pickled.universe is u: False
+
+        >>> g_pickled, u_pickled = pickle.load(pickle.dumps(g, u))
+        >>> print("g_pickled.universe is u_pickled: ",
+        >>>       u_pickle is g_pickled.universe)
+        g_pickled.universe is u_pickled: True
+
+    If multiple :class:`AtomGroup` are bound to the same
+    :class:`MDAnalysis.core.universe.Universe`, they will bound to the same one
+    after serialization:
+
+    .. code-block:: python
+
+        >>> u = mda.Universe(PSF, DCD)
+        >>> g = u.atoms
+        >>> h = u.atoms
+
+        >>> g_pickled = pickle.loads(pickle.dumps(g))
+        >>> h_pickled = pickle.loads(pickle.dumps(h))
+        >>> print("g_pickled.universe is h_pickled.universe : ",
+        >>>       g_pickled.universe is h_pickled.universe)
+        g_pickled.universe is h_pickled.universe: False
+
+        >>> g_pickled, h_pickled = pickle.load(pickle.dumps(g, h))
+        >>> print("g_pickled.universe is h_pickled.universe: ",
+        >>>       g_pickle.universe is h_pickled.universe)
+        g_pickled.universe is h_pickled.universe: True
+
+    The aforementioned two cases are useful for implementation of parallel
+    analysis base classes. First, you always get an independent
+    :class:`MDAnalysis.core.universe.Universe`
+    in the new process; you don't have to worry about detaching and reattaching
+    Universe with :class:`AtomGroup`. It also means the state of the
+    new pickled AtomGroup will not be changed with the old Universe,
+    So either the Universe has to pickled together with the AtomGroup
+    (e.g. as a tuple, or as attributes of the object to be pickled), or the
+    implicit new Universe (`AtomGroup.Universe`) needs to be used.
+    Second, When multiple AtomGroup need to be pickled, they will recognize if
+    they belong to the same Univese or not.
+    Also keep in mind that they need to be pickled together.
 
     See Also
     --------
