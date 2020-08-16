@@ -49,6 +49,9 @@ Fixes
     residues with identical resids (Issue #1387, PR #2872)
   * H5MD files are now pickleable with H5PYPicklable (Issue #2890, PR #2894)
   * Fixed Janin analysis residue filtering (include CYSH) (Issue #2898)
+  * libmdaxdr and libdcd classes in their last frame can now be pickled
+    (Issue #2878, PR #2911)
+
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis

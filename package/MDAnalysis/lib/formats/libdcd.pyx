@@ -270,8 +270,7 @@ cdef class DCDFile:
             #  at the end of the trajectory.
             self.seek(current_frame - 1)
             _ = self.read()
-        else:
-            #pragma: no cov
+        else:             # pragma: no cover
             raise RuntimeError("Invalid frame number {} > {} -- this should"
                                "not happen.".format(current_frame,
                                                     self.n_frames)
