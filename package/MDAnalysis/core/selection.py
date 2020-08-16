@@ -1015,7 +1015,7 @@ class NucleicSugarSelection(NucleicSelection):
        performance improved by ~100x on larger systems
     """
     token = 'nucleicsugar'
-    sug_atoms = np.array(["C1'", "C2'", "C3'", "C4'", "O4'"])
+    sug_atoms = {"C1'", "C2'", "C3'", "C4'", "O4'"}
 
     def apply(self, group):
         atomnames = group.universe._topology.names
