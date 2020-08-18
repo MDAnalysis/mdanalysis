@@ -80,11 +80,13 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
         The AtomGroup used to generate the fingerprint
     kind : str
         The kind of fingerprint to generate. One of:
+
         * AtomPair
         * Morgan
         * TopologicalTorsion
         * RDKit
         * MACCSKeys
+
     hashed : bool
         Return a hashed version of the fingerprint
     as_array : bool
@@ -145,7 +147,7 @@ class RDKitDescriptors(AnalysisBase):
 
         >>> def num_atoms(mol):
         ...    return mol.GetNumAtoms()
-        >>> desc = RDKitDescriptors(u.atoms, 
+        >>> desc = RDKitDescriptors(u.atoms,
         ...                         "MolWt", "RadiusOfGyration", num_atoms)
         >>> desc.run()
         >>> desc.results
@@ -208,7 +210,7 @@ class RDKitDescriptors(AnalysisBase):
         """
         if flat:
             return np.array(list(_RDKIT_DESCRIPTORS.keys()), dtype=object)
-        t = [(module.__name__, desc) 
+        t = [(module.__name__, desc)
              for desc, (module, func) in _RDKIT_DESCRIPTORS.items()]
         descriptors = {}
         for module, desc in sorted(t):
