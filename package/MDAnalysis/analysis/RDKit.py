@@ -94,7 +94,7 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
 
     Returns
     -------
-    fp : numpy.array or rdkit.DataStructs.cDataStructs object
+    fp : numpy.ndarray or rdkit.DataStructs.cDataStructs object
         The fingerprint in the desired shape and format
 
     Notes
@@ -135,7 +135,7 @@ class RDKitDescriptors(AnalysisBase):
 
     Attributes
     ----------
-    results : numpy.array
+    results : numpy.ndarray
         Array of dictionnaries storing the descriptor name and the
         corresponding value for each frame
 
@@ -195,7 +195,7 @@ class RDKitDescriptors(AnalysisBase):
 
         Returns
         -------
-        descriptors : dict or numpy.array
+        descriptors : dict or numpy.ndarray
             A dictionnary of list of descriptors indexed by the RDKit module
             where the descriptor can be found, or a flat array of descriptors
 
