@@ -36,5 +36,5 @@ r"""Water Bridge analysis --- :mod:`MDAnalysis.analysis.hbonds.WaterBridgeAnalys
 This module is moved to
 :class:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`."""
 
-from MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis import (
+from ..hydrogenbonds.wbridge_analysis import (
     WaterBridgeAnalysis,)
