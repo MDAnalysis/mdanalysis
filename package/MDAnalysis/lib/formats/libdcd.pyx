@@ -252,7 +252,7 @@ cdef class DCDFile:
                 self.__getstate__())
 
     def __getstate__(self):
-        return self.is_open, self.current_frame
+        return self.is_open, self.current_frame, self.n_frames
 
     def __setstate__(self, state):
         is_open = state[0]
@@ -261,8 +261,20 @@ cdef class DCDFile:
             return
 
         current_frame = state[1]
-        self.seek(current_frame - 1)
-        self.current_frame = current_frame
+        if current_frame < self.n_frames:
+            self.seek(current_frame)
+        elif current_frame == self.n_frames:
+            #  cannot seek to self.n_frames (a.k.a. len(DCDFile));
+            #  instead, we seek to the previous frame and read next. 
+            #  which is the state of the file when we need to serialize
+            #  at the end of the trajectory.
+            self.seek(current_frame - 1)
+            _ = self.read()
+        else:             # pragma: no cover
+            raise RuntimeError("Invalid frame number {} > {} -- this should"
+                               "not happen.".format(current_frame,
+                                                    self.n_frames)
+                              )
 
     def tell(self):
         """
