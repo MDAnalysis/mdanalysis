@@ -102,6 +102,7 @@ Changes
   * Sets the minimal RDKit version for CI to 2020.03.1 (Issue #2827, PR #2831)
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
+  * Move water bridge analysis from hbonds to hydrogenbonds and deprecate hydrogen bond analysis in water bridge analysis (PR #2913)
 
 Deprecations
 
