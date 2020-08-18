@@ -62,13 +62,13 @@ _RDKIT_FP = {
 
 
 _RDKIT_DESCRIPTORS = {}
-for module in [rdMolDescriptors, Descriptors, Descriptors3D, EState, 
-    EState.EState_VSA, GraphDescriptors, Lipinski, MolSurf]:
+for module in [rdMolDescriptors, Descriptors, Descriptors3D, EState,
+               EState.EState_VSA, GraphDescriptors, Lipinski, MolSurf]:
     for arg in [x for x in dir(module)
                 if not (x.startswith("_") or x.endswith("_"))]:
         thing = getattr(module, arg)
         if callable(thing):
-            _RDKIT_DESCRIPTORS[arg] = thing
+            _RDKIT_DESCRIPTORS[arg] = (module, thing)
 
 
 def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
@@ -133,18 +133,55 @@ class RDKitDescriptors(AnalysisBase):
             if callable(thing):
                 self._functions[thing.__name__] = thing
             else:
-                func = _RDKIT_DESCRIPTORS.get(thing, 
-                    _RDKIT_DESCRIPTORS.get(f"Calc{thing}"))
-                if func is None:
-                    raise KeyError(f"Could not find {thing!r} in RDKit. "
+                obj = _RDKIT_DESCRIPTORS.get(
+                    thing, _RDKIT_DESCRIPTORS.get(f"Calc{thing}"))
+                if obj is None:
+                    raise KeyError(
+                        f"Could not find {thing!r} in RDKit. "
                         "Please try passing the required function directly "
                         "instead of a string")
+                module, func = obj
                 self._functions[thing] = func
 
     def _prepare(self):
-        self.results = {name: None for name in self._functions.keys()}
-        self._mol = self._ag.convert_to("RDKIT")
+        self.results = np.array([{} for i in range(self.n_frames)],
+                                dtype=object)
 
     def _single_frame(self):
+        mol = self._ag.convert_to("RDKIT")
         for name, func in self._functions.items():
-            self.results[name] = func(self._mol)
+            self.results[self._frame_index][name] = func(mol)
+
+    @staticmethod
+    def list_available(flat=False):
+        """List the available RDKit functions to calculate descriptors
+
+        Parameters
+        ----------
+        flat : bool
+            Return a flat array instead of a dictionnary
+
+        Returns
+        -------
+        descriptors : dict or numpy.array
+            A dictionnary of list of descriptors indexed by the RDKit module
+            where the descriptor can be found, or a flat array of descriptors
+
+        Notes
+        -----
+        This is NOT a currated list of descriptors, some of the names listed
+        here might correspond to helper functions available in RDKit that do
+        not represent any kind of molecular property.
+
+        """
+        if flat:
+            return np.array(list(_RDKIT_DESCRIPTORS.keys()), dtype=object)
+        t = [(module.__name__, desc) 
+             for desc, (module, func) in _RDKIT_DESCRIPTORS.items()]
+        descriptors = {}
+        for module, desc in sorted(t):
+            try:
+                descriptors[module].append(desc)
+            except KeyError:
+                descriptors[module] = [desc]
+        return descriptors
