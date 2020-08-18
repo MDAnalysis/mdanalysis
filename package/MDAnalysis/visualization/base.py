@@ -21,11 +21,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+import warnings
+
 try:
-    get_ipython()
+    shell = get_ipython()
 except NameError:
-    raise ImportError("You must be in an interactive python shell (IPython or "
-                      "Notebook) to use this")
+    shell = None
+    warnings.warn("You should be in an interactive python shell (IPython or "
+                  "Notebook) to use this properly")
 
 from .. import _FORMATTERS
 
@@ -48,7 +51,7 @@ class _Formattermeta(type):
 
 class FormatterBase(metaclass=_Formattermeta):
     """Base class for formatters
-    
+
     .. versionadded:: 2.0.0
     """
 
@@ -66,7 +69,8 @@ class FormatterBase(metaclass=_Formattermeta):
             formatter, e.g. raw SVG text for an SVG representation
         """
         # add formatter
-        get_ipython().display_formatter.formatters[mime].for_type(obj, func)
+        if shell:
+            shell.display_formatter.formatters[mime].for_type(obj, func)
         # register it
         _FORMATTERS[self.format][(obj, mime)] = func
 
@@ -83,7 +87,8 @@ class FormatterBase(metaclass=_Formattermeta):
         mime : str
             The MIME type to drop, e.g. "image/png"
         """
-        get_ipython().display_formatter.formatters[mime].pop(obj)
+        if shell:
+            shell.display_formatter.formatters[mime].pop(obj)
         _FORMATTERS[self.format].pop((obj, mime))
 
     def reset_all_repr(self):
