@@ -22,7 +22,7 @@
 #
 
 """RDKit Drawer --- :mod:`MDAnalysis.visualization.rdkit`
-=============================================================
+=========================================================
 
 A module to wrap RDKit's drawing code and modify the representation of small
 AtomGroups in interactive notebooks.
@@ -51,7 +51,7 @@ from .. import _FORMATTERS
 
 class RDKitDrawer(FormatterBase):
     """Wrapper class to RDKit's drawing code
-    
+
     .. versionadded:: 2.0.0
     """
     format = "RDKIT"
@@ -71,7 +71,7 @@ class RDKitDrawer(FormatterBase):
             Remove hydrogens from the image
         kekulize : bool
             Use the Kekule representation for aromatic systems
-        drawOptions : None or an instance of :class:`rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions`
+        drawOptions : None or rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
             RDKit MolDrawOption object passed when calling the drawing code.
             Use it to set the label size, highlight color...etc.
         useSVG : bool
@@ -96,8 +96,9 @@ class RDKitDrawer(FormatterBase):
 
         Returns
         -------
-        An image (PNG or SVG) if the AtomGroup has less atoms than `max_atoms`
-        or else the default AtomGroup representation
+        repr : str or None
+            Raw image data (str) if the AtomGroup has less atoms than
+            ``max_atoms`` or else (None) the default AtomGroup representation
         """
         if ag.n_atoms <= self.max_atoms:
             return self.atomgroup_to_image(ag)
@@ -107,7 +108,7 @@ class RDKitDrawer(FormatterBase):
 
         Parameters
         ----------
-        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+        ag : MDAnalysis.core.groups.AtomGroup
             The AtomGroup to prepare
         keep_3D : bool
             Keep or remove 3D coordinates to generate the image
@@ -125,11 +126,11 @@ class RDKitDrawer(FormatterBase):
         return mol
 
     def atomgroup_to_image(self, ag, **kwargs):
-        """Create an image from an AtomGroup
+        r"""Create an image from an AtomGroup
 
         Parameters
         ----------
-        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+        ag : MDAnalysis.core.groups.AtomGroup
             The AtomGroup to display
         keep_3D : bool
             Keep or remove 3D coordinates to generate the image
@@ -137,16 +138,17 @@ class RDKitDrawer(FormatterBase):
             size of the output image
         useSVG : bool
             Output an SVG instead of a PNG
-        drawOptions : ``None`` or an instance of RDKit's ``MolDrawOptions``
+        drawOptions : None or rdkit.Chem.Draw.rdMolDraw2D.MolDrawOptions
             Parameters passed to RDKit for drawing the molecule
         legend : str
             Legend displayed on the image
-        \** kwargs : Other parameters passed to RDKit's 
-            :meth:`rdkit.Chem.Draw.rdMolDraw2D.MolDraw2D.DrawMolecule` method
+        **kwargs : object
+            Other parameters passed to :meth:`~rdkit.Chem.Draw.rdMolDraw2D.MolDraw2D.DrawMolecule`
 
         Returns
         -------
-        Raw PNG or SVG code
+        img : str
+            Raw PNG or SVG code
         """
         keep_3D = kwargs.pop("keep_3D", False)
         mol = self._prepare_atomgroup_for_drawing(ag, keep_3D)
@@ -162,13 +164,13 @@ class RDKitDrawer(FormatterBase):
         return d2d.GetDrawingText()
 
     def atomgroup_to_gif(self, ag, output=None, legend="Frame {}",
-                         frame_duration=200, traj_slice=slice(0, None, None),
+                         frame_duration=200, start=None, stop=None, step=None,
                          **kwargs):
-        """Create a GIF from an AtomGroup
+        r"""Create a GIF from an AtomGroup
 
         Parameters
         ----------
-        ag : :class:`~MDAnalysis.core.groups.AtomGroup`
+        ag : MDAnalysis.core.groups.AtomGroup
             The AtomGroup to display
         output : None or str
             Either a path to save the gif (str), or ``None`` to display the GIF
@@ -176,17 +178,21 @@ class RDKitDrawer(FormatterBase):
         legend : str
             Format string used for the legend of the GIF. ``{}`` will be
             replaced by the frame number
-        frame_duration : int or list of ints
+        frame_duration : int or list
             Duration of each frame for the GIF
-        traj_slice : slice(start, end, step)
-            Display only a part of the trajectory, from frames ``start`` to
-            ``end`` using 1 frame every ``step`` frames.
-        \**kwargs : Other parameters used by :meth:`~atomgroup_to_image`
+        start : None or int
+            Start frame for the GIF
+        stop : None or int
+            End frame for the GIF
+        step : None or int
+            Skip 1 frame for every ``step`` frames in the trajectory
+        **kwargs : object
+            Other parameters used by :meth:`~atomgroup_to_image`
         """
         mol = self._prepare_atomgroup_for_drawing(ag, keep_3D=True)
         if mol and hasattr(ag.universe, "trajectory"):
             pngs = []
-            for ts in ag.universe.trajectory[traj_slice]:
+            for ts in ag.universe.trajectory[start:stop:step]:
                 img = self.atomgroup_to_image(ag, keep_3D=True, useSVG=False,
                                               legend=legend.format(ts.frame),
                                               **kwargs)

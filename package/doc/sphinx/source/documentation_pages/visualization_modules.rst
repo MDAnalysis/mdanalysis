@@ -17,11 +17,12 @@ import them from :mod:`MDAnalysis.visualization`, for instance: ::
 
 .. Note::
 
-  Some of the modules require additional Python packages such as matplotlib_ or
-  scipy_.
+  Some of the modules require additional Python packages such as matplotlib_,
+  scipy_, or RDKit_.
 
 .. _matplotlib: http://matplotlib.org
 .. _scipy: https://www.scipy.org/scipylib/index.html
+.. _RDKit: https://www.rdkit.org/docs/index.html
 
 
 Visualization of Lipid Flow
@@ -33,5 +34,11 @@ Visualization of Lipid Flow
    visualization/streamlines
    visualization/streamlines_3D
 
+Visualization of small molecules
+================================
 
+.. toctree::
+   :maxdepth: 1
+
+   visualization/RDKit
 
