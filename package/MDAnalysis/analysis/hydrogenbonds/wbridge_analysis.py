@@ -922,9 +922,9 @@ class WaterBridgeAnalysis(AnalysisBase):
     def _log_parameters(self):
         """Log important parameters to the logfile."""
         logger.info("WaterBridgeAnalysis: selection = %r (update: %r)",
-            self.selection2, self.update_selection)
+                    self.selection2, self.update_selection)
         logger.info("WaterBridgeAnalysis: water selection = %r (update: %r)",
-            self.water_selection, self.update_water_selection)
+                    self.water_selection, self.update_water_selection)
         logger.info("WaterBridgeAnalysis: criterion: donor %s atom and "
                     "acceptor atom distance <= %.3f A", self.distance_type,
                     self.distance)
@@ -1577,11 +1577,11 @@ class WaterBridgeAnalysis(AnalysisBase):
         '''
 
         s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-            (to_resname, to_resid, to_name), dist, angle = \
-                self._expand_timeseries(current[0])
+        (to_resname, to_resid, to_name), dist, angle = \
+            self._expand_timeseries(current[0])
         from_index, s2_index, (from_resname, from_resid, from_name), \
-            (s2_resname, s2_resid, s2_name), dist, angle = \
-                self._expand_timeseries(current[-1])
+        (s2_resname, s2_resid, s2_name), dist, angle = \
+            self._expand_timeseries(current[-1])
         key = (s1_index, s2_index,
                s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
@@ -1640,11 +1640,11 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _count_by_time_analysis(self, current, output, *args, **kwargs):
         s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-            (to_resname, to_resid, to_name), dist, angle = \
-                self._expand_timeseries(current[0])
+        (to_resname, to_resid, to_name), dist, angle = \
+            self._expand_timeseries(current[0])
         from_index, s2_index, (from_resname, from_resid, from_name), \
-            (s2_resname, s2_resid, s2_name), dist, angle = \
-                self._expand_timeseries(current[-1])
+        (s2_resname, s2_resid, s2_name), dist, angle = \
+            self._expand_timeseries(current[-1])
         key = (s1_index, s2_index,
                s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
@@ -1681,11 +1681,11 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _timesteps_by_type_analysis(self, current, output, *args, **kwargs):
         s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-            (to_resname, to_resid, to_name), dist, angle = \
-                self._expand_timeseries(current[0])
+        (to_resname, to_resid, to_name), dist, angle = \
+            self._expand_timeseries(current[0])
         from_index, s2_index, (from_resname, from_resid, from_name), \
-            (s2_resname, s2_resid, s2_name), dist, angle = \
-                self._expand_timeseries(current[-1])
+        (s2_resname, s2_resid, s2_name), dist, angle = \
+            self._expand_timeseries(current[-1])
         key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname,
                s2_resid, s2_name)
         output[key].append(kwargs.pop('time'))
