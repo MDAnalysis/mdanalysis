@@ -43,7 +43,7 @@ from ..hydrogenbonds.wbridge_analysis import (
 
 warnings.warn(
             "This module has been moved to MDAnalysis.analysis.hydrogenbonds"
-            "It will be removed in MDAnalysis version 2.0"
-            "Please use MDAnalysis.analysis.hydrogenbonds.wbridge_analysis instead.",
+            "It will be removed in MDAnalysis version 2.0. Please use "
+            "MDAnalysis.analysis.hydrogenbonds.wbridge_analysis instead.",
             category=DeprecationWarning
         )
