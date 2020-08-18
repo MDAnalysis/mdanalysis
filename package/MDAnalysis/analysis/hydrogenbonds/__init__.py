@@ -26,3 +26,4 @@ __all__ = [
 ]
 
 from .hbond_analysis import HydrogenBondAnalysis
+from .wbridge_analysis import WaterBridgeAnalysis
