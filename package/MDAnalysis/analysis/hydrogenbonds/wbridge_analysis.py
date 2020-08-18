@@ -684,6 +684,7 @@ from MDAnalysis.lib import distances
 
 logger = logging.getLogger('MDAnalysis.analysis.WaterBridgeAnalysis')
 
+
 class WaterBridgeAnalysis(AnalysisBase):
     """Perform a water bridge analysis
 
@@ -871,7 +872,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         """
         super(WaterBridgeAnalysis, self).__init__(universe.trajectory,
-                                          **kwargs)
+                                                  **kwargs)
         self.water_selection = water_selection
         self.update_water_selection = update_water_selection
         # per-frame debugging output?
@@ -911,7 +912,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         if self.selection1_type not in ('both', 'donor', 'acceptor'):
             raise ValueError('WaterBridgeAnalysis: '
                              'Invalid selection type {0!s}'.format(
-            self.selection1_type))
+                                self.selection1_type))
 
         self._network = []  # final result accessed as self.network
         self.timesteps = None  # time for each frame
@@ -921,15 +922,15 @@ class WaterBridgeAnalysis(AnalysisBase):
     def _log_parameters(self):
         """Log important parameters to the logfile."""
         logger.info("WaterBridgeAnalysis: selection = %r (update: %r)",
-        self.selection2, self.update_selection)
+            self.selection2, self.update_selection)
         logger.info("WaterBridgeAnalysis: water selection = %r (update: %r)",
-        self.water_selection, self.update_water_selection)
+            self.water_selection, self.update_water_selection)
         logger.info("WaterBridgeAnalysis: criterion: donor %s atom and "
                     "acceptor atom distance <= %.3f A", self.distance_type,
                     self.distance)
         logger.info("WaterBridgeAnalysis: criterion: "
                     "angle D-H-A >= %.3f degrees",
-        self.angle)
+                    self.angle)
         logger.info("WaterBridgeAnalysis: force field %s to guess donor and \
         acceptor names", self.forcefield)
 
@@ -940,7 +941,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         # The content is the hydrogen bond donor hydrogen atom names
         atom_group = self.u.select_atoms(selection)
         for residue in atom_group.residues:
-            if not residue.resname in self._residue_dict:
+            if residue.resname not in self._residue_dict:
                 self._residue_dict[residue.resname] = defaultdict(set)
             for atom in residue.atoms:
                 if atom.name in self.donors:
@@ -1113,7 +1114,6 @@ class WaterBridgeAnalysis(AnalysisBase):
         if self.debug:
             logger.debug(*args)
 
-
     def _prepare(self):
         # The distance for selection is defined as twice the maximum bond
         # length of an O-H bond (2A) plus order of water bridge times the
@@ -1168,18 +1168,18 @@ class WaterBridgeAnalysis(AnalysisBase):
                                            box=self.box,
                                            return_distances=True)
         if self.distance_type != 'heavy':
-            tmp_donors = [h_donors[donors_idx[idx]] for idx in pairs[:,0]]
-            tmp_hydrogens = [donors_idx[idx] for idx in pairs[:,0]]
-            tmp_acceptors = [acceptor[idx] for idx in pairs[:,1]]
+            tmp_donors = [h_donors[donors_idx[idx]] for idx in pairs[:, 0]]
+            tmp_hydrogens = [donors_idx[idx] for idx in pairs[:, 0]]
+            tmp_acceptors = [acceptor[idx] for idx in pairs[:, 1]]
         else:
             tmp_donors = []
             tmp_hydrogens = []
             tmp_acceptors = []
-            for idx in range(len(pairs[:,0])):
-                for h in donors[donors_idx[pairs[idx,0]]]:
-                    tmp_donors.append(donors_idx[pairs[idx,0]])
+            for idx in range(len(pairs[:, 0])):
+                for h in donors[donors_idx[pairs[idx, 0]]]:
+                    tmp_donors.append(donors_idx[pairs[idx, 0]])
                     tmp_hydrogens.append(h)
-                    tmp_acceptors.append(acceptor[pairs[idx,1]])
+                    tmp_acceptors.append(acceptor[pairs[idx, 1]])
 
         angles = np.rad2deg(
             calc_angles(
@@ -1221,10 +1221,10 @@ class WaterBridgeAnalysis(AnalysisBase):
             # check for direct hbond from s1 to s2
             self.logger_debug("Selection 1 Donors <-> Selection 2 Acceptors")
             results = self._donor2acceptor(
-                self._s1_donors_h, self._s1_h_donors,self._s2_acceptors)
+                self._s1_donors_h, self._s1_h_donors, self._s2_acceptors)
             for line in results:
                 h_index, d_index, a_index, (h_resname, h_resid, h_name), \
-                (a_resname, a_resid, a_name), dist, angle = line
+                    (a_resname, a_resid, a_name), dist, angle = line
                 water_pool[(a_resname, a_resid)] = None
                 selection_1.append(
                     (h_index, d_index, a_index, None, dist, angle))
@@ -1236,7 +1236,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     self._water_acceptors)
                 for line in results:
                     h_index, d_index, a_index, (h_resname, h_resid, h_name), (
-                    a_resname, a_resid, a_name), dist, angle = line
+                        a_resname, a_resid, a_name), dist, angle = line
                     selection_1.append(
                         (h_index, d_index, a_index, None, dist, angle))
 
@@ -1246,7 +1246,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     self._s2_acceptors)
                 for line in results:
                     h_index, d_index, a_index, (h_resname, h_resid, h_name), (
-                    a_resname, a_resid, a_name), dist, angle = line
+                        a_resname, a_resid, a_name), dist, angle = line
                     water_pool[(h_resname, h_resid)].append(
                         (h_index, d_index, a_index, None, dist, angle))
                     selection_2.append((a_resname, a_resid))
@@ -1258,7 +1258,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                                            self._s1_acceptors)
             for line in results:
                 h_index, d_index, a_index, (h_resname, h_resid, h_name), \
-                (a_resname, a_resid, a_name), dist, angle = line
+                    (a_resname, a_resid, a_name), dist, angle = line
                 water_pool[(h_resname, h_resid)] = None
                 selection_1.append(
                     (a_index, None, h_index, d_index, dist, angle))
@@ -1271,7 +1271,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     self._water_acceptors)
                 for line in results:
                     h_index, d_index, a_index, (h_resname, h_resid, h_name), (
-                    a_resname, a_resid, a_name), dist, angle = line
+                        a_resname, a_resid, a_name), dist, angle = line
                     water_pool[(a_resname, a_resid)].append(
                         (a_index, None, h_index, d_index, dist, angle))
                     selection_2.append((h_resname, h_resid))
@@ -1282,7 +1282,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                     self._s1_acceptors)
                 for line in results:
                     h_index, d_index, a_index, (h_resname, h_resid, h_name), (
-                    a_resname, a_resid, a_name), dist, angle = line
+                        a_resname, a_resid, a_name), dist, angle = line
                     selection_1.append(
                         (a_index, None, h_index, d_index, dist, angle))
 
@@ -1293,7 +1293,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                                            self._water_acceptors)
             for line in results:
                 h_index, d_index, a_index, (h_resname, h_resid, h_name), (
-                a_resname, a_resid, a_name), dist, angle = line
+                    a_resname, a_resid, a_name), dist, angle = line
                 water_pool[(a_resname, a_resid)].append(
                     (a_index, None, h_index, d_index, dist, angle))
                 water_pool[(h_resname, h_resid)].append(
@@ -1307,7 +1307,7 @@ class WaterBridgeAnalysis(AnalysisBase):
         #     [0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180],
         #     [2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180],
         # The resulting network will be
-        #{(0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180):
+        # {(0,1,('ARG',1,'O'),  ('SOL',2,'HW1'),  3.0,180):
         # {(2,3,('SOL',2,'HW2'),('ASP',3,'OD1'),  3.0,180): None}}
         # Where the key of the a dict will be all the hydrogen bonds starting
         # from this nodes.
@@ -1349,12 +1349,12 @@ class WaterBridgeAnalysis(AnalysisBase):
                         new_route = route[:]
                         new_route.append(new_node)
                         new_node = self._expand_timeseries(
-                            new_node,'sele1_sele2')[3][:2]
+                            new_node, 'sele1_sele2')[3][:2]
                         traverse_water_network(graph, new_node, end, new_route,
                                                maxdepth, result)
         for s1 in selection_1:
             route = [s1, ]
-            next_mol = self._expand_timeseries(s1,'sele1_sele2')[3][:2]
+            next_mol = self._expand_timeseries(s1, 'sele1_sele2')[3][:2]
             traverse_water_network(water_pool, next_mol, selection_2, route[:],
                                    self.order, result)
 
@@ -1386,7 +1386,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         if graph is None:
             # if selection 2 is reached
-            if not analysis_func is None:
+            if analysis_func is not None:
                 # the result is analysed by analysis_func which will change the
                 # output
                 analysis_func(current, output, self.u, **kwargs)
@@ -1494,6 +1494,7 @@ class WaterBridgeAnalysis(AnalysisBase):
 
         '''
         output_format = output_format or self.output_format
+
         def analysis(current, output, *args, **kwargs):
             output = current
 
@@ -1576,11 +1577,11 @@ class WaterBridgeAnalysis(AnalysisBase):
         '''
 
         s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-        (to_resname, to_resid, to_name), dist, angle = \
-            self._expand_timeseries(current[0])
+            (to_resname, to_resid, to_name), dist, angle = \
+                self._expand_timeseries(current[0])
         from_index, s2_index, (from_resname, from_resid, from_name), \
-        (s2_resname, s2_resid, s2_name), dist, angle = \
-            self._expand_timeseries(current[-1])
+            (s2_resname, s2_resid, s2_name), dist, angle = \
+                self._expand_timeseries(current[-1])
         key = (s1_index, s2_index,
                s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
@@ -1639,11 +1640,11 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _count_by_time_analysis(self, current, output, *args, **kwargs):
         s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-        (to_resname, to_resid, to_name), dist, angle = \
-            self._expand_timeseries(current[0])
+            (to_resname, to_resid, to_name), dist, angle = \
+                self._expand_timeseries(current[0])
         from_index, s2_index, (from_resname, from_resid, from_name), \
-        (s2_resname, s2_resid, s2_name), dist, angle = \
-            self._expand_timeseries(current[-1])
+            (s2_resname, s2_resid, s2_name), dist, angle = \
+                self._expand_timeseries(current[-1])
         key = (s1_index, s2_index,
                s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
@@ -1680,11 +1681,11 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     def _timesteps_by_type_analysis(self, current, output, *args, **kwargs):
         s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-        (to_resname, to_resid, to_name), dist, angle = \
-            self._expand_timeseries(current[0])
+            (to_resname, to_resid, to_name), dist, angle = \
+                self._expand_timeseries(current[0])
         from_index, s2_index, (from_resname, from_resid, from_name), \
-        (s2_resname, s2_resid, s2_name), dist, angle = \
-            self._expand_timeseries(current[-1])
+            (s2_resname, s2_resid, s2_name), dist, angle = \
+                self._expand_timeseries(current[-1])
         key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname,
                s2_resid, s2_name)
         output[key].append(kwargs.pop('time'))
