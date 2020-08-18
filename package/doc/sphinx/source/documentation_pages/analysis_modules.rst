@@ -138,6 +138,13 @@ Dimensionality Reduction
    analysis/diffusionmap
    analysis/pca
 
+Chemoinformatics
+================
+.. toctree::
+   :maxdepth: 1
+
+   analysis/RDKit
+
 Legacy analysis modules
 =======================
 

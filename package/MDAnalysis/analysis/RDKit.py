@@ -23,7 +23,7 @@
 
 """
 Calculating RDKit descriptors and fingerprints --- :mod:`MDAnalysis.analysis.RDKit`
-==========================================================================
+===================================================================================
 
 This module contains a wrapper class to calculate descriptors and fingerprints
 from RDKit molecules. Technically, it is not limited to descriptors provided
@@ -38,8 +38,8 @@ import warnings
 
 import numpy as np
 try:
-    from rdkit.Chem import (AllChem, DataStructs, rdMolDescriptors, 
-                            Descriptors, Descriptors3D, EState, 
+    from rdkit.Chem import (AllChem, DataStructs, rdMolDescriptors,
+                            Descriptors, Descriptors3D, EState,
                             GraphDescriptors, Lipinski, MolSurf)
 except ImportError:
     raise ImportError("RDKit is needed to use the RDKit descriptors code, but "
@@ -72,7 +72,7 @@ for module in [rdMolDescriptors, Descriptors, Descriptors3D, EState,
 
 
 def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
-    """Generate a fingerprint for an AtomGroup using RDKit
+    r"""Generate a fingerprint for an AtomGroup using RDKit
 
     Parameters
     ----------
@@ -89,7 +89,7 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
         Return a hashed version of the fingerprint
     as_array : bool
         Return the fingerprint as a numpy array
-    \**kwargs : object
+    **kwargs : object
         Arguments passed to the fingerprint function
 
     Returns
@@ -102,7 +102,7 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
     To generate a Morgan fingerprint, don't forget to specify the radius::
 
         get_fingerprint(ag, 'Morgan', radius=2)
-    
+
     """
     kind = f"hashed_{kind}" if hashed else kind
     try:
@@ -123,7 +123,39 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
 
 
 class RDKitDescriptors(AnalysisBase):
-    """TODO"""
+    r"""Class to compute molecular descriptors through RDKit
+
+    Parameters
+    ----------
+    atomgroup : MDAnalysis.core.groups.AtomGroup
+        The AtomGroup used to calculate descriptors
+    *args : str or function
+        Either a descriptor name in RDKit or a function that takes an RDKit
+        molecule as argument
+
+    Attributes
+    ----------
+    results : numpy.array
+        Array of dictionnaries storing the descriptor name and the
+        corresponding value for each frame
+
+    Example
+    -------
+    Here's an example with a custom function for a trajectory with 3 frames::
+
+        >>> def num_atoms(mol):
+        ...    return mol.GetNumAtoms()
+        >>> desc = RDKitDescriptors(u.atoms, 
+        ...                         "MolWt", "RadiusOfGyration", num_atoms)
+        >>> desc.run()
+        >>> desc.results
+        array([{'MolWt': 46.069, 'RadiusOfGyration': 1.176, 'num_atoms': 9},
+               {'MolWt': 46.069, 'RadiusOfGyration': 1.177, 'num_atoms': 9},
+               {'MolWt': 46.069, 'RadiusOfGyration': 1.183, 'num_atoms': 9}],
+              dtype=object)
+
+    """
+
     def __init__(self, atomgroup, *args, **kwargs):
         super().__init__(atomgroup.universe.trajectory,
                          **kwargs)
