@@ -1576,12 +1576,12 @@ class WaterBridgeAnalysis(AnalysisBase):
         :return:
         '''
 
-        s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-        (to_resname, to_resid, to_name), dist, angle = \
+        s1_index, to_index, s1, to_residue, dist, angle = \
             self._expand_timeseries(current[0])
-        from_index, s2_index, (from_resname, from_resid, from_name), \
-        (s2_resname, s2_resid, s2_name), dist, angle = \
+        s1_resname, s1_resid, s1_name = s1
+        from_index, s2_index, from_residue, s2, dist, angle = \
             self._expand_timeseries(current[-1])
+        s2_resname, s2_resid, s2_name = s2
         key = (s1_index, s2_index,
                s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
@@ -1639,12 +1639,12 @@ class WaterBridgeAnalysis(AnalysisBase):
             return None
 
     def _count_by_time_analysis(self, current, output, *args, **kwargs):
-        s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-        (to_resname, to_resid, to_name), dist, angle = \
+        s1_index, to_index, s1, to_residue, dist, angle = \
             self._expand_timeseries(current[0])
-        from_index, s2_index, (from_resname, from_resid, from_name), \
-        (s2_resname, s2_resid, s2_name), dist, angle = \
+        s1_resname, s1_resid, s1_name = s1
+        from_index, s2_index, from_residue, s2, dist, angle = \
             self._expand_timeseries(current[-1])
+        s2_resname, s2_resid, s2_name = s2
         key = (s1_index, s2_index,
                s1_resname, s1_resid, s1_name, s2_resname, s2_resid, s2_name)
         output[key] += 1
@@ -1680,12 +1680,12 @@ class WaterBridgeAnalysis(AnalysisBase):
             return None
 
     def _timesteps_by_type_analysis(self, current, output, *args, **kwargs):
-        s1_index, to_index, (s1_resname, s1_resid, s1_name), \
-        (to_resname, to_resid, to_name), dist, angle = \
+        s1_index, to_index, s1, to_residue, dist, angle = \
             self._expand_timeseries(current[0])
-        from_index, s2_index, (from_resname, from_resid, from_name), \
-        (s2_resname, s2_resid, s2_name), dist, angle = \
+        s1_resname, s1_resid, s1_name = s1
+        from_index, s2_index, from_residue, s2, dist, angle = \
             self._expand_timeseries(current[-1])
+        s2_resname, s2_resid, s2_name = s2
         key = (s1_index, s2_index, s1_resname, s1_resid, s1_name, s2_resname,
                s2_resid, s2_name)
         output[key].append(kwargs.pop('time'))
