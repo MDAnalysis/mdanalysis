@@ -820,6 +820,7 @@ class ProteinSelection(Selection):
     --------
     :func:`MDAnalysis.lib.util.convert_aa_code`
 
+
     .. versionchanged:: 2.0.0
        prot_res changed to set (from numpy array)
        performance improved by ~100x on larger systems
@@ -912,6 +913,7 @@ class BackboneSelection(ProteinSelection):
     This excludes OT* on C-termini
     (which are included by, eg VMD's backbone selection).
 
+
     .. versionchanged:: 2.0.0
        bb_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
@@ -943,6 +945,7 @@ class NucleicBackboneSelection(NucleicSelection):
 
     These atoms are only recognized if they are in a residue matched
     by the :class:`NucleicSelection`.
+
 
     .. versionchanged:: 2.0.0
        bb_atoms changed to set (from numpy array)
@@ -978,6 +981,7 @@ class BaseSelection(NucleicSelection):
      'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
      'O6','N2','N6', 'O2','N4','O4','C5M'
 
+
     .. versionchanged:: 2.0.0
        base_atoms changed to set (from numpy array)
        performance improved by ~100x on larger systems
@@ -1009,6 +1013,7 @@ class BaseSelection(NucleicSelection):
 
 class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
+
 
     .. versionchanged:: 2.0.0
        sug_atoms changed to set (from numpy array)
