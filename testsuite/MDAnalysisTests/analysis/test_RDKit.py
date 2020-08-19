@@ -53,7 +53,7 @@ class TestDescriptorsRDKit:
         return mda.Universe.from_smiles("CCO")
 
     def test_arg_function(self, u):
-        def func(mol): 
+        def func(mol):
             return mol.GetNumAtoms()
         desc = RDKitDescriptors(u.atoms, func).run()
         assert desc.results[0]["func"] == 9
@@ -84,14 +84,15 @@ class TestFingerprintsRDKit:
         return mda.Universe.from_smiles("CCO")
 
     def test_hashed_maccs(self, u):
-        with pytest.raises(ValueError, 
+        with pytest.raises(ValueError,
                            match="MACCSKeys is not available in a hashed version"):
             get_fingerprint(u.atoms, "MACCSKeys", hashed=True)
-        fp = get_fingerprint(u.atoms, "MACCSKeys", hashed=False, as_array=False)
+        fp = get_fingerprint(u.atoms, "MACCSKeys", hashed=False, 
+                             as_array=False)
         assert list(fp.GetOnBits()) == [82, 109, 112, 114, 126, 138, 139, 153, 155, 157, 160, 164]
 
     def test_unknown_fp(self, u):
-        with pytest.raises(ValueError, 
+        with pytest.raises(ValueError,
                            match="Could not find 'foo' in the available fingerprints"):
             get_fingerprint(u.atoms, "foo", hashed=False)
 
@@ -105,7 +106,7 @@ class TestFingerprintsRDKit:
         assert fp.__class__.__name__ == dtype
 
     def test_kwargs(self, u):
-        fp = get_fingerprint(u.atoms, "AtomPair", hashed=True, as_array=True, 
+        fp = get_fingerprint(u.atoms, "AtomPair", hashed=True, as_array=True,
                              nBits=128)
         assert len(fp) == 128
 
@@ -121,8 +122,8 @@ class TestFingerprintsRDKit:
         ("TopologicalTorsion", {}, False, False, 0),
     ])
     def test_fp(self, u, kind, kwargs, hashed, as_array, n_on_bits):
-        fp = get_fingerprint(u.atoms, kind, 
-                                hashed=hashed, as_array=as_array, **kwargs)
+        fp = get_fingerprint(u.atoms, kind,
+                             hashed=hashed, as_array=as_array, **kwargs)
         classname = fp.__class__.__name__
         if classname.endswith("BitVect"):
             assert fp.GetNumOnBits() == n_on_bits

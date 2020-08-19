@@ -111,10 +111,10 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
         fp_function = _RDKIT_FP[key]
     except KeyError:
         if key == "hashed_MACCSKeys":
-            raise ValueError(f"MACCSKeys is not available in a hashed version. "
-                           "Please use `hashed=False`") from None
+            raise ValueError(f"MACCSKeys is not available in a hashed version."
+                             " Please use `hashed=False`") from None
         raise ValueError(f"Could not find {kind!r} in the available "
-                       "fingerprints") from None
+                         "fingerprints") from None
     mol = ag.convert_to("RDKIT")
     fp = fp_function(mol, **kwargs)
     if not as_array:
