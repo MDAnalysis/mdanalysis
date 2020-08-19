@@ -106,20 +106,20 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
         get_fingerprint(ag, 'Morgan', radius=2)
 
     """
-    kind = f"hashed_{kind}" if hashed else kind
+    key = f"hashed_{kind}" if hashed else kind
     try:
-        fp_function = _RDKIT_FP[kind]
+        fp_function = _RDKIT_FP[key]
     except KeyError:
-        if kind == "hashed_MACCSKeys":
-            raise KeyError(f"MACCSKeys is not available in a hashed version. "
+        if key == "hashed_MACCSKeys":
+            raise ValueError(f"MACCSKeys is not available in a hashed version. "
                            "Please use `hashed=False`") from None
-        raise KeyError(f"Could not find {kind!r} in the available "
+        raise ValueError(f"Could not find {kind!r} in the available "
                        "fingerprints") from None
     mol = ag.convert_to("RDKIT")
     fp = fp_function(mol, **kwargs)
     if not as_array:
         return fp
-    array = np.zeros((0, ), dtype=np.int8)
+    array = np.zeros((0, ), dtype=np.uint8)
     DataStructs.ConvertToNumpyArray(fp, array)
     return array
 
