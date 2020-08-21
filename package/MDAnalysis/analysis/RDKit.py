@@ -69,7 +69,7 @@ for module in [rdMolDescriptors, Descriptors, Descriptors3D, EState,
             _RDKIT_DESCRIPTORS[arg] = (module, thing)
 
 
-def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
+def get_fingerprint(ag, kind, hashed=False, dtype=None, **kwargs):
     r"""Generate a fingerprint for an AtomGroup using RDKit
 
     Parameters
@@ -87,14 +87,19 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
 
     hashed : bool
         Return a hashed version of the fingerprint
-    as_array : bool
-        Return the fingerprint as a numpy array
+    dtype : None or str
+        Return type for the fingerprint: One of:
+
+        * None for the original RDKit object
+        * "dict" for a dictionary containing the bits that are set
+        * "array" for the sequence of on and off bits
+
     **kwargs : object
         Arguments passed to the fingerprint function
 
     Returns
     -------
-    fp : numpy.ndarray or rdkit.DataStructs.cDataStructs object
+    fp : rdkit.DataStructs.cDataStructs object or dict or numpy.ndarray
         The fingerprint in the desired shape and format
 
     Notes
@@ -102,6 +107,9 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
     To generate a Morgan fingerprint, don't forget to specify the radius::
 
         get_fingerprint(ag, 'Morgan', radius=2)
+
+    ``dtype="array"`` is not recommended for non-hashed fingerprints
+    (except MACCS) as it is likely to overflow the available memory and crash.
 
     """
     key = f"hashed_{kind}" if hashed else kind
@@ -115,11 +123,19 @@ def get_fingerprint(ag, kind, hashed=True, as_array=True, **kwargs):
                          "fingerprints") from None
     mol = ag.convert_to("RDKIT")
     fp = fp_function(mol, **kwargs)
-    if not as_array:
+    if dtype is None:
         return fp
-    array = np.zeros((0, ), dtype=np.uint8)
-    DataStructs.ConvertToNumpyArray(fp, array)
-    return array
+    elif dtype == "array":
+        array = np.zeros((0, ), dtype=np.uint8)
+        DataStructs.ConvertToNumpyArray(fp, array)
+        return array
+    elif dtype == "dict":
+        classname = fp.__class__.__name__
+        if classname.endswith("BitVect"):
+            return {bit: 1 for bit in fp.GetOnBits()}
+        return fp.GetNonzeroElements()
+    else:
+        raise ValueError(f"{dtype!r} is not a supported output type")
 
 
 class RDKitDescriptors(AnalysisBase):
@@ -178,7 +194,7 @@ class RDKitDescriptors(AnalysisBase):
         self.n_descriptors = len(self._functions)
 
     def _prepare(self):
-        self.results = np.empty(shape=(self.n_frames, self.n_descriptors), 
+        self.results = np.empty(shape=(self.n_frames, self.n_descriptors),
                                 dtype=object)
 
     def _single_frame(self):

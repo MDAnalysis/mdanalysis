@@ -87,47 +87,58 @@ class TestFingerprintsRDKit:
         with pytest.raises(ValueError,
                            match="MACCSKeys is not available in a hashed version"):
             get_fingerprint(u.atoms, "MACCSKeys", hashed=True)
-        fp = get_fingerprint(u.atoms, "MACCSKeys", hashed=False, 
-                             as_array=False)
-        assert list(fp.GetOnBits()) == [82, 109, 112, 114, 126, 138, 139, 153, 155, 157, 160, 164]
+        fp = get_fingerprint(u.atoms, "MACCSKeys", hashed=False, dtype="dict")
+        assert list(fp.keys()) == [82, 109, 112, 114, 126, 138, 139, 153, 155, 157, 160, 164]
 
     def test_unknown_fp(self, u):
         with pytest.raises(ValueError,
                            match="Could not find 'foo' in the available fingerprints"):
-            get_fingerprint(u.atoms, "foo", hashed=False)
+            get_fingerprint(u.atoms, "foo")
 
-    @pytest.mark.parametrize("kind, hashed, as_array, dtype", [
-        ("MACCSKeys", False, False, "ExplicitBitVect"),
-        ("AtomPair", True, False, "IntSparseIntVect"),
-        ("AtomPair", True, True, "ndarray"),
+    @pytest.mark.parametrize("kind, hashed, dtype, out_type", [
+        ("MACCSKeys", False, None, "ExplicitBitVect"),
+        ("AtomPair", True, None, "IntSparseIntVect"),
+        ("AtomPair", True, "array", "ndarray"),
+        ("AtomPair", False, "dict", "dict"),
     ])
-    def test_return_types(self, u, kind, hashed, as_array, dtype):
-        fp = get_fingerprint(u.atoms, kind, hashed, as_array)
-        assert fp.__class__.__name__ == dtype
+    def test_return_types(self, u, kind, hashed, dtype, out_type):
+        fp = get_fingerprint(u.atoms, kind, hashed, dtype)
+        assert fp.__class__.__name__ == out_type
+
+    def test_unknown_dtype(self, u):
+        with pytest.raises(ValueError,
+                           match="'foo' is not a supported output type"):
+            get_fingerprint(u.atoms, "MACCSKeys", dtype="foo")
 
     def test_kwargs(self, u):
-        fp = get_fingerprint(u.atoms, "AtomPair", hashed=True, as_array=True,
+        fp = get_fingerprint(u.atoms, "AtomPair", hashed=True, dtype="array",
                              nBits=128)
         assert len(fp) == 128
 
-    @pytest.mark.parametrize("kind, kwargs, hashed, as_array, n_on_bits", [
-        ("MACCSKeys", {}, False, False, 12),
-        ("AtomPair", {}, True, True, 5),
-        ("AtomPair", {}, False, False, 12),
-        ("Morgan", dict(radius=2), True, True, 8),
-        ("Morgan", dict(radius=2), False, False, 11),
-        ("RDKit", {}, True, True, 84),
-        ("RDKit", {}, False, False, 42),
-        ("TopologicalTorsion", {}, True, True, 0),
-        ("TopologicalTorsion", {}, False, False, 0),
+    @pytest.mark.parametrize("kind, kwargs, hashed, dtype, n_on_bits", [
+        ("MACCSKeys", {}, False, None, 12),
+        ("AtomPair", {}, True, "array", 5),
+        ("AtomPair", {}, False, "dict", 12),
+        ("AtomPair", {}, False, None, 12),
+        ("Morgan", dict(radius=2), True, "array", 8),
+        ("Morgan", dict(radius=2), False, "dict", 11),
+        ("Morgan", dict(radius=2), False, None, 11),
+        ("RDKit", {}, True, "array", 84),
+        ("RDKit", {}, False, "dict", 42),
+        ("RDKit", {}, False, None, 42),
+        ("TopologicalTorsion", {}, True, "array", 0),
+        ("TopologicalTorsion", {}, False, "dict", 0),
+        ("TopologicalTorsion", {}, False, None, 0),
     ])
-    def test_fp(self, u, kind, kwargs, hashed, as_array, n_on_bits):
+    def test_fp(self, u, kind, kwargs, hashed, dtype, n_on_bits):
         fp = get_fingerprint(u.atoms, kind,
-                             hashed=hashed, as_array=as_array, **kwargs)
+                             hashed=hashed, dtype=dtype, **kwargs)
         classname = fp.__class__.__name__
         if classname.endswith("BitVect"):
             assert fp.GetNumOnBits() == n_on_bits
         elif classname.endswith("IntVect"):
             assert len(fp.GetNonzeroElements()) == n_on_bits
+        elif classname == "dict":
+            assert len(fp.keys()) == n_on_bits
         else:
             assert len(np.where(fp == 1)[0]) == n_on_bits
