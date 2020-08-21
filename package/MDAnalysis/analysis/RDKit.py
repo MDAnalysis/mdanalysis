@@ -193,17 +193,17 @@ class RDKitDescriptors(AnalysisBase):
         Parameters
         ----------
         flat : bool
-            Return a flat array instead of a dictionnary
+            Return a flat array instead of a dictionary
 
         Returns
         -------
         descriptors : dict or numpy.ndarray
-            A dictionnary of list of descriptors indexed by the RDKit module
+            A dictionary of list of descriptors indexed by the RDKit module
             where the descriptor can be found, or a flat array of descriptors
 
         Notes
         -----
-        This is NOT a currated list of descriptors, some of the names listed
+        This is NOT a curated list of descriptors, some of the names listed
         here might correspond to helper functions available in RDKit that do
         not represent any kind of molecular property.
 
