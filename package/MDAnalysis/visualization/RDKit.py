@@ -63,7 +63,7 @@ class RDKitDrawer(FormatterBase):
         Parameters
         ----------
         size : tuple
-            default size for images
+            default width and height of images, in pixels
         max_atoms : int
             AtomGroups with more atoms that this limit won't be displayed as
             images and will use the default representation instead

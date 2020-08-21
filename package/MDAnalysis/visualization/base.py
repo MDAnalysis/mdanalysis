@@ -61,7 +61,8 @@ class FormatterBase(metaclass=_Formattermeta):
         Parameters
         ----------
         obj : object
-            An MDAnalysis object
+            An MDAnalysis :class:`~MDAnalysis.core.universe.Universe` or 
+            :class:`~MDAnalysis.core.groups.AtomGroup`
         mime : str
             The MIME type to add, e.g. "image/svg+xml"
         func : callable
@@ -83,7 +84,8 @@ class FormatterBase(metaclass=_Formattermeta):
         Parameters
         ----------
         obj : object
-            An MDAnalysis object
+            An MDAnalysis :class:`~MDAnalysis.core.universe.Universe` or 
+            :class:`~MDAnalysis.core.groups.AtomGroup`
         mime : str
             The MIME type to drop, e.g. "image/png"
         """
