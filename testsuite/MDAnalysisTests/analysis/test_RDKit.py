@@ -56,17 +56,17 @@ class TestDescriptorsRDKit:
         def func(mol):
             return mol.GetNumAtoms()
         desc = RDKitDescriptors(u.atoms, func).run()
-        assert desc.results[0]["func"] == 9
+        assert desc.results[0, 0] == 9
 
     def test_arg_string(self, u):
         desc = RDKitDescriptors(u.atoms, "MolWt", "MolFormula").run()
-        assert round(desc.results[0]["MolWt"], 10) == 46.069
+        assert round(desc.results[0, 0], 10) == 46.069
         # MolFormula is known as "CalcMolFormula" in RDKit but should still
         # match even with the missing Calc
-        assert desc.results[0]["MolFormula"] == "C2H6O"
+        assert desc.results[0, 1] == "C2H6O"
 
     def test_unknown_desc(self, u):
-        with pytest.raises(KeyError, match="Could not find 'foo' in RDKit"):
+        with pytest.raises(ValueError, match="Could not find 'foo' in RDKit"):
             desc = RDKitDescriptors(u.atoms, "foo")
 
     def test_list_available(self):

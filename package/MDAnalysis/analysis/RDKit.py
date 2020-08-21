@@ -34,8 +34,6 @@ by RDKit since any function that can take an RDKit molecule as input will work.
 
 """
 
-import warnings
-
 import numpy as np
 try:
     from rdkit.Chem import (AllChem, DataStructs, rdMolDescriptors,
@@ -131,15 +129,16 @@ class RDKitDescriptors(AnalysisBase):
     ----------
     atomgroup : MDAnalysis.core.groups.AtomGroup
         The AtomGroup used to calculate descriptors
-    *args : str or function
+    *descriptors : str or function
         Either a descriptor name in RDKit or a function that takes an RDKit
         molecule as argument
 
     Attributes
     ----------
+    n_descriptors : int
+        Number of descriptors requested
     results : numpy.ndarray
-        Array of dictionnaries storing the descriptor name and the
-        corresponding value for each frame
+        2D array of shape (n_frames, n_descriptors)
 
     Example
     -------
@@ -151,40 +150,41 @@ class RDKitDescriptors(AnalysisBase):
         ...                         "MolWt", "RadiusOfGyration", num_atoms)
         >>> desc.run()
         >>> desc.results
-        array([{'MolWt': 46.069, 'RadiusOfGyration': 1.176, 'num_atoms': 9},
-               {'MolWt': 46.069, 'RadiusOfGyration': 1.177, 'num_atoms': 9},
-               {'MolWt': 46.069, 'RadiusOfGyration': 1.183, 'num_atoms': 9}],
+        array([[46.06900000000002, 1.161278342193013, 'C2H6O', 9],
+               [46.06900000000002, 1.175492972121405, 'C2H6O', 9],
+               [46.06900000000002, 1.173230936577319, 'C2H6O', 9]],
               dtype=object)
 
     """
 
-    def __init__(self, atomgroup, *args, **kwargs):
+    def __init__(self, atomgroup, *descriptors, **kwargs):
         super().__init__(atomgroup.universe.trajectory,
                          **kwargs)
         self._ag = atomgroup
-        self._functions = {}
-        for thing in args:
+        self._functions = []
+        for thing in descriptors:
             if callable(thing):
-                self._functions[thing.__name__] = thing
+                self._functions.append(thing)
             else:
                 obj = _RDKIT_DESCRIPTORS.get(
                     thing, _RDKIT_DESCRIPTORS.get(f"Calc{thing}"))
                 if obj is None:
-                    raise KeyError(
+                    raise ValueError(
                         f"Could not find {thing!r} in RDKit. "
                         "Please try passing the required function directly "
                         "instead of a string")
                 module, func = obj
-                self._functions[thing] = func
+                self._functions.append(func)
+        self.n_descriptors = len(self._functions)
 
     def _prepare(self):
-        self.results = np.array([{} for i in range(self.n_frames)],
+        self.results = np.empty(shape=(self.n_frames, self.n_descriptors), 
                                 dtype=object)
 
     def _single_frame(self):
         mol = self._ag.convert_to("RDKIT")
-        for name, func in self._functions.items():
-            self.results[self._frame_index][name] = func(mol)
+        for i, func in enumerate(self._functions):
+            self.results[self._frame_index][i] = func(mol)
 
     @staticmethod
     def list_available(flat=False):
