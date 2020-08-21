@@ -275,7 +275,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_ANCHOR_UNIVERSES</span><span class="p">,</span> <span class="n">_CONVERTERS</span><span class="p">,</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="p">(</span><span class="n">_CONVERTERS</span><span class="p">,</span>
                 <span class="n">_TOPOLOGY_ATTRS</span><span class="p">,</span> <span class="n">_TOPOLOGY_TRANSPLANTS</span><span class="p">,</span> <span class="n">_TOPOLOGY_ATTRNAMES</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">cached</span><span class="p">,</span> <span class="n">warn_if_not_unique</span><span class="p">,</span> <span class="n">unique_int_1d</span>
@@ -289,16 +289,7 @@
 <span class="kn">from</span> <span class="nn">._get_readers</span> <span class="kn">import</span> <span class="n">get_writer_for</span><span class="p">,</span> <span class="n">get_converter_for</span>
 
 
-<span class="k">def</span> <span class="nf">_unpickle</span><span class="p">(</span><span class="n">uhash</span><span class="p">,</span> <span class="n">ix</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">u</span> <span class="o">=</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="p">[</span><span class="n">uhash</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="c1"># doesn&#39;t provide as nice an error message as before as only hash of universe is stored</span>
-        <span class="c1"># maybe if we pickled the filename too we could do better...</span>
-        <span class="n">errmsg</span> <span class="o">=</span> <span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Couldn&#39;t find a suitable Universe to unpickle AtomGroup &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;onto with Universe hash &#39;</span><span class="si">{</span><span class="n">uhash</span><span class="si">}</span><span class="s2">&#39;. Availble hashes: &quot;</span>
-                  <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_ANCHOR_UNIVERSES</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+<span class="k">def</span> <span class="nf">_unpickle</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ix</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">ix</span><span class="p">]</span>
 
 
@@ -2431,10 +2422,64 @@
 <span class="sd">    :class:`AtomGroup` instances are always bound to a</span>
 <span class="sd">    :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.</span>
 
+<span class="sd">    During serialization, :class:`AtomGroup` will be pickled with its bound</span>
+<span class="sd">    :class:`MDAnalysis.core.universe.Universe` which means after unpickling,</span>
+<span class="sd">    a new :class:`MDAnalysis.core.universe.Universe` will be created and</span>
+<span class="sd">    be attached by the new :class:`AtomGroup`. If the Universe is serialized</span>
+<span class="sd">    with its :class:`AtomGroup`, they will still be bound together afterwards:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; g = u.atoms</span>
+
+<span class="sd">        &gt;&gt;&gt; g_pickled = pickle.loads(pickle.dumps(g))</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is u: &quot;, u is g_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is u: False</span>
+
+<span class="sd">        &gt;&gt;&gt; g_pickled, u_pickled = pickle.load(pickle.dumps(g, u))</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is u_pickled: &quot;,</span>
+<span class="sd">        &gt;&gt;&gt;       u_pickle is g_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is u_pickled: True</span>
+
+<span class="sd">    If multiple :class:`AtomGroup` are bound to the same</span>
+<span class="sd">    :class:`MDAnalysis.core.universe.Universe`, they will bound to the same one</span>
+<span class="sd">    after serialization:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        &gt;&gt;&gt; u = mda.Universe(PSF, DCD)</span>
+<span class="sd">        &gt;&gt;&gt; g = u.atoms</span>
+<span class="sd">        &gt;&gt;&gt; h = u.atoms</span>
+
+<span class="sd">        &gt;&gt;&gt; g_pickled = pickle.loads(pickle.dumps(g))</span>
+<span class="sd">        &gt;&gt;&gt; h_pickled = pickle.loads(pickle.dumps(h))</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is h_pickled.universe : &quot;,</span>
+<span class="sd">        &gt;&gt;&gt;       g_pickled.universe is h_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is h_pickled.universe: False</span>
+
+<span class="sd">        &gt;&gt;&gt; g_pickled, h_pickled = pickle.load(pickle.dumps(g, h))</span>
+<span class="sd">        &gt;&gt;&gt; print(&quot;g_pickled.universe is h_pickled.universe: &quot;,</span>
+<span class="sd">        &gt;&gt;&gt;       g_pickle.universe is h_pickled.universe)</span>
+<span class="sd">        g_pickled.universe is h_pickled.universe: True</span>
+
+<span class="sd">    The aforementioned two cases are useful for implementation of parallel</span>
+<span class="sd">    analysis base classes. First, you always get an independent</span>
+<span class="sd">    :class:`MDAnalysis.core.universe.Universe`</span>
+<span class="sd">    in the new process; you don&#39;t have to worry about detaching and reattaching</span>
+<span class="sd">    Universe with :class:`AtomGroup`. It also means the state of the</span>
+<span class="sd">    new pickled AtomGroup will not be changed with the old Universe,</span>
+<span class="sd">    So either the Universe has to pickled together with the AtomGroup</span>
+<span class="sd">    (e.g. as a tuple, or as attributes of the object to be pickled), or the</span>
+<span class="sd">    implicit new Universe (`AtomGroup.Universe`) needs to be used.</span>
+<span class="sd">    Second, When multiple AtomGroup need to be pickled, they will recognize if</span>
+<span class="sd">    they belong to the same Univese or not.</span>
+<span class="sd">    Also keep in mind that they need to be pickled together.</span>
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    :class:`MDAnalysis.core.universe.Universe`</span>
+
 
 <span class="sd">    .. deprecated:: 0.16.2</span>
 <span class="sd">       *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0</span>
@@ -2442,10 +2487,13 @@
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Removed instant selectors, use select_atoms(&#39;name ...&#39;) to select</span>
 <span class="sd">       atoms by name.</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       :class:`AtomGroup` can always be pickled with or without its universe,</span>
+<span class="sd">       instead of failing when not finding its anchored universe.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">_unpickle</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">anchor_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">_unpickle</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="c1"># special-case timestep info</span>

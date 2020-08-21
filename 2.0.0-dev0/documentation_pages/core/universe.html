@@ -286,15 +286,6 @@ between atoms.  This will populate the .bonds, .angles, and .dihedrals
 attributes of the Universe.</li>
 <li><strong>vdwradii</strong> (dict, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – For use with <em>guess_bonds</em>. Supply a dict giving a vdwradii for each
 atom type which are used in guessing bonds.</li>
-<li><strong>is_anchor</strong> (bool, default <code class="docutils literal notranslate"><span class="pre">True</span></code>) – When unpickling instances of
-<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> existing Universes are
-searched for one where to anchor those atoms. Set to <code class="docutils literal notranslate"><span class="pre">False</span></code> to
-prevent this Universe from being considered.</li>
-<li><strong>anchor_name</strong> (str, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Setting to other than <code class="docutils literal notranslate"><span class="pre">None</span></code> will cause
-<a class="reference internal" href="groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.groups.AtomGroup</span></code></a> instances pickled from the
-Universe to only unpickle if a compatible Universe with matching
-<em>anchor_name</em> is found. Even if <em>anchor_name</em> is set <em>is_anchor</em> will
-still be honored when unpickling.</li>
 <li><strong>transformations</strong> (function or list, <code class="docutils literal notranslate"><span class="pre">None</span></code>, default <code class="docutils literal notranslate"><span class="pre">None</span></code>) – Provide a list of transformations that you wish to apply to the
 trajectory upon reading. Transformations can be found in
 <a class="reference internal" href="../trajectory_transformations.html#module-MDAnalysis.transformations" title="MDAnalysis.transformations"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations</span></code></a>, or can be user-created.</li>
@@ -341,7 +332,7 @@ Removed instant selectors.</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 2.0.0: </span>Universe now can be (un)pickled.
-<code class="docutils literal notranslate"><span class="pre">topology</span></code>, <code class="docutils literal notranslate"><span class="pre">trajectory</span></code> and <code class="docutils literal notranslate"><span class="pre">anchor_name</span></code> are reserved
+<code class="docutils literal notranslate"><span class="pre">topology</span></code> and <code class="docutils literal notranslate"><span class="pre">trajectory</span></code> are reserved
 upon unpickle.</p>
 </div>
 <dl class="method">
@@ -826,12 +817,6 @@ function. Requires adding hydrogens with the <cite>addHs</cite> parameter</li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="MDAnalysis.core.universe.Universe.is_anchor">
-<code class="descname">is_anchor</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.is_anchor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Is this Universe an anchoring for unpickling AtomGroups</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="MDAnalysis.core.universe.Universe.kwargs">
 <code class="descname">kwargs</code><a class="headerlink" href="#MDAnalysis.core.universe.Universe.kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>keyword arguments used to initialize this universe</p>
@@ -894,12 +879,6 @@ features than the
 <p><span class="versionmodified">Changed in version 0.17.0: </span>Now returns a <a class="reference internal" href="#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> instead of the tuple of file/array
 and detected file type.</p>
 </div>
-</dd></dl>
-
-<dl class="method">
-<dt id="MDAnalysis.core.universe.Universe.remove_anchor">
-<code class="descname">remove_anchor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe.remove_anchor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe.remove_anchor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove this Universe from the possible anchor list for unpickling</p>
 </dd></dl>
 
 <dl class="method">
