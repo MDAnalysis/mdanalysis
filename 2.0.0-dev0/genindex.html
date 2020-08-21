@@ -256,11 +256,13 @@
 </li>
       <li><a href="documentation_pages/analysis/hbond_analysis.html#MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis._get_bonded_hydrogens_list">_get_bonded_hydrogens_list() (MDAnalysis.analysis.hbonds.hbond_analysis.HydrogenBondAnalysis method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_local_frame">_get_local_frame() (MDAnalysis.coordinates.chain.ChainReader method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._get_same">_get_same() (MDAnalysis.coordinates.chain.ChainReader method)</a>
+</li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit._infer_bo_and_charges">_infer_bo_and_charges() (in module MDAnalysis.coordinates.RDKit)</a>
 </li>
       <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep._init_unitcell">_init_unitcell() (MDAnalysis.coordinates.base.Timestep method)</a>
 </li>
@@ -272,9 +274,13 @@
       </ul></li>
       <li><a href="documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader._read_frame">_read_frame() (MDAnalysis.coordinates.chain.ChainReader method)</a>
 </li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit._rebuild_conjugated_bonds">_rebuild_conjugated_bonds() (in module MDAnalysis.coordinates.RDKit)</a>
+</li>
       <li><a href="documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.H5MDReader._reopen">_reopen() (MDAnalysis.coordinates.H5MD.H5MDReader method)</a>
 </li>
       <li><a href="documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis._set_user_grid">_set_user_grid() (MDAnalysis.analysis.density.DensityAnalysis static method)</a>
+</li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit._standardize_patterns">_standardize_patterns() (in module MDAnalysis.coordinates.RDKit)</a>
 </li>
       <li><a href="documentation_pages/selections/base.html#MDAnalysis.selections.base.SelectionWriterBase._translate">_translate() (MDAnalysis.selections.base.SelectionWriterBase method)</a>
 </li>
@@ -450,10 +456,10 @@
 </li>
       <li><a href="documentation_pages/analysis/legacy/x3dna.html#MDAnalysis.analysis.legacy.x3dna.ApplicationError">ApplicationError</a>, <a href="documentation_pages/exceptions.html#MDAnalysis.exceptions.ApplicationError">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/lib/distances.html#MDAnalysis.lib.distances.apply_PBC">apply_PBC() (in module MDAnalysis.lib.distances)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.Arcball">Arcball (class in MDAnalysis.lib.transformations)</a>
 </li>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.arcball_nearest_axis">arcball_nearest_axis() (in module MDAnalysis.lib.transformations)</a>
@@ -495,6 +501,8 @@
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup">AtomGroup (class in MDAnalysis.core.groups)</a>
 </li>
       <li><a href="documentation_pages/core/topologyobjects.html#MDAnalysis.core.topologyobjects.TopologyGroup.atomgroup_intersection">atomgroup_intersection() (MDAnalysis.core.topologyobjects.TopologyGroup method)</a>
+</li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitConverter.atomgroup_to_mol">atomgroup_to_mol() (MDAnalysis.coordinates.RDKit.RDKitConverter method)</a>
 </li>
       <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomICodeSelection">AtomICodeSelection (class in MDAnalysis.core.selection)</a>
 </li>
@@ -941,7 +949,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.close">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.close">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.close">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.close">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1038,6 +1046,8 @@
 
       <ul>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.coordinates.ParmEd.ParmEdConverter.convert">(MDAnalysis.coordinates.ParmEd.ParmEdConverter method)</a>
+</li>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitConverter.convert">(MDAnalysis.coordinates.RDKit.RDKitConverter method)</a>
 </li>
       </ul></li>
       <li><a href="documentation_pages/lib/util.html#MDAnalysis.lib.util.convert_aa_code">convert_aa_code() (in module MDAnalysis.lib.util)</a>
@@ -1143,7 +1153,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_forces_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1235,7 +1245,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_forces_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_forces_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_forces_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1331,7 +1341,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_pos_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1427,7 +1437,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_pos_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_pos_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_pos_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1521,7 +1531,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_time_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_time_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1615,7 +1625,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_time_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_time_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_time_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1709,7 +1719,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_velocities_from_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_from_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_from_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -1801,7 +1811,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.convert_velocities_to_native">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.convert_velocities_to_native">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.convert_velocities_to_native">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -3561,6 +3571,8 @@
 </li>
       <li><a href="documentation_pages/coordinates/PQR.html#module-MDAnalysis.coordinates.PQR">MDAnalysis.coordinates.PQR (module)</a>
 </li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#module-MDAnalysis.coordinates.RDKit">MDAnalysis.coordinates.RDKit (module)</a>
+</li>
       <li><a href="documentation_pages/coordinates/TRJ.html#module-MDAnalysis.coordinates.TRJ">MDAnalysis.coordinates.TRJ (module)</a>
 </li>
       <li><a href="documentation_pages/coordinates/TRR.html#module-MDAnalysis.coordinates.TRR">MDAnalysis.coordinates.TRR (module)</a>
@@ -3683,7 +3695,7 @@
 </li>
       <li><a href="documentation_pages/topology/PSFParser.html#module-MDAnalysis.topology.PSFParser">MDAnalysis.topology.PSFParser (module)</a>
 </li>
-      <li><a href="documentation_pages/topology/RDKitParser.html#module-MDAnalysis.topology.RDKitParser">MDAnalysis.topology.RDKitParser (module)</a>
+      <li><a href="documentation_pages/converters/RDKitParser.html#module-MDAnalysis.topology.RDKitParser">MDAnalysis.topology.RDKitParser (module)</a>
 </li>
       <li><a href="documentation_pages/topology/tables.html#module-MDAnalysis.topology.tables">MDAnalysis.topology.tables (module)</a>
 </li>
@@ -4180,7 +4192,7 @@
 </li>
         <li><a href="documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser.parse">(MDAnalysis.topology.ParmEdParser.ParmEdParser method)</a>
 </li>
-        <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.parse">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
+        <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser.parse">(MDAnalysis.topology.RDKitParser.RDKitParser method)</a>
 </li>
         <li><a href="documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse">(MDAnalysis.topology.TOPParser.TOPParser method)</a>
 </li>
@@ -4465,7 +4477,11 @@
         <li><a href="documentation_pages/analysis/rdf.html#MDAnalysis.analysis.rdf.InterRDF_s.rdf">(MDAnalysis.analysis.rdf.InterRDF_s attribute)</a>
 </li>
       </ul></li>
-      <li><a href="documentation_pages/topology/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser">RDKitParser (class in MDAnalysis.topology.RDKitParser)</a>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitConverter">RDKitConverter (class in MDAnalysis.coordinates.RDKit)</a>
+</li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.topology.RDKitParser.RDKitParser">RDKitParser (class in MDAnalysis.topology.RDKitParser)</a>
+</li>
+      <li><a href="documentation_pages/converters/RDKitParser.html#MDAnalysis.coordinates.RDKit.RDKitReader">RDKitReader (class in MDAnalysis.coordinates.RDKit)</a>
 </li>
       <li><a href="documentation_pages/lib/formats/libdcd.html#MDAnalysis.lib.formats.libdcd.DCDFile.read">read() (MDAnalysis.lib.formats.libdcd.DCDFile method)</a>
 
@@ -4613,10 +4629,10 @@
 </li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup">ResidueGroup (class in MDAnalysis.core.groups)</a>
 </li>
-      <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidueNameSelection">ResidueNameSelection (class in MDAnalysis.core.selection)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidueNameSelection">ResidueNameSelection (class in MDAnalysis.core.selection)</a>
+</li>
       <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.residues">residues (MDAnalysis.core.groups.AtomGroup attribute)</a>
 
       <ul>

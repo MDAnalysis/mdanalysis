@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>5.29. Utility functions for the TPR topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>5.28. Utility functions for the TPR topology parser &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="6. Coordinates modules" href="../coordinates_modules.html" />
-    <link rel="prev" title="5.28. MDAnalysis topology tables" href="tables.html" /> 
+    <link rel="prev" title="5.27. MDAnalysis topology tables" href="tables.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -122,20 +122,19 @@
 <li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.18. PQR topology parser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.19. PSF topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="RDKitParser.html">5.20. RDKit topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.21. AMBER PRMTOP topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.22. Gromacs portable run input TPR format parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.23. TXYZ topology parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.24. XYZ Topology Parser</a></li>
-<li class="toctree-l2"><a class="reference internal" href="base.html">5.25. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="core.html">5.26. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.27. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="tables.html">5.28. MDAnalysis topology tables</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">5.29. Utility functions for the TPR topology parser</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#tpr-support">5.29.1. TPR support</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#tprparser-settings">5.29.2. TPRParser settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#class-definitions-for-the-tprparser">5.29.3. Class definitions for the TPRParser</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#utilities-for-the-tprparser">5.29.4. Utilities for the TPRParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.22. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.27. MDAnalysis topology tables</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.28. Utility functions for the TPR topology parser</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#tpr-support">5.28.1. TPR support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tprparser-settings">5.28.2. TPRParser settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#class-definitions-for-the-tprparser">5.28.3. Class definitions for the TPRParser</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utilities-for-the-tprparser">5.28.4. Utilities for the TPRParser</a></li>
 </ul>
 </li>
 </ul>
@@ -200,7 +199,7 @@
         
           <li><a href="../topology_modules.html">5. Topology modules</a> &raquo;</li>
         
-      <li>5.29. Utility functions for the TPR topology parser</li>
+      <li>5.28. Utility functions for the TPR topology parser</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -220,12 +219,12 @@
            <div itemprop="articleBody">
             
   <div class="section" id="utility-functions-for-the-tpr-topology-parser">
-<h1>5.29. Utility functions for the TPR topology parser<a class="headerlink" href="#utility-functions-for-the-tpr-topology-parser" title="Permalink to this headline">¶</a></h1>
+<h1>5.28. Utility functions for the TPR topology parser<a class="headerlink" href="#utility-functions-for-the-tpr-topology-parser" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a> module contains classes and
 functions on which the Gromacs TPR topology reader
 <a class="reference internal" href="TPRParser.html#MDAnalysis.topology.TPRParser.TPRParser" title="MDAnalysis.topology.TPRParser.TPRParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">TPRParser</span></code></a> is built.</p>
 <span class="target" id="module-MDAnalysis.topology.tpr"></span><div class="section" id="tpr-support">
-<h2>5.29.1. TPR support<a class="headerlink" href="#tpr-support" title="Permalink to this headline">¶</a></h2>
+<h2>5.28.1. TPR support<a class="headerlink" href="#tpr-support" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="#module-MDAnalysis.topology.tpr" title="MDAnalysis.topology.tpr"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.tpr</span></code></a> module is required for the
 <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser</span></code></a> module.</p>
 <dl class="data">
@@ -245,7 +244,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 </ul>
 </div>
 <span class="target" id="module-MDAnalysis.topology.tpr.setting"></span><div class="section" id="tprparser-settings">
-<h2>5.29.2. TPRParser settings<a class="headerlink" href="#tprparser-settings" title="Permalink to this headline">¶</a></h2>
+<h2>5.28.2. TPRParser settings<a class="headerlink" href="#tprparser-settings" title="Permalink to this headline">¶</a></h2>
 <p>Definition of constants.</p>
 <p>The currently read file format versions are defined in
 <a class="reference internal" href="#MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS" title="MDAnalysis.topology.tpr.setting.SUPPORTED_VERSIONS"><code class="xref py py-data docutils literal notranslate"><span class="pre">SUPPORTED_VERSIONS</span></code></a>.</p>
@@ -833,7 +832,7 @@ If iterable is specified the tuple is initialized from iterable’s items.</p>
 
 </div>
 <span class="target" id="module-MDAnalysis.topology.tpr.obj"></span><div class="section" id="class-definitions-for-the-tprparser">
-<h2>5.29.3. Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this headline">¶</a></h2>
+<h2>5.28.3. Class definitions for the TPRParser<a class="headerlink" href="#class-definitions-for-the-tprparser" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.topology.tpr.obj.Atom">
 <em class="property">class </em><code class="descclassname">MDAnalysis.topology.tpr.obj.</code><code class="descname">Atom</code><span class="sig-paren">(</span><em>m</em>, <em>q</em>, <em>mB</em>, <em>qB</em>, <em>tp</em>, <em>typeB</em>, <em>ptype</em>, <em>resind</em>, <em>atomnumber</em><span class="sig-paren">)</span><a class="headerlink" href="#MDAnalysis.topology.tpr.obj.Atom" title="Permalink to this definition">¶</a></dt>
@@ -1250,7 +1249,7 @@ atom (e.g a coarse-grained particle), an empty string is returned.</p>
 
 </div>
 <span class="target" id="module-MDAnalysis.topology.tpr.utils"></span><div class="section" id="utilities-for-the-tprparser">
-<h2>5.29.4. Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this headline">¶</a></h2>
+<h2>5.28.4. Utilities for the TPRParser<a class="headerlink" href="#utilities-for-the-tprparser" title="Permalink to this headline">¶</a></h2>
 <p>Function calling order:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">TPRParser</span><span class="o">.</span><span class="n">py</span> <span class="n">call</span> <span class="n">do_mtop</span><span class="p">)</span>
 <span class="n">do_mtop</span> <span class="o">-&gt;</span> <span class="n">do_symtab</span>
@@ -1495,7 +1494,7 @@ functions as a starting point for your own code.</p>
         <a href="../coordinates_modules.html" class="btn btn-neutral float-right" title="6. Coordinates modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tables.html" class="btn btn-neutral float-left" title="5.28. MDAnalysis topology tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="tables.html" class="btn btn-neutral float-left" title="5.27. MDAnalysis topology tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
