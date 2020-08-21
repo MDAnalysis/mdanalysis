@@ -40,7 +40,7 @@ class TestFormatterBase:
     def test_add(self, dummy):
         dummy_func = lambda: None
         dummy.add_repr(int, "foo", dummy_func)
-        assert mda._FORMATTERS["dummy"][(int, "foo")] is dummy_func
+        assert mda._FORMATTERS["dummy"][(int, "foo")] == dummy_func
     
     def test_reset_repr(self, dummy):
         dummy_func = lambda: None
