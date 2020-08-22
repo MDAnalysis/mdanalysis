@@ -79,6 +79,8 @@ Enhancements
   * Added new kwargs `select_remove` and `select_protein` to
     analysis.dihedrals.Janin analysis to give user more fine grained control
     over selections (PR #2899)
+  * Added an RDKit converter that works for any input with all hydrogens
+    explicit in the topology (Issue #2468, PR #2775)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types
