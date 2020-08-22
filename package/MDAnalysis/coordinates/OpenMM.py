@@ -54,7 +54,6 @@ class OpenMMSimulationReader(base.ReaderBase):
         self.ts.dt = (self.filename.context.getState(1).getTime()._value - 
             self.filename.context.getState(0).getTime()._value
         )
-        print('first {}'.format(self.ts.dt))
 
         self._frame = 1
         self._read_frame(self._frame)
@@ -64,7 +63,6 @@ class OpenMMSimulationReader(base.ReaderBase):
         return self.filename.currentStep
 
     def _read_frame(self, frame):
-        print('called read frame on {}'.format(frame))
         self._frame = frame
         self.ts.frame = self._frame
 
