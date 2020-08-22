@@ -26,7 +26,7 @@ import numpy as np
 from . import base
 
 
-class OpenMMSimulationReader(base.ReaderBase):
+class OpenMMSimulationReader(base.SingleFrameReaderBase):
     """Reader for the OpenMM Simulation objects
 
     """
@@ -46,38 +46,12 @@ class OpenMMSimulationReader(base.ReaderBase):
         else:
             return isinstance(thing, Simulation) 
 
-    def __init__(self, filename, **kwargs):
-        super(OpenMMSimulationReader, self).__init__(filename, **kwargs)
-        self.filename = filename
+
+    def _read_first_frame(self):
         self.n_atoms = self.filename.system.getNumParticles()
-        self.ts = self._Timestep(self.n_atoms, **self._ts_kwargs)
-        self.ts.dt = (self.filename.context.getState(1).getTime()._value - 
-            self.filename.context.getState(0).getTime()._value
-        )
 
-        self._frame = 1
-        self._read_frame(self._frame)
-
-    @property
-    def n_frames(self):
-        return self.filename.currentStep
-
-    def _read_frame(self, frame):
-        self._frame = frame
-        self.ts.frame = self._frame
-
-        state = self.filename.context.getState(self._frame, getVelocities=True, getForces=True, getEnergy=True)
-        self.ts.dt = (self.filename.context.getState(self._frame).getTime()._value - 
-            self.filename.context.getState(self._frame - 1).getTime()._value
-        )
-
-        self.ts.data['time'] = state.getTime()
-        self.ts.data['potential_energy'] = state.getPotentialEnergy()
-        self.ts.data['kinetic_energy'] = state.getKineticEnergy()
-        self.ts.triclinic_dimensions = state.getPeriodicBoxVectors(asNumpy=True)._value
-        self.ts.positions = state.getPositions(asNumpy=True)._value
-        self.ts.velocities = state.getVelocities(asNumpy=True)._value
-        self.ts.forces = state.getForces(asNumpy=True)._value
+        self.ts = _mda_timestep_from_omm_context(self.filename.context, 
+                self._Timestep, **self._ts_kwargs)
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
@@ -88,13 +62,32 @@ class OpenMMSimulationReader(base.ReaderBase):
             self.convert_forces_from_native(self.ts._forces)
             self.convert_time_from_native(self.ts.dt)
 
-        return self.ts
-    
-    def _read_next_timestep(self):
-        return self._read_frame(self._frame + 1)
 
-    #def _reopen(self):
-        #self.ts.frame = 0 
-        #self._frame = 0
+def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
+    """ Construct Timestep object from Openmm context 
+
+    Parameters
+    ----------
+    omm_context: simtk.openmm.context
+    timestep_module: MDAnalysis.coordinates.base.timestep 
+        This is the module, but the object gets created within this function """
+
+    state = omm_context.getState(-1, getVelocities=True, 
+        getForces=True, getEnergy=True
+    )
+
+    n_atoms = omm_context.getSystem().getNumParticles()
+
+    ts = timestep_module(n_atoms, **ts_kwargs)
+    ts.data['time'] = state.getTime()
+    ts.data['potential_energy'] = state.getPotentialEnergy()
+    ts.data['kinetic_energy'] = state.getKineticEnergy()
+    ts.triclinic_dimensions = state.getPeriodicBoxVectors(asNumpy=True)._value
+    ts.positions = state.getPositions(asNumpy=True)._value
+    ts.velocities = state.getVelocities(asNumpy=True)._value
+    ts.forces = state.getForces(asNumpy=True)._value
+
+
+    return ts
     
 
