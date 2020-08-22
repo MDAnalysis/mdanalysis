@@ -726,6 +726,7 @@ from . import GRO
 from . import INPCRD
 from . import LAMMPS
 from . import MOL2
+from . import OpenMM
 from . import ParmEd
 from . import PDB
 from . import PDBQT
