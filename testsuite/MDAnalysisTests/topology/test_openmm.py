@@ -27,13 +27,18 @@ from simtk.openmm import app
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import PDB, PDB_conect
+from MDAnalysisTests.datafiles import CONECT
 
 class OpenMMTopologyBase(ParserBase):
     parser = mda.topology.OpenMMParser.OpenMMTopologyParser
     expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses',
-                      'bonds']
+                      'bonds', 'chainIDs', 'elements']
     expected_n_bonds = 0
+
+    def test_creates_universe(self, filename):
+        """Check that Universe works with this Parser"""
+        u = mda.Universe(filename, topology_format='OPENMMTOPOLOGY')
+        assert isinstance(u, mda.Universe)
 
     def test_attr_size(self, top):
         assert len(top.ids) == top.n_atoms
@@ -81,16 +86,9 @@ class OpenMMTopologyBase(ParserBase):
 
 
 class TestOpenMMTopologyParser(OpenMMTopologyBase):
-    ref_filename = app.PDBFile(PDB).topology
-    expected_n_atoms = 47681
-    expected_n_residues = 11302
-    expected_n_segments = 1
-
-class TestOpenMMTopologyParserBonds(OpenMMTopologyBase):
-    ref_filename = app.PDBFile(PDB_conect).topology
-    expected_n_atoms = 10
-    expected_n_bonds = 8
-    expected_n_residues = 1
-    expected_n_segments = 1
-
+    ref_filename = app.PDBFile(CONECT).topology
+    expected_n_atoms = 1890
+    expected_n_residues = 199
+    expected_n_segments = 3
+    expected_n_bonds = 1922
 
