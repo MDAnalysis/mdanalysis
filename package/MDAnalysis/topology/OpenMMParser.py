@@ -87,6 +87,56 @@ class OpenMMSimulationParser(TopologyReaderBase):
 
         return top
 
+class OpenMMPDBFileParser(TopologyReaderBase):
+    format = 'OPENMMPDBFILE'
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Parser read object *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            from simtk.openmm import app
+        except ImportError:  
+            return False
+        else:
+            return isinstance(thing, app.PDBFile)
+
+
+    def parse(self, **kwargs):
+        omm_pdbfile = self.filename
+
+        top = _mda_topology_from_omm_topology(omm_pdbfile.topology)
+
+        return top
+
+class OpenMMModellerParser(TopologyReaderBase):
+    format = 'OPENMMMODELLER'
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Parser read object *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            from simtk.openmm import app
+        except ImportError:  
+            return False
+        else:
+            return isinstance(thing, app.Modeller)
+
+
+    def parse(self, **kwargs):
+        omm_modeller = self.filename
+
+        top = _mda_topology_from_omm_topology(omm_modeller.topology)
+
+        return top
+
+
+
 def _mda_topology_from_omm_topology(omm_topology):
     """ Construct mda topology from omm topology 
 
