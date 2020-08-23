@@ -24,6 +24,7 @@
 import numpy as np
 
 from .base import TopologyReaderBase
+from .guessers import guess_types
 from ..core.topology import Topology
 from ..core.topologyattrs import (
     Atomids,
@@ -146,7 +147,7 @@ def _mda_topology_from_omm_topology(omm_topology):
     residue_segindex = [r.chain.index for r in omm_topology.residues()]
     atomids = [a.id for a in omm_topology.atoms()]
     atomnames = [a.name for a in omm_topology.atoms()]
-    atomtypes = [a.name for a in omm_topology.atoms()]
+    atomtypes = guess_types(atomnames)
     chainids = [a.residue.chain.id for a in omm_topology.atoms()]
     elements = [a.element.symbol for a in omm_topology.atoms()]
     masses = [a.element.mass._value for a in omm_topology.atoms()]
