@@ -48,7 +48,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 
 
     def _read_first_frame(self):
-        self.n_atoms = self.filename.system.getNumParticles()
+        self.n_atoms = self.filename.topology.getNumAtoms()
 
         self.ts = _mda_timestep_from_omm_context(self.filename.context, 
                 self._Timestep, **self._ts_kwargs)
@@ -61,6 +61,71 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
             self.convert_velocities_from_native(self.ts._velocities)
             self.convert_forces_from_native(self.ts._forces)
             self.convert_time_from_native(self.ts.dt)
+
+class OpenMMPDBFileReader(base.SingleFrameReaderBase):
+    """Reader for the OpenMM Simulation objects
+
+    """
+    format = 'OPENMMPDBFILE'
+    units = {'time': 'ps', 'length': 'nm'}
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this reader read *thing*?
+        .. versionadded:: 1.0.0
+        """
+        try:
+            from simtk.openmm.app import PDBFile
+        except ImportError:
+            return False
+        else:
+            return isinstance(thing, PDBFile) 
+
+
+    def _read_first_frame(self):
+        self.n_atoms = self.filename.topology.getNumAtoms()
+
+        self.ts = _mda_timestep_from_omm_modeller_pdbfile(self.filename, 
+                self._Timestep, **self._ts_kwargs)
+
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts._pos)
+            self.ts.triclinic_dimensions = self.convert_pos_from_native(
+                self.ts.triclinic_dimensions, inplace=False
+            )
+
+class OpenMMModellerReader(base.SingleFrameReaderBase):
+    """Reader for the OpenMM Simulation objects
+
+    """
+    format = 'OPENMMMODELLER'
+    units = {'time': 'ps', 'length': 'nm'}
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this reader read *thing*?
+        .. versionadded:: 1.0.0
+        """
+        try:
+            from simtk.openmm.app import Modeller
+        except ImportError:
+            return False
+        else:
+            return isinstance(thing, Modeller) 
+
+
+    def _read_first_frame(self):
+        self.n_atoms = self.filename.topology.getNumAtoms()
+
+        self.ts = _mda_timestep_from_omm_modeller_pdbfile(self.filename, 
+                self._Timestep, **self._ts_kwargs)
+
+        if self.convert_units:
+            self.convert_pos_from_native(self.ts._pos)
+            self.ts.triclinic_dimensions = self.convert_pos_from_native(
+                self.ts.triclinic_dimensions, inplace=False
+            )
+
 
 
 def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
@@ -90,4 +155,20 @@ def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
 
     return ts
     
+def _mda_timestep_from_omm_modeller_pdbfile(omm_object, timestep_module, **ts_kwargs):
+    """ Construct Timestep object from Openmm context 
 
+    Parameters
+    ----------
+    omm_object: simtk.openmm.app.PDBFile or simtk.openmm.app.Modeller
+    timestep_module: MDAnalysis.coordinates.base.timestep 
+        This is the module, but the object gets created within this function """
+
+    n_atoms = omm_object.topology.getNumAtoms()
+
+    ts = timestep_module(n_atoms, **ts_kwargs)
+    ts.triclinic_dimensions = np.array(omm_object.topology.getPeriodicBoxVectors()._value)
+    ts.positions = np.array(omm_object.getPositions()._value)
+
+    return ts
+ 
