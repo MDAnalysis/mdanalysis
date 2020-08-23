@@ -46,18 +46,13 @@ class TestAtomGroupPickle(object):
 
     @staticmethod
     @pytest.fixture()
-    def universe_n():
-        return mda.Universe(PDB_small, PDB_small, PDB_small, anchor_name="test1")
-
-    @staticmethod
-    @pytest.fixture()
     def ag(universe):
         return universe.atoms[:20]
 
     @staticmethod
     @pytest.fixture()
-    def ag_n(universe_n):
-        return universe_n.atoms[:10]
+    def ag_2(universe):
+        return universe.atoms[10:20]
 
     @staticmethod
     @pytest.fixture()
@@ -66,79 +61,24 @@ class TestAtomGroupPickle(object):
 
     @staticmethod
     @pytest.fixture()
-    def pickle_str_n(ag_n):
-        return pickle.dumps(ag_n, protocol=pickle.HIGHEST_PROTOCOL)
+    def pickle_str_two_ag(ag, ag_2):
+        return pickle.dumps((ag, ag_2), protocol=pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    @pytest.fixture()
+    def pickle_str_ag_with_universe_f(ag, universe):
+        return pickle.dumps((universe, ag), protocol=pickle.HIGHEST_PROTOCOL)
+
+    @staticmethod
+    @pytest.fixture()
+    def pickle_str_ag_with_universe(ag, universe):
+        return pickle.dumps((ag, universe), protocol=pickle.HIGHEST_PROTOCOL)
 
     def test_unpickle(self, pickle_str, ag, universe):
         """Test that an AtomGroup can be unpickled (Issue 293)"""
         newag = pickle.loads(pickle_str)
         # Can unpickle
         assert_equal(ag.indices, newag.indices)
-        assert newag.universe is universe, "Unpickled AtomGroup on wrong Universe."
-
-    def test_unpickle_named(self, pickle_str_n, ag_n, universe_n):
-        """Test that an AtomGroup can be unpickled (Issue 293)"""
-        newag = pickle.loads(pickle_str_n)
-        # Can unpickle
-        assert_equal(ag_n.indices, newag.indices)
-        assert newag.universe is universe_n, "Unpickled AtomGroup on wrong Universe."
-
-    def test_unpickle_missing(self):
-        universe = mda.Universe(PDB_small, PDB_small, PDB_small)
-        universe_n = mda.Universe(PDB_small, PDB_small, PDB_small,
-                                  anchor_name="test1")
-        ag = universe.atoms[:20]  # prototypical AtomGroup
-        ag_n = universe_n.atoms[:10]
-        pickle_str_n = pickle.dumps(ag_n, protocol=pickle.HIGHEST_PROTOCOL)
-        # Kill AtomGroup and Universe
-        del ag_n
-        del universe_n
-        # and make sure they're very dead
-        gc.collect()
-        # we shouldn't be able to unpickle
-        # assert_raises(RuntimeError, pickle.loads, pickle_str_n)
-        with pytest.raises(RuntimeError):
-            pickle.loads(pickle_str_n)
-
-    def test_unpickle_noanchor(self, universe, pickle_str):
-        # Shouldn't unpickle if the universe is removed from the anchors
-        universe.remove_anchor()
-        # In the complex (parallel) testing environment there's the risk of
-        # other compatible Universes being available for anchoring even after
-        # this one is expressly removed.
-        # assert_raises(RuntimeError, pickle.loads, pickle_str)
-        with pytest.raises(RuntimeError):
-            pickle.loads(pickle_str)
-        # If this fails to raise an exception either:
-        # 1-the anchoring Universe failed to remove_anchor or 2-another
-        # Universe with the same characteristics was created for testing and is
-        # being used as anchor."
-
-    def test_unpickle_reanchor(self, universe, pickle_str, ag):
-        # universe is removed from the anchors
-        universe.remove_anchor()
-        # now it goes back into the anchor list again
-        universe.make_anchor()
-        newag = pickle.loads(pickle_str)
-        assert_equal(ag.indices, newag.indices)
-        assert newag.universe is universe, "Unpickled AtomGroup on wrong Universe."
-
-    def test_unpickle_wrongname(self, universe_n, pickle_str_n):
-        # we change the universe's anchor_name
-        universe_n.anchor_name = "test2"
-        # shouldn't unpickle if no name matches, even if there's a compatible
-        # universe in the unnamed anchor list.
-        with pytest.raises(RuntimeError):
-            pickle.loads(pickle_str_n)
-
-    def test_unpickle_rename(self, universe_n, universe, pickle_str_n, ag_n):
-        # we change universe_n's anchor_name
-        universe_n.anchor_name = "test2"
-        # and make universe a named anchor
-        universe.anchor_name = "test1"
-        newag = pickle.loads(pickle_str_n)
-        assert_equal(ag_n.indices, newag.indices)
-        assert newag.universe is universe, "Unpickled AtomGroup on wrong Universe."
 
     def test_pickle_unpickle_empty(self, universe):
         """Test that an empty AtomGroup can be pickled/unpickled (Issue 293)"""
@@ -146,6 +86,28 @@ class TestAtomGroupPickle(object):
         pickle_str = pickle.dumps(ag, protocol=pickle.HIGHEST_PROTOCOL)
         newag = pickle.loads(pickle_str)
         assert len(newag) == 0
+
+    def test_unpickle_two_ag(self, pickle_str_two_ag):
+        newag, newag2 = pickle.loads(pickle_str_two_ag)
+        assert newag.universe is newag2.universe, (
+            "Two AtomGroups are unpickled to two different Universes"
+        )
+
+    def test_unpickle_ag_with_universe_f(self,
+                                         pickle_str_ag_with_universe_f):
+        newu, newag = pickle.loads(pickle_str_ag_with_universe_f)
+        assert newag.universe is newu, (
+            "AtomGroup is not unpickled to the bound Universe"
+            "when Universe is pickled first"
+        )
+
+    def test_unpickle_ag_with_universe(self,
+                                       pickle_str_ag_with_universe):
+        newag, newu = pickle.loads(pickle_str_ag_with_universe)
+        assert newag.universe is newu, (
+                "AtomGroup is not unpickled to the bound Universe"
+                "when AtomGroup is pickled first"
+        )
 
 
 class TestPicklingUpdatingAtomGroups(object):

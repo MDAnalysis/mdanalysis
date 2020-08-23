@@ -96,7 +96,7 @@ import numbers
 import os
 import warnings
 
-from .. import (_ANCHOR_UNIVERSES, _CONVERTERS,
+from .. import (_CONVERTERS,
                 _TOPOLOGY_ATTRS, _TOPOLOGY_TRANSPLANTS, _TOPOLOGY_ATTRNAMES)
 from ..lib import util
 from ..lib.util import cached, warn_if_not_unique, unique_int_1d
@@ -110,16 +110,7 @@ from . import topologyobjects
 from ._get_readers import get_writer_for, get_converter_for
 
 
-def _unpickle(uhash, ix):
-    try:
-        u = _ANCHOR_UNIVERSES[uhash]
-    except KeyError:
-        # doesn't provide as nice an error message as before as only hash of universe is stored
-        # maybe if we pickled the filename too we could do better...
-        errmsg = (f"Couldn't find a suitable Universe to unpickle AtomGroup "
-                  f"onto with Universe hash '{uhash}'. Availble hashes: "
-                  f"{', '.join([str(k) for k in _ANCHOR_UNIVERSES.keys()])}")
-        raise RuntimeError(errmsg) from None
+def _unpickle(u, ix):
     return u.atoms[ix]
 
 
@@ -2252,10 +2243,64 @@ class AtomGroup(GroupBase):
     :class:`AtomGroup` instances are always bound to a
     :class:`MDAnalysis.core.universe.Universe`. They cannot exist in isolation.
 
+    During serialization, :class:`AtomGroup` will be pickled with its bound
+    :class:`MDAnalysis.core.universe.Universe` which means after unpickling,
+    a new :class:`MDAnalysis.core.universe.Universe` will be created and
+    be attached by the new :class:`AtomGroup`. If the Universe is serialized
+    with its :class:`AtomGroup`, they will still be bound together afterwards:
+
+    .. code-block:: python
+
+        >>> u = mda.Universe(PSF, DCD)
+        >>> g = u.atoms
+
+        >>> g_pickled = pickle.loads(pickle.dumps(g))
+        >>> print("g_pickled.universe is u: ", u is g_pickled.universe)
+        g_pickled.universe is u: False
+
+        >>> g_pickled, u_pickled = pickle.load(pickle.dumps(g, u))
+        >>> print("g_pickled.universe is u_pickled: ",
+        >>>       u_pickle is g_pickled.universe)
+        g_pickled.universe is u_pickled: True
+
+    If multiple :class:`AtomGroup` are bound to the same
+    :class:`MDAnalysis.core.universe.Universe`, they will bound to the same one
+    after serialization:
+
+    .. code-block:: python
+
+        >>> u = mda.Universe(PSF, DCD)
+        >>> g = u.atoms
+        >>> h = u.atoms
+
+        >>> g_pickled = pickle.loads(pickle.dumps(g))
+        >>> h_pickled = pickle.loads(pickle.dumps(h))
+        >>> print("g_pickled.universe is h_pickled.universe : ",
+        >>>       g_pickled.universe is h_pickled.universe)
+        g_pickled.universe is h_pickled.universe: False
+
+        >>> g_pickled, h_pickled = pickle.load(pickle.dumps(g, h))
+        >>> print("g_pickled.universe is h_pickled.universe: ",
+        >>>       g_pickle.universe is h_pickled.universe)
+        g_pickled.universe is h_pickled.universe: True
+
+    The aforementioned two cases are useful for implementation of parallel
+    analysis base classes. First, you always get an independent
+    :class:`MDAnalysis.core.universe.Universe`
+    in the new process; you don't have to worry about detaching and reattaching
+    Universe with :class:`AtomGroup`. It also means the state of the
+    new pickled AtomGroup will not be changed with the old Universe,
+    So either the Universe has to pickled together with the AtomGroup
+    (e.g. as a tuple, or as attributes of the object to be pickled), or the
+    implicit new Universe (`AtomGroup.Universe`) needs to be used.
+    Second, When multiple AtomGroup need to be pickled, they will recognize if
+    they belong to the same Univese or not.
+    Also keep in mind that they need to be pickled together.
 
     See Also
     --------
     :class:`MDAnalysis.core.universe.Universe`
+
 
     .. deprecated:: 0.16.2
        *Instant selectors* of :class:`AtomGroup` will be removed in the 1.0
@@ -2263,10 +2308,13 @@ class AtomGroup(GroupBase):
     .. versionchanged:: 1.0.0
        Removed instant selectors, use select_atoms('name ...') to select
        atoms by name.
+    .. versionchanged:: 2.0.0
+       :class:`AtomGroup` can always be pickled with or without its universe,
+       instead of failing when not finding its anchored universe.
     """
 
     def __reduce__(self):
-        return (_unpickle, (self.universe.anchor_name, self.ix))
+        return (_unpickle, (self.universe, self.ix))
 
     def __getattr__(self, attr):
         # special-case timestep info
