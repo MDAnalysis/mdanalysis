@@ -22,22 +22,14 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 """Setuptools-based setup script for tests of MDAnalysis.
-
 A working installation of NumPy <http://numpy.scipy.org> is required.
-
 For a basic installation just type the command::
-
   python setup.py install
-
 For more in-depth instructions, see the installation section at the
 MDAnalysis Wiki:
-
   https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
-
 Also free to ask on the MDAnalysis mailing list for help:
-
   http://groups.google.com/group/mdnalysis-discussion
-
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
@@ -87,12 +79,7 @@ if sys.version_info[:2] < (3, 6):
 
 if __name__ == '__main__':
     # this must be in-sync with MDAnalysis
-<<<<<<< HEAD
     RELEASE = "2.0.0-dev0"
-=======
-    RELEASE = "0.20.1"
-
->>>>>>> origin/master
     with open("README") as summary:
         LONG_DESCRIPTION = summary.read()
 
