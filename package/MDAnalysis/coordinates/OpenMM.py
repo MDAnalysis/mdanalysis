@@ -144,6 +144,7 @@ def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
     n_atoms = omm_context.getSystem().getNumParticles()
 
     ts = timestep_module(n_atoms, **ts_kwargs)
+    ts.frame = 0
     ts.data['time'] = state.getTime()
     ts.data['potential_energy'] = state.getPotentialEnergy()
     ts.data['kinetic_energy'] = state.getKineticEnergy()
@@ -167,8 +168,10 @@ def _mda_timestep_from_omm_modeller_pdbfile(omm_object, timestep_module, **ts_kw
     n_atoms = omm_object.topology.getNumAtoms()
 
     ts = timestep_module(n_atoms, **ts_kwargs)
+    ts.frame = 0
     ts.triclinic_dimensions = np.array(omm_object.topology.getPeriodicBoxVectors()._value)
     ts.positions = np.array(omm_object.getPositions()._value)
+
 
     return ts
  
