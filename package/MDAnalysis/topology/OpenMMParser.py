@@ -152,7 +152,7 @@ def _mda_topology_from_omm_topology(omm_topology):
     elements = [a.element.symbol for a in omm_topology.atoms()]
     masses = [a.element.mass._value for a in omm_topology.atoms()]
     resnames = [r.name for r in omm_topology.residues()]
-    resids = [r.index for r in omm_topology.residues()]
+    resids = [r.index + 1 for r in omm_topology.residues()]
     resnums = resids.copy()
     segids = [c.index for c in omm_topology.chains()]
     bonds = [(b.atom1.index, b.atom2.index) for b in omm_topology.bonds()]
