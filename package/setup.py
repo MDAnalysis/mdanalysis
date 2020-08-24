@@ -23,22 +23,14 @@
 #
 
 """Setuptools-based setup script for MDAnalysis.
-
 A working installation of NumPy <http://numpy.scipy.org> is required.
-
 For a basic installation just type the command::
-
   python setup.py install
-
 For more in-depth instructions, see the installation section at the
 MDAnalysis Wiki:
-
   https://github.com/MDAnalysis/mdanalysis/wiki/INSTALL
-
 Also free to ask on the MDAnalysis mailing list for help:
-
   http://groups.google.com/group/mdnalysis-discussion
-
 (Note that the group really is called `mdnalysis-discussion' because
 Google groups forbids any name that contains the string `anal'.)
 """
@@ -73,11 +65,7 @@ else:
     from commands import getoutput
 
 # NOTE: keep in sync with MDAnalysis.__version__ in version.py
-<<<<<<< HEAD
 RELEASE = "2.0.0-dev0"
-=======
-RELEASE = "0.20.1"
->>>>>>> origin/master
 
 is_release = 'dev' not in RELEASE
 
@@ -113,19 +101,15 @@ def abspath(file):
 
 class Config(object):
     """Config wrapper class to get build options
-
     This class looks for options in the environment variables and the
     'setup.cfg' file. The order how we look for an option is.
-
     1. Environment Variable
     2. set in 'setup.cfg'
     3. given default
-
     Environment variables should start with 'MDA_' and be all uppercase.
     Values passed to environment variables are checked (case-insensitively)
     for specific strings with boolean meaning: 'True' or '1' will cause `True`
     to be returned. '0' or 'False' cause `False` to be returned.
-
     """
 
     def __init__(self, fname='setup.cfg'):
@@ -454,12 +438,10 @@ def extensions(config):
 
 def dynamic_author_list():
     """Generate __authors__ from AUTHORS
-
     This function generates authors.py that contains the list of the
     authors from the AUTHORS file. This avoids having that list maintained in
     several places. Note that AUTHORS is sorted chronologically while we want
     __authors__ in authors.py to be sorted alphabetically.
-
     The authors are written in AUTHORS as bullet points under the
     "Chronological list of authors" title.
     """
@@ -508,7 +490,6 @@ def dynamic_author_list():
         # Write the header
         header = '''\
 #-*- coding:utf-8 -*-
-
 # This file is generated from the AUTHORS file during the installation process.
 # Do not edit it as your changes will be overwritten.
 '''
