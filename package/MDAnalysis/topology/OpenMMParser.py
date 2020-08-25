@@ -21,6 +21,55 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+"""OpenMM topology parser
+=========================
+
+.. versionadded:: 0.17.0
+
+
+Converts an `OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_ :class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
+
+Also converts:
+
+    - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_ 
+    - `simtk.openmm.app.simulation.Simulation <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
+    - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_
+    - `simtk.openmm.app.pdbxfile.PDBxFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbxfile.PDBxFile.html#simtk.openmm.app.pdbxfile.PDBxFile>`_
+
+The :class:`OpenMMTopologyParser` generates a topology from an OpenMM Topology object files. 
+
+.. _OpenMM: http://docs.openmm.org/latest/api-python/app.html
+
+
+
+Classes
+-------
+
+.. autoclass:: OpenMMTopologyParser
+   :members:
+   :inherited-members:
+
+.. autoclass:: OpenMMSimulationParser
+   :members:
+   :inherited-members:
+
+.. autoclass:: OpenMMPDBFileParser
+   :members:
+   :inherited-members:
+
+.. autoclass:: OpenMMModellerParser
+   :members:
+   :inherited-members:
+
+.. autoclass:: OpenMMPDBxFileParser
+   :members:
+   :inherited-members:
+
+
+
+
+"""
+
 import numpy as np
 
 from .base import TopologyReaderBase
@@ -137,6 +186,29 @@ class OpenMMModellerParser(TopologyReaderBase):
 
         return top
 
+class OpenMMPDBxFileParser(TopologyReaderBase):
+    format = 'OPENMMMPDBXFILE'
+
+    @staticmethod
+    def _format_hint(thing):
+        """Can this Parser read object *thing*?
+
+        .. versionadded:: 1.0.0
+        """
+        try:
+            from simtk.openmm import app
+        except ImportError:  
+            return False
+        else:
+            return isinstance(thing, app.PDBxFile)
+
+
+    def parse(self, **kwargs):
+        omm_pdbxfile = self.filename
+
+        top = _mda_topology_from_omm_topology(omm_pdbxfile.topology)
+
+        return top
 
 
 def _mda_topology_from_omm_topology(omm_topology):
