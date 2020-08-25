@@ -26,6 +26,7 @@ import MDAnalysis as mda
 from MDAnalysisTests.util import import_not_available
 try:
     from MDAnalysis.analysis.RDKit import RDKitDescriptors, get_fingerprint
+    from rdkit.Chem import AllChem
 except ImportError:
     pass
 
@@ -52,6 +53,11 @@ class TestDescriptorsRDKit:
     def u(self):
         return mda.Universe.from_smiles("CCO")
 
+    def test_not_ag(self, u):
+        with pytest.raises(ValueError,
+                           match="must be an AtomGroup"):
+            RDKitDescriptors(u, "MolWt").run()
+
     def test_arg_function(self, u):
         def func(mol):
             return mol.GetNumAtoms()
@@ -64,6 +70,11 @@ class TestDescriptorsRDKit:
         # MolFormula is known as "CalcMolFormula" in RDKit but should still
         # match even with the missing Calc
         assert desc.results[0, 1] == "C2H6O"
+
+    def test_multi_frame(self):
+        u = mda.Universe.from_smiles("CCO", numConfs=3)
+        desc = RDKitDescriptors(u.atoms, "RadiusOfGyration").run()
+        assert desc.results.shape == (3, 1)
 
     def test_unknown_desc(self, u):
         with pytest.raises(ValueError, match="Could not find 'foo' in RDKit"):
@@ -82,6 +93,11 @@ class TestFingerprintsRDKit:
     @pytest.fixture
     def u(self):
         return mda.Universe.from_smiles("CCO")
+
+    def test_not_ag(self, u):
+        with pytest.raises(ValueError,
+                           match="must be an AtomGroup"):
+            get_fingerprint(u, "MACCSKeys")
 
     def test_hashed_maccs(self, u):
         with pytest.raises(ValueError,
@@ -115,29 +131,38 @@ class TestFingerprintsRDKit:
                              nBits=128)
         assert len(fp) == 128
 
-    @pytest.mark.parametrize("kind, kwargs, hashed, dtype, n_on_bits", [
-        ("MACCSKeys", {}, False, None, 12),
-        ("AtomPair", {}, True, "array", 5),
-        ("AtomPair", {}, False, "dict", 12),
-        ("AtomPair", {}, False, None, 12),
-        ("Morgan", dict(radius=2), True, "array", 8),
-        ("Morgan", dict(radius=2), False, "dict", 11),
-        ("Morgan", dict(radius=2), False, None, 11),
-        ("RDKit", {}, True, "array", 84),
-        ("RDKit", {}, False, "dict", 42),
-        ("RDKit", {}, False, None, 42),
-        ("TopologicalTorsion", {}, True, "array", 0),
-        ("TopologicalTorsion", {}, False, "dict", 0),
-        ("TopologicalTorsion", {}, False, None, 0),
+    @pytest.mark.parametrize("kind, kwargs, hashed, dtype, n_on_bits, func", [
+        ("MACCSKeys", {}, False, "array", 12, None),
+        ("MACCSKeys", {}, False, "dict", 12, None),
+        ("MACCSKeys", {}, False, None, 12, AllChem.GetMACCSKeysFingerprint),
+        ("AtomPair", {}, True, "array", 5, None),
+        ("AtomPair", {}, False, "dict", 12, None),
+        ("AtomPair", {}, False, None, 12, AllChem.GetAtomPairFingerprint),
+        ("AtomPair", {}, True, None, 5, AllChem.GetHashedAtomPairFingerprint),
+        ("Morgan", dict(radius=2), True, "array", 8, None),
+        ("Morgan", dict(radius=2), False, "dict", 11, None),
+        ("Morgan", dict(radius=2), False, None, 11, AllChem.GetMorganFingerprint),
+        ("Morgan", dict(radius=2), True, None, 8, AllChem.GetHashedMorganFingerprint),
+        ("RDKit", {}, True, "array", 84, None),
+        ("RDKit", {}, False, "dict", 42, None),
+        ("RDKit", {}, False, None, 42, AllChem.UnfoldedRDKFingerprintCountBased),
+        ("RDKit", {}, True, None, 84, AllChem.RDKFingerprint),
+        ("TopologicalTorsion", {}, True, "array", 0, None),
+        ("TopologicalTorsion", {}, False, "dict", 0, None),
+        ("TopologicalTorsion", {}, False, None, 0, AllChem.GetTopologicalTorsionFingerprint),
+        ("TopologicalTorsion", {}, True, None, 0, AllChem.GetHashedTopologicalTorsionFingerprint),
     ])
-    def test_fp(self, u, kind, kwargs, hashed, dtype, n_on_bits):
+    def test_fp(self, u, kind, kwargs, hashed, dtype, n_on_bits, func):
         fp = get_fingerprint(u.atoms, kind,
                              hashed=hashed, dtype=dtype, **kwargs)
+        if func:
+            mol = u.atoms.convert_to("RDKIT")
+            rdkit_fp = func(mol, **kwargs)
         classname = fp.__class__.__name__
         if classname.endswith("BitVect"):
-            assert fp.GetNumOnBits() == n_on_bits
+            assert list(fp.GetOnBits()) == list(rdkit_fp.GetOnBits())
         elif classname.endswith("IntVect"):
-            assert len(fp.GetNonzeroElements()) == n_on_bits
+            assert fp.GetNonzeroElements() == rdkit_fp.GetNonzeroElements()
         elif classname == "dict":
             assert len(fp.keys()) == n_on_bits
         else:
