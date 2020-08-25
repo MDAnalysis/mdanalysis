@@ -102,7 +102,7 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
             self.universe.trajectory.ts.dimensions[0:3],
             self.ref.trajectory.ts.dimensions[0:3],
             self.prec,
-            "OpenMMPDBFileReader failed to get unitcell dimensions from OpenMMPDBFile")
+            "OpenMMSimulationReader failed to get unitcell dimensions from OpenMMSimulation")
     
     def test_coordinates(self):
         up = self.universe.atoms.positions
