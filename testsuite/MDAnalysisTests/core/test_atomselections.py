@@ -78,7 +78,7 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
-    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    @pytest.mark.parametrize('resname', sorted(MDAnalysis.core.selection.ProteinSelection.prot_res))
     def test_protein_resnames(self, resname):
         u = make_Universe(('resnames',))
         # set half the residues' names to the resname we're testing

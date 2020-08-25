@@ -477,8 +477,65 @@ class Atomids(AtomAttr):
         return np.arange(1, na + 1)
 
 
+class _AtomStringAttr(AtomAttr):
+    def __init__(self, vals, guessed=False):
+        self._guessed = guessed
+
+        self.namedict = dict()  # maps str to nmidx
+        name_lookup = []  # maps idx to str
+        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
+
+        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
+        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
+
+        for i, val in enumerate(vals):
+            try:
+                self.nmidx[i] = self.namedict[val]
+            except KeyError:
+                nextidx = len(self.namedict)
+                self.namedict[val] = nextidx
+                name_lookup.append(val)
+
+                self.nmidx[i] = nextidx
+
+        self.name_lookup = np.array(name_lookup, dtype=object)
+        self.values = self.name_lookup[self.nmidx]
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(na)], dtype=object)
+
+    @_check_length
+    def set_atoms(self, ag, values):
+        newnames = []
+
+        # two possibilities, either single value given, or one per Atom
+        if isinstance(values, six.string_types):
+            try:
+                newidx = self.namedict[values]
+            except KeyError:
+                newidx = len(self.namedict)
+                self.namedict[values] = newidx
+                newnames.append(values)
+        else:
+            newidx = np.zeros_like(values, dtype=int)
+            for i, val in enumerate(values):
+                try:
+                    newidx[i] = self.namedict[val]
+                except KeyError:
+                    nextidx = len(self.namedict)
+                    self.namedict[val] = nextidx
+                    newnames.append(val)
+                    newidx[i] = nextidx
+
+        self.nmidx[ag.ix] = newidx  # newidx either single value or same size array
+        if newnames:
+            self.name_lookup = np.concatenate([self.name_lookup, newnames])
+        self.values = self.name_lookup[self.nmidx]
+
+
 # TODO: update docs to property doc
-class Atomnames(AtomAttr):
+class Atomnames(_AtomStringAttr):
     """Name for each atom.
     """
     attrname = 'names'
@@ -486,10 +543,6 @@ class Atomnames(AtomAttr):
     per_object = 'atom'
     dtype = object
     transplants = defaultdict(list)
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
 
     def phi_selection(residue, c_name='C', n_name='N', ca_name='CA'):
         """Select AtomGroup corresponding to the phi protein backbone dihedral
@@ -540,7 +593,7 @@ class Atomnames(AtomAttr):
     transplants[Residue].append(('phi_selection', phi_selection))
 
     def phi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
-        """Select list of AtomGroups corresponding to the phi protein 
+        """Select list of AtomGroups corresponding to the phi protein
         backbone dihedral C'-N-CA-C.
 
         Parameters
@@ -580,9 +633,9 @@ class Atomnames(AtomAttr):
                 except IndexError:
                     invalid.append(i)
             prev = sum(prevls)
-        
+
         keep_prev = [sum(r.atoms.names == c_name) == 1 for r in prev]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names) 
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names)
                     for r in residues]
         keep = np.array(keep_prev) & np.array(keep_res)
         keep[invalid] = False
@@ -591,7 +644,7 @@ class Atomnames(AtomAttr):
         prev = prev[keep]
         residues = residues[keep]
         keepix = np.where(keep)[0]
-        
+
         c_ = prev.atoms[prev.atoms.names == c_name]
         n = residues.atoms[residues.atoms.names == n_name]
         ca = residues.atoms[residues.atoms.names == ca_name]
@@ -660,13 +713,13 @@ class Atomnames(AtomAttr):
     transplants[Residue].append(('psi_selection', psi_selection))
 
     def _get_next_residues_by_resid(residues):
-        """Select list of Residues corresponding to the next resid for each 
+        """Select list of Residues corresponding to the next resid for each
         residue in `residues`.
 
         Returns
         -------
         List of Residues
-            List of the next residues in the Universe, by resid and segid. 
+            List of the next residues in the Universe, by resid and segid.
             If not found, the corresponding item in the list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -700,13 +753,13 @@ class Atomnames(AtomAttr):
                                       _get_next_residues_by_resid))
 
     def _get_prev_residues_by_resid(residues):
-        """Select list of Residues corresponding to the previous resid for each 
+        """Select list of Residues corresponding to the previous resid for each
         residue in `residues`.
 
         Returns
         -------
         List of Residues
-            List of the previous residues in the Universe, by resid and segid. 
+            List of the previous residues in the Universe, by resid and segid.
             If not found, the corresponding item in the list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -728,12 +781,12 @@ class Atomnames(AtomAttr):
                     pvres[i] = None
         return pvres
 
-    
+
     transplants[ResidueGroup].append(('_get_prev_residues_by_resid',
                                       _get_prev_residues_by_resid))
 
     def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
-        """Select list of AtomGroups corresponding to the psi protein 
+        """Select list of AtomGroups corresponding to the psi protein
         backbone dihedral N-CA-C-N'.
 
         Parameters
@@ -749,7 +802,7 @@ class Atomnames(AtomAttr):
         -------
         List of AtomGroups
             4-atom selections in the correct order. If no N' found in the
-            following residue (by resid) then the corresponding item in the 
+            following residue (by resid) then the corresponding item in the
             list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -762,13 +815,13 @@ class Atomnames(AtomAttr):
         ncac_names = [n_name, ca_name, c_name]
 
         keep_nxt = [sum(r.atoms.names == n_name) == 1 for r in nxt]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names) 
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in ncac_names)
                     for r in residues]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
         residues = residues[keep]
         keepix = np.where(keep)[0]
-        
+
         n = residues.atoms[residues.atoms.names == n_name]
         ca = residues.atoms[residues.atoms.names == ca_name]
         c = residues.atoms[residues.atoms.names == c_name]
@@ -837,7 +890,7 @@ class Atomnames(AtomAttr):
     transplants[Residue].append(('omega_selection', omega_selection))
 
     def omega_selections(residues, c_name='C', n_name='N', ca_name='CA'):
-        """Select list of AtomGroups corresponding to the omega protein 
+        """Select list of AtomGroups corresponding to the omega protein
         backbone dihedral CA-C-N'-CA'.
 
         omega describes the -C-N- peptide bond. Typically, it is trans (180
@@ -857,7 +910,7 @@ class Atomnames(AtomAttr):
         -------
         List of AtomGroups
             4-atom selections in the correct order. If no C' found in the
-            previous residue (by resid) then the corresponding item in the 
+            previous residue (by resid) then the corresponding item in the
             list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -867,18 +920,18 @@ class Atomnames(AtomAttr):
         rix = np.where(nxtres)[0]
         nxt = sum(nxtres[rix])
         residues = residues[rix]
-        
+
         nxtatoms = [ca_name, n_name]
         resatoms = [ca_name, c_name]
-        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms) 
+        keep_nxt = [all(sum(r.atoms.names == n) == 1 for n in nxtatoms)
                     for r in nxt]
-        keep_res = [all(sum(r.atoms.names == n) == 1 for n in resatoms) 
+        keep_res = [all(sum(r.atoms.names == n) == 1 for n in resatoms)
                     for r in residues]
         keep = np.array(keep_nxt) & np.array(keep_res)
         nxt = nxt[keep]
         residues = residues[keep]
         keepix = np.where(keep)[0]
-        
+
         c = residues.atoms[residues.atoms.names == c_name]
         ca = residues.atoms[residues.atoms.names == ca_name]
         n_ = nxt.atoms[nxt.atoms.names == n_name]
@@ -889,7 +942,7 @@ class Atomnames(AtomAttr):
 
     transplants[ResidueGroup].append(('omega_selections', omega_selections))
 
-    def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB', 
+    def chi1_selection(residue, n_name='N', ca_name='CA', cb_name='CB',
                        cg_name='CG'):
         """Select AtomGroup corresponding to the chi1 sidechain dihedral N-CA-CB-CG.
 
@@ -924,9 +977,9 @@ class Atomnames(AtomAttr):
 
     transplants[Residue].append(('chi1_selection', chi1_selection))
 
-    def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB', 
+    def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
                         cg_name='CG'):
-        """Select list of AtomGroups corresponding to the chi1 sidechain dihedral 
+        """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
         Parameters
@@ -950,7 +1003,7 @@ class Atomnames(AtomAttr):
         """
         results = np.array([None]*len(residues))
         names = [n_name, ca_name, cb_name, cg_name]
-        keep = [all(sum(r.atoms.names == n) == 1 for n in names) 
+        keep = [all(sum(r.atoms.names == n) == 1 for n in names)
                 for r in residues]
         keepix = np.where(keep)[0]
         residues = residues[keep]
@@ -959,25 +1012,21 @@ class Atomnames(AtomAttr):
         ags = [residues.atoms[atnames == n] for n in names]
         results[keepix] = [sum(atoms) for atoms in zip(*ags)]
         return list(results)
-    
+
     transplants[ResidueGroup].append(('chi1_selections', chi1_selections))
 
 
 # TODO: update docs to property doc
-class Atomtypes(AtomAttr):
+class Atomtypes(_AtomStringAttr):
     """Type for each atom"""
     attrname = 'types'
     singular = 'type'
     per_object = 'atom'
     dtype = object
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
-
 
 # TODO: update docs to property doc
-class Elements(AtomAttr):
+class Elements(_AtomStringAttr):
     """Element for each atom"""
     attrname = 'elements'
     singular = 'element'
@@ -1001,7 +1050,7 @@ class Radii(AtomAttr):
         return np.zeros(na)
 
 
-class RecordTypes(AtomAttr):
+class RecordTypes(_AtomStringAttr):
     """For PDB-like formats, indicates if ATOM or HETATM
 
     Defaults to 'ATOM'
@@ -1019,7 +1068,7 @@ class RecordTypes(AtomAttr):
         return np.array(['ATOM'] * na, dtype=object)
 
 
-class ChainIDs(AtomAttr):
+class ChainIDs(_AtomStringAttr):
     """ChainID per atom
 
     Note
@@ -1030,10 +1079,6 @@ class ChainIDs(AtomAttr):
     singular = 'chainID'
     per_object = 'atom'
     dtype = object
-
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(na)], dtype=object)
 
 
 class Tempfactors(AtomAttr):
@@ -1428,7 +1473,7 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 1.0.0 
+        .. versionchanged:: 1.0.0
             Always return principal axes in right-hand convention.
 
         """
@@ -1580,7 +1625,7 @@ class Occupancies(AtomAttr):
 
 
 # TODO: update docs to property doc
-class AltLocs(AtomAttr):
+class AltLocs(_AtomStringAttr):
     """AltLocs for each atom"""
     attrname = 'altLocs'
     singular = 'altLoc'
@@ -1722,8 +1767,65 @@ class Resids(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
+class _ResidueStringAttr(ResidueAttr):
+    def __init__(self, vals, guessed=False):
+        self._guessed = guessed
+
+        self.namedict = dict()  # maps str to nmidx
+        name_lookup = []  # maps idx to str
+        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
+
+        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
+        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
+
+        for i, val in enumerate(vals):
+            try:
+                self.nmidx[i] = self.namedict[val]
+            except KeyError:
+                nextidx = len(self.namedict)
+                self.namedict[val] = nextidx
+                name_lookup.append(val)
+
+                self.nmidx[i] = nextidx
+
+        self.name_lookup = np.array(name_lookup, dtype=object)
+        self.values = self.name_lookup[self.nmidx]
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
+
+    @_check_length
+    def set_residues(self, rg, values):
+        newnames = []
+
+        # two possibilities, either single value given, or one per Atom
+        if isinstance(values, six.string_types):
+            try:
+                newidx = self.namedict[values]
+            except KeyError:
+                newidx = len(self.namedict)
+                self.namedict[values] = newidx
+                newnames.append(values)
+        else:
+            newidx = np.zeros_like(values, dtype=int)
+            for i, val in enumerate(values):
+                try:
+                    newidx[i] = self.namedict[val]
+                except KeyError:
+                    nextidx = len(self.namedict)
+                    self.namedict[val] = nextidx
+                    newnames.append(val)
+                    newidx[i] = nextidx
+
+        self.nmidx[rg.ix] = newidx  # newidx either single value or same size array
+        if newnames:
+            self.name_lookup = np.concatenate([self.name_lookup, newnames])
+        self.values = self.name_lookup[self.nmidx]
+
+
 # TODO: update docs to property doc
-class Resnames(ResidueAttr):
+class Resnames(_ResidueStringAttr):
     attrname = 'resnames'
     singular = 'resname'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup, Atom, Residue]
@@ -1844,18 +1946,14 @@ class Resnums(ResidueAttr):
         return np.arange(1, nr + 1)
 
 
-class ICodes(ResidueAttr):
+class ICodes(_ResidueStringAttr):
     """Insertion code for Atoms"""
     attrname = 'icodes'
     singular = 'icode'
     dtype = object
 
-    @staticmethod
-    def _gen_initial_values(na, nr, ns):
-        return np.array(['' for _ in range(nr)], dtype=object)
 
-
-class Moltypes(ResidueAttr):
+class Moltypes(_ResidueStringAttr):
     """Name of the molecule type
 
     Two molecules that share a molecule type share a common template topology.
@@ -1910,8 +2008,65 @@ class SegmentAttr(TopologyAttr):
         self.values[sg.ix] = values
 
 
+class _SegmentStringAttr(SegmentAttr):
+    def __init__(self, vals, guessed=False):
+        self._guessed = guessed
+
+        self.namedict = dict()  # maps str to nmidx
+        name_lookup = []  # maps idx to str
+        # eg namedict['O'] = 5 & name_lookup[5] = 'O'
+
+        self.nmidx = np.zeros_like(vals, dtype=int)  # the lookup for each atom
+        # eg Atom 5 is 'C', so nmidx[5] = 7, where name_lookup[7] = 'C'
+
+        for i, val in enumerate(vals):
+            try:
+                self.nmidx[i] = self.namedict[val]
+            except KeyError:
+                nextidx = len(self.namedict)
+                self.namedict[val] = nextidx
+                name_lookup.append(val)
+
+                self.nmidx[i] = nextidx
+
+        self.name_lookup = np.array(name_lookup, dtype=object)
+        self.values = self.name_lookup[self.nmidx]
+
+    @staticmethod
+    def _gen_initial_values(na, nr, ns):
+        return np.array(['' for _ in range(nr)], dtype=object)
+
+    @_check_length
+    def set_segments(self, sg, values):
+        newnames = []
+
+        # two possibilities, either single value given, or one per Atom
+        if isinstance(values, six.string_types):
+            try:
+                newidx = self.namedict[values]
+            except KeyError:
+                newidx = len(self.namedict)
+                self.namedict[values] = newidx
+                newnames.append(values)
+        else:
+            newidx = np.zeros_like(values, dtype=int)
+            for i, val in enumerate(values):
+                try:
+                    newidx[i] = self.namedict[val]
+                except KeyError:
+                    nextidx = len(self.namedict)
+                    self.namedict[val] = nextidx
+                    newnames.append(val)
+                    newidx[i] = nextidx
+
+        self.nmidx[sg.ix] = newidx  # newidx either single value or same size array
+        if newnames:
+            self.name_lookup = np.concatenate([self.name_lookup, newnames])
+        self.values = self.name_lookup[self.nmidx]
+
+
 # TODO: update docs to property doc
-class Segids(SegmentAttr):
+class Segids(_SegmentStringAttr):
     attrname = 'segids'
     singular = 'segid'
     target_classes = [AtomGroup, ResidueGroup, SegmentGroup,
