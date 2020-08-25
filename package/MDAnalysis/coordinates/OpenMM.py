@@ -145,7 +145,7 @@ def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
 
     ts = timestep_module(n_atoms, **ts_kwargs)
     ts.frame = 0
-    ts.data['time'] = state.getTime()
+    ts.data['time'] = state.getTime()._value
     ts.data['potential_energy'] = state.getPotentialEnergy()
     ts.data['kinetic_energy'] = state.getKineticEnergy()
     ts.triclinic_dimensions = state.getPeriodicBoxVectors(asNumpy=True)._value
