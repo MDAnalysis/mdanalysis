@@ -93,6 +93,25 @@ class OpenMMTopologyBase(ParserBase):
         else:
             assert top.segids.values == []
 
+class OpenMMAppTopologyBase(OpenMMTopologyBase):
+    parser = mda.topology.OpenMMParser.OpenMMAppTopologyParser
+    expected_attrs = [
+        "ids",
+        "names",
+        "resids",
+        "resnames",
+        "masses",
+        "bonds",
+        "chainIDs",
+        "elements",
+    ]
+    expected_n_bonds = 0
+
+    def test_creates_universe(self, filename):
+        """Check that Universe works with this Parser"""
+        u = mda.Universe(filename, topology_format="OPENMMAPP")
+        assert isinstance(u, mda.Universe)
+
 
 class TestOpenMMTopologyParser(OpenMMTopologyBase):
     ref_filename = app.PDBFile(CONECT).topology
@@ -102,8 +121,16 @@ class TestOpenMMTopologyParser(OpenMMTopologyBase):
     expected_n_bonds = 1922
 
 
-class TestOpenMMPDBxFileParser(OpenMMTopologyBase):
-    ref_filename = app.PDBxFile(PDBX).topology
+class TestOpenMMPDBFileParser(OpenMMAppTopologyBase):
+    ref_filename = app.PDBFile(CONECT)
+    expected_n_atoms = 1890
+    expected_n_residues = 199
+    expected_n_segments = 3
+    expected_n_bonds = 1922
+
+
+class TestOpenMMPDBxFileParser(OpenMMAppTopologyBase):
+    ref_filename = app.PDBxFile(PDBX)
     expected_n_atoms = 60
     expected_n_residues = 7
     expected_n_segments = 1
