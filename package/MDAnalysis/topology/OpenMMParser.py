@@ -187,7 +187,7 @@ class OpenMMModellerParser(TopologyReaderBase):
         return top
 
 class OpenMMPDBxFileParser(TopologyReaderBase):
-    format = 'OPENMMMPDBXFILE'
+    format = 'OPENMMPDBXFILE'
 
     @staticmethod
     def _format_hint(thing):
