@@ -226,7 +226,7 @@ def _mda_timestep_from_omm_modeller_pdbfile(omm_object, timestep_module, **ts_kw
 
     Parameters
     ----------
-    omm_object: simtk.openmm.app.PDBFile or simtk.openmm.app.Modeller
+    omm_object: simtk.openmm.app.PDBFile, simtk.openmm.app.Modeller, or simtk.openmm.app.PDBxFile
     timestep_module: MDAnalysis.coordinates.base.timestep 
         This is the module, but the object gets created within this function """
 
