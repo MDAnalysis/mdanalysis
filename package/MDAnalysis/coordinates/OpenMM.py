@@ -234,7 +234,8 @@ def _mda_timestep_from_omm_modeller_pdbfile(omm_object, timestep_module, **ts_kw
 
     ts = timestep_module(n_atoms, **ts_kwargs)
     ts.frame = 0
-    ts.triclinic_dimensions = np.array(omm_object.topology.getPeriodicBoxVectors()._value)
+    if omm_object.topology.getPeriodicBoxVectors() is not None:
+        ts.triclinic_dimensions = np.array(omm_object.topology.getPeriodicBoxVectors()._value)
     ts.positions = np.array(omm_object.getPositions()._value)
 
 

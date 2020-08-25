@@ -27,7 +27,7 @@ from simtk.openmm import app
 import MDAnalysis as mda
 
 from MDAnalysisTests.topology.base import ParserBase
-from MDAnalysisTests.datafiles import CONECT
+from MDAnalysisTests.datafiles import CONECT, PDBX
 
 class OpenMMTopologyBase(ParserBase):
     parser = mda.topology.OpenMMParser.OpenMMTopologyParser
@@ -91,4 +91,12 @@ class TestOpenMMTopologyParser(OpenMMTopologyBase):
     expected_n_residues = 199
     expected_n_segments = 3
     expected_n_bonds = 1922
+
+
+class TestOpenMMPDBxFileParser(OpenMMTopologyBase):
+    ref_filename = app.PDBxFile(PDBX).topology
+    expected_n_atoms = 60
+    expected_n_residues = 7
+    expected_n_segments = 1
+    expected_n_bonds = 62
 
