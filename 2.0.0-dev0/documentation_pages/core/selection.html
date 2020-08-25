@@ -246,6 +246,10 @@ available through RDKit</p>
 <dd><p>A BackboneSelection contains all atoms with name ‘N’, ‘CA’, ‘C’, ‘O’.</p>
 <p>This excludes OT* on C-termini
 (which are included by, eg VMD’s backbone selection).</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>bb_atoms changed to set (from numpy array)
+performance improved by ~100x on larger systems</p>
+</div>
 </dd></dl>
 
 <dl class="class">
@@ -256,6 +260,10 @@ available through RDKit</p>
 <blockquote>
 <div>‘N9’, ‘N7’, ‘C8’, ‘C5’, ‘C4’, ‘N3’, ‘C2’, ‘N1’, ‘C6’,
 ‘O6’,’N2’,’N6’, ‘O2’,’N4’,’O4’,’C5M’</div></blockquote>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>base_atoms changed to set (from numpy array)
+performance improved by ~100x on larger systems</p>
+</div>
 </dd></dl>
 
 <dl class="class">
@@ -304,6 +312,10 @@ three-dimensions, otherwise returns None</td>
 <dd><p>Contains all atoms with name “P”, “C5’”, C3’”, “O3’”, “O5’”.</p>
 <p>These atoms are only recognized if they are in a residue matched
 by the <a class="reference internal" href="#MDAnalysis.core.selection.NucleicSelection" title="MDAnalysis.core.selection.NucleicSelection"><code class="xref py py-class docutils literal notranslate"><span class="pre">NucleicSelection</span></code></a>.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>bb_atoms changed to set (from numpy array)
+performance improved by ~100x on larger systems</p>
+</div>
 </dd></dl>
 
 <dl class="class">
@@ -323,12 +335,20 @@ by the <a class="reference internal" href="#MDAnalysis.core.selection.NucleicSel
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 0.8: </span>additional Gromacs selections</p>
 </div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>nucl_res changed to set (from numpy array)
+performance improved by ~100x on larger systems</p>
+</div>
 </dd></dl>
 
 <dl class="class">
 <dt id="MDAnalysis.core.selection.NucleicSugarSelection">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">NucleicSugarSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#NucleicSugarSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.NucleicSugarSelection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Contains all atoms with name C1’, C2’, C3’, C4’, O2’, O4’, O3’.</p>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>sug_atoms changed to set (from numpy array)
+performance improved by ~100x on larger systems</p>
+</div>
 </dd></dl>
 
 <dl class="class">
@@ -366,6 +386,10 @@ prop x&lt;5</p>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="../lib/util.html#MDAnalysis.lib.util.convert_aa_code" title="MDAnalysis.lib.util.convert_aa_code"><code class="xref py py-func docutils literal notranslate"><span class="pre">MDAnalysis.lib.util.convert_aa_code()</span></code></a></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>prot_res changed to set (from numpy array)
+performance improved by ~100x on larger systems</p>
 </div>
 </dd></dl>
 
@@ -478,11 +502,7 @@ periodic boundary conditions</li>
 <dl class="class">
 <dt id="MDAnalysis.core.selection.StringSelection">
 <em class="property">class </em><code class="descclassname">MDAnalysis.core.selection.</code><code class="descname">StringSelection</code><span class="sig-paren">(</span><em>parser</em>, <em>tokens</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/selection.html#StringSelection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.selection.StringSelection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Selections based on text attributes</p>
-<div class="versionchanged">
-<p><span class="versionmodified">Changed in version 1.0.0: </span>Supports multiple wildcards, based on fnmatch</p>
-</div>
-</dd></dl>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="MDAnalysis.core.selection.grab_not_keywords">
