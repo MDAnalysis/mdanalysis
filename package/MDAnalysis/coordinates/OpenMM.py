@@ -62,9 +62,9 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
     """Reader for the OpenMM Simulation objects
 
     """
-    format = 'OPENMMSIMULATION'
-    units = {'time': 'ps', 'length': 'nm', 'velocity': 'nm/ps',
-            'force': 'kJ/(mol*nm)'}
+
+    format = "OPENMMSIMULATION"
+    units = {"time": "ps", "length": "nm", "velocity": "nm/ps", "force": "kJ/(mol*nm)"}
 
     @staticmethod
     def _format_hint(thing):
@@ -76,14 +76,14 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
         except ImportError:
             return False
         else:
-            return isinstance(thing, Simulation) 
-
+            return isinstance(thing, Simulation)
 
     def _read_first_frame(self):
         self.n_atoms = self.filename.topology.getNumAtoms()
 
-        self.ts = _mda_timestep_from_omm_context(self.filename.context, 
-                self._Timestep, **self._ts_kwargs)
+        self.ts = _mda_timestep_from_omm_context(
+            self.filename.context, self._Timestep, **self._ts_kwargs
+        )
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
@@ -94,12 +94,14 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
             self.convert_forces_from_native(self.ts._forces)
             self.convert_time_from_native(self.ts.dt)
 
+
 class OpenMMPDBFileReader(base.SingleFrameReaderBase):
     """Reader for the OpenMM PDBFile objects
 
     """
-    format = 'OPENMMPDBFILE'
-    units = {'time': 'ps', 'length': 'nm'}
+
+    format = "OPENMMPDBFILE"
+    units = {"time": "ps", "length": "nm"}
 
     @staticmethod
     def _format_hint(thing):
@@ -111,14 +113,14 @@ class OpenMMPDBFileReader(base.SingleFrameReaderBase):
         except ImportError:
             return False
         else:
-            return isinstance(thing, PDBFile) 
-
+            return isinstance(thing, PDBFile)
 
     def _read_first_frame(self):
         self.n_atoms = self.filename.topology.getNumAtoms()
 
-        self.ts = _mda_timestep_from_omm_modeller_pdbfile(self.filename, 
-                self._Timestep, **self._ts_kwargs)
+        self.ts = _mda_timestep_from_omm_modeller_pdbfile(
+            self.filename, self._Timestep, **self._ts_kwargs
+        )
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
@@ -126,12 +128,14 @@ class OpenMMPDBFileReader(base.SingleFrameReaderBase):
                 self.ts.triclinic_dimensions, inplace=False
             )
 
+
 class OpenMMPDBxFileReader(base.SingleFrameReaderBase):
     """Reader for the OpenMM PDBxFile objects
 
     """
-    format = 'OPENMMPDBXFILE'
-    units = {'time': 'ps', 'length': 'nm'}
+
+    format = "OPENMMPDBXFILE"
+    units = {"time": "ps", "length": "nm"}
 
     @staticmethod
     def _format_hint(thing):
@@ -143,14 +147,14 @@ class OpenMMPDBxFileReader(base.SingleFrameReaderBase):
         except ImportError:
             return False
         else:
-            return isinstance(thing, PDBxFile) 
-
+            return isinstance(thing, PDBxFile)
 
     def _read_first_frame(self):
         self.n_atoms = self.filename.topology.getNumAtoms()
 
-        self.ts = _mda_timestep_from_omm_modeller_pdbfile(self.filename, 
-                self._Timestep, **self._ts_kwargs)
+        self.ts = _mda_timestep_from_omm_modeller_pdbfile(
+            self.filename, self._Timestep, **self._ts_kwargs
+        )
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
@@ -163,8 +167,9 @@ class OpenMMModellerReader(base.SingleFrameReaderBase):
     """Reader for the OpenMM Modeller objects
 
     """
-    format = 'OPENMMMODELLER'
-    units = {'time': 'ps', 'length': 'nm'}
+
+    format = "OPENMMMODELLER"
+    units = {"time": "ps", "length": "nm"}
 
     @staticmethod
     def _format_hint(thing):
@@ -176,21 +181,20 @@ class OpenMMModellerReader(base.SingleFrameReaderBase):
         except ImportError:
             return False
         else:
-            return isinstance(thing, Modeller) 
-
+            return isinstance(thing, Modeller)
 
     def _read_first_frame(self):
         self.n_atoms = self.filename.topology.getNumAtoms()
 
-        self.ts = _mda_timestep_from_omm_modeller_pdbfile(self.filename, 
-                self._Timestep, **self._ts_kwargs)
+        self.ts = _mda_timestep_from_omm_modeller_pdbfile(
+            self.filename, self._Timestep, **self._ts_kwargs
+        )
 
         if self.convert_units:
             self.convert_pos_from_native(self.ts._pos)
             self.ts.triclinic_dimensions = self.convert_pos_from_native(
                 self.ts.triclinic_dimensions, inplace=False
             )
-
 
 
 def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
@@ -202,25 +206,23 @@ def _mda_timestep_from_omm_context(omm_context, timestep_module, **ts_kwargs):
     timestep_module: MDAnalysis.coordinates.base.timestep 
         This is the module, but the object gets created within this function """
 
-    state = omm_context.getState(-1, getVelocities=True, 
-        getForces=True, getEnergy=True
-    )
+    state = omm_context.getState(-1, getVelocities=True, getForces=True, getEnergy=True)
 
     n_atoms = omm_context.getSystem().getNumParticles()
 
     ts = timestep_module(n_atoms, **ts_kwargs)
     ts.frame = 0
-    ts.data['time'] = state.getTime()._value
-    ts.data['potential_energy'] = state.getPotentialEnergy()
-    ts.data['kinetic_energy'] = state.getKineticEnergy()
+    ts.data["time"] = state.getTime()._value
+    ts.data["potential_energy"] = state.getPotentialEnergy()
+    ts.data["kinetic_energy"] = state.getKineticEnergy()
     ts.triclinic_dimensions = state.getPeriodicBoxVectors(asNumpy=True)._value
     ts.positions = state.getPositions(asNumpy=True)._value
     ts.velocities = state.getVelocities(asNumpy=True)._value
     ts.forces = state.getForces(asNumpy=True)._value
 
-
     return ts
-    
+
+
 def _mda_timestep_from_omm_modeller_pdbfile(omm_object, timestep_module, **ts_kwargs):
     """ Construct Timestep object from Openmm context 
 
@@ -235,9 +237,9 @@ def _mda_timestep_from_omm_modeller_pdbfile(omm_object, timestep_module, **ts_kw
     ts = timestep_module(n_atoms, **ts_kwargs)
     ts.frame = 0
     if omm_object.topology.getPeriodicBoxVectors() is not None:
-        ts.triclinic_dimensions = np.array(omm_object.topology.getPeriodicBoxVectors()._value)
+        ts.triclinic_dimensions = np.array(
+            omm_object.topology.getPeriodicBoxVectors()._value
+        )
     ts.positions = np.array(omm_object.getPositions()._value)
 
-
     return ts
- 

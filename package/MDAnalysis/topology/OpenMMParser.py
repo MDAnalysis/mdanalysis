@@ -1,5 +1,5 @@
 # -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-
-# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
 #
 # MDAnalysis --- https://www.mdanalysis.org
 # Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors
@@ -91,7 +91,7 @@ from ..core.topologyattrs import (
 
 
 class OpenMMTopologyParser(TopologyReaderBase):
-    format = 'OPENMMTOPOLOGY'
+    format = "OPENMMTOPOLOGY"
 
     @staticmethod
     def _format_hint(thing):
@@ -101,11 +101,10 @@ class OpenMMTopologyParser(TopologyReaderBase):
         """
         try:
             from simtk.openmm import app
-        except ImportError:  
+        except ImportError:
             return False
         else:
             return isinstance(thing, app.Topology)
-
 
     def parse(self, **kwargs):
         omm_topology = self.filename
@@ -114,8 +113,9 @@ class OpenMMTopologyParser(TopologyReaderBase):
 
         return top
 
+
 class OpenMMSimulationParser(TopologyReaderBase):
-    format = 'OPENMMSIMULATION'
+    format = "OPENMMSIMULATION"
 
     @staticmethod
     def _format_hint(thing):
@@ -125,11 +125,10 @@ class OpenMMSimulationParser(TopologyReaderBase):
         """
         try:
             from simtk.openmm import app
-        except ImportError:  
+        except ImportError:
             return False
         else:
             return isinstance(thing, app.Simulation)
-
 
     def parse(self, **kwargs):
         omm_topology = self.filename.topology
@@ -138,8 +137,9 @@ class OpenMMSimulationParser(TopologyReaderBase):
 
         return top
 
+
 class OpenMMPDBFileParser(TopologyReaderBase):
-    format = 'OPENMMPDBFILE'
+    format = "OPENMMPDBFILE"
 
     @staticmethod
     def _format_hint(thing):
@@ -149,11 +149,10 @@ class OpenMMPDBFileParser(TopologyReaderBase):
         """
         try:
             from simtk.openmm import app
-        except ImportError:  
+        except ImportError:
             return False
         else:
             return isinstance(thing, app.PDBFile)
-
 
     def parse(self, **kwargs):
         omm_pdbfile = self.filename
@@ -162,8 +161,9 @@ class OpenMMPDBFileParser(TopologyReaderBase):
 
         return top
 
+
 class OpenMMModellerParser(TopologyReaderBase):
-    format = 'OPENMMMODELLER'
+    format = "OPENMMMODELLER"
 
     @staticmethod
     def _format_hint(thing):
@@ -173,11 +173,10 @@ class OpenMMModellerParser(TopologyReaderBase):
         """
         try:
             from simtk.openmm import app
-        except ImportError:  
+        except ImportError:
             return False
         else:
             return isinstance(thing, app.Modeller)
-
 
     def parse(self, **kwargs):
         omm_modeller = self.filename
@@ -186,8 +185,9 @@ class OpenMMModellerParser(TopologyReaderBase):
 
         return top
 
+
 class OpenMMPDBxFileParser(TopologyReaderBase):
-    format = 'OPENMMPDBXFILE'
+    format = "OPENMMPDBXFILE"
 
     @staticmethod
     def _format_hint(thing):
@@ -197,11 +197,10 @@ class OpenMMPDBxFileParser(TopologyReaderBase):
         """
         try:
             from simtk.openmm import app
-        except ImportError:  
+        except ImportError:
             return False
         else:
             return isinstance(thing, app.PDBxFile)
-
 
     def parse(self, **kwargs):
         omm_pdbxfile = self.filename
@@ -228,13 +227,13 @@ def _mda_topology_from_omm_topology(omm_topology):
     resnums = resids.copy()
     segids = [c.index for c in omm_topology.chains()]
     bonds = [(b.atom1.index, b.atom2.index) for b in omm_topology.bonds()]
-    bond_orders =[b.order for b in omm_topology.bonds()]
+    bond_orders = [b.order for b in omm_topology.bonds()]
     bond_types = [b.type for b in omm_topology.bonds()]
-    
+
     n_atoms = len(atomids)
     n_residues = len(resids)
     n_segments = len(segids)
-    
+
     attrs = [
         Atomids(np.array(atomids, dtype=np.int32)),
         Atomnames(np.array(atomnames, dtype=object)),
@@ -246,15 +245,16 @@ def _mda_topology_from_omm_topology(omm_topology):
         Resids(resids),
         Resnums(resnums),
         Resnames(resnames),
-        Segids(segids)
+        Segids(segids),
     ]
 
-    top = Topology(n_atoms, n_residues, n_segments, 
+    top = Topology(
+        n_atoms,
+        n_residues,
+        n_segments,
         attrs=attrs,
         atom_resindex=atom_resindex,
-        residue_segindex=residue_segindex
+        residue_segindex=residue_segindex,
     )
 
     return top
-
-

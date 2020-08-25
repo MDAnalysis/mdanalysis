@@ -29,15 +29,24 @@ import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import CONECT, PDBX
 
+
 class OpenMMTopologyBase(ParserBase):
     parser = mda.topology.OpenMMParser.OpenMMTopologyParser
-    expected_attrs = ['ids', 'names', 'resids', 'resnames', 'masses',
-                      'bonds', 'chainIDs', 'elements']
+    expected_attrs = [
+        "ids",
+        "names",
+        "resids",
+        "resnames",
+        "masses",
+        "bonds",
+        "chainIDs",
+        "elements",
+    ]
     expected_n_bonds = 0
 
     def test_creates_universe(self, filename):
         """Check that Universe works with this Parser"""
-        u = mda.Universe(filename, topology_format='OPENMMTOPOLOGY')
+        u = mda.Universe(filename, topology_format="OPENMMTOPOLOGY")
         assert isinstance(u, mda.Universe)
 
     def test_attr_size(self, top):
@@ -45,7 +54,7 @@ class OpenMMTopologyBase(ParserBase):
         assert len(top.names) == top.n_atoms
         assert len(top.resids) == top.n_residues
         assert len(top.resnames) == top.n_residues
-    
+
     def test_atoms(self, top):
         assert top.n_atoms == self.expected_n_atoms
 
@@ -99,4 +108,3 @@ class TestOpenMMPDBxFileParser(OpenMMTopologyBase):
     expected_n_residues = 7
     expected_n_segments = 1
     expected_n_bonds = 62
-
