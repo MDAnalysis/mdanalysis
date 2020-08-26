@@ -24,10 +24,13 @@
 """OpenMM structure I/O --- :mod:`MDAnalysis.coordinates.OpenMM`
 ================================================================
 
-Read coordinates data from a `OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ :class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader` 
+Read coordinates data from a 
+`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ 
+:class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader` 
 into a MDAnalysis Universe. 
 
-Also converts other objects within the `OpenMM Application Layer <http://docs.openmm.org/latest/api-python/app.html>`_:
+Also converts other objects within the 
+`OpenMM Application Layer <http://docs.openmm.org/latest/api-python/app.html>`_:
 
     - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_ 
     - `simtk.openmm.app.modeller.Modeller <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.modeller.Modeller.html#simtk.openmm.app.modeller.Modeller>`_

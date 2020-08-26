@@ -51,7 +51,8 @@ class TestOpenMMPDBFileReader(_SingleFrameReader):
             self.universe.trajectory.ts.dimensions[0:3],
             self.ref.trajectory.ts.dimensions[0:3],
             self.prec,
-            "OpenMMPDBFileReader failed to get unitcell dimensions from OpenMMPDBFile",
+            "OpenMMPDBFileReader failed to get unitcell dimensions " +
+            "from OpenMMPDBFile",
         )
 
     def test_coordinates(self):
@@ -76,7 +77,8 @@ class TestOpenMMModellerReader(_SingleFrameReader):
             self.universe.trajectory.ts.dimensions[0:3],
             self.ref.trajectory.ts.dimensions[0:3],
             self.prec,
-            "OpenMMModellerReader failed to get unitcell dimensions from OpenMMModeller",
+            "OpenMMModellerReader failed to get unitcell dimensions " +
+            "from OpenMMModeller",
         )
 
     def test_coordinates(self):
@@ -109,7 +111,8 @@ class TestOpenMMSimulationReader(_SingleFrameReader):
             self.universe.trajectory.ts.dimensions[0:3],
             self.ref.trajectory.ts.dimensions[0:3],
             self.prec,
-            "OpenMMSimulationReader failed to get unitcell dimensions from OpenMMSimulation",
+            "OpenMMSimulationReader failed to get unitcell dimensions " +
+            "from OpenMMSimulation",
         )
 
     def test_coordinates(self):

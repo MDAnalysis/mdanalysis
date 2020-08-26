@@ -27,9 +27,12 @@
 .. versionadded:: 0.17.0
 
 
-Converts an `OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_ :class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
+Converts an 
+`OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.topology.Topology.html#simtk.openmm.app.topology.Topology>`_ 
+:class:`simtk.openmm.app.topology.Topology` into a :class:`MDAnalysis.core.Topology`.
 
-Also converts some objects within the `OpenMM Application layer <http://docs.openmm.org/latest/api-python/app.html>`_
+Also converts some objects within the 
+`OpenMM Application layer <http://docs.openmm.org/latest/api-python/app.html>`_
 
     - `simtk.openmm.app.pdbfile.PDBFile <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.pdbfile.PDBFile.html#simtk.openmm.app.pdbfile.PDBFile>`_ 
     - `simtk.openmm.app.simulation.Simulation <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_
