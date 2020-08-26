@@ -210,14 +210,18 @@ class RDKitDescriptors(AnalysisBase):
     -----
     Links to the modules from which descriptors are taken:
 
-        * :mod:`rdkit.Chem.Descriptors`
-        * :mod:`rdkit.Chem.Descriptors3D`
-        * :mod:`rdkit.Chem.EState.EState`
-        * :mod:`rdkit.Chem.EState.EState_VSA`
-        * :mod:`rdkit.Chem.GraphDescriptors`
-        * :mod:`rdkit.Chem.Lipinski`
-        * :mod:`rdkit.Chem.MolSurf`
-        * :mod:`rdkit.Chem.rdMolDescriptors`
+        * :mod:`rdkit.Chem.Descriptors`: Molecular descriptors
+        * :mod:`rdkit.Chem.Descriptors3D`: Descriptors derived from a 
+          molecule's 3D structure
+        * :mod:`rdkit.Chem.EState.EState`: Basic EState definitions
+        * :mod:`rdkit.Chem.EState.EState_VSA`: Hybrid EState-VSA descriptors
+        * :mod:`rdkit.Chem.GraphDescriptors`: Topological/topochemical
+          descriptors
+        * :mod:`rdkit.Chem.Lipinski`: Lipinski parameters for molecules
+        * :mod:`rdkit.Chem.MolSurf`: Approximate molecular surface area
+          descriptors
+        * :mod:`rdkit.Chem.rdMolDescriptors`: Molecular descriptors 
+          (redundancies with :mod:`rdkit.Chem.Descriptors`)
     
     To get a list of all available descriptors, see :meth:`list_available`
 

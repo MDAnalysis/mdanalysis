@@ -89,6 +89,43 @@ class TestDescriptorsRDKit:
 
 
 @requires_rdkit
+class FingerprintFactory:
+    def GetAtomPairFingerprint(*args, **kwargs):
+        return AllChem.GetAtomPairFingerprint(*args, **kwargs)
+
+    def GetHashedAtomPairFingerprint(*args, **kwargs):
+        return AllChem.GetHashedAtomPairFingerprint(*args, **kwargs)
+
+    def GetMorganFingerprint(*args, **kwargs):
+        return AllChem.GetMorganFingerprint(*args, **kwargs)
+
+    def GetHashedMorganFingerprint(*args, **kwargs):
+        return AllChem.GetHashedMorganFingerprint(*args, **kwargs)
+
+    def GetTopologicalTorsionFingerprint(*args, **kwargs):
+        return AllChem.GetTopologicalTorsionFingerprint(*args, **kwargs)
+
+    def GetHashedTopologicalTorsionFingerprint(*args, **kwargs):
+        return AllChem.GetHashedTopologicalTorsionFingerprint(*args, **kwargs)
+
+    def UnfoldedRDKFingerprintCountBased(*args, **kwargs):
+        return AllChem.UnfoldedRDKFingerprintCountBased(*args, **kwargs)
+
+    def RDKFingerprint(*args, **kwargs):
+        return AllChem.RDKFingerprint(*args, **kwargs)
+
+    def GetMACCSKeysFingerprint(*args, **kwargs):
+        return AllChem.GetMACCSKeysFingerprint(*args, **kwargs)
+
+    def null(*args, **kwargs):
+        pass
+
+@pytest.fixture(scope="function")
+def fp_func(request):
+    return getattr(FingerprintFactory, request.param)
+
+
+@requires_rdkit
 class TestFingerprintsRDKit:
     @pytest.fixture
     def u(self):
@@ -131,33 +168,33 @@ class TestFingerprintsRDKit:
                              nBits=128)
         assert len(fp) == 128
 
-    @pytest.mark.parametrize("kind, kwargs, hashed, dtype, n_on_bits, func", [
-        ("MACCSKeys", {}, False, "array", 12, None),
-        ("MACCSKeys", {}, False, "dict", 12, None),
-        ("MACCSKeys", {}, False, None, 12, AllChem.GetMACCSKeysFingerprint),
-        ("AtomPair", {}, True, "array", 5, None),
-        ("AtomPair", {}, False, "dict", 12, None),
-        ("AtomPair", {}, False, None, 12, AllChem.GetAtomPairFingerprint),
-        ("AtomPair", {}, True, None, 5, AllChem.GetHashedAtomPairFingerprint),
-        ("Morgan", dict(radius=2), True, "array", 8, None),
-        ("Morgan", dict(radius=2), False, "dict", 11, None),
-        ("Morgan", dict(radius=2), False, None, 11, AllChem.GetMorganFingerprint),
-        ("Morgan", dict(radius=2), True, None, 8, AllChem.GetHashedMorganFingerprint),
-        ("RDKit", {}, True, "array", 84, None),
-        ("RDKit", {}, False, "dict", 42, None),
-        ("RDKit", {}, False, None, 42, AllChem.UnfoldedRDKFingerprintCountBased),
-        ("RDKit", {}, True, None, 84, AllChem.RDKFingerprint),
-        ("TopologicalTorsion", {}, True, "array", 0, None),
-        ("TopologicalTorsion", {}, False, "dict", 0, None),
-        ("TopologicalTorsion", {}, False, None, 0, AllChem.GetTopologicalTorsionFingerprint),
-        ("TopologicalTorsion", {}, True, None, 0, AllChem.GetHashedTopologicalTorsionFingerprint),
-    ])
-    def test_fp(self, u, kind, kwargs, hashed, dtype, n_on_bits, func):
+    @pytest.mark.parametrize("kind, kwargs, hashed, dtype, n_on_bits, fp_func", [
+        ("MACCSKeys", {}, False, "array", 12, "null"),
+        ("MACCSKeys", {}, False, "dict", 12, "null"),
+        ("MACCSKeys", {}, False, None, 12, "GetMACCSKeysFingerprint"),
+        ("AtomPair", {}, True, "array", 5, "null"),
+        ("AtomPair", {}, False, "dict", 12, "null"),
+        ("AtomPair", {}, False, None, 12, "GetAtomPairFingerprint"),
+        ("AtomPair", {}, True, None, 5, "GetHashedAtomPairFingerprint"),
+        ("Morgan", dict(radius=2), True, "array", 8, "null"),
+        ("Morgan", dict(radius=2), False, "dict", 11, "null"),
+        ("Morgan", dict(radius=2), False, None, 11, "GetMorganFingerprint"),
+        ("Morgan", dict(radius=2), True, None, 8, "GetHashedMorganFingerprint"),
+        ("RDKit", {}, True, "array", 84, "null"),
+        ("RDKit", {}, False, "dict", 42, "null"),
+        ("RDKit", {}, False, None, 42, "UnfoldedRDKFingerprintCountBased"),
+        ("RDKit", {}, True, None, 84, "RDKFingerprint"),
+        ("TopologicalTorsion", {}, True, "array", 0, "null"),
+        ("TopologicalTorsion", {}, False, "dict", 0, "null"),
+        ("TopologicalTorsion", {}, False, None, 0, "GetTopologicalTorsionFingerprint"),
+        ("TopologicalTorsion", {}, True, None, 0, "GetHashedTopologicalTorsionFingerprint"),
+    ], indirect=["fp_func"])
+    def test_fp(self, u, kind, kwargs, hashed, dtype, n_on_bits, fp_func):
         fp = get_fingerprint(u.atoms, kind,
                              hashed=hashed, dtype=dtype, **kwargs)
-        if func:
+        if fp_func != "null":
             mol = u.atoms.convert_to("RDKIT")
-            rdkit_fp = func(mol, **kwargs)
+            rdkit_fp = fp_func(mol, **kwargs)
         classname = fp.__class__.__name__
         if classname.endswith("BitVect"):
             assert list(fp.GetOnBits()) == list(rdkit_fp.GetOnBits())
