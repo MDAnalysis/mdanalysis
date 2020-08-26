@@ -93,9 +93,8 @@ class LeafletFinder(object):
 
     Parameters
     ----------
-    universe : Universe or str
-        :class:`MDAnalysis.Universe` or a file name (e.g., in PDB or
-        GRO format)
+    universe : Universe
+        :class:`~MDAnalysis.core.universe.Universe` object.
     select : AtomGroup or str
         A AtomGroup instance or a
         :meth:`Universe.select_atoms` selection string
@@ -119,7 +118,8 @@ class LeafletFinder(object):
     consecutively, starting at 0. To obtain the atoms in the input structure
     use :meth:`LeafletFinder.groups`::
 
-       L = LeafletFinder(PDB, 'name P*')
+       u_PDB = mda.Universe(PDB)
+       L = LeafletFinder(u_PDB, 'name P*')
        leaflet0 = L.groups(0)
        leaflet1 = L.groups(1)
 
@@ -132,12 +132,15 @@ class LeafletFinder(object):
 
        leaflet0.residues.atoms
 
+
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+    .. versionchanged:: 2.0.0
+       The universe keyword no longer accepts non-Universe arguments. Please
+       create a :class:`~MDAnalysis.core.universe.Universe` first.
     """
 
     def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):
-        universe = core.universe.as_Universe(universe)
         self.universe = universe
         self.selectionstring = select
         if isinstance(self.selectionstring, core.groups.AtomGroup):
