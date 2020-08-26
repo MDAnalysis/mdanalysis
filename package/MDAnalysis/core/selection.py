@@ -622,13 +622,11 @@ class SmartsSelection(Selection):
             # keep track of the number of open and closed parentheses
             if tokens[0] in ["(", ")"]:
                 counter[tokens[0]] += 1
-            # if the next char is a closing ")" but there's no corresponding
-            # open "(" then we've reached then end of the smarts query and
-            # the ")" is part of a grouping parenthesis
-            if tokens[1] == ")" and counter["("] < (counter[")"] + 1):
-                val = tokens.popleft()
-                pattern.append(val)
-                break
+                # if the char is a closing ")" but there's no corresponding
+                # open "(" then we've reached then end of the smarts query and
+                # the current token ")" is part of a grouping parenthesis
+                if tokens[0] == ")" and counter["("] < (counter[")"]):
+                    break
             # add the token to the pattern and remove it from the tokens
             val = tokens.popleft()
             pattern.append(val)
@@ -644,8 +642,7 @@ class SmartsSelection(Selection):
                               "conda install -c conda-forge rdkit")
         pattern = Chem.MolFromSmarts(self.pattern)
         if not pattern:
-            raise ValueError("{!r} is not a valid SMARTS query".format(
-                self.pattern))
+            raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
         mol = group.convert_to("RDKIT")
         matches = mol.GetSubstructMatches(pattern, useChirality=True)
         # convert rdkit indices to mdanalysis'

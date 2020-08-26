@@ -2691,8 +2691,8 @@ class AtomGroup(GroupBase):
                 e.g. ``select_atoms('name CA and not record_type HETATM')``
             smarts *SMARTS-query*
                 select atoms using Daylight's SMARTS queries, e.g. ``smarts
-                [#7;R]`` to find nitrogen atoms in rings. Restricted to 1000
-                matches.
+                [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
+                All matches (max 1000) are combined as a unique match
 
         **Boolean**
 
@@ -2851,7 +2851,6 @@ class AtomGroup(GroupBase):
         periodic = selgroups.pop('periodic', True)
 
         updating = selgroups.pop('updating', False)
-
         sel_strs = (sel,) + othersel
 
         for group, thing in selgroups.items():

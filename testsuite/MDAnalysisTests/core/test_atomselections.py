@@ -543,22 +543,22 @@ class TestSelectionRDKit(object):
         sel = u.select_atoms(sel_str)
         assert sel.n_atoms == n_atoms
 
-    @pytest.mark.parametrize("sel_str, n_atoms", [
-        ("smarts n", 1),
-        ("smarts [#7]", 2),
-        ("smarts a", 5),
-        ("smarts c", 4),
-        ("smarts [*-]", 1),
-        ("smarts [$([!#1]);$([!R][R])]", 2),
-        ("smarts [$([C@H](-[CH2])(-[O-])-C=O)]", 1),
-        ("smarts [$([C@@H](-[CH2])(-[O-])-C=O)]", 0),
-        ("smarts a and type C", 4),
-        ("(smarts a) and (type C)", 4),
-        ("smarts a and type N", 1),
+    @pytest.mark.parametrize("sel_str, indices", [
+        ("smarts n", [10]),
+        ("smarts [#7]", [0, 10]),
+        ("smarts a", [1, 2, 3, 9, 10]),
+        ("smarts c", [1, 2, 3, 9]),
+        ("smarts [*-]", [6]),
+        ("smarts [$([!#1]);$([!R][R])]", [0, 4]),
+        ("smarts [$([C@H](-[CH2])(-[O-])-C=O)]", [5]),
+        ("smarts [$([C@@H](-[CH2])(-[O-])-C=O)]", []),
+        ("smarts a and type C", [1, 2, 3, 9]),
+        ("(smarts a) and (type C)", [1, 2, 3, 9]),
+        ("smarts a and type N", [10]),
     ])
-    def test_smarts_selection(self, u2, sel_str, n_atoms):
+    def test_smarts_selection(self, u2, sel_str, indices):
         sel = u2.select_atoms(sel_str)
-        assert sel.n_atoms == n_atoms
+        assert_equal(sel.indices, indices)
 
     def test_invalid_smarts_sel_raises_error(self, u2):
         with pytest.raises(ValueError, match="not a valid SMARTS"):
