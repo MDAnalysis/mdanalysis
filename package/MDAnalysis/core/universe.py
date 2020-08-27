@@ -1324,32 +1324,6 @@ class Universe(object):
         return cls(mol, **kwargs)
 
 
-# TODO: what is the point of this function???
-def as_Universe(*args, **kwargs):
-    """Return a universe from the input arguments.
-
-    1. If the first argument is a universe, just return it::
-
-         as_Universe(universe) --> universe
-
-    2. Otherwise try to build a universe from the first or the first
-       and second argument::
-
-         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
-         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
-         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
-
-    Returns
-    -------
-    :class:`~MDAnalysis.core.groups.Universe`
-    """
-    if len(args) == 0:
-        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
-    elif len(args) == 1 and isinstance(args[0], Universe):
-        return args[0]
-    return Universe(*args, **kwargs)
-
-
 def Merge(*args):
     """Create a new new :class:`Universe` from one or more
     :class:`~MDAnalysis.core.groups.AtomGroup` instances.
