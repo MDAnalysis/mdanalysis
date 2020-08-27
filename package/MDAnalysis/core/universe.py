@@ -138,11 +138,8 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
-# py3 TODO
-#def _resolve_formats(*coordinates, format=None, topology_format=None):
-def _resolve_formats(*coordinates, **kwargs):
-    format = kwargs.get('format', None)
-    topology_format = kwargs.get('topology_format', None)
+
+def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
         if format is None:
             format = topology_format
@@ -150,15 +147,9 @@ def _resolve_formats(*coordinates, **kwargs):
             topology_format = format
     return format, topology_format
 
-# py3 TODO
-#def _resolve_coordinates(filename, *coordinates, format=None,
-#                         all_coordinates=False):
-def _resolve_coordinates(*args, **kwargs):
-    filename = args[0]
-    coordinates = args[1:]
-    format = kwargs.get('format', None)
-    all_coordinates = kwargs.get('all_coordinates', False)
 
+def _resolve_coordinates(filename, *coordinates, format=None,
+                         all_coordinates=False):
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
@@ -287,6 +278,7 @@ class Universe(object):
         :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
         functionality to treat independent trajectory files as a single virtual
         trajectory.
+    **kwargs: extra arguments are passed to the topology parser.
 
     Attributes
     ----------
@@ -310,23 +302,10 @@ class Universe(object):
         ``topology`` and ``trajectory`` are reserved
         upon unpickle.
     """
-# Py3 TODO
-#    def __init__(self, topology=None, *coordinates, all_coordinates=False,
-#                 format=None, topology_format=None, transformations=None,
-#                 guess_bonds=False, vdwradii=None,
-#                 in_memory=False, in_memory_step=1,
-#                 **kwargs):
-    def __init__(self, *args, **kwargs):
-        topology = args[0] if args else None
-        coordinates = args[1:]
-        all_coordinates = kwargs.pop('all_coordinates', False)
-        format = kwargs.pop('format', None)
-        topology_format = kwargs.pop('topology_format', None)
-        transformations = kwargs.pop('transformations', None)
-        guess_bonds = kwargs.pop('guess_bonds', False)
-        vdwradii = kwargs.pop('vdwradii', None)
-        in_memory = kwargs.pop('in_memory', False)
-        in_memory_step = kwargs.pop('in_memory_step', 1)
+    def __init__(self, topology=None, *coordinates, all_coordinates=False,
+                 format=None, topology_format=None, transformations=None,
+                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
