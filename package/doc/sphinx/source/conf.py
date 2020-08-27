@@ -346,4 +346,5 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
                        'https://parmed.github.io/ParmEd/html/': None,
                        'https://docs.h5py.org/en/stable': None,
+                       'https://www.rdkit.org/docs/': None,
                        }

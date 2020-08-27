@@ -43,7 +43,6 @@ topology file format in the *topology_format* keyword argument to
    topology/PDBQTParser
    topology/PQRParser
    topology/PSFParser
-   topology/RDKitParser
    topology/TOPParser
    topology/TPRParser
    topology/TXYZParser

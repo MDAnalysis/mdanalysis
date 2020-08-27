@@ -45,6 +45,7 @@ Fixes
   * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError
     was thrown when finding D-H pairs via the topology if `hydrogens` was an
     empty AtomGroup (Issue #2848)
+  * Fixed performance regression on select_atoms for string selections (#2751)
   * Fixed the DMSParser, allowing the creation of multiple segids sharing
     residues with identical resids (Issue #1387, PR #2872)
   * H5MD files are now picklable with H5PYPicklable (Issue #2890, PR #2894)
@@ -79,8 +80,15 @@ Enhancements
   * Added new kwargs `select_remove` and `select_protein` to
     analysis.dihedrals.Janin analysis to give user more fine grained control
     over selections (PR #2899)
+  * Improved performance of select_atoms on strings (e.g. name, type, resname) and
+    'protein' selection (#2751 PR #2755)
+  * Added an RDKit converter that works for any input with all hydrogens
+    explicit in the topology (Issue #2468, PR #2775)
 
 Changes
+  * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
+    as a result :class:`MDAnalysis.analysis.leaflet.LeafletFinder` now only
+    accepts Universes for its `universe` argument (Issue #2920)
   * deprecated NumPy type aliases have been replaced with their actual types
     (see upstream NumPy PR 14882), and our pytest configuration will raise an
     error for any violation when testing with development NumPy builds

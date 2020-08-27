@@ -88,6 +88,24 @@ def test_set_segid_updates_(universe):
                  err_msg="old selection was not changed in place after set_segid")
 
 
+def test_set_segids_many():
+    u = mda.Universe.empty(n_atoms=6, n_residues=2, n_segments=2,
+                           atom_resindex=[0, 0, 0, 1, 1, 1], residue_segindex=[0,1])
+    u.add_TopologyAttr('segids', ['A', 'B'])
+
+    # universe with 2 segments, A and B
+
+    u.segments.segids = ['X', 'Y']
+
+    assert u.segments[0].segid == 'X'
+    assert u.segments[1].segid == 'Y'
+
+    assert len(u.select_atoms('segid A')) == 0
+    assert len(u.select_atoms('segid B')) == 0
+    assert len(u.select_atoms('segid X')) == 3
+    assert len(u.select_atoms('segid Y')) == 3
+
+
 def test_atom_order(universe):
     assert_equal(universe.segments.atoms.indices,
                  sorted(universe.segments.atoms.indices))
