@@ -35,41 +35,120 @@ from MDAnalysis.transformations.wrap import wrap, unwrap
 from MDAnalysisTests.datafiles import PSF_TRICLINIC, DCD_TRICLINIC
 
 
-@pytest.fixture()
-def test_u():
-    u = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
-    return u
-
-
-uni = mda.Universe(PSF_TRICLINIC, DCD_TRICLINIC)
-ag = uni.atoms[0:10]
-
-
 @pytest.fixture(params=[
-    (fit_translation, [ag, ag]),
-    (fit_rot_trans, [ag, ag]),
-    (PositionAverager, [3]),
-    (rotateby, [90, [0, 0, 1], [1, 2, 3]]),
-    (translate, [[1, 2, 3]]),
-    (center_in_box, [ag]),
-    (wrap, [uni.atoms]),
-    (unwrap, [uni.atoms])
+    (PSF_TRICLINIC, DCD_TRICLINIC),
 ])
-def transformation(request):
-    transform = request.param[0](*request.param[1])
-    return transform
+def u(request):
+    top, traj = request.param
+    return mda.Universe(top, traj)
 
 
-def test_transformation_pickle(transformation, test_u):
-    ref_result = transformation(test_u.trajectory[5]).positions
-    transformation_p = pickle.loads(pickle.dumps(transformation))
-    result = transformation_p(test_u.trajectory[5]).positions
-    assert_equal(ref_result, result)
+@pytest.fixture()
+def fit_translation_transformation(u):
+    ag = u.atoms[0:10]
+    return fit_translation(ag, ag)
 
 
-def test_add_transformation_pickle(transformation, test_u):
-    test_u.trajectory.add_transformations(transformation)
-    test_u_p = pickle.loads(pickle.dumps(test_u))
-    test_u.trajectory[0]
-    for u_ts, u_p_ts in zip(test_u.trajectory[:5], test_u_p.trajectory[:5]):
+@pytest.fixture()
+def fit_rot_trans_transformation(u):
+    ag = u.atoms[0:10]
+    return fit_rot_trans(ag, ag)
+
+
+@pytest.fixture()
+def PositionAverager_transformation(u):
+    return PositionAverager(3)
+
+
+@pytest.fixture()
+def rotateby_transformation(u):
+    ag = u.atoms[0:10]
+    return rotateby(90, [0, 0, 1], [1, 2, 3])
+
+
+@pytest.fixture()
+def translate_transformation(u):
+    return translate([1, 2, 3])
+
+
+@pytest.fixture()
+def center_in_box_transformation(u):
+    ag = u.atoms[0:10]
+    return center_in_box(ag)
+
+
+@pytest.fixture()
+def wrap_transformation(u):
+    ag = u.atoms
+    return wrap(ag)
+
+
+@pytest.fixture()
+def unwrap_transformation(u):
+    ag = u.atoms
+    return unwrap(ag)
+
+
+def test_add_fit_translation_pickle(fit_translation_transformation, u):
+    u.trajectory.add_transformations(fit_translation_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation,
+                                                 u):
+    u.trajectory.add_transformations(fit_rot_trans_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_PositionAverager_pickle(PositionAverager_transformation, u):
+    u.trajectory.add_transformations(PositionAverager_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_rotateby_pickle(rotateby_transformation, u):
+    u.trajectory.add_transformations(rotateby_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_translate_pickle(translate_transformation, u):
+    u.trajectory.add_transformations(translate_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_center_in_box_pickle(center_in_box_transformation, u):
+    u.trajectory.add_transformations(center_in_box_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_wrap_pickle(wrap_transformation, u):
+    u.trajectory.add_transformations(wrap_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
+        assert_equal(u_ts.positions, u_p_ts.positions)
+
+
+def test_add_unwrap_pickle(unwrap_transformation, u):
+    u.trajectory.add_transformations(unwrap_transformation)
+    u_p = pickle.loads(pickle.dumps(u))
+    u.trajectory[0]
+    for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
         assert_equal(u_ts.positions, u_p_ts.positions)
