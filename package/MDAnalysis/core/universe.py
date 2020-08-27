@@ -83,7 +83,7 @@ else:
     os.fork = _os_dot_fork
     del _os_dot_fork
 
-from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
+from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -273,17 +273,6 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    is_anchor: bool, default ``True``
-        When unpickling instances of
-        :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
-        searched for one where to anchor those atoms. Set to ``False`` to
-        prevent this Universe from being considered.
-    anchor_name: str, ``None``, default ``None``
-        Setting to other than ``None`` will cause
-        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
-        Universe to only unpickle if a compatible Universe with matching
-        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
-        still be honored when unpickling.
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -318,14 +307,14 @@ class Universe(object):
 
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
-        ``topology``, ``trajectory`` and ``anchor_name`` are reserved
+        ``topology`` and ``trajectory`` are reserved
         upon unpickle.
     """
 # Py3 TODO
 #    def __init__(self, topology=None, *coordinates, all_coordinates=False,
 #                 format=None, topology_format=None, transformations=None,
-#                 guess_bonds=False, vdwradii=None, anchor_name=None,
-#                 is_anchor=True, in_memory=False, in_memory_step=1,
+#                 guess_bonds=False, vdwradii=None,
+#                 in_memory=False, in_memory_step=1,
 #                 **kwargs):
     def __init__(self, *args, **kwargs):
         topology = args[0] if args else None
@@ -336,15 +325,11 @@ class Universe(object):
         transformations = kwargs.pop('transformations', None)
         guess_bonds = kwargs.pop('guess_bonds', False)
         vdwradii = kwargs.pop('vdwradii', None)
-        anchor_name = kwargs.pop('anchor_name', None)
-        is_anchor = kwargs.pop('is_anchor', True)
         in_memory = kwargs.pop('in_memory', False)
         in_memory_step = kwargs.pop('in_memory_step', 1)
 
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
-        self._anchor_name = anchor_name
-        self.is_anchor = is_anchor
         self.atoms = None
         self.residues = None
         self.segments = None
@@ -354,8 +339,6 @@ class Universe(object):
             'transformations': transformations,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
-            'anchor_name': anchor_name,
-            'is_anchor': is_anchor,
             'in_memory': in_memory,
             'in_memory_step': in_memory_step,
             'format': format,
@@ -696,45 +679,6 @@ class Universe(object):
         """Improper dihedral angles between atoms"""
         return self.atoms.impropers
 
-    @property
-    def anchor_name(self):
-        # hash used for anchoring.
-        # Try and use anchor_name, else use (and store) uuid
-        if self._anchor_name is not None:
-            return self._anchor_name
-        else:
-            try:
-                return self._anchor_uuid
-            except AttributeError:
-                # store this so we can later recall it if needed
-                self._anchor_uuid = str(uuid.uuid4())
-                return self._anchor_uuid
-
-    @anchor_name.setter
-    def anchor_name(self, name):
-        self.remove_anchor()  # clear any old anchor
-        self._anchor_name = str(name) if not name is None else name
-        self.make_anchor()  # add anchor again
-
-    @property
-    def is_anchor(self):
-        """Is this Universe an anchoring for unpickling AtomGroups"""
-        return self.anchor_name in _ANCHOR_UNIVERSES
-
-    @is_anchor.setter
-    def is_anchor(self, new):
-        if new:
-            self.make_anchor()
-        else:
-            self.remove_anchor()
-
-    def remove_anchor(self):
-        """Remove this Universe from the possible anchor list for unpickling"""
-        _ANCHOR_UNIVERSES.pop(self.anchor_name, None)
-
-    def make_anchor(self):
-        _ANCHOR_UNIVERSES[self.anchor_name] = self
-
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
@@ -745,17 +689,13 @@ class Universe(object):
 
     def __getstate__(self):
         # Universe's two "legs" of topology and traj both serialise themselves
-        # the only other state held in Universe is anchor name?
-        return self.anchor_name, self._topology, self._trajectory
+        return self._topology, self._trajectory
 
     def __setstate__(self, args):
-        self._anchor_name = args[0]
-        self.make_anchor()
-
-        self._topology = args[1]
+        self._topology = args[0]
         _generate_from_topology(self)
 
-        self._trajectory = args[2]
+        self._trajectory = args[1]
 
     # Properties
     @property
