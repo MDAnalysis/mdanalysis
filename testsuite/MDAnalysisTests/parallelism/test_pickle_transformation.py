@@ -62,7 +62,6 @@ def PositionAverager_transformation(u):
 
 @pytest.fixture()
 def rotateby_transformation(u):
-    ag = u.atoms[0:10]
     return rotateby(90, [0, 0, 1], [1, 2, 3])
 
 
@@ -98,7 +97,7 @@ def test_add_fit_translation_pickle(fit_translation_transformation, u):
 
 
 def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation,
-                                                 u):
+                                  u):
     u.trajectory.add_transformations(fit_rot_trans_transformation)
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
