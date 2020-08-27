@@ -38,7 +38,7 @@ env:
     - CYTHON_TRACE_NOGIL=1
     - MPLBACKEND=agg
 
-  matrix:
+  jobs:
     # Run a coverage test for most versions
     - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
@@ -47,7 +47,7 @@ env:
     - NUMPY_VERSION=1.13.3
     - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
-matrix:
+jobs:
   fast_finish: true
   include:
     - env: NAME="Doc"
@@ -67,10 +67,14 @@ matrix:
            CONDA_DEPENDENCIES=""
            INSTALL_HOLE="false"
 
+    # pin dependencies for legacy:
+    # - ensure that chemfiles can get the last netcdf4 that is still supported
+    #   see https://github.com/MDAnalysis/mdanalysis/pull/2798#issuecomment-679991785
     - env: NAME="python 2.7"
            PYTHON_VERSION=2.7
            CODECOV="true"
            NUMPY_VERSION=1.16
+           CONDA_DEPENDENCIES="${CONDA_DEPENDENCIES} chemfiles-lib=0.9.3=he1b5a44_0"
            SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
 
@@ -86,14 +90,6 @@ matrix:
     - os: osx
       env: PYTHON_VERSION=3.6
            NUMPY_VERSION=1.17.3
-
-# macOS Python 2.7 works in principle but times out on Travis CI:
-# Disabled so that the tests can pass.
-#    - os: osx
-#      env: PYTHON_VERSION=2.7
-#           NUMPY_VERSION=1.16
-#           CODECOV="true"
-#           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
     - env: NAME='minimal'
            PIP_DEPENDENCIES=""
