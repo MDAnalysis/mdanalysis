@@ -123,7 +123,8 @@ class LeafletFinder(object):
     consecutively, starting at 0. To obtain the atoms in the input structure
     use :meth:`LeafletFinder.groups`::
 
-       L = LeafletFinder(PDB, 'name P*')
+       u = mda.Universe(PDB)
+       L = LeafletFinder(u, 'name P*')
        leaflet0 = L.groups(0)
        leaflet1 = L.groups(1)
 
@@ -136,8 +137,13 @@ class LeafletFinder(object):
 
        leaflet0.residues.atoms
 
+
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+
+    .. deprecated:: 1.0.1
+       The ability to pass a filename (str) in the `universe` argument
+       will be removed in 2.0.0.
     """
 
     def __init__(self, universe, select, cutoff=15.0, pbc=False, sparse=None):

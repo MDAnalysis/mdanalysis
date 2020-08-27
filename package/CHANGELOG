@@ -50,6 +50,9 @@ Deprecations
   * waterdynamics.HydrogenBondLifetimes will be removed in 2.0.0 and
     replaced with hydrogenbonds.HydrogenBondAnalysis.lifetime() (#2547)
   * lib.util.echo() will be removed in 2.0.0
+  * core.universe.as_Universe() will be removed in 2.0.0
+  * analysis.leaflets.LeafletFinder() will not accept a filename any more,
+    only a Universe, in 2.0.0 
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,
