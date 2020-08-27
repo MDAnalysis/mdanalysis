@@ -1503,32 +1503,6 @@
         <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
 
 
-<span class="c1"># TODO: what is the point of this function???</span>
-<span class="k">def</span> <span class="nf">as_Universe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return a universe from the input arguments.</span>
-
-<span class="sd">    1. If the first argument is a universe, just return it::</span>
-
-<span class="sd">         as_Universe(universe) --&gt; universe</span>
-
-<span class="sd">    2. Otherwise try to build a universe from the first or the first</span>
-<span class="sd">       and second argument::</span>
-
-<span class="sd">         as_Universe(PDB, **kwargs) --&gt; Universe(PDB, **kwargs)</span>
-<span class="sd">         as_Universe(PSF, DCD, **kwargs) --&gt; Universe(PSF, DCD, **kwargs)</span>
-<span class="sd">         as_Universe(*args, **kwargs) --&gt; Universe(*args, **kwargs)</span>
-
-<span class="sd">    Returns</span>
-<span class="sd">    -------</span>
-<span class="sd">    :class:`~MDAnalysis.core.groups.Universe`</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;as_Universe() takes at least one argument (</span><span class="si">%d</span><span class="s2"> given)&quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
-    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Universe</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">Universe</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-
 <div class="viewcode-block" id="Merge"><a class="viewcode-back" href="../../../documentation_pages/core/universe.html#MDAnalysis.core.universe.Merge">[docs]</a><span class="k">def</span> <span class="nf">Merge</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Create a new new :class:`Universe` from one or more</span>
 <span class="sd">    :class:`~MDAnalysis.core.groups.AtomGroup` instances.</span>

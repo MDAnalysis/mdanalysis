@@ -272,9 +272,8 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    universe : Universe or str</span>
-<span class="sd">        :class:`MDAnalysis.Universe` or a file name (e.g., in PDB or</span>
-<span class="sd">        GRO format)</span>
+<span class="sd">    universe : Universe</span>
+<span class="sd">        :class:`~MDAnalysis.core.universe.Universe` object.</span>
 <span class="sd">    select : AtomGroup or str</span>
 <span class="sd">        A AtomGroup instance or a</span>
 <span class="sd">        :meth:`Universe.select_atoms` selection string</span>
@@ -298,7 +297,8 @@
 <span class="sd">    consecutively, starting at 0. To obtain the atoms in the input structure</span>
 <span class="sd">    use :meth:`LeafletFinder.groups`::</span>
 
-<span class="sd">       L = LeafletFinder(PDB, &#39;name P*&#39;)</span>
+<span class="sd">       u_PDB = mda.Universe(PDB)</span>
+<span class="sd">       L = LeafletFinder(u_PDB, &#39;name P*&#39;)</span>
 <span class="sd">       leaflet0 = L.groups(0)</span>
 <span class="sd">       leaflet1 = L.groups(1)</span>
 
@@ -311,12 +311,15 @@
 
 <span class="sd">       leaflet0.residues.atoms</span>
 
+
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">       Changed `selection` keyword to `select`</span>
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">       The universe keyword no longer accepts non-Universe arguments. Please</span>
+<span class="sd">       create a :class:`~MDAnalysis.core.universe.Universe` first.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="n">universe</span> <span class="o">=</span> <span class="n">core</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">as_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">universe</span> <span class="o">=</span> <span class="n">universe</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span> <span class="o">=</span> <span class="n">select</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectionstring</span><span class="p">,</span> <span class="n">core</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">AtomGroup</span><span class="p">):</span>

@@ -243,8 +243,7 @@ algorithm.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> or a file name (e.g., in PDB or
-GRO format)</li>
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> object.</li>
 <li><strong>select</strong> (<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – A AtomGroup instance or a
 <code class="xref py py-meth docutils literal notranslate"><span class="pre">Universe.select_atoms()</span></code> selection string
 for atoms that define the lipid head groups, e.g.
@@ -266,7 +265,8 @@ implementation [<code class="docutils literal notranslate"><span class="pre">Non
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">LeafletFinder.components</span></code>; the atoms in each component are numbered
 consecutively, starting at 0. To obtain the atoms in the input structure
 use <a class="reference internal" href="#MDAnalysis.analysis.leaflet.LeafletFinder.groups" title="MDAnalysis.analysis.leaflet.LeafletFinder.groups"><code class="xref py py-meth docutils literal notranslate"><span class="pre">LeafletFinder.groups()</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">PDB</span><span class="p">,</span> <span class="s1">&#39;name P*&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">u_PDB</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PDB</span><span class="p">)</span>
+<span class="n">L</span> <span class="o">=</span> <span class="n">LeafletFinder</span><span class="p">(</span><span class="n">u_PDB</span><span class="p">,</span> <span class="s1">&#39;name P*&#39;</span><span class="p">)</span>
 <span class="n">leaflet0</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">leaflet1</span> <span class="o">=</span> <span class="n">L</span><span class="o">.</span><span class="n">groups</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -282,6 +282,10 @@ instance. Similarly, all atoms in the first leaflet are then</p>
 </div>
 <div class="versionchanged">
 <p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The universe keyword no longer accepts non-Universe arguments. Please
+create a <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a> first.</p>
 </div>
 <dl class="method">
 <dt id="MDAnalysis.analysis.leaflet.LeafletFinder.group">
