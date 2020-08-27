@@ -687,16 +687,23 @@ class Universe(object):
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
 
-    def __getstate__(self):
-        # Universe's two "legs" of topology and traj both serialise themselves
-        return self._topology, self._trajectory
 
-    def __setstate__(self, args):
-        self._topology = args[0]
-        _generate_from_topology(self)
+    @classmethod
+    def _unpickle_U(cls, top, traj):
+        """Special method used by __reduce__ to deserialise a Universe"""
+        #  top is a Topology object at this point, but Universe can handle that	
+        u = cls(top)
+        #  maybe this is None, but that's still cool	
+        u.trajectory = traj
 
-        self._trajectory = args[1]
+        return u
 
+    def __reduce__(self):
+        #  __setstate__/__getstate__ will raise an error when Universe has a
+        #  transformation (that has AtomGroup inside). Use __reduce__ instead.
+        #  Universe's two "legs" of topology and traj both serialise themselves.
+        return (self._unpickle_U, (self._topology,
+                                   self._trajectory))
     # Properties
     @property
     def dimensions(self):
