@@ -214,7 +214,7 @@ construct a <code class="docutils literal notranslate"><span class="pre">Univers
 <h2>11.1.1.1. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.core.universe.Universe">
-<em class="property">class </em><code class="descclassname">MDAnalysis.core.universe.</code><code class="descname">Universe</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.core.universe.</code><code class="descname">Universe</code><span class="sig-paren">(</span><em>topology=None</em>, <em>*coordinates</em>, <em>all_coordinates=False</em>, <em>format=None</em>, <em>topology_format=None</em>, <em>transformations=None</em>, <em>guess_bonds=False</em>, <em>vdwradii=None</em>, <em>in_memory=False</em>, <em>in_memory_step=1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/core/universe.html#Universe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.core.universe.Universe" title="Permalink to this definition">¶</a></dt>
 <dd><p>The MDAnalysis Universe contains all the information describing the system.</p>
 <p>The system always requires a <em>topology</em> file — in the simplest case just
 a list of atoms. This can be a CHARMM/NAMD PSF file or a simple coordinate
@@ -296,6 +296,7 @@ representations, which allow for manipulation of coordinates.</li>
 <a class="reference internal" href="../coordinates/chain.html#module-MDAnalysis.coordinates.chain" title="MDAnalysis.coordinates.chain"><code class="xref py py-mod docutils literal notranslate"><span class="pre">ChainReader</span></code></a>, which contains the
 functionality to treat independent trajectory files as a single virtual
 trajectory.</li>
+<li><strong>**kwargs</strong> (<em>extra arguments are passed to the topology parser.</em>) – </li>
 </ul>
 </td>
 </tr>

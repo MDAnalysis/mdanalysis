@@ -317,11 +317,8 @@
             <span class="s2">&quot;Error: </span><span class="si">{2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topology_file</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">err</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">topology</span>
 
-<span class="c1"># py3 TODO</span>
-<span class="c1">#def _resolve_formats(*coordinates, format=None, topology_format=None):</span>
-<span class="k">def</span> <span class="nf">_resolve_formats</span><span class="p">(</span><span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">topology_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;topology_format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_resolve_formats</span><span class="p">(</span><span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">coordinates</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="nb">format</span> <span class="o">=</span> <span class="n">topology_format</span>
@@ -329,15 +326,9 @@
             <span class="n">topology_format</span> <span class="o">=</span> <span class="nb">format</span>
     <span class="k">return</span> <span class="nb">format</span><span class="p">,</span> <span class="n">topology_format</span>
 
-<span class="c1"># py3 TODO</span>
-<span class="c1">#def _resolve_coordinates(filename, *coordinates, format=None,</span>
-<span class="c1">#                         all_coordinates=False):</span>
-<span class="k">def</span> <span class="nf">_resolve_coordinates</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">coordinates</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="n">all_coordinates</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;all_coordinates&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
 
+<span class="k">def</span> <span class="nf">_resolve_coordinates</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">all_coordinates</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">coordinates</span> <span class="ow">and</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">get_reader_for</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="nb">format</span><span class="p">)</span>
@@ -466,6 +457,7 @@
 <span class="sd">        :mod:`ChainReader&lt;MDAnalysis.coordinates.chain&gt;`, which contains the</span>
 <span class="sd">        functionality to treat independent trajectory files as a single virtual</span>
 <span class="sd">        trajectory.</span>
+<span class="sd">    **kwargs: extra arguments are passed to the topology parser.</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -489,23 +481,10 @@
 <span class="sd">        ``topology`` and ``trajectory`` are reserved</span>
 <span class="sd">        upon unpickle.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<span class="c1"># Py3 TODO</span>
-<span class="c1">#    def __init__(self, topology=None, *coordinates, all_coordinates=False,</span>
-<span class="c1">#                 format=None, topology_format=None, transformations=None,</span>
-<span class="c1">#                 guess_bonds=False, vdwradii=None,</span>
-<span class="c1">#                 in_memory=False, in_memory_step=1,</span>
-<span class="c1">#                 **kwargs):</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">topology</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">args</span> <span class="k">else</span> <span class="kc">None</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-        <span class="n">all_coordinates</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;all_coordinates&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">topology_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;topology_format&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">transformations</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;transformations&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">guess_bonds</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;guess_bonds&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">vdwradii</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;vdwradii&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">in_memory</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;in_memory&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
-        <span class="n">in_memory_step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;in_memory_step&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">topology</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">coordinates</span><span class="p">,</span> <span class="n">all_coordinates</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="nb">format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">topology_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">transformations</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">guess_bonds</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">vdwradii</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">in_memory_step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># managed attribute holding Reader</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
