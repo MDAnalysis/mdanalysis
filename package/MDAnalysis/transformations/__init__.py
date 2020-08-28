@@ -22,7 +22,7 @@
 #
 
 
-"""\
+"""
 Trajectory transformations --- :mod:`MDAnalysis.transformations`
 ================================================================
 
@@ -55,11 +55,11 @@ atoms around the z-axis through the center of geometry by a fixed increment
 for every time step. We will use
 :meth:`MDAnalysis.core.groups.AtomGroup.rotateby`
 and simply increment the rotation angle every time the
-transformation is called::
+transformation is called ::
 
     class spin_atoms(object):
         def __init__(self, atoms, dphi):
-            """Rotate atoms by dphi degrees for every ts (around the z axis)"""
+            #  Rotate atoms by dphi degrees for every ts around the z axis
             self.atoms = atoms
             self.dphi = dphi
             self.axis = np.array([0, 0, 1])
