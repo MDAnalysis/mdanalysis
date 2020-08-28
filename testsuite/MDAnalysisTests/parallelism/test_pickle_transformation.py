@@ -22,7 +22,7 @@
 #
 import pytest
 import pickle
-from numpy.testing import assert_equal
+from numpy.testing import assert_almost_equal
 
 import MDAnalysis as mda
 
@@ -93,7 +93,7 @@ def test_add_fit_translation_pickle(fit_translation_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation,
@@ -102,7 +102,7 @@ def test_add_fit_rot_trans_pickle(fit_rot_trans_transformation,
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_PositionAverager_pickle(PositionAverager_transformation, u):
@@ -110,7 +110,7 @@ def test_add_PositionAverager_pickle(PositionAverager_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_rotateby_pickle(rotateby_transformation, u):
@@ -118,7 +118,7 @@ def test_add_rotateby_pickle(rotateby_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_translate_pickle(translate_transformation, u):
@@ -126,7 +126,7 @@ def test_add_translate_pickle(translate_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_center_in_box_pickle(center_in_box_transformation, u):
@@ -134,7 +134,7 @@ def test_add_center_in_box_pickle(center_in_box_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_wrap_pickle(wrap_transformation, u):
@@ -142,7 +142,7 @@ def test_add_wrap_pickle(wrap_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)
 
 
 def test_add_unwrap_pickle(unwrap_transformation, u):
@@ -150,4 +150,4 @@ def test_add_unwrap_pickle(unwrap_transformation, u):
     u_p = pickle.loads(pickle.dumps(u))
     u.trajectory[0]
     for u_ts, u_p_ts in zip(u.trajectory[:5], u_p.trajectory[:5]):
-        assert_equal(u_ts.positions, u_p_ts.positions)
+        assert_almost_equal(u_ts.positions, u_p_ts.positions)

@@ -32,7 +32,9 @@ Coordinate transformations, such as PBC corrections and molecule fitting
 are often required for some analyses and visualization, and the functions in
 this module allow transformations to be applied on-the-fly.
 
-A typical transformation class looks like this:
+A typical transformation class looks like this (note that we keep its name
+lowercase because we will treat it as a function, thanks to the ``__call__``
+method):
 
 .. code-blocks:: python
 
@@ -48,7 +50,32 @@ A typical transformation class looks like this:
 
             return ts
 
-See `MDAnalysis.transformations.translate` for a simple example.
+As a concrete example we will write a transformation that rotates a group of
+atoms around the z-axis through the center of geometry by a fixed increment
+for every time step. We will use
+:meth:`MDAnalysis.core.groups.AtomGroup.rotateby`
+and simply increment the rotation angle every time the
+transformation is called::
+
+    class spin_atoms(object):
+        def __init__(self, atoms, dphi):
+            """Rotate atoms by dphi degrees for every ts (around the z axis)"""
+            self.atoms = atoms
+            self.dphi = dphi
+            self.axis = np.array([0, 0, 1])
+            self.phi = 0
+
+        def __call__(self, ts):
+            self.atoms.rotateby(self.phi, self.axis)
+            self.phi += self.dphi
+            return ts
+
+This transformation can be used as ::
+
+   u = mda.Universe(PSF, DCD)
+   u.trajectory.add_transformations(spin_atoms(u.select_atoms("protein"), 1.0))
+
+Alos see :mod:`MDAnalysis.transformations.translate` for a simple example.
 
 These transformation functions can be called by the user for any given timestep
 of the trajectory, added as a workflow using :meth:`add_transformations`
