@@ -2737,6 +2737,10 @@ class AtomGroup(GroupBase):
             record_type *record_type*
                 for selecting either ATOM or HETATM from PDB-like files.
                 e.g. ``select_atoms('name CA and not record_type HETATM')``
+            smarts *SMARTS-query*
+                select atoms using Daylight's SMARTS queries, e.g. ``smarts
+                [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.
+                All matches (max 1000) are combined as a unique match
 
         **Boolean**
 
@@ -2883,6 +2887,8 @@ class AtomGroup(GroupBase):
            equivalent ``global group`` selection.
            Removed flags affecting default behaviour for periodic selections;
            periodic are now on by default (as with default flags)
+        .. versionchanged:: 2.0.0
+            Added the *smarts* selection.
         """
 
         if not sel:
