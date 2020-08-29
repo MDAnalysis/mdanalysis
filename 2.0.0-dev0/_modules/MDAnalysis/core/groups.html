@@ -2916,6 +2916,10 @@
 <span class="sd">            record_type *record_type*</span>
 <span class="sd">                for selecting either ATOM or HETATM from PDB-like files.</span>
 <span class="sd">                e.g. ``select_atoms(&#39;name CA and not record_type HETATM&#39;)``</span>
+<span class="sd">            smarts *SMARTS-query*</span>
+<span class="sd">                select atoms using Daylight&#39;s SMARTS queries, e.g. ``smarts</span>
+<span class="sd">                [#7;R]`` to find nitrogen atoms in rings. Requires RDKit.</span>
+<span class="sd">                All matches (max 1000) are combined as a unique match</span>
 
 <span class="sd">        **Boolean**</span>
 
@@ -3062,6 +3066,8 @@
 <span class="sd">           equivalent ``global group`` selection.</span>
 <span class="sd">           Removed flags affecting default behaviour for periodic selections;</span>
 <span class="sd">           periodic are now on by default (as with default flags)</span>
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">            Added the *smarts* selection.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>

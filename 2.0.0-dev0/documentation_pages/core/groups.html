@@ -1644,6 +1644,10 @@ moment, only the TPR format defines the molecule type.</dd>
 <dt>record_type <em>record_type</em></dt>
 <dd>for selecting either ATOM or HETATM from PDB-like files.
 e.g. <code class="docutils literal notranslate"><span class="pre">select_atoms('name</span> <span class="pre">CA</span> <span class="pre">and</span> <span class="pre">not</span> <span class="pre">record_type</span> <span class="pre">HETATM')</span></code></dd>
+<dt>smarts <em>SMARTS-query</em></dt>
+<dd>select atoms using Daylight’s SMARTS queries, e.g. <code class="docutils literal notranslate"><span class="pre">smarts</span>
+<span class="pre">[#7;R]</span></code> to find nitrogen atoms in rings. Requires RDKit.
+All matches (max 1000) are combined as a unique match</dd>
 </dl>
 </div></blockquote>
 <p><strong>Boolean</strong></p>
@@ -1815,6 +1819,9 @@ Added periodic kwarg (default True)</p>
 equivalent <code class="docutils literal notranslate"><span class="pre">global</span> <span class="pre">group</span></code> selection.
 Removed flags affecting default behaviour for periodic selections;
 periodic are now on by default (as with default flags)</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Added the <em>smarts</em> selection.</p>
 </div>
 </dd></dl>
 

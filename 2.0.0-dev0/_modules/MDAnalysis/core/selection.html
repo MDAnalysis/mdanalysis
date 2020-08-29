@@ -796,6 +796,60 @@
         <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">aromaticities</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
 
 
+<div class="viewcode-block" id="SmartsSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SmartsSelection">[docs]</a><span class="k">class</span> <span class="nc">SmartsSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on SMARTS queries.</span>
+
+<span class="sd">    Uses RDKit to run the query and converts the result to MDAnalysis.</span>
+<span class="sd">    Supports chirality.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;smarts&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="c1"># The parser will add spaces around parentheses and then split the</span>
+        <span class="c1"># selection based on spaces to create the tokens</span>
+        <span class="c1"># If the input SMARTS query contained parentheses, the query will be</span>
+        <span class="c1"># split because of that and we need to reconstruct it</span>
+        <span class="c1"># We also need to keep the parentheses that are not part of the smarts</span>
+        <span class="c1"># query intact</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;(&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="c1"># loop until keyword but ignore parentheses as a keyword</span>
+        <span class="k">while</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">is_keyword</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="c1"># keep track of the number of open and closed parentheses</span>
+            <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;(&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">]:</span>
+                <span class="n">counter</span><span class="p">[</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># if the char is a closing &quot;)&quot; but there&#39;s no corresponding</span>
+                <span class="c1"># open &quot;(&quot; then we&#39;ve reached then end of the smarts query and</span>
+                <span class="c1"># the current token &quot;)&quot; is part of a grouping parenthesis</span>
+                <span class="k">if</span> <span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span> <span class="ow">and</span> <span class="n">counter</span><span class="p">[</span><span class="s2">&quot;(&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="s2">&quot;)&quot;</span><span class="p">]):</span>
+                    <span class="k">break</span>
+            <span class="c1"># add the token to the pattern and remove it from the tokens</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="n">pattern</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="s2">&quot;RDKit is required for SMARTS-based atom &quot;</span>
+                              <span class="s2">&quot;selection but it&#39;s not installed. Try &quot;</span>
+                              <span class="s2">&quot;installing it with </span><span class="se">\n</span><span class="s2">&quot;</span>
+                              <span class="s2">&quot;conda install -c conda-forge rdkit&quot;</span><span class="p">)</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmarts</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pattern</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">pattern</span><span class="si">!r}</span><span class="s2"> is not a valid SMARTS query&quot;</span><span class="p">)</span>
+        <span class="n">mol</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">convert_to</span><span class="p">(</span><span class="s2">&quot;RDKIT&quot;</span><span class="p">)</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetSubstructMatches</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">useChirality</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># convert rdkit indices to mdanalysis&#39;</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">mol</span><span class="o">.</span><span class="n">GetAtomWithIdx</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">.</span><span class="n">GetIntProp</span><span class="p">(</span><span class="s2">&quot;_MDAnalysis_index&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">match</span><span class="p">]</span>
+        <span class="c1"># create boolean mask for atoms based on index</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">n_atoms</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">indices</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="ResidSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
 

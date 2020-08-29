@@ -271,6 +271,10 @@ that have an altloc B record.</dd>
 <dt>moltype <em>molecule-type</em></dt>
 <dd>select by molecule type, e.g. <code class="docutils literal notranslate"><span class="pre">moltype</span> <span class="pre">Protein_A</span></code>. At the moment, only
 the TPR format defines the molecule type.</dd>
+<dt>smarts <em>SMARTS-query</em></dt>
+<dd>select atoms using Daylight’s SMARTS queries, e.g. <code class="docutils literal notranslate"><span class="pre">smarts</span> <span class="pre">[#7;R]</span></code> to
+find nitrogen atoms in rings. Requires RDKit. All matches (max 1000) are
+combined as a unique match.</dd>
 </dl>
 </div>
 <div class="section" id="pattern-matching">
