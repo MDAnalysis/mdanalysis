@@ -40,8 +40,9 @@ The selections should appear in the user interface.
 .. autoclass:: SelectionWriter
    :inherited-members:
 """
-from . import base
+from __future__ import absolute_import
 
+from . import base
 
 class SelectionWriter(base.SelectionWriterBase):
     format = ["PyMol", "pml"]

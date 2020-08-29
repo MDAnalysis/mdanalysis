@@ -28,6 +28,8 @@ Neighbor Search wrapper for MDAnalysis --- :mod:`MDAnalysis.lib.NeighborSearch`
 This module contains classes that allow neighbor searches directly with
 `AtomGroup` objects from `MDAnalysis`.
 """
+from __future__ import absolute_import
+
 import numpy as np
 from MDAnalysis.lib.distances import capped_distance
 from MDAnalysis.lib.util import unique_int_1d
@@ -91,7 +93,7 @@ class AtomNeighborSearch(object):
                                 radius, box=self._box, return_distances=False)
 
         if pairs.size > 0:
-            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.intp))
+            unique_idx = unique_int_1d(np.asarray(pairs[:, 1], dtype=np.int64))
         return self._index2level(unique_idx, level)
 
     def _index2level(self, indices, level):

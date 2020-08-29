@@ -55,6 +55,8 @@ Classes
 .. _AutoDock:
    http://autodock.scripps.edu/
 """
+from __future__ import absolute_import
+
 import numpy as np
 
 from . import guessers

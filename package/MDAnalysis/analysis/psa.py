@@ -205,7 +205,12 @@ Classes, methods, and functions
 .. |Np| replace:: :math:`N_p`
 
 """
-import pickle
+from __future__ import division, absolute_import, print_function
+
+import six
+from six.moves import range, cPickle, zip
+from six import raise_from, string_types
+
 import os
 import warnings
 import numbers
@@ -256,9 +261,14 @@ def get_path_metric_func(name):
     try:
         return path_metrics[name]
     except KeyError as key:
-        errmsg = (f'Path metric "{key}" not found. Valid selections: '
-                  f'{" ".join(n for n in path_metrics.keys())}')
-        raise KeyError(errmsg) from None
+        raise_from(
+            KeyError(
+                'Path metric "{}" not found. Valid selections: {}'.format(
+                    key,
+                    " ".join('"{}"'.format(n) for n in path_metrics.keys())
+                    )
+                ),
+            None)
 
 
 def sqnorm(v, axis=None):
@@ -1343,7 +1353,7 @@ class PSAnalysis(object):
                          'paths' : 'paths',
                          'distance_matrices' : 'distance_matrices',
                          'plots' : 'plots'}
-        for dir_name, directory in self.datadirs.items():
+        for dir_name, directory in six.iteritems(self.datadirs):
             try:
                 full_dir_name = os.path.join(self.targetdir, dir_name)
                 os.makedirs(full_dir_name)
@@ -1372,11 +1382,11 @@ class PSAnalysis(object):
         self._labels_pkl = os.path.join(self.targetdir, "psa_labels.pkl")
         # Pickle topology and trajectory filenames for this analysis to curdir
         with open(self._top_pkl, 'wb') as output:
-            pickle.dump(self.top_name, output)
+            cPickle.dump(self.top_name, output)
         with open(self._trjs_pkl, 'wb') as output:
-            pickle.dump(self.trj_names, output)
+            cPickle.dump(self.trj_names, output)
         with open(self._labels_pkl, 'wb') as output:
-            pickle.dump(self.labels, output)
+            cPickle.dump(self.labels, output)
 
         self.natoms = None
         self.npaths = None
@@ -1470,7 +1480,7 @@ class PSAnalysis(object):
         self.fit_trj_names = fit_trj_names
         if save:
             with open(self._fit_trjs_pkl, 'wb') as output:
-                pickle.dump(self.fit_trj_names, output)
+                cPickle.dump(self.fit_trj_names, output)
         if store:
             self.save_paths(filename=filename)
 
@@ -1503,7 +1513,7 @@ class PSAnalysis(object):
         stop = kwargs.pop('stop', None)
         step = kwargs.pop('step', None)
 
-        if isinstance(metric, str):
+        if isinstance(metric, string_types):
             metric_func = get_path_metric_func(str(metric))
         else:
             metric_func = metric
@@ -1609,7 +1619,7 @@ class PSAnalysis(object):
             logger.info("Wrote path to file %r", current_outfile)
         self.path_names = path_names
         with open(self._paths_pkl, 'wb') as output:
-            pickle.dump(self.path_names, output)
+            cPickle.dump(self.path_names, output)
         return filename
 
     def load(self):
@@ -1670,7 +1680,7 @@ class PSAnalysis(object):
         dist_matrix_clus
           clustered distance matrix (reordered)
 
-        .. versionchanged:: 1.0.0
+        .. versionchanged:: 0.21.0
             :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
             changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
             :attr:`label2` due to upstream deprecation (see #2493)
@@ -1797,7 +1807,7 @@ class PSAnalysis(object):
 
         .. _seaborn: https://seaborn.pydata.org/
 
-        .. versionchanged:: 1.0.0
+        .. versionchanged:: 0.21.0
             :attr:`tick1On`, :attr:`tick2On`, :attr:`label1On` and :attr:`label2On`
             changed to :attr:`tick1line`, :attr:`tick2line`, :attr:`label1` and
             :attr:`label2` due to upstream deprecation (see #2493)
@@ -1808,7 +1818,7 @@ class PSAnalysis(object):
         try:
             import seaborn as sns
         except ImportError:
-            raise ImportError(
+            raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
                 The seaborn API could not be imported. Please install it first.
@@ -1823,7 +1833,9 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-                ) from None
+                ),
+                None,
+                )
 
         if self.D is None:
             raise ValueError(
@@ -1922,7 +1934,7 @@ class PSAnalysis(object):
         try:
             import seaborn as sns
         except ImportError:
-            raise ImportError(
+            raise_from(ImportError(
                 """ERROR --- The seaborn package cannot be found!
 
                 The seaborn API could not be imported. Please install it first.
@@ -1937,7 +1949,9 @@ class PSAnalysis(object):
 
                 and install in the usual manner.
                 """
-                ) from None
+                ),
+                None,
+                )
 
         colors = sns.xkcd_palette(["cherry", "windows blue"])
 

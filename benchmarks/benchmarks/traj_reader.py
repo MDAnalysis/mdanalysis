@@ -1,3 +1,4 @@
+from __future__ import division, absolute_import, print_function
 
 try:
     from MDAnalysis.coordinates.DCD import DCDReader

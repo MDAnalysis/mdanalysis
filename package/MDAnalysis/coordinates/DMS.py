@@ -32,6 +32,8 @@ coordinate files (as used by the Desmond_ MD package).
 .. _Desmond: http://www.deshawresearch.com/resources_desmond.html
 .. _DMS: http://www.deshawresearch.com/Desmond_Users_Guide-0.7.pdf
 """
+from __future__ import absolute_import
+
 import numpy as np
 import sqlite3
 

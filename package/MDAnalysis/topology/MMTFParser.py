@@ -66,6 +66,9 @@ Classes
 
 .. _Macromolecular Transmission Format (MMTF) format: https://mmtf.rcsb.org/
 """
+from __future__ import absolute_import
+from six.moves import zip
+
 from collections import defaultdict
 import mmtf
 import numpy as np
@@ -132,7 +135,7 @@ class ModelSelection(RangeSelection):
     field = 'models'
 
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=bool)
+        mask = np.zeros(len(group), dtype=np.bool)
         vals = group.models
 
         for upper, lower in zip(self.uppers, self.lowers):

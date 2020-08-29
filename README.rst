@@ -16,10 +16,18 @@ MDAnalysis also includes widely used analysis algorithms in the `MDAnalysis.anal
 The MDAnalysis project uses an `open governance model`_ and is fiscally sponsored by `NumFOCUS`_. Consider making 
 a `tax-deductible donation`_ to help the project pay for developer time, professional services, travel, workshops, and a variety of other needs.
 
-.. image:: https://www.mdanalysis.org/public/images/numfocus-sponsored-small.png
-   :alt: NumFOCUS (Fiscally Sponsored Project)
-   :target: https://numfocus.org/project/mdanalysis
-   :align: center
+.. raw:: html
+
+   <div align="center">
+      <a href="https://numfocus.org/project/mdanalysis">
+         <img height="60px" 
+            src="https://raw.githubusercontent.com/numfocus/templates/master/images/numfocus-logo.png"
+            alt="NumFOCUS Logo"
+            align="center">
+      </a>
+   </div>
+   <br />
+
 
 This project is bound by a `Code of Conduct`_.
 
@@ -45,68 +53,45 @@ Example analysis script
    # Iterate through trajectories
    for ts in u.trajectory:
        print(ag.center_of_mass())
+ 
+There are a number of tutorials_ on the MDAnalysis homepage that explain
+how to conduct RMSD calculations, Alignment and many more features of MDAnalysis.
 
+Source code
+===========
 
-Documentation
-=============
+Source code is hosted in a git repository at
 
-**New users** should read the `Quickstart Guide`_ and might want to
-look at our videos_, in which core developers explain various aspects
-of MDAnalysis.
+https://github.com/MDAnalysis/mdanalysis
 
-**All users** should read the `User Guide`_.
+and is available under the GNU General Public License, version 2 (see
+the file LICENSE_).
 
-**Developers** may also want to refer to the `MDAnalysis API docs`_.
+This is the top level of the master repository. It contains
 
-A growing number of **tutorials_** are available that explain how to
-conduct RMSD calculations, structural alignment, distance and contact
-analysis, and many more.
+1. the MDAnalysis toolkit source files in the directory ::
 
+      package/
 
-Installation and availability
-=============================
+2. the unit tests together with any input files required for
+   running those tests in the directory ::
 
-The latest release can be **installed via ``pip`` or ``conda``** as
-described in the `Installation Quick Start`_.
+      testsuite/
 
-**Source code** is hosted in a git repository at
-https://github.com/MDAnalysis/mdanalysis and is available under the
-GNU General Public License, version 2 (see the file LICENSE_).
+The directory ``maintainer`` contains scripts only needed for
+maintaining releases and are not generally useful for the user or the
+typical developer.
 
+(For more details on the directory layout see `Issue 87`_ on the
+MDAnalysis issue tracker.)
 
-Contributing
-============
+Guide for Developers
+====================
 
-Please report **bugs** or **enhancement requests** through the `Issue
-Tracker`_. Questions can also be asked on the `user mailing list`_.
-
-If you are a **new developer** who would like to start contributing to
-MDAnalysis get in touch on the `developer mailing list`_. To set up a
-development environment and run the test suite read the `developer
-guide`_.
-
-
-Citation
-========
-
-When using MDAnalysis in published work, please cite the following
-two papers:
-
-*   R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy,
-    M. N. Melo, S. L. Seyler, D. L. Dotson, J. Domanski,
-    S. Buchoux, I. M. Kenney, and O. Beckstein. MDAnalysis:
-    A Python package for the rapid analysis of molecular
-    dynamics simulations. In S. Benthall and S. Rostrup,
-    editors, Proceedings of the 15th Python in Science
-    Conference, pages 102-109, Austin, TX, 2016. SciPy.
-    doi:`10.25080/Majora-629e541a-00e`_    
-
-*   N. Michaud-Agrawal, E. J. Denning, T. B. Woolf,
-    and O. Beckstein. MDAnalysis: A Toolkit for the Analysis of Molecular
-    Dynamics Simulations. *J. Comput. Chem.* **32** (2011), 2319--2327.
-    doi:`10.1002/jcc.21787`_
-
-For citations of included algorithms and sub-modules please see the references_.
+To set up a development environment and run the test suite you can use this
+guide_. If you are a new developer who would like to start contributing to
+MDAnalysis, you can help increase our code coverage, the guides explain how
+to find uncovered code.
 
 
 
@@ -121,38 +106,21 @@ For citations of included algorithms and sub-modules please see the references_.
 .. _`Code of Conduct`: https://www.mdanalysis.org/pages/conduct/
 .. _trajectory formats: https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1
 .. _topology formats: https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats
+.. _Issue 87: https://github.com/MDAnalysis/mdanalysis/issues/87
 .. _MDAnalysis: https://www.mdanalysis.org
-.. _LICENSE:
-   https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
-.. _`Installation Quick Start`:
-   https://www.mdanalysis.org/pages/installation_quick_start/
+.. _LICENSE: https://github.com/MDAnalysis/mdanalysis/blob/master/LICENSE
+.. _`#286`: https://github.com/MDAnalysis/mdanalysis/issues/286
 .. _`MDAnalysis.analysis`: https://docs.mdanalysis.org/documentation_pages/analysis_modules.html
-.. _`tutorials`: https://userguide.mdanalysis.org/examples/README.html
-.. _`videos`: https://www.mdanalysis.org/pages/learning_MDAnalysis/#videos
-.. _`Quickstart Guide`:
-   https://userguide.mdanalysis.org/examples/quickstart.html
-.. _`User Guide`: https://userguide.mdanalysis.org
-.. _`MDAnalysis API docs`:
-   https://docs.mdanalysis.org
-.. _`Issue Tracker`: https://github.com/mdanalysis/mdanalysis/issues
-.. _`user mailing list`:
-   https://groups.google.com/group/mdnalysis-discussion
-.. _`developer guide`:
-   https://userguide.mdanalysis.org/contributing.html
-.. _`developer mailing list`:
-   https://groups.google.com/group/mdnalysis-devel
-.. _`10.1002/jcc.21787`: https://dx.doi.org/10.1002/jcc.21787
-.. _`10.25080/Majora-629e541a-00e`: https://doi.org/10.25080/Majora-629e541a-00e
-.. _references: https://docs.mdanalysis.org/documentation_pages/references.html
-
+.. _`tutorials`: https://www.mdanalysis.org/pages/learning_MDAnalysis/
+.. _`guide`: https://github.com/MDAnalysis/mdanalysis/wiki/Guide-for-Developers
 
 .. |usergroup| image:: https://img.shields.io/badge/Google%20Group-Users-lightgrey.svg
    :alt: User Google Group
-   :target: https://groups.google.com/group/mdnalysis-discussion
+   :target: http://users.mdanalysis.org
 
 .. |developergroup| image:: https://img.shields.io/badge/Google%20Group-Developers-lightgrey.svg
    :alt: Developer Google Group
-   :target: https://groups.google.com/group/mdnalysis-devel
+   :target: http://developers.mdanalysis.org
 
 .. |docs| image:: https://img.shields.io/badge/docs-latest-brightgreen.svg
    :alt: Documentation (latest release)
@@ -160,7 +128,7 @@ For citations of included algorithms and sub-modules please see the references_.
 
 .. |devdocs| image:: https://img.shields.io/badge/docs-development-yellow.svg
    :alt: Documentation (development version)
-   :target: https://docs.mdanalysis.org/dev
+   :target: https://www.mdanalysis.org/mdanalysis/
 
 .. |numfocus| image:: https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A
    :alt: Powered by NumFOCUS

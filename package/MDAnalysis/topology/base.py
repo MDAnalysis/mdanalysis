@@ -36,6 +36,10 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
+import six
+from six.moves import zip
+# While reduce is a built-in in python 2, it is not in python 3
 from functools import reduce
 
 import itertools
@@ -91,7 +95,7 @@ class _Topologymeta(type):
                 if '_format_hint' in classdict:
                     _PARSER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
-class TopologyReaderBase(IOBase, metaclass=_Topologymeta):
+class TopologyReaderBase(six.with_metaclass(_Topologymeta, IOBase)):
     """Base class for topology readers
 
     Parameters
@@ -196,7 +200,7 @@ def change_squash(criteria, to_squash):
 
     # 2) Allocate new arrays
     # Per atom record of what residue they belong to
-    residx = np.zeros_like(criteria[0], dtype=int)
+    residx = np.zeros_like(criteria[0], dtype=np.int)
     # Per residue record of various attributes
     new_others = [np.zeros(nres, dtype=o.dtype) for o in to_squash]
 

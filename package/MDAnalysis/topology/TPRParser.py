@@ -110,10 +110,10 @@ Development notes
 The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:
 
-* Atoms: number, name, type, resname, resid, segid, mass, charge, element
+* Atoms: number, name, type, resname, resid, segid, mass, charge,
   [residue, segment, radius, bfactor, resnum, moltype]
 * Bonds
-* Angles
+* Angels
 * Dihedrals
 * Impropers
 
@@ -132,7 +132,8 @@ The function :func:`read_tpxheader` is based on the
 ``read_`` or ``do_`` are trying to be similar to those in
 :file:`gmxdump.c` or :file:`tpxio.c`, those with ``extract_`` are new.
 
-Versions prior to Gromacs 4.0.x are not supported.
+Wherever ``fver_err(fver)`` is used, it means the tpx version problem
+has not been solved. Versions prior to Gromacs 4.0.x are not supported.
 
 .. Links
 .. _Gromacs: http://www.gromacs.org
@@ -144,14 +145,8 @@ Versions prior to Gromacs 4.0.x are not supported.
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
 .. _`Issue 2428`: https://github.com/MDAnalysis/mdanalysis/issues/2428
 
-
-.. versionchanged:: 2.0.0
-   The `elements` topology attribute is now exposed if at least one atom has
-   a valid element symbol. In that case, atoms for which the element is not
-   recognized have their element attribute set to an empty string. If none of
-   the elements are recognized, then the `elements` attribute is not set in the
-   topology.
 """
+from __future__ import absolute_import
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"
 
@@ -188,16 +183,18 @@ class TPRParser(TopologyReaderBase):
         data = tpr_utils.TPXUnpacker(tprf)
         try:
             th = tpr_utils.read_tpxheader(data)                    # tpxheader
-        except (EOFError, ValueError):
-            msg = f"{self.filename}: Invalid tpr file or cannot be recognized"
+        except EOFError:
+            msg = "{0}: Invalid tpr file or cannot be recognized".format(self.filename)
             logger.critical(msg)
             raise IOError(msg)
 
         self._log_header(th)
 
+        V = th.fver                                    # since it's used very often
+
         # Starting with gromacs 2020 (tpx version 119), the body of the file
         # is encoded differently. We change the unpacker accordingly.
-        if th.fver >= S.tpxv_AddSizeField and th.fgen >= 27:
+        if V >= S.tpxv_AddSizeField and th.fgen >= 27:
             actual_body_size = len(data.get_buffer()) - data.get_position()
             if actual_body_size == 4 * th.sizeOfTprBody:
                 # See issue #2428.
@@ -211,17 +208,20 @@ class TPRParser(TopologyReaderBase):
 
         state_ngtc = th.ngtc         # done init_state() in src/gmxlib/tpxio.c
         if th.bBox:
-            tpr_utils.extract_box_info(data, th.fver)
+            tpr_utils.extract_box_info(data, V)
 
-        if state_ngtc > 0:
-            if th.fver < 69:                      # redundancy due to  different versions
+        if state_ngtc > 0 and V >= 28:
+            if V < 69:                      # redundancy due to  different versions
                 tpr_utils.ndo_real(data, state_ngtc)
             tpr_utils.ndo_real(data, state_ngtc)        # relevant to Berendsen tcoupl_lambda
 
+        if V < 26:
+            tpr_utils.fileVersion_err(V)
+
         if th.bTop:
-            tpr_top = tpr_utils.do_mtop(data, th.fver)
+            tpr_top = tpr_utils.do_mtop(data, V)
         else:
-            msg = f"{self.filename}: No topology found in tpr file"
+            msg = "{0}: No topology found in tpr file".format(self.filename)
             logger.critical(msg)
             raise IOError(msg)
 
@@ -255,18 +255,18 @@ class TPRParser(TopologyReaderBase):
     #         utils.do_inputrec(data)
 
     def _log_header(self, th):
-        logger.info(f"Gromacs version   : {th.ver_str}")
-        logger.info(f"tpx version       : {th.fver}")
-        logger.info(f"tpx generation    : {th.fgen}")
-        logger.info(f"tpx precision     : {th.precision}")
-        logger.info(f"tpx file_tag      : {th.file_tag}")
-        logger.info(f"tpx natoms        : {th.natoms}")
-        logger.info(f"tpx ngtc          : {th.ngtc}")
-        logger.info(f"tpx fep_state     : {th.fep_state}")
-        logger.info(f"tpx lambda        : {th.lamb}")
-        logger.debug(f"tpx bIr (input record): {th.bIr}")
-        logger.debug(f"tpx bTop         : {th.bTop}")
-        logger.debug(f"tpx bX           : {th.bX}")
-        logger.debug(f"tpx bV           : {th.bV}")
-        logger.debug(f"tpx bF           : {th.bF}")
-        logger.debug(f"tpx bBox         : {th.bBox}")
+        logger.info("Gromacs version   : {0}".format(th.ver_str))
+        logger.info("tpx version       : {0}".format(th.fver))
+        logger.info("tpx generation    : {0}".format(th.fgen))
+        logger.info("tpx precision     : {0}".format(th.precision))
+        logger.info("tpx file_tag      : {0}".format(th.file_tag))
+        logger.info("tpx natoms        : {0}".format(th.natoms))
+        logger.info("tpx ngtc          : {0}".format(th.ngtc))
+        logger.info("tpx fep_state     : {0}".format(th.fep_state))
+        logger.info("tpx lambda        : {0}".format(th.lamb))
+        logger.debug("tpx bIr (input record): {0}".format(th.bIr))
+        logger.debug("tpx bTop         : {0}".format(th.bTop))
+        logger.debug("tpx bX           : {0}".format(th.bX))
+        logger.debug("tpx bV           : {0}".format(th.bV))
+        logger.debug("tpx bF           : {0}".format(th.bF))
+        logger.debug("tpx bBox         : {0}".format(th.bBox))

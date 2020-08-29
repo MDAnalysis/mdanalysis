@@ -33,6 +33,8 @@ MDAnalysis.coordinates.XTC: Read and write GROMACS XTC trajectory files.
 MDAnalysis.coordinates.TRR: Read and write GROMACS TRR trajectory files.
 MDAnalysis.lib.formats.libmdaxdr: Low level xdr format reader
 """
+from __future__ import absolute_import
+import six
 
 import errno
 import numpy as np
@@ -81,7 +83,7 @@ def read_numpy_offsets(filename):
 
     """
     try:
-        return {k: v for k, v in np.load(filename).items()}
+        return {k: v for k, v in six.iteritems(np.load(filename))}
     except IOError:
         warnings.warn("Failed to load offsets file {}\n".format(filename))
         return False
@@ -90,7 +92,7 @@ class XDRBaseReader(base.ReaderBase):
     """Base class for libmdaxdr file formats xtc and trr
 
     This class handles integration of XDR based formats into MDAnalysis. The
-    XTC and TRR classes only implement `_write_next_frame` and
+    XTC and TRR classes only implement `write_next_timestep` and
     `_frame_to_ts`.
 
     .. _offsets-label:
@@ -111,7 +113,7 @@ class XDRBaseReader(base.ReaderBase):
     Reader. However, the  next time the trajectory is opened,  the offsets will
     have to be rebuilt again.
 
-    .. versionchanged:: 1.0.0
+    .. versionchanged:: 0.21.0
        XDR offsets read from trajectory if offsets file read-in fails
 
     """

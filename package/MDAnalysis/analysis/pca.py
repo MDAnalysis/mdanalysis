@@ -102,6 +102,8 @@ Classes and Functions
 .. autofunction:: cosine_content
 
 """
+from __future__ import division, absolute_import
+from six.moves import range
 import warnings
 
 import numpy as np

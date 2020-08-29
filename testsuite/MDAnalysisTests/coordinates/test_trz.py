@@ -20,7 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
+
 import pytest
+from six.moves import zip
 import MDAnalysis as mda
 import os
 
@@ -129,10 +132,6 @@ class TestTRZReader(RefTRZ):
             assert_equal(isinstance(W, mda.coordinates.TRZ.TRZWriter), True)
             assert_equal(W.n_atoms, 100)
 
-    def test_get_wrong_n_atoms(self):
-        with pytest.raises(ValueError, match=r"Supplied n_atoms"):
-            mda.Universe(TRZ, n_atoms=8080)
-
 
 class TestTRZWriter(RefTRZ):
     prec = 3
@@ -154,7 +153,7 @@ class TestTRZWriter(RefTRZ):
 
     def _copy_traj(self, writer, universe, outfile):
         for ts in universe.trajectory:
-            writer.write(universe)
+            writer.write_next_timestep(ts)
         writer.close()
 
         uw = mda.Universe(TRZ_psf, outfile)
@@ -197,7 +196,7 @@ class TestTRZWriter2(object):
     def test_writer_trz_from_other(self, u, tmpdir):
         outfile = os.path.join(str(tmpdir), 'trz-writer-2.trz')
         with mda.coordinates.TRZ.TRZWriter(outfile, len(u.atoms)) as W:
-            W.write(u)
+            W.write(u.trajectory.ts)
             W.close()
 
             u2 = mda.Universe(two_water_gro, outfile)

@@ -21,13 +21,15 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
+from __future__ import print_function, absolute_import
+
 import pytest
 
 from numpy.testing import assert_equal, assert_allclose
 import numpy as np
 
 import MDAnalysis as mda
-from MDAnalysisTests.datafiles import GRO, Martini_membrane_gro, PDB
+from MDAnalysisTests.datafiles import GRO, Martini_membrane_gro
 from MDAnalysis.lib import nsgrid
 
 
@@ -229,46 +231,3 @@ def test_nsgrid_probe_close_to_box_boundary():
     expected_dists = np.array([2.3689647], dtype=np.float64)
     assert_equal(results.get_pairs(), expected_pairs)
     assert_allclose(results.get_pair_distances(), expected_dists, rtol=1.e-6)
-
-
-def test_zero_max_dist():
-    # see issue #2656
-    # searching with max_dist = 0.0 shouldn't cause segfault (and infinite subboxes)
-    ref = np.array([1.0, 1.0, 1.0], dtype=np.float32)
-    conf = np.array([2.0, 1.0, 1.0], dtype=np.float32)
-
-    box = np.array([10., 10., 10., 90., 90., 90.], dtype=np.float32)
-
-    res = mda.lib.distances._nsgrid_capped(ref, conf, box=box, max_cutoff=0.0)
-
-
-@pytest.fixture()
-def u_pbc_triclinic():
-    u = mda.Universe(PDB)
-    u.dimensions = [10, 10, 10, 60, 60, 60]
-    return u
-
-
-def test_around_res(u_pbc_triclinic):
-    # sanity check for issue 2656, shouldn't segfault (obviously)
-    ag = u_pbc_triclinic.select_atoms('around 0.0 resid 3')
-    assert len(ag) == 0
-
-
-def test_around_overlapping():
-    # check that around 0.0 catches when atoms *are* superimposed
-    u = mda.Universe.empty(60, trajectory=True)
-    xyz = np.zeros((60, 3))
-    x = np.tile(np.arange(12), (5,))+np.repeat(np.arange(5)*100, 12)
-    # x is 5 images of 12 atoms
-
-    xyz[:, 0] = x  # y and z are 0
-    u.load_new(xyz)
-
-    u.dimensions = [100, 100, 100, 60, 60, 60]
-    # Technically true but not what we're testing:
-    # dist = mda.lib.distances.distance_array(u.atoms[:12].positions,
-    #                                         u.atoms[12:].positions,
-    #                                         box=u.dimensions)
-    # assert np.count_nonzero(np.any(dist <= 0.0, axis=0)) == 48
-    assert u.select_atoms('around 0.0 index 0:11').n_atoms == 48

@@ -75,6 +75,11 @@ Classes
 
 
 """
+from __future__ import absolute_import, print_function
+
+from six.moves import range
+from six import raise_from
+
 import numpy as np
 import logging
 import string
@@ -280,11 +285,12 @@ class DATAParser(TopologyReaderBase):
         try:
             top = self._parse_atoms(sects['Atoms'], masses)
         except Exception:
-            errmsg = (
+            raise_from(ValueError(
                 "Failed to parse atoms section.  You can supply a description "
                 "of the atom_style as a keyword argument, "
-                "eg mda.Universe(..., atom_style='id resid x y z')")
-            raise ValueError(errmsg) from None
+                "eg mda.Universe(..., atom_style='id resid x y z')"
+            ),
+            None)
 
         # create mapping of id to index (ie atom id 10 might be the 0th atom)
         mapping = {atom_id: i for i, atom_id in enumerate(top.ids.values)}
@@ -330,8 +336,9 @@ class DATAParser(TopologyReaderBase):
         try:
             positions, ordering = self._parse_pos(sects['Atoms'])
         except KeyError as err:
-            errmsg = f"Position information not found: {err}"
-            raise IOError(errmsg) from None
+            raise_from(
+                IOError("Position information not found: {}".format(err)),
+                None)
 
         if 'Velocities' in sects:
             velocities = self._parse_vel(sects['Velocities'], ordering)

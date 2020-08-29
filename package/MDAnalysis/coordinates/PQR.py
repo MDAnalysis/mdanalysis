@@ -98,6 +98,9 @@ option are guaranteed to conform to the above format::
 .. _PDB2PQR: https://apbs-pdb2pqr.readthedocs.io/en/latest/pdb2pqr/index.html
 .. _PDB:     http://www.wwpdb.org/documentation/file-format
 """
+from __future__ import absolute_import
+from six.moves import zip
+
 import itertools
 import numpy as np
 import warnings
@@ -227,12 +230,7 @@ class PQRWriter(base.WriterBase):
 
         """
         # write() method that complies with the Trajectory API
-        try:
-            u = selection.universe
-        except AttributeError:
-            errmsg = "Input obj is neither an AtomGroup or Universe"
-            raise TypeError(errmsg) from None
-
+        u = selection.universe
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:

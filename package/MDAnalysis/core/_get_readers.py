@@ -19,6 +19,9 @@ coordinates/core (all others).  They are declared here to avoid
 circular imports.
 
 """
+from __future__ import absolute_import
+from six import raise_from
+
 import copy
 import inspect
 
@@ -95,16 +98,16 @@ def get_reader_for(filename, format=None):
     try:
         return _READERS[format]
     except KeyError:
-        errmsg = (
+        raise_from(ValueError(
             "Unknown coordinate trajectory format '{0}' for '{1}'. The FORMATs \n"
             "           {2}\n"
             "           are implemented in MDAnalysis.\n"
             "           See https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
-            "https://github.com/MDAnalysis/mdanalysis/issues".format(
-                format, filename, _READERS.keys()))
-        raise ValueError(errmsg) from None
+            "http://issues.mdanalysis.org".format(
+                format, filename, _READERS.keys())),
+                   None)
 
 
 def get_writer_for(filename, format=None, multiframe=None):
@@ -167,8 +170,10 @@ def get_writer_for(filename, format=None, multiframe=None):
             # be manipulated as a string.
             # A TypeError is raised in py3.6
             # "TypeError: expected str, bytes or os.PathLike object"
-            errmsg = f'File format could not be guessed from "{filename}"'
-            raise ValueError(errmsg) from None
+            raise_from(
+                ValueError('File format could not be guessed from "{0}"'
+                             .format(filename)),
+                None)
         else:
             format = util.check_compressed_format(root, ext)
 
@@ -199,7 +204,7 @@ def get_writer_for(filename, format=None, multiframe=None):
     try:
         return options[format]
     except KeyError:
-        raise TypeError(errmsg.format(format)) from None
+        raise_from(TypeError(errmsg.format(format)), None)
 
 
 def get_parser_for(filename, format=None):
@@ -242,7 +247,8 @@ def get_parser_for(filename, format=None):
         try:
             rdr = get_reader_for(filename)
         except ValueError:
-            errmsg = (
+            raise_from(
+                ValueError(
                 "'{0}' isn't a valid topology format, nor a coordinate format\n"
                 "   from which a topology can be minimally inferred.\n"
                 "   You can use 'Universe(topology, ..., topology_format=FORMAT)'\n"
@@ -251,9 +257,8 @@ def get_parser_for(filename, format=None):
                 "   {1}\n"
                 "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
                 "   For missing formats, raise an issue at \n"
-                "   https://github.com/MDAnalysis/mdanalysis/issues".format(
-                    format, _PARSERS.keys()))
-            raise ValueError(errmsg) from None
+                "   http://issues.mdanalysis.org".format(format, _PARSERS.keys())),
+                None)
         else:
             return _PARSERS['MINIMAL']
 
@@ -271,11 +276,11 @@ def get_converter_for(format):
         If no appropriate parser could be found.
 
 
-    .. versionadded:: 1.0.0
+    .. versionadded:: 0.21.0
     """
     try:
         writer = _CONVERTERS[format]
     except KeyError:
-        errmsg = f'No converter found for {format} format'
-        raise TypeError(errmsg) from None
+        errmsg = 'No converter found for {} format'
+        raise_from(TypeError(errmsg.format(format)), None)
     return writer

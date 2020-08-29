@@ -20,6 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, division
+
+from six.moves import range
+
 import itertools
 import numpy as np
 from numpy.testing import (
@@ -28,9 +32,9 @@ from numpy.testing import (
 )
 import pytest
 import operator
+import six
 
 import MDAnalysis as mda
-from MDAnalysis.exceptions import NoDataError
 from MDAnalysisTests import make_Universe, no_deprecated_call
 from MDAnalysisTests.datafiles import PSF, DCD
 from MDAnalysis.core import groups
@@ -56,7 +60,7 @@ class TestGroupProperties(object):
     def test_dimensions(self, u, group_dict):
         dimensions = np.arange(6)
 
-        for group in group_dict.values():
+        for group in six.itervalues(group_dict):
             group.dimensions = dimensions.copy()
             assert_array_equal(group.dimensions, dimensions)
             assert_equal(u.dimensions, group.dimensions)
@@ -1308,93 +1312,6 @@ class TestAttributeSetting(object):
         with pytest.raises(AttributeError):
             setattr(comp, attr, 24)
 
-class TestAttributeGetting(object):
-    
-    @staticmethod
-    @pytest.fixture()
-    def universe():
-        return make_Universe(extras=('masses', 'altLocs'))
-
-    @pytest.mark.parametrize('attr', ['masses', 'altLocs'])
-    def test_get_present_topattr_group(self, universe, attr):
-        values = getattr(universe.atoms, attr)
-        assert values is not None
-    
-    @pytest.mark.parametrize('attr', ['mass', 'altLoc'])
-    def test_get_present_topattr_component(self, universe, attr):
-        value = getattr(universe.atoms[0], attr)
-        assert value is not None
-
-    @pytest.mark.parametrize('attr,singular', [
-        ('masses', 'mass'), 
-        ('altLocs', 'altLoc')])
-    def test_get_plural_topattr_from_component(self, universe, attr, singular):
-        with pytest.raises(AttributeError) as exc:
-            getattr(universe.atoms[0], attr)
-        assert ('Do you mean ' + singular) in str(exc.value)
-    
-    @pytest.mark.parametrize('attr,singular', [
-        ('masses', 'mass'), 
-        ('altLocs', 'altLoc')])
-    def test_get_sing_topattr_from_group(self, universe, attr, singular):
-        with pytest.raises(AttributeError) as exc:
-            getattr(universe.atoms, singular)
-        assert ('Do you mean '+attr) in str(exc.value)
-    
-    @pytest.mark.parametrize('attr,singular', [
-        ('elements', 'element'), 
-        ('tempfactors', 'tempfactor'),
-        ('bonds', 'bonds')])
-    def test_get_absent_topattr_group(self, universe, attr, singular):
-        with pytest.raises(NoDataError) as exc:
-            getattr(universe.atoms, attr)
-        assert 'does not contain '+singular in str(exc.value)
-
-    def test_get_non_topattr(self, universe):
-        with pytest.raises(AttributeError) as exc:
-            universe.atoms.jabberwocky
-        assert 'has no attribute' in str(exc.value)
-
-    def test_unwrap_without_bonds(self, universe):
-        with pytest.raises(NoDataError) as exc:
-            universe.atoms.unwrap()
-        err = ('AtomGroup.unwrap() not available; '
-               'this requires Bonds')
-        assert str(exc.value) == err
-
-    def test_get_absent_attr_method(self, universe):
-        with pytest.raises(NoDataError) as exc:
-            universe.atoms.total_charge()
-        err = ('AtomGroup.total_charge() not available; '
-               'this requires charges')
-        assert str(exc.value) == err
-
-    def test_get_absent_attrprop(self, universe):
-        with pytest.raises(NoDataError) as exc:
-            universe.atoms.fragindices
-        err = ('AtomGroup.fragindices not available; '
-               'this requires bonds')
-        assert str(exc.value) == err
-
-    def test_attrprop_wrong_group(self, universe):
-        with pytest.raises(AttributeError) as exc:
-            universe.atoms[0].fragindices
-        err = ('fragindices is a property of AtomGroup, not Atom')
-        assert str(exc.value) == err
-
-    def test_attrmethod_wrong_group(self, universe):
-        with pytest.raises(AttributeError) as exc:
-            universe.atoms[0].center_of_mass()
-        err = ('center_of_mass() is a method of AtomGroup, not Atom')
-        assert str(exc.value) == err
-    
-    @pytest.mark.parametrize('attr', ['altlocs', 'alt_Locs'])
-    def test_wrong_name(self, universe, attr):
-        with pytest.raises(AttributeError) as exc:
-            getattr(universe.atoms, attr)
-        err = ('AtomGroup has no attribute {}. '
-               'Did you mean altLocs?').format(attr)
-        assert str(exc.value) == err
 
 
 class TestInitGroup(object):

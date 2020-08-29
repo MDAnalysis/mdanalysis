@@ -32,6 +32,8 @@ algorithms, wrapping them to allow them to be used interchangably.
 .. versionadded:: 0.16.0
 
 """
+from __future__ import absolute_import
+
 import numpy as np
 from ..utils import ParallelCalculation, merge_universes
 from .ClusterCollection import ClusterCollection

@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
+from six.moves import zip
+
 import bz2
 import gzip
 import os
@@ -149,20 +152,6 @@ class TestLAMMPSDATAWriter(object):
                                 getattr(u_new.atoms, attr),
                                 err_msg="attributes different after writing",
                                 decimal=6)
-
-
-def test_datawriter_universe(tmpdir):
-    fn = str(tmpdir.join('out.data'))
-
-    u = mda.Universe(LAMMPSdata_mini)
-
-    with mda.Writer(fn, n_atoms=len(u.atoms)) as w:
-        w.write(u)
-
-    u2 = mda.Universe(fn)
-
-    assert_almost_equal(u.atoms.positions, u2.atoms.positions)
-    assert_almost_equal(u.dimensions, u2.dimensions)
 
 
 class TestLAMMPSDATAWriter_data_partial(TestLAMMPSDATAWriter):
@@ -297,7 +286,7 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
                         n_atoms=u.atoms.n_atoms,
                         format=self.format) as w:
             for ts in u.trajectory[:n_frames]:
-                w.write(u)
+                w.write(ts)
 
         short = mda.Universe(self.topology, outfile)
         assert_equal(short.trajectory.n_frames, n_frames,
@@ -320,7 +309,7 @@ class TestLAMMPSDCDWriter(RefLAMMPSDataDCD):
         with u.trajectory.OtherWriter(outfile) as w:
             for ts in u.trajectory[::-1]:
                 times.append(ts.time)
-                w.write(u)
+                w.write(ts)
         # note: the reversed trajectory records times in increasing
         #       steps, and NOT reversed, i.e. the time markers are not
         #       attached to their frames. This could be considered a bug

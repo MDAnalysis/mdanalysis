@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, division, print_function
 from contextlib import contextmanager
 
 import MDAnalysis as mda
@@ -30,8 +31,7 @@ import numpy as np
 import pytest
 from MDAnalysis import SelectionError, SelectionWarning
 from MDAnalysisTests import executable_not_found
-from MDAnalysisTests.datafiles import (PSF, DCD, CRD, FASTA, ALIGN_BOUND,
-                                       ALIGN_UNBOUND)
+from MDAnalysisTests.datafiles import PSF, DCD, CRD, FASTA, ALIGN_BOUND, ALIGN_UNBOUND
 from numpy.testing import (
     assert_almost_equal,
     assert_equal,
@@ -52,7 +52,7 @@ class TestRotationMatrix(object):
     @pytest.mark.parametrize('a, b, weights', (
             (a, b, None),
             (a, b, w),
-            (a.astype(int), b.astype(int), w.astype(np.float32))
+            (a.astype(np.int), b.astype(np.int), w.astype(np.float32))
     ))
     def test_rotation_matrix_input(self, a, b, weights):
         rot, rmsd = align.rotation_matrix(a, b, weights)
@@ -470,29 +470,25 @@ class TestAlignmentProcessing(object):
         """test align.fasta2select() on aligned FASTA (Issue 112)"""
         sel = align.fasta2select(self.seq, is_aligned=True)
         # length of the output strings, not residues or anything real...
-        assert len(sel['reference']) == 30623, ("selection string has"
-                                                "unexpected length")
+        assert len(
+            sel['reference']) == 30623, "selection string has unexpected length"
         assert len(
             sel['mobile']) == 30623, "selection string has unexpected length"
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_file(self, tmpdir):
-        """test align.fasta2select() on a non-aligned FASTA with default
-        filenames"""
-        with tmpdir.as_cwd():
-            sel = align.fasta2select(self.seq, is_aligned=False,
-                                     alnfilename=None, treefilename=None)
-            assert len(sel['reference']) == 23080, ("selection string has"
-                                                    "unexpected length")
-            assert len(sel['mobile']) == 23090, ("selection string has"
-                                                 "unexpected length")
+        sel = align.fasta2select(self.seq, is_aligned=False,
+                                 alnfilename=None, treefilename=None)
+        assert len(
+            sel['reference']) == 23080, "selection string has unexpected length"
+        assert len(
+            sel['mobile']) == 23090, "selection string has unexpected length"
 
     @pytest.mark.skipif(executable_not_found("clustalw2"),
                         reason="Test skipped because clustalw2 executable not found")
     def test_fasta2select_ClustalW(self, tmpdir):
-        """MDAnalysis.analysis.align: test fasta2select() with ClustalW
-        (Issue 113)"""
+        """MDAnalysis.analysis.align: test fasta2select() with ClustalW (Issue 113)"""
         alnfile = str(tmpdir.join('alignmentprocessing.aln'))
         treefile = str(tmpdir.join('alignmentprocessing.dnd'))
         sel = align.fasta2select(self.seq, is_aligned=False,
@@ -500,11 +496,10 @@ class TestAlignmentProcessing(object):
         # numbers computed from alignment with clustalw 2.1 on Mac OS X
         # [orbeckst] length of the output strings, not residues or anything
         # real...
-        assert len(sel['reference']) == 23080, ("selection string has"
-                                                "unexpected length")
+        assert len(
+            sel['reference']) == 23080, "selection string has unexpected length"
         assert len(
             sel['mobile']) == 23090, "selection string has unexpected length"
-
 
 def test_sequence_alignment():
     u = mda.Universe(PSF)

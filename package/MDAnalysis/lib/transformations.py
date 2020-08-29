@@ -188,6 +188,10 @@ Functions
    MDAnalysis.lib.transformations
 """
 
+from __future__ import division, absolute_import
+
+from six.moves import range
+
 import sys
 import os
 import warnings

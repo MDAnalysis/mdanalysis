@@ -27,6 +27,8 @@ Tests for making sure that integer arrays used for indexing use `np.intp`.
 This dtype is important for platform independent indexing of other arrays.
 
 """
+from __future__ import absolute_import
+
 import numpy as np
 import pytest
 from MDAnalysisTests import make_Universe

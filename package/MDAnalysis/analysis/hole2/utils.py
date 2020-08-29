@@ -33,11 +33,15 @@
 
 Helper functions used in :mod:`MDAnalysis.analysis.hole2.hole`
 """
+
+from __future__ import absolute_import
+
 import logging
 import tempfile
 import subprocess
 import os
 import numpy as np
+import six
 import errno
 
 from ...lib import util
@@ -533,7 +537,7 @@ def create_vmd_surface(sphpdb='hole.sph',
     except subprocess.CalledProcessError as err:
         os.unlink(tmp_sos)
         logger.fatal("sph_process failed ({0})".format(err.returncode))
-        raise OSError(err.returncode, "sph_process failed") from None
+        six.raise_from(OSError(err.returncode, "sph_process failed"), None)
     except:
         os.unlink(tmp_sos)
         raise
@@ -551,7 +555,7 @@ def create_vmd_surface(sphpdb='hole.sph',
                 stderr=FNULL)
     except subprocess.CalledProcessError as err:
         logger.fatal("sos_triangle failed ({0})".format(err.returncode))
-        raise OSError(err.returncode, "sos_triangle failed") from None
+        six.raise_from(OSError(err.returncode, "sos_triangle failed"), None)
     finally:
         os.unlink(tmp_sos)
 

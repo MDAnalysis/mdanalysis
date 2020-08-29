@@ -23,6 +23,9 @@
 """Mock Universe and Topology generated from scratch with default values
 
 """
+from __future__ import absolute_import, division
+
+from six.moves import range
 
 import numpy as np
 import string

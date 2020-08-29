@@ -39,6 +39,7 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
 
 from ..core._get_readers import get_reader_for
 from ..core.topology import Topology

@@ -45,6 +45,9 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
+from six import raise_from
+
 import numpy as np
 
 from ..lib.util import openany, FORTRANReader
@@ -120,9 +123,9 @@ class CRDParser(TopologyReaderBase):
                     (serial, resnum, resName, name,
                      x, y, z, segid, resid, tempFactor) = r.read(line)
                 except Exception:
-                    errmsg = (f"Check CRD format at line {linenum + 1}: "
-                              f"{line.rstrip()}")
-                    raise ValueError(errmsg) from None
+                    raise_from(ValueError("Check CRD format at line {0}: {1}"
+                                     "".format(linenum + 1, line.rstrip())),
+                               None)
 
                 atomids.append(serial)
                 atomnames.append(name)

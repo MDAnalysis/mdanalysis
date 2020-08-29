@@ -28,11 +28,15 @@ Read DL Poly_ format coordinate files
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
+from six.moves import range
+
 import numpy as np
 
 from . import base
 from . import core
-from ..lib import util
 
 _DLPOLY_UNITS = {'length': 'Angstrom', 'velocity': 'Angstrom/ps', 'time': 'ps'}
 
@@ -150,7 +154,7 @@ class HistoryReader(base.ReaderBase):
         super(HistoryReader, self).__init__(filename, **kwargs)
 
         # "private" file handle
-        self._file = util.anyopen(self.filename, 'r')
+        self._file = open(self.filename, 'r')
         self.title = self._file.readline().strip()
         self._levcfg, self._imcon, self.n_atoms = np.int64(self._file.readline().split()[:3])
         self._has_vels = True if self._levcfg > 0 else False

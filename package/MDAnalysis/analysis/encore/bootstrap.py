@@ -33,6 +33,9 @@ objects) or distance matrices, by resampling with replacement.
 .. versionadded:: 0.16.0
 
 """
+from __future__ import absolute_import
+from six.moves import zip
+
 import numpy as np
 import logging
 import MDAnalysis as mda

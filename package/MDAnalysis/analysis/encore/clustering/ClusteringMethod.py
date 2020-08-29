@@ -33,6 +33,8 @@ others are available only if scikit-learn is installed
 .. versionadded:: 0.16.0
 
 """
+from __future__ import absolute_import
+
 import numpy as np
 import warnings
 import logging

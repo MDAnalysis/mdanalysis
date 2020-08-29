@@ -38,6 +38,8 @@ See Also
 :mod:`MDAnalysis.lib.distances`
 """
 
+from __future__ import absolute_import
+
 __all__ = ['distance_array', 'self_distance_array',
            'contact_matrix', 'dist', 'between']
 

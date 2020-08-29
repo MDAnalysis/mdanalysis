@@ -49,6 +49,7 @@ the coordinates as a numpy array ::
 
 and write your own Python code.
 """
+from __future__ import absolute_import
 
 __all__ = ['AtomGroup', 'Selection']
 

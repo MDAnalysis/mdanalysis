@@ -39,6 +39,10 @@ Base classes for deriving all auxiliary data readers. See the API in :mod:`MDAna
 
 """
 
+from __future__ import division, absolute_import
+import six
+from six.moves import range
+
 import os
 import numbers
 import math
@@ -231,7 +235,7 @@ class AuxStep(object):
         return np.full_like(self.data, np.nan)
 
 
-class AuxReader(metaclass=_AuxReaderMeta):
+class AuxReader(six.with_metaclass(_AuxReaderMeta)):
     """ Base class for auxiliary readers.
 
     Allows iteration over a set of data from a trajectory, additional

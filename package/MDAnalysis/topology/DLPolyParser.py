@@ -35,6 +35,9 @@ Guesses the following attributes:
 
 .. _Poly: http://www.stfc.ac.uk/SCD/research/app/ccg/software/DL_POLY/44516.aspx
 """
+from __future__ import (absolute_import, division,
+                        print_function, unicode_literals)
+
 import numpy as np
 
 from . import guessers

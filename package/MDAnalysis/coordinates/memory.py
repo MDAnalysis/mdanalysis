@@ -184,6 +184,8 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
+from six import raise_from
 import logging
 import errno
 import numpy as np
@@ -317,9 +319,10 @@ class MemoryReader(base.ProtoReader):
             if coordinate_array.ndim == 2 and coordinate_array.shape[1] == 3:
                 coordinate_array = coordinate_array[np.newaxis, :, :]
         except AttributeError:
-            errmsg = ("The input has to be a numpy.ndarray that corresponds "
-                      "to the layout specified by the 'order' keyword.")
-            raise TypeError(errmsg) from None
+            raise_from(TypeError("The input has to be a numpy.ndarray that "
+                            "corresponds to the layout specified by the "
+                            "'order' keyword."),
+                        None)
 
         self.set_array(coordinate_array, order)
         self.n_frames = \
@@ -331,9 +334,10 @@ class MemoryReader(base.ProtoReader):
             try:
                 velocities = np.asarray(velocities, dtype=np.float32)
             except ValueError:
-                errmsg = (f"'velocities' must be array-like got "
-                          f"{type(velocities)}")
-                raise TypeError(errmsg) from None
+                raise_from(
+                    TypeError("'velocities' must be array-like got {}"
+                              "".format(type(velocities))),
+                    None)
             # if single frame, make into array of 1 frame
             if velocities.ndim == 2:
                 velocities = velocities[np.newaxis, :, :]
@@ -350,8 +354,9 @@ class MemoryReader(base.ProtoReader):
             try:
                 forces = np.asarray(forces, dtype=np.float32)
             except ValueError:
-                errmsg = f"'forces' must be array like got {type(forces)}"
-                raise TypeError(errmsg) from None
+                raise_from(TypeError("'forces' must be array like got {}"
+                                     "".format(type(forces))),
+                           None)
             if forces.ndim == 2:
                 forces = forces[np.newaxis, :, :]
             if not forces.shape == self.coordinate_array.shape:
@@ -381,9 +386,9 @@ class MemoryReader(base.ProtoReader):
             try:
                 dimensions = np.asarray(dimensions, dtype=np.float32)
             except ValueError:
-                errmsg = (f"'dimensions' must be array-like got "
-                          f"{type(dimensions)}")
-                raise TypeError(errmsg) from None
+                raise_from(TypeError("'dimensions' must be array-like got {}"
+                                     "".format(type(dimensions))),
+                           None)
             if dimensions.shape == (6,):
                 # single box, tile this to trajectory length
                 # allows modifying the box of some frames

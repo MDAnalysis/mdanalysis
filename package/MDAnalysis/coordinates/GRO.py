@@ -103,7 +103,11 @@ strings for writing lines in ``.gro`` files.  These are as follows:
 .. _GRO format: http://chembytes.wikidot.com/g-grofile
 
 """
+from __future__ import absolute_import
+
 import re
+from six.moves import range, zip
+from six import raise_from
 
 import itertools
 import warnings
@@ -340,7 +344,7 @@ class GROWriter(base.WriterBase):
 
         Parameters
         -----------
-        obj : AtomGroup or Universe
+        obj : AtomGroup or Universe or :class:`Timestep`
 
         Note
         ----
@@ -353,24 +357,23 @@ class GROWriter(base.WriterBase):
            *resName* and *atomName* are truncated to a maximum of 5 characters
         .. versionchanged:: 0.16.0
            `frame` kwarg has been removed
-        .. versionchanged:: 2.0.0
-           Deprecated support for calling with Timestep has nwo been removed.
-           Use AtomGroup or Universe as an input instead.
         """
         # write() method that complies with the Trajectory API
 
         try:
 
             # make sure to use atoms (Issue 46)
-            ag = obj.atoms
+            ag_or_ts = obj.atoms
             # can write from selection == Universe (Issue 49)
 
         except AttributeError:
-            errmsg = "Input obj is neither an AtomGroup or Universe"
-            raise TypeError(errmsg) from None
+            if isinstance(obj, base.Timestep):
+                ag_or_ts = obj.copy()
+            else:
+                raise_from(TypeError("No Timestep found in obj argument"), None)
 
         try:
-            velocities = ag.velocities
+            velocities = ag_or_ts.velocities
         except NoDataError:
             has_velocities = False
         else:
@@ -379,29 +382,29 @@ class GROWriter(base.WriterBase):
         # Check for topology information
         missing_topology = []
         try:
-            names = ag.names
+            names = ag_or_ts.names
         except (AttributeError, NoDataError):
             names = itertools.cycle(('X',))
             missing_topology.append('names')
         try:
-            resnames = ag.resnames
+            resnames = ag_or_ts.resnames
         except (AttributeError, NoDataError):
             resnames = itertools.cycle(('UNK',))
             missing_topology.append('resnames')
         try:
-            resids = ag.resids
+            resids = ag_or_ts.resids
         except (AttributeError, NoDataError):
             resids = itertools.cycle((1,))
             missing_topology.append('resids')
 
         if not self.reindex:
             try:
-                atom_indices = ag.ids
+                atom_indices = ag_or_ts.ids
             except (AttributeError, NoDataError):
-                atom_indices = range(1, ag.n_atoms+1)
+                atom_indices = range(1, ag_or_ts.n_atoms+1)
                 missing_topology.append('ids')
         else:
-            atom_indices = range(1, ag.n_atoms + 1)
+            atom_indices = range(1, ag_or_ts.n_atoms + 1)
         if missing_topology:
             warnings.warn(
                 "Supplied AtomGroup was missing the following attributes: "
@@ -409,7 +412,7 @@ class GROWriter(base.WriterBase):
                 "Alternatively these can be supplied as keyword arguments."
                 "".format(miss=', '.join(missing_topology)))
 
-        positions = ag.positions
+        positions = ag_or_ts.positions
 
         if self.convert_units:
             # Convert back to nm from Angstroms,
@@ -428,13 +431,13 @@ class GROWriter(base.WriterBase):
         with util.openany(self.filename, 'wt') as output_gro:
             # Header
             output_gro.write('Written by MDAnalysis\n')
-            output_gro.write(self.fmt['n_atoms'].format(ag.n_atoms))
+            output_gro.write(self.fmt['n_atoms'].format(ag_or_ts.n_atoms))
 
             # Atom descriptions and coords
             # Dont use enumerate here,
             # all attributes could be infinite cycles!
             for atom_index, resid, resname, name in zip(
-                    range(ag.n_atoms), resids, resnames, names):
+                    range(ag_or_ts.n_atoms), resids, resnames, names):
                 truncated_atom_index = util.ltruncate_int(atom_indices[atom_index], 5)
                 truncated_resid = util.ltruncate_int(resid, 5)
                 if has_velocities:
@@ -456,9 +459,9 @@ class GROWriter(base.WriterBase):
                     ))
 
             # Footer: box dimensions
-            if np.allclose(ag.dimensions[3:], [90., 90., 90.]):
+            if np.allclose(ag_or_ts.dimensions[3:], [90., 90., 90.]):
                 box = self.convert_pos_to_native(
-                    ag.dimensions[:3], inplace=False)
+                    ag_or_ts.dimensions[:3], inplace=False)
                 # orthorhombic cell, only lengths along axes needed in gro
                 output_gro.write(self.fmt['box_orthorhombic'].format(
                     box=box)

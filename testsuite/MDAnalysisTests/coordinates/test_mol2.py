@@ -20,13 +20,15 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
+
 import pytest
+from six.moves import range
 
 import os
 from numpy.testing import (
     assert_equal, assert_array_equal,
     assert_array_almost_equal, TestCase,
-    assert_almost_equal
 )
 
 from MDAnalysisTests.datafiles import (
@@ -188,19 +190,3 @@ def test_mol2_multi_write(tmpdir):
         u = mda.Universe(mol2_molecules)
         u.atoms[:4].write('group1.mol2')
         u.atoms[:4].write('group1.mol2')
-
-
-def test_mol2_universe_write(tmpdir):
-    # see Issue 2717
-    with tmpdir.as_cwd():
-        outfile = 'test.mol2'
-
-        u = mda.Universe(mol2_comments_header)
-
-        with mda.Writer(outfile) as W:
-            W.write(u)
-
-        u2 = mda.Universe(outfile)
-
-        assert_almost_equal(u.atoms.positions, u2.atoms.positions)
-        assert_almost_equal(u.dimensions, u2.dimensions)

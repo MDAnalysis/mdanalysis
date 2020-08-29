@@ -62,7 +62,7 @@ own please see the source code in `lib/formats/libmdaxdr.pyx`_ for the time bein
 
 cimport numpy as np
 cimport cython
-from MDAnalysis.lib.formats.cython_util cimport ptr_to_ndarray
+from cython_util cimport ptr_to_ndarray
 from libc.stdint cimport int64_t
 
 from libc.stdio cimport SEEK_SET, SEEK_CUR, SEEK_END
@@ -306,8 +306,7 @@ cdef class _XDRFile:
 
         # where was I
         current_frame = state[1]
-        self.seek(current_frame - 1)
-        self.current_frame = current_frame
+        self.seek(current_frame)
 
     def seek(self, frame):
         """Seek to Frame.

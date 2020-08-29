@@ -24,6 +24,8 @@
 Test the user facing API is as we expect...
 """
 
+from __future__ import absolute_import
+
 import MDAnalysis as mda
 
 def test_Universe():

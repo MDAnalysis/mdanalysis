@@ -43,8 +43,11 @@ Classes
 
 """
 
+from __future__ import absolute_import
+
 import itertools
 import numpy as np
+from six.moves import zip
 
 from . import guessers
 from ..lib.util import openany
@@ -85,7 +88,7 @@ class TXYZParser(TopologyReaderBase):
             #header
             natoms = int(inf.readline().split()[0])
 
-            atomids = np.zeros(natoms, dtype=int)
+            atomids = np.zeros(natoms, dtype=np.int)
             names = np.zeros(natoms, dtype=object)
             types = np.zeros(natoms, dtype=object)
             bonds = []

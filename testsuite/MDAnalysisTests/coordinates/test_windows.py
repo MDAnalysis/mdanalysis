@@ -30,6 +30,8 @@ These tests are just basic repeats of the tests from elsewhere, but on these DOS
 line ending files.
 """
 
+from __future__ import absolute_import
+
 import numpy as np
 import pytest
 from numpy.testing import assert_almost_equal, assert_equal

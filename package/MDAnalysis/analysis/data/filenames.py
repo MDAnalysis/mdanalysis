@@ -71,6 +71,7 @@ Data files
    data. See the :ref:`Janin plot figure <figure-janin>` as an example.
 
 """
+from __future__ import absolute_import
 
 __all__ = [
     "Rama_ref", "Janin_ref" # reference plots for Ramachandran and Janin classes

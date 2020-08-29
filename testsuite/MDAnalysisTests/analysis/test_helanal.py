@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 import re
 
 import numpy as np
@@ -197,13 +198,14 @@ def test_warnings(tmpdir):
                 u, select="name CA", begin=-1, finish=99999
             )
 
+            assert len(record) == 2
             wmsg1 = ("The input begin time (-1 ps) precedes the starting "
                    "trajectory time --- Setting starting frame to 0".format(
                     -1,0))
-            assert str(record[-2].message.args[0]) == wmsg1
+            assert str(record[0].message.args[0]) == wmsg1
             wmsg2 = ("The input finish time ({0} ps) occurs after the end of "
                      "the trajectory ({1} ps). Finish time will be set to "
                      "the end of the trajectory".format(
                       99999,1000.0000762939453))
-            assert str(record[-1].message.args[0]) == wmsg2
+            assert str(record[1].message.args[0]) == wmsg2
 

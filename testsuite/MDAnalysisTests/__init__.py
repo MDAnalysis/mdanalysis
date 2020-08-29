@@ -24,50 +24,73 @@
 """=========================
 Test cases for MDAnalysis
 =========================
+
 The test cases and the test data are kept in this package,
 MDAnalysisTests. They will only run when MDAnalysis is also
 installed. MDAnalysis and MDAnalysisTests *must* have the same release
 number, which can be found in :data:`MDAnalysis.__version__` and
 :data:`MDAnalysisTests.__version__`. If the versions don't match then
 an :exc:`ImportError` is raised.
+
 We are using the NumPy_ testing frame work; thus, :mod:`numpy` *must* be
 installed for the tests to run at all.
+
 Run all the tests with ::
+
     pytest --pyargs MDAnalysisTests
+
 If you have the `pytest-xdist`_ plugin installed then you can run the
 tests in parallel
+
 .. code-block:: bash
+
    pytest -n 4 --pyargs MDAnalysisTests
+
+
 .. _`pytest-xdist`:
    https://github.com/pytest-dev/pytest-xdist
+
+
 Data
 ====
+
 The simulation data used in some tests are from [Beckstein2009]_ (``adk.psf``,
 ``adk_dims.dcd``) or unpublished simulations (O. Beckstein).
+
    adk_dims
       Trajectory of a macromolecular transition of the enzyme adenylate kinase
       between a closed and an open conformation. The simulation was run in
       Charmm_ c35a1.
+
    adk_oplsaa
       Ten frames from the first 1 ns of a equilibrium trajectory of AdK in
       water with Na+ counter ions. The OPLS/AA forcefield is used with the
       TIP4P water model. The simulation was run with Gromacs_ 4.0.2.
+
+
 [Beckstein2009] O. Beckstein, E.J. Denning, J.R. Perilla and T.B. Woolf,
                 Zipping and Unzipping of Adenylate Kinase: Atomistic Insights
                 into the Ensemble of Open ↔ Closed Transitions. J Mol Biol 394
                 (2009), 160–176, doi:10.1016/j.jmb.2009.09.009
+
+
 Writing test cases
 ==================
+
 The unittests use the :mod:`pytest <https://docs.pytest.org/en/latest/>`_ module. See the
 examples in the ``MDAnalysisTests`` directory.
+
 The `SciPy testing guidelines`_ are a good howto for writing test cases,
 especially as we are directly using this framework (imported from numpy).
+
 .. _NumPy: http://www.numpy.org/
 .. _SciPy testing guidelines:
    http://projects.scipy.org/numpy/wiki/TestingGuidelines#id11
 .. _Charmm: http://www.charmm.org
 .. _Gromacs: http://www.gromacs.org
+
 """
+from __future__ import absolute_import
 import logging
 
 import pytest
@@ -75,7 +98,7 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
-__version__ = "2.0.0-dev0"
+__version__ = "0.20.2-dev0"
 
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
@@ -95,10 +118,14 @@ import sys
 os.environ['DUECREDIT_ENABLE'] = 'yes'
 
 # Any tests that plot with matplotlib need to run with the simple agg backend
-# because on Travis there is no DISPLAY set.
-#
-# Instead of using matplotlib.use() we set MPLBACKEND=agg in the CI environment.
-# See https://matplotlib.org/3.2.1/tutorials/introductory/usage.html#backends
+# because on Travis there is no DISPLAY set. This doesn't warn if we import
+# files from the tests after loading matplotlib. This will remove unnecessary
+# user warnings. 
+try:
+    import matplotlib
+    matplotlib.use('agg', warn=False)
+except ImportError:
+    pass
 
 from MDAnalysisTests.util import (
     block_import,

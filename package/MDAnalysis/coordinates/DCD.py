@@ -56,6 +56,9 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+from six.moves import range
+
 import os
 import errno
 import numpy as np
@@ -387,34 +390,17 @@ class DCDWriter(base.WriterBase):
             is_periodic=1,
             istart=istart)
 
-    def _write_next_frame(self, ag):
-        """Write information associated with ``obj`` at current frame into trajectory
+    def write_next_timestep(self, ts):
+        """Write timestep object into trajectory.
 
         Parameters
         ----------
-        ag : AtomGroup or Universe
+        ts: TimeStep
 
         See Also
         --------
         :meth:`DCDWriter.write`  takes a more general input
-
-
-        .. versionchanged:: 1.0.0
-           Added ability to pass AtomGroup or Universe.
-           Renamed from `write_next_timestep` to `_write_next_frame`.
-        .. versionchanged:: 2.0.0
-           Deprecated support for Timestep argument has now been removed.
-           Use AtomGroup or Universe as an input instead.
         """
-        try:
-            ts = ag.ts
-        except AttributeError:
-            try:
-                # Universe?
-                ts = ag.trajectory.ts
-            except AttributeError:
-                errmsg = "Input obj is neither an AtomGroup or Universe"
-                raise TypeError(errmsg) from None
         xyz = ts.positions.copy()
         dimensions = ts.dimensions.copy()
 

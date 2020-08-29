@@ -28,10 +28,8 @@ topology file format in the *topology_format* keyword argument to
    topology/CRDParser
    topology/DLPolyParser
    topology/DMSParser
-   topology/FHIAIMSParser   
    topology/GMSParser
    topology/GROParser
-   topology/GSDParser   
    topology/HoomdXMLParser
    topology/ITPParser
    topology/LAMMPSParser
@@ -43,7 +41,6 @@ topology file format in the *topology_format* keyword argument to
    topology/PDBQTParser
    topology/PQRParser
    topology/PSFParser
-   topology/RDKitParser
    topology/TOPParser
    topology/TPRParser
    topology/TXYZParser

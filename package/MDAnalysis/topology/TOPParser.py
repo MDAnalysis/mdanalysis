@@ -69,13 +69,8 @@ TODO:
    by 18.2223.
 
    Chamber-style Amber topologies (i.e. topologies generated via parmed
-   conversion of a CHARMM topology to an AMBER one) are not currently
-   supported. Support will likely be added in future MDAnalysis releases.
-
-   As of version 2.0.0, elements are no longer guessed if ATOMIC_NUMBER records
-   are missing. In those scenarios, if elements are necessary, users will have
-   to invoke the element guessers after parsing the topology file. Please see
-   :mod:`MDAnalysis.topology.guessers` for more details.
+   conversion of a CHARMM topology to an AMBER one) are not currently supported.
+   Support will likely be added in future MDAnalysis releases.
 
 .. _`PARM parameter/topology file specification`:
    http://ambermd.org/formats.html#topology
@@ -88,10 +83,17 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import, division
+
+from six.moves import range, zip
+from six import raise_from
 import numpy as np
+import functools
+from math import ceil
 import itertools
 
-from .tables import Z2SYMB
+from . import guessers
+from .tables import NUMBER_TO_ELEMENT
 from ..lib.util import openany, FORTRANReader
 from .base import TopologyReaderBase
 from ..core.topology import Topology
@@ -141,6 +143,9 @@ class TOPParser(TopologyReaderBase):
     - Angles
     - Dihedrals (inc. impropers)
 
+    Guesses the following attributes:
+     - Elements (if not included in topology)
+
     The format is defined in `PARM parameter/topology file
     specification`_.  The reader tries to detect if it is a newer
     (AMBER 12?) file format by looking for the flag "ATOMIC_NUMBER".
@@ -148,20 +153,12 @@ class TOPParser(TopologyReaderBase):
     .. _`PARM parameter/topology file specification`:
        http://ambermd.org/formats.html#topology
 
-    Notes
-    -----
-    Elements are obtained from the atomic numbers (if present). If a given
-    input atomic number does not belong to an element (usually either -1 or 0),
-    the element will be assigned an empty record.
-
     .. versionchanged:: 0.7.6
       parses both amber10 and amber12 formats
     .. versionchanged:: 0.19.0
       parses bonds, angles, dihedrals, and impropers
-    .. versionchanged:: 1.0.0
-      warns users that chamber-style topologies are not currently supported
-    .. versionchanged:: 2.0.0
-      no longer guesses elements if missing
+    .. versionchanged:: 0.21.0
+      warns users that chamber-style topologies are not current supported
     """
     format = ['TOP', 'PRMTOP', 'PARM7']
 
@@ -178,8 +175,7 @@ class TOPParser(TopologyReaderBase):
             "CHARGE": (1, 5, self.parse_charges, "charge", 0),
             "ATOMIC_NUMBER": (1, 10, self.parse_elements, "elements", 0),
             "MASS": (1, 5, self.parse_masses, "mass", 0),
-            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices",
-                                0),
+            "ATOM_TYPE_INDEX": (1, 10, self.parse_type_indices, "type_indices", 0),
             "AMBER_ATOM_TYPE": (1, 20, self.parse_types, "types", 0),
             "RESIDUE_LABEL": (1, 20, self.parse_resnames, "resname", 11),
             "RESIDUE_POINTER": (1, 10, self.parse_residx, "respoint", 11),
@@ -254,9 +250,11 @@ class TOPParser(TopologyReaderBase):
                     try:
                         next_section = line.split("%FLAG")[1].strip()
                     except IndexError:
-                        errmsg = (f"%FLAG section not found, formatting error "
-                                  f"for PARM7 file {self.filename} ")
-                        raise IndexError(errmsg) from None
+                        raise_from(
+                            IndexError((
+                                "%FLAG section not found, formatting error "
+                                "for PARM7 file {0} ").format(self.filename)),
+                                None)
 
         # strip out a few values to play with them
         n_atoms = len(attrs['name'])
@@ -279,20 +277,27 @@ class TOPParser(TopologyReaderBase):
         attrs['dihedrals'], attrs['impropers'] = self.parse_dihedrals(
                               attrs.pop('diha'), attrs.pop('dihh'))
 
-        # Warn user if elements not in topology
-        if 'elements' not in attrs:
-            msg = ("ATOMIC_NUMBER record not found, elements attribute will "
-                   "not be populated. If needed these can be guessed using "
-                   "MDAnalysis.topology.guessers.")
+        # Guess elements if not in topology or if any dummy atoms are found
+        if not 'elements' in attrs:
+            msg = ("ATOMIC_NUMBER record not found, guessing atom elements "
+                   "based on their atom types")
             logger.warning(msg)
             warnings.warn(msg)
-        elif np.any(attrs['elements'].values == ""):
-            # only send out one warning that some elements are unknown
-            msg = ("Unknown ATOMIC_NUMBER value found for some atoms, these "
-                   "have been given an empty element record. If needed these "
-                   "can be guessed using MDAnalysis.topology.guessers.")
-            logger.warning(msg)
-            warnings.warn(msg)
+            attrs['elements'] = Elements(
+                guessers.guess_types(attrs['types'].values),
+                guessed=True)
+        elif np.any(attrs['elements'].values == "DUMMY"):
+            # This approach assumes np.any is much faster than np.where
+            attrs['elements']._guessed = True
+            for dummy_idx in np.where(attrs['elements'].values == 'DUMMY')[0]:
+                atom_type = attrs['types'].values[dummy_idx]
+                atom_ele = guessers.guess_atom_element(atom_type)
+                msg = ("Unknown ATOMIC_NUMBER value found, guessing atom "
+                       "element from type: {0} assigned to {1}".format(
+                        atom_type, atom_ele))
+                logger.warning(msg)
+                warnings.warn(msg)
+                attrs['elements'].values[dummy_idx] = atom_ele
 
         # atom ids are mandatory
         attrs['atomids'] = Atomids(np.arange(n_atoms) + 1)
@@ -421,18 +426,14 @@ class TOPParser(TopologyReaderBase):
 
         Note
         ----
-        If the record contains unknown atomic numbers (e.g. <= 0), these will
-        be treated as unknown elements and assigned an empty string value. See
-        issues #2306 and #2651 for more details.
-
-        .. versionchanged:: 2.0.0
-           Unrecognised elements will now return a empty string. The parser
-           will no longer attempt to guess the element by default.
+        If the record contains atomic numbers <= 0, these will be treated as
+        dummy elements and an attempt will be made to guess the element based
+        on atom type. See issue #2306 for more details.
         """
 
         vals = self.parsesection_mapper(
                 numlines,
-                lambda x: Z2SYMB[int(x)] if int(x) > 0 else "")
+                lambda x: NUMBER_TO_ELEMENT[int(x)] if int(x) > 0 else "DUMMY")
         attr = Elements(np.array(vals, dtype=object))
         return attr
 

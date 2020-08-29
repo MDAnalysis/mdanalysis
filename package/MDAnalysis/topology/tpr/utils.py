@@ -46,12 +46,15 @@ Then compose the stuffs in the format :class:`MDAnalysis.Universe` reads in.
 
 The module also contains the :func:`do_inputrec` to read the TPR header with.
 """
+from __future__ import absolute_import
+
+from six.moves import range
 import numpy as np
 import xdrlib
 import struct
 
 from . import obj
-from . import setting
+from . import setting as S
 from ..base import squash_by
 from ...core.topology import Topology
 from ...core.topologyattrs import (
@@ -60,7 +63,6 @@ from ...core.topologyattrs import (
     Atomtypes,
     Masses,
     Charges,
-    Elements,
     Resids,
     Resnames,
     Moltypes,
@@ -69,7 +71,7 @@ from ...core.topologyattrs import (
     Bonds,
     Angles,
     Dihedrals,
-    Impropers,
+    Impropers
 )
 
 
@@ -78,12 +80,17 @@ class TPXUnpacker(xdrlib.Unpacker):
     Extend the standard XDR unpacker for the specificity of TPX files.
     """
     def __init__(self, data):
-        super().__init__(data)
+        # Using super here would be ideal, but it does not work on python2 as
+        # TPXUnpacker is a `classobj` and not a `type`.
+        # super().__init__(data)
+        xdrlib.Unpacker.__init__(self, data)
         self._buf = self.get_buffer()
 
     # The parent class uses a dunder attribute to store the
     # cursor position. This property makes it easier to manipulate
     # this attribute that is otherwise "protected".
+    # The use of this property works well in python3, but fails in python2
+    # where direct access to the mangled attribute seems required.
     @property
     def _pos(self):
         return self.get_position()
@@ -93,8 +100,14 @@ class TPXUnpacker(xdrlib.Unpacker):
         self.set_position(value)
 
     def _unpack_value(self, item_size, struct_template):
-        start_position = self._pos
-        end_position = self._pos = start_position + item_size
+        # Ideally, we should use the _pos attribute, but it present some
+        # unexpected behaviour on python2 where the position of the cursor is
+        # not kept in sync between the method defined in TPXUnpacker and the
+        # methods defined in the base class.
+        # start_position = self._pos
+        # end_position = self._pos = start_position + item_size
+        start_position = self._Unpacker__pos  # pylint: disable=access-member-before-definition 
+        end_position = self._pos = self._Unpacker__pos = start_position + item_size
         content = self._buf[start_position:end_position]
         if len(content) != item_size:
             raise EOFError
@@ -138,8 +151,8 @@ class TPXUnpacker2020(TPXUnpacker):
     """
     @classmethod
     def from_unpacker(cls, unpacker):
-        new_unpacker = cls(unpacker.get_buffer())
-        new_unpacker._pos = unpacker.get_position()
+        new_unpacker = cls(unpacker._buf)
+        new_unpacker._pos = new_unpacker._Unpacker__pos = unpacker._Unpacker__pos
         if hasattr(unpacker, 'unpack_real'):
             if unpacker.unpack_real == unpacker.unpack_float:
                 new_unpacker.unpack_real = new_unpacker.unpack_float
@@ -152,8 +165,8 @@ class TPXUnpacker2020(TPXUnpacker):
     def unpack_fstring(self, n):
         if n < 0:
             raise ValueError('Size of fstring cannot be negative.')
-        start_position = self._pos
-        end_position = self._pos = start_position + n
+        start_position = self._Unpacker__pos # pylint: disable=access-member-before-definition
+        end_position = self._pos = self._Unpacker__pos = start_position + n
         if end_position > len(self._buf):
             raise EOFError
         content = self._buf[start_position:end_position]
@@ -188,24 +201,24 @@ def ndo_real(data, n):
 
 
 def do_rvec(data):
-    return data.unpack_farray(setting.DIM, data.unpack_real)
+    return data.unpack_farray(S.DIM, data.unpack_real)
 
 
 def ndo_rvec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(setting.DIM, data.unpack_real) for i in range(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_real) for i in range(n)]
 
 
 def ndo_ivec(data, n):
     """mimic of gmx_fio_ndo_rvec in gromacs"""
-    return [data.unpack_farray(setting.DIM, data.unpack_int) for i in range(n)]
+    return [data.unpack_farray(S.DIM, data.unpack_int) for i in range(n)]
 
 
 def fileVersion_err(fver):
-    if fver not in setting.SUPPORTED_VERSIONS:
+    if fver not in S.SUPPORTED_VERSIONS:
         raise NotImplementedError(
-            f"Your tpx version is {fver}, which this parser does not support, yet "
-        )
+            "Your tpx version is {0}, which this parser does not support, yet ".format(
+                fver))
 
 
 def define_unpack_real(prec, data):
@@ -215,7 +228,7 @@ def define_unpack_real(prec, data):
     elif prec == 8:
         data.unpack_real = data.unpack_double
     else:
-        raise ValueError(f"unsupported precision: {prec}")
+        raise ValueError("unsupported precision: {0}".format(prec))
 
 
 def read_tpxheader(data):
@@ -223,8 +236,6 @@ def read_tpxheader(data):
     """
     # Last compatibility check with gromacs-2016
     ver_str = data.do_string()  # version string e.g. VERSION 4.0.5
-    if not ver_str.startswith(b'VERSION'):
-        raise ValueError('Input does not look like a TPR file.')
     precision = data.unpack_int()  # e.g. 4
     define_unpack_real(precision, data)
     fileVersion = data.unpack_int()  # version of tpx file
@@ -232,7 +243,6 @@ def read_tpxheader(data):
 
     # This is for backward compatibility with development version 77-79 where
     # the tag was, mistakenly, placed before the generation.
-    # These versions are development versions between the 4.5 and 4.6 series.
     if 77 <= fileVersion <= 79:
         data.unpack_int()  # the value is 8, but haven't found the
         file_tag = data.do_string()
@@ -244,7 +254,7 @@ def read_tpxheader(data):
     # tpx_tag from a lower or the same version of gromacs code can be parsed by
     # the tpxio.c
 
-    file_tag = data.do_string() if fileVersion >= 81 else setting.TPX_TAG_RELEASE
+    file_tag = data.do_string() if fileVersion >= 81 else S.TPX_TAG_RELEASE
 
     natoms = data.unpack_int()  # total number of atoms
     ngtc = data.unpack_int() if fileVersion >= 28 else 0  # number of groups for T-coupling
@@ -267,7 +277,7 @@ def read_tpxheader(data):
     bBox = data.unpack_int()  # has box or not
 
     sizeOfTprBody = None
-    if fileVersion >= setting.tpxv_AddSizeField and fileGeneration >= 27:
+    if fileVersion >= S.tpxv_AddSizeField and fileGeneration >= 27:
         sizeOfTprBody = data.unpack_int64()
 
     th = obj.TpxHeader(ver_str, precision, fileVersion, fileGeneration,
@@ -276,10 +286,12 @@ def read_tpxheader(data):
     return th
 
 
-def extract_box_info(data, fver):
-    box = ndo_rvec(data, setting.DIM)
-    box_rel = ndo_rvec(data, setting.DIM)
-    box_v = ndo_rvec(data, setting.DIM)
+def extract_box_info(data, fileVersion):
+    box = ndo_rvec(data, S.DIM)
+    box_rel = ndo_rvec(data, S.DIM) if fileVersion >= 51 else 0
+    box_v = ndo_rvec(data, S.DIM) if fileVersion >= 28 else None
+    if (fileVersion < 56):
+        ndo_rvec(data, S.DIM)  # mdum?
 
     return obj.Box(box, box_rel, box_v)
 
@@ -315,7 +327,6 @@ def do_mtop(data, fver):
     molnums = []
     charges = []
     masses = []
-    elements = []
 
     atom_start_ndx = 0
     res_start_ndx = 0
@@ -326,7 +337,7 @@ def do_mtop(data, fver):
         # segment is made to correspond to the molblock as in gromacs, the
         # naming is kind of arbitrary
         molblock = mtop.moltypes[mb.molb_type].name.decode('utf-8')
-        segid = f"seg_{i}_{molblock}"
+        segid = "seg_{0}_{1}".format(i, molblock)
         for j in range(mb.molb_nmol):
             mt = mtop.moltypes[mb.molb_type]  # mt: molecule type
             for atomkind in mt.atomkinds:
@@ -340,7 +351,6 @@ def do_mtop(data, fver):
                 molnums.append(molnum)
                 charges.append(atomkind.charge)
                 masses.append(atomkind.mass)
-                elements.append(atomkind.element_symbol)
             molnum += 1
 
             # remap_ method returns [blah, blah, ..] or []
@@ -406,15 +416,11 @@ def do_mtop(data, fver):
     top.add_TopologyAttr(Impropers([improper for improper in impropers
                                     if improper]))
 
-    if any(elements):
-        elements = Elements(np.array(elements, dtype=object))
-        top.add_TopologyAttr(elements)
-
     return top
 
 
 def do_symstr(data, symtab):
-    # do_symstr: get a string based on index from the symtab
+    #do_symstr: get a string based on index from the symtab
     ndx = data.unpack_int()
     return symtab[ndx]
 
@@ -430,22 +436,27 @@ def do_symtab(data):
 
 def do_ffparams(data, fver):
     atnr = data.unpack_int()
+    if fver < 57:
+        data.unpack_int()  # idum
     ntypes = data.unpack_int()
     functype = ndo_int(data, ntypes)
     reppow = data.unpack_double() if fver >= 66 else 12.0
-    fudgeQQ = data.unpack_real()
+    if fver >= 57:
+        fudgeQQ = data.unpack_real()
 
     # mimicing the c code,
     # remapping the functype due to inconsistency in different versions
     for i in range(len(functype)):
-        for k in setting.ftupd:
+        for k in S.ftupd:
             # j[0]: tpx_version, j[1] funtype
             if fver < k[0] and functype[i] >= k[1]:
                 functype[i] += 1
 
-    do_iparams(data, functype, fver)
+    # parameters for different functions, None returned for now since not sure
+    # what is iparams
+    iparams = do_iparams(data, functype, fver)
 
-    params = obj.Params(atnr, ntypes, functype, reppow, fudgeQQ)
+    params = obj.Params(atnr, ntypes, functype, reppow, fudgeQQ, iparams)
     return params
 
 
@@ -460,23 +471,23 @@ def do_iparams(data, functypes, fver):
     # Not all elif cases in this function has been used and tested
     for k, i in enumerate(functypes):
         if i in [
-            setting.F_ANGLES, setting.F_G96ANGLES,
-            setting.F_BONDS, setting.F_G96BONDS,
-            setting.F_HARMONIC, setting.F_IDIHS
+            S.F_ANGLES, S.F_G96ANGLES,
+            S.F_BONDS, S.F_G96BONDS,
+            S.F_HARMONIC, S.F_IDIHS
         ]:
             do_harm(data)
-        elif i in [setting.F_RESTRANGLES]:
+        elif i in [S.F_RESTRANGLES]:
             data.unpack_real()  # harmonic.rA
             data.unpack_real()  # harmonic.krA
-        elif i in [setting.F_LINEAR_ANGLES]:
+        elif i in [S.F_LINEAR_ANGLES]:
             data.unpack_real()  # linangle.klinA
             data.unpack_real()  # linangle.aA
-            data.unpack_real()  # linangle.klinB
-            data.unpack_real()  # linangle.aB);
-        elif i in [setting.F_FENEBONDS]:
+            data.unpack()  # linangle.klinB
+            data.unpack()  # linangle.aB);
+        elif i in [S.F_FENEBONDS]:
             data.unpack_real()  # fene.bm
             data.unpack_real()  # fene.kb
-        elif i in [setting.F_RESTRBONDS]:
+        elif i in [S.F_RESTRBONDS]:
             data.unpack_real()  # restraint.lowA
             data.unpack_real()  # restraint.up1A
             data.unpack_real()  # restraint.up2A
@@ -485,23 +496,20 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # restraint.up1B
             data.unpack_real()  # restraint.up2B
             data.unpack_real()  # restraint.kB
-        elif i in [
-            setting.F_TABBONDS, setting.F_TABBONDSNC,
-            setting.F_TABANGLES, setting.F_TABDIHS,
-        ]:
+        elif i in [S.F_TABBONDS, S.F_TABBONDSNC, S.F_TABANGLES, S.F_TABDIHS]:
             data.unpack_real()  # tab.kA
             data.unpack_int()  # tab.table
             data.unpack_real()  # tab.kB
-        elif i in [setting.F_CROSS_BOND_BONDS]:
+        elif i in [S.F_CROSS_BOND_BONDS]:
             data.unpack_real()  # cross_bb.r1e
             data.unpack_real()  # cross_bb.r2e
             data.unpack_real()  # cross_bb.krr
-        elif i in [setting.F_CROSS_BOND_ANGLES]:
+        elif i in [S.F_CROSS_BOND_ANGLES]:
             data.unpack_real()  # cross_ba.r1e
             data.unpack_real()  # cross_ba.r2e
             data.unpack_real()  # cross_ba.r3e
             data.unpack_real()  # cross_ba.krt
-        elif i in [setting.F_UREY_BRADLEY]:
+        elif i in [S.F_UREY_BRADLEY]:
             data.unpack_real()  # u_b.theta
             data.unpack_real()  # u_b.ktheta
             data.unpack_real()  # u_b.r13
@@ -511,14 +519,14 @@ def do_iparams(data, functypes, fver):
                 data.unpack_real()  # u_b.kthetaB
                 data.unpack_real()  # u_b.r13B
                 data.unpack_real()  # u_b.kUBB
-        elif i in [setting.F_QUARTIC_ANGLES]:
+        elif i in [S.F_QUARTIC_ANGLES]:
             data.unpack_real()  # qangle.theta
             ndo_real(data, 5)   # qangle.c
-        elif i in [setting.F_BHAM]:
+        elif i in [S.F_BHAM]:
             data.unpack_real()  # bham.a
             data.unpack_real()  # bham.b
             data.unpack_real()  # bham.c
-        elif i in [setting.F_MORSE]:
+        elif i in [S.F_MORSE]:
             data.unpack_real()  # morse.b0
             data.unpack_real()  # morse.cb
             data.unpack_real()  # morse.beta
@@ -526,65 +534,68 @@ def do_iparams(data, functypes, fver):
                 data.unpack_real()  # morse.b0B
                 data.unpack_real()  # morse.cbB
                 data.unpack_real()  # morse.betaB
-        elif i in [setting.F_CUBICBONDS]:
-            data.unpack_real()  # cubic.b0g
+        elif i in [S.F_CUBICBONDS]:
+            data.unpack_real()  # cubic.b0
             data.unpack_real()  # cubic.kb
             data.unpack_real()  # cubic.kcub
-        elif i in [setting.F_CONNBONDS]:
+        elif i in [S.F_CONNBONDS]:
             pass
-        elif i in [setting.F_POLARIZATION]:
+        elif i in [S.F_POLARIZATION]:
             data.unpack_real()  # polarize.alpha
-        elif i in [setting.F_ANHARM_POL]:
+        elif i in [S.F_ANHARM_POL]:
             data.unpack_real()  # anharm_polarize.alpha
             data.unpack_real()  # anharm_polarize.drcut
             data.unpack_real()  # anharm_polarize.khyp
-        elif i in [setting.F_WATER_POL]:
+        elif i in [S.F_WATER_POL]:
+            if fver < 31:
+                fver_err(fver)
             data.unpack_real()  # wpol.al_x
             data.unpack_real()  # wpol.al_y
             data.unpack_real()  # wpol.al_z
             data.unpack_real()  # wpol.rOH
             data.unpack_real()  # wpol.rHH
             data.unpack_real()  # wpol.rOD
-        elif i in [setting.F_THOLE_POL]:
+        elif i in [S.F_THOLE_POL]:
             data.unpack_real()  # thole.a
             data.unpack_real()  # thole.alpha1
             data.unpack_real()  # thole.alpha2
             data.unpack_real()  # thole.rfac
 
-        elif i in [setting.F_LJ]:
+        elif i in [S.F_LJ]:
             data.unpack_real()  # lj_c6
             data.unpack_real()  # lj_c9
-        elif i in [setting.F_LJ14]:
+        elif i in [S.F_LJ14]:
             data.unpack_real()  # lj14_c6A
             data.unpack_real()  # lj14_c12A
             data.unpack_real()  # lj14_c6B
             data.unpack_real()  # lj14_c12B
-        elif i in [setting.F_LJC14_Q]:
+        elif i in [S.F_LJC14_Q]:
             data.unpack_real()  # ljc14.fqq
             data.unpack_real()  # ljc14.qi
             data.unpack_real()  # ljc14.qj
             data.unpack_real()  # ljc14.c6
             data.unpack_real()  # ljc14.c12
-        elif i in [setting.F_LJC_PAIRS_NB]:
+        elif i in [S.F_LJC_PAIRS_NB]:
             data.unpack_real()  # ljcnb.qi
             data.unpack_real()  # ljcnb.qj
             data.unpack_real()  # ljcnb.c6
             data.unpack_real()  # ljcnb.c12
 
-        elif i in [
-            setting.F_PIDIHS, setting.F_ANGRES,
-            setting.F_ANGRESZ, setting.F_PDIHS,
-        ]:
+        elif i in [S.F_PIDIHS, S.F_ANGRES, S.F_ANGRESZ, S.F_PDIHS]:
             data.unpack_real()  # pdihs_phiA
             data.unpack_real()  # pdihs_cpA
-            data.unpack_real()  # pdihs_phiB
-            data.unpack_real()  # pdihs_cpB
-            data.unpack_int()  # pdihs_mult
+            if (i == S.F_ANGRES or i == S.F_ANGRESZ) and fver < 42:
+                data.unpack_real()  # harmonic.rB
+                data.unpack_real()  # harmonic.krB
+            else:
+                data.unpack_real()  # pdihs_phiB
+                data.unpack_real()  # pdihs_cpB
+                data.unpack_int()  # pdihs_mult
 
-        elif i in [setting.F_RESTRDIHS]:
+        elif i in [S.F_RESTRDIHS]:
             data.unpack_real()  # pdihs.phiA
             data.unpack_real()  # pdihs.cpA
-        elif i in [setting.F_DISRES]:
+        elif i in [S.F_DISRES]:
             data.unpack_int()  # disres.label
             data.unpack_int()  # disres.type
             data.unpack_real()  # disres.low
@@ -592,7 +603,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # disres.up2
             data.unpack_real()  # disres.kfac
 
-        elif i in [setting.F_ORIRES]:
+        elif i in [S.F_ORIRES]:
             data.unpack_int()  # orires.ex
             data.unpack_int()  # orires.label
             data.unpack_int()  # orires.power
@@ -600,7 +611,7 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # orires.obs
             data.unpack_real()  # orires.kfac
 
-        elif i in [setting.F_DIHRES]:
+        elif i in [S.F_DIHRES]:
             if fver < 72:
                 data.unpack_int()  # idum
                 data.unpack_int()  # idum
@@ -612,55 +623,59 @@ def do_iparams(data, functypes, fver):
                 data.unpack_real()  # dihres.dphiB
                 data.unpack_real()  # dihres.kfacB
 
-        elif i in [setting.F_POSRES]:
+        elif i in [S.F_POSRES]:
             do_rvec(data)  # posres.pos0A
             do_rvec(data)  # posres.fcA
-            do_rvec(data)  # posres.pos0B
-            do_rvec(data)  # posres.fcB
+            if fver < 27:
+                fver_err(fver)
+            else:
+                do_rvec(data)  # posres.pos0B
+                do_rvec(data)  # posres.fcB
 
-        elif i in [setting.F_FBPOSRES]:
+        elif i in [S.F_FBPOSRES]:
             data.unpack_int()   # fbposres.geom
             do_rvec(data)       # fbposres.pos0
             data.unpack_real()  # fbposres.r
             data.unpack_real()  # fbposres.k
 
-        elif i in [setting.F_CBTDIHS]:
-            ndo_real(data, setting.NR_CBTDIHS)  # cbtdihs.cbtcA
+        elif i in [S.F_CBTDIHS]:
+            ndo_real(data, S.NR_CBTDIHS)  # cbtdihs.cbtcA
 
-        elif i in [setting.F_RBDIHS]:
-            ndo_real(data, setting.NR_RBDIHS)  # iparams_rbdihs_rbcA
-            ndo_real(data, setting.NR_RBDIHS)  # iparams_rbdihs_rbcB
+        elif i in [S.F_RBDIHS]:
+            ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcA
+            if fver >= 25:
+                ndo_real(data, S.NR_RBDIHS)  # iparams_rbdihs_rbcB
 
-        elif i in [setting.F_FOURDIHS]:
+        elif i in [S.F_FOURDIHS]:
             # Fourier dihedrals
-            ndo_real(data, setting.NR_RBDIHS)  # rbdihs.rbcA
-            ndo_real(data, setting.NR_RBDIHS)  # rbdihs.rbcB
+            ndo_real(data, S.NR_RBDIHS)  # rbdihs.rbcA
+            ndo_real(data, S.NR_RBDIHS)  # rbdihs.rbcB
 
-        elif i in [setting.F_CONSTR, setting.F_CONSTRNC]:
+        elif i in [S.F_CONSTR, S.F_CONSTRNC]:
             data.unpack_real()  # dA
             data.unpack_real()  # dB
 
-        elif i in [setting.F_SETTLE]:
+        elif i in [S.F_SETTLE]:
             data.unpack_real()  # settle.doh
             data.unpack_real()  # settle.dhh
 
-        elif i in [setting.F_VSITE2, setting.F_VSITE2FD]:
+        elif i in [S.F_VSITE2, S.F_VSITE2FD]:
             data.unpack_real()  # vsite.a
 
-        elif i in [setting.F_VSITE3, setting.F_VSITE3FD, setting.F_VSITE3FAD]:
+        elif i in [S.F_VSITE3, S.F_VSITE3FD, S.F_VSITE3FAD]:
             data.unpack_real()  # vsite.a
             data.unpack_real()  # vsite.b
 
-        elif i in [setting.F_VSITE3OUT, setting.F_VSITE4FD, setting.F_VSITE4FDN]:
+        elif i in [S.F_VSITE3OUT, S.F_VSITE4FD, S.F_VSITE4FDN]:
             data.unpack_real()  # vsite.a
             data.unpack_real()  # vsite.b
             data.unpack_real()  # vsite.c
 
-        elif i in [setting.F_VSITEN]:
+        elif i in [S.F_VSITEN]:
             data.unpack_int()  # vsiten.n
             data.unpack_real()  # vsiten.a
 
-        elif i in [setting.F_GB12, setting.F_GB13, setting.F_GB14]:
+        elif i in [S.F_GB12, S.F_GB13, S.F_GB14]:
             # /* We got rid of some parameters in version 68 */
             if fver < 68:
                 data.unpack_real()  # rdum
@@ -673,16 +688,17 @@ def do_iparams(data, functypes, fver):
             data.unpack_real()  # gb.gbr
             data.unpack_real()  # gb.bmlt
 
-        elif i in [setting.F_CMAP]:
+        elif i in [S.F_CMAP]:
             data.unpack_int()  # cmap.cmapA
             data.unpack_int()  # cmap.cmapB
         else:
-            raise NotImplementedError(f"unknown functype: {i}")
+            raise NotImplementedError("unknown functype: {0}".format(i))
     return
 
 
 def do_moltype(data, symtab, fver):
-    molname = do_symstr(data, symtab)
+    if fver >= 57:
+        molname = do_symstr(data, symtab)
 
     # key info: about atoms
     atoms_obj = do_atoms(data, symtab, fver)
@@ -697,9 +713,7 @@ def do_moltype(data, symtab, fver):
             a.resind,
             atoms_obj.resnames[a.resind],
             a.m,
-            a.q,
-            a.atomnumber,
-        ))
+            a.q))
     #### end: MDAnalysis specific
 
     # key info: about bonds, angles, dih, improp dih.
@@ -732,7 +746,7 @@ def do_moltype(data, symtab, fver):
             elif ik_obj.name == 'SETTLE':
                 # SETTLE interactions are optimized triangular constraints for
                 # water molecules. They should be counted as a pair of bonds
-                # between the oxygen and the hydrogens. In older versions of
+                # between the oxigen and the hydrogens. In older versions of
                 # the TPR format only specifies the index of the oxygen and
                 # assumes that the next two atoms are the hydrogens.
                 if len(ias) == 2:
@@ -761,7 +775,7 @@ def do_moltype(data, symtab, fver):
     moltype = obj.MoleculeKind(molname, atomkinds, bonds, angles, dihs, impr)
     #### end: MDAnalysis specific
 
-    # info in do_block and do_blocka is not interesting, but has to be parsed
+    # info in do_block and do_blocka is not interested, but has to be parsed
     # here so that all moltypes can be parsed properly
     do_block(data)
     do_blocka(data)
@@ -772,6 +786,9 @@ def do_atoms(data, symtab, fver):
     nr = data.unpack_int()  # number of atoms in a particular molecule
     nres = data.unpack_int()  # number of residues in a particular molecule
 
+    if fver < 57:
+        fver_err(fver)
+
     atoms = []
     for i in range(nr):
         A = do_atom(data, fver)
@@ -780,9 +797,15 @@ def do_atoms(data, symtab, fver):
     # do_strstr
     atomnames = [symtab[i] for i in ndo_int(data, nr)]
 
-    type = [symtab[i] for i in ndo_int(data, nr)]  # e.g. opls_111
-    typeB = [symtab[i] for i in ndo_int(data, nr)]
+    if fver <= 20:
+        fver_err(fver)
+    else:
+        type = [symtab[i] for i in ndo_int(data, nr)]  # e.g. opls_111
+        typeB = [symtab[i] for i in ndo_int(data, nr)]
     resnames = do_resinfo(data, symtab, fver, nres)
+
+    if fver < 57:
+        fver_err(fver)
 
     return obj.Atoms(atoms, nr, nres, type, typeB, atomnames, resnames)
 
@@ -809,8 +832,11 @@ def do_atom(data, fver):
     ptype = data.unpack_int()  # regular atom, virtual site or others
     resind = data.unpack_int()  # index of residue
 
-    atomnumber = data.unpack_int()  # index of atom type
+    if fver >= 52:
+        atomnumber = data.unpack_int()  # index of atom type
 
+    if fver < 23 or fver < 39 or fver < 57:
+        fver_err(fver)
     return obj.Atom(m, q, mB, qB, tp, typeB, ptype, resind, atomnumber)
 
 
@@ -818,15 +844,17 @@ def do_ilists(data, fver):
     nr = []  # number of ilist
     iatoms = []  # atoms involved in a particular interaction type
     pos = []
-    for j in range(setting.F_NRE):  # total number of energies (i.e. interaction types)
+    for j in range(S.F_NRE):  # total number of energies (i.e. interaction types)
         bClear = False
-        for k in setting.ftupd:
+        for k in S.ftupd:
             if fver < k[0] and j == k[1]:
                 bClear = True
         if bClear:
             nr.append(0)
             iatoms.append(None)
         else:
+            if fver < 44:
+                fver_err(fver)
             # do_ilist
             n = data.unpack_int()
             nr.append(n)
@@ -835,10 +863,7 @@ def do_ilists(data, fver):
                 l_.append(data.unpack_int())
             iatoms.append(l_)
 
-    return [
-        obj.Ilist(n, it, i)
-        for n, it, i in zip(nr, setting.interaction_types, iatoms)
-    ]
+    return [obj.Ilist(n, it, i) for n, it, i in zip(nr, S.interaction_types, iatoms)]
 
 
 def do_molblock(data):
@@ -875,7 +900,7 @@ def do_blocka(data):
 
 def do_grps(data):  # pragma: no cover
     grps_nr = []
-    myngrps = ngrps = setting.egcNR  # remind of version inconsistency
+    myngrps = ngrps = S.egcNR  # remind of version inconsistency
     for j in range(ngrps):
         if j < myngrps:
             v = data.unpack_int()
@@ -894,7 +919,7 @@ def do_groups(data, symtab):  # pragma: no cover
 
     ngrpnr = []
     grpnr = []
-    for i in range(setting.egcNR):
+    for i in range(S.egcNR):
         x = data.unpack_int()
         ngrpnr.append(x)
         if x == 0:
@@ -1014,17 +1039,17 @@ def do_inputrec(data):  # pragma: no cover
     # ir_nstpcouple = ir_nstcalcenergy
     data.unpack_real()  # tau_p
 
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_ref_p_XX
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_ref_p_YY
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_ref_p_ZZ
+    data.unpack_farray(DIM, data.unpack_real)  # ir_ref_p_XX
+    data.unpack_farray(DIM, data.unpack_real)  # ir_ref_p_YY
+    data.unpack_farray(DIM, data.unpack_real)  # ir_ref_p_ZZ
 
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_compress_XX
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_compress_YY
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_compress_ZZ
+    data.unpack_farray(DIM, data.unpack_real)  # ir_compress_XX
+    data.unpack_farray(DIM, data.unpack_real)  # ir_compress_YY
+    data.unpack_farray(DIM, data.unpack_real)  # ir_compress_ZZ
 
     data.unpack_int()  # ir_refcoord_scaling
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_posres_com
-    data.unpack_farray(setting.DIM, data.unpack_real)  # ir_posres_comB
+    data.unpack_farray(DIM, data.unpack_real)  # ir_posres_com
+    data.unpack_farray(DIM, data.unpack_real)  # ir_posres_comB
 
     data.unpack_int()  # ir_andersen_seed
     data.unpack_real()  # ir_shake_tol
@@ -1079,7 +1104,7 @@ def do_inputrec(data):  # pragma: no cover
     data.unpack_real()  # ir_bd_fric
     data.unpack_int()  # ir_ld_seed
 
-    ndo_rvec(data, setting.DIM)  # ir_deform
+    ndo_rvec(data, DIM)  # ir_deform
 
     data.unpack_real()  # ir_cos_accel
 
@@ -1144,7 +1169,7 @@ def do_inputrec(data):  # pragma: no cover
 
     # cosine stuff for electric fields
     ir_ex_n, ir_et_n, ir_ex_a, ir_ex_phi, ir_et_a, ir_et_phi = [], [], [], [], [], []
-    for j in range(setting.DIM):
+    for j in range(DIM):
         x = data.unpack_int()
         ir_ex_n.append(x)
         y = data.unpack_int()

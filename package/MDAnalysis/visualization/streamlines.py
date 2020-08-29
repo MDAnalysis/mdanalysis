@@ -42,6 +42,10 @@ MDAnalysis.visualization.streamlines_3D : streamplots in 3D
 .. autofunction:: generate_streamlines
 
 """
+from __future__ import absolute_import
+from six.moves import zip
+from six import raise_from
+
 import multiprocessing
 
 import numpy as np
@@ -51,12 +55,14 @@ try:
     import matplotlib
     import matplotlib.path
 except ImportError:
-    raise ImportError(
+    raise_from(
+        ImportError((
             '2d streamplot module requires: matplotlib.path for its '
             'path.Path.contains_points method. The installation '
             'instructions for the matplotlib module can be found here: '
             'http://matplotlib.org/faq/installing_faq.html?highlight=install'
-            ) from None
+            )),
+        None)
 
 import MDAnalysis
 

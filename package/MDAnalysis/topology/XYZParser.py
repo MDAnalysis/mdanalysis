@@ -38,6 +38,9 @@ Classes
    :members:
 
 """
+from __future__ import absolute_import
+
+from six.moves import range
 import numpy as np
 
 from . import guessers
@@ -68,7 +71,7 @@ class XYZParser(TopologyReaderBase):
 
     .. versionadded:: 0.9.1
 
-    .. versionchanged: 1.0.0
+    .. versionchanged: 0.21.0
        Store elements attribute, based on XYZ atom names
     """
     format = 'XYZ'

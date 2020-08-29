@@ -20,6 +20,10 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import division, absolute_import
+
+
+from six import string_types
 import MDAnalysis
 import pytest
 
@@ -82,4 +86,4 @@ def test_str_types(top_format, top, prop):
     # Related to Issue #1336
     u = MDAnalysis.Universe(top, format=top_format)
     if hasattr(u.atoms[0], prop):
-        assert isinstance(getattr(u.atoms[0], prop), str)
+        assert isinstance(getattr(u.atoms[0], prop), string_types)

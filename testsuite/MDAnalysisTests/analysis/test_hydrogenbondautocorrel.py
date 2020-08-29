@@ -20,7 +20,11 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import division, absolute_import
+
 import pytest
+import six
+from six.moves import range
 
 from MDAnalysisTests.datafiles import (
     TRZ, TRZ_psf,
@@ -29,7 +33,7 @@ from MDAnalysisTests.datafiles import (
 )
 from numpy.testing import assert_almost_equal
 import numpy as np
-from unittest import mock
+import mock
 import os
 
 import MDAnalysis as mda
@@ -273,7 +277,7 @@ class TestHydrogenBondAutocorrel(object):
                      bond_type='continuous',
                      sample_time=0.06,
         )
-        assert isinstance(repr(hbond), str)
+        assert isinstance(repr(hbond), six.string_types)
 
 def test_find_donors():
     u = mda.Universe(waterPSF, waterDCD)

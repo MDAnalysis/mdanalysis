@@ -35,6 +35,8 @@ class to compute an RMSD matrix in such a way is also available.
 .. versionadded:: 0.16.0
 
 """
+from __future__ import division, absolute_import
+
 from joblib import Parallel, delayed
 import numpy as np
 from getpass import getuser

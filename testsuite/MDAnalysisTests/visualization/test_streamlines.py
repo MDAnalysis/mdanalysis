@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import, print_function, division
 import numpy as np
 from numpy.testing import assert_almost_equal
 import MDAnalysis
@@ -28,6 +29,8 @@ from MDAnalysis.visualization import (streamlines,
 from MDAnalysis.coordinates.XTC import XTCWriter
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 import pytest
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import os
 

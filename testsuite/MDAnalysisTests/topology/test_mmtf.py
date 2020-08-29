@@ -1,7 +1,9 @@
+from __future__ import absolute_import
+
 import pytest
 from numpy.testing import assert_equal
 import mmtf
-from unittest import mock
+import mock
 
 import MDAnalysis as mda
 from MDAnalysis.core.groups import AtomGroup

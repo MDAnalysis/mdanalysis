@@ -20,6 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import absolute_import
 import os
 import pytest
 
@@ -63,14 +64,14 @@ class TestDuecredit(object):
         ("MDAnalysis.analysis.leaflet",
          "MDAnalysis.analysis.leaflet",
          "10.1002/jcc.21787"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
+        ("MDAnalysis.analysis.hole",
+         "MDAnalysis.analysis.hole",
          "10.1016/s0006-3495(93)81293-1"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
+        ("MDAnalysis.analysis.hole",
+         "MDAnalysis.analysis.hole",
          "10.1016/s0263-7855(97)00009-x"),
-        ("MDAnalysis.analysis.hole2",
-         "MDAnalysis.analysis.hole2",
+        ("MDAnalysis.analysis.hole",
+         "MDAnalysis.analysis.hole",
          "10.1016/j.jmb.2013.10.024"),
         ("MDAnalysis.lib.qcprot",
          "MDAnalysis.lib.qcprot",

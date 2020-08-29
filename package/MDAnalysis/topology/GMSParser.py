@@ -45,6 +45,8 @@ Classes
    :inherited-members:
 
 """
+from __future__ import absolute_import
+
 import re
 import numpy as np
 

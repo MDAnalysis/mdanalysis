@@ -36,6 +36,8 @@ For the example provided below, the minimum least-squares RMSD for the two
      [-0.0271479  -0.67963547  0.73304748]]
 
 """
+from __future__ import division, absolute_import
+
 import numpy as np
 
 import MDAnalysis.lib.qcprot as qcp

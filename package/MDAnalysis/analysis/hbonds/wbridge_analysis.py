@@ -559,9 +559,12 @@ Classes
       of a water bridge existence.
 
 """
+from __future__ import print_function, absolute_import, division
+
 from collections import defaultdict
 import logging
 import warnings
+import six
 import numpy as np
 
 from ..base import AnalysisBase
@@ -1496,7 +1499,7 @@ class WaterBridgeAnalysis(AnalysisBase):
                                              link_func=self._full_link, time=time, **kwargs)
 
             result_list = []
-            for key, time_list in result.items():
+            for key, time_list in six.iteritems(result):
                 for time in time_list:
                     if output == 'combined':
                         key = list(key)

@@ -41,6 +41,8 @@ Classes
 .. _MMTF: https://mmtf.rcsb.org/
 
 """
+from __future__ import absolute_import
+
 import mmtf
 
 from . import base

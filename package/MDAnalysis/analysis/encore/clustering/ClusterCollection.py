@@ -32,7 +32,10 @@ designed to store results from clustering algorithms.
 .. versionadded:: 0.16.0
 
 """
+from __future__ import absolute_import
+
 import numpy as np
+import six
 
 
 class Cluster(object):
@@ -99,7 +102,7 @@ class Cluster(object):
         self.centroid = centroid
         self.size = self.elements.shape[0]
         if metadata:
-            for name, data in metadata.items():
+            for name, data in six.iteritems(metadata):
                 if len(data) != self.size:
                     raise TypeError("Size of metadata having label \"{0}\"\
 is not equal to the number of cluster elmements".format(name))
@@ -198,7 +201,7 @@ belong to its own cluster".format(elements[i]))
             this_metadata = {}
             this_array = np.where(elements_array == c)
             if metadata:
-                for k, v in metadata.items():
+                for k, v in six.iteritems(metadata):
                     this_metadata[k] = np.asarray(v)[this_array]
             self.clusters.append(
                 Cluster(elem_list=this_array[0], idn=idn, centroid=c,

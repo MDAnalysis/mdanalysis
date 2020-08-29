@@ -20,6 +20,9 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
+from __future__ import division, absolute_import
+
+
 import numpy as np
 import pytest
 from numpy.testing import (
@@ -43,7 +46,7 @@ def assert_not_view(arr):
 
 
 def assert_correct_errormessage(func, var):
-    errmsg = "Timestep has no {}".format(var)
+    errmsg = "Timestep does not contain {}".format(var)
     try:
         func[0](*func[1:])
     except NoDataError as e:

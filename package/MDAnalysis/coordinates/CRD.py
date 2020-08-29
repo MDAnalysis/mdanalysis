@@ -29,6 +29,11 @@ Read and write coordinates in CHARMM CARD coordinate format (suffix
 "crd"). The CHARMM "extended format" is handled automatically.
 
 """
+from __future__ import absolute_import
+
+from six.moves import zip, range
+from six import raise_from
+
 import itertools
 import numpy as np
 import warnings
@@ -77,9 +82,12 @@ class CRDReader(base.SingleFrameReaderBase):
                     else:
                         coords_list.append(np.array(line[20:50].split()[0:3], dtype=float))
                 except Exception:
-                    errmsg = (f"Check CRD format at line {linenum}: "
-                              f"{line.rstrip()}")
-                    raise ValueError(errmsg) from None
+                    raise_from(
+                        ValueError(
+                            "Check CRD format at line {0}: {1}"
+                            "".format(linenum, line.rstrip())),
+                        None
+                        )
 
         self.n_atoms = len(coords_list)
 
@@ -168,12 +176,7 @@ class CRDWriter(base.WriterBase):
              the current frame.
 
         """
-        try:
-            u = selection.universe
-        except AttributeError:
-            errmsg = "Input obj is neither an AtomGroup or Universe"
-            raise TypeError(errmsg) from None
-
+        u = selection.universe
         if frame is not None:
             u.trajectory[frame]  # advance to frame
         else:
@@ -206,7 +209,7 @@ class CRDWriter(base.WriterBase):
         for attr, default in (
                 ('resnames', itertools.cycle(('UNK',))),
                 # Resids *must* be an array because we index it later
-                ('resids', np.ones(n_atoms, dtype=int)),
+                ('resids', np.ones(n_atoms, dtype=np.int)),
                 ('names', itertools.cycle(('X',))),
                 ('tempfactors', itertools.cycle((0.0,))),
         ):

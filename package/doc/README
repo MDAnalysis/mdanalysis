@@ -34,12 +34,12 @@ Online html manual
 
 The documentation for the latest stable release can always be found at
 
-   https://www.mdanalysis.org/docs
+   https://docs.mdanalysis.org
 
 The docs for the latest development version are also on the internet
 at
 
-   https://docs.mdanalysis.org/dev
+   http://devdocs.mdanalysis.org
 
 The manual includes all the doc strings with some additional text; it
 is a work in progress and suggestions to improve it are welcome. File
