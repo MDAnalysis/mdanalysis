@@ -20,9 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-from six.moves import range
-
 import numpy as np
 from numpy.testing import (
     assert_equal,
@@ -129,7 +126,7 @@ class TestFragments(object):
         # number of unique fragindices must correspond to number of fragments:
         assert len(np.unique(fragindices)) == len(fragments)
         # check fragindices dtype:
-        assert fragindices.dtype == np.int64
+        assert fragindices.dtype == np.intp
         #check n_fragments
         assert u.atoms.n_fragments == len(fragments)
 

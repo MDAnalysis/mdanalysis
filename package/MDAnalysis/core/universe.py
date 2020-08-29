@@ -53,10 +53,6 @@ Functions
 .. autofunction:: Merge
 
 """
-from __future__ import absolute_import
-from six.moves import range
-import six
-
 import errno
 import numpy as np
 import logging
@@ -87,7 +83,7 @@ else:
     os.fork = _os_dot_fork
     del _os_dot_fork
 
-from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
+from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -129,7 +125,7 @@ def _topology_from_file_like(topology_file, topology_format=None,
         if (err.errno is not None and
             errno.errorcode[err.errno] in ['ENOENT', 'EACCES']):
             # Runs if the error is propagated due to no permission / file not found
-            six.reraise(*sys.exc_info())
+            raise sys.exc_info()[1] from err
         else:
             # Runs when the parser fails
             raise IOError("Failed to load from the topology file {0}"
@@ -142,11 +138,8 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
-# py3 TODO
-#def _resolve_formats(*coordinates, format=None, topology_format=None):
-def _resolve_formats(*coordinates, **kwargs):
-    format = kwargs.get('format', None)
-    topology_format = kwargs.get('topology_format', None)
+
+def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
         if format is None:
             format = topology_format
@@ -154,15 +147,9 @@ def _resolve_formats(*coordinates, **kwargs):
             topology_format = format
     return format, topology_format
 
-# py3 TODO
-#def _resolve_coordinates(filename, *coordinates, format=None,
-#                         all_coordinates=False):
-def _resolve_coordinates(*args, **kwargs):
-    filename = args[0]
-    coordinates = args[1:]
-    format = kwargs.get('format', None)
-    all_coordinates = kwargs.get('all_coordinates', False)
 
+def _resolve_coordinates(filename, *coordinates, format=None,
+                         all_coordinates=False):
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
@@ -277,17 +264,6 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    is_anchor: bool, default ``True``
-        When unpickling instances of
-        :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
-        searched for one where to anchor those atoms. Set to ``False`` to
-        prevent this Universe from being considered.
-    anchor_name: str, ``None``, default ``None``
-        Setting to other than ``None`` will cause
-        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
-        Universe to only unpickle if a compatible Universe with matching
-        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
-        still be honored when unpickling.
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -302,6 +278,7 @@ class Universe(object):
         :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
         functionality to treat independent trajectory files as a single virtual
         trajectory.
+    **kwargs: extra arguments are passed to the topology parser.
 
     Attributes
     ----------
@@ -311,38 +288,27 @@ class Universe(object):
         current system dimensions (simulation unit cell, if set in the
         trajectory)
     atoms, residues, segments
-        master Groups for each topology level
+        principal Groups for each topology level
     bonds, angles, dihedrals
-        master ConnectivityGroups for each connectivity type
+        principal ConnectivityGroups for each connectivity type
+
 
     .. versionchanged:: 1.0.0
         Universe() now raises an error. Use Universe(None) or :func:`Universe.empty()` instead.
         Removed instant selectors.
+
+    .. versionchanged:: 2.0.0
+        Universe now can be (un)pickled.
+        ``topology`` and ``trajectory`` are reserved
+        upon unpickle.
     """
-# Py3 TODO
-#    def __init__(self, topology=None, *coordinates, all_coordinates=False,
-#                 format=None, topology_format=None, transformations=None,
-#                 guess_bonds=False, vdwradii=None, anchor_name=None,
-#                 is_anchor=True, in_memory=False, in_memory_step=1,
-#                 **kwargs):
-    def __init__(self, *args, **kwargs):
-        topology = args[0] if args else None
-        coordinates = args[1:]
-        all_coordinates = kwargs.pop('all_coordinates', False)
-        format = kwargs.pop('format', None)
-        topology_format = kwargs.pop('topology_format', None)
-        transformations = kwargs.pop('transformations', None)
-        guess_bonds = kwargs.pop('guess_bonds', False)
-        vdwradii = kwargs.pop('vdwradii', None)
-        anchor_name = kwargs.pop('anchor_name', None)
-        is_anchor = kwargs.pop('is_anchor', True)
-        in_memory = kwargs.pop('in_memory', False)
-        in_memory_step = kwargs.pop('in_memory_step', 1)
+    def __init__(self, topology=None, *coordinates, all_coordinates=False,
+                 format=None, topology_format=None, transformations=None,
+                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
-        self._anchor_name = anchor_name
-        self.is_anchor = is_anchor
         self.atoms = None
         self.residues = None
         self.segments = None
@@ -352,8 +318,6 @@ class Universe(object):
             'transformations': transformations,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
-            'anchor_name': anchor_name,
-            'is_anchor': is_anchor,
             'in_memory': in_memory,
             'in_memory_step': in_memory_step,
             'format': format,
@@ -456,7 +420,7 @@ class Universe(object):
         .. versionadded:: 0.17.0
         .. versionchanged:: 0.19.0
            The attached Reader when trajectory=True is now a MemoryReader
-        .. versionchanged:: 0.21.0
+        .. versionchanged:: 1.0.0
            Universes can now be created with 0 atoms
         """
         if not n_atoms:
@@ -694,45 +658,6 @@ class Universe(object):
         """Improper dihedral angles between atoms"""
         return self.atoms.impropers
 
-    @property
-    def anchor_name(self):
-        # hash used for anchoring.
-        # Try and use anchor_name, else use (and store) uuid
-        if self._anchor_name is not None:
-            return self._anchor_name
-        else:
-            try:
-                return self._anchor_uuid
-            except AttributeError:
-                # store this so we can later recall it if needed
-                self._anchor_uuid = uuid.uuid4()
-                return self._anchor_uuid
-
-    @anchor_name.setter
-    def anchor_name(self, name):
-        self.remove_anchor()  # clear any old anchor
-        self._anchor_name = str(name) if not name is None else name
-        self.make_anchor()  # add anchor again
-
-    @property
-    def is_anchor(self):
-        """Is this Universe an anchoring for unpickling AtomGroups"""
-        return self.anchor_name in _ANCHOR_UNIVERSES
-
-    @is_anchor.setter
-    def is_anchor(self, new):
-        if new:
-            self.make_anchor()
-        else:
-            self.remove_anchor()
-
-    def remove_anchor(self):
-        """Remove this Universe from the possible anchor list for unpickling"""
-        _ANCHOR_UNIVERSES.pop(self.anchor_name, None)
-
-    def make_anchor(self):
-        _ANCHOR_UNIVERSES[self.anchor_name] = self
-
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
@@ -742,10 +667,14 @@ class Universe(object):
             n_atoms=len(self.atoms))
 
     def __getstate__(self):
-        raise NotImplementedError
+        # Universe's two "legs" of topology and traj both serialise themselves
+        return self._topology, self._trajectory
 
-    def __setstate__(self, state):
-        raise NotImplementedError
+    def __setstate__(self, args):
+        self._topology = args[0]
+        _generate_from_topology(self)
+
+        self._trajectory = args[1]
 
     # Properties
     @property
@@ -829,17 +758,19 @@ class Universe(object):
            attribute to add (eg 'charges'), can also supply initial values
            using values keyword.
         """
-        if isinstance(topologyattr, six.string_types):
+        if isinstance(topologyattr, str):
             try:
                 tcls = _TOPOLOGY_ATTRS[topologyattr]
             except KeyError:
-                six.raise_from(ValueError(
+                errmsg = (
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
-                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "To raise an issue go to: "
+                    "https://github.com/MDAnalysis/mdanalysis/issues"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
-                    None)
+                        topologyattr, ', '.join(
+                            sorted(_TOPOLOGY_ATTRS.keys()))))
+                raise ValueError(errmsg) from None
             else:
                 topologyattr = tcls.from_blank(
                     n_atoms=self._topology.n_atoms,
@@ -981,7 +912,7 @@ class Universe(object):
             None, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         if all(isinstance(x, TopologyObject) for x in values):
             try:
@@ -1061,7 +992,7 @@ class Universe(object):
             u2.add_bonds(u.bonds.to_indices())
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('bonds', values, types=types,
                                  guessed=guessed, order=order)
@@ -1083,7 +1014,7 @@ class Universe(object):
         guessed : bool or iterable (optional, default False)
             bool, or an iterable of hashable values with the same length as ``values``
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('angles', values, types=types,
                                  guessed=guessed)
@@ -1105,7 +1036,7 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('dihedrals', values, types=types,
                                  guessed=guessed)
@@ -1127,7 +1058,7 @@ class Universe(object):
             bool, or an iterable of hashable values with the same length as ``values``
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._add_topology_objects('impropers', values, types=types,
                                  guessed=guessed)
@@ -1145,7 +1076,7 @@ class Universe(object):
             If AtomGroups, TopologyObjects, or a TopologyGroup are passed,
             they *must* be from the same Universe.
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         indices = []
         for x in values:
@@ -1199,7 +1130,7 @@ class Universe(object):
             u.delete_bonds(u2.bonds.to_indices())
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('bonds', values)
         self._cache.pop('fragments', None)
@@ -1216,7 +1147,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('angles', values)
 
@@ -1232,7 +1163,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('dihedrals', values)
 
@@ -1248,7 +1179,7 @@ class Universe(object):
             they *must* be from the same Universe.
 
 
-        .. versionadded:: 0.21.0
+        .. versionadded:: 1.0.0
         """
         self._delete_topology_objects('impropers', values)
 
@@ -1290,31 +1221,86 @@ class Universe(object):
 
         return fragdict
 
+    @classmethod
+    def from_smiles(cls, smiles, sanitize=True, addHs=True,
+                    generate_coordinates=True, numConfs=1,
+                    rdkit_kwargs={}, **kwargs):
+        """Create a Universe from a SMILES string with rdkit
 
-# TODO: what is the point of this function???
-def as_Universe(*args, **kwargs):
-    """Return a universe from the input arguments.
+        Parameters
+        ----------
+        smiles : str
+            SMILES string
 
-    1. If the first argument is a universe, just return it::
+        sanitize : bool (optional, default True)
+            Toggle the sanitization of the molecule
 
-         as_Universe(universe) --> universe
+        addHs : bool (optional, default True)
+            Add all necessary hydrogens to the molecule
 
-    2. Otherwise try to build a universe from the first or the first
-       and second argument::
+        generate_coordinates : bool (optional, default True)
+            Generate 3D coordinates using RDKit's `AllChem.EmbedMultipleConfs`
+            function. Requires adding hydrogens with the `addHs` parameter
 
-         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
-         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
-         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
+        numConfs : int (optional, default 1)
+            Number of frames to generate coordinates for. Ignored if
+            `generate_coordinates=False`
 
-    Returns
-    -------
-    :class:`~MDAnalysis.core.groups.Universe`
-    """
-    if len(args) == 0:
-        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
-    elif len(args) == 1 and isinstance(args[0], Universe):
-        return args[0]
-    return Universe(*args, **kwargs)
+        rdkit_kwargs : dict (optional)
+            Other arguments passed to the RDKit `EmbedMultipleConfs` function
+
+        kwargs : dict
+            Parameters passed on Universe creation
+
+        Returns
+        -------
+        :class:`~MDAnalysis.core.Universe`
+
+        Examples
+        --------
+        To create a Universe with 10 conformers of ethanol:
+
+        >>> u = mda.Universe.from_smiles('CCO', numConfs=10)
+        >>> u
+        <Universe with 9 atoms>
+        >>> u.trajectory
+        <RDKitReader with 10 frames of 9 atoms>
+
+        To use a different conformer generation algorithm, like ETKDGv3:
+
+        >>> u = mda.Universe.from_smiles('CCO', rdkit_kwargs=dict(
+                                         params=AllChem.ETKDGv3()))
+        >>> u.trajectory
+        <RDKitReader with 1 frames of 9 atoms>
+
+
+        .. versionadded:: 2.0.0
+        """
+        try:
+            from rdkit import Chem
+            from rdkit.Chem import AllChem
+        except ImportError as e:
+            raise ImportError(
+                "Creating a Universe from a SMILES string requires RDKit but "
+                "it does not appear to be installed") from e
+
+        mol = Chem.MolFromSmiles(smiles, sanitize=sanitize)
+        if mol is None:
+            raise SyntaxError('Error while parsing SMILES {0}'.format(smiles))
+        if addHs:
+            mol = Chem.AddHs(mol)
+        if generate_coordinates:
+            if not addHs:
+                raise ValueError("Generating coordinates requires adding "
+                "hydrogens with `addHs=True`")
+
+            numConfs = rdkit_kwargs.pop("numConfs", numConfs)
+            if not (type(numConfs) is int and numConfs > 0):
+                raise SyntaxError("numConfs must be a non-zero positive "
+                "integer instead of {0}".format(numConfs))
+            AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
+
+        return cls(mol, **kwargs)
 
 
 def Merge(*args):

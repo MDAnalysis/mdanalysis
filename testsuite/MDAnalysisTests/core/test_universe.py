@@ -20,18 +20,12 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import, print_function
-
-
-from six.moves import cPickle
+import pickle
 
 import os
 import subprocess
 
-try:
-    from cStringIO import StringIO
-except:
-    from io import StringIO
+from io import StringIO
 
 import numpy as np
 from numpy.testing import (
@@ -217,6 +211,81 @@ class TestUniverseCreation(object):
         assert u2._topology is u._topology
 
 
+class TestUniverseFromSmiles(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+
+    def test_default(self):
+        smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+        u = mda.Universe.from_smiles(smi, format='RDKIT')
+        assert u.atoms.n_atoms == 24
+        assert len(u.bonds.indices) == 25
+
+    def test_from_bad_smiles(self):
+        with pytest.raises(SyntaxError) as e:
+            u = mda.Universe.from_smiles("J", format='RDKIT')
+            assert "Error while parsing SMILES" in str(e.value)
+
+    def test_no_Hs(self):
+        smi = "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"
+        u = mda.Universe.from_smiles(smi, addHs=False, 
+            generate_coordinates=False, format='RDKIT')
+        assert u.atoms.n_atoms == 14
+        assert len(u.bonds.indices) == 15
+
+    def test_gencoords_without_Hs_error(self):
+        with pytest.raises(ValueError) as e:
+            u = mda.Universe.from_smiles("CCO", addHs=False,
+                generate_coordinates=True, format='RDKIT')
+            assert "requires adding hydrogens" in str (e.value)
+
+    def test_generate_coordinates_numConfs(self):
+        with pytest.raises(SyntaxError) as e:
+            u = mda.Universe.from_smiles("CCO", numConfs=0, format='RDKIT')
+            assert "non-zero positive integer" in str (e.value)
+        with pytest.raises(SyntaxError) as e:
+            u = mda.Universe.from_smiles("CCO", numConfs=2.1, format='RDKIT')
+            assert "non-zero positive integer" in str (e.value)
+
+    def test_rdkit_kwargs(self):
+        # test for bad kwarg:
+        # Unfortunately, exceptions from Boost cannot be passed to python,
+        # we cannot `from Boost.Python import ArgumentError` and use it with 
+        # pytest.raises(ArgumentError), so "this is the way"
+        try:
+            u = mda.Universe.from_smiles("CCO", rdkit_kwargs=dict(abc=42))
+        except Exception as e:
+            assert "did not match C++ signature" in str(e)
+        else:
+            raise AssertionError("RDKit should have raised an ArgumentError "
+                                 "from Boost")
+        # good kwarg
+        u1 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=42))
+        u2 = mda.Universe.from_smiles("C", rdkit_kwargs=dict(randomSeed=51))
+        with pytest.raises(AssertionError) as e:
+            assert_equal(u1.trajectory.coordinate_array, 
+                         u2.trajectory.coordinate_array)
+            assert "Mismatched elements: 15 / 15 (100%)" in str(e.value)
+
+
+    def test_coordinates(self):
+        u = mda.Universe.from_smiles("C", numConfs=2, 
+                                     rdkit_kwargs=dict(randomSeed=42))
+        assert u.trajectory.n_frames == 2
+        expected = np.array([
+            [[-0.02209686,  0.00321505,  0.01651974],
+            [-0.6690088 ,  0.8893599 , -0.1009085 ],
+            [-0.37778795, -0.8577519 , -0.58829606],
+            [ 0.09642092, -0.3151253 ,  1.0637809 ],
+            [ 0.97247267,  0.28030226, -0.3910961 ]],
+            [[-0.0077073 ,  0.00435363,  0.01834692],
+            [-0.61228824, -0.83705765, -0.38619974],
+            [-0.41925883,  0.9689095 , -0.3415968 ],
+            [ 0.03148226, -0.03256683,  1.1267245 ],
+            [ 1.0077721 , -0.10363862, -0.41727486]]], dtype=np.float32)
+        assert_almost_equal(u.trajectory.coordinate_array, expected)
+
+
 class TestUniverse(object):
     # older tests, still useful
     def test_load_bad_topology(self):
@@ -272,10 +341,12 @@ class TestUniverse(object):
         assert_equal(len(u.atoms), 3341, "Loading universe failed somehow")
         assert_equal(u.trajectory.n_frames, 2 * ref.trajectory.n_frames)
 
-    def test_pickle_raises_NotImplementedError(self):
+    def test_pickle(self):
         u = mda.Universe(PSF, DCD)
-        with pytest.raises(NotImplementedError):
-            cPickle.dumps(u, protocol = cPickle.HIGHEST_PROTOCOL)
+        s = pickle.dumps(u, protocol=pickle.HIGHEST_PROTOCOL)
+        new_u = pickle.loads(s)
+        assert_equal(u.atoms.names, new_u.atoms.names)
+
 
     @pytest.mark.parametrize('dtype', (int, np.float32, np.float64))
     def test_set_dimensions(self, dtype):

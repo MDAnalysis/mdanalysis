@@ -59,7 +59,7 @@ Available analysis modules
 :mod:`~MDAnalysis.analysis.helanal`
     Analysis of helices with the HELANAL_ algorithm.
 
-:mod:`~MDAnalysis.analysis.hole`
+:mod:`~MDAnalysis.analysis.hole2`
     Run and process output from the :program:`HOLE` program
     to analyze pores, tunnels and cavities in proteins.
 
@@ -71,6 +71,10 @@ Available analysis modules
     Find lipids in the upper and lower (or inner and outer) leaflet of
     a bilayer; the algorithm can deal with any deformations as long as
     the two leaflets are topologically distinct.
+
+:mod:`~MDAnalysis.analysis.msd`
+    Implements the calculation of Mean Squared Displacements (MSDs) by the
+    Einstein relation.
 
 :mod:`~MDAnalysis.analysis.nuclinfo`
     Analyse the nucleic acid for the backbone dihedrals, chi, sugar
@@ -108,6 +112,9 @@ Available analysis modules
    :mod:`~MDAnalysis.analysis.legacy.x3dna` was moved to the
    :mod:`MDAnalysis.analysis.legacy` package
 
+.. versionchanged:: 2.0.0
+   Adds MSD, and changes hole for hole2.hole.
+
 """
 
 __all__ = [
@@ -121,8 +128,9 @@ __all__ = [
     'hbonds',
     'hydrogenbonds',
     'helanal',
-    'hole',
+    'hole2',
     'leaflet',
+    'msd',
     'nuclinfo',
     'polymer',
     'psa',

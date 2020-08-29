@@ -28,8 +28,6 @@ This module contains a class to allow searches on a KDTree involving periodic
 boundary conditions.
 """
 
-from __future__ import absolute_import
-
 import itertools
 import numpy as np
 from scipy.spatial import cKDTree
@@ -189,7 +187,7 @@ class PeriodicKDTree(object):
                                                       radius))
             self._indices = np.array(list(
                                      itertools.chain.from_iterable(indices)),
-                                     dtype=np.int64)
+                                     dtype=np.intp)
             if self._indices.size > 0:
                 self._indices = undo_augment(self._indices,
                                              self.mapping,
@@ -200,7 +198,7 @@ class PeriodicKDTree(object):
                                                       radius))
             self._indices = np.array(list(
                                      itertools.chain.from_iterable(indices)),
-                                     dtype=np.int64)
+                                     dtype=np.intp)
         self._indices = np.asarray(unique_int_1d(self._indices))
         return self._indices
 
@@ -234,7 +232,7 @@ class PeriodicKDTree(object):
             if self.cutoff < radius:
                 raise RuntimeError('Set cutoff greater or equal to the radius.')
 
-        pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.int64)
+        pairs = np.array(list(self.ckdt.query_pairs(radius)), dtype=np.intp)
         if self.pbc:
             if len(pairs) > 1:
                 pairs[:, 0] = undo_augment(pairs[:, 0], self.mapping,
@@ -294,7 +292,7 @@ class PeriodicKDTree(object):
             other_tree = cKDTree(wrapped_centers, leafsize=self.leafsize)
             pairs = other_tree.query_ball_tree(self.ckdt, radius)
             pairs = np.array([[i, j] for i, lst in enumerate(pairs) for j in lst],
-                                   dtype=np.int64)
+                                   dtype=np.intp)
             if pairs.size > 0:
                 pairs[:, 1] = undo_augment(pairs[:, 1],
                                              self.mapping,
@@ -303,7 +301,7 @@ class PeriodicKDTree(object):
             other_tree = cKDTree(centers, leafsize=self.leafsize)
             pairs = other_tree.query_ball_tree(self.ckdt, radius)
             pairs = np.array([[i, j] for i, lst in enumerate(pairs) for j in lst],
-                                   dtype=np.int64)
+                                   dtype=np.intp)
         if pairs.size > 0:
             pairs = unique_rows(pairs)
         return pairs

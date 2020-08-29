@@ -31,9 +31,6 @@ point
 .. autofunction:: rotateby
 
 """
-from __future__ import absolute_import
-from six import raise_from
-
 import math
 import numpy as np
 from functools import partial
@@ -43,35 +40,39 @@ from ..lib.util import get_weights
 
 def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     '''
-    Rotates the trajectory by a given angle on a given axis. The axis is defined by 
+    Rotates the trajectory by a given angle on a given axis. The axis is defined by
     the user, combining the direction vector and a point. This point can be the center
-    of geometry or the center of mass of a user defined AtomGroup, or an array defining 
+    of geometry or the center of mass of a user defined AtomGroup, or an array defining
     custom coordinates.
-    
+
     Examples
     --------
-    
-    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and 
+
+    e.g. rotate the coordinates by 90 degrees on a axis formed by the [0,0,1] vector and
     the center of geometry of a given AtomGroup:
-    
+
     .. code-block:: python
-    
+
+        from MDAnalysis import transformations
+
         ts = u.trajectory.ts
         angle = 90
-        ag = u.atoms()
+        ag = u.atoms
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, direction=d, ag=ag)(ts)
-    
+        rotated = transformations.rotate.rotateby(angle, direction=d, ag=ag)(ts)
+
     e.g. rotate the coordinates by a custom axis:
-    
+
     .. code-block:: python
+
+        from MDAnalysis import transformations
 
         ts = u.trajectory.ts
         angle = 90
         p = [1,2,3]
         d = [0,0,1]
-        rotated = MDAnalysis.transformations.rotate(angle, direction=d, point=point)(ts) 
-    
+        rotated = transformations.rotate.rotateby(angle, direction=d, point=p)(ts)
+
     Parameters
     ----------
     angle: float
@@ -100,7 +101,7 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
     Returns
     -------
     MDAnalysis.coordinates.base.Timestep
-    
+
     Warning
     -------
     Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible 
@@ -114,9 +115,7 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
             raise ValueError('{} is not a valid direction'.format(direction))
         direction = direction.reshape(3, )
     except ValueError:
-        raise_from(
-            ValueError('{} is not a valid direction'.format(direction)),
-            None)
+        raise ValueError(f'{direction} is not a valid direction') from None
     if point is not None:
         point = np.asarray(point, np.float32)
         if point.shape != (3, ) and point.shape != (1, 3):
@@ -126,19 +125,18 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         try:
             atoms = ag.atoms
         except AttributeError:
-            raise_from(ValueError('{} is not an AtomGroup object'.format(ag)), None)
+            raise ValueError(f'{ag} is not an AtomGroup object') from None
         else:
             try:
                 weights = get_weights(atoms, weights=weights)
             except (ValueError, TypeError):
-                raise_from(
-                    TypeError("weights must be {'mass', None} or an iterable of the "
-                              "same size as the atomgroup."),
-                    None)
+                errmsg = ("weights must be {'mass', None} or an iterable of "
+                          "the same size as the atomgroup.")
+                raise TypeError(errmsg) from None
         center_method = partial(atoms.center, weights, pbc=wrap)
     else:
         raise ValueError('A point or an AtomGroup must be specified')
-    
+
     def wrapped(ts):
         if point is None:
             position = center_method()
@@ -149,8 +147,8 @@ def rotateby(angle, direction, point=None, ag=None, weights=None, wrap=False):
         translation = matrix[:3, 3]
         ts.positions= np.dot(ts.positions, rotation)
         ts.positions += translation
-        
+
         return ts
-    
+
     return wrapped
-    
+

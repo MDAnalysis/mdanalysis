@@ -26,6 +26,7 @@ provide the format in the keyword argument *format* to
    coordinates/GMS
    coordinates/GSD
    coordinates/GRO
+   coordinates/H5MD
    coordinates/INPCRD
    coordinates/LAMMPS
    coordinates/MMTF
@@ -36,10 +37,11 @@ provide the format in the keyword argument *format* to
    coordinates/PQR
    coordinates/TRJ
    coordinates/TRR
-   coordinates/TRZ   
+   coordinates/TRZ
    coordinates/TXYZ
    coordinates/XTC
    coordinates/XYZ
+   coordinates/FHIAIMS
    coordinates/memory
    coordinates/chemfiles
    coordinates/null
@@ -56,5 +58,11 @@ functionality should first read the :ref:`Trajectory API`.
 
    coordinates/base
    coordinates/core
+   coordinates/pickle_readers
    coordinates/chain
    coordinates/XDR
+
+In particular, all trajectory readers have to be 
+:ref:`serializable<serialization>` and they should pass all tests
+available in the ``MDAnalysisTests.coordinates.base.MultiframeReaderTest`` 
+or ``MDAnalysisTests.coordinates.base.BaseReaderTest``.

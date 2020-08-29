@@ -132,11 +132,6 @@ Analysis classes
       giving RMSFs for each of the given atoms.
 
 """
-from __future__ import division, absolute_import
-
-from six.moves import zip
-from six import raise_from, string_types
-
 import numpy as np
 
 import logging
@@ -278,30 +273,25 @@ def process_selection(select):
     :func:`fasta2select` based on a ClustalW_ or STAMP_ sequence alignment.
     """
 
-    if isinstance(select, string_types):
+    if isinstance(select, str):
         select = {'reference': str(select), 'mobile': str(select)}
     elif type(select) is tuple:
         try:
             select = {'mobile': select[0], 'reference': select[1]}
         except IndexError:
-            raise_from(IndexError(
+            raise IndexError(
                 "select must contain two selection strings "
-                "(reference, mobile)"),
-                None,
-                )
+                "(reference, mobile)") from None
     elif type(select) is dict:
         # compatability hack to use new nomenclature
         try:
             select['mobile']
             select['reference']
         except KeyError:
-            raise_from(
-                KeyError(
+            raise KeyError(
                     "select dictionary must contain entries for keys "
                     "'mobile' and 'reference'."
-                    ),
-                None,
-                )
+                    ) from None
     else:
         raise TypeError("'select' must be either a string, 2-tuple, or dict")
     select['mobile'] = asiterable(select['mobile'])
@@ -543,10 +533,24 @@ class RMSD(AnalysisBase):
                         len(atoms['reference']), len(atoms['mobile'])))
 
         # check weights type
-        if iterable(self.weights) and (np.array(weights).dtype
-                                not in (np.dtype('float64'),np.dtype('int64'))):
-            raise TypeError("weights should only be 'mass', None or 1D float array."
-                                 "For weights on groupselections, use **weight_groupselections** ")
+        acceptable_dtypes = (np.dtype('float64'), np.dtype('int64'))
+        msg = ("weights should only be 'mass', None or 1D float array."
+              "For weights on groupselections, "
+              "use **weight_groupselections**")
+
+        if iterable(self.weights):
+            element_lens = []
+            for element in self.weights:
+                if iterable(element):
+                    element_lens.append(len(element))
+                else:
+                    element_lens.append(1)
+            if np.unique(element_lens).size > 1:
+                # jagged data structure
+                raise TypeError(msg)
+            if np.array(element).dtype not in acceptable_dtypes:
+                raise TypeError(msg)
+
         if iterable(self.weights) or self.weights != "mass":
             get_weights(self.mobile_atoms, self.weights)
 

@@ -20,9 +20,7 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import absolute_import
-
-from six.moves import StringIO
+from io import StringIO
 
 import pytest
 import warnings
@@ -41,8 +39,10 @@ from MDAnalysisTests.datafiles import (
     PDB_chainidnewres,
     PDB_sameresid_diffresname,
     PDB_metal,
+    PDB_helix,
 )
 from MDAnalysis.topology.PDBParser import PDBParser
+from MDAnalysis import NoDataError
 
 _PDBPARSER = mda.topology.PDBParser.PDBParser
 
@@ -73,7 +73,7 @@ def test_hy36decode(hybrid, integer):
 class PDBBase(ParserBase):
     expected_attrs = ['ids', 'names', 'record_types', 'resids',
                       'resnames', 'altLocs', 'icodes', 'occupancies',
-                      'bonds', 'tempfactors', 'chainIDs']
+                      'tempfactors', 'chainIDs']
     guessed_attrs = ['types', 'masses']
 
 
@@ -350,3 +350,14 @@ def test_wrong_elements_warnings():
     assert len(record) == 2
     assert record[1].message.args[0] == "Invalid elements found in the PDB "\
         "file, elements attributes will not be populated."
+
+
+def test_nobonds_error():
+    """Issue #2832: PDB without CONECT record should not have a bonds
+    attribute and raises NoDataError on access"""
+    u = mda.Universe(PDB_helix)
+
+    errmsg = "This Universe does not contain bonds information"
+
+    with pytest.raises(NoDataError, match=errmsg):
+        u.atoms.bonds

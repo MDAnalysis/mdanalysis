@@ -197,10 +197,6 @@ writers share.
    :members:
 
 """
-from __future__ import absolute_import
-import six
-from six.moves import range
-
 import numpy as np
 import numbers
 import copy
@@ -230,6 +226,7 @@ class Timestep(object):
 
          create a timestep object with space for n_atoms
 
+
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
@@ -237,6 +234,9 @@ class Timestep(object):
        :attr:`n_atoms` now a read only property.
        :attr:`frame` now 0-based instead of 1-based.
        Attributes `status` and `step` removed.
+    .. versionchanged:: 2.0.0
+       Timestep now can be (un)pickled. Weakref for Reader
+       will be dropped.
     """
     order = 'F'
 
@@ -303,7 +303,6 @@ class Timestep(object):
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
-
 
     @classmethod
     def from_timestep(cls, other, **kwargs):
@@ -385,6 +384,22 @@ class Timestep(object):
 
         return ts
 
+    def __getstate__(self):
+        #  The `dt` property is lazy loaded.
+        #  We need to load it once from the `_reader` (if exists)
+        #  attached to this timestep to get the dt value.
+        #  This will help to (un)pickle a `Timestep` without pickling `_reader`
+        #  and retain its dt value.
+        self.dt
+
+        state = self.__dict__.copy()
+        state.pop('_reader', None)
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
         # override for other Timesteps
@@ -446,6 +461,14 @@ class Timestep(object):
             return self._pos[atoms]
         else:
             raise TypeError
+
+    def __getattr__(self, attr):
+        # special-case timestep info
+        if attr in ('velocities', 'forces', 'positions'):
+            raise NoDataError('This Timestep has no ' + attr)
+        err = "{selfcls} object has no attribute '{attr}'"
+        raise AttributeError(err.format(selfcls=type(self).__name__,
+                                        attr=attr))
 
     def __len__(self):
         return self.n_atoms
@@ -519,32 +542,25 @@ class Timestep(object):
             # It's cool if there's no Data, we'll live
             pos = None
         except Exception:
-            six.raise_from(
-                TypeError(
-                    "Selection type must be compatible with slicing"
-                    " the coordinates"
-                    ),
-                None)
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
         try:
             vel = self.velocities[sel, :]
         except NoDataError:
             vel = None
         except Exception:
-            six.raise_from(
-                TypeError("Selection type must be compatible with slicing"
-                          " the coordinates"),
-                None)
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
         try:
             force = self.forces[sel, :]
         except NoDataError:
             force = None
         except Exception:
-            six.raise_from(
-                TypeError(
-                    "Selection type must be compatible with slicing"
-                    " the coordinates"
-                    ),
-                None)
+            errmsg = ("Selection type must be compatible with slicing the "
+                      "coordinates")
+            raise TypeError(errmsg) from None
 
         new_TS = self.__class__.from_coordinates(
             positions=pos,
@@ -1384,7 +1400,7 @@ class _Readermeta(type):
                     _READER_HINTS[fmt_name] = classdict['_format_hint'].__func__
 
 
-class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
+class ProtoReader(IOBase, metaclass=_Readermeta):
     """Base class for Readers, without a :meth:`__del__` method.
 
     Extends :class:`IOBase` with most attributes and methods of a generic
@@ -1403,6 +1419,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.0.0
+       Now supports (un)pickle. Upon unpickling,
+       the current timestep is retained by reconstrunction.
     """
 
     #: The appropriate Timestep class, e.g.
@@ -1441,7 +1460,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
             ts = self._read_next_timestep()
         except (EOFError, IOError):
             self.rewind()
-            six.raise_from(StopIteration, None)
+            raise StopIteration from None
         else:
             for auxname in self.aux_list:
                 ts = self._auxs[auxname].update_ts(ts)
@@ -1573,7 +1592,7 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         elif isinstance(frame, (list, np.ndarray)):
             if len(frame) != 0 and isinstance(frame[0], (bool, np.bool_)):
                 # Avoid having list of bools
-                frame = np.asarray(frame, dtype=np.bool)
+                frame = np.asarray(frame, dtype=bool)
                 # Convert bool array to int array
                 frame = np.arange(len(self))[frame]
             return FrameIteratorIndices(self, frame)
@@ -1625,11 +1644,8 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
                 yield self._read_frame_with_aux(i)
             self.rewind()
         except TypeError:  # if _read_frame not implemented
-            six.raise_from(
-                TypeError(
-                    "{0} does not support slicing."
-                    "".format(self.__class__.__name__)),
-                None)
+            errmsg = f"{self.__class__.__name__} does not support slicing."
+            raise TypeError(errmsg) from None
 
     def check_slice_indices(self, start, stop, step):
         """Check frame indices are valid and clip to fit trajectory.
@@ -2048,11 +2064,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
         try:
             self.transformations = transformations
         except ValueError:
-            six.raise_from(
-                ValueError(
-                    "Can't add transformations again. "
-                    "Please create new Universe object"),
-                None)
+            errmsg = ("Can't add transformations again. Please create a new "
+                      "Universe object")
+            raise ValueError(errmsg) from None
         else:
             self.ts = self._apply_transformations(self.ts)
 
@@ -2068,6 +2082,9 @@ class ProtoReader(six.with_metaclass(_Readermeta, IOBase)):
 
         return ts
 
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self[self.ts.frame]
 
 
 class ReaderBase(ProtoReader):
@@ -2170,11 +2187,16 @@ class _Writermeta(type):
                     _MULTIFRAME_WRITERS[f] = cls
 
 
-class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
+class WriterBase(IOBase, metaclass=_Writermeta):
     """Base class for trajectory writers.
 
     See Trajectory API definition in :mod:`MDAnalysis.coordinates.__init__` for
     the required attributes and methods.
+
+
+    .. versionchanged:: 2.0.0
+       Deprecated :func:`write_next_timestep` has now been removed, please use
+       :func:`write` instead.
     """
 
     def convert_dimensions_to_unitcell(self, ts, inplace=True):
@@ -2196,26 +2218,20 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
 
         Parameters
         ----------
-        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe` or a :class:`Timestep`
+        obj : :class:`~MDAnalysis.core.groups.AtomGroup` or :class:`~MDAnalysis.core.universe.Universe`
             write coordinate information associate with `obj`
 
         Note
         ----
         The size of the `obj` must be the same as the number of atoms provided
         when setting up the trajectory.
+
+
+        .. versionchanged:: 2.0.0
+           Deprecated support for Timestep argument to write has now been
+           removed. Use AtomGroup or Universe as an input instead.
         """
-        if isinstance(obj, Timestep):
-            ts = obj
-        else:
-            try:
-                ts = obj.ts
-            except AttributeError:
-                try:
-                    # special case: can supply a Universe, too...
-                    ts = obj.trajectory.ts
-                except AttributeError:
-                    six.raise_from(TypeError("No Timestep found in obj argument"), None)
-        return self.write_next_timestep(ts)
+        return self._write_next_frame(obj)
 
     def __del__(self):
         self.close()
@@ -2248,8 +2264,6 @@ class WriterBase(six.with_metaclass(_Writermeta, IOBase)):
         """
         x = np.ravel(x)
         return np.all(criteria["min"] < x) and np.all(x <= criteria["max"])
-
-        # def write_next_timestep(self, ts=None)
 
 
 class SingleFrameReaderBase(ProtoReader):
@@ -2408,7 +2422,7 @@ class _Convertermeta(type):
                 f = f.upper()
                 _CONVERTERS[f] = cls
 
-class ConverterBase(six.with_metaclass(_Convertermeta, IOBase)):
+class ConverterBase(IOBase, metaclass=_Convertermeta):
     """Base class for converting to other libraries.
     """
 

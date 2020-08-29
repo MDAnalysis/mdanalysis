@@ -20,10 +20,6 @@
 # MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
-from __future__ import division, absolute_import
-
-from six.moves import range
-
 import os
 import itertools
 import numpy as np
@@ -46,6 +42,7 @@ from MDAnalysis.tests.datafiles import (
     TRZ_psf, TRZ,
     PDB_icodes,
     PDB_HOLE,
+    PDB_helix,
 )
 from MDAnalysisTests import make_Universe
 
@@ -78,7 +75,7 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
-    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    @pytest.mark.parametrize('resname', sorted(MDAnalysis.core.selection.ProteinSelection.prot_res))
     def test_protein_resnames(self, resname):
         u = make_Universe(('resnames',))
         # set half the residues' names to the resname we're testing
@@ -518,6 +515,54 @@ class TestSelectionsTPR(object):
     def test_molnum(self, universe, selection_string, reference):
         sel = universe.select_atoms(selection_string)
         assert_equal(sel.ids, np.array(reference, dtype=np.int32))
+
+
+class TestSelectionRDKit(object):
+    def setup_class(self):
+        pytest.importorskip("rdkit.Chem")
+
+    @pytest.fixture
+    def u(self):
+        smi = "Cc1cNcc1"
+        u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
+                                            generate_coordinates=False)
+        return u
+
+    @pytest.fixture
+    def u2(self):
+        u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+        return u
+
+    @pytest.mark.parametrize("sel_str, n_atoms", [
+        ("aromatic", 5),
+        ("not aromatic", 1),
+        ("type N and aromatic", 1),
+        ("type C and aromatic", 4),
+    ])
+    def test_aromatic_selection(self, u, sel_str, n_atoms):
+        sel = u.select_atoms(sel_str)
+        assert sel.n_atoms == n_atoms
+
+    @pytest.mark.parametrize("sel_str, indices", [
+        ("smarts n", [10]),
+        ("smarts [#7]", [0, 10]),
+        ("smarts a", [1, 2, 3, 9, 10]),
+        ("smarts c", [1, 2, 3, 9]),
+        ("smarts [*-]", [6]),
+        ("smarts [$([!#1]);$([!R][R])]", [0, 4]),
+        ("smarts [$([C@H](-[CH2])(-[O-])-C=O)]", [5]),
+        ("smarts [$([C@@H](-[CH2])(-[O-])-C=O)]", []),
+        ("smarts a and type C", [1, 2, 3, 9]),
+        ("(smarts a) and (type C)", [1, 2, 3, 9]),
+        ("smarts a and type N", [10]),
+    ])
+    def test_smarts_selection(self, u2, sel_str, indices):
+        sel = u2.select_atoms(sel_str)
+        assert_equal(sel.indices, indices)
+
+    def test_invalid_smarts_sel_raises_error(self, u2):
+        with pytest.raises(ValueError, match="not a valid SMARTS"):
+            u2.select_atoms("smarts foo")
 
 
 class TestSelectionsNucleicAcids(object):
@@ -1130,6 +1175,25 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
 
     assert len(sel.atoms) == n_atoms
 
+@pytest.mark.parametrize('selection', [
+    'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
+    'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
+    'index 0', 'index 1', 'bynum 1-10',
+    'segid SYSTEM', 'resid 163', 'resid 1-10', 'resnum 2',
+    'around 10 resid 1', 'point 0 0 0 10', 'sphzone 10 resid 1',
+    'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
+    'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
+    'byres index 0', 'same resid as index 0',
+])
+def test_selections_on_empty_group(u_pdb_icodes, selection):
+    ag = u_pdb_icodes.atoms[[]].select_atoms(selection)
+    assert len(ag) == 0
+
+def test_empty_yet_global(u_pdb_icodes):
+    # slight exception to above test, an empty AG can return something if 'global' used
+    ag = u_pdb_icodes.atoms[[]].select_atoms('global name O')
+
+    assert len(ag) == 185  # len(u_pdb_icodes.select_atoms('name O'))
 
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)
