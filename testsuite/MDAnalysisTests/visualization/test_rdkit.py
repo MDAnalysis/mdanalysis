@@ -49,14 +49,21 @@ class TestRequiresRDKit:
 
 
 @requires_rdkit
+class DummyForMinDependencies:
+    def __call__(self):
+        return RDKitDrawer()
+
+
+@pytest.fixture(scope="function")
+def drawer():
+    return DummyForMinDependencies()()
+
+
+@requires_rdkit
 class TestRDKitDrawer:
     @pytest.fixture
     def u(self):
         return mda.Universe.from_smiles("CCO", numConfs=3)
-
-    @pytest.fixture
-    def drawer(self):
-        return RDKitDrawer()
 
     def test_init(self, drawer):
         assert mda._FORMATTERS["RDKIT"][(
