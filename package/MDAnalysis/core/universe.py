@@ -83,7 +83,7 @@ else:
     os.fork = _os_dot_fork
     del _os_dot_fork
 
-from .. import _ANCHOR_UNIVERSES, _TOPOLOGY_ATTRS, _PARSERS
+from .. import _TOPOLOGY_ATTRS, _PARSERS
 from ..exceptions import NoDataError
 from ..lib import util
 from ..lib.log import ProgressBar
@@ -138,11 +138,8 @@ def _topology_from_file_like(topology_file, topology_format=None,
             "Error: {2}".format(topology_file, parser, err))
     return topology
 
-# py3 TODO
-#def _resolve_formats(*coordinates, format=None, topology_format=None):
-def _resolve_formats(*coordinates, **kwargs):
-    format = kwargs.get('format', None)
-    topology_format = kwargs.get('topology_format', None)
+
+def _resolve_formats(*coordinates, format=None, topology_format=None):
     if not coordinates:
         if format is None:
             format = topology_format
@@ -150,15 +147,9 @@ def _resolve_formats(*coordinates, **kwargs):
             topology_format = format
     return format, topology_format
 
-# py3 TODO
-#def _resolve_coordinates(filename, *coordinates, format=None,
-#                         all_coordinates=False):
-def _resolve_coordinates(*args, **kwargs):
-    filename = args[0]
-    coordinates = args[1:]
-    format = kwargs.get('format', None)
-    all_coordinates = kwargs.get('all_coordinates', False)
 
+def _resolve_coordinates(filename, *coordinates, format=None,
+                         all_coordinates=False):
     if all_coordinates or not coordinates and filename is not None:
         try:
             get_reader_for(filename, format=format)
@@ -273,17 +264,6 @@ class Universe(object):
     vdwradii: dict, ``None``, default ``None``
         For use with *guess_bonds*. Supply a dict giving a vdwradii for each
         atom type which are used in guessing bonds.
-    is_anchor: bool, default ``True``
-        When unpickling instances of
-        :class:`MDAnalysis.core.groups.AtomGroup` existing Universes are
-        searched for one where to anchor those atoms. Set to ``False`` to
-        prevent this Universe from being considered.
-    anchor_name: str, ``None``, default ``None``
-        Setting to other than ``None`` will cause
-        :class:`MDAnalysis.core.groups.AtomGroup` instances pickled from the
-        Universe to only unpickle if a compatible Universe with matching
-        *anchor_name* is found. Even if *anchor_name* is set *is_anchor* will
-        still be honored when unpickling.
     transformations: function or list, ``None``, default ``None``
         Provide a list of transformations that you wish to apply to the
         trajectory upon reading. Transformations can be found in
@@ -298,6 +278,7 @@ class Universe(object):
         :mod:`ChainReader<MDAnalysis.coordinates.chain>`, which contains the
         functionality to treat independent trajectory files as a single virtual
         trajectory.
+    **kwargs: extra arguments are passed to the topology parser.
 
     Attributes
     ----------
@@ -318,33 +299,16 @@ class Universe(object):
 
     .. versionchanged:: 2.0.0
         Universe now can be (un)pickled.
-        ``topology``, ``trajectory`` and ``anchor_name`` are reserved
+        ``topology`` and ``trajectory`` are reserved
         upon unpickle.
     """
-# Py3 TODO
-#    def __init__(self, topology=None, *coordinates, all_coordinates=False,
-#                 format=None, topology_format=None, transformations=None,
-#                 guess_bonds=False, vdwradii=None, anchor_name=None,
-#                 is_anchor=True, in_memory=False, in_memory_step=1,
-#                 **kwargs):
-    def __init__(self, *args, **kwargs):
-        topology = args[0] if args else None
-        coordinates = args[1:]
-        all_coordinates = kwargs.pop('all_coordinates', False)
-        format = kwargs.pop('format', None)
-        topology_format = kwargs.pop('topology_format', None)
-        transformations = kwargs.pop('transformations', None)
-        guess_bonds = kwargs.pop('guess_bonds', False)
-        vdwradii = kwargs.pop('vdwradii', None)
-        anchor_name = kwargs.pop('anchor_name', None)
-        is_anchor = kwargs.pop('is_anchor', True)
-        in_memory = kwargs.pop('in_memory', False)
-        in_memory_step = kwargs.pop('in_memory_step', 1)
+    def __init__(self, topology=None, *coordinates, all_coordinates=False,
+                 format=None, topology_format=None, transformations=None,
+                 guess_bonds=False, vdwradii=None, in_memory=False,
+                 in_memory_step=1, **kwargs):
 
         self._trajectory = None  # managed attribute holding Reader
         self._cache = {}
-        self._anchor_name = anchor_name
-        self.is_anchor = is_anchor
         self.atoms = None
         self.residues = None
         self.segments = None
@@ -354,8 +318,6 @@ class Universe(object):
             'transformations': transformations,
             'guess_bonds': guess_bonds,
             'vdwradii': vdwradii,
-            'anchor_name': anchor_name,
-            'is_anchor': is_anchor,
             'in_memory': in_memory,
             'in_memory_step': in_memory_step,
             'format': format,
@@ -696,45 +658,6 @@ class Universe(object):
         """Improper dihedral angles between atoms"""
         return self.atoms.impropers
 
-    @property
-    def anchor_name(self):
-        # hash used for anchoring.
-        # Try and use anchor_name, else use (and store) uuid
-        if self._anchor_name is not None:
-            return self._anchor_name
-        else:
-            try:
-                return self._anchor_uuid
-            except AttributeError:
-                # store this so we can later recall it if needed
-                self._anchor_uuid = str(uuid.uuid4())
-                return self._anchor_uuid
-
-    @anchor_name.setter
-    def anchor_name(self, name):
-        self.remove_anchor()  # clear any old anchor
-        self._anchor_name = str(name) if not name is None else name
-        self.make_anchor()  # add anchor again
-
-    @property
-    def is_anchor(self):
-        """Is this Universe an anchoring for unpickling AtomGroups"""
-        return self.anchor_name in _ANCHOR_UNIVERSES
-
-    @is_anchor.setter
-    def is_anchor(self, new):
-        if new:
-            self.make_anchor()
-        else:
-            self.remove_anchor()
-
-    def remove_anchor(self):
-        """Remove this Universe from the possible anchor list for unpickling"""
-        _ANCHOR_UNIVERSES.pop(self.anchor_name, None)
-
-    def make_anchor(self):
-        _ANCHOR_UNIVERSES[self.anchor_name] = self
-
     def __repr__(self):
         # return "<Universe with {n_atoms} atoms{bonds}>".format(
         #    n_atoms=len(self.atoms),
@@ -745,17 +668,13 @@ class Universe(object):
 
     def __getstate__(self):
         # Universe's two "legs" of topology and traj both serialise themselves
-        # the only other state held in Universe is anchor name?
-        return self.anchor_name, self._topology, self._trajectory
+        return self._topology, self._trajectory
 
     def __setstate__(self, args):
-        self._anchor_name = args[0]
-        self.make_anchor()
-
-        self._topology = args[1]
+        self._topology = args[0]
         _generate_from_topology(self)
 
-        self._trajectory = args[2]
+        self._trajectory = args[1]
 
     # Properties
     @property
@@ -1382,32 +1301,6 @@ class Universe(object):
             AllChem.EmbedMultipleConfs(mol, numConfs, **rdkit_kwargs)
 
         return cls(mol, **kwargs)
-
-
-# TODO: what is the point of this function???
-def as_Universe(*args, **kwargs):
-    """Return a universe from the input arguments.
-
-    1. If the first argument is a universe, just return it::
-
-         as_Universe(universe) --> universe
-
-    2. Otherwise try to build a universe from the first or the first
-       and second argument::
-
-         as_Universe(PDB, **kwargs) --> Universe(PDB, **kwargs)
-         as_Universe(PSF, DCD, **kwargs) --> Universe(PSF, DCD, **kwargs)
-         as_Universe(*args, **kwargs) --> Universe(*args, **kwargs)
-
-    Returns
-    -------
-    :class:`~MDAnalysis.core.groups.Universe`
-    """
-    if len(args) == 0:
-        raise TypeError("as_Universe() takes at least one argument (%d given)" % len(args))
-    elif len(args) == 1 and isinstance(args[0], Universe):
-        return args[0]
-    return Universe(*args, **kwargs)
 
 
 def Merge(*args):

@@ -33,4 +33,5 @@ you will have to specify a package name (case-insensitive). ::
    :maxdepth: 1
 
    converters/ParmEdParser
+   converters/RDKitParser
 
