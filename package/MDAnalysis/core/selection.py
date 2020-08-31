@@ -617,6 +617,60 @@ class AromaticSelection(Selection):
         return group[group.aromaticities].unique
 
 
+class SmartsSelection(Selection):
+    """Select atoms based on SMARTS queries.
+
+    Uses RDKit to run the query and converts the result to MDAnalysis.
+    Supports chirality.
+    """
+    token = 'smarts'
+
+    def __init__(self, parser, tokens):
+        # The parser will add spaces around parentheses and then split the
+        # selection based on spaces to create the tokens
+        # If the input SMARTS query contained parentheses, the query will be
+        # split because of that and we need to reconstruct it
+        # We also need to keep the parentheses that are not part of the smarts
+        # query intact
+        pattern = []
+        counter = {"(": 0, ")": 0}
+        # loop until keyword but ignore parentheses as a keyword
+        while tokens[0] in ["(", ")"] or not is_keyword(tokens[0]):
+            # keep track of the number of open and closed parentheses
+            if tokens[0] in ["(", ")"]:
+                counter[tokens[0]] += 1
+                # if the char is a closing ")" but there's no corresponding
+                # open "(" then we've reached then end of the smarts query and
+                # the current token ")" is part of a grouping parenthesis
+                if tokens[0] == ")" and counter["("] < (counter[")"]):
+                    break
+            # add the token to the pattern and remove it from the tokens
+            val = tokens.popleft()
+            pattern.append(val)
+        self.pattern = "".join(pattern)
+
+    def apply(self, group):
+        try:
+            from rdkit import Chem
+        except ImportError:
+            raise ImportError("RDKit is required for SMARTS-based atom "
+                              "selection but it's not installed. Try "
+                              "installing it with \n"
+                              "conda install -c conda-forge rdkit")
+        pattern = Chem.MolFromSmarts(self.pattern)
+        if not pattern:
+            raise ValueError(f"{self.pattern!r} is not a valid SMARTS query")
+        mol = group.convert_to("RDKIT")
+        matches = mol.GetSubstructMatches(pattern, useChirality=True)
+        # convert rdkit indices to mdanalysis'
+        indices = [
+            mol.GetAtomWithIdx(idx).GetIntProp("_MDAnalysis_index")
+            for match in matches for idx in match]
+        # create boolean mask for atoms based on index
+        mask = np.in1d(range(group.n_atoms), np.unique(indices))
+        return group[mask]
+
+
 class ResidSelection(Selection):
     """Select atoms based on numerical fields
 
