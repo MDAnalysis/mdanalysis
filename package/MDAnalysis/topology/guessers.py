@@ -490,6 +490,7 @@ def guess_aromaticities(atomgroup):
     aromaticities : numpy.ndarray
         Array of boolean values for the aromaticity of each atom
 
+
     .. versionadded:: 2.0.0
     """
     mol = atomgroup.convert_to("RDKIT")
