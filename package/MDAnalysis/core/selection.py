@@ -795,7 +795,7 @@ class ResidSelection(Selection):
 
 
 class BoolSelection(Selection):
-    """Range selection for boolean values"""
+    """Selection for boolean values"""
 
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
@@ -814,9 +814,12 @@ class BoolSelection(Selection):
         vals = getattr(group, self.field)
         return group[vals == self.value].unique
 
+class RangeSelection(Selection):
+    """Range selection for numeric values"""
 
-class FloatRangeSelection(Selection):
-    """Range selection for float values"""
+    value_offset = 0
+    pattern = ".*"
+    dtype = float
 
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
@@ -826,62 +829,33 @@ class FloatRangeSelection(Selection):
         uppers = []  # upper limit on any range
         lowers = []  # lower limit on any range
 
-        for val in values:
+        _values = []
+        while values:
+            v = values.pop(0)
+            if v in ("to", ":", "-"):
+                try:
+                    _values[-1] = f"{_values[-1]} {v} {values.pop(0)}"
+                except IndexError:
+                    given = f"{' '.join(_values)} {v} {' '.join(values)}"
+                    raise ValueError(f"Invalid expression given: {given}")
+            else:
+                _values.append(v)
+
+        for val in _values:
             try:
                 lower = float(val)
                 upper = None
             except ValueError:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
-                selrange = re.match(r"(\d+\.?\d*)[:-](\d+\.?\d*)", val)
+                selrange = re.match(self.pattern, val)
+                print(self.pattern, val)
                 if not selrange:
                     errmsg = f"Failed to parse number: {val}"
                     raise ValueError(errmsg) from None
-                lower, upper = map(float, selrange.groups())
-
-            lowers.append(lower)
-            uppers.append(upper)
-
-        self.lowers = lowers
-        self.uppers = uppers
-
-    def apply(self, group):
-        mask = np.zeros(len(group), dtype=bool)
-        vals = getattr(group, self.field)
-
-        for upper, lower in zip(self.uppers, self.lowers):
-            if upper is not None:
-                thismask = vals >= lower
-                thismask &= vals <= upper
-            else:
-                thismask = vals == lower
-
-            mask |= thismask
-        return group[mask].unique
-
-
-class RangeSelection(Selection):
-    """Range selection for int values"""
-    value_offset=0
-
-    def __init__(self, parser, tokens):
-        values = grab_not_keywords(tokens)
-        if not values:
-            raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
-
-        uppers = []  # upper limit on any range
-        lowers = []  # lower limit on any range
-
-        for val in values:
-            try:
-                lower = int(val)
-                upper = None
-            except ValueError:
-                # check if in appropriate format 'lower:upper' or 'lower-upper'
-                selrange = re.match(r"(\d+)[:-](\d+)", val)
-                if not selrange:
-                    errmsg = f"Failed to parse number: {val}"
-                    raise ValueError(errmsg) from None
-                lower, upper = np.int64(selrange.groups())
+                print(self.pattern, val, selrange.groups())
+                lower, upper = map(self.dtype, selrange.groups())
+                if lower > upper:
+                    lower, upper = upper, lower
 
             lowers.append(lower)
             uppers.append(upper)
@@ -903,27 +877,21 @@ class RangeSelection(Selection):
             mask |= thismask
         return group[mask].unique
 
+class FloatRangeSelection(RangeSelection):
+    """Range selection for float values"""
 
-class ResnumSelection(RangeSelection):
-    token = 'resnum'
-    field = 'resnums'
+    pattern = r"(-?\d+\.?\d*)\s*(?:[:-]|to)\s*(-?\d+\.?\d*)"
 
 
-class ByNumSelection(RangeSelection):
+class IntRangeSelection(RangeSelection):
+    """Range selection for int values"""
+
+    pattern = r"(-?\d+)\s*(?:[:-]|to)\s*(-?\d+)"
+
+class ByNumSelection(IntRangeSelection):
     token = 'bynum'
     field = 'indices'
     value_offset = 1  # queries are in 1 based indices
-
-
-class IndexSelection(RangeSelection):
-    token = 'index'
-    field = 'indices'
-    value_offset = 0 # queries now 0 based indices
-
-
-class MolidSelection(RangeSelection):
-    token = 'molnum'
-    field = 'molnums'
 
 
 class ProteinSelection(Selection):
@@ -1465,17 +1433,17 @@ def gen_selection_class(singular, attrname, dtype, per_object):
 
     Returns
     -------
-    Selection: subclass of Selection
+    selection: subclass of Selection
     """
     basedct = {"token": singular, "field": attrname}
     name = f"{attrname}Selection"
     if issubclass(dtype, bool):
         basecls = BoolSelection
 
-    elif issubclass(dtype, int):
-        basecls = RangeSelection
+    elif np.issubdtype(dtype, np.integer):
+        basecls = IntRangeSelection
 
-    elif issubclass(dtype, float):
+    elif np.issubdtype(dtype, np.floating):
         basecls = FloatRangeSelection
 
     elif issubclass(dtype, str) or dtype == object:
@@ -1487,6 +1455,8 @@ def gen_selection_class(singular, attrname, dtype, per_object):
         else:
             basedct["level"] = "ix"
     else:
-        raise ValueError(f"No base class defined for dtype {dtype}")
+        raise ValueError(f"No base class defined for dtype {dtype}. "
+                         "Define a Selection class manually by "
+                         "subclassing core.selection.Selection")
 
     return type(name, (basecls,), basedct)

@@ -1233,16 +1233,34 @@ def test_chain_sel():
     assert len(u.select_atoms("chainID A")) == len(u.atoms)
 
 
-def test_mass_sel():
+@pytest.mark.parametrize("selstr,n_atoms", [
+    ("mass 0.8 to 1.2", 23850),
+    ("mass -5--3", 2),  # select -5 to -3
+    ("mass -3 : -5", 2),  # wrong way around
+])
+def test_mass_sel(selstr, n_atoms):
     # test auto-topattr addition of float (FloatRangeSelection)
     u = mda.Universe(TPR)
-    assert len(u.select_atoms("mass 0.8-1.2")) == 23853
+    u.atoms[-10:].masses = - (np.arange(10) + 1.001)
+    assert len(u.select_atoms(selstr)) == n_atoms
 
+
+@pytest.mark.parametrize("selstr,n_res", [
+    ("resnum -10 to 3", 14),
+    ("resnum -5--3", 3),  # select -5 to -3
+    ("resnum -3 : -5", 3),  # wrong way around
+])
+def test_int_sel(selstr, n_res):
+    # test auto-topattr addition of float (FloatRangeSelection)
+    u = mda.Universe(TPR)
+    u.residues[-10:].resnums = - (np.arange(10) + 1)
+    ag = u.select_atoms(selstr).residues
+    assert len(ag) == n_res
 
 def test_bool_sel():
     pytest.importorskip("rdkit.Chem")
     u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
     assert len(u.select_atoms("aromaticity")) == 5
     assert len(u.select_atoms("aromaticity true")) == 5
-    assert len(u.select_atoms("not aromaticity")) == 1
-    assert len(u.select_atoms("aromaticity False")) == 1
+    assert len(u.select_atoms("not aromaticity")) == 15
+    assert len(u.select_atoms("aromaticity False")) == 15
