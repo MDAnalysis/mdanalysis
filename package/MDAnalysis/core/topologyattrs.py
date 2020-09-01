@@ -301,7 +301,8 @@ class _TopologyAttrMeta(type):
             if singular not in selection._SELECTIONDICT:
                 dtype = classdict.get("dtype")
                 if dtype is not None:
-                    per_obj = classdict.get("per_object", "atom")
+                    per_obj = classdict.get("per_object", bases[0].per_object)
+
                     try:
                         selection.gen_selection_class(singular, attrname, dtype,
                                                     per_obj)
