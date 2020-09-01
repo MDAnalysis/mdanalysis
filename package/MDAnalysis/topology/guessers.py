@@ -512,6 +512,7 @@ def guess_gasteiger_charges(atomgroup):
     charges : numpy.ndarray
         Array of float values representing the charge of each atom
 
+
     .. versionadded:: 2.0.0
     """
     mol = atomgroup.convert_to("RDKIT")
