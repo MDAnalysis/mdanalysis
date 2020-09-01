@@ -794,7 +794,73 @@ class ResidSelection(Selection):
         return mask
 
 
+class BoolSelection(Selection):
+    """Range selection for boolean values"""
+
+    def __init__(self, parser, tokens):
+        values = grab_not_keywords(tokens)
+        if not values:
+            values = [True]
+        val = values[0]
+        if isinstance(val, str):
+            val = val.lower()
+            if val == "false":
+                val = False
+            elif val == "true":
+                val = True
+        self.value = val
+
+    def apply(self, group):
+        vals = getattr(group, self.field)
+        return group[vals == self.value].unique
+
+
+class FloatRangeSelection(Selection):
+    """Range selection for float values"""
+
+    def __init__(self, parser, tokens):
+        values = grab_not_keywords(tokens)
+        if not values:
+            raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
+
+        uppers = []  # upper limit on any range
+        lowers = []  # lower limit on any range
+
+        for val in values:
+            try:
+                lower = float(val)
+                upper = None
+            except ValueError:
+                # check if in appropriate format 'lower:upper' or 'lower-upper'
+                selrange = re.match(r"(\d+\.?\d*)[:-](\d+\.?\d*)", val)
+                if not selrange:
+                    errmsg = f"Failed to parse number: {val}"
+                    raise ValueError(errmsg) from None
+                lower, upper = map(float, selrange.groups())
+
+            lowers.append(lower)
+            uppers.append(upper)
+
+        self.lowers = lowers
+        self.uppers = uppers
+
+    def apply(self, group):
+        mask = np.zeros(len(group), dtype=bool)
+        vals = getattr(group, self.field)
+
+        for upper, lower in zip(self.uppers, self.lowers):
+            if upper is not None:
+                thismask = vals >= lower
+                thismask &= vals <= upper
+            else:
+                thismask = vals == lower
+
+            mask |= thismask
+        return group[mask].unique
+
+
 class RangeSelection(Selection):
+    """Range selection for int values"""
     value_offset=0
 
     def __init__(self, parser, tokens):
@@ -1381,3 +1447,46 @@ class SelectionParser(object):
 
 # The module level instance
 Parser = SelectionParser()
+
+
+def gen_selection_class(singular, attrname, dtype, per_object):
+    """Class factory for arbitrary TopologyAttrs
+
+    Parameters
+    ----------
+    singular: str
+        singular name of TopologyAttr
+    attrname: str
+        attribute name of TopologyAttr
+    dtype:
+        type of TopologyAttr
+    per_object:
+        level of TopologyAttr
+
+    Returns
+    -------
+    Selection: subclass of Selection
+    """
+    basedct = {"token": singular, "field": attrname}
+    name = f"{attrname}Selection"
+    if issubclass(dtype, bool):
+        basecls = BoolSelection
+
+    elif issubclass(dtype, int):
+        basecls = RangeSelection
+
+    elif issubclass(dtype, float):
+        basecls = FloatRangeSelection
+
+    elif issubclass(dtype, str) or dtype == object:
+        basecls = _ProtoStringSelection
+        if per_object == "segment":
+            basedct["level"] = "segindices"
+        elif per_object == "residue":
+            basedct["level"] = "resindices"
+        else:
+            basedct["level"] = "ix"
+    else:
+        raise ValueError(f"No base class defined for dtype {dtype}")
+
+    return type(name, (basecls,), basedct)

@@ -43,6 +43,7 @@ from MDAnalysis.tests.datafiles import (
     PDB_icodes,
     PDB_HOLE,
     PDB_helix,
+    PDB_elements,
 )
 from MDAnalysisTests import make_Universe
 
@@ -1218,3 +1219,30 @@ def test_record_type_sel():
 
     assert len(u.select_atoms('name CA and not record_type HETATM')) == 30
     assert len(u.select_atoms('name CA and record_type HETATM')) == 2
+
+
+def test_element_sel():
+    # test auto-topattr addition of string
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("element H")) == 8
+    assert len(u.select_atoms("same element as index 12")) == 8
+
+
+def test_chain_sel():
+    u = mda.Universe(PDB_elements)
+    assert len(u.select_atoms("chainID A")) == len(u.atoms)
+
+
+def test_mass_sel():
+    # test auto-topattr addition of float (FloatRangeSelection)
+    u = mda.Universe(TPR)
+    assert len(u.select_atoms("mass 0.8-1.2")) == 23853
+
+
+def test_bool_sel():
+    pytest.importorskip("rdkit.Chem")
+    u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+    assert len(u.select_atoms("aromaticity")) == 5
+    assert len(u.select_atoms("aromaticity true")) == 5
+    assert len(u.select_atoms("not aromaticity")) == 1
+    assert len(u.select_atoms("aromaticity False")) == 1
