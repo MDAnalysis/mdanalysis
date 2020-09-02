@@ -92,12 +92,11 @@ class XYZParser(TopologyReaderBase):
                 names[i] = name
 
         # Guessing time
-        atomtypes = guessers.guess_types(names)
         masses = guessers.guess_masses(names)
 
         attrs = [Atomnames(names),
                  Atomids(np.arange(natoms) + 1),
-                 Atomtypes(atomtypes, guessed=True),
+                 Atomtypes(names),
                  Masses(masses, guessed=True),
                  Resids(np.array([1])),
                  Resnums(np.array([1])),
