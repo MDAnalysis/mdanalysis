@@ -24,7 +24,7 @@
 """OpenMM topology parser
 =========================
 
-.. versionadded:: 0.17.0
+.. versionadded:: 2.0.0
 
 
 Converts an 
@@ -85,7 +85,6 @@ class OpenMMTopologyParser(TopologyReaderBase):
     def _format_hint(thing):
         """Can this Parser read object *thing*?
 
-        .. versionadded:: 1.0.0
         """
         try:
             from simtk.openmm import app
@@ -168,7 +167,6 @@ class OpenMMAppTopologyParser(OpenMMTopologyParser):
     def _format_hint(thing):
         """Can this Parser read object *thing*?
 
-        .. versionadded:: 1.0.0
         """
         try:
             from simtk.openmm import app

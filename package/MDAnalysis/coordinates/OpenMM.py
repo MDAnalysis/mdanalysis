@@ -24,6 +24,7 @@
 """OpenMM structure I/O --- :mod:`MDAnalysis.coordinates.OpenMM`
 ================================================================
 
+
 Read coordinates data from a 
 `OpenMM <http://docs.openmm.org/latest/api-python/generated/simtk.openmm.app.simulation.Simulation.html#simtk.openmm.app.simulation.Simulation>`_ 
 :class:`simtk.openmm.app.simulation.Simulation` with :class:`OpenMMReader` 
@@ -58,6 +59,8 @@ from . import base
 class OpenMMSimulationReader(base.SingleFrameReaderBase):
     """Reader for OpenMM Simulation objects
 
+
+    .. versionadded:: 2.0.0
     """
 
     format = "OPENMMSIMULATION"
@@ -67,7 +70,6 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
     @staticmethod
     def _format_hint(thing):
         """Can this reader read *thing*?
-        .. versionadded:: 1.0.0
         """
         try:
             from simtk.openmm.app import Simulation
@@ -115,6 +117,7 @@ class OpenMMSimulationReader(base.SingleFrameReaderBase):
 class OpenMMAppReader(base.SingleFrameReaderBase):
     """Reader for OpenMM App objects
 
+    .. versionadded:: 2.0.0
     """
 
     format = "OPENMMAPP"
@@ -123,7 +126,6 @@ class OpenMMAppReader(base.SingleFrameReaderBase):
     @staticmethod
     def _format_hint(thing):
         """Can this reader read *thing*?
-        .. versionadded:: 1.0.0
         """
         try:
             from simtk.openmm import app
