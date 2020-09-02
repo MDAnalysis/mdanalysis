@@ -175,6 +175,7 @@ class _Selectionmeta(type):
         type.__init__(type, name, bases, classdict)
         try:
             _SELECTIONDICT[classdict['token']] = cls
+            _SELECTIONDICT[classdict['token'].lower()] = cls
         except KeyError:
             pass
 
@@ -758,12 +759,13 @@ class BoolSelection(Selection):
         vals = getattr(group, self.field)
         return group[vals == self.value].unique
 
+
 class RangeSelection(Selection):
-    """Range selection for numeric values"""
+    """Range selection for int values"""
 
     value_offset = 0
-    pattern = ".*"
-    dtype = float
+    pattern = r"(-?\d+)\s*(?:[:-]|to)\s*(-?\d+)"
+    dtype = int
 
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
@@ -787,16 +789,14 @@ class RangeSelection(Selection):
 
         for val in _values:
             try:
-                lower = float(val)
+                lower = self.dtype(val)
                 upper = None
             except ValueError:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 selrange = re.match(self.pattern, val)
-                print(self.pattern, val)
                 if not selrange:
                     errmsg = f"Failed to parse number: {val}"
                     raise ValueError(errmsg) from None
-                print(self.pattern, val, selrange.groups())
                 lower, upper = map(self.dtype, selrange.groups())
                 if lower > upper:
                     lower, upper = upper, lower
@@ -825,16 +825,11 @@ class RangeSelection(Selection):
 class FloatRangeSelection(RangeSelection):
     """Range selection for float values"""
 
-    pattern = r"(-?\d+\.?\d*)\s*(?:[:-]|to)\s*(-?\d+\.?\d*)"
+    pattern = r"(-?\d*\.?\d*)\s*(?:[:-]|to)\s*(-?\d*\.?\d*)"
+    dtype = float
 
 
-class IntRangeSelection(RangeSelection):
-    """Range selection for int values"""
-
-    pattern = r"(-?\d+)\s*(?:[:-]|to)\s*(-?\d+)"
-
-
-class ByNumSelection(IntRangeSelection):
+class ByNumSelection(RangeSelection):
     token = 'bynum'
     field = 'indices'
     value_offset = 1  # queries are in 1 based indices
@@ -1394,7 +1389,7 @@ def gen_selection_class(singular, attrname, dtype, per_object):
     if issubclass(dtype, bool):
         basecls = BoolSelection
     elif np.issubdtype(dtype, np.integer):
-        basecls = IntRangeSelection
+        basecls = RangeSelection
     elif np.issubdtype(dtype, np.floating):
         basecls = FloatRangeSelection
     elif issubclass(dtype, str) or dtype == object:

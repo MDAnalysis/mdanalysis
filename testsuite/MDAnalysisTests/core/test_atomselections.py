@@ -1251,7 +1251,7 @@ def test_mass_sel(selstr, n_atoms):
     ("resnum -3 : -5", 3),  # wrong way around
 ])
 def test_int_sel(selstr, n_res):
-    # test auto-topattr addition of float (FloatRangeSelection)
+    # test auto-topattr addition of int (IntRangeSelection)
     u = mda.Universe(TPR)
     u.residues[-10:].resnums = - (np.arange(10) + 1)
     ag = u.select_atoms(selstr).residues
@@ -1265,3 +1265,12 @@ def test_bool_sel():
     assert len(u.select_atoms("aromaticity true")) == 5
     assert len(u.select_atoms("not aromaticity")) == 15
     assert len(u.select_atoms("aromaticity False")) == 15
+
+
+def test_error_selection_for_strange_dtype():
+    with pytest.raises(ValueError) as rec:
+        MDAnalysis.core.selection.gen_selection_class("star", "stars",
+                                                      dict, "atom")
+
+    err = "No base class defined for dtype"
+    assert err in str(rec.value)
