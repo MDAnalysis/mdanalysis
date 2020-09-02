@@ -56,7 +56,7 @@ Available analysis modules
     Analyze hydrogen bonds, including both the per frame results as well
     as the dynamic properties and lifetimes.
 
-:mod:`~MDAnalysis.analysis.helanal`
+:mod:`~MDAnalysis.analysis.helix_analysis`
     Analysis of helices with the HELANAL_ algorithm.
 
 :mod:`~MDAnalysis.analysis.hole2`
