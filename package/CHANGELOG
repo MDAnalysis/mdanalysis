@@ -111,6 +111,8 @@ Enhancements
     'protein' selection (#2751 PR #2755)
   * Added an RDKit converter that works for any input with all hydrogens
     explicit in the topology (Issue #2468, PR #2775)
+  * Added automatic selection class generation for TopologyAttrs,
+    FloatRangeSelection, and BoolSelection (Issues #2925, #2875; PR #2927)
 
 Changes
   * Continuous integration uses mamba rather than conda to install the
