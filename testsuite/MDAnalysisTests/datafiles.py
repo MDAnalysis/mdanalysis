@@ -198,6 +198,7 @@ __all__ = [
     "MMTF_NOCRYST", # File with meaningless CRYST1 record (Issue #2679, PR #2685)
     "FHIAIMS", # to test FHIAIMS coordinate files
     "SDF_molecule"  # MDL SDFile for rdkit
+    "PDBX",  # PDBxfile
 ]
 
 from pkg_resources import resource_filename
@@ -544,6 +545,8 @@ ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
+
+PDBX = resource_filename(__name__, "data/4x8u.pdbx")
 
 # This should be the last line: clean up namespace
 del resource_filename

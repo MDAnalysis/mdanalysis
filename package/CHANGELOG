@@ -15,7 +15,7 @@ The rules for this file:
 ------------------------------------------------------------------------------
 ??/??/?? tylerjereddy, richardjgowers, IAlibay, hmacdope, orbeckst, cbouy,
          lilyminium, daveminh, jbarnoud, yuxuanzhuang, VOD555, ianmkenney,
-         calcraven，xiki-tempula, mieczyslaw
+         calcraven，xiki-tempula, mieczyslaw, ahy3nz
 
   * 2.0.0
 
@@ -112,6 +112,7 @@ Changes
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
   * Updated Universe creation function signatures to named arguments (Issue #2921)
+  * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
 
