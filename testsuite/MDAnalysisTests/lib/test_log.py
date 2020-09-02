@@ -50,6 +50,7 @@ class TestProgressMeter(object):
         actual = err.strip().split('\r')[-1]
         assert actual == expected
 
+
 def test_echo_deprecated():
     with pytest.deprecated_call():
         echo("F=ma -- Isaac Newton")

@@ -160,6 +160,7 @@ class OrOperation(LogicOperation):
 
         return group.universe.atoms[idx]
 
+
 def return_empty_on_apply(func):
     """
     Decorator to return empty AtomGroups from the apply() function

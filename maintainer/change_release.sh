@@ -19,11 +19,11 @@ die () {
 
 findcommand() {
     for name in $*; do
-	path=$(which $name)
-	if [ -n "$path" ]; then
+        path=$(which $name)
+        if [ -n "$path" ]; then
             echo $path
             return 0
-	fi
+        fi
     done
     die "None of the commands $* found." 2
 }

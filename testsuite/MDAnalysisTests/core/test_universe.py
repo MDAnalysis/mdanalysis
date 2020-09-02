@@ -1132,6 +1132,7 @@ class TestEmpty(object):
             u = mda.Universe()
         assert 'Universe.empty' in str(exc.value)
 
+
 def test_as_Universe_deprecation():
     with pytest.deprecated_call():
         _ = mda.core.universe.as_Universe(PSF, DCD)
