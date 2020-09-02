@@ -45,13 +45,15 @@ Fixes
   * In hydrogenbonds.hbond_analysis.HydrogenbondAnalysis an AttributeError
     was thrown when finding D-H pairs via the topology if `hydrogens` was an
     empty AtomGroup (Issue #2848)
+  * Fixed performance regression on select_atoms for string selections (#2751)
   * Fixed the DMSParser, allowing the creation of multiple segids sharing
     residues with identical resids (Issue #1387, PR #2872)
-  * H5MD files are now pickleable with H5PYPicklable (Issue #2890, PR #2894)
+  * H5MD files are now picklable with H5PYPicklable (Issue #2890, PR #2894)
   * Fixed Janin analysis residue filtering (include CYSH) (Issue #2898)
   * libmdaxdr and libdcd classes in their last frame can now be pickled
     (Issue #2878, PR #2911)
-
+  * AtomGroup now are pickled/unpickled without looking for its anchored
+    Universe (PR #2893) 
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
@@ -78,6 +80,10 @@ Enhancements
   * Added new kwargs `select_remove` and `select_protein` to
     analysis.dihedrals.Janin analysis to give user more fine grained control
     over selections (PR #2899)
+  * Improved performance of select_atoms on strings (e.g. name, type, resname) and
+    'protein' selection (#2751 PR #2755)
+  * Added an RDKit converter that works for any input with all hydrogens
+    explicit in the topology (Issue #2468, PR #2775)
 
 Changes
   * deprecated NumPy type aliases have been replaced with their actual types

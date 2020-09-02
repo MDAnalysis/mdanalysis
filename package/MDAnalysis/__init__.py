@@ -181,11 +181,6 @@ _TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
 _TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
 
 
-# Storing anchor universes for unpickling groups
-import weakref
-_ANCHOR_UNIVERSES = weakref.WeakValueDictionary()
-del weakref
-
 # custom exceptions and warnings
 from .exceptions import (
     SelectionError, NoDataError, ApplicationError, SelectionWarning,
