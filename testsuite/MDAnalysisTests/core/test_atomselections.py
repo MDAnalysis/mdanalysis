@@ -1257,6 +1257,7 @@ def test_int_sel(selstr, n_res):
     ag = u.select_atoms(selstr).residues
     assert len(ag) == n_res
 
+
 def test_bool_sel():
     pytest.importorskip("rdkit.Chem")
     u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")

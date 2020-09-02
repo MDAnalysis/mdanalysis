@@ -304,14 +304,14 @@ class _TopologyAttrMeta(type):
                     per_obj = classdict.get("per_object", bases[0].per_object)
 
                     try:
-                        selection.gen_selection_class(singular, attrname, dtype,
-                                                    per_obj)
+                        selection.gen_selection_class(singular, attrname,
+                                                      dtype, per_obj)
                     except ValueError:
                         msg = ("A selection keyword could not be "
                                "automatically generated for the "
                                f"{singular} attribute. If you need a "
-                                "selection keyword, define it manually "
-                                "by subclassing core.selection.Selection")
+                               "selection keyword, define it manually "
+                               "by subclassing core.selection.Selection")
                         warnings.warn(msg)
 
 
