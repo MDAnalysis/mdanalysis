@@ -123,13 +123,14 @@ Functions
 .. autofunction:: helanal_main
 
 """
+from __future__ import print_function, division, absolute_import
 import os
 
 import numpy as np
 
 import MDAnalysis
-from MDAnalysis.lib.log import ProgressBar
-from MDAnalysis.lib import mdamath
+from ..lib.log import ProgressBar
+from ..lib import mdamath, util
 
 import warnings
 import logging
@@ -168,6 +169,9 @@ def mean_abs_dev(a, mean_a=None):
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
+
+@util.deprecate(release="1.0.1", remove="2.0",
+                message="In 2.0 use the upcoming helix_analysis module")
 def helanal_trajectory(universe, select="name CA",
                        begin=None, finish=None,
                        matrix_filename="bending_matrix.dat",
@@ -258,12 +262,6 @@ def helanal_trajectory(universe, select="name CA",
        helanal_trajectory is deprecated and will be removed in 2.0.0.
        Please use helix_analysis.HELANAL instead (available in 2.0.0).
     """
-
-    warnings.warn("This function is deprecated as of MDAnalysis version 1.0. "
-                  "It will be removed in MDAnalysis version 2.0. Please use "
-                  "MDAnalysis.analysis.helix_analysis.HELANAL instead "
-                  "(available in 2.0.0)",
-                  category=DeprecationWarning)
 
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
@@ -546,6 +544,8 @@ def stats(some_list):
     return [list_mean, list_sd, list_abdev]
 
 
+@util.deprecate(release="1.0.1", remove="2.0",
+                message="In 2.0 use the upcoming helix_analysis module")
 def helanal_main(pdbfile, select="name CA", ref_axis=None):
     """Simple HELANAL_ run on a single frame PDB/GRO.
 
@@ -607,12 +607,6 @@ def helanal_main(pdbfile, select="name CA", ref_axis=None):
        Please use helix_analysis.HELANAL instead (available in 2.0.0).
 
     """
-
-    warnings.warn("This function is deprecated as of MDAnalysis version 1.0. "
-                  "It will be removed in MDAnalysis version 2.0. Please use "
-                  "MDAnalysis.analysis.helix_analysis.helix_analysis on "
-                  "a Universe instead (available in 2.0.0).",
-                  category=DeprecationWarning)
 
     universe = MDAnalysis.Universe(pdbfile)
     ca = universe.select_atoms(select)
