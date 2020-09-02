@@ -126,7 +126,7 @@ __all__ = [
     'gnm',
     'hbonds',
     'hydrogenbonds',
-    'helanal',
+    'helix_analysis',
     'hole2',
     'leaflet',
     'msd',

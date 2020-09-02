@@ -112,6 +112,8 @@ Changes
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
   * Updated Universe creation function signatures to named arguments (Issue #2921)
+  * deprecated ``analysis.helanal`` module has been removed in favour of
+    ``analysis.helix_analysis`` (PR #2929)
 
 Deprecations
 
