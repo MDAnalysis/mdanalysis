@@ -174,6 +174,7 @@ if __name__ == '__main__':
                          'data/windows/*',
                          'data/*.itp',
                          'data/*.coor',
+                         'data/*.h5md',
                         ],
           },
           install_requires=[
@@ -181,7 +182,6 @@ if __name__ == '__main__':
               'pytest>=3.3.0', # Raised to 3.3.0 due to Issue 2329
               'hypothesis',
               'psutil>=4.0.2',
-              'tidynamics>=1.0.0'
           ],
           # had 'KeyError' as zipped egg (2MB savings are not worth the
           # trouble)

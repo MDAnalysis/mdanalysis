@@ -1,0 +1,9 @@
+; Activate distance and orientation restraints
+; If these restraints are not activated, they are trimmed from the TPR
+disre = simple
+orire = yes
+orire-fitgrp = System
+; Shell particles, used in polarized force fields, requires the energy to
+; be computed every step.
+nstcalcenergy = 1
+; Implicit solvents where removed in gromacs 2020.

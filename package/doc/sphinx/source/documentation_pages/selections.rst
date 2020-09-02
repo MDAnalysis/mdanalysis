@@ -99,6 +99,12 @@ moltype *molecule-type*
     select by molecule type, e.g. ``moltype Protein_A``. At the moment, only
     the TPR format defines the molecule type.
 
+smarts *SMARTS-query*
+    select atoms using Daylight's SMARTS queries, e.g. ``smarts [#7;R]`` to
+    find nitrogen atoms in rings. Requires RDKit. All matches (max 1000) are
+    combined as a unique match.
+
+
 Pattern matching
 ----------------
 

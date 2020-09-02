@@ -59,6 +59,7 @@ Distances and contacts
    analysis/rms
    analysis/psa
    analysis/encore
+   analysis/bat
 
 Hydrogen bonding
 ================
@@ -108,6 +109,7 @@ Macromolecules
 
    analysis/gnm
    analysis/helanal
+   analysis/helix_analysis
    analysis/dihedrals
 
 Liquids
@@ -115,7 +117,7 @@ Liquids
 
 .. toctree::
    :maxdepth: 1
-      
+
    analysis/rdf
    analysis/msd
 

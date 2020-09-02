@@ -464,7 +464,8 @@ class TestDownshiftArrays(object):
 
     @pytest.fixture()
     def ragged_result(self):
-        return np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]])
+        return np.array([[0, 4, 7], [1, 5, 8], [2, 3, 6, 9]],
+                        dtype=object)
 
     @staticmethod
     def assert_rows_match(a, b):
@@ -508,7 +509,7 @@ class TestDownshiftArrays(object):
             np.array([0, 0, 2, 2, 3, 3]), 4)
         self.assert_rows_match(out,
                                np.array([np.array([0, 1]),
-                                         np.array([], dtype=np.int),
+                                         np.array([], dtype=int),
                                          np.array([2, 3]),
                                          np.array([4, 5]),
                                          None], dtype=object))
@@ -518,8 +519,8 @@ class TestDownshiftArrays(object):
             np.array([0, 0, 3, 3, 4, 4]), 5)
         self.assert_rows_match(out,
                                np.array([np.array([0, 1]),
-                                         np.array([], dtype=np.int),
-                                         np.array([], dtype=np.int),
+                                         np.array([], dtype=int),
+                                         np.array([], dtype=int),
                                          np.array([2, 3]),
                                          np.array([4, 5]),
                                          None], dtype=object))
@@ -530,7 +531,7 @@ class TestDownshiftArrays(object):
                                np.array([np.array([0, 1]),
                                          np.array([2, 3]),
                                          np.array([4, 5]),
-                                         np.array([], dtype=np.int),
+                                         np.array([], dtype=int),
                                          None], dtype=object))
 
     def test_missing_end_values_2(self):
@@ -539,8 +540,8 @@ class TestDownshiftArrays(object):
                                np.array([np.array([0, 1]),
                                          np.array([2, 3]),
                                          np.array([4, 5]),
-                                         np.array([], dtype=np.int),
-                                         np.array([], dtype=np.int),
+                                         np.array([], dtype=int),
+                                         np.array([], dtype=int),
                                          None], dtype=object))
 
 
