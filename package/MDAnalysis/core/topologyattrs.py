@@ -61,9 +61,10 @@ def _check_dtype(func):
     """
     def _attr_dtype(values):
         # check dtype of values array
-        dtypes = ['int8','int16','int32','int64','object','string']
+        # dtypes = ['int8', 'int16', 'int32', 'int64','float8', 'float64', 'object', 'string']
+        dtypes2 = [np.int8,np.int16,np.int32,np.int64,np.float32,np.float64]
         try:
-            if values.dtype in dtypes:
+            if values.dtype in dtypes2:
                 return True
             else:
                 return False
@@ -72,17 +73,18 @@ def _check_dtype(func):
 
     @functools.wraps(func)
     def wrapper(attr, group, values):
+        values = np.array(values)
         val_dtype = _attr_dtype(values)
         print(val_dtype)
         if not val_dtype:
-            raise ValueError("Array Inputs of int8, int16, int32, int64, string, object datatypes are only allowed")
-
-
+            raise ValueError(
+                "Array Inputs of int8, int16, int32, int64, string, object datatypes are only allowed, you are having ",values.dtype)
 
         # if everything went OK, continue with the function
         return func(attr, group, values)
 
-    return wrapper    
+    return wrapper
+
 
 def _check_length(func):
     """Wrapper which checks the length of inputs to set_X
@@ -506,7 +508,7 @@ class Atomids(AtomAttr):
 class _AtomStringAttr(AtomAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
-      
+
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
@@ -554,7 +556,8 @@ class _AtomStringAttr(AtomAttr):
                     newnames.append(val)
                     newidx[i] = nextidx
 
-        self.nmidx[ag.ix] = newidx  # newidx either single value or same size array
+        # newidx either single value or same size array
+        self.nmidx[ag.ix] = newidx
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
         self.values = self.name_lookup[self.nmidx]
@@ -1805,7 +1808,7 @@ class Resids(ResidueAttr):
 class _ResidueStringAttr(ResidueAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
-      
+
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
@@ -1824,7 +1827,7 @@ class _ResidueStringAttr(ResidueAttr):
                 self.nmidx[i] = nextidx
 
         self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1853,10 +1856,11 @@ class _ResidueStringAttr(ResidueAttr):
                     newnames.append(val)
                     newidx[i] = nextidx
 
-        self.nmidx[rg.ix] = newidx  # newidx either single value or same size array
+        # newidx either single value or same size array
+        self.nmidx[rg.ix] = newidx
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
 
 # TODO: update docs to property doc
@@ -2041,7 +2045,7 @@ class SegmentAttr(TopologyAttr):
 class _SegmentStringAttr(SegmentAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
-      
+
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
@@ -2060,7 +2064,7 @@ class _SegmentStringAttr(SegmentAttr):
                 self.nmidx[i] = nextidx
 
         self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -2089,12 +2093,13 @@ class _SegmentStringAttr(SegmentAttr):
                     newnames.append(val)
                     newidx[i] = nextidx
 
-        self.nmidx[sg.ix] = newidx  # newidx either single value or same size array
+        # newidx either single value or same size array
+        self.nmidx[sg.ix] = newidx
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
-        
+
 # TODO: update docs to property doc
 class Segids(_SegmentStringAttr):
     attrname = 'segids'
