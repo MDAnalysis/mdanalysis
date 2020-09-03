@@ -1126,9 +1126,9 @@ def _nsgrid_capped_self(reference, max_cutoff, min_cutoff=None, box=None,
             gridsearch = FastNS(max_cutoff, reference, box=box)
             results = gridsearch.self_search()
 
-        pairs = results.get_pairs()[::2, :]
+        pairs = results.get_pairs()
         if return_distances or (min_cutoff is not None):
-            distances = results.get_pair_distances()[::2]
+            distances = results.get_pair_distances()
             if min_cutoff is not None:
                 idx = distances > min_cutoff
                 pairs, distances = pairs[idx], distances[idx]

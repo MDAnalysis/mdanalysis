@@ -13,6 +13,14 @@ The rules for this file:
   * release numbers follow "Semantic Versioning" http://semver.org
 
 ------------------------------------------------------------------------------
+??/??/??  richardjgowers
+
+  * 1.0.2
+
+Fixes
+  * Fixed several issues with NSGrid and triclinic boxes not finding some pairs.
+    (Issues #2229 #2345 #2919) PR #2937.
+    
 01/17/21 richardjgowers, IAlibay, orbeckst, tylerjereddy, jbarnoud,
          yuxuanzhuang, lilyminium, VOD555, p-j-smith, bieniekmateusz,
          calcraven, ianmkenney, rcrehuet, manuel.nuno.melo, hanatok

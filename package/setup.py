@@ -425,7 +425,7 @@ def extensions(config):
                               extra_compile_args=extra_compile_args)
     nsgrid = MDAExtension('MDAnalysis.lib.nsgrid',
                              ['MDAnalysis/lib/nsgrid' + cpp_source_suffix],
-                             include_dirs=include_dirs,
+                             include_dirs=include_dirs + ['MDAnalysis/lib/include'],
                              language='c++',
                              define_macros=define_macros,
                              extra_compile_args=cpp_extra_compile_args,
