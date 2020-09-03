@@ -60,9 +60,7 @@ def _check_dtype(func):
     wrapper that checks the datatype of values array that is passed in the set_atoms functions.The allowed datatypes are array of integer,string and object datatype are only allowed
     """
     def _attr_dtype(values):
-        # check dtype of values array
-        # dtypes = ['int8', 'int16', 'int32', 'int64','float8', 'float64', 'object', 'string']
-        dtypes2 = [np.int8,np.int16,np.int32,np.int64,np.float32,np.float64]
+        dtypes2 = [np.int8,np.int16,np.int32,np.int64,np.float32,np.float64,np.str,np.object]
         try:
             if values.dtype in dtypes2:
                 return True
@@ -78,7 +76,7 @@ def _check_dtype(func):
         print(val_dtype)
         if not val_dtype:
             raise ValueError(
-                "Array Inputs of int8, int16, int32, int64, string, object datatypes are only allowed, you are having ",values.dtype)
+                "Array Inputs of int8, int16, int32, int64, float32, float64, string, object datatypes are only allowed, you are having ",values.dtype)
 
         # if everything went OK, continue with the function
         return func(attr, group, values)

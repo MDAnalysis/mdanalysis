@@ -117,11 +117,23 @@ class TestAtomAttr(TopologyAttrMixin):
         assert_equal(attr.get_atoms(dg),
                      np.array([self.single_value, self.single_value]))
 
+    def test_set_atoms_plural_string(self, attr):
+        # set len 2 Group to len 2 values
+        flag = 0
+        try:
+            dg = DummyGroup([3, 7])
+            attr.set_atoms(dg, np.array(    [23, 504,'H','P']))
+            flag = 1
+        except:
+            flag = 0
+        assert_equal(flag,0)
+
     def test_set_atoms_plural(self, attr):
         # set len 2 Group to len 2 values
         dg = DummyGroup([3, 7])
         attr.set_atoms(dg, np.array([23, 504]))
         assert_equal(attr.get_atoms(dg), np.array([23, 504]))
+    
 
     def test_set_atoms_VE(self, attr):
         # set len 2 Group to wrong length values
