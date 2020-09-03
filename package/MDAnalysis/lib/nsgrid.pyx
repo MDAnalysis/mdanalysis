@@ -75,11 +75,9 @@ Classes
 """
 
 # Used to handle memory allocation
-from cpython.mem cimport PyMem_Malloc, PyMem_Realloc, PyMem_Free
 from libc.math cimport sqrt
 import numpy as np
 from libcpp.vector cimport vector
-cimport numpy as np
 
 # Preprocessor DEFs
 DEF DIM = 3
@@ -534,7 +532,7 @@ cdef class _NSGrid(object):
         This class is not meant to be used by end users.
 
     """
-
+    cdef _PBCBox box
     cdef readonly dreal used_cutoff  # cutoff used for cell creation
     cdef ns_int size  # total cells
     cdef ns_int ncoords  # number of coordinates
@@ -543,20 +541,18 @@ cdef class _NSGrid(object):
     # cellsize MUST be double precision, otherwise coord2cellid() may fail for
     # coordinates very close to the upper box boundaries! See Issue #2132
     cdef dreal[DIM] cellsize  # cell size in every dimension
-    cdef ns_int nbeads_per_cell  # maximum beads
-    cdef ns_int *nbeads  # size (Number of beads in every cell)
-    cdef ns_int *beadids  # size * nbeads_per_cell (Beadids in every cell)
-    cdef ns_int *cellids  # ncoords (Cell occupation id for every atom)
-    cdef bint force  # To negate the effects of optimized cutoff
 
-    def __init__(self, ncoords, cutoff, _PBCBox box, max_size, force=False):
+    cdef ns_int[:] head_ids  # first coord id for a given cell
+    cdef ns_int[:] next_id  # next coord id after a given cell
+
+    def __init__(self, float coords[:, :], cutoff, box, max_size, force=False):
         """
         Parameters
         ----------
-        ncoords : int
-            Number of coordinates to fill inside the brick shaped box
+        coords : np.ndarray float of shape (ncoords, 3)
+            Coordinates to fill inside the brick shaped box
         cutoff : float
-            Desired cutoff radius
+            Minimum desired cutoff radius
         box : _PBCBox
             Instance of :class:`_PBCBox`
         max_size : int
@@ -565,15 +561,15 @@ cdef class _NSGrid(object):
             Optimizes cutoff if set to ``False`` [False]
         """
 
-        cdef ns_int i
-        cdef ns_int ncellx, ncelly, ncellz
-        cdef ns_int xi, yi, zi
+        cdef ns_int i, j
         cdef real bbox_vol
         cdef dreal relative_cutoff_margin
         cdef dreal original_cutoff
 
         self.ncoords = ncoords
 
+        self.box = _PBCBox(box)
+        
         if not force:
             # Calculate best cutoff, with 0.01A minimum
             cutoff = max(cutoff, 0.01)
@@ -585,13 +581,13 @@ cdef class _NSGrid(object):
             while cutoff == original_cutoff:
                 cutoff = cutoff * (1.0 + relative_cutoff_margin)
                 relative_cutoff_margin *= 10.0
-            bbox_vol = box.c_pbcbox.box[XX][XX] * box.c_pbcbox.box[YY][YY] * box.c_pbcbox.box[YY][YY]
+            bbox_vol = self.box.c_pbcbox.box[XX][XX] * self.box.c_pbcbox.box[YY][YY] * self.box.c_pbcbox.box[YY][YY]
             while bbox_vol / cutoff**3 > max_size:
                 cutoff *= 1.2
 
         for i in range(DIM):
-            self.ncells[i] = <ns_int> (box.c_pbcbox.box[i][i] / cutoff)
-            self.cellsize[i] = box.c_pbcbox.box[i][i] / self.ncells[i]
+            self.ncells[i] = <ns_int> (self.box.c_pbcbox.box[i][i] / cutoff)
+            self.cellsize[i] = self.box.c_pbcbox.box[i][i] / self.ncells[i]
         self.size = self.ncells[XX] * self.ncells[YY] * self.ncells[ZZ]
         self.used_cutoff = cutoff
 
@@ -599,100 +595,34 @@ cdef class _NSGrid(object):
         self.cell_offsets[YY] = self.ncells[XX]
         self.cell_offsets[ZZ] = self.ncells[XX] * self.ncells[YY]
 
-        # Allocate memory
-        # Number of beads in every cell
-        self.nbeads = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size)
-        if not self.nbeads:
-            raise MemoryError("Could not allocate memory from _NSGrid.nbeads ({} bits requested)".format(sizeof(ns_int) * self.size))
-        self.beadids = NULL
-        # Cellindex of every bead
-        self.cellids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.ncoords)
-        if not self.cellids:
-            raise MemoryError("Could not allocate memory from _NSGrid.cellids ({} bits requested)".format(sizeof(ns_int) * self.ncoords))
-        self.nbeads_per_cell = 0
+        # Assign coordinates into cells
+        head_ids = np.full(self.size, -1, dtype=np.int)
+        next_id = np.full(coords.shape[0], -1, dtype=np.int)
+        self.head_ids = head_ids
+        self.next_id = next_id
 
-        for i in range(self.size):
-            self.nbeads[i] = 0
+        for i in range(coords.shape[0]):
+            j = self.coord2cellid(coords[i])
 
-    def __dealloc__(self):
-        PyMem_Free(self.nbeads)
-        PyMem_Free(self.beadids)
-        PyMem_Free(self.cellids)
+            self.next_id[i] = head_ids[j]
+            self.head_ids[j] = i
 
     cdef ns_int coord2cellid(self, rvec coord) nogil:
         """Finds the cell-id for the given coordinate inside the brick shaped box
 
         Note
         ----
-        Assumes the coordinate is already inside the brick shaped box.
+        Assumes the coordinate is already inside the primary unit cell.
         Return wrong cell-id if this is not the case
         """
-        return <ns_int> (coord[ZZ] / self.cellsize[ZZ]) * (self.cell_offsets[ZZ]) +\
-               <ns_int> (coord[YY] / self.cellsize[YY]) * self.cell_offsets[YY] + \
-               <ns_int> (coord[XX] / self.cellsize[XX])
+        # TODO: Check optimising for orthogonal cells
+        cdef ns_int cx, cy, cz
 
-    cdef bint cellid2cellxyz(self, ns_int cellid, ivec cellxyz) nogil:
-        """Finds actual cell position `(x, y, z)` from a cell-id
-        """
-
-        if cellid < 0:
-            return False
-        if cellid >= self.size:
-            return False
-
-        cellxyz[ZZ] = <ns_int> (cellid / self.cell_offsets[ZZ])
-        cellid -= cellxyz[ZZ] * self.cell_offsets[ZZ]
-
-        cellxyz[YY] = <ns_int> (cellid / self.cell_offsets[YY])
-        cellxyz[XX] = cellid - cellxyz[YY] * self.cell_offsets[YY]
-
-        return True
-
-    cdef fill_grid(self, real[:, ::1] coords):
-        """Sorts atoms into cells based on their position in the brick shaped box
-
-        Every atom inside the brick shaped box is assigned a
-        cell-id based on its position. Another list ``beadids``
-        sort the atom-ids in each cell.
-
-        Note
-        ----
-        The method fails if any coordinate is outside the brick shaped box.
-
-        """
-
-        cdef ns_int i, cellindex = -1
-        cdef ns_int ncoords = coords.shape[0]
-        cdef ns_int[:] beadcounts = np.empty(self.size, dtype=int)
-
-        with nogil:
-            # Initialize buffers
-            for i in range(self.size):
-                beadcounts[i] = 0
-
-            # First loop: find cellindex for each bead
-            for i in range(ncoords):
-                cellindex = self.coord2cellid(&coords[i, 0])
-
-                self.nbeads[cellindex] += 1
-                self.cellids[i] = cellindex
-
-                if self.nbeads[cellindex] > self.nbeads_per_cell:
-                    self.nbeads_per_cell = self.nbeads[cellindex]
-
-        # Allocate memory
-        self.beadids = <ns_int *> PyMem_Malloc(sizeof(ns_int) * self.size * self.nbeads_per_cell)  # np.empty((self.size, nbeads_max), dtype=np.int)
-        if not self.beadids:
-            raise MemoryError("Could not allocate memory for _NSGrid.beadids ({} bits requested)".format(sizeof(ns_int) * self.size * self.nbeads_per_cell))
-
-        with nogil:
-            # Second loop: fill grid
-            for i in range(ncoords):
-
-                # Add bead to grid cell
-                cellindex = self.cellids[i]
-                self.beadids[cellindex * self.nbeads_per_cell + beadcounts[cellindex]] = i
-                beadcounts[cellindex] += 1
+        cz = <ns_int> (coord[ZZ] / self.cellsize[ZZ])
+        cy = <ns_int> ((coord[YY] - cz * self.box.box[YZ]) / self.cellsize[YY])
+        cz = <ns_int> ((coord[ZZ] - cy * self.box.box[XY] - cz * self.box.box[XZ]) / self.cellsize[ZZ])
+        
+        return cx + cy * self.cell_offsets[YY] + cz * self.cell_offsets[ZZ]
 
 
 cdef class FastNS(object):
@@ -705,7 +635,6 @@ cdef class FastNS(object):
     Minimum image convention is used for distance evaluations
     if pbc is set to ``True``.
     """
-    cdef _PBCBox box
     cdef real[:, ::1] coords
     cdef real[:, ::1] coords_bbox
     cdef readonly dreal cutoff
@@ -777,6 +706,7 @@ cdef class FastNS(object):
         """
 
         from MDAnalysis.lib.mdamath import triclinic_vectors
+        from MDAnalysis.lib import distances
 
         if (coords.ndim != 2 or coords.shape[1] != 3):
             raise ValueError("coords must have a shape of (n, 3), got {}."
@@ -798,15 +728,13 @@ cdef class FastNS(object):
         if cutoff * cutoff > self.box.c_pbcbox.max_cutoff2:
             raise ValueError("Cutoff greater than maximum cutoff ({:.3f}) given the PBC")
 
-        self.coords_bbox = self.box.fast_put_atoms_in_bbox(self.coords)
+        self.coords_bbox = distances.apply_PBC(coords, box)
 
         self.cutoff = cutoff
         self.max_gridsize = max_gridsize
         # Note that self.cutoff might be different from self.grid.cutoff
         # due to optimization
-        self.grid = _NSGrid(self.coords_bbox.shape[0], self.cutoff, self.box, self.max_gridsize)
-
-        self.grid.fill_grid(self.coords_bbox)
+        self.grid = _NSGrid(self.coords_bbox, self.cutoff, box, self.max_gridsize)
 
     def search(self, search_coords):
         """Search a group of atoms against initialized coordinates
@@ -866,6 +794,7 @@ cdef class FastNS(object):
 
         # Generate another grid to search
         searchcoords = search_coords.astype(np.float32, order='C', copy=False)
+        # TODO: Remov this
         searchcoords_bbox = self.box.fast_put_atoms_in_bbox(searchcoords)
         searchgrid = _NSGrid(searchcoords_bbox.shape[0], self.grid.used_cutoff, self.box, self.max_gridsize, force=True)
 
