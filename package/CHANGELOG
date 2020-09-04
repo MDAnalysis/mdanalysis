@@ -53,6 +53,8 @@ Deprecations
   * core.universe.as_Universe() will be removed in 2.0.0
   * analysis.leaflets.LeafletFinder() will not accept a filename any more,
     only a Universe, in 2.0.0 
+  * analysis.helanal will be removed in 2.0.0 and replaced by
+    analysis.helix_analysis (PR #2622)
 
 
 06/09/20 richardjgowers, kain88-de, lilyminium, p-j-smith, bdice, joaomcteixeira,

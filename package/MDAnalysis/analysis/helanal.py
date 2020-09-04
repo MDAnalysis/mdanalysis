@@ -30,12 +30,19 @@
 
 
 """
-HELANAL --- analysis of protein helices
-=======================================
+HELANAL (Deprecated) --- analysis of protein helices
+====================================================
 
 :Author:  Benjamin Hall <benjamin.a.hall@ucl.ac.uk>, Oliver Beckstein, Xavier Deupi
 :Year:    2009, 2011, 2013
 :License: GNU General Public License v2 (or higher)
+
+.. note::
+
+    This module was deprecated in 1.0 and will be removed in 2.0.
+    Please use MDAnalysis.analysis.helix_analysis instead
+    (available in 2.0.0).
+
 
 The :mod:`MDAnalysis.analysis.helanal` module is a Python implementation of the
 HELANAL_ algorithm [Bansal2000]_ in `helanal.f`_, which is also available
@@ -124,12 +131,18 @@ import os
 import numpy as np
 
 import MDAnalysis
-from MDAnalysis.lib.log import ProgressBar
-from MDAnalysis.lib import mdamath
+from ..lib.log import ProgressBar
+from ..lib import mdamath, util
 
 import warnings
 import logging
 logger = logging.getLogger("MDAnalysis.analysis.helanal")
+
+warnings.warn("This module is deprecated as of MDAnalysis version 1.0. "
+              "It will be removed in MDAnalysis version 2.0."
+              "Please use (available in 2.0.0) "
+              "MDAnalysis.analysis.helix_analysis instead.",
+              category=DeprecationWarning)
 
 def center(coordinates):
     """Return the geometric center (centroid) of the coordinates.
@@ -158,6 +171,9 @@ def mean_abs_dev(a, mean_a=None):
         mean_a = np.mean(a)
     return np.mean(np.fabs(a - mean_a))
 
+
+@util.deprecate(release="1.0.1", remove="2.0",
+                message="In 2.0 use the upcoming helix_analysis module")
 def helanal_trajectory(universe, select="name CA",
                        begin=None, finish=None,
                        matrix_filename="bending_matrix.dat",
@@ -243,7 +259,12 @@ def helanal_trajectory(universe, select="name CA",
 
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+
+    .. deprecated:: 1.0.1
+       helanal_trajectory is deprecated and will be removed in 2.0.0.
+       Please use helix_analysis.HELANAL instead (available in 2.0.0).
     """
+
     if ref_axis is None:
         ref_axis = np.array([0., 0., 1.])
     else:
@@ -525,6 +546,8 @@ def stats(some_list):
     return [list_mean, list_sd, list_abdev]
 
 
+@util.deprecate(release="1.0.1", remove="2.0",
+                message="In 2.0 use the upcoming helix_analysis module")
 def helanal_main(pdbfile, select="name CA", ref_axis=None):
     """Simple HELANAL_ run on a single frame PDB/GRO.
 
@@ -580,6 +603,10 @@ def helanal_main(pdbfile, select="name CA", ref_axis=None):
 
     .. versionchanged:: 1.0.0
        Changed `selection` keyword to `select`
+
+    .. deprecated:: 1.0.1
+       helanal_trajectory is deprecated and will be removed in 2.0.0.
+       Please use helix_analysis.HELANAL instead (available in 2.0.0).
 
     """
 
