@@ -75,7 +75,7 @@ This transformation can be used as ::
    u = mda.Universe(PSF, DCD)
    u.trajectory.add_transformations(spin_atoms(u.select_atoms("protein"), 1.0))
 
-Alos see :mod:`MDAnalysis.transformations.translate` for a simple example.
+Also see :mod:`MDAnalysis.transformations.translate` for a simple example.
 
 These transformation functions can be called by the user for any given timestep
 of the trajectory, added as a workflow using :meth:`add_transformations`
