@@ -29,8 +29,6 @@ from MDAnalysis.visualization import (streamlines,
 from MDAnalysis.coordinates.XTC import XTCWriter
 from MDAnalysisTests.datafiles import Martini_membrane_gro
 import pytest
-import matplotlib
-matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import os
 

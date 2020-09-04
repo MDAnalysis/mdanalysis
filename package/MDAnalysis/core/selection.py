@@ -161,6 +161,18 @@ class OrOperation(LogicOperation):
         return group.universe.atoms[idx]
 
 
+def return_empty_on_apply(func):
+    """
+    Decorator to return empty AtomGroups from the apply() function
+    without evaluating it
+    """
+    @functools.wraps(func)
+    def apply(self, group):
+        if len(group) == 0:
+            return group
+        return func(self, group)
+    return apply
+
 class _Selectionmeta(type):
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
@@ -262,6 +274,7 @@ class AroundSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
@@ -289,7 +302,8 @@ class SphericalLayerSelection(DistanceSelection):
         self.inRadius = float(tokens.popleft())
         self.exRadius = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
-    
+
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
@@ -315,6 +329,7 @@ class SphericalZoneSelection(DistanceSelection):
         self.cutoff = float(tokens.popleft())
         self.sel = parser.parse_expression(self.precedence)
 
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         sel = self.sel.apply(group)
@@ -331,6 +346,7 @@ class SphericalZoneSelection(DistanceSelection):
 
 
 class CylindricalSelection(Selection):
+    @return_empty_on_apply
     def apply(self, group):
         sel = self.sel.apply(group)
 
@@ -424,6 +440,7 @@ class PointSelection(DistanceSelection):
         self.ref = np.array([x, y, z], dtype=np.float32)
         self.cutoff = float(tokens.popleft())
 
+    @return_empty_on_apply
     def apply(self, group):
         indices = []
         box = self.validate_dimensions(group.dimensions)
@@ -504,7 +521,7 @@ class SelgroupSelection(Selection):
         return group[mask]
 
 
-class StringSelection(Selection):
+class _ProtoStringSelection(Selection):
     """Selections based on text attributes
 
     .. versionchanged:: 1.0.0
@@ -517,12 +534,25 @@ class StringSelection(Selection):
 
         self.values = vals
 
+    @return_empty_on_apply
     def apply(self, group):
-        mask = np.zeros(len(group), dtype=np.bool)
-        for val in self.values:
-            values = getattr(group, self.field)
-            mask |= [fnmatch.fnmatch(x, val) for x in values]
-        return group[mask].unique
+        # rather than work on group.names, cheat and look at the lookup table
+        nmattr = getattr(group.universe._topology, self.field)
+
+        matches = []  # list of passing indices
+        # iterate through set of known atom names, check which pass
+        for nm, ix in nmattr.namedict.items():
+            if any(fnmatch.fnmatchcase(nm, val) for val in self.values):
+                matches.append(ix)
+
+        # atomname indices for members of this group
+        nmidx = nmattr.nmidx[getattr(group, self.level)]
+
+        return group[np.in1d(nmidx, matches)].unique
+
+
+class StringSelection(_ProtoStringSelection):
+    level = 'ix'  # operates on atom level attribute, i.e. '.ix'
 
 
 class AtomNameSelection(StringSelection):
@@ -549,22 +579,27 @@ class AtomICodeSelection(StringSelection):
     field = 'icodes'
 
 
-class ResidueNameSelection(StringSelection):
+class _ResidueStringSelection(_ProtoStringSelection):
+    level= 'resindices'
+
+
+class ResidueNameSelection(_ResidueStringSelection):
     """Select atoms based on 'resnames' attribute"""
     token = 'resname'
     field = 'resnames'
 
 
-class MoleculeTypeSelection(StringSelection):
+class MoleculeTypeSelection(_ResidueStringSelection):
     """Select atoms based on 'moltypes' attribute"""
     token = 'moltype'
     field = 'moltypes'
 
 
-class SegmentNameSelection(StringSelection):
+class SegmentNameSelection(_ProtoStringSelection):
     """Select atoms based on 'segids' attribute"""
     token = 'segid'
     field = 'segids'
+    level = 'segindices'
 
 
 class AltlocSelection(StringSelection):
@@ -774,10 +809,15 @@ class ProteinSelection(Selection):
     See Also
     --------
     :func:`MDAnalysis.lib.util.convert_aa_code`
+
+
+    .. versionchanged:: 1.0.1
+       prot_res changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'protein'
 
-    prot_res = np.array([
+    prot_res = {
         # CHARMM top_all27_prot_lipid.rtf
         'ALA', 'ARG', 'ASN', 'ASP', 'CYS', 'GLN', 'GLU', 'GLY', 'HSD',
         'HSE', 'HSP', 'ILE', 'LEU', 'LYS', 'MET', 'PHE', 'PRO', 'SER', 'THR',
@@ -800,14 +840,20 @@ class ProteinSelection(Selection):
         'CLEU', 'CILE', 'CVAL', 'CASF', 'CASN', 'CGLN', 'CARG', 'CHID', 'CHIE',
         'CHIP', 'CTRP', 'CPHE', 'CTYR', 'CGLU', 'CASP', 'CLYS', 'CPRO', 'CCYS',
         'CCYX', 'CMET', 'CME', 'ASF',
-    ])
+    }
 
     def __init__(self, parser, tokens):
         pass
 
     def apply(self, group):
-        mask = np.in1d(group.resnames, self.prot_res)
-        return group[mask].unique
+        resname_attr = group.universe._topology.resnames
+        # which values in resname attr are in prot_res?
+        matches = [ix for (nm, ix) in resname_attr.namedict.items()
+                   if nm in self.prot_res]
+        # index of each atom's resname
+        nmidx = resname_attr.nmidx[group.resindices]
+        # intersect atom's resname index and matches to prot_res
+        return group[np.in1d(nmidx, matches)].unique
 
 
 class NucleicSelection(Selection):
@@ -822,23 +868,32 @@ class NucleicSelection(Selection):
 
     .. versionchanged:: 0.8
        additional Gromacs selections
+    .. versionchanged:: 1.0.1
+       nucl_res changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleic'
 
-    nucl_res = np.array([
+    nucl_res = {
         'ADE', 'URA', 'CYT', 'GUA', 'THY', 'DA', 'DC', 'DG', 'DT', 'RA',
         'RU', 'RG', 'RC', 'A', 'T', 'U', 'C', 'G',
         'DA5', 'DC5', 'DG5', 'DT5',
         'DA3', 'DC3', 'DG3', 'DT3',
         'RA5', 'RU5', 'RG5', 'RC5',
         'RA3', 'RU3', 'RG3', 'RC3'
-    ])
+    }
 
     def __init__(self, parser, tokens):
         pass
 
     def apply(self, group):
-        mask = np.in1d(group.resnames, self.nucl_res)
+        resnames = group.universe._topology.resnames
+        nmidx = resnames.nmidx[group.resindices]
+
+        matches = [ix for (nm, ix) in resnames.namedict.items()
+                   if nm in self.nucl_res]
+        mask = np.in1d(nmidx, matches)
+
         return group[mask].unique
 
 
@@ -847,14 +902,32 @@ class BackboneSelection(ProteinSelection):
 
     This excludes OT* on C-termini
     (which are included by, eg VMD's backbone selection).
+
+
+    .. versionchanged:: 1.0.1
+       bb_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'backbone'
-    bb_atoms = np.array(['N', 'CA', 'C', 'O'])
+    bb_atoms = {'N', 'CA', 'C', 'O'}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.bb_atoms)
-        mask &= np.in1d(group.resnames, self.prot_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.bb_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.prot_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class NucleicBackboneSelection(NucleicSelection):
@@ -862,14 +935,32 @@ class NucleicBackboneSelection(NucleicSelection):
 
     These atoms are only recognized if they are in a residue matched
     by the :class:`NucleicSelection`.
+
+
+    .. versionchanged:: 1.0.1
+       bb_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleicbackbone'
-    bb_atoms = np.array(["P", "C5'", "C3'", "O3'", "O5'"])
+    bb_atoms = {"P", "C5'", "C3'", "O3'", "O5'"}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.bb_atoms)
-        mask &= np.in1d(group.resnames, self.nucl_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.bb_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.nucl_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class BaseSelection(NucleicSelection):
@@ -879,29 +970,65 @@ class BaseSelection(NucleicSelection):
 
      'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
      'O6','N2','N6', 'O2','N4','O4','C5M'
+
+
+    .. versionchanged:: 1.0.1
+       base_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleicbase'
-    base_atoms = np.array([
+    base_atoms = {
         'N9', 'N7', 'C8', 'C5', 'C4', 'N3', 'C2', 'N1', 'C6',
         'O6', 'N2', 'N6',
-        'O2', 'N4', 'O4', 'C5M'])
+        'O2', 'N4', 'O4', 'C5M'}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.base_atoms)
-        mask &= np.in1d(group.resnames, self.nucl_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.base_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.nucl_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class NucleicSugarSelection(NucleicSelection):
     """Contains all atoms with name C1', C2', C3', C4', O2', O4', O3'.
+
+
+    .. versionchanged:: 1.0.1
+       sug_atoms changed to set (from numpy array)
+       performance improved by ~100x on larger systems
     """
     token = 'nucleicsugar'
-    sug_atoms = np.array(["C1'", "C2'", "C3'", "C4'", "O4'"])
+    sug_atoms = {"C1'", "C2'", "C3'", "C4'", "O4'"}
 
     def apply(self, group):
-        mask = np.in1d(group.names, self.sug_atoms)
-        mask &= np.in1d(group.resnames, self.nucl_res)
-        return group[mask].unique
+        atomnames = group.universe._topology.names
+        resnames = group.universe._topology.resnames
+
+        # filter by atom names
+        name_matches = [ix for (nm, ix) in atomnames.namedict.items()
+                        if nm in self.sug_atoms]
+        nmidx = atomnames.nmidx[group.ix]
+        group = group[np.in1d(nmidx, name_matches)]
+
+        # filter by resnames
+        resname_matches = [ix for (nm, ix) in resnames.namedict.items()
+                           if nm in self.nucl_res]
+        nmidx = resnames.nmidx[group.resindices]
+        group = group[np.in1d(nmidx, resname_matches)]
+
+        return group.unique
 
 
 class PropertySelection(Selection):
@@ -1018,7 +1145,7 @@ class SameSelection(Selection):
     Selects all atoms that have the same subkeyword value as any atom in selection
 
     .. versionchanged:: 1.0.0
-       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to 
+       Map :code:`"residue"` to :code:`"resindices"` and :code:`"segment"` to
        :code:`"segindices"` (see #2669 and #2672)
     """
 

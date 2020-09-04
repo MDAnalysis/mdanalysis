@@ -102,6 +102,8 @@ from .topology import Topology
 from .topologyattrs import AtomAttr, ResidueAttr, SegmentAttr
 from .topologyobjects import TopologyObject
 
+from ..lib.util import deprecate
+
 logger = logging.getLogger("MDAnalysis.core.universe")
 
 
@@ -836,9 +838,11 @@ class Universe(object):
                 six.raise_from(ValueError(
                     "Unrecognised topology attribute name: '{}'."
                     "  Possible values: '{}'\n"
-                    "To raise an issue go to: http://issues.mdanalysis.org"
+                    "To raise an issue go to: "
+                    "https://github.com/MDAnalysis/mdanalysis/issues"
                     "".format(
-                        topologyattr, ', '.join(sorted(_TOPOLOGY_ATTRS.keys())))),
+                        topologyattr, ', '.join(
+                            sorted(_TOPOLOGY_ATTRS.keys())))),
                     None)
             else:
                 topologyattr = tcls.from_blank(
@@ -1291,7 +1295,7 @@ class Universe(object):
         return fragdict
 
 
-# TODO: what is the point of this function???
+@deprecate(release="1.0.1", remove="2.0.0")
 def as_Universe(*args, **kwargs):
     """Return a universe from the input arguments.
 

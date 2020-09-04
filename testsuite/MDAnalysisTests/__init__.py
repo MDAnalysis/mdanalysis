@@ -98,7 +98,7 @@ import pytest
 logger = logging.getLogger("MDAnalysisTests.__init__")
 
 # keep in sync with RELEASE in setup.py
-__version__ = "1.0.0"
+__version__ = "1.0.1-dev"
 
 
 # Do NOT import MDAnalysis at this level. Tests should do it themselves.
@@ -118,14 +118,10 @@ import sys
 os.environ['DUECREDIT_ENABLE'] = 'yes'
 
 # Any tests that plot with matplotlib need to run with the simple agg backend
-# because on Travis there is no DISPLAY set. This doesn't warn if we import
-# files from the tests after loading matplotlib. This will remove unnecessary
-# user warnings. 
-try:
-    import matplotlib
-    matplotlib.use('agg', warn=False)
-except ImportError:
-    pass
+# because on Travis there is no DISPLAY set.
+#
+# Instead of using matplotlib.use() we set MPLBACKEND=agg in the CI environment.
+# See https://matplotlib.org/3.2.1/tutorials/introductory/usage.html#backends
 
 from MDAnalysisTests.util import (
     block_import,

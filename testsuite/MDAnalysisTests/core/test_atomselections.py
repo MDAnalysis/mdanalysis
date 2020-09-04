@@ -78,7 +78,7 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
-    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    @pytest.mark.parametrize('resname', sorted(MDAnalysis.core.selection.ProteinSelection.prot_res))
     def test_protein_resnames(self, resname):
         u = make_Universe(('resnames',))
         # set half the residues' names to the resname we're testing
@@ -1130,6 +1130,25 @@ def test_similarity_selection_icodes(u_pdb_icodes, selection, n_atoms):
 
     assert len(sel.atoms) == n_atoms
 
+@pytest.mark.parametrize('selection', [
+    'all', 'protein', 'backbone', 'nucleic', 'nucleicbackbone',
+    'name O', 'name N*', 'resname stuff', 'resname ALA', 'type O',
+    'index 0', 'index 1', 'bynum 1-10',
+    'segid SYSTEM', 'resid 163', 'resid 1-10', 'resnum 2',
+    'around 10 resid 1', 'point 0 0 0 10', 'sphzone 10 resid 1',
+    'sphlayer 0 10 index 1', 'cyzone 15 4 -8 index 0',
+    'cylayer 5 10 10 -8 index 1', 'prop abs z <= 100',
+    'byres index 0', 'same resid as index 0',
+])
+def test_selections_on_empty_group(u_pdb_icodes, selection):
+    ag = u_pdb_icodes.atoms[[]].select_atoms(selection)
+    assert len(ag) == 0
+
+def test_empty_yet_global(u_pdb_icodes):
+    # slight exception to above test, an empty AG can return something if 'global' used
+    ag = u_pdb_icodes.atoms[[]].select_atoms('global name O')
+
+    assert len(ag) == 185  # len(u_pdb_icodes.select_atoms('name O'))
 
 def test_arbitrary_atom_group_raises_error():
     u = make_Universe(trajectory=True)

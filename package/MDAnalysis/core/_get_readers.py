@@ -105,7 +105,7 @@ def get_reader_for(filename, format=None):
             "           See https://docs.mdanalysis.org/documentation_pages/coordinates/init.html#id1\n"
             "           Use the format keyword to explicitly set the format: 'Universe(...,format=FORMAT)'\n"
             "           For missing formats, raise an issue at "
-            "http://issues.mdanalysis.org".format(
+            "https://github.com/MDAnalysis/mdanalysis/issues".format(
                 format, filename, _READERS.keys())),
                    None)
 
@@ -257,8 +257,8 @@ def get_parser_for(filename, format=None):
                 "   {1}\n"
                 "   See https://docs.mdanalysis.org/documentation_pages/topology/init.html#supported-topology-formats\n"
                 "   For missing formats, raise an issue at \n"
-                "   http://issues.mdanalysis.org".format(format, _PARSERS.keys())),
-                None)
+                "   https://github.com/MDAnalysis/mdanalysis/issues".format(
+                    format, _PARSERS.keys())), None)
         else:
             return _PARSERS['MINIMAL']
 

@@ -510,11 +510,21 @@ class HydrogenBondLifetimes(object):
     .. versionchanged:: 1.0.0
        The ``nproc`` keyword was removed as it linked to a portion of code that
        may have failed in some cases.
+    .. deprecated:: 1.0.1
+       ``waterdynamics.HydrogenBondLifetimes`` is deprecated and will be
+       removed in 2.0.0. Instead, please use (available in 2.0.0)
+       :meth:`MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime`
     """
 
 
     def __init__(self, universe, selection1, selection2, t0, tf, dtmax,
                  nproc=1):
+        warnings.warn(
+            "The waterdynamics.HydrogenBondLifetimes class is deprecated in 1.0.1. "
+            "This class will be removed in 2.0.0; please prepare to use "
+            "MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime (in 2.0.0)",
+            category=DeprecationWarning
+        )
         self.universe = universe
         self.selection1 = selection1
         self.selection2 = selection2
@@ -1192,7 +1202,7 @@ class SurvivalProbability(object):
        Using the MDAnalysis.lib.correlations.py to carry out the intermittency
        and autocorrelation calculations.
        Changed `selection` keyword to `select`.
-       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords. 
+       Removed support for the deprecated `t0`, `tf`, and `dtmax` keywords.
        These should instead be passed to :meth:`SurvivalProbability.run` as
        the `start`, `stop`, and `tau_max` keywords respectively.
        The `stop` keyword as passed to :meth:`SurvivalProbability.run` has now

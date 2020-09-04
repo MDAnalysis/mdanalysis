@@ -19,6 +19,8 @@ jobs:
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))  # skip for PR merges
   pool:
     vmImage: 'VS2017-Win2016'
+  variables:
+    MPLBACKEND: agg    
   strategy:
     maxParallel: 4
     matrix:
@@ -40,6 +42,7 @@ jobs:
       matplotlib
       numpy
       pytest
+      pytest-cov
       pytest-xdist
       scikit-learn
       scipy
@@ -53,5 +56,9 @@ jobs:
     displayName: 'Build MDAnalysis'
   - powershell: |
       cd testsuite
-      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx
+      pytest .\MDAnalysisTests --disable-pytest-warnings -n 2 -rsx --cov=MDAnalysis
     displayName: 'Run MDAnalysis Test Suite'
+  - script: |
+      curl -s https://codecov.io/bash | bash
+    condition: succeeded()
+    displayName: 'Codecov Coverage Data Upload'

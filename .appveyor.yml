@@ -21,7 +21,8 @@ environment:
         # Temporarily fall back to default MINICONDA_VERSION in ci-helpers until https://github.com/MDAnalysis/mdanalysis/issues/2311
         # is fixed in ci-helpers https://github.com/astropy/ci-helpers/issues/406
         # MINICONDA_VERSION: "latest"
-
+        MPLBACKEND: "agg"
+        
     matrix:
         - PYTHON_VERSION: 3.6
           PYTHON_ARCH: 64
