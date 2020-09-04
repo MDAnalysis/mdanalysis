@@ -1,0 +1,861 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.topology.TOPParser &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.topology.TOPParser</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.topology.TOPParser</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">AMBER PRMTOP topology parser</span>
+<span class="sd">============================</span>
+
+<span class="sd">Reads an AMBER top file to build the system.</span>
+
+<span class="sd">Amber keywords are turned into the following attributes:</span>
+
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| AMBER flag                 | MDAnalysis attribute |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| ATOM_NAME                  | names                |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| CHARGE                     | charges              |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| ATOMIC_NUMBER              | elements             |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| MASS                       | masses               |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| BONDS_INC_HYDROGEN         | bonds                |</span>
+<span class="sd">| BONDS_WITHOUT_HYDROGEN     |                      |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| ANGLES_INC_HYDROGEN        | angles               |</span>
+<span class="sd">| ANGLES_WITHOUT_HYDROGEN    |                      |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| DIHEDRALS_INC_HYDROGEN     | dihedrals / improper |</span>
+<span class="sd">| DIHEDRALS_WITHOUT_HYDROGEN |                      |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| ATOM_TYPE_INDEX            | type_indices         |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| AMBER_ATOM_TYPE            | types                |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| RESIDUE_LABEL              | resnames             |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+<span class="sd">| RESIDUE_POINTER            | residues             |</span>
+<span class="sd">+----------------------------+----------------------+</span>
+
+<span class="sd">TODO:</span>
+<span class="sd">  Add support for Chamber-style topologies</span>
+<span class="sd">  More stringent tests</span>
+
+<span class="sd">.. Note::</span>
+
+<span class="sd">   The Amber charge is converted to electron charges as used in</span>
+<span class="sd">   MDAnalysis and other packages. To get back Amber charges, multiply</span>
+<span class="sd">   by 18.2223.</span>
+
+<span class="sd">   Chamber-style Amber topologies (i.e. topologies generated via parmed</span>
+<span class="sd">   conversion of a CHARMM topology to an AMBER one) are not currently supported.</span>
+<span class="sd">   Support will likely be added in future MDAnalysis releases.</span>
+
+<span class="sd">.. _`PARM parameter/topology file specification`:</span>
+<span class="sd">   http://ambermd.org/formats.html#topology</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: TOPParser</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
+<span class="kn">import</span> <span class="nn">itertools</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">guessers</span>
+<span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span><span class="p">,</span> <span class="n">FORTRANReader</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span>
+<span class="kn">from</span> <span class="nn">..core.topology</span> <span class="kn">import</span> <span class="n">Topology</span>
+<span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Atomnames</span><span class="p">,</span>
+    <span class="n">Atomtypes</span><span class="p">,</span>
+    <span class="n">Atomids</span><span class="p">,</span>
+    <span class="n">Charges</span><span class="p">,</span>
+    <span class="n">Elements</span><span class="p">,</span>
+    <span class="n">Masses</span><span class="p">,</span>
+    <span class="n">Resnames</span><span class="p">,</span>
+    <span class="n">Resids</span><span class="p">,</span>
+    <span class="n">Resnums</span><span class="p">,</span>
+    <span class="n">Segids</span><span class="p">,</span>
+    <span class="n">AtomAttr</span><span class="p">,</span>
+    <span class="n">Bonds</span><span class="p">,</span>
+    <span class="n">Angles</span><span class="p">,</span>
+    <span class="n">Dihedrals</span><span class="p">,</span>
+    <span class="n">Impropers</span>
+<span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;MDAnalysis.topology.TOPParser&#39;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">TypeIndices</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Numerical type of each Atom&quot;&quot;&quot;</span>
+    <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;type_indices&#39;</span>
+    <span class="n">singular</span> <span class="o">=</span> <span class="s1">&#39;type_index&#39;</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+
+<div class="viewcode-block" id="TOPParser"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser">[docs]</a><span class="k">class</span> <span class="nc">TOPParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads topology information from an AMBER top file.</span>
+
+<span class="sd">    Reads the following Attributes if in topology:</span>
+<span class="sd">    - Atomnames</span>
+<span class="sd">    - Charges</span>
+<span class="sd">    - Masses</span>
+<span class="sd">    - Elements</span>
+<span class="sd">    - Atomtypes</span>
+<span class="sd">    - Resnames</span>
+<span class="sd">    - Type_indices</span>
+<span class="sd">    - Bonds</span>
+<span class="sd">    - Angles</span>
+<span class="sd">    - Dihedrals (inc. impropers)</span>
+
+<span class="sd">    Guesses the following attributes:</span>
+<span class="sd">     - Elements (if not included in topology)</span>
+
+<span class="sd">    The format is defined in `PARM parameter/topology file</span>
+<span class="sd">    specification`_.  The reader tries to detect if it is a newer</span>
+<span class="sd">    (AMBER 12?) file format by looking for the flag &quot;ATOMIC_NUMBER&quot;.</span>
+
+<span class="sd">    .. _`PARM parameter/topology file specification`:</span>
+<span class="sd">       http://ambermd.org/formats.html#topology</span>
+
+<span class="sd">    .. versionchanged:: 0.7.6</span>
+<span class="sd">      parses both amber10 and amber12 formats</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">      parses bonds, angles, dihedrals, and impropers</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">      warns users that chamber-style topologies are not current supported</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;TOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PRMTOP&#39;</span><span class="p">,</span> <span class="s1">&#39;PARM7&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="TOPParser.parse"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parse Amber PRMTOP topology file *filename*.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        A MDAnalysis Topology object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Sections that we grab as we parse the file</span>
+        <span class="n">sections</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;ATOM_NAME&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_names</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;CHARGE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_charges</span><span class="p">,</span> <span class="s2">&quot;charge&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;ATOMIC_NUMBER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_elements</span><span class="p">,</span> <span class="s2">&quot;elements&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;MASS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_masses</span><span class="p">,</span> <span class="s2">&quot;mass&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;ATOM_TYPE_INDEX&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_type_indices</span><span class="p">,</span> <span class="s2">&quot;type_indices&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;AMBER_ATOM_TYPE&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_types</span><span class="p">,</span> <span class="s2">&quot;types&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+            <span class="s2">&quot;RESIDUE_LABEL&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_resnames</span><span class="p">,</span> <span class="s2">&quot;resname&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+            <span class="s2">&quot;RESIDUE_POINTER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_residx</span><span class="p">,</span> <span class="s2">&quot;respoint&quot;</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span>
+            <span class="s2">&quot;BONDS_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;bondh&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s2">&quot;BONDS_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;bonda&quot;</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="s2">&quot;ANGLES_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;angh&quot;</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+            <span class="s2">&quot;ANGLES_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;anga&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+            <span class="s2">&quot;DIHEDRALS_INC_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;dihh&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+            <span class="s2">&quot;DIHEDRALS_WITHOUT_HYDROGEN&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_bonded</span><span class="p">,</span> <span class="s2">&quot;diha&quot;</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>  <span class="c1"># empty dict for attrs that we&#39;ll fill</span>
+
+        <span class="c1"># Open and check top validity</span>
+        <span class="c1"># Reading header info POINTERS</span>
+        <span class="k">with</span> <span class="n">openany</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;%VE&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. %VE Missing in header&quot;</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;TITLE&quot;</span><span class="p">):</span>
+                <span class="c1"># Raise a separate warning if Chamber-style TOP is detected</span>
+                <span class="k">if</span> <span class="n">title</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CTITLE&quot;</span><span class="p">:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is detected as a Chamber-style TOP file. &quot;</span>
+                            <span class="s2">&quot;At this time MDAnalysis does not support such &quot;</span>
+                            <span class="s2">&quot;topologies&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">emsg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid TOP file. &quot;</span>
+                            <span class="s2">&quot;&#39;TITLE&#39; missing in header&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">emsg</span><span class="p">)</span>
+
+            <span class="k">while</span> <span class="ow">not</span> <span class="n">header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%F</span><span class="s1">LAG POINTERS&#39;</span><span class="p">):</span>
+                <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+            <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+
+            <span class="n">topremarks</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">)]</span>
+            <span class="n">sys_info</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">topremarks</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+
+            <span class="n">header</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+            <span class="c1"># grab the next section title</span>
+            <span class="n">next_section</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="k">while</span> <span class="n">next_section</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="p">(</span><span class="n">num_per_record</span><span class="p">,</span> <span class="n">per_line</span><span class="p">,</span>
+                     <span class="n">func</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">sect_num</span><span class="p">)</span> <span class="o">=</span> <span class="n">sections</span><span class="p">[</span><span class="n">next_section</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">def</span> <span class="nf">next_getter</span><span class="p">():</span>
+                        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">skipper</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="n">sys_info</span><span class="p">[</span><span class="n">sect_num</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_per_record</span>
+                    <span class="n">numlines</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span> <span class="o">//</span> <span class="n">per_line</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">per_line</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">numlines</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="n">attrs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">)</span>
+
+                    <span class="k">def</span> <span class="nf">next_getter</span><span class="p">():</span>
+                        <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">next_getter</span><span class="p">()</span>
+                    <span class="c1"># Capture case where section is empty w/ 1 empty line</span>
+                    <span class="k">if</span> <span class="n">numlines</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">next_getter</span><span class="p">()</span>
+                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+                    <span class="n">next_section</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">next_section</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                        <span class="n">raise_from</span><span class="p">(</span>
+                            <span class="ne">IndexError</span><span class="p">((</span>
+                                <span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG section not found, formatting error &quot;</span>
+                                <span class="s2">&quot;for PARM7 file </span><span class="si">{0}</span><span class="s2"> &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">)),</span>
+                                <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># strip out a few values to play with them</span>
+        <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+
+        <span class="n">resptrs</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;respoint&#39;</span><span class="p">)</span>
+        <span class="n">resptrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span>
+        <span class="n">residx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">resptrs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">resptrs</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+            <span class="n">residx</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="n">n_res</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resname&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Deal with recreating bonds and angle records here</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;bonds&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Bonds</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+                                <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;bonda&#39;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;bondh&#39;</span><span class="p">))])</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;angles&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Angles</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span>
+                                <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;anga&#39;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;angh&#39;</span><span class="p">))])</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">],</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;impropers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_dihedrals</span><span class="p">(</span>
+                              <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;diha&#39;</span><span class="p">),</span> <span class="n">attrs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;dihh&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Guess elements if not in topology or if any dummy atoms are found</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;elements&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;ATOMIC_NUMBER record not found, guessing atom elements &quot;</span>
+                   <span class="s2">&quot;based on their atom types&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span>
+                <span class="n">guessers</span><span class="o">.</span><span class="n">guess_types</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+                <span class="n">guessed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s2">&quot;DUMMY&quot;</span><span class="p">):</span>
+            <span class="c1"># This approach assumes np.any is much faster than np.where</span>
+            <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">dummy_idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="s1">&#39;DUMMY&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">atom_type</span> <span class="o">=</span> <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;types&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dummy_idx</span><span class="p">]</span>
+                <span class="n">atom_ele</span> <span class="o">=</span> <span class="n">guessers</span><span class="o">.</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">atom_type</span><span class="p">)</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unknown ATOMIC_NUMBER value found, guessing atom &quot;</span>
+                       <span class="s2">&quot;element from type: </span><span class="si">{0}</span><span class="s2"> assigned to </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">atom_type</span><span class="p">,</span> <span class="n">atom_ele</span><span class="p">))</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;elements&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">dummy_idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom_ele</span>
+
+        <span class="c1"># atom ids are mandatory</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;atomids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Atomids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;resnums&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Resnums</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_res</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;segids&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Segids</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s1">&#39;SYSTEM&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+
+        <span class="n">top</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">n_atoms</span><span class="p">,</span> <span class="n">n_res</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>
+                       <span class="n">attrs</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">attrs</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+                       <span class="n">atom_resindex</span><span class="o">=</span><span class="n">residx</span><span class="p">,</span>
+                       <span class="n">residue_segindex</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">top</span></div>
+
+<div class="viewcode-block" id="TOPParser.skipper"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.skipper">[docs]</a>    <span class="k">def</span> <span class="nf">skipper</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;TOPParser :class: helper function, skips lines of input parm7 file</span>
+<span class="sd">        until we find the next %FLAG entry and return that</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        line : string</span>
+<span class="sd">            String containing the current line of the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">LAG&quot;</span><span class="p">):</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">line</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_names"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_names">[docs]</a>    <span class="k">def</span> <span class="nf">parse_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts atoms names from parm7 file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in the section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : :class:`Atomnames`</span>
+<span class="sd">            A :class:`Atomnames` instance containing the names of each atom as</span>
+<span class="sd">            defined in the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Atomnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_resnames"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_resnames">[docs]</a>    <span class="k">def</span> <span class="nf">parse_resnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the names of each residue</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each recrod in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : :class:`Resnames`</span>
+<span class="sd">            A :class:`Resnames` instance containing the names of each residue</span>
+<span class="sd">            as defined in the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Resnames</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_charges"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_charges">[docs]</a>    <span class="k">def</span> <span class="nf">parse_charges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the partial charges for each atom</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : :class:`Charges`</span>
+<span class="sd">            A :class:`Charges` instance containing the partial charges of each</span>
+<span class="sd">            atom as defined in the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">charges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">charges</span> <span class="o">/=</span> <span class="mf">18.2223</span>  <span class="c1"># to electron charge units</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Charges</span><span class="p">(</span><span class="n">charges</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_masses"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_masses">[docs]</a>    <span class="k">def</span> <span class="nf">parse_masses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the mass of each atom</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : :class:`Masses`</span>
+<span class="sd">            A :class:`Masses` instance containing the mass of each atom as</span>
+<span class="sd">            defined in the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Masses</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_elements"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_elements">[docs]</a>    <span class="k">def</span> <span class="nf">parse_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the atomic numbers of each atom and converts to element type</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section(unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be pasred in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : :class:`Elements`</span>
+<span class="sd">            A :class:`Elements` instance containing the element of each atom</span>
+<span class="sd">            as defined in the parm7 file</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        If the record contains atomic numbers &lt;= 0, these will be treated as</span>
+<span class="sd">        dummy elements and an attempt will be made to guess the element based</span>
+<span class="sd">        on atom type. See issue #2306 for more details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span>
+                <span class="n">numlines</span><span class="p">,</span>
+                <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">Z2SYMB</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;DUMMY&quot;</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Elements</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_types"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_types">[docs]</a>    <span class="k">def</span> <span class="nf">parse_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the force field atom types of each atom</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr : :class:`Atomtypes`</span>
+<span class="sd">            A :class:`Atomtypes` instance containing the atom types for each</span>
+<span class="sd">            atom as defined in the parm7 file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">)</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">Atomtypes</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_type_indices"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_type_indices">[docs]</a>    <span class="k">def</span> <span class="nf">parse_type_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the index of atom types of the each atom involved in Lennard</span>
+<span class="sd">        Jones (6-12) interactions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        attr :class:`TypeIndices`</span>
+<span class="sd">            A :class:`TypeIndices` instance containing the LJ 6-12 atom type</span>
+<span class="sd">            index for each atom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">attr</span> <span class="o">=</span> <span class="n">TypeIndices</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">attr</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_residx"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_residx">[docs]</a>    <span class="k">def</span> <span class="nf">parse_residx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts the residue pointers for each atom</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section (unused input)</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vals : list of int</span>
+<span class="sd">            A list of zero-formatted residue pointers for each atom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">vals</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_chunks"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">parse_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">chunksize</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Helper function to parse AMBER PRMTOP bonds/angles.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        data : list of int</span>
+<span class="sd">            Input list of the parm7 bond/angle section, zero-indexed</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in the input list</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        vals : list of int tuples</span>
+<span class="sd">            A list of tuples containing the atoms involved in a given bonded</span>
+<span class="sd">            interaction</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        In the parm7 format this information is structured in the following</span>
+<span class="sd">        format: [ atoms 1:n, internal index ]</span>
+<span class="sd">        Where 1:n represent the ids of the n atoms involved in the bond/angle</span>
+<span class="sd">        and the internal index links to a given set of FF parameters.</span>
+<span class="sd">        Therefore, to extract the required information, we split out the list</span>
+<span class="sd">        into chunks of size num_per_record, and only extract the atom ids.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">+</span><span class="n">chunksize</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">chunksize</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">vals</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_bonded"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_bonded">[docs]</a>    <span class="k">def</span> <span class="nf">parse_bonded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">,</span> <span class="n">numlines</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extracts bond information from PARM7 format files</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        num_per_record : int</span>
+<span class="sd">            The number of entries for each record in section</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed for this section</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        For the bond/angle sections of parm7 files, the atom numbers are set to</span>
+<span class="sd">        coordinate array index values. As detailed in</span>
+<span class="sd">        http://ambermd.org/formats.html to recover the actual atom number, one</span>
+<span class="sd">        should divide the values by 3 and add 1. Here, since we want to satisfy</span>
+<span class="sd">        zero-indexing, we only divide by 3.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsesection_mapper</span><span class="p">(</span><span class="n">numlines</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">//</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_chunks</span><span class="p">(</span><span class="n">fields</span><span class="p">,</span> <span class="n">num_per_record</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">section</span></div>
+
+<div class="viewcode-block" id="TOPParser.parsesection_mapper"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parsesection_mapper">[docs]</a>    <span class="k">def</span> <span class="nf">parsesection_mapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numlines</span><span class="p">,</span> <span class="n">mapper</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Parses FORTRAN formatted section, and returns a list of all entries</span>
+<span class="sd">        in each line</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        numlines : int</span>
+<span class="sd">            The number of lines to be parsed in this section</span>
+<span class="sd">        mapper : lambda operator</span>
+<span class="sd">            Operator to format entries in current section</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        section : list</span>
+<span class="sd">            A list of all entries in a given parm7 section</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%F</span><span class="s2">ORMAT(&quot;</span><span class="p">)</span>
+        <span class="n">y</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">FORTRANReader</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">numlines</span><span class="p">):</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">topfile</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">)):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">start</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">entries</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">stop</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+                    <span class="n">section</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mapper</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">section</span></div>
+
+<div class="viewcode-block" id="TOPParser.parse_dihedrals"><a class="viewcode-back" href="../../../documentation_pages/topology/TOPParser.html#MDAnalysis.topology.TOPParser.TOPParser.parse_dihedrals">[docs]</a>    <span class="k">def</span> <span class="nf">parse_dihedrals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">diha</span><span class="p">,</span> <span class="n">dihh</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Combines hydrogen and non-hydrogen containing AMBER dihedral lists</span>
+<span class="sd">        and extracts sublists for conventional dihedrals and improper angles</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        diha : list of tuples</span>
+<span class="sd">            The atom ids of dihedrals not involving hydrogens</span>
+<span class="sd">        dihh : list of tuples</span>
+<span class="sd">            The atom ids of dihedrals involving hydrogens</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dihedrals : :class:`Dihedrals`</span>
+<span class="sd">            A :class:`Dihedrals` instance containing a list of all unique</span>
+<span class="sd">            dihedrals as defined by the parm7 file</span>
+<span class="sd">        impropers : :class:`Impropers`</span>
+<span class="sd">            A :class:`Impropers` instance containing a list of all unique</span>
+<span class="sd">            improper dihedrals as defined by the parm7 file</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        As detailed in http://ambermd.org/formats.html, the dihedral sections</span>
+<span class="sd">        of parm7 files contain information about both conventional dihedrals</span>
+<span class="sd">        and impropers. The following must be accounted for:</span>
+<span class="sd">        1) If the fourth atom in a dihedral entry is given a negative value,</span>
+<span class="sd">        this indicates that it is an improper.</span>
+<span class="sd">        2) If the third atom in a dihedral entry is given a negative value,</span>
+<span class="sd">        this indicates that it 1-4 NB interactions are ignored for this</span>
+<span class="sd">        dihedrals. This could be due to the dihedral within a ring, or if it is</span>
+<span class="sd">        part of a multi-term dihedral definition or if it is an improper.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">improp</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">dihed</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="p">(</span><span class="n">diha</span><span class="p">,</span> <span class="n">dihh</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">improp</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]),)</span><span class="o">+</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">]),))</span>
+            <span class="k">elif</span> <span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">vals</span> <span class="o">=</span> <span class="n">i</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="mi">2</span><span class="p">]),)</span> <span class="o">+</span> <span class="n">i</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+                <span class="n">dihed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dihed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">dihed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">dihed</span><span class="p">))</span>
+        <span class="n">dihedrals</span> <span class="o">=</span> <span class="n">Dihedrals</span><span class="p">(</span><span class="n">dihed</span><span class="p">)</span>
+        <span class="n">impropers</span> <span class="o">=</span> <span class="n">Impropers</span><span class="p">(</span><span class="n">improp</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dihedrals</span><span class="p">,</span> <span class="n">impropers</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

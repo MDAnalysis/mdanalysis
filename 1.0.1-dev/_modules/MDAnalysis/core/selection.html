@@ -1,0 +1,1561 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.core.selection &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.core.selection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.core.selection</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding: utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Atom selection Hierarchy --- :mod:`MDAnalysis.core.selection`</span>
+<span class="sd">=============================================================</span>
+
+<span class="sd">This module contains objects that represent selections. They are</span>
+<span class="sd">constructed and then applied to the group.</span>
+
+<span class="sd">In general, :meth:`Parser.parse` creates a :class:`Selection` object</span>
+<span class="sd">from a selection string. This :class:`Selection` object is then passed</span>
+<span class="sd">an :class:`~MDAnalysis.core.groups.AtomGroup` through its</span>
+<span class="sd">:meth:`~MDAnalysis.core.groups.AtomGroup.apply` method to apply the</span>
+<span class="sd">``Selection`` to the ``AtomGroup``.</span>
+
+<span class="sd">This is all invisible to the user through the</span>
+<span class="sd">:meth:`~MDAnalysis.core.groups.AtomGroup.select_atoms` method of an</span>
+<span class="sd">:class:`~MDAnalysis.core.groups.AtomGroup`.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">fnmatch</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">unique_int_1d</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">SelectionError</span><span class="p">,</span> <span class="n">NoDataError</span>
+
+
+<div class="viewcode-block" id="is_keyword"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.is_keyword">[docs]</a><span class="k">def</span> <span class="nf">is_keyword</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Is val a selection keyword?</span>
+
+<span class="sd">    Returns False on any of the following strings:</span>
+<span class="sd">      - keys in SELECTIONDICT (tokens from Selection objects)</span>
+<span class="sd">      - keys in OPERATIONS (tokens from LogicOperations)</span>
+<span class="sd">      - (Parentheses)</span>
+<span class="sd">      - The value `None` (used as EOF in selection strings)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">_SELECTIONDICT</span> <span class="ow">or</span>
+            <span class="n">val</span> <span class="ow">in</span> <span class="n">_OPERATIONS</span> <span class="ow">or</span>
+            <span class="n">val</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">]</span> <span class="ow">or</span>
+            <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="grab_not_keywords"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.grab_not_keywords">[docs]</a><span class="k">def</span> <span class="nf">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Pop tokens from the left until you hit a keyword</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    tokens : collections.deque</span>
+<span class="sd">        deque of strings, some tokens some not</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    values : list of strings</span>
+<span class="sd">        All non keywords found until a keyword was hit</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    This function pops the values from the deque</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    grab_not_keywords([&#39;H&#39;, &#39;and&#39;,&#39;resname&#39;, &#39;MET&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; [&#39;H&#39;]</span>
+
+<span class="sd">    grab_not_keywords([&#39;H&#39;, &#39;Ca&#39;, &#39;N&#39;, &#39;and&#39;,&#39;resname&#39;, &#39;MET&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; [&#39;H&#39;, &#39;Ca&#39; ,&#39;N&#39;]</span>
+
+<span class="sd">    grab_not_keywords([&#39;and&#39;,&#39;resname&#39;, &#39;MET&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; []</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">is_keyword</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="c1"># Insert escape characters here to use keywords as names?</span>
+        <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">values</span></div>
+
+
+<span class="n">_SELECTIONDICT</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_OPERATIONS</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="c1"># These are named args to select_atoms that have a special meaning and must</span>
+<span class="c1"># not be allowed as names for the &#39;group&#39; keyword.</span>
+<span class="n">_RESERVED_KWARGS</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;updating&#39;</span><span class="p">,)</span>
+
+
+<span class="c1"># And and Or are exception and aren&#39;t strictly a Selection</span>
+<span class="c1"># as they work on other Selections rather than doing work themselves.</span>
+<span class="c1"># So their init is a little strange too....</span>
+<span class="k">class</span> <span class="nc">_Operationmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+        <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_OPERATIONS</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">LogicOperation</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Operationmeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lsel</span><span class="p">,</span> <span class="n">rsel</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span> <span class="o">=</span> <span class="n">rsel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span> <span class="o">=</span> <span class="n">lsel</span>
+
+
+<span class="k">class</span> <span class="nc">AndOperation</span><span class="p">(</span><span class="n">LogicOperation</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;and&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">rsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">lsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Mask which lsel indices appear in rsel</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">rsel</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">lsel</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="c1"># and mask rsel according to that</span>
+        <span class="k">return</span> <span class="n">rsel</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">OrOperation</span><span class="p">(</span><span class="n">LogicOperation</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;or&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">lsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">rsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rsel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Find unique indices from both these AtomGroups</span>
+        <span class="c1"># and slice master list using them</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">lsel</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">rsel</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="return_empty_on_apply"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.return_empty_on_apply">[docs]</a><span class="k">def</span> <span class="nf">return_empty_on_apply</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Decorator to return empty AtomGroups from the apply() function</span>
+<span class="sd">    without evaluating it</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@functools</span><span class="o">.</span><span class="n">wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">group</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">apply</span></div>
+
+<span class="k">class</span> <span class="nc">_Selectionmeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+        <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;token&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Selection</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_Selectionmeta</span><span class="p">,</span> <span class="nb">object</span><span class="p">)):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">AllSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="c1"># Check whether group is identical to the one stored</span>
+        <span class="c1"># in the corresponding universe, in which case this</span>
+        <span class="c1"># is returned directly. This works since the Universe.atoms</span>
+        <span class="c1"># are unique by construction.</span>
+        <span class="k">if</span> <span class="n">group</span> <span class="ow">is</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">group</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[:]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">UnarySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">sel</span>
+
+
+<span class="k">class</span> <span class="nc">NotSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;not&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">notsel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">notsel</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">GlobalSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;global&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">5</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span><span class="o">.</span><span class="n">unique</span>
+
+
+<div class="viewcode-block" id="ByResSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ByResSelection">[docs]</a><span class="k">class</span> <span class="nc">ByResSelection</span><span class="p">(</span><span class="n">UnarySelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Selects all atoms that are in the same segment and residue as selection</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Use :code:`&quot;resindices&quot;` instead of :code:`&quot;resids&quot;` (see #2669 and #2672)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;byres&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">unique_res</span> <span class="o">=</span> <span class="n">unique_int_1d</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">resindices</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">,</span> <span class="n">unique_res</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="DistanceSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.DistanceSelection">[docs]</a><span class="k">class</span> <span class="nc">DistanceSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for distance search based selections&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DistanceSelection.validate_dimensions"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.DistanceSelection.validate_dimensions">[docs]</a>    <span class="k">def</span> <span class="nf">validate_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dimensions</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Check if the system is periodic in all three-dimensions.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        dimensions : numpy.ndarray</span>
+<span class="sd">            6-item array denoting system size and angles</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        None or numpy.ndarray</span>
+<span class="sd">            Returns argument dimensions if system is periodic in all</span>
+<span class="sd">            three-dimensions, otherwise returns None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]):</span>
+            <span class="k">return</span> <span class="n">dimensions</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+
+<div class="viewcode-block" id="AroundSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AroundSelection">[docs]</a><span class="k">class</span> <span class="nc">AroundSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;around&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+
+    <span class="nd">@return_empty_on_apply</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="c1"># All atoms in group that aren&#39;t in sel</span>
+        <span class="n">sys</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">sel</span><span class="o">.</span><span class="n">indices</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sys</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sel</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">sys</span><span class="p">[[]]</span>
+
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">sel</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">sys</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+
+<div class="viewcode-block" id="SphericalLayerSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SphericalLayerSelection">[docs]</a><span class="k">class</span> <span class="nc">SphericalLayerSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphlayer&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+
+    <span class="nd">@return_empty_on_apply</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="p">,</span>
+                                          <span class="n">min_cutoff</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span><span class="p">,</span>
+                                          <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="SphericalZoneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SphericalZoneSelection">[docs]</a><span class="k">class</span> <span class="nc">SphericalZoneSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;sphzone&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+
+    <span class="nd">@return_empty_on_apply</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">periodic</span> <span class="o">=</span> <span class="n">box</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
+                                          <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<span class="k">class</span> <span class="nc">CylindricalSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="nd">@return_empty_on_apply</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+
+        <span class="c1"># Calculate vectors between point of interest and our group</span>
+        <span class="n">vecs</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span> <span class="o">-</span> <span class="n">sel</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">box</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">cyl_z_hheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span>
+
+            <span class="k">if</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">&gt;</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;The diameter of the cylinder selection (</span><span class="si">{:.3f}</span><span class="s2">) is larger &quot;</span>
+                    <span class="s2">&quot;than the unit cell&#39;s x dimension (</span><span class="si">{:.3f}</span><span class="s2">). Can only do &quot;</span>
+                    <span class="s2">&quot;selections where it is smaller or equal.&quot;</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">&gt;</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;The diameter of the cylinder selection (</span><span class="si">{:.3f}</span><span class="s2">) is larger &quot;</span>
+                    <span class="s2">&quot;than the unit cell&#39;s y dimension (</span><span class="si">{:.3f}</span><span class="s2">). Can only do &quot;</span>
+                    <span class="s2">&quot;selections where it is smaller or equal.&quot;</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">if</span> <span class="n">cyl_z_hheight</span> <span class="o">&gt;</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s2">&quot;The total length of the cylinder selection in z (</span><span class="si">{:.3f}</span><span class="s2">) &quot;</span>
+                    <span class="s2">&quot;is larger than the unit cell&#39;s z dimension (</span><span class="si">{:.3f}</span><span class="s2">). Can &quot;</span>
+                    <span class="s2">&quot;only do selections where it is smaller or equal.&quot;</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cyl_z_hheight</span><span class="p">,</span> <span class="n">box</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">==</span> <span class="mf">90.</span><span class="p">):</span>
+                <span class="c1"># Orthogonal version</span>
+                <span class="n">vecs</span> <span class="o">-=</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">vecs</span> <span class="o">/</span> <span class="n">box</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Triclinic version</span>
+                <span class="n">tribox</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span>
+                <span class="n">vecs</span> <span class="o">-=</span> <span class="n">tribox</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">vecs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">tribox</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">])[:,</span> <span class="kc">None</span><span class="p">]</span>
+                <span class="n">vecs</span> <span class="o">-=</span> <span class="n">tribox</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">vecs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">tribox</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])[:,</span> <span class="kc">None</span><span class="p">]</span>
+                <span class="n">vecs</span> <span class="o">-=</span> <span class="n">tribox</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">vecs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">tribox</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])[:,</span> <span class="kc">None</span><span class="p">]</span>
+
+        <span class="c1"># First deal with Z dimension criteria</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">vecs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">vecs</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span><span class="p">)</span>
+        <span class="c1"># Mask out based on height to reduce number of radii comparisons</span>
+        <span class="n">vecs</span> <span class="o">=</span> <span class="n">vecs</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+        <span class="c1"># Radial vectors from sel to each in group</span>
+        <span class="n">radii</span> <span class="o">=</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">vecs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">radii</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">&amp;=</span> <span class="n">radii</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="c1"># Only for cylayer, cyzone doesn&#39;t have inRadius</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">CylindricalZoneSelection</span><span class="p">(</span><span class="n">CylindricalSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;cyzone&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">CylindricalLayerSelection</span><span class="p">(</span><span class="n">CylindricalSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;cylayer&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exRadius</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmax</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmin</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PointSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PointSelection">[docs]</a><span class="k">class</span> <span class="nc">PointSelection</span><span class="p">(</span><span class="n">DistanceSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;point&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">periodic</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+
+    <span class="nd">@return_empty_on_apply</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_dimensions</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">dimensions</span><span class="p">)</span>
+        <span class="n">pairs</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">capped_distance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ref</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">,</span>
+                                          <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span>
+                                          <span class="n">return_distances</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pairs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">pairs</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<span class="k">class</span> <span class="nc">AtomSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;atom&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segid</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resid</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">names</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sub</span><span class="p">:</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span><span class="p">[</span><span class="n">sub</span><span class="o">.</span><span class="n">resids</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">resid</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">sub</span><span class="p">:</span>
+            <span class="n">sub</span> <span class="o">=</span> <span class="n">sub</span><span class="p">[</span><span class="n">sub</span><span class="o">.</span><span class="n">segids</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">segid</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">sub</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">BondedSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bonded&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">grp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="c1"># Check if we have bonds</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Bonded selection has 0 bonds&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">group</span><span class="p">[[]]</span>
+
+        <span class="n">grpidx</span> <span class="o">=</span> <span class="n">grp</span><span class="o">.</span><span class="n">indices</span>
+
+        <span class="c1"># (n, 2) array of bond indices</span>
+        <span class="n">bix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">bonds</span><span class="o">.</span><span class="n">to_indices</span><span class="p">())</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># left side</span>
+        <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">bix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">grpidx</span><span class="p">)])</span>
+        <span class="c1"># right side</span>
+        <span class="n">idx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bix</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">][</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">bix</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">grpidx</span><span class="p">)])</span>
+
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="o">*</span><span class="n">idx</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">idx</span><span class="p">)]</span>
+
+
+<span class="k">class</span> <span class="nc">SelgroupSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;group&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="n">grpname</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">grpname</span> <span class="ow">in</span> <span class="n">_RESERVED_KWARGS</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;The &#39;</span><span class="si">{}</span><span class="s2">&#39; keyword is reserved and cannot be &quot;</span>
+                            <span class="s2">&quot;used as a selection group name.&quot;</span>
+                            <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grpname</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grp</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">selgroups</span><span class="p">[</span><span class="n">grpname</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to find group: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grpname</span><span class="p">)),</span>
+                <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grp</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">_ProtoStringSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selections based on text attributes</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">        Supports multiple wildcards, based on fnmatch</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vals</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected token &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">vals</span>
+
+    <span class="nd">@return_empty_on_apply</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="c1"># rather than work on group.names, cheat and look at the lookup table</span>
+        <span class="n">nmattr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span>
+
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># list of passing indices</span>
+        <span class="c1"># iterate through set of known atom names, check which pass</span>
+        <span class="k">for</span> <span class="n">nm</span><span class="p">,</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">nmattr</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">fnmatch</span><span class="o">.</span><span class="n">fnmatchcase</span><span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+                <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ix</span><span class="p">)</span>
+
+        <span class="c1"># atomname indices for members of this group</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">nmattr</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<div class="viewcode-block" id="StringSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.StringSelection">[docs]</a><span class="k">class</span> <span class="nc">StringSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;ix&#39;</span>  <span class="c1"># operates on atom level attribute, i.e. &#39;.ix&#39;</span></div>
+
+
+<div class="viewcode-block" id="AtomNameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomNameSelection">[docs]</a><span class="k">class</span> <span class="nc">AtomNameSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;names&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;name&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;names&#39;</span></div>
+
+
+<div class="viewcode-block" id="AtomTypeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomTypeSelection">[docs]</a><span class="k">class</span> <span class="nc">AtomTypeSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;types&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;type&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;types&#39;</span></div>
+
+
+<div class="viewcode-block" id="RecordTypeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.RecordTypeSelection">[docs]</a><span class="k">class</span> <span class="nc">RecordTypeSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;record_type&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;record_type&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;record_types&#39;</span></div>
+
+
+<div class="viewcode-block" id="AtomICodeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AtomICodeSelection">[docs]</a><span class="k">class</span> <span class="nc">AtomICodeSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on icode attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;icode&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;icodes&#39;</span></div>
+
+
+<span class="k">class</span> <span class="nc">_ResidueStringSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
+    <span class="n">level</span><span class="o">=</span> <span class="s1">&#39;resindices&#39;</span>
+
+
+<div class="viewcode-block" id="ResidueNameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidueNameSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidueNameSelection</span><span class="p">(</span><span class="n">_ResidueStringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;resnames&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resname&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;resnames&#39;</span></div>
+
+
+<div class="viewcode-block" id="MoleculeTypeSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.MoleculeTypeSelection">[docs]</a><span class="k">class</span> <span class="nc">MoleculeTypeSelection</span><span class="p">(</span><span class="n">_ResidueStringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;moltypes&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;moltype&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;moltypes&#39;</span></div>
+
+
+<div class="viewcode-block" id="SegmentNameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SegmentNameSelection">[docs]</a><span class="k">class</span> <span class="nc">SegmentNameSelection</span><span class="p">(</span><span class="n">_ProtoStringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;segids&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;segid&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;segids&#39;</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="s1">&#39;segindices&#39;</span></div>
+
+
+<div class="viewcode-block" id="AltlocSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.AltlocSelection">[docs]</a><span class="k">class</span> <span class="nc">AltlocSelection</span><span class="p">(</span><span class="n">StringSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on &#39;altLoc&#39; attribute&quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;altloc&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;altLocs&#39;</span></div>
+
+
+<div class="viewcode-block" id="ResidSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ResidSelection">[docs]</a><span class="k">class</span> <span class="nc">ResidSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Select atoms based on numerical fields</span>
+
+<span class="sd">    Allows the use of &#39;:&#39; and &#39;-&#39; to specify a range of values</span>
+<span class="sd">    For example</span>
+
+<span class="sd">      resid 1:10</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resid&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="c1"># each value in uppers and lowers is a tuple of (resid, icode)</span>
+        <span class="n">uppers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lowers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">m1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(\d+)(\w?)$&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">m1</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">m1</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                <span class="n">lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">upper</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># check if in appropriate format &#39;lower:upper&#39; or &#39;lower-upper&#39;</span>
+                <span class="c1"># each val is one or more digits, maybe a letter</span>
+                <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(\d+)(\w?)[:-](\d+)(\w?)&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">selrange</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># re.match returns None on failure</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Failed to parse value: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">selrange</span><span class="o">.</span><span class="n">groups</span><span class="p">()</span>
+                <span class="c1"># resid and icode</span>
+                <span class="n">lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">upper</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">res</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="n">lowers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
+            <span class="n">uppers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span> <span class="o">=</span> <span class="n">lowers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">uppers</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="c1"># Grab arrays here to reduce number of calls to main topology</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">resids</span>
+        <span class="k">try</span><span class="p">:</span>  <span class="c1"># optional attribute</span>
+            <span class="n">icodes</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">icodes</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">NoDataError</span><span class="p">):</span>
+            <span class="n">icodes</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># if no icodes and icodes are part of selection, cause a fuss</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nb">any</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="nb">any</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">)):</span>
+                <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Selection specified icodes, while the &quot;</span>
+                                 <span class="s2">&quot;topology doesn&#39;t have any.&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">icodes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sel_with_icodes</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sel_without_icodes</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+
+    <span class="k">def</span> <span class="nf">_sel_without_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
+        <span class="c1"># Final mask that gets applied to group</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">u_resid</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="p">(</span><span class="n">l_resid</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">u_resid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># range selection</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">&gt;=</span> <span class="n">l_resid</span>
+                <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">vals</span> <span class="o">&lt;=</span> <span class="n">u_resid</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># single residue selection</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">l_resid</span>
+
+            <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
+
+        <span class="k">return</span> <span class="n">mask</span>
+
+    <span class="k">def</span> <span class="nf">_sel_with_icodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">icodes</span><span class="p">):</span>
+        <span class="c1"># Final mask that gets applied to group</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="p">(</span><span class="n">u_resid</span><span class="p">,</span> <span class="n">u_icode</span><span class="p">),</span> <span class="p">(</span><span class="n">l_resid</span><span class="p">,</span> <span class="n">l_icode</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">u_resid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Selecting a range</span>
+                <span class="c1"># Special case, if l_resid == u_resid, ie 163A-163C, this simplifies to:</span>
+                <span class="c1"># all 163, and A &lt;= icode &lt;= C</span>
+                <span class="k">if</span> <span class="n">l_resid</span> <span class="o">==</span> <span class="n">u_resid</span><span class="p">:</span>
+                    <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">l_resid</span>
+                    <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">icodes</span> <span class="o">&gt;=</span> <span class="n">l_icode</span>
+                    <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">icodes</span> <span class="o">&lt;=</span> <span class="n">u_icode</span>
+                <span class="c1"># For 163A to 166B we want:</span>
+                <span class="c1"># [START]  all 163 and icode &gt;= &#39;A&#39;</span>
+                <span class="c1"># [MIDDLE] all of 164 and 165, any icode</span>
+                <span class="c1"># [END]    166 and icode &lt;= &#39;B&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># start of range</span>
+                    <span class="n">startmask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">l_resid</span>
+                    <span class="n">startmask</span> <span class="o">&amp;=</span> <span class="n">icodes</span> <span class="o">&gt;=</span> <span class="n">l_icode</span>
+                    <span class="n">thismask</span> <span class="o">=</span> <span class="n">startmask</span>
+
+                    <span class="c1"># middle of range</span>
+                    <span class="n">mid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">l_resid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">u_resid</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mid</span><span class="p">):</span>  <span class="c1"># if there are any resids in the middle</span>
+                        <span class="n">mid_beg</span><span class="p">,</span> <span class="n">mid_end</span> <span class="o">=</span> <span class="n">mid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mid</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">midmask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">&gt;=</span> <span class="n">mid_beg</span>
+                        <span class="n">midmask</span> <span class="o">&amp;=</span> <span class="n">vals</span> <span class="o">&lt;=</span> <span class="n">mid_end</span>
+
+                        <span class="n">thismask</span> <span class="o">|=</span> <span class="n">midmask</span>
+
+                    <span class="c1"># end of range</span>
+                    <span class="n">endmask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">u_resid</span>
+                    <span class="n">endmask</span> <span class="o">&amp;=</span> <span class="n">icodes</span> <span class="o">&lt;=</span> <span class="n">u_icode</span>
+
+                    <span class="n">thismask</span> <span class="o">|=</span> <span class="n">endmask</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Selecting a single residue</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">l_resid</span>
+                <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">icodes</span> <span class="o">==</span> <span class="n">l_icode</span>
+
+            <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
+
+        <span class="k">return</span> <span class="n">mask</span></div>
+
+
+<span class="k">class</span> <span class="nc">RangeSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="n">value_offset</span><span class="o">=</span><span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">grab_not_keywords</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+
+        <span class="n">uppers</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># upper limit on any range</span>
+        <span class="n">lowers</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># lower limit on any range</span>
+
+        <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">lower</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="n">upper</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># check if in appropriate format &#39;lower:upper&#39; or &#39;lower-upper&#39;</span>
+                <span class="n">selrange</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;(\d+)[:-](\d+)&quot;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">selrange</span><span class="p">:</span>
+                    <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Failed to parse number: </span><span class="si">{0}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">val</span><span class="p">)),</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">(</span><span class="n">selrange</span><span class="o">.</span><span class="n">groups</span><span class="p">())</span>
+
+            <span class="n">lowers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">lower</span><span class="p">)</span>
+            <span class="n">uppers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">upper</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span> <span class="o">=</span> <span class="n">lowers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uppers</span> <span class="o">=</span> <span class="n">uppers</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">field</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_offset</span>
+
+        <span class="k">for</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uppers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowers</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">upper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">&gt;=</span> <span class="n">lower</span>
+                <span class="n">thismask</span> <span class="o">&amp;=</span> <span class="n">vals</span> <span class="o">&lt;=</span> <span class="n">upper</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">thismask</span> <span class="o">=</span> <span class="n">vals</span> <span class="o">==</span> <span class="n">lower</span>
+
+            <span class="n">mask</span> <span class="o">|=</span> <span class="n">thismask</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+
+
+<span class="k">class</span> <span class="nc">ResnumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;resnum&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;resnums&#39;</span>
+
+
+<span class="k">class</span> <span class="nc">ByNumSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;bynum&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
+    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># queries are in 1 based indices</span>
+
+
+<span class="k">class</span> <span class="nc">IndexSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;index&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;indices&#39;</span>
+    <span class="n">value_offset</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># queries now 0 based indices</span>
+
+
+<span class="k">class</span> <span class="nc">MolidSelection</span><span class="p">(</span><span class="n">RangeSelection</span><span class="p">):</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;molnum&#39;</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="s1">&#39;molnums&#39;</span>
+
+
+<div class="viewcode-block" id="ProteinSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.ProteinSelection">[docs]</a><span class="k">class</span> <span class="nc">ProteinSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Consists of all residues with  recognized residue names.</span>
+
+<span class="sd">    Recognized residue names in :attr:`ProteinSelection.prot_res`.</span>
+
+<span class="sd">      * from the CHARMM force field::</span>
+<span class="sd">         awk &#39;/RESI/ {printf &quot;&#39;&quot;&#39;&quot;%s&quot;&#39;&quot;&#39;,&quot;,$2 }&#39; top_all27_prot_lipid.rtf</span>
+
+<span class="sd">      * manually added special CHARMM, OPLS/AA and Amber residue names.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`MDAnalysis.lib.util.convert_aa_code`</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       prot_res changed to set (from numpy array)</span>
+<span class="sd">       performance improved by ~100x on larger systems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;protein&#39;</span>
+
+    <span class="n">prot_res</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># CHARMM top_all27_prot_lipid.rtf</span>
+        <span class="s1">&#39;ALA&#39;</span><span class="p">,</span> <span class="s1">&#39;ARG&#39;</span><span class="p">,</span> <span class="s1">&#39;ASN&#39;</span><span class="p">,</span> <span class="s1">&#39;ASP&#39;</span><span class="p">,</span> <span class="s1">&#39;CYS&#39;</span><span class="p">,</span> <span class="s1">&#39;GLN&#39;</span><span class="p">,</span> <span class="s1">&#39;GLU&#39;</span><span class="p">,</span> <span class="s1">&#39;GLY&#39;</span><span class="p">,</span> <span class="s1">&#39;HSD&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HSE&#39;</span><span class="p">,</span> <span class="s1">&#39;HSP&#39;</span><span class="p">,</span> <span class="s1">&#39;ILE&#39;</span><span class="p">,</span> <span class="s1">&#39;LEU&#39;</span><span class="p">,</span> <span class="s1">&#39;LYS&#39;</span><span class="p">,</span> <span class="s1">&#39;MET&#39;</span><span class="p">,</span> <span class="s1">&#39;PHE&#39;</span><span class="p">,</span> <span class="s1">&#39;PRO&#39;</span><span class="p">,</span> <span class="s1">&#39;SER&#39;</span><span class="p">,</span> <span class="s1">&#39;THR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;TRP&#39;</span><span class="p">,</span> <span class="s1">&#39;TYR&#39;</span><span class="p">,</span> <span class="s1">&#39;VAL&#39;</span><span class="p">,</span> <span class="s1">&#39;ALAD&#39;</span><span class="p">,</span>
+        <span class="c1">## &#39;CHO&#39;,&#39;EAM&#39;, # -- special formyl and ethanolamine termini of gramicidin</span>
+        <span class="c1"># PDB</span>
+        <span class="s1">&#39;HIS&#39;</span><span class="p">,</span> <span class="s1">&#39;MSE&#39;</span><span class="p">,</span>
+        <span class="c1"># from Gromacs 4.5.3 oplsaa.ff/aminoacids.rtp</span>
+        <span class="s1">&#39;ARGN&#39;</span><span class="p">,</span> <span class="s1">&#39;ASPH&#39;</span><span class="p">,</span> <span class="s1">&#39;CYS2&#39;</span><span class="p">,</span> <span class="s1">&#39;CYSH&#39;</span><span class="p">,</span> <span class="s1">&#39;QLN&#39;</span><span class="p">,</span> <span class="s1">&#39;PGLU&#39;</span><span class="p">,</span> <span class="s1">&#39;GLUH&#39;</span><span class="p">,</span> <span class="s1">&#39;HIS1&#39;</span><span class="p">,</span> <span class="s1">&#39;HISD&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HISE&#39;</span><span class="p">,</span> <span class="s1">&#39;HISH&#39;</span><span class="p">,</span> <span class="s1">&#39;LYSH&#39;</span><span class="p">,</span>
+        <span class="c1"># from Gromacs 4.5.3 gromos53a6.ff/aminoacids.rtp</span>
+        <span class="s1">&#39;ASN1&#39;</span><span class="p">,</span> <span class="s1">&#39;CYS1&#39;</span><span class="p">,</span> <span class="s1">&#39;HISA&#39;</span><span class="p">,</span> <span class="s1">&#39;HISB&#39;</span><span class="p">,</span> <span class="s1">&#39;HIS2&#39;</span><span class="p">,</span>
+        <span class="c1"># from Gromacs 4.5.3 amber03.ff/aminoacids.rtp</span>
+        <span class="s1">&#39;HID&#39;</span><span class="p">,</span> <span class="s1">&#39;HIE&#39;</span><span class="p">,</span> <span class="s1">&#39;HIP&#39;</span><span class="p">,</span> <span class="s1">&#39;ORN&#39;</span><span class="p">,</span> <span class="s1">&#39;DAB&#39;</span><span class="p">,</span> <span class="s1">&#39;LYN&#39;</span><span class="p">,</span> <span class="s1">&#39;HYP&#39;</span><span class="p">,</span> <span class="s1">&#39;CYM&#39;</span><span class="p">,</span> <span class="s1">&#39;CYX&#39;</span><span class="p">,</span> <span class="s1">&#39;ASH&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;GLH&#39;</span><span class="p">,</span> <span class="s1">&#39;ACE&#39;</span><span class="p">,</span> <span class="s1">&#39;NME&#39;</span><span class="p">,</span>
+        <span class="c1"># from Gromacs 2016.3 amber99sb-star-ildn.ff/aminoacids.rtp</span>
+        <span class="s1">&#39;NALA&#39;</span><span class="p">,</span> <span class="s1">&#39;NGLY&#39;</span><span class="p">,</span> <span class="s1">&#39;NSER&#39;</span><span class="p">,</span> <span class="s1">&#39;NTHR&#39;</span><span class="p">,</span> <span class="s1">&#39;NLEU&#39;</span><span class="p">,</span> <span class="s1">&#39;NILE&#39;</span><span class="p">,</span> <span class="s1">&#39;NVAL&#39;</span><span class="p">,</span> <span class="s1">&#39;NASN&#39;</span><span class="p">,</span> <span class="s1">&#39;NGLN&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;NARG&#39;</span><span class="p">,</span> <span class="s1">&#39;NHID&#39;</span><span class="p">,</span> <span class="s1">&#39;NHIE&#39;</span><span class="p">,</span> <span class="s1">&#39;NHIP&#39;</span><span class="p">,</span> <span class="s1">&#39;NTRP&#39;</span><span class="p">,</span> <span class="s1">&#39;NPHE&#39;</span><span class="p">,</span> <span class="s1">&#39;NTYR&#39;</span><span class="p">,</span> <span class="s1">&#39;NGLU&#39;</span><span class="p">,</span> <span class="s1">&#39;NASP&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;NLYS&#39;</span><span class="p">,</span> <span class="s1">&#39;NPRO&#39;</span><span class="p">,</span> <span class="s1">&#39;NCYS&#39;</span><span class="p">,</span> <span class="s1">&#39;NCYX&#39;</span><span class="p">,</span> <span class="s1">&#39;NMET&#39;</span><span class="p">,</span> <span class="s1">&#39;CALA&#39;</span><span class="p">,</span> <span class="s1">&#39;CGLY&#39;</span><span class="p">,</span> <span class="s1">&#39;CSER&#39;</span><span class="p">,</span> <span class="s1">&#39;CTHR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CLEU&#39;</span><span class="p">,</span> <span class="s1">&#39;CILE&#39;</span><span class="p">,</span> <span class="s1">&#39;CVAL&#39;</span><span class="p">,</span> <span class="s1">&#39;CASF&#39;</span><span class="p">,</span> <span class="s1">&#39;CASN&#39;</span><span class="p">,</span> <span class="s1">&#39;CGLN&#39;</span><span class="p">,</span> <span class="s1">&#39;CARG&#39;</span><span class="p">,</span> <span class="s1">&#39;CHID&#39;</span><span class="p">,</span> <span class="s1">&#39;CHIE&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CHIP&#39;</span><span class="p">,</span> <span class="s1">&#39;CTRP&#39;</span><span class="p">,</span> <span class="s1">&#39;CPHE&#39;</span><span class="p">,</span> <span class="s1">&#39;CTYR&#39;</span><span class="p">,</span> <span class="s1">&#39;CGLU&#39;</span><span class="p">,</span> <span class="s1">&#39;CASP&#39;</span><span class="p">,</span> <span class="s1">&#39;CLYS&#39;</span><span class="p">,</span> <span class="s1">&#39;CPRO&#39;</span><span class="p">,</span> <span class="s1">&#39;CCYS&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;CCYX&#39;</span><span class="p">,</span> <span class="s1">&#39;CMET&#39;</span><span class="p">,</span> <span class="s1">&#39;CME&#39;</span><span class="p">,</span> <span class="s1">&#39;ASF&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">resname_attr</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
+        <span class="c1"># which values in resname attr are in prot_res?</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resname_attr</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                   <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prot_res</span><span class="p">]</span>
+        <span class="c1"># index of each atom&#39;s resname</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resname_attr</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+        <span class="c1"># intersect atom&#39;s resname index and matches to prot_res</span>
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="NucleicSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;All atoms in nucleic acid residues with recognized residue names.</span>
+
+<span class="sd">    Recognized residue names:</span>
+
+<span class="sd">    * from the CHARMM force field ::</span>
+<span class="sd">        awk &#39;/RESI/ {printf &quot;&#39;&quot;&#39;&quot;%s&quot;&#39;&quot;&#39;,&quot;,$2 }&#39; top_all27_prot_na.rtf</span>
+<span class="sd">    * recognized: &#39;ADE&#39;, &#39;URA&#39;, &#39;CYT&#39;, &#39;GUA&#39;, &#39;THY&#39;</span>
+<span class="sd">    * recognized (CHARMM in Gromacs): &#39;DA&#39;, &#39;DU&#39;, &#39;DC&#39;, &#39;DG&#39;, &#39;DT&#39;</span>
+
+<span class="sd">    .. versionchanged:: 0.8</span>
+<span class="sd">       additional Gromacs selections</span>
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       nucl_res changed to set (from numpy array)</span>
+<span class="sd">       performance improved by ~100x on larger systems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;nucleic&#39;</span>
+
+    <span class="n">nucl_res</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ADE&#39;</span><span class="p">,</span> <span class="s1">&#39;URA&#39;</span><span class="p">,</span> <span class="s1">&#39;CYT&#39;</span><span class="p">,</span> <span class="s1">&#39;GUA&#39;</span><span class="p">,</span> <span class="s1">&#39;THY&#39;</span><span class="p">,</span> <span class="s1">&#39;DA&#39;</span><span class="p">,</span> <span class="s1">&#39;DC&#39;</span><span class="p">,</span> <span class="s1">&#39;DG&#39;</span><span class="p">,</span> <span class="s1">&#39;DT&#39;</span><span class="p">,</span> <span class="s1">&#39;RA&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;RU&#39;</span><span class="p">,</span> <span class="s1">&#39;RG&#39;</span><span class="p">,</span> <span class="s1">&#39;RC&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;DA5&#39;</span><span class="p">,</span> <span class="s1">&#39;DC5&#39;</span><span class="p">,</span> <span class="s1">&#39;DG5&#39;</span><span class="p">,</span> <span class="s1">&#39;DT5&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;DA3&#39;</span><span class="p">,</span> <span class="s1">&#39;DC3&#39;</span><span class="p">,</span> <span class="s1">&#39;DG3&#39;</span><span class="p">,</span> <span class="s1">&#39;DT3&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;RA5&#39;</span><span class="p">,</span> <span class="s1">&#39;RU5&#39;</span><span class="p">,</span> <span class="s1">&#39;RG5&#39;</span><span class="p">,</span> <span class="s1">&#39;RC5&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;RA3&#39;</span><span class="p">,</span> <span class="s1">&#39;RU3&#39;</span><span class="p">,</span> <span class="s1">&#39;RG3&#39;</span><span class="p">,</span> <span class="s1">&#39;RC3&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                   <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucl_res</span><span class="p">]</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">matches</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="BackboneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BackboneSelection">[docs]</a><span class="k">class</span> <span class="nc">BackboneSelection</span><span class="p">(</span><span class="n">ProteinSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A BackboneSelection contains all atoms with name &#39;N&#39;, &#39;CA&#39;, &#39;C&#39;, &#39;O&#39;.</span>
+
+<span class="sd">    This excludes OT* on C-termini</span>
+<span class="sd">    (which are included by, eg VMD&#39;s backbone selection).</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       bb_atoms changed to set (from numpy array)</span>
+<span class="sd">       performance improved by ~100x on larger systems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;backbone&#39;</span>
+    <span class="n">bb_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
+
+        <span class="c1"># filter by atom names</span>
+        <span class="n">name_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bb_atoms</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">name_matches</span><span class="p">)]</span>
+
+        <span class="c1"># filter by resnames</span>
+        <span class="n">resname_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prot_res</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">resname_matches</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="NucleicBackboneSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicBackboneSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicBackboneSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Contains all atoms with name &quot;P&quot;, &quot;C5&#39;&quot;, C3&#39;&quot;, &quot;O3&#39;&quot;, &quot;O5&#39;&quot;.</span>
+
+<span class="sd">    These atoms are only recognized if they are in a residue matched</span>
+<span class="sd">    by the :class:`NucleicSelection`.</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       bb_atoms changed to set (from numpy array)</span>
+<span class="sd">       performance improved by ~100x on larger systems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;nucleicbackbone&#39;</span>
+    <span class="n">bb_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;C5&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;O3&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;O5&#39;&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
+
+        <span class="c1"># filter by atom names</span>
+        <span class="n">name_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bb_atoms</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">name_matches</span><span class="p">)]</span>
+
+        <span class="c1"># filter by resnames</span>
+        <span class="n">resname_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucl_res</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">resname_matches</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="BaseSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.BaseSelection">[docs]</a><span class="k">class</span> <span class="nc">BaseSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Selection of atoms in nucleobases.</span>
+
+<span class="sd">    Recognized atom names (from CHARMM):</span>
+
+<span class="sd">     &#39;N9&#39;, &#39;N7&#39;, &#39;C8&#39;, &#39;C5&#39;, &#39;C4&#39;, &#39;N3&#39;, &#39;C2&#39;, &#39;N1&#39;, &#39;C6&#39;,</span>
+<span class="sd">     &#39;O6&#39;,&#39;N2&#39;,&#39;N6&#39;, &#39;O2&#39;,&#39;N4&#39;,&#39;O4&#39;,&#39;C5M&#39;</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       base_atoms changed to set (from numpy array)</span>
+<span class="sd">       performance improved by ~100x on larger systems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;nucleicbase&#39;</span>
+    <span class="n">base_atoms</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;N9&#39;</span><span class="p">,</span> <span class="s1">&#39;N7&#39;</span><span class="p">,</span> <span class="s1">&#39;C8&#39;</span><span class="p">,</span> <span class="s1">&#39;C5&#39;</span><span class="p">,</span> <span class="s1">&#39;C4&#39;</span><span class="p">,</span> <span class="s1">&#39;N3&#39;</span><span class="p">,</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="s1">&#39;N1&#39;</span><span class="p">,</span> <span class="s1">&#39;C6&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;O6&#39;</span><span class="p">,</span> <span class="s1">&#39;N2&#39;</span><span class="p">,</span> <span class="s1">&#39;N6&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;O2&#39;</span><span class="p">,</span> <span class="s1">&#39;N4&#39;</span><span class="p">,</span> <span class="s1">&#39;O4&#39;</span><span class="p">,</span> <span class="s1">&#39;C5M&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
+
+        <span class="c1"># filter by atom names</span>
+        <span class="n">name_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_atoms</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">name_matches</span><span class="p">)]</span>
+
+        <span class="c1"># filter by resnames</span>
+        <span class="n">resname_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucl_res</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">resname_matches</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="NucleicSugarSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.NucleicSugarSelection">[docs]</a><span class="k">class</span> <span class="nc">NucleicSugarSelection</span><span class="p">(</span><span class="n">NucleicSelection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Contains all atoms with name C1&#39;, C2&#39;, C3&#39;, C4&#39;, O2&#39;, O4&#39;, O3&#39;.</span>
+
+
+<span class="sd">    .. versionchanged:: 1.0.1</span>
+<span class="sd">       sug_atoms changed to set (from numpy array)</span>
+<span class="sd">       performance improved by ~100x on larger systems</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;nucleicsugar&#39;</span>
+    <span class="n">sug_atoms</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;C1&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;C4&#39;&quot;</span><span class="p">,</span> <span class="s2">&quot;O4&#39;&quot;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">atomnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">names</span>
+        <span class="n">resnames</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_topology</span><span class="o">.</span><span class="n">resnames</span>
+
+        <span class="c1"># filter by atom names</span>
+        <span class="n">name_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sug_atoms</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">atomnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">name_matches</span><span class="p">)]</span>
+
+        <span class="c1"># filter by resnames</span>
+        <span class="n">resname_matches</span> <span class="o">=</span> <span class="p">[</span><span class="n">ix</span> <span class="k">for</span> <span class="p">(</span><span class="n">nm</span><span class="p">,</span> <span class="n">ix</span><span class="p">)</span> <span class="ow">in</span> <span class="n">resnames</span><span class="o">.</span><span class="n">namedict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="n">nm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nucl_res</span><span class="p">]</span>
+        <span class="n">nmidx</span> <span class="o">=</span> <span class="n">resnames</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">resindices</span><span class="p">]</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">group</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">nmidx</span><span class="p">,</span> <span class="n">resname_matches</span><span class="p">)]</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="PropertySelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.PropertySelection">[docs]</a><span class="k">class</span> <span class="nc">PropertySelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Some of the possible properties:</span>
+<span class="sd">    x, y, z, radius, mass,</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;prop&#39;</span>
+    <span class="n">ops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([</span>
+        <span class="p">(</span><span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">less</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">equal</span><span class="p">),</span>
+        <span class="p">(</span><span class="s1">&#39;!=&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">not_equal</span><span class="p">),</span>
+    <span class="p">])</span>
+    <span class="c1"># order here is important, need to check &lt;= before &lt; so the</span>
+    <span class="c1"># larger (in terms of string length) symbol is considered first</span>
+    <span class="n">_op_symbols</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;!=&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">)</span>
+
+    <span class="c1"># symbols to replace with when flipping</span>
+    <span class="c1"># eg 6 &gt; x -&gt; x &lt;= 6, 5 == x -&gt; x == 5</span>
+    <span class="n">opposite_ops</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;==&#39;</span><span class="p">:</span> <span class="s1">&#39;==&#39;</span><span class="p">,</span> <span class="s1">&#39;!=&#39;</span><span class="p">:</span> <span class="s1">&#39;!=&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;&lt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;=&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;&gt;&#39;</span><span class="p">:</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;=&#39;</span><span class="p">:</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">props</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Possible splitting around operator:</span>
+
+<span class="sd">        prop x &lt; 5</span>
+<span class="sd">        prop x&lt; 5</span>
+<span class="sd">        prop x &lt;5</span>
+<span class="sd">        prop x&lt;5</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="n">oper</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">prop</span> <span class="o">==</span> <span class="s2">&quot;abs&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">absolute</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">absolute</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># check if prop has any extra information atm</span>
+        <span class="k">for</span> <span class="n">possible</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_op_symbols</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">possible</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># won&#39;t unpack into 2 args unless *possible* is present</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prop</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">oper</span> <span class="o">=</span> <span class="n">possible</span> <span class="o">+</span> <span class="n">y</span>  <span class="c1"># add back after splitting</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">oper</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">oper</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="c1"># check if oper has the value appended</span>
+        <span class="k">for</span> <span class="n">possible</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_op_symbols</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">possible</span> <span class="ow">in</span> <span class="n">oper</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">oper</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">possible</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">y</span><span class="p">:</span>  <span class="c1"># &#39;&lt;=&#39;.split(&#39;&lt;=&#39;) == [&#39;&#39;, &#39;&#39;], therefore y won&#39;t exist</span>
+                    <span class="n">oper</span> <span class="o">=</span> <span class="n">possible</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="c1"># check if we flip prop and value</span>
+        <span class="c1"># eg 5 &gt; x -&gt; x &lt;= 5</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">props</span><span class="p">:</span>
+            <span class="n">prop</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span> <span class="n">prop</span>
+            <span class="n">oper</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">opposite_ops</span><span class="p">[</span><span class="n">oper</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">operator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ops</span><span class="p">[</span><span class="n">oper</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Invalid operator : &#39;</span><span class="si">{0}</span><span class="s2">&#39; Use one of : &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">oper</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ops</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+                <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">masses</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">==</span> <span class="s1">&#39;charge&#39;</span><span class="p">:</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">charges</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span><span class="n">SelectionError</span><span class="p">(</span>
+                    <span class="s2">&quot;Expected one of : </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">([</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;mass&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">])),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">col</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">absolute</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">operator</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="SameSelection"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SameSelection">[docs]</a><span class="k">class</span> <span class="nc">SameSelection</span><span class="p">(</span><span class="n">Selection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Selects all atoms that have the same subkeyword value as any atom in selection</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Map :code:`&quot;residue&quot;` to :code:`&quot;resindices&quot;` and :code:`&quot;segment&quot;` to</span>
+<span class="sd">       :code:`&quot;segindices&quot;` (see #2669 and #2672)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">token</span> <span class="o">=</span> <span class="s1">&#39;same&#39;</span>
+    <span class="n">precedence</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">prop_trans</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;fragment&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="s1">&#39;residue&#39;</span><span class="p">:</span> <span class="s1">&#39;resindices&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;segment&#39;</span><span class="p">:</span> <span class="s1">&#39;segindices&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;names&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;types&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;resname&#39;</span><span class="p">:</span> <span class="s1">&#39;resnames&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;resid&#39;</span><span class="p">:</span> <span class="s1">&#39;resids&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;segid&#39;</span><span class="p">:</span> <span class="s1">&#39;segids&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;mass&#39;</span><span class="p">:</span> <span class="s1">&#39;masses&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;charge&#39;</span><span class="p">:</span> <span class="s1">&#39;charges&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="s1">&#39;radii&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bfactor&#39;</span><span class="p">:</span> <span class="s1">&#39;bfactors&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;resnum&#39;</span><span class="p">:</span> <span class="s1">&#39;resnums&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop_trans</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown same property : </span><span class="si">{0}</span><span class="s2">&quot;</span>
+                             <span class="s2">&quot;Choose one of : </span><span class="si">{1}</span><span class="s2">&quot;</span>
+                             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop_trans</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s2">&quot;as&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">precedence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">group</span><span class="p">[[]]</span>  <span class="c1"># empty selection</span>
+
+        <span class="c1"># Fragment must come before self.prop_trans lookups!</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">==</span> <span class="s1">&#39;fragment&#39;</span><span class="p">:</span>
+            <span class="c1"># Combine all fragments together, then check where group</span>
+            <span class="c1"># indices are same as fragment(s) indices</span>
+            <span class="n">allfrags</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">fragments</span><span class="p">)</span>
+
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">indices</span><span class="p">,</span> <span class="n">allfrags</span><span class="o">.</span><span class="n">indices</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+        <span class="c1"># [xyz] must come before self.prop_trans lookups too!</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pos_idx</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;x&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># The self.prop string was already checked,</span>
+            <span class="c1"># so don&#39;t need error checking here.</span>
+            <span class="c1"># KeyError at this point is impossible!</span>
+            <span class="n">attrname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop_trans</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="p">]</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">attrname</span><span class="p">)</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">in1d</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">attrname</span><span class="p">),</span> <span class="n">vals</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">vals</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">pos_idx</span><span class="p">]</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span><span class="p">[:,</span> <span class="n">pos_idx</span><span class="p">]</span>
+
+            <span class="c1"># isclose only does one value at a time</span>
+            <span class="n">mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                              <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">])</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">group</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span></div>
+
+
+<div class="viewcode-block" id="SelectionParser"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser">[docs]</a><span class="k">class</span> <span class="nc">SelectionParser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A small parser for selection expressions.  Demonstration of</span>
+<span class="sd">    recursive descent parsing using Precedence climbing (see</span>
+<span class="sd">    http://www.engr.mun.ca/~theo/Misc/exp_parsing.htm).  Transforms</span>
+<span class="sd">    expressions into nested Selection tree.</span>
+
+<span class="sd">    For reference, the grammar that we parse is ::</span>
+
+<span class="sd">       E(xpression)--&gt; Exp(0)</span>
+<span class="sd">       Exp(p) --&gt;      P {B Exp(q)}</span>
+<span class="sd">       P --&gt;           U Exp(q) | &quot;(&quot; E &quot;)&quot; | v</span>
+<span class="sd">       B(inary) --&gt;    &quot;and&quot; | &quot;or&quot;</span>
+<span class="sd">       U(nary) --&gt;     &quot;not&quot;</span>
+<span class="sd">       T(erms) --&gt;     segid [value]</span>
+<span class="sd">                       | resname [value]</span>
+<span class="sd">                       | resid [value]</span>
+<span class="sd">                       | name [value]</span>
+<span class="sd">                       | type [value]</span>
+<span class="sd">   &quot;&quot;&quot;</span>
+    <span class="c1"># Borg pattern: http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/66531</span>
+    <span class="n">_shared_state</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">):</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">k</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_shared_state</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="SelectionParser.expect"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.expect">[docs]</a>    <span class="k">def</span> <span class="nf">expect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Anticipate and remove a given token&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">token</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected token: &#39;</span><span class="si">{0}</span><span class="s2">&#39; Expected: &#39;</span><span class="si">{1}</span><span class="s2">&#39;&quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">token</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SelectionParser.parse"><a class="viewcode-back" href="../../../documentation_pages/core/selection.html#MDAnalysis.core.selection.SelectionParser.parse">[docs]</a>    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selectstr</span><span class="p">,</span> <span class="n">selgroups</span><span class="p">,</span> <span class="n">periodic</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Selection object from a string.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        selectstr : str</span>
+<span class="sd">            The string that describes the selection</span>
+<span class="sd">        selgroups : AtomGroups</span>
+<span class="sd">            AtomGroups to be used in `group` selections</span>
+<span class="sd">        periodic : bool, optional</span>
+<span class="sd">            for distance based selections, whether to consider</span>
+<span class="sd">            periodic boundary conditions</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        The appropriate Selection object.  Use the .apply method on</span>
+<span class="sd">        this to perform the selection.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        SelectionError</span>
+<span class="sd">            If anything goes wrong in creating the Selection object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic</span> <span class="o">=</span> <span class="n">periodic</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectstr</span> <span class="o">=</span> <span class="n">selectstr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selgroups</span> <span class="o">=</span> <span class="n">selgroups</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">selectstr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39; ( &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39; ) &#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">deque</span><span class="p">(</span><span class="n">tokens</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="o">+</span> <span class="p">[</span><span class="kc">None</span><span class="p">])</span>
+        <span class="n">parsetree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SelectionError</span><span class="p">(</span>
+                <span class="s2">&quot;Unexpected token at end of selection string: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span>
+                <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">parsetree</span></div>
+
+    <span class="k">def</span> <span class="nf">parse_expression</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="n">exp1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_subexp</span><span class="p">()</span>
+        <span class="k">while</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="n">_OPERATIONS</span> <span class="ow">and</span>
+               <span class="n">_OPERATIONS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">precedence</span> <span class="o">&gt;=</span> <span class="n">p</span><span class="p">):</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">_OPERATIONS</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()]</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">op</span><span class="o">.</span><span class="n">precedence</span>
+            <span class="n">exp2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+            <span class="n">exp1</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="n">exp1</span><span class="p">,</span> <span class="n">exp2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">exp1</span>
+
+    <span class="k">def</span> <span class="nf">_parse_subexp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s1">&#39;(&#39;</span><span class="p">:</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_expression</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s1">&#39;)&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">exp</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_SELECTIONDICT</span><span class="p">[</span><span class="n">op</span><span class="p">](</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
+                <span class="n">SelectionError</span><span class="p">(</span><span class="s2">&quot;Unknown selection token: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op</span><span class="p">)),</span>
+                <span class="kc">None</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">six</span><span class="o">.</span><span class="n">raise_from</span><span class="p">(</span>
+                <span class="n">SelectionError</span><span class="p">(</span><span class="s2">&quot;Selection failed: &#39;</span><span class="si">{0}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)),</span>
+                <span class="kc">None</span><span class="p">)</span></div>
+
+
+<span class="c1"># The module level instance</span>
+<span class="n">Parser</span> <span class="o">=</span> <span class="n">SelectionParser</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

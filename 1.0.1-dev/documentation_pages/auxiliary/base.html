@@ -1,0 +1,757 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>10.2. Auxiliary Readers — MDAnalysis.auxiliary.base &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="10.3. Common functions for auxiliary reading — MDAnalysis.auxiliary.core" href="core.html" />
+    <link rel="prev" title="10.1. Auxiliary Readers — MDAnalysis.auxiliary" href="init.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="init.html">10.1. Auxiliary Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary</span></code></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">10.2. Auxiliary Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">10.3. Common functions for auxiliary reading — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="XVG.html">10.4. XVG auxiliary reader — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.XVG</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../auxiliary_modules.html">10. Auxiliary modules</a> &raquo;</li>
+        
+      <li>10.2. Auxiliary Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/auxiliary/base.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.auxiliary.base"></span><div class="section" id="auxiliary-readers-mdanalysis-auxiliary-base">
+<h1>10.2. Auxiliary Readers — <a class="reference internal" href="#module-MDAnalysis.auxiliary.base" title="MDAnalysis.auxiliary.base"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.base</span></code></a><a class="headerlink" href="#auxiliary-readers-mdanalysis-auxiliary-base" title="Permalink to this headline">¶</a></h1>
+<p>Base classes for deriving all auxiliary data readers. See the API in <a class="reference internal" href="init.html#module-MDAnalysis.auxiliary.__init__" title="MDAnalysis.auxiliary.__init__"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.auxiliary.__init__</span></code></a>.</p>
+<dl class="class">
+<dt id="MDAnalysis.auxiliary.base.AuxStep">
+<em class="property">class </em><code class="descclassname">MDAnalysis.auxiliary.base.</code><code class="descname">AuxStep</code><span class="sig-paren">(</span><em>dt=1</em>, <em>initial_time=0</em>, <em>time_selector=None</em>, <em>data_selector=None</em>, <em>constant_dt=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxStep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for auxiliary timesteps.</p>
+<p>Stores the auxiliary data for the current auxiliary step. On creation,
+<code class="docutils literal notranslate"><span class="pre">step</span></code> is set to -1.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Change in time between auxiliary steps (in ps). If not specified, will
+attempt to determine from auxiliary data; otherwise defaults to 1 ps.
+Ignored if <code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is False.</li>
+<li><strong>initial_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Time of first auxiliary step (in ps). If not specified, will attempt to
+determine from auxiliary data; otherwise defaults to 0 ps. Ignored if
+<code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is False.</li>
+<li><strong>time_selector</strong> (<em>optional</em>) – Key to select ‘time’ value from the full set of data read for each
+step, if time selection is enabled; type will vary depending on the
+auxiliary data format (see individual AuxReader documentation). If
+<code class="docutils literal notranslate"><span class="pre">None</span></code> (default value), time is instead calculated as: <code class="docutils literal notranslate"><span class="pre">time</span> <span class="pre">=</span> <span class="pre">step</span>
+<span class="pre">*</span> <span class="pre">dt</span> <span class="pre">+</span> <span class="pre">initial_time</span></code></li>
+<li><strong>data_selector</strong> (<em>optional</em>) – Key(s) to select auxiliary data values of interest from the full set of
+data read for each step, if data selection is enabled by the reader;
+type will vary depending on the auxiliary data format (see individual
+AuxReader documentation).
+If <code class="docutils literal notranslate"><span class="pre">None</span></code> (default value), the full set of data is returned.</li>
+<li><strong>constant_dt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: True) Set to False if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is not constant
+throughout the auxiliary data set, in which case a valid
+<code class="docutils literal notranslate"><span class="pre">time_selector</span></code> must be provided.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxStep.step">
+<code class="descname">step</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of the current auxiliary step (0-based).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxStep.data">
+<code class="descname">data</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Auxiliary values of interest for the current step (as ndarray).</p>
+<p>Read from the full set of data read for each step if data selection is
+enabled and a valid <code class="docutils literal notranslate"><span class="pre">data_selector</span></code> is specified; otherwise
+defaults to the full set of data.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxStep.time">
+<code class="descname">time</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxStep.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time in ps of current auxiliary step (as float).</p>
+<p>Read from the set of auxiliary data read each step if time selection
+is enabled and a valid <code class="docutils literal notranslate"><span class="pre">time_selector</span></code> is specified; otherwise
+calculated as <code class="docutils literal notranslate"><span class="pre">step</span> <span class="pre">*</span> <span class="pre">dt</span> <span class="pre">+</span> <span class="pre">initial_time</span></code>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.auxiliary.base.AuxReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.auxiliary.base.</code><code class="descname">AuxReader</code><span class="sig-paren">(</span><em>represent_ts_as='closest'</em>, <em>auxname=None</em>, <em>cutoff=-1</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for auxiliary readers.</p>
+<p>Allows iteration over a set of data from a trajectory, additional
+(‘auxiliary’) to the regular positions/velocities/etc. This auxiliary
+data may be stored in e.g. an array or a separate file.</p>
+<p>See the <a class="reference internal" href="init.html#auxiliary-api"><span class="std std-ref">Auxiliary API</span></a> for more on use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>auxname</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – Name for auxiliary data. When added to a trajectory, the representative
+auxiliary value(s) for the timestep may be accessed as <code class="docutils literal notranslate"><span class="pre">ts.aux.auxname</span></code>
+or <code class="docutils literal notranslate"><span class="pre">ts.aux['auxname']</span></code>.</li>
+<li><strong>represent_ts_as</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Method to use to calculate representative value of auxiliary data for a
+trajectory timestep. See <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative" title="MDAnalysis.auxiliary.base.AuxReader.calc_representative"><code class="xref py py-func docutils literal notranslate"><span class="pre">calc_representative()</span></code></a> for valid options.</li>
+<li><strong>cutoff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em>, </em><em>optional</em>) – Auxiliary steps further from the trajectory timestep than <em>cutoff</em>
+(in ps) will be ignored when calculating representative values. If -1
+(default), all auxiliary steps assigned to that timestep will be used.</li>
+<li><strong>**kwargs</strong> – Options to be passed to <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.auxstep">
+<code class="descname">auxstep</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.auxstep" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxStep" title="MDAnalysis.auxiliary.base.AuxStep"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxStep</span></code></a> object containing data for current step.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.frame_data">
+<code class="descname">frame_data</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.frame_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary containing <code class="docutils literal notranslate"><span class="pre">data</span></code> from each auxiliary step assigned to the
+current trajectory timestep, indexed by the difference in time between
+the step and trajectory timestep (i.e. <code class="docutils literal notranslate"><span class="pre">auxstep.time</span> <span class="pre">-</span> <span class="pre">ts.time</span></code>; in ps)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.frame_rep">
+<code class="descname">frame_rep</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.frame_rep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representative value(s) of auxiliary data for current trajectory timestep.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Auxiliary data are assumed to be time ordered and contain no duplicates.</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.calc_representative">
+<code class="descname">calc_representative</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.calc_representative"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.calc_representative" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate representative auxiliary value(s) from the data in
+<em>frame_data</em>.</p>
+<p>Currently implemented options for calculating representative value are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><cite>closest</cite>: default; the value(s) from the step closest to in time
+to the trajectory timestep</li>
+<li><cite>average</cite>: average of the value(s) from steps ‘assigned’ to the
+trajectory timestep.</li>
+</ul>
+</div></blockquote>
+<p>Additionally, if <code class="docutils literal notranslate"><span class="pre">cutoff</span></code> is specified, only steps within this time
+of the trajectory timestep are considered in calculating the
+representative.</p>
+<p>If no auxiliary steps were assigned to the timestep, or none fall
+within the cutoff, representative values are set to <code class="docutils literal notranslate"><span class="pre">np.nan</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Array of auxiliary value(s) ‘representative’ for the timestep.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">ndarray</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.constant_dt">
+<code class="descname">constant_dt</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.constant_dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if <code class="docutils literal notranslate"><span class="pre">dt</span></code> is constant throughout the auxiliary (as stored in
+<code class="docutils literal notranslate"><span class="pre">auxstep</span></code>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.data_selector">
+<code class="descname">data_selector</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.data_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key(s) to select auxiliary data values of interest from the full set
+of data read for each step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>).</p>
+<p>Type differs between auxiliary formats, depending how the data for each
+step is read in and stored - e.g. data from .xvg files is read in as
+a list and <cite>data_selector</cite> must be a list of valid indicies. If data
+selection is not enabled by the reader, <code class="docutils literal notranslate"><span class="pre">data_selector</span></code> will default
+to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>See each individual auxiliary reader.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.dt">
+<code class="descname">dt</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.dt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change in time between auxiliary steps (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>;
+in ps)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.get_description">
+<code class="descname">get_description</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.get_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.get_description" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the values of the parameters necessary for replicating the
+AuxReader.</p>
+<p>An AuxReader can be duplicated using
+<a class="reference internal" href="core.html#MDAnalysis.auxiliary.core.auxreader" title="MDAnalysis.auxiliary.core.auxreader"><code class="xref py py-func docutils literal notranslate"><span class="pre">auxreader()</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">description</span> <span class="o">=</span> <span class="n">original_aux</span><span class="o">.</span><span class="n">get_description</span><span class="p">()</span>
+<span class="n">new_aux</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">auxiliary</span><span class="o">.</span><span class="n">auxreader</span><span class="p">(</span><span class="o">**</span><span class="n">description</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The resulting dictionary may also be passed directly to
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.ProtoReader.add_auxiliary" title="MDAnalysis.coordinates.base.ProtoReader.add_auxiliary"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add_auxiliary()</span></code></a> to
+reload an auxiliary into a trajectory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">trajectory</span><span class="o">.</span><span class="n">add_auxiliary</span><span class="p">(</span><span class="o">**</span><span class="n">description</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Key-word arguments and values that can be used to replicate the
+AuxReader.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.8)">dict</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.initial_time">
+<code class="descname">initial_time</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.initial_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time of first auxiliary step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>; in ps)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.move_to_ts">
+<code class="descname">move_to_ts</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.move_to_ts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.move_to_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Position auxiliary reader just before trajectory timestep <em>ts</em>.</p>
+<p>Calling <code class="docutils literal notranslate"><span class="pre">next()</span></code> should read the first auxiliary step ‘assigned’ to
+the trajectory timestep <em>ts</em> or, if no auxiliary steps are
+assigned to that timestep (as in the case of less frequent auxiliary
+data), the first auxiliary step after <em>ts</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep before which the auxiliary reader is to
+be positioned.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.n_steps">
+<code class="descname">n_steps</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.n_steps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of steps in the auxiliary data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.next">
+<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.next" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move to next step of auxiliary data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.next_nonempty_frame">
+<code class="descname">next_nonempty_frame</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.next_nonempty_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.next_nonempty_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the next trajectory frame for which a representative auxiliary
+value can be calculated.</p>
+<p>That is, the next trajectory frame to which one or more auxiliary steps
+are assigned and fall within the cutoff.</p>
+<p>Starts looking from the current step time. If the end of the auxiliary
+data is reached before a trajectory frame is found, None is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – Any timestep from the trajectory for which the next ‘non-empty’
+frame is to be found.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Index of the next auxiliary-containing frame in the trajectory.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)">int</a></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The returned index may be out of range for the trajectory.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.read_ts">
+<code class="descname">read_ts</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.read_ts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.read_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read auxiliary steps corresponding to the trajectory timestep <em>ts</em>.</p>
+<p>Read the auxiliary steps ‘assigned’ to <em>ts</em> (the steps that are within
+<code class="docutils literal notranslate"><span class="pre">ts.dt/2</span></code> of of the trajectory timestep/frame - ie. closer to <em>ts</em>
+than either the preceding or following frame). Then calculate a
+‘representative value’ for the timestep from the data in each of these
+auxiliary steps.</p>
+<p>To update <em>ts</em> with the representative value, use <code class="docutils literal notranslate"><span class="pre">update_ts</span></code> instead.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep for which corresponding auxiliary data is
+to be read.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.update_ts" title="MDAnalysis.auxiliary.base.AuxReader.update_ts"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_ts()</span></code></a></p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The auxiliary reader will end up positioned at the last step assigned
+to the trajectory frame or, if the frame includes no auxiliary steps,
+(as when auxiliary data are less frequent), the most recent auxiliary
+step before the frame.</p>
+</div>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.represent_ts_as">
+<code class="descname">represent_ts_as</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.represent_ts_as" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method by which ‘representative’ timestep values of auxiliary data
+will be calculated.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.rewind">
+<code class="descname">rewind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.rewind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.rewind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return to and read first step.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.step">
+<code class="descname">step</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of the current auxiliary step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>;
+0-based).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.step_to_frame">
+<code class="descname">step_to_frame</code><span class="sig-paren">(</span><em>step</em>, <em>ts</em>, <em>return_time_diff=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.step_to_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.step_to_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate closest trajectory frame for auxiliary step <em>step</em>.</p>
+<p>Calculated given dt, time and frame from <em>ts</em>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">time_frame_0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="o">*</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>   <span class="c1"># time at frame 0</span>
+
+<span class="n">frame</span> <span class="o">=</span> <span class="n">floor</span><span class="p">((</span><span class="n">step_to_time</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="o">-</span> <span class="n">time_frame_0</span> <span class="o">+</span> <span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span><span class="o">/</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The difference in time between the step and the calculated frame can
+also optionally be returned with <em>return_time_diff</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Number of the auxiliary step to calculate closest trajectory frame
+for.</li>
+<li><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – (Any) timestep from the trajectory the calculated frame number is to
+correspond to.</li>
+<li><strong>return_time_diff</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – (Default: False) Additionally return the time difference between
+<em>step</em> and returned frame.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>frame_index</strong> (<em>int or None</em>) – Number of the trajectory frame closest (in time) to the given
+auxiliary step. If the step index is out of range for the auxiliary
+data, <code class="docutils literal notranslate"><span class="pre">None</span></code> is returned instead.</li>
+<li><strong>time_diff</strong> (<em>float (optional)</em>) – Difference in time between <em>step</em> and <em>frame_index</em>.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Assumes trajectory dt is consant.
+The returned frame number may be out of range for the trajectory.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.step_to_time">
+<code class="descname">step_to_time</code><span class="sig-paren">(</span><em>i</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.step_to_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.step_to_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return time of auxiliary step <em>i</em>.</p>
+<p>Calculated using <code class="docutils literal notranslate"><span class="pre">dt</span></code> and <code class="docutils literal notranslate"><span class="pre">initial_time</span></code> if <code class="docutils literal notranslate"><span class="pre">constant_dt</span></code> is True;
+otherwise from the list of times as read from the auxiliary data for
+each step.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Index (0-based) of step to return time for</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><strong>time</strong> – Time (in ps) of step <em>i</em></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – When <em>i</em> not in valid range</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.time">
+<code class="descname">time</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time of current auxiliary step (as stored in <code class="docutils literal notranslate"><span class="pre">auxstep</span></code>; in ps)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.time_selector">
+<code class="descname">time_selector</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.time_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key to select ‘time’ value from the full set of data read for each step.
+As stored in <code class="docutils literal notranslate"><span class="pre">austep</span></code>.</p>
+<p>Type differs between auxiliary formats, depending how the data for each
+step is read in and stored; e.g. data from .xvg files is read in as a
+list and <cite>time_selector</cite> must be a valid index. If time selection is not
+enabled by the reader, <code class="docutils literal notranslate"><span class="pre">time_selector</span></code> will default to <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<p>See each individual auxiliary reader.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxReader.update_ts">
+<code class="descname">update_ts</code><span class="sig-paren">(</span><em>ts</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxReader.update_ts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxReader.update_ts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read auxiliary steps corresponding to and update the trajectory
+timestep <em>ts</em>.</p>
+<p>Calls <a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.read_ts" title="MDAnalysis.auxiliary.base.AuxReader.read_ts"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_ts()</span></code></a>, then updates <em>ts</em> with the representative value.
+<code class="docutils literal notranslate"><span class="pre">auxname</span></code> must be set; the representative value will be accessible in
+<em>ts</em> as <code class="docutils literal notranslate"><span class="pre">ts.aux.auxname</span></code> or <code class="docutils literal notranslate"><span class="pre">ts.aux['auxname']</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ts</strong> (<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a> object) – The trajectory timestep for which corresponding auxiliary data is
+to be read and updated.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><em>ts</em> with the representative auxiliary
+value in <code class="docutils literal notranslate"><span class="pre">ts.aux</span></code> be updated appropriately.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.8)"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code></a> – If <code class="docutils literal notranslate"><span class="pre">auxname</span></code> is not set.</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader.read_ts" title="MDAnalysis.auxiliary.base.AuxReader.read_ts"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_ts()</span></code></a></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.auxiliary.base.AuxFileReader">
+<em class="property">class </em><code class="descclassname">MDAnalysis.auxiliary.base.</code><code class="descname">AuxFileReader</code><span class="sig-paren">(</span><em>filename</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxFileReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxFileReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for auxiliary readers that read from file.</p>
+<p>Extends AuxReader with attributes and methods particular to reading
+auxiliary data from an open file, for use when auxiliary files may be too
+large to read in at once.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Location of the file containing the auxiliary data.</li>
+<li><strong>**kwargs</strong> – Other AuxReader options.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#MDAnalysis.auxiliary.base.AuxReader" title="MDAnalysis.auxiliary.base.AuxReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">AuxReader</span></code></a></p>
+</div>
+<dl class="attribute">
+<dt id="MDAnalysis.auxiliary.base.AuxFileReader.auxfile">
+<code class="descname">auxfile</code><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxFileReader.auxfile" title="Permalink to this definition">¶</a></dt>
+<dd><p>File object for the auxiliary file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.auxiliary.base.AuxFileReader.close">
+<code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/auxiliary/base.html#AuxFileReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.auxiliary.base.AuxFileReader.close" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close <em>auxfile</em>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="core.html" class="btn btn-neutral float-right" title="10.3. Common functions for auxiliary reading — MDAnalysis.auxiliary.core" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="init.html" class="btn btn-neutral float-left" title="10.1. Auxiliary Readers — MDAnalysis.auxiliary" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

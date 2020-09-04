@@ -1,0 +1,986 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>4.8.3. Water dynamics analysis — MDAnalysis.analysis.waterdynamics &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap" href="diffusionmap.html" />
+    <link rel="prev" title="4.8.2. Linear Density — MDAnalysis.analysis.lineardensity" href="lineardensity.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#building-blocks-for-analysis">4.1. Building blocks for Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#distances-and-contacts">4.2. Distances and contacts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#hydrogen-bonding">4.3. Hydrogen bonding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#membranes-and-membrane-proteins">4.4. Membranes and membrane proteins</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#nucleic-acids">4.5. Nucleic acids</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#polymers">4.6. Polymers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#volumetric-analysis">4.8. Volumetric analysis</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="density.html">4.8.1. Generating densities from trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.density</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lineardensity.html">4.8.2. Linear Density — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.lineardensity</span></code></a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.8.3. Water dynamics analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-use-of-the-analysis-classes">4.8.3.1. Example use of the analysis classes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#output">4.8.3.2. Output</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classes">4.8.3.3. Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#dimensionality-reduction">4.9. Dimensionality Reduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#legacy-analysis-modules">4.10. Legacy analysis modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../analysis_modules.html#data">4.11. Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
+        
+      <li>4.8.3. Water dynamics analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/analysis/waterdynamics.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.analysis.waterdynamics"></span><div class="section" id="water-dynamics-analysis-mdanalysis-analysis-waterdynamics">
+<h1>4.8.3. Water dynamics analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a><a class="headerlink" href="#water-dynamics-analysis-mdanalysis-analysis-waterdynamics" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Author:</th><td class="field-body">Alejandro Bernardin</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Year:</th><td class="field-body">2014-2015</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Copyright:</th><td class="field-body">GNU Public License v3</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<p>This module provides functions to analize water dynamics trajectories and water
+interactions with other molecules.  The functions in this module are: water
+orientational relaxation (WOR) <a class="reference internal" href="#yeh1999" id="id1">[Yeh1999]</a>, hydrogen bond lifetimes (HBL)
+<a class="reference internal" href="#rapaport1983" id="id2">[Rapaport1983]</a>, angular distribution (AD) <a class="reference internal" href="#grigera1995" id="id3">[Grigera1995]</a>, mean square
+displacement (MSD) <a class="reference internal" href="#brodka1994" id="id4">[Brodka1994]</a> and survival probability (SP) <a class="reference internal" href="#liu2004" id="id5">[Liu2004]</a>.</p>
+<p>For more information about this type of analysis please refer to
+<a class="reference internal" href="#araya-secchi2014" id="id6">[Araya-Secchi2014]</a> (water in a protein cavity) and <a class="reference internal" href="#milischuk2011" id="id7">[Milischuk2011]</a> (water in
+a nanopore).</p>
+<p class="rubric">References</p>
+<table class="docutils citation" frame="void" id="rapaport1983" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[Rapaport1983]</td><td><em>(<a class="fn-backref" href="#id2">1</a>, <a class="fn-backref" href="#id14">2</a>)</em> D.C. Rapaport (1983): Hydrogen bonds in water, Molecular
+Physics: An International Journal at the Interface Between
+Chemistry and Physics, 50:5, 1151-1162.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="yeh1999" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Yeh1999]</a></td><td>Yu-ling Yeh and Chung-Yuan Mou (1999).  Orientational Relaxation
+Dynamics of Liquid Water Studied by Molecular Dynamics Simulation,
+J. Phys. Chem. B 1999, 103, 3699-3705.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="grigera1995" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[Grigera1995]</a></td><td>Raul Grigera, Susana G. Kalko and Jorge Fischbarg
+(1995). Wall-Water Interface.  A Molecular Dynamics Study,
+Langmuir 1996,12,154-158</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="liu2004" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id5">[Liu2004]</a></td><td>Pu Liu, Edward Harder, and B. J. Berne (2004).On the Calculation
+of Diffusion Coefficients in Confined Fluids and Interfaces with
+an Application to the Liquid-Vapor Interface of Water,
+J. Phys. Chem. B 2004, 108, 6595-6602.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="brodka1994" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[Brodka1994]</a></td><td>Aleksander Brodka (1994). Diffusion in restricted volume,
+Molecular Physics, 1994, Vol.  82, No. 5, 1075-1078.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="araya-secchi2014" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id6">[Araya-Secchi2014]</a></td><td>Araya-Secchi, R., Tomas Perez-Acle, Seung-gu Kang, Tien
+Huynh, Alejandro Bernardin, Yerko Escalona, Jose-Antonio
+Garate, Agustin D. Martinez, Isaac E. Garcia, Juan
+C. Saez, Ruhong Zhou (2014). Characterization of a novel
+water pocket inside the human Cx26 hemichannel
+structure. Biophysical journal, 107(3), 599-612.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="milischuk2011" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id7">[Milischuk2011]</a></td><td>Anatoli A. Milischuk and Branka M. Ladanyi. Structure and
+dynamics of water confined in silica
+nanopores. J. Chem. Phys. 135, 174709 (2011); doi:
+10.1063/1.3657408</td></tr>
+</tbody>
+</table>
+<div class="section" id="example-use-of-the-analysis-classes">
+<h2>4.8.3.1. Example use of the analysis classes<a class="headerlink" href="#example-use-of-the-analysis-classes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="hydrogenbondlifetimes">
+<h3>4.8.3.1.1. HydrogenBondLifetimes<a class="headerlink" href="#hydrogenbondlifetimes" title="Permalink to this headline">¶</a></h3>
+<p>Analyzing hydrogen bond lifetimes (HBL) <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes" title="MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes"><code class="xref py py-class docutils literal notranslate"><span class="pre">HydrogenBondLifetimes</span></code></a>, both
+continuos and intermittent. In this case we are analyzing how residue 38
+interact with a water sphere of radius 6.0 centered on the geometric center of
+protein and residue 42. If the hydrogen bond lifetimes are very stable, we can
+assume that residue 38 is hydrophilic, on the other hand, if the are very
+unstable, we can assume that residue 38 is hydrophobic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">HydrogenBondLifetimes</span> <span class="k">as</span> <span class="n">HBL</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<span class="n">selection1</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
+<span class="n">selection2</span> <span class="o">=</span> <span class="s2">&quot;resid 38&quot;</span>
+<span class="n">HBL_analysis</span> <span class="o">=</span> <span class="n">HBL</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">selection1</span><span class="p">,</span> <span class="n">selection2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="n">HBL_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1">#now we print the data ready to plot. The first two columns are the HBLc vs t</span>
+<span class="c1">#plot and the second two columns are the HBLi vs t graph</span>
+<span class="k">for</span> <span class="n">HBLc</span><span class="p">,</span> <span class="n">HBLi</span> <span class="ow">in</span> <span class="n">HBL_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{HBLc}</span><span class="s2"> </span><span class="si">{time}</span><span class="s2"> </span><span class="si">{HBLi}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">HBLc</span><span class="o">=</span><span class="n">HBLc</span><span class="p">,</span> <span class="n">HBLi</span><span class="o">=</span><span class="n">HBLi</span><span class="p">))</span>
+    <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1">#we can also plot our data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#HBL continuos</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;HBLc&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;HBL Continuos&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">time</span><span class="p">),[</span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">HBL_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
+<span class="c1">#HBL intermitent</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;HBLi&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;HBL Intermitent&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">time</span><span class="p">),[</span><span class="n">column</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">HBL_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>where HBLc is the value for the continuos hydrogen bond lifetimes and HBLi is
+the value for the intermittent hydrogen bond lifetime, t0 = 0, tf = 2000 and
+dtmax = 30. In this way we create 30 windows timestep (30 values in x
+axis). The continuos hydrogen bond lifetimes should decay faster than
+intermittent.</p>
+</div>
+<div class="section" id="waterorientationalrelaxation">
+<h3>4.8.3.1.2. WaterOrientationalRelaxation<a class="headerlink" href="#waterorientationalrelaxation" title="Permalink to this headline">¶</a></h3>
+<p>Analyzing water orientational relaxation (WOR)
+<a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation" title="MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation"><code class="xref py py-class docutils literal notranslate"><span class="pre">WaterOrientationalRelaxation</span></code></a>. In this case we are analyzing “how fast”
+water molecules are rotating/changing direction. If WOR is very stable we can
+assume that water molecules are rotating/changing direction very slow, on the
+other hand, if WOR decay very fast, we can assume that water molecules are
+rotating/changing direction very fast:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">WaterOrientationalRelaxation</span> <span class="k">as</span> <span class="n">WOR</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 protein and resid 42&quot;</span>
+<span class="n">WOR_analysis</span> <span class="o">=</span> <span class="n">WOR</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">WOR_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="c1">#now we print the data ready to plot. The first two columns are WOR_OH vs t plot,</span>
+<span class="c1">#the second two columns are WOR_HH vs t graph and the third two columns are WOR_dip vs t graph</span>
+<span class="k">for</span> <span class="n">WOR_OH</span><span class="p">,</span> <span class="n">WOR_HH</span><span class="p">,</span> <span class="n">WOR_dip</span> <span class="ow">in</span> <span class="n">WOR_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{WOR_OH}</span><span class="s2"> </span><span class="si">{time}</span><span class="s2"> </span><span class="si">{WOR_HH}</span><span class="s2"> </span><span class="si">{time}</span><span class="s2"> </span><span class="si">{WOR_dip}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">WOR_OH</span><span class="o">=</span><span class="n">WOR_OH</span><span class="p">,</span> <span class="n">WOR_HH</span><span class="o">=</span><span class="n">WOR_HH</span><span class="p">,</span><span class="n">WOR_dip</span><span class="o">=</span><span class="n">WOR_dip</span><span class="p">))</span>
+      <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1">#now, if we want, we can plot our data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#WOR OH</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;WOR&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;WOR OH&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">time</span><span class="p">),[</span><span class="n">column</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">WOR_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
+<span class="c1">#WOR HH</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;WOR&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;WOR HH&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">time</span><span class="p">),[</span><span class="n">column</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">WOR_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
+<span class="c1">#WOR dip</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;WOR&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;WOR dip&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">time</span><span class="p">),[</span><span class="n">column</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">WOR_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>where t0 = 0, tf = 1000 and dtmax = 20. In this way we create 20 windows
+timesteps (20 values in the x axis), the first window is created with 1000
+timestep average (1000/1), the second window is created with 500 timestep
+average(1000/2), the third window is created with 333 timestep average (1000/3)
+and so on.</p>
+</div>
+<div class="section" id="angulardistribution">
+<h3>4.8.3.1.3. AngularDistribution<a class="headerlink" href="#angulardistribution" title="Permalink to this headline">¶</a></h3>
+<p>Analyzing angular distribution (AD) <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.AngularDistribution" title="MDAnalysis.analysis.waterdynamics.AngularDistribution"><code class="xref py py-class docutils literal notranslate"><span class="pre">AngularDistribution</span></code></a> for OH vector,
+HH vector and dipole vector. It returns a line histogram with vector
+orientation preference. A straight line in the output plot means no
+preferential orientation in water molecules. In this case we are analyzing if
+water molecules have some orientational preference, in this way we can see if
+water molecules are under an electric field or if they are interacting with
+something (residue, protein, etc):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">AngularDistribution</span> <span class="k">as</span> <span class="n">AD</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<span class="n">selection</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 6.0 (protein and (resid 42 or resid 26) )&quot;</span>
+<span class="n">bins</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">AD_analysis</span> <span class="o">=</span> <span class="n">AD</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span><span class="n">selection</span><span class="p">,</span><span class="n">bins</span><span class="p">)</span>
+<span class="n">AD_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="c1">#now we print data ready to graph. The first two columns are P(cos(theta)) vs cos(theta) for OH vector ,</span>
+<span class="c1">#the seconds two columns are P(cos(theta)) vs cos(theta) for HH vector and thirds two columns</span>
+<span class="c1">#are P(cos(theta)) vs cos(theta) for dipole vector</span>
+<span class="k">for</span> <span class="nb">bin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bins</span><span class="p">):</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{AD_analysisOH}</span><span class="s2"> </span><span class="si">{AD_analysisHH}</span><span class="s2"> </span><span class="si">{AD_analysisDip}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph0</span><span class="o">=</span><span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="nb">bin</span><span class="p">],</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph1</span><span class="o">=</span><span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="nb">bin</span><span class="p">],</span><span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph2</span><span class="o">=</span><span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="nb">bin</span><span class="p">]))</span>
+
+<span class="c1">#and if we want to graph our results</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="c1">#AD OH</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;cos theta&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P(cos theta)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;PDF cos theta for OH&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="c1">#AD HH</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;cos theta&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P(cos theta)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;PDF cos theta for HH&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">1</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="c1">#AD dip</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;cos theta&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;P(cos theta)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;PDF cos theta for dipole&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">2</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]],[</span><span class="nb">float</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">column</span> <span class="ow">in</span> <span class="n">AD_analysis</span><span class="o">.</span><span class="n">graph</span><span class="p">[</span><span class="mi">2</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>where <cite>P(cos(theta))</cite> is the angular distribution or angular probabilities.</p>
+</div>
+<div class="section" id="meansquaredisplacement">
+<h3>4.8.3.1.4. MeanSquareDisplacement<a class="headerlink" href="#meansquaredisplacement" title="Permalink to this headline">¶</a></h3>
+<p>Analyzing mean square displacement (MSD) <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement" title="MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement"><code class="xref py py-class docutils literal notranslate"><span class="pre">MeanSquareDisplacement</span></code></a> for
+water molecules. In this case we are analyzing the average distance that water
+molecules travels inside protein in XYZ direction (cylindric zone of radius
+11[nm], Zmax 4.0[nm] and Zmin -8.0[nm]). A strong rise mean a fast movement of
+water molecules, a weak rise mean slow movement of particles:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">MeanSquareDisplacement</span> <span class="k">as</span> <span class="n">MSD</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and cyzone 11.0 4.0 -8.0 protein&quot;</span>
+<span class="n">MSD_analysis</span> <span class="o">=</span> <span class="n">MSD</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">MSD_analysis</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="c1">#now we print data ready to graph. The graph</span>
+<span class="c1">#represents MSD vs t</span>
+<span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">msd</span> <span class="ow">in</span> <span class="n">MSD_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">:</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{msd}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span> <span class="n">msd</span><span class="o">=</span><span class="n">msd</span><span class="p">))</span>
+      <span class="n">time</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c1">#Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;MSD&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;MSD&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">time</span><span class="p">),</span><span class="n">MSD_analysis</span><span class="o">.</span><span class="n">timeseries</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="survivalprobability">
+<span id="sp-examples"></span><h3>4.8.3.1.5. SurvivalProbability<a class="headerlink" href="#survivalprobability" title="Permalink to this headline">¶</a></h3>
+<p>Analyzing survival probability (SP) <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SurvivalProbability</span></code></a> of molecules.
+In this case we are analyzing how long water molecules remain in a
+sphere of radius 12.3 centered in the geometrical center of resid 42 and 26.
+A slow decay of SP means a long permanence time of water molecules in
+the zone, on the other hand, a fast decay means a short permanence time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">universe</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="n">trajectory</span><span class="p">)</span>
+<span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;byres name OH2 and sphzone 12.3 (resid 42 or resid 26) &quot;</span>
+<span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">tau_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">tau_timeseries</span>
+<span class="n">sp_timeseries</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">sp_timeseries</span>
+
+<span class="c1"># print in console</span>
+<span class="k">for</span> <span class="n">tau</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">):</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{sp}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="n">sp</span><span class="p">))</span>
+
+<span class="c1"># plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Time&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;SP&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Survival Probability&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">sp_timeseries</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>One should note that the <cite>stop</cite> keyword as used in the above example has an
+<cite>exclusive</cite> behaviour, i.e. here the final frame used will be 100 not 101.
+This behaviour is aligned with <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code> but currently differs from
+other <a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a> classes, which all exhibit
+<cite>inclusive</cite> behaviour for their final frame selections.</p>
+<p>Another example applies to the situation where you work with many different “residues”.
+Here we calculate the SP of a potassium ion around each lipid in a membrane and
+average the results. In this example, if the SP analysis were run without treating each lipid
+separately, potassium ions may hop from one lipid to another and still be counted as remaining
+in the specified region. That is, the survival probability of the potassium ion around the
+entire membrane will be calculated.</p>
+<p>Note, for this example, it is advisable to use <cite>Universe(in_memory=True)</cite> to ensure that the
+simulation is not being reloaded into memory for each lipid:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.waterdynamics</span> <span class="kn">import</span> <span class="n">SurvivalProbability</span> <span class="k">as</span> <span class="n">SP</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;md.gro&quot;</span><span class="p">,</span> <span class="s2">&quot;md100ns.xtc&quot;</span><span class="p">,</span> <span class="n">in_memory</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">lipids</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s1">&#39;resname LIPIDS&#39;</span><span class="p">)</span>
+<span class="n">joined_sp_timeseries</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)]</span>
+<span class="k">for</span> <span class="n">lipid</span> <span class="ow">in</span> <span class="n">lipids</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lipid ID: </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span><span class="p">)</span>
+
+    <span class="n">select</span> <span class="o">=</span> <span class="s2">&quot;resname POTASSIUM and around 3.5 (resid </span><span class="si">%d</span><span class="s2"> and name O13 O14) &quot;</span> <span class="o">%</span> <span class="n">lipid</span><span class="o">.</span><span class="n">resid</span>
+    <span class="n">sp</span> <span class="o">=</span> <span class="n">SP</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">sp</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tau_max</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="c1"># Raw SP points for each tau:</span>
+    <span class="k">for</span> <span class="n">sps</span><span class="p">,</span> <span class="n">new_sps</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">joined_sp_timeseries</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">sp_timeseries_data</span><span class="p">):</span>
+        <span class="n">sps</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_sps</span><span class="p">)</span>
+
+<span class="c1"># average all SP datapoints</span>
+<span class="n">sp_data</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">sp</span><span class="p">)</span> <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">joined_sp_timeseries</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">tau</span><span class="p">,</span> <span class="n">sp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">sp_data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{time}</span><span class="s2"> </span><span class="si">{sp}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">tau</span><span class="p">,</span> <span class="n">sp</span><span class="o">=</span><span class="n">sp</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="output">
+<span id="id8"></span><h2>4.8.3.2. Output<a class="headerlink" href="#output" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id9">
+<h3>4.8.3.2.1. HydrogenBondLifetimes<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>Hydrogen bond lifetimes (HBL) data is returned per window timestep, which is
+stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">HydrogenBondLifetimes.timeseries</span></code> (in all the following
+descriptions, # indicates comments that are not part of the output):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span> <span class="c1"># time t0</span>
+        <span class="o">&lt;</span><span class="n">HBL_c</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">HBL_i</span><span class="o">&gt;</span>
+    <span class="p">],</span>
+    <span class="p">[</span> <span class="c1"># time t1</span>
+        <span class="o">&lt;</span><span class="n">HBL_c</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">HBL_i</span><span class="o">&gt;</span>
+    <span class="p">],</span>
+    <span class="o">...</span>
+ <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id10">
+<h3>4.8.3.2.2. WaterOrientationalRelaxation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p>Water orientational relaxation (WOR) data is returned per window timestep,
+which is stored in <code class="xref py py-attr docutils literal notranslate"><span class="pre">WaterOrientationalRelaxation.timeseries</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span> <span class="c1"># time t0</span>
+        <span class="o">&lt;</span><span class="n">WOR_OH</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">WOR_HH</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">WOR_dip</span><span class="o">&gt;</span>
+    <span class="p">],</span>
+    <span class="p">[</span> <span class="c1"># time t1</span>
+        <span class="o">&lt;</span><span class="n">WOR_OH</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">WOR_HH</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">WOR_dip</span><span class="o">&gt;</span>
+    <span class="p">],</span>
+    <span class="o">...</span>
+ <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id11">
+<h3>4.8.3.2.3. AngularDistribution<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<p>Angular distribution (AD) data is returned per vector, which is stored in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">AngularDistribution.graph</span></code>. In fact, AngularDistribution returns a
+histogram:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span> <span class="c1"># OH vector values</span>
+      <span class="c1"># the values are order in this way: &lt;x_axis  y_axis&gt;</span>
+        <span class="o">&lt;</span><span class="n">cos_theta0</span> <span class="n">ang_distr0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">cos_theta1</span> <span class="n">ang_distr1</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span>
+    <span class="p">],</span>
+    <span class="p">[</span> <span class="c1"># HH vector values</span>
+        <span class="o">&lt;</span><span class="n">cos_theta0</span> <span class="n">ang_distr0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">cos_theta1</span> <span class="n">ang_distr1</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span>
+    <span class="p">],</span>
+    <span class="p">[</span> <span class="c1"># dip vector values</span>
+       <span class="o">&lt;</span><span class="n">cos_theta0</span> <span class="n">ang_distr0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">cos_theta1</span> <span class="n">ang_distr1</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span>
+    <span class="p">],</span>
+ <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id12">
+<h3>4.8.3.2.4. MeanSquareDisplacement<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>Mean Square Displacement (MSD) data is returned in a list, which each element
+represents a MSD value in its respective window timestep. Data is stored in
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">MeanSquareDisplacement.timeseries</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+     <span class="c1">#MSD values orders by window timestep</span>
+        <span class="o">&lt;</span><span class="n">MSD_t0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">MSD_t1</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span>
+ <span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id13">
+<h3>4.8.3.2.5. SurvivalProbability<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<p>Survival Probability (SP) computes two lists: a list of taus (<code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.tau_timeseries</span></code>) and a list of
+the corresponding survival probabilities (<code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.sp_timeseries</span></code>).</p>
+<blockquote>
+<div>results = [ tau1, tau2, …, tau_n ], [ sp_tau1, sp_tau2, …, sp_tau_n]</div></blockquote>
+<p>Additionally, a list <code class="xref py py-attr docutils literal notranslate"><span class="pre">SurvivalProbability.sp_timeseries_data</span></code>, is provided which contains
+a list of all SPs calculated for each tau. This can be used to compute the distribution or time dependence of SP, etc.</p>
+</div>
+</div>
+<div class="section" id="classes">
+<h2>4.8.3.3. Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">HydrogenBondLifetimes</code><span class="sig-paren">(</span><em>universe</em>, <em>selection1</em>, <em>selection2</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#HydrogenBondLifetimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hydrogen bond lifetime analysis</p>
+<p>This is a autocorrelation function that gives the “Hydrogen Bond Lifetimes”
+(HBL) proposed by D.C. Rapaport <a class="reference internal" href="#rapaport1983" id="id14">[Rapaport1983]</a>. From this function we can
+obtain the continuous and intermittent behavior of hydrogen bonds in
+time. A fast decay in these parameters indicate a fast change in HBs
+connectivity. A slow decay indicate very stables hydrogen bonds, like in
+ice. The HBL is also know as “Hydrogen Bond Population Relaxation”
+(HBPR). In the continuos case we have:</p>
+<div class="math notranslate nohighlight">
+\[C_{HB}^c(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h'_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(h'_{ij}(t_0+\tau)=1\)</span> if there is a H-bond between a pair
+<span class="math notranslate nohighlight">\(ij\)</span> during time interval <span class="math notranslate nohighlight">\(t_0+\tau\)</span> (continuos) and
+<span class="math notranslate nohighlight">\(h'_{ij}(t_0+\tau)=0\)</span> otherwise. In the intermittent case we have:</p>
+<div class="math notranslate nohighlight">
+\[C_{HB}^i(\tau) = \frac{\sum_{ij}h_{ij}(t_0)h_{ij}(t_0+\tau)}{\sum_{ij}h_{ij}(t_0)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(h_{ij}(t_0+\tau)=1\)</span> if there is a H-bond between a pair
+<span class="math notranslate nohighlight">\(ij\)</span> at time <span class="math notranslate nohighlight">\(t_0+\tau\)</span> (intermittent) and
+<span class="math notranslate nohighlight">\(h_{ij}(t_0+\tau)=0\)</span> otherwise.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
+<li><strong>selection1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for first selection [‘byres name OH2’].
+It could be any selection available in MDAnalysis, not just water.</li>
+<li><strong>selection2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string to analize its HBL against selection1</li>
+<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
+<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
+<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>The <code class="docutils literal notranslate"><span class="pre">nproc</span></code> keyword was removed as it linked to a portion of code that
+may have failed in some cases.</p>
+</div>
+<div class="deprecated">
+<p><span class="versionmodified">Deprecated since version 1.0.1: </span><code class="docutils literal notranslate"><span class="pre">waterdynamics.HydrogenBondLifetimes</span></code> is deprecated and will be
+removed in 2.0.0. Instead, please use (available in 2.0.0)
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">MDAnalysis.analysis.hydrogenbonds.HydrogenBondAnalysis.lifetime()</span></code></p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#HydrogenBondLifetimes.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.HydrogenBondLifetimes.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze trajectory and produce timeseries</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">WaterOrientationalRelaxation</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#WaterOrientationalRelaxation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Water orientation relaxation analysis</p>
+<p>Function to evaluate the Water Orientational Relaxation proposed by Yu-ling
+Yeh and Chung-Yuan Mou [<a class="reference internal" href="#yeh1999">Yeh1999</a>]. WaterOrientationalRelaxation indicates
+“how fast” water molecules are rotating or changing direction. This is a
+time correlation function given by:</p>
+<div class="math notranslate nohighlight">
+\[C_{\hat u}(\tau)=\langle \mathit{P}_2[\mathbf{\hat{u}}(t_0)\cdot\mathbf{\hat{u}}(t_0+\tau)]\rangle\]</div>
+<p>where <span class="math notranslate nohighlight">\(P_2=(3x^2-1)/2\)</span> is the second-order Legendre polynomial and <span class="math notranslate nohighlight">\(\hat{u}\)</span> is
+a unit vector along HH, OH or dipole vector.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
+<li><strong>selection</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
+<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
+<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
+<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
+<dl class="staticmethod">
+<dt id="MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2">
+<em class="property">static </em><code class="descname">lg2</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#WaterOrientationalRelaxation.lg2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.lg2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Second Legendre polynomial</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#WaterOrientationalRelaxation.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.WaterOrientationalRelaxation.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze trajectory and produce timeseries</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.analysis.waterdynamics.AngularDistribution">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">AngularDistribution</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>bins=40</em>, <em>nproc=1</em>, <em>axis='z'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#AngularDistribution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.AngularDistribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Angular distribution function analysis</p>
+<p>The angular distribution function (AD) is defined as the distribution
+probability of the cosine of the <span class="math notranslate nohighlight">\(\theta\)</span> angle formed by the OH
+vector, HH vector or dipolar vector of water molecules and a vector
+<span class="math notranslate nohighlight">\(\hat n\)</span> parallel to chosen axis (z is the default value). The cosine
+is define as <span class="math notranslate nohighlight">\(\cos \theta = \hat u \cdot \hat n\)</span>, where <span class="math notranslate nohighlight">\(\hat
+u\)</span> is OH, HH or dipole vector.  It creates a histogram and returns a list
+of lists, see <a class="reference internal" href="#output">Output</a>. The AD is also know as Angular Probability (AP).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string to evaluate its angular distribution [‘byres name OH2’]</li>
+<li><strong>bins</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – Number of bins to create the histogram by means of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.histogram.html#numpy.histogram" title="(in NumPy v1.19)"><code class="xref py py-func docutils literal notranslate"><span class="pre">numpy.histogram()</span></code></a></li>
+<li><strong>axis</strong> (<em>{'x'</em><em>, </em><em>'y'</em><em>, </em><em>'z'}</em><em> (</em><em>optional</em><em>)</em>) – Axis to create angle with the vector (HH, OH or dipole) and calculate
+cosine theta [‘z’].</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.analysis.waterdynamics.AngularDistribution.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#AngularDistribution.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.AngularDistribution.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to evaluate the angular distribution of cos(theta)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">MeanSquareDisplacement</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>t0</em>, <em>tf</em>, <em>dtmax</em>, <em>nproc=1</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#MeanSquareDisplacement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mean square displacement analysis</p>
+<p>Function to evaluate the Mean Square Displacement (<a class="reference external" href="http://en.wikipedia.org/wiki/Mean_squared_displacement">MSD</a>). The MSD gives the
+average distance that particles travels. The MSD is given by:</p>
+<div class="math notranslate nohighlight">
+\[\langle\Delta r(t)^2\rangle = 2nDt\]</div>
+<p>where <span class="math notranslate nohighlight">\(r(t)\)</span> is the position of particle in time <span class="math notranslate nohighlight">\(t\)</span>,
+<span class="math notranslate nohighlight">\(\Delta r(t)\)</span> is the displacement after time lag <span class="math notranslate nohighlight">\(t\)</span>,
+<span class="math notranslate nohighlight">\(n\)</span> is the dimensionality, in this case <span class="math notranslate nohighlight">\(n=3\)</span>,
+<span class="math notranslate nohighlight">\(D\)</span> is the diffusion coefficient and <span class="math notranslate nohighlight">\(t\)</span> is the time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string for water [‘byres name OH2’].</li>
+<li><strong>t0</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame  where analysis begins</li>
+<li><strong>tf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – frame where analysis ends</li>
+<li><strong>dtmax</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a>) – Maximum dt size, <cite>dtmax</cite> &lt; <cite>tf</cite> or it will crash.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Changed <cite>selection</cite> keyword to <cite>select</cite></p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#MeanSquareDisplacement.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.MeanSquareDisplacement.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Analyze trajectory and produce timeseries</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.waterdynamics.</code><code class="descname">SurvivalProbability</code><span class="sig-paren">(</span><em>universe</em>, <em>select</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Survival Probability (SP) gives the probability for a group of particles to remain in a certain region.
+The SP is given by:</p>
+<div class="math notranslate nohighlight">
+\[P(\tau) = \frac1T \sum_{t=1}^T \frac{N(t,t+\tau)}{N(t)}\]</div>
+<p>where <span class="math notranslate nohighlight">\(T\)</span> is the maximum time of simulation, <span class="math notranslate nohighlight">\(\tau\)</span> is the
+timestep, <span class="math notranslate nohighlight">\(N(t)\)</span> the number of particles at time <span class="math notranslate nohighlight">\(t\)</span>, and
+<span class="math notranslate nohighlight">\(N(t, t+\tau)\)</span> is the number of particles at every frame from <span class="math notranslate nohighlight">\(t\)</span> to <cite>tau</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>universe</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe object</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a>) – Selection string; any selection is allowed. With this selection you
+define the region/zone where to analyze, e.g.: “resname SOL and around 5 (resid 10)”. See <a class="reference internal" href="#sp-examples">SP-examples</a>.</li>
+<li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – When True, prints progress and comments to the console.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Currently <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability"><code class="xref py py-class docutils literal notranslate"><span class="pre">SurvivalProbability</span></code></a> is the only on in
+<a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a> to support an <cite>exclusive</cite>
+behaviour (i.e. similar to the current behaviour of <code class="xref py py-class docutils literal notranslate"><span class="pre">AnalysisBase</span></code>
+to the <cite>stop</cite> keyword passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a>. Unlike
+other <a class="reference internal" href="#module-MDAnalysis.analysis.waterdynamics" title="MDAnalysis.analysis.waterdynamics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.waterdynamics</span></code></a> final frame definitions
+which are <cite>inclusive</cite>.</p>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.11.0.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>Using the MDAnalysis.lib.correlations.py to carry out the intermittency
+and autocorrelation calculations.
+Changed <cite>selection</cite> keyword to <cite>select</cite>.
+Removed support for the deprecated <cite>t0</cite>, <cite>tf</cite>, and <cite>dtmax</cite> keywords.
+These should instead be passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a> as
+the <cite>start</cite>, <cite>stop</cite>, and <cite>tau_max</cite> keywords respectively.
+The <cite>stop</cite> keyword as passed to <a class="reference internal" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run"><code class="xref py py-meth docutils literal notranslate"><span class="pre">SurvivalProbability.run()</span></code></a> has now
+changed behaviour and will act in an <cite>exclusive</cite> manner (instead of it’s
+previous <cite>inclusive</cite> behaviour),</p>
+</div>
+<dl class="method">
+<dt id="MDAnalysis.analysis.waterdynamics.SurvivalProbability.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>tau_max=20</em>, <em>start=None</em>, <em>stop=None</em>, <em>step=None</em>, <em>residues=False</em>, <em>intermittency=0</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/waterdynamics.html#SurvivalProbability.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.waterdynamics.SurvivalProbability.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes and returns the Survival Probability (SP) timeseries</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the first frame to be analysed, Default: None
+(first frame).</li>
+<li><strong>stop</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Zero-based index of the last frame to be analysed (exclusive),
+Default: None (last frame).</li>
+<li><strong>step</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Jump every <cite>step</cite>-th frame. This is compatible but independant of
+the taus used, and it is good to consider using the  <cite>step</cite> equal
+to <cite>tau_max</cite> to remove the overlap. Note that <cite>step</cite> and <cite>tau_max</cite>
+work consistently with intermittency. Default: None
+(use every frame).</li>
+<li><strong>tau_max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – Survival probability is calculated for the range
+1 &lt;= <cite>tau</cite> &lt;= <cite>tau_max</cite>.</li>
+<li><strong>residues</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – If true, the analysis will be carried out on the residues
+(.resids) rather than on atom (.ids). A single atom is sufficient
+to classify the residue as within the distance.</li>
+<li><strong>intermittency</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em>, </em><em>optional</em>) – The maximum number of consecutive frames for which an atom can
+leave but be counted as present if it returns at the next frame.
+An intermittency of <cite>0</cite> is equivalent to a continuous survival
+probability, which does not allow for the leaving and returning of
+atoms. For example, for <cite>intermittency=2</cite>, any given atom may leave
+a region of interest for up to two consecutive frames yet be
+treated as being present at all frames. The default is continuous
+(0).</li>
+<li><strong>verbose</strong> (<em>Boolean</em><em>, </em><em>optional</em>) – Print the progress to the console.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>tau_timeseries</strong> (<em>list</em>) – tau from 1 to <cite>tau_max</cite>. Saved in the field tau_timeseries.</li>
+<li><strong>sp_timeseries</strong> (<em>list</em>) – survival probability for each value of <cite>tau</cite>. Saved in the field
+sp_timeseries.</li>
+<li><strong>sp_timeseries_data</strong> (<em>list</em>) – raw datapoints from which the average is taken (sp_timeseries).
+Time dependancy and distribution can be extracted.</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 1.0.0: </span>To math other analysis methods, the <cite>stop</cite> keyword is now exclusive
+rather than inclusive.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="diffusionmap.html" class="btn btn-neutral float-right" title="4.9.1. Diffusion map — MDAnalysis.analysis.diffusionmap" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="lineardensity.html" class="btn btn-neutral float-left" title="4.8.2. Linear Density — MDAnalysis.analysis.lineardensity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

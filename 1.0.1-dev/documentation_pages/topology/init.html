@@ -1,0 +1,654 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>5.1. Topology readers — MDAnalysis.topology &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="5.2. CRD topology parser" href="CRDParser.html" />
+    <link rel="prev" title="5. Topology modules" href="../topology_modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../index.html">
+          
+
+          
+            
+            <img src="../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../topology_modules.html">5. Topology modules</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.1. Topology readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#developer-notes">5.1.1. Developer Notes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#atoms">5.1.1.1. atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bonds">5.1.1.2. bonds</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#bondorder">5.1.1.3. bondorder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#angles">5.1.1.4. angles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dihedrals">5.1.1.5. dihedrals</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#impropers">5.1.1.6. impropers</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="CRDParser.html">5.2. CRD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DLPolyParser.html">5.3. DL Poly format Topology Readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="DMSParser.html">5.4. DESRES Molecular Structure file format topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="FHIAIMSParser.html">5.5. FHI-AIMS Topology Parser — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topolgy.FHIAIMSParser</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="GMSParser.html">5.6. GAMESS Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GROParser.html">5.7. GRO topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="GSDParser.html">5.8. GSD topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="HoomdXMLParser.html">5.9. HOOMD XML topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ITPParser.html">5.10. ITP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMMPSParser.html">5.11. LAMMPSParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MinimalParser.html">5.12. Minimal topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MMTFParser.html">5.13. MMTF Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MOL2Parser.html">5.14. MOL2 file format — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.MOL2</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBParser.html">5.15. PDB Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ExtendedPDBParser.html">5.16. Extended PDB topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PDBQTParser.html">5.17. PDBQT topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PQRParser.html">5.18. PQR topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PSFParser.html">5.19. PSF topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TOPParser.html">5.20. AMBER PRMTOP topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TPRParser.html">5.21. Gromacs portable run input TPR format parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="TXYZParser.html">5.22. TXYZ topology parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="XYZParser.html">5.23. XYZ Topology Parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">5.24. Base topology reader classes — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.base</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.html">5.25. Common functions for topology building — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.core</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="guessers.html">5.26. Guessing unknown Topology information — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology.guessers</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="tables.html">5.27. MDAnalysis topology tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpr_util.html">5.28. Utility functions for the TPR topology parser</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../topology_modules.html">5. Topology modules</a> &raquo;</li>
+        
+      <li>5.1. Topology readers — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code></li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/documentation_pages/topology/init.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <span class="target" id="module-MDAnalysis.topology.__init__"></span><div class="section" id="topology-readers-mdanalysis-topology">
+<h1>5.1. Topology readers — <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology</span></code><a class="headerlink" href="#topology-readers-mdanalysis-topology" title="Permalink to this headline">¶</a></h1>
+<p>This submodule contains the topology readers. A topology file supplies the list
+of atoms in the system, their connectivity and possibly additional information
+such as B-factors, partial charges, etc. The details depend on the file format
+and not every topology file provides all (or even any) additional data. This
+data is made accessible through AtomGroup properties.</p>
+<p>As a minimum, all topology parsers will provide atom ids, atom types, masses,
+resids, resnums and segids as well as assigning all atoms to residues and all
+residues to segments.  For systems without residues and segments, this results
+in there being a single residue and segment to which all atoms belong. Often
+when data is not provided by a file, it will be guessed based on other data in
+the file.  In the event that this happens, a UserWarning will always be issued.</p>
+<p>The following table lists the currently supported topology formats along with
+the attributes they provide.</p>
+<span id="supported-topology-formats"></span><table border="1" class="docutils" id="id19">
+<caption><span class="caption-text">Table of Supported Topology Formats</span><a class="headerlink" href="#id19" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="17%" />
+<col width="10%" />
+<col width="17%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">extension</th>
+<th class="head">attributes</th>
+<th class="head">remarks</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>CHARMM/XPLOR PSF</td>
+<td>psf</td>
+<td>resnames,
+names, types,
+charges,
+bonds, angles,
+dihedrals,
+impropers</td>
+<td><a class="reference external" href="https://www.charmm.org/charmm/">CHARMM</a>/XPLOR/<a class="reference external" href="http://www.ks.uiuc.edu/Research/namd/">NAMD</a> topology format;
+<a class="reference internal" href="PSFParser.html#module-MDAnalysis.topology.PSFParser" title="MDAnalysis.topology.PSFParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.PSFParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>CHARMM CARD <a class="footnote-reference" href="#a" id="id1">[1]</a></td>
+<td>crd</td>
+<td>names,
+tempfactors,
+resnames,</td>
+<td>“CARD” coordinate output from <a class="reference external" href="https://www.charmm.org/charmm/">CHARMM</a>; deals with
+either standard or EXTended format;
+<a class="reference internal" href="CRDParser.html#module-MDAnalysis.topology.CRDParser" title="MDAnalysis.topology.CRDParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.CRDParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Brookhaven <a class="footnote-reference" href="#a" id="id2">[1]</a></td>
+<td>pdb/ent</td>
+<td>names, bonds,
+resids, resnums,
+types,
+chainids,
+occupancies,
+bfactors,
+resids, icodes,
+resnames,
+segids,</td>
+<td>a simplified PDB format (as used in MD simulations)
+is read by default</td>
+</tr>
+<tr class="row-odd"><td>XPDB <a class="footnote-reference" href="#a" id="id3">[1]</a></td>
+<td>pdb</td>
+<td>As PDB except
+icodes</td>
+<td>Extended PDB format as used by e.g., <a class="reference external" href="http://www.ks.uiuc.edu/Research/namd/">NAMD</a>
+(can use 5-digit residue numbers). To use, specify
+the format “XPBD” explicitly:
+<code class="docutils literal notranslate"><span class="pre">Universe(...,</span> <span class="pre">topology_format=&quot;XPDB&quot;)</span></code>.
+Module <a class="reference internal" href="../coordinates/PDB.html#module-MDAnalysis.coordinates.PDB" title="MDAnalysis.coordinates.PDB"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.PDB</span></code></a></td>
+</tr>
+<tr class="row-even"><td>PQR <a class="footnote-reference" href="#a" id="id4">[1]</a></td>
+<td>pqr</td>
+<td>names, charges,
+types,
+radii, resids,
+resnames, icodes,
+segids</td>
+<td>PDB-like but whitespace-separated files with charge
+and radius information as used by, e.g., <a class="reference external" href="https://apbs-pdb2pqr.readthedocs.io/en/latest/apbs/">APBS</a>.
+<a class="reference internal" href="PQRParser.html#module-MDAnalysis.topology.PQRParser" title="MDAnalysis.topology.PQRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.PQRParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>PDBQT <a class="footnote-reference" href="#a" id="id5">[1]</a></td>
+<td>pdbqt</td>
+<td>names, types,
+altLocs, charges,
+resnames,
+resids,
+icodes,
+occupancies,
+tempfactors,
+segids,</td>
+<td>file format used by <a class="reference external" href="http://autodock.scripps.edu/">AutoDock</a> with atom types and
+partial charges. Module:
+<a class="reference internal" href="PDBQTParser.html#module-MDAnalysis.topology.PDBQTParser" title="MDAnalysis.topology.PDBQTParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.PDBQTParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>GROMOS96 <a class="footnote-reference" href="#a" id="id6">[1]</a></td>
+<td>gro</td>
+<td>names, resids,
+resnames,</td>
+<td>GROMOS96 coordinate file (used e.g., by <a class="reference external" href="http://www.gromacs.org/">Gromacs</a>)
+<a class="reference internal" href="GROParser.html#module-MDAnalysis.topology.GROParser" title="MDAnalysis.topology.GROParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.GROParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>Amber</td>
+<td>top,
+prmtop,
+parm7</td>
+<td>names, charges
+type_indices,
+types,
+resnames,</td>
+<td>simple <a class="reference external" href="http://ambermd.org/">Amber</a> format reader (only supports a subset
+of flags);
+<a class="reference internal" href="TOPParser.html#module-MDAnalysis.topology.TOPParser" title="MDAnalysis.topology.TOPParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TOPParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>DESRES <a class="footnote-reference" href="#a" id="id7">[1]</a></td>
+<td>dms</td>
+<td>names, numbers,
+masses, charges,
+chainids, resids,
+resnames, segids,
+radii,</td>
+<td>DESRES molecular structure reader (only supports
+the atom and bond records) as used by <a class="reference external" href="https://www.deshawresearch.com/resources_desmond.html">Desmond</a> and Anton;
+<a class="reference internal" href="DMSParser.html#module-MDAnalysis.topology.DMSParser" title="MDAnalysis.topology.DMSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DMSParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>TPR <a class="footnote-reference" href="#b" id="id8">[2]</a></td>
+<td>tpr</td>
+<td>names, types,
+resids, resnames,
+charges, bonds,
+masses, moltypes,
+molnums</td>
+<td><a class="reference external" href="http://www.gromacs.org/">Gromacs</a> portable run input reader (limited
+experimental support for some of the more recent
+versions of the file format);
+<a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TPRParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>ITP</td>
+<td>itp</td>
+<td>names, types,
+resids, resnames,
+charges, bonds,
+masses, segids,
+moltypes,
+chargegroups</td>
+<td><a class="reference external" href="http://www.gromacs.org/">Gromacs</a> include topology file;
+<a class="reference internal" href="ITPParser.html#module-MDAnalysis.topology.ITPParser" title="MDAnalysis.topology.ITPParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.ITPParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>MOL2 <a class="footnote-reference" href="#a" id="id9">[1]</a></td>
+<td>mol2</td>
+<td>ids, names,
+types, resids,
+charges, bonds,
+resnames,</td>
+<td>Tripos MOL2 molecular structure format;
+<a class="reference internal" href="MOL2Parser.html#module-MDAnalysis.topology.MOL2Parser" title="MDAnalysis.topology.MOL2Parser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.MOL2Parser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>LAMMPS <a class="footnote-reference" href="#a" id="id10">[1]</a></td>
+<td>data</td>
+<td>ids, types,
+masses, charges,
+resids, bonds,
+angles, dihedrals</td>
+<td><a class="reference external" href="https://lammps.sandia.gov/">LAMMPS</a> Data file parser
+<a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>LAMMPS <a class="footnote-reference" href="#a" id="id11">[1]</a></td>
+<td>lammpsdump</td>
+<td>id, masses</td>
+<td><a class="reference external" href="https://lammps.sandia.gov/">LAMMPS</a> ascii dump file reader
+<a class="reference internal" href="LAMMPSParser.html#module-MDAnalysis.topology.LAMMPSParser" title="MDAnalysis.topology.LAMMPSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.LAMMPSParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>XYZ <a class="footnote-reference" href="#a" id="id12">[1]</a></td>
+<td>xyz</td>
+<td>names</td>
+<td>XYZ File Parser.  Reads only the labels from atoms
+and constructs minimal topology data.
+<a class="reference internal" href="XYZParser.html#module-MDAnalysis.topology.XYZParser" title="MDAnalysis.topology.XYZParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.XYZParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>TXYZ <a class="footnote-reference" href="#a" id="id13">[1]</a></td>
+<td>txyz,
+arc</td>
+<td>names, atomids,
+masses, types,
+bonds</td>
+<td><a class="reference external" href="https://dasher.wustl.edu/tinker/">Tinker</a> XYZ File Parser. Reads atom labels, numbers
+and connectivity; masses are guessed from atoms names.
+<a class="reference internal" href="TXYZParser.html#module-MDAnalysis.topology.TXYZParser" title="MDAnalysis.topology.TXYZParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.TXYZParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>GAMESS <a class="footnote-reference" href="#a" id="id14">[1]</a></td>
+<td>gms,
+log</td>
+<td>names,
+atomic charges,</td>
+<td><a class="reference external" href="https://www.msg.chem.iastate.edu/gamess/">GAMESS</a> output parser. Read only atoms of assembly
+section (atom, elems and coords) and construct
+topology.
+<a class="reference internal" href="GMSParser.html#module-MDAnalysis.topology.GMSParser" title="MDAnalysis.topology.GMSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.GMSParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>DL_POLY <a class="footnote-reference" href="#a" id="id15">[1]</a></td>
+<td>config,
+history</td>
+<td>ids, names</td>
+<td><a class="reference external" href="https://www.scd.stfc.ac.uk/Pages/DL_POLY.aspx">DL_POLY</a> CONFIG or HISTORY file.  Reads only the
+atom names. If atoms are written out of order, will
+correct the order.
+<a class="reference internal" href="DLPolyParser.html#module-MDAnalysis.topology.DLPolyParser" title="MDAnalysis.topology.DLPolyParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.DLPolyParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>Hoomd XML</td>
+<td>xml</td>
+<td>types, charges,
+radii, masses
+bonds, angles,
+dihedrals</td>
+<td><a class="reference external" href="http://codeblue.umich.edu/hoomd-blue/doc/page_xml_file_format.html">HOOMD XML</a> topology file.  Reads atom types,
+masses, and charges if possible. Also reads bonds,
+angles, and dihedrals.
+<a class="reference internal" href="HoomdXMLParser.html#module-MDAnalysis.topology.HoomdXMLParser" title="MDAnalysis.topology.HoomdXMLParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.HoomdXMLParser</span></code></a></td>
+</tr>
+<tr class="row-odd"><td>GSD <a class="footnote-reference" href="#a" id="id16">[1]</a></td>
+<td>gsd</td>
+<td>types, charges,
+radii, masses
+bonds, angles,
+dihedrals</td>
+<td><a class="reference external" href="http://glotzerlab.engin.umich.edu/hoomd-blue/">HOOMD</a> GSD topology file.  Reads atom types,
+masses, and charges if possible. Also reads bonds,
+angles, and dihedrals.
+<a class="reference internal" href="GSDParser.html#module-MDAnalysis.topology.GSDParser" title="MDAnalysis.topology.GSDParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.GSDParser</span></code></a></td>
+</tr>
+<tr class="row-even"><td>MMTF <a class="footnote-reference" href="#a" id="id17">[1]</a></td>
+<td>mmtf</td>
+<td>altLocs,
+bfactors, bonds,
+charges, masses,
+names,
+occupancies,
+types, icodes,
+resnames, resids,
+segids, models</td>
+<td><a class="reference external" href="https://mmtf.rcsb.org/">Macromolecular Transmission Format (MMTF)</a>. An
+efficient compact format for biomolecular
+structures.</td>
+</tr>
+<tr class="row-odd"><td>FHIAIMS <a class="footnote-reference" href="#a" id="id18">[1]</a></td>
+<td>in</td>
+<td>names</td>
+<td><a class="reference external" href="https://aimsclub.fhi-berlin.mpg.de/">FHI-AIMS</a> File Parser.  Reads only the labels from
+atoms and constructs minimal topology data.
+<a class="reference internal" href="FHIAIMSParser.html#module-MDAnalysis.topology.FHIAIMSParser" title="MDAnalysis.topology.FHIAIMSParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.topology.FHIAIMSParser</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id2">2</a>, <a class="fn-backref" href="#id3">3</a>, <a class="fn-backref" href="#id4">4</a>, <a class="fn-backref" href="#id5">5</a>, <a class="fn-backref" href="#id6">6</a>, <a class="fn-backref" href="#id7">7</a>, <a class="fn-backref" href="#id9">8</a>, <a class="fn-backref" href="#id10">9</a>, <a class="fn-backref" href="#id11">10</a>, <a class="fn-backref" href="#id12">11</a>, <a class="fn-backref" href="#id13">12</a>, <a class="fn-backref" href="#id14">13</a>, <a class="fn-backref" href="#id15">14</a>, <a class="fn-backref" href="#id16">15</a>, <a class="fn-backref" href="#id17">16</a>, <a class="fn-backref" href="#id18">17</a>)</em> This format can also be used to provide <em>coordinates</em> so that
+it is possible to create a full
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Universe</span></code></a> by simply providing
+a file of this format as the sole argument to
+<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Universe</span></code></a>: <code class="docutils literal notranslate"><span class="pre">u</span> <span class="pre">=</span>
+<span class="pre">Universe(filename)</span></code></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id8">[2]</a></td><td>The Gromacs TPR format contains coordinate information but
+parsing coordinates from a TPR file is currently not implemented
+in <a class="reference internal" href="TPRParser.html#module-MDAnalysis.topology.TPRParser" title="MDAnalysis.topology.TPRParser"><code class="xref py py-mod docutils literal notranslate"><span class="pre">TPRParser</span></code></a>.</td></tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><a class="reference internal" href="../coordinates_modules.html#coordinates"><span class="std std-ref">Coordinates modules</span></a> with the <a class="reference internal" href="../coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a></p>
+</div>
+<div class="section" id="developer-notes">
+<span id="topology-parsers-developer-notes"></span><h2>5.1.1. Developer Notes<a class="headerlink" href="#developer-notes" title="Permalink to this headline">¶</a></h2>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 0.8.</span></p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 0.16.0: </span>The new array-based topology system completely replaced the old
+system that was based on a list of Atom instances.</p>
+</div>
+<p>Topology information consists of data that do not change over time,
+i.e. information that is the same for all time steps of a
+trajectory. This includes</p>
+<ul class="simple">
+<li>identity of atoms (name, type, number, partial charge, …) and to
+which residue and segment they belong; atoms are identified in
+MDAnalysis by their <code class="xref py py-attr docutils literal notranslate"><span class="pre">index</span></code>,
+an integer number starting at 0 and incremented in the order of
+atoms found in the topology.</li>
+<li>bonds (pairs of atoms)</li>
+<li>angles (triplets of atoms)</li>
+<li>dihedral angles (quadruplets of atoms) — proper and improper
+dihedrals should be treated separately</li>
+</ul>
+<p>Topology readers are generally called “parsers” in MDAnalysis (for
+historical reasons and in order to distinguish them from coordinate
+“readers”). All parsers are derived from
+<a class="reference internal" href="base.html#MDAnalysis.topology.base.TopologyReaderBase" title="MDAnalysis.topology.base.TopologyReaderBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.topology.base.TopologyReaderBase</span></code></a> and have a
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">parse()</span></code> method that
+returns a <a class="reference internal" href="../core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.topology.Topology</span></code></a> instance.</p>
+<div class="section" id="atoms">
+<h3>5.1.1.1. atoms<a class="headerlink" href="#atoms" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>atoms</strong> appear to the user as an array of
+<a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.Atom" title="MDAnalysis.core.groups.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">Atom</span></code></a> instances. However, under the
+hood this is essentially only an array of atom indices that are used
+to index the various components of the topology database
+<a class="reference internal" href="../core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a>. The parser needs to
+initialize the <a class="reference internal" href="../core/topology.html#MDAnalysis.core.topology.Topology" title="MDAnalysis.core.topology.Topology"><code class="xref py py-class docutils literal notranslate"><span class="pre">Topology</span></code></a> with the
+data read from the topology file.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="../core_modules.html#topology-system-label"><span class="std std-ref">Topology system</span></a></p>
+</div>
+</div>
+<div class="section" id="bonds">
+<h3>5.1.1.2. bonds<a class="headerlink" href="#bonds" title="Permalink to this headline">¶</a></h3>
+<p><strong>Bonds</strong> are represented as a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each tuple
+contains two atom numbers, which indicate the atoms between which the
+bond is formed. Only one of the two permutations is stored, typically
+the one with the lower atom number first.</p>
+</div>
+<div class="section" id="bondorder">
+<h3>5.1.1.3. bondorder<a class="headerlink" href="#bondorder" title="Permalink to this headline">¶</a></h3>
+<p>Some <strong>bonds</strong> have additional information called <strong>order</strong>. When available
+this is stored in a dictionary of format {bondtuple:order}.  This extra
+information is then passed to Bond initialisation in u._init_bonds()</p>
+</div>
+<div class="section" id="angles">
+<h3>5.1.1.4. angles<a class="headerlink" href="#angles" title="Permalink to this headline">¶</a></h3>
+<p><strong>Angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
+tuple contains three atom numbers.  The second of these numbers
+represents the apex of the angle.</p>
+</div>
+<div class="section" id="dihedrals">
+<h3>5.1.1.5. dihedrals<a class="headerlink" href="#dihedrals" title="Permalink to this headline">¶</a></h3>
+<p><strong>Proper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
+tuple contains four atom numbers. The angle of the torsion
+is defined by the angle between the planes formed by atoms 1, 2, and 3,
+and 2, 3, and 4.</p>
+</div>
+<div class="section" id="impropers">
+<h3>5.1.1.6. impropers<a class="headerlink" href="#impropers" title="Permalink to this headline">¶</a></h3>
+<p><strong>Improper dihedral angles</strong> are represented by a <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a> of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a>. Each
+tuple contains four atom numbers.  The angle of the improper torsion
+is again defined by the angle between the planes formed by atoms 1, 2, and 3,
+and 2, 3, and 4.  Improper dihedrals differ from regular dihedrals as the
+four atoms need not be sequentially bonded, and are instead often all bonded
+to the second atom.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="CRDParser.html" class="btn btn-neutral float-right" title="5.2. CRD topology parser" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../topology_modules.html" class="btn btn-neutral float-left" title="5. Topology modules" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

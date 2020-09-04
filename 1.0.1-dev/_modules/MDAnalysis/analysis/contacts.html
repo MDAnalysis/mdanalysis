@@ -1,0 +1,751 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.contacts &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.contacts</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.contacts</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Native contacts analysis --- :mod:`MDAnalysis.analysis.contacts`</span>
+<span class="sd">================================================================</span>
+
+<span class="sd">This module contains classes to analyze native contacts *Q* over a</span>
+<span class="sd">trajectory. Native contacts of a conformation are contacts that exist</span>
+<span class="sd">in a reference structure and in the conformation. Contacts in the</span>
+<span class="sd">reference structure are always defined as being closer then a distance</span>
+<span class="sd">`radius`. The fraction of native contacts for a conformation can be</span>
+<span class="sd">calculated in different ways. This module supports 3 different metrics</span>
+<span class="sd">listed below, as well as custom metrics.</span>
+
+<span class="sd">1. *Hard Cut*: To count as a contact the atoms *i* and *j* have to be at least</span>
+<span class="sd">   as close as in the reference structure.</span>
+
+<span class="sd">2. *Soft Cut*: The atom pair *i* and *j* is assigned based on a soft potential</span>
+<span class="sd">   that is 1 if the distance is 0, 1/2 if the distance is the same as in</span>
+<span class="sd">   the reference and 0 for large distances. For the exact definition of the</span>
+<span class="sd">   potential and parameters have a look at function :func:`soft_cut_q`.</span>
+
+<span class="sd">3. *Radius Cut*: To count as a contact the atoms *i* and *j* cannot be further</span>
+<span class="sd">   apart than some distance `radius`.</span>
+
+<span class="sd">The &quot;fraction of native contacts&quot; *Q(t)* is a number between 0 and 1 and</span>
+<span class="sd">calculated as the total number of native contacts for a given time frame</span>
+<span class="sd">divided by the total number of contacts in the reference structure.</span>
+
+
+<span class="sd">Examples for contact analysis</span>
+<span class="sd">-----------------------------</span>
+
+<span class="sd">One-dimensional contact analysis</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">As an example we analyze the opening (&quot;unzipping&quot;) of salt bridges</span>
+<span class="sd">when the AdK enzyme opens up; this is one of the example trajectories</span>
+<span class="sd">in MDAnalysis. ::</span>
+
+<span class="sd">    import numpy as np</span>
+<span class="sd">    import matplotlib.pyplot as plt</span>
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    from MDAnalysis.analysis import contacts</span>
+<span class="sd">    from MDAnalysis.tests.datafiles import PSF,DCD</span>
+<span class="sd">    # example trajectory (transition of AdK from closed to open)</span>
+<span class="sd">    u = mda.Universe(PSF,DCD)</span>
+<span class="sd">    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
+<span class="sd">    # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
+<span class="sd">    # problem before using this for real work.</span>
+<span class="sd">    sel_basic = &quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
+<span class="sd">    sel_acidic = &quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+<span class="sd">    # reference groups (first frame of the trajectory, but you could also use a</span>
+<span class="sd">    # separate PDB, eg crystal structure)</span>
+<span class="sd">    acidic = u.select_atoms(sel_acidic)</span>
+<span class="sd">    basic = u.select_atoms(sel_basic)</span>
+<span class="sd">    # set up analysis of native contacts (&quot;salt bridges&quot;); salt bridges have a</span>
+<span class="sd">    # distance &lt;6 A</span>
+<span class="sd">    ca1 = contacts.Contacts(u, select=(sel_acidic, sel_basic),</span>
+<span class="sd">                            refgroup=(acidic, basic), radius=6.0)</span>
+<span class="sd">    # iterate through trajectory and perform analysis of &quot;native contacts&quot; Q</span>
+<span class="sd">    ca1.run()</span>
+<span class="sd">    # print number of averave contacts</span>
+<span class="sd">    average_contacts = np.mean(ca1.timeseries[:, 1])</span>
+<span class="sd">    print(&#39;average contacts = {}&#39;.format(average_contacts))</span>
+<span class="sd">    # plot time series q(t)</span>
+<span class="sd">    fig, ax = plt.subplots()</span>
+<span class="sd">    ax.plot(ca1.timeseries[:, 0], ca1.timeseries[:, 1])</span>
+<span class="sd">    ax.set(xlabel=&#39;frame&#39;, ylabel=&#39;fraction of native contacts&#39;,</span>
+<span class="sd">           title=&#39;Native Contacts, average = {:.2f}&#39;.format(average_contacts))</span>
+<span class="sd">    fig.show()</span>
+
+
+<span class="sd">The first graph shows that when AdK opens, about 20% of the salt</span>
+<span class="sd">bridges that existed in the closed state disappear when the enzyme</span>
+<span class="sd">opens. They open in a step-wise fashion (made more clear by the movie</span>
+<span class="sd">`AdK_zipper_cartoon.avi`_).</span>
+
+<span class="sd">.. _`AdK_zipper_cartoon.avi`:</span>
+<span class="sd">   http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2803350/bin/NIHMS150766-supplement-03.avi</span>
+
+<span class="sd">.. rubric:: Notes</span>
+
+<span class="sd">Suggested cutoff distances for different simulations</span>
+
+<span class="sd">* For all-atom simulations, cutoff = 4.5 Å</span>
+<span class="sd">* For coarse-grained simulations, cutoff = 6.0 Å</span>
+
+
+<span class="sd">Two-dimensional contact analysis (q1-q2)</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">Analyze a single DIMS transition of AdK between its closed and open</span>
+<span class="sd">conformation and plot the trajectory projected on q1-q2 [Franklin2007]_ ::</span>
+
+
+<span class="sd">    import MDAnalysis as mda</span>
+<span class="sd">    from MDAnalysis.analysis import contacts</span>
+<span class="sd">    from MDAnalysisTests.datafiles import PSF, DCD</span>
+<span class="sd">    u = mda.Universe(PSF, DCD)</span>
+<span class="sd">    q1q2 = contacts.q1q2(u, &#39;name CA&#39;, radius=8)</span>
+<span class="sd">    q1q2.run()</span>
+
+<span class="sd">    f, ax = plt.subplots(1, 2, figsize=plt.figaspect(0.5))</span>
+<span class="sd">    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 1], label=&#39;q1&#39;)</span>
+<span class="sd">    ax[0].plot(q1q2.timeseries[:, 0], q1q2.timeseries[:, 2], label=&#39;q2&#39;)</span>
+<span class="sd">    ax[0].legend(loc=&#39;best&#39;)</span>
+<span class="sd">    ax[1].plot(q1q2.timeseries[:, 1], q1q2.timeseries[:, 2], &#39;.-&#39;)</span>
+<span class="sd">    f.show()</span>
+
+<span class="sd">Compare the resulting pathway to the `MinActionPath result for AdK`_</span>
+<span class="sd">[Franklin2007]_.</span>
+
+<span class="sd">.. _MinActionPath result for AdK:</span>
+<span class="sd">   http://lorentz.dynstr.pasteur.fr/joel/adenylate.php</span>
+
+
+<span class="sd">Writing your own contact analysis</span>
+<span class="sd">~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</span>
+
+<span class="sd">The :class:`Contacts` class has been designed to be extensible for your own</span>
+<span class="sd">analysis. As an example we will analyze when the acidic and basic groups of AdK</span>
+<span class="sd">are in contact which each other; this means that at least one of the contacts</span>
+<span class="sd">formed in the reference is closer than 2.5 Å.</span>
+
+<span class="sd">For this we define a new function to determine if any contact is closer than</span>
+<span class="sd">2.5 Å; this function must implement the API prescribed by :class:`Contacts`::</span>
+
+<span class="sd">    def is_any_closer(r, r0, dist=2.5):</span>
+<span class="sd">        return np.any(r &lt; dist)</span>
+
+<span class="sd">The first two parameters `r` and `r0` are provided by :class:`Contacts` when it</span>
+<span class="sd">calls :func:`is_any_closer` while the others can be passed as keyword args</span>
+<span class="sd">using the `kwargs` parameter in :class:`Contacts`.</span>
+
+<span class="sd">Next we are creating an instance of the :class:`Contacts` class and use the</span>
+<span class="sd">:func:`is_any_closer` function as an argument to `method` and run the analysis::</span>
+
+<span class="sd">    # crude definition of salt bridges as contacts between NH/NZ in ARG/LYS and</span>
+<span class="sd">    # OE*/OD* in ASP/GLU. You might want to think a little bit harder about the</span>
+<span class="sd">    # problem before using this for real work.</span>
+<span class="sd">    sel_basic = &quot;(resname ARG LYS) and (name NH* NZ)&quot;</span>
+<span class="sd">    sel_acidic = &quot;(resname ASP GLU) and (name OE* OD*)&quot;</span>
+
+<span class="sd">    # reference groups (first frame of the trajectory, but you could also use a</span>
+<span class="sd">    # separate PDB, eg crystal structure)</span>
+<span class="sd">    acidic = u.select_atoms(sel_acidic)</span>
+<span class="sd">    basic = u.select_atoms(sel_basic)</span>
+
+<span class="sd">    nc = contacts.Contacts(u, select=(sel_acidic, sel_basic),</span>
+<span class="sd">                           method=is_any_closer,</span>
+<span class="sd">                           refgroup=(acidic, basic), kwargs={&#39;dist&#39;: 2.5})</span>
+<span class="sd">    nc.run()</span>
+
+<span class="sd">    bound = nc.timeseries[:, 1]</span>
+<span class="sd">    frames = nc.timeseries[:, 0]</span>
+
+<span class="sd">    f, ax = plt.subplots()</span>
+
+<span class="sd">    ax.plot(frames, bound, &#39;.&#39;)</span>
+<span class="sd">    ax.set(xlabel=&#39;frame&#39;, ylabel=&#39;is Bound&#39;,</span>
+<span class="sd">           ylim=(-0.1, 1.1))</span>
+
+<span class="sd">    f.show()</span>
+
+
+<span class="sd">Functions</span>
+<span class="sd">---------</span>
+
+<span class="sd">.. autofunction:: hard_cut_q</span>
+<span class="sd">.. autofunction:: soft_cut_q</span>
+<span class="sd">.. autofunction:: radius_cut_q</span>
+<span class="sd">.. autofunction:: contact_matrix</span>
+<span class="sd">.. autofunction:: q1q2</span>
+
+<span class="sd">Classes</span>
+<span class="sd">-------</span>
+
+<span class="sd">.. autoclass:: Contacts</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">zip</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">bz2</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">import</span> <span class="nn">MDAnalysis.lib.distances</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">openany</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis.distances</span> <span class="kn">import</span> <span class="n">distance_array</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core.groups</span> <span class="kn">import</span> <span class="n">AtomGroup</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.contacts&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="soft_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.soft_cut_q">[docs]</a><span class="k">def</span> <span class="nf">soft_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">lambda_constant</span><span class="o">=</span><span class="mf">1.8</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a soft cut off</span>
+
+<span class="sd">    The native contact function is defined as [Best2013]_</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        Q(r, r_0) = \frac{1}{1 + e^{\beta (r - \lambda r_0)}}</span>
+
+<span class="sd">    Reasonable values for different simulation types are</span>
+
+<span class="sd">    - *All Atom*: `lambda_constant = 1.8` (unitless)</span>
+<span class="sd">    - *Coarse Grained*: `lambda_constant = 1.5` (unitless)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r: array</span>
+<span class="sd">      Contact distances at time t</span>
+<span class="sd">    r0: array</span>
+<span class="sd">      Contact distances at time t=0, reference distances</span>
+<span class="sd">    beta: float (default 5.0 Angstrom)</span>
+<span class="sd">      Softness of the switching function</span>
+<span class="sd">    lambda_constant: float (default 1.8, unitless)</span>
+<span class="sd">      Reference distance tolerance</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Q : float</span>
+<span class="sd">      fraction of native contacts</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [Best2013] RB Best, G Hummer, and WA Eaton, &quot;Native contacts determine protein</span>
+<span class="sd">       folding mechanisms in atomistic simulations&quot; _PNAS_ **110** (2013),</span>
+<span class="sd">       17874–17879. doi: `10.1073/pnas.1311599110</span>
+<span class="sd">       &lt;http://doi.org/10.1073/pnas.1311599110&gt;`_.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">r0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">beta</span><span class="o">*</span><span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">lambda_constant</span> <span class="o">*</span> <span class="n">r0</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hard_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.hard_cut_q">[docs]</a><span class="k">def</span> <span class="nf">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate fraction of native contacts *Q* for a hard cut off.</span>
+
+<span class="sd">    The cutoff can either be a float or a :class:`~numpy.ndarray` of the same</span>
+<span class="sd">    shape as `r`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r : ndarray</span>
+<span class="sd">        distance matrix</span>
+<span class="sd">    cutoff : ndarray | float</span>
+<span class="sd">        cut off value to count distances. Can either be a float of a ndarray of</span>
+<span class="sd">        the same size as distances</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Q : float</span>
+<span class="sd">        fraction of contacts</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="n">cutoff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">cutoff</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">&lt;=</span> <span class="n">cutoff</span>
+    <span class="k">return</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="n">r</span><span class="o">.</span><span class="n">size</span></div>
+
+
+<div class="viewcode-block" id="radius_cut_q"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.radius_cut_q">[docs]</a><span class="k">def</span> <span class="nf">radius_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;calculate native contacts *Q* based on the single distance radius.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    r : ndarray</span>
+<span class="sd">        distance array between atoms</span>
+<span class="sd">    r0 : ndarray</span>
+<span class="sd">        unused to fullfill :class:`Contacts` API</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        Distance between atoms at which a contact is formed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Q : float</span>
+<span class="sd">        fraction of contacts</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [Franklin2007] Franklin, J., Koehl, P., Doniach, S., &amp; Delarue,</span>
+<span class="sd">       M. (2007).  MinActionPath: Maximum likelihood trajectory for large-scale</span>
+<span class="sd">       structural transitions in a coarse-grained locally harmonic energy</span>
+<span class="sd">       landscape.  Nucleic Acids Research, 35(SUPPL.2), 477–482.</span>
+<span class="sd">       doi: `10.1093/nar/gkm342 &lt;http://doi.org/10.1093/nar/gkm342&gt;`_</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hard_cut_q</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">radius</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="contact_matrix"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.contact_matrix">[docs]</a><span class="k">def</span> <span class="nf">contact_matrix</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;calculate contacts from distance matrix</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    d : array-like</span>
+<span class="sd">        distance matrix</span>
+<span class="sd">    radius : float</span>
+<span class="sd">        distance below which a contact is formed.</span>
+<span class="sd">    out: array (optional)</span>
+<span class="sd">        If `out` is supplied as a pre-allocated array of the correct</span>
+<span class="sd">        shape then it is filled instead of allocating a new one in</span>
+<span class="sd">        order to increase performance.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    contacts : ndarray</span>
+<span class="sd">        boolean array of formed contacts</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">out</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">radius</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&lt;=</span> <span class="n">radius</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="Contacts"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.Contacts">[docs]</a><span class="k">class</span> <span class="nc">Contacts</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Calculate contacts based observables.</span>
+
+<span class="sd">    The standard methods used in this class calculate the fraction of native</span>
+<span class="sd">    contacts *Q* from a trajectory.</span>
+
+
+<span class="sd">    .. rubric:: Contact API</span>
+
+<span class="sd">    By defining your own method it is possible to calculate other observables</span>
+<span class="sd">    that only depend on the distances and a possible reference distance. The</span>
+<span class="sd">    **Contact API** prescribes that this method must be a function with call</span>
+<span class="sd">    signature ``func(r, r0, **kwargs)`` and must be provided in the keyword</span>
+<span class="sd">    argument `method`.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    timeseries : list</span>
+<span class="sd">        list containing *Q* for all refgroup pairs and analyzed frames</span>
+
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       ``save()`` method has been removed. Use ``np.savetxt()`` on</span>
+<span class="sd">       :attr:`Contacts.timeseries` instead.</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">        added ``pbc`` attribute to calculate distances using PBC.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">refgroup</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;hard_cut&quot;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">,</span>
+                 <span class="n">pbc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">basekwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : Universe</span>
+<span class="sd">            trajectory</span>
+<span class="sd">        select : tuple(string, string)</span>
+<span class="sd">            two contacting groups that change over time</span>
+<span class="sd">        refgroup : tuple(AtomGroup, AtomGroup)</span>
+<span class="sd">            two contacting atomgroups in their reference conformation. This</span>
+<span class="sd">            can also be a list of tuples containing different atom groups</span>
+<span class="sd">        radius : float, optional (4.5 Angstroms)</span>
+<span class="sd">            radius within which contacts exist in refgroup</span>
+<span class="sd">        method : string | callable (optional)</span>
+<span class="sd">            Can either be one of ``[&#39;hard_cut&#39; , &#39;soft_cut&#39;, &#39;radius_cut&#39;]`` or a callable</span>
+<span class="sd">            with call signature ``func(r, r0, **kwargs)`` (the &quot;Contacts API&quot;).</span>
+<span class="sd">        pbc : bool (optional)</span>
+<span class="sd">            Uses periodic boundary conditions to calculate distances if set to ``True``; the</span>
+<span class="sd">            default is ``True``.</span>
+<span class="sd">        kwargs : dict, optional</span>
+<span class="sd">            dictionary of additional kwargs passed to `method`. Check</span>
+<span class="sd">            respective functions for reasonable values.</span>
+<span class="sd">        verbose : bool (optional)</span>
+<span class="sd">             Show detailed progress of the calculation if set to ``True``; the</span>
+<span class="sd">             default is ``False``.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">u</span> <span class="o">=</span> <span class="n">u</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Contacts</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="o">**</span><span class="n">basekwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">fraction_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;hard_cut&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">hard_cut_q</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;soft_cut&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">soft_cut_q</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;radius_cut&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="n">radius_cut_q</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">callable</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;method has to be callable&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span> <span class="o">=</span> <span class="n">method</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">select</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grA</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grB</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span> <span class="o">=</span> <span class="n">pbc</span>
+        
+        <span class="c1"># contacts formed in reference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r0</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1">#get dimension of box if pbc set to True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pbc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ts</span><span class="p">:</span> <span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">ts</span><span class="p">:</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">refgroup</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">AtomGroup</span><span class="p">):</span>
+            <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="o">=</span> <span class="n">refgroup</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">refA</span><span class="p">,</span> <span class="n">refB</span> <span class="ow">in</span> <span class="n">refgroup</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">distance_array</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="n">refB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                                                <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="n">refA</span><span class="o">.</span><span class="n">universe</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">contact_matrix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">radius</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="o">.</span><span class="n">frame</span>
+        
+        <span class="c1"># compute distance array for a frame</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">distance_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grA</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grB</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                            <span class="n">box</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_box</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ts</span><span class="p">))</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">initial_contacts</span><span class="p">,</span> <span class="n">r0</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_contacts</span><span class="p">,</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="n">r0</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="c1"># select only the contacts that were formed in the reference state</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="n">initial_contacts</span><span class="p">]</span>
+            <span class="n">r0</span> <span class="o">=</span> <span class="n">r0</span><span class="p">[</span><span class="n">initial_contacts</span><span class="p">]</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fraction_contacts</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">r0</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fraction_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timeseries</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_frame_index</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span></div>
+
+
+<span class="k">def</span> <span class="nf">_new_selections</span><span class="p">(</span><span class="n">u_orig</span><span class="p">,</span> <span class="n">selections</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;create stand alone AGs from selections at frame&quot;&quot;&quot;</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">u_orig</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="n">u_orig</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">frame</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">selections</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="q1q2"><a class="viewcode-back" href="../../../documentation_pages/analysis/contacts.html#MDAnalysis.analysis.contacts.q1q2">[docs]</a><span class="k">def</span> <span class="nf">q1q2</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">4.5</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Perform a q1-q2 analysis.</span>
+
+<span class="sd">    Compares native contacts between the starting structure and final structure</span>
+<span class="sd">    of a trajectory [Franklin2007]_.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    u : Universe</span>
+<span class="sd">        Universe with a trajectory</span>
+<span class="sd">    select : string, optional</span>
+<span class="sd">        atoms to do analysis on</span>
+<span class="sd">    radius : float, optional</span>
+<span class="sd">        distance at which contact is formed</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    contacts : :class:`Contacts`</span>
+<span class="sd">        Contact Analysis that is set up for a q1-q2 analysis</span>
+
+<span class="sd">    </span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       Changed `selection` keyword to `select`</span>
+<span class="sd">       Support for setting ``start``, ``stop``, and ``step`` has been removed.</span>
+<span class="sd">       These should now be directly passed to :meth:`Contacts.run`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">selection</span> <span class="o">=</span> <span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">select</span><span class="p">)</span>
+    <span class="n">first_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">last_frame_refs</span> <span class="o">=</span> <span class="n">_new_selections</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Contacts</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">selection</span><span class="p">,</span>
+                    <span class="p">(</span><span class="n">first_frame_refs</span><span class="p">,</span> <span class="n">last_frame_refs</span><span class="p">),</span>
+                    <span class="n">radius</span><span class="o">=</span><span class="n">radius</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">&#39;radius_cut&#39;</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

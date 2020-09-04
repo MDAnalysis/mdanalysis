@@ -1,0 +1,1184 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.auxiliary.base &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.auxiliary.base</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.auxiliary.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Auxiliary Readers --- :mod:`MDAnalysis.auxiliary.base`</span>
+<span class="sd">======================================================</span>
+
+<span class="sd">Base classes for deriving all auxiliary data readers. See the API in :mod:`MDAnalysis.auxiliary.__init__`.</span>
+
+<span class="sd">.. autoclass:: AuxStep</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: AuxReader</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autoclass:: AuxFileReader</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numbers</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">asiterable</span><span class="p">,</span> <span class="n">anyopen</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_AUXREADERS</span>
+
+
+<span class="k">class</span> <span class="nc">_AuxReaderMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="c1"># auto register on class creation</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">):</span>
+        <span class="nb">type</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">classdict</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fmt</span> <span class="o">=</span> <span class="n">asiterable</span><span class="p">(</span><span class="n">classdict</span><span class="p">[</span><span class="s1">&#39;format&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fmt</span><span class="p">:</span>
+                <span class="n">_AUXREADERS</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+
+
+<div class="viewcode-block" id="AuxStep"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxStep">[docs]</a><span class="k">class</span> <span class="nc">AuxStep</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for auxiliary timesteps.</span>
+
+<span class="sd">    Stores the auxiliary data for the current auxiliary step. On creation,</span>
+<span class="sd">    ``step`` is set to -1.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    dt : float, optional</span>
+<span class="sd">        Change in time between auxiliary steps (in ps). If not specified, will</span>
+<span class="sd">        attempt to determine from auxiliary data; otherwise defaults to 1 ps.</span>
+<span class="sd">        Ignored if ``constant_dt`` is False.</span>
+<span class="sd">    initial_time : float, optional</span>
+<span class="sd">        Time of first auxiliary step (in ps). If not specified, will attempt to</span>
+<span class="sd">        determine from auxiliary data; otherwise defaults to 0 ps. Ignored if</span>
+<span class="sd">        ``constant_dt`` is False.</span>
+<span class="sd">    time_selector: optional</span>
+<span class="sd">        Key to select &#39;time&#39; value from the full set of data read for each</span>
+<span class="sd">        step, if time selection is enabled; type will vary depending on the</span>
+<span class="sd">        auxiliary data format (see individual AuxReader documentation). If</span>
+<span class="sd">        ``None`` (default value), time is instead calculated as: ``time = step</span>
+<span class="sd">        * dt + initial_time``</span>
+<span class="sd">    data_selector: optional</span>
+<span class="sd">        Key(s) to select auxiliary data values of interest from the full set of</span>
+<span class="sd">        data read for each step, if data selection is enabled by the reader;</span>
+<span class="sd">        type will vary depending on the auxiliary data format (see individual</span>
+<span class="sd">        AuxReader documentation).</span>
+<span class="sd">        If ``None`` (default value), the full set of data is returned.</span>
+<span class="sd">    constant_dt : bool, optional</span>
+<span class="sd">        (Default: True) Set to False if ``dt`` is not constant</span>
+<span class="sd">        throughout the auxiliary data set, in which case a valid</span>
+<span class="sd">        ``time_selector`` must be provided.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    step : int</span>
+<span class="sd">        Number of the current auxiliary step (0-based).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">initial_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data_selector</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">constant_dt</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_time</span> <span class="o">=</span> <span class="n">initial_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="n">dt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_constant_dt</span> <span class="o">=</span> <span class="n">constant_dt</span>
+        <span class="c1"># check for valid values when assigning _time/data_selector will fail</span>
+        <span class="c1"># here as we don&#39;t have and _data yet, so set _time/data_selector_ directly;</span>
+        <span class="c1"># if invalid, will catch later</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_time_selector_</span> <span class="o">=</span> <span class="n">time_selector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_selector_</span> <span class="o">=</span> <span class="n">data_selector</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Time in ps of current auxiliary step (as float).</span>
+
+<span class="sd">        Read from the set of auxiliary data read each step if time selection</span>
+<span class="sd">        is enabled and a valid ``time_selector`` is specified; otherwise</span>
+<span class="sd">        calculated as ``step * dt + initial_time``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_time_selector</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constant_dt</span><span class="p">:</span>
+            <span class="c1"># default to calculting time...</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dt</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initial_time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;If dt is not constant, must have a valid &quot;</span>
+                             <span class="s2">&quot;time selector&quot;</span><span class="p">)</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Auxiliary values of interest for the current step (as ndarray).</span>
+
+<span class="sd">        Read from the full set of data read for each step if data selection is</span>
+<span class="sd">        enabled and a valid ``data_selector`` is specified; otherwise</span>
+<span class="sd">        defaults to the full set of data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data_selector</span><span class="p">)</span>
+        <span class="c1"># default to full set of data...</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; &#39;Key&#39; to select time from the full set of data read in each step.</span>
+
+<span class="sd">        Will be passed to ``_select_time()``, defined separately for each</span>
+<span class="sd">        auxiliary format, when returning the time of the current step.</span>
+<span class="sd">        Format will depend on the auxiliary format. e.g. for the XVGReader,</span>
+<span class="sd">        this is an index and ``_select_time()`` returns the value in that column</span>
+<span class="sd">        of the current step data.</span>
+
+<span class="sd">        Defaults to &#39;None&#39; if time selection is not enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_select_time</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support time selection. Reverting to &quot;</span>
+                          <span class="s2">&quot;default&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_time_selector_</span>
+
+    <span class="nd">@_time_selector</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="c1"># check we have a select_time method</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_time</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support time selection&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                                       <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check *new* is valid before setting; _select_time should raise</span>
+            <span class="c1"># an error if not</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_time_selector_</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">_data_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; &#39;Key&#39; to select values of interest from full set of auxiliary data.</span>
+<span class="sd">        These are the values that will be stored in ``data`` (and</span>
+<span class="sd">        ``frame_data`` and ``frame_rep``).</span>
+
+<span class="sd">        Will be passed to ``_select_data()``, defined separately for each</span>
+<span class="sd">        auxiliary format, when returning the data of interest for the current</span>
+<span class="sd">        step (``data``). Format will depend on the auxiliary format; e.g.</span>
+<span class="sd">        for the XVGReader, this is a list of indices and `_select_data()` returns</span>
+<span class="sd">        the value(s) in those columns of the current step data.</span>
+
+<span class="sd">        Defaults to &#39;None&#39; if data selection is not enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support data selection. Reverting to &quot;</span>
+                          <span class="s2">&quot;default&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_selector_</span>
+
+    <span class="nd">@_data_selector</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">_data_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="c1"># check we have a select_data method</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">select</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_data</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> does not support data selection&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># check *new* is valid before setting; _select_data should raise an</span>
+            <span class="c1"># error if not</span>
+            <span class="n">select</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data_selector_</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="k">def</span> <span class="nf">_empty_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Create an &#39;empty&#39; ``data``-like placeholder.</span>
+
+<span class="sd">        Returns an ndarray in the format of ``data`` with all values set to</span>
+<span class="sd">        np.nan; to use at the &#39;representative value&#39; when no auxiliary steps</span>
+<span class="sd">        are assigned to a trajectory timestep/within the cutoff.</span>
+
+<span class="sd">        Default behaviour here works when ``data`` is a ndarray of floats. May</span>
+<span class="sd">        need to overwrite in individual format&#39;s AuxSteps.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="AuxReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader">[docs]</a><span class="k">class</span> <span class="nc">AuxReader</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">with_metaclass</span><span class="p">(</span><span class="n">_AuxReaderMeta</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot; Base class for auxiliary readers.</span>
+
+<span class="sd">    Allows iteration over a set of data from a trajectory, additional</span>
+<span class="sd">    (&#39;auxiliary&#39;) to the regular positions/velocities/etc. This auxiliary</span>
+<span class="sd">    data may be stored in e.g. an array or a separate file.</span>
+
+<span class="sd">    See the :ref:`Auxiliary API` for more on use.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    auxname : str, optional</span>
+<span class="sd">        Name for auxiliary data. When added to a trajectory, the representative</span>
+<span class="sd">        auxiliary value(s) for the timestep may be accessed as ``ts.aux.auxname``</span>
+<span class="sd">        or ``ts.aux[&#39;auxname&#39;]``.</span>
+<span class="sd">    represent_ts_as : str</span>
+<span class="sd">        Method to use to calculate representative value of auxiliary data for a</span>
+<span class="sd">        trajectory timestep. See :func:`calc_representative` for valid options.</span>
+<span class="sd">    cutoff : float, optional</span>
+<span class="sd">        Auxiliary steps further from the trajectory timestep than *cutoff*</span>
+<span class="sd">        (in ps) will be ignored when calculating representative values. If -1</span>
+<span class="sd">        (default), all auxiliary steps assigned to that timestep will be used.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">        Options to be passed to :class:`~AuxStep`</span>
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    auxstep :</span>
+<span class="sd">       :class:`~AuxStep` object containing data for current step.</span>
+<span class="sd">    frame_data : dict</span>
+<span class="sd">        Dictionary containing ``data`` from each auxiliary step assigned to the</span>
+<span class="sd">        current trajectory timestep, indexed by the difference in time between</span>
+<span class="sd">        the step and trajectory timestep (i.e. ``auxstep.time - ts.time``; in ps)</span>
+<span class="sd">    frame_rep : ndarray</span>
+<span class="sd">        Representative value(s) of auxiliary data for current trajectory timestep.</span>
+
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    Auxiliary data are assumed to be time ordered and contain no duplicates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_Auxstep</span> <span class="o">=</span> <span class="n">AuxStep</span>
+    <span class="c1"># update when add new options</span>
+    <span class="n">represent_options</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span> <span class="s1">&#39;average&#39;</span><span class="p">]</span>
+
+    <span class="c1"># list of attributes required to recreate the auxiliary</span>
+    <span class="n">required_attrs</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;represent_ts_as&#39;</span><span class="p">,</span> <span class="s1">&#39;cutoff&#39;</span><span class="p">,</span> <span class="s1">&#39;dt&#39;</span><span class="p">,</span> <span class="s1">&#39;initial_time&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;time_selector&#39;</span><span class="p">,</span> <span class="s1">&#39;data_selector&#39;</span><span class="p">,</span> <span class="s1">&#39;constant_dt&#39;</span><span class="p">,</span> <span class="s1">&#39;auxname&#39;</span><span class="p">,</span>
+                      <span class="s1">&#39;format&#39;</span><span class="p">,</span> <span class="s1">&#39;_auxdata&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">represent_ts_as</span><span class="o">=</span><span class="s1">&#39;closest&#39;</span><span class="p">,</span> <span class="n">auxname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># allow auxname to be optional for when using reader separate from</span>
+        <span class="c1"># trajectory.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxname</span> <span class="o">=</span> <span class="n">auxname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">represent_ts_as</span> <span class="o">=</span> <span class="n">represent_ts_as</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">=</span> <span class="n">cutoff</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Auxstep</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span>
+
+        <span class="c1"># if dt is constant and auxiliary data includes time, calculate</span>
+        <span class="c1"># initial time and dt</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant_dt</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_initial_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Copy not implemented for AuxReader&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Number of steps in auxiliary data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span>
+
+<div class="viewcode-block" id="AuxReader.next"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move to next step of auxiliary data. &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Iterate over all auxiliary steps. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">_restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reset back to start; calling next() should read first step. &quot;&quot;&quot;</span>
+        <span class="c1"># Overwrite as appropriate</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+<div class="viewcode-block" id="AuxReader.rewind"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.rewind">[docs]</a>    <span class="k">def</span> <span class="nf">rewind</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return to and read first step. &quot;&quot;&quot;</span>
+        <span class="c1"># Overwrite as appropriate</span>
+        <span class="c1">#  could also use _go_to_step(0)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_read_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move to next step and update auxstep.</span>
+
+<span class="sd">        Should return the AuxStep instance corresponding to the next step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Define in each auxiliary reader</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;BUG: Override _read_next_timestep() in auxiliary reader!&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AuxReader.update_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.update_ts">[docs]</a>    <span class="k">def</span> <span class="nf">update_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to and update the trajectory</span>
+<span class="sd">        timestep *ts*.</span>
+
+<span class="sd">        Calls :meth:`read_ts`, then updates *ts* with the representative value.</span>
+<span class="sd">        ``auxname`` must be set; the representative value will be accessible in</span>
+<span class="sd">        *ts* as ``ts.aux.auxname`` or ``ts.aux[&#39;auxname&#39;]``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">            The trajectory timestep for which corresponding auxiliary data is</span>
+<span class="sd">            to be read and updated.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        :class:`~MDAnalysis.coordinates.base.Timestep`</span>
+<span class="sd">            *ts* with the representative auxiliary</span>
+<span class="sd">            value in ``ts.aux`` be updated appropriately.</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If ``auxname`` is not set.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :meth:`read_ts`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxname</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Auxiliary name not set, cannot set representative &quot;</span>
+                             <span class="s2">&quot;value in timestep. Name auxiliary or use read_ts &quot;</span>
+                             <span class="s2">&quot;instead&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">aux</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
+
+<div class="viewcode-block" id="AuxReader.read_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.read_ts">[docs]</a>    <span class="k">def</span> <span class="nf">read_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Read auxiliary steps corresponding to the trajectory timestep *ts*.</span>
+
+<span class="sd">        Read the auxiliary steps &#39;assigned&#39; to *ts* (the steps that are within</span>
+<span class="sd">        ``ts.dt/2`` of of the trajectory timestep/frame - ie. closer to *ts*</span>
+<span class="sd">        than either the preceding or following frame). Then calculate a</span>
+<span class="sd">        &#39;representative value&#39; for the timestep from the data in each of these</span>
+<span class="sd">        auxiliary steps.</span>
+
+<span class="sd">        To update *ts* with the representative value, use ``update_ts`` instead.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">            The trajectory timestep for which corresponding auxiliary data is</span>
+<span class="sd">            to be read.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :meth:`update_ts`</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The auxiliary reader will end up positioned at the last step assigned</span>
+<span class="sd">        to the trajectory frame or, if the frame includes no auxiliary steps,</span>
+<span class="sd">        (as when auxiliary data are less frequent), the most recent auxiliary</span>
+<span class="sd">        step before the frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure our auxiliary step starts at the right point (just before</span>
+        <span class="c1"># the frame being read): the current step should be assigned to a</span>
+        <span class="c1"># previous frame, and the next step to either the frame being read or a</span>
+        <span class="c1"># following frame. Move to right position if not.</span>
+        <span class="n">frame_for_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+        <span class="n">frame_for_next_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">frame_for_step</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">frame_for_next_step</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># self.step is the last auxiliary step in memory.</span>
+                <span class="k">if</span> <span class="n">frame_for_step</span> <span class="o">&gt;=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">move_to_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="p">(</span><span class="n">frame_for_step</span> <span class="o">&lt;</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span> <span class="o">&lt;=</span> <span class="n">frame_for_next_step</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">move_to_ts</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_frame_data</span><span class="p">()</span> <span class="c1"># clear previous frame data</span>
+        <span class="c1"># read through all the steps &#39;assigned&#39; to ts.frame + add to frame_data</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts</span><span class="p">)</span> <span class="o">==</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_step</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_step_to_frame_data</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_rep</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_representative</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="AuxReader.step_to_frame"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.step_to_frame">[docs]</a>    <span class="k">def</span> <span class="nf">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">return_time_diff</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate closest trajectory frame for auxiliary step *step*.</span>
+
+<span class="sd">        Calculated given dt, time and frame from *ts*::</span>
+
+<span class="sd">            time_frame_0 = ts.time - ts.frame*ts.dt   # time at frame 0</span>
+
+<span class="sd">            frame = floor((step_to_time(step) - time_frame_0 + ts.dt/2)/ts.dt))</span>
+
+<span class="sd">        The difference in time between the step and the calculated frame can</span>
+<span class="sd">        also optionally be returned with *return_time_diff*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        step : int</span>
+<span class="sd">            Number of the auxiliary step to calculate closest trajectory frame</span>
+<span class="sd">            for.</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">            (Any) timestep from the trajectory the calculated frame number is to</span>
+<span class="sd">            correspond to.</span>
+<span class="sd">        return_time_diff : bool, optional</span>
+<span class="sd">            (Default: False) Additionally return the time difference between</span>
+<span class="sd">            *step* and returned frame.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        frame_index : int or None</span>
+<span class="sd">            Number of the trajectory frame closest (in time) to the given</span>
+<span class="sd">            auxiliary step. If the step index is out of range for the auxiliary</span>
+<span class="sd">            data, ``None`` is returned instead.</span>
+<span class="sd">        time_diff : float (optional)</span>
+<span class="sd">            Difference in time between *step* and *frame_index*.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Assumes trajectory dt is consant.</span>
+<span class="sd">        The returned frame number may be out of range for the trajectory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">time_frame_0</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="o">*</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>  <span class="c1"># assumes ts.dt is constant</span>
+        <span class="n">time_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_time</span><span class="p">(</span><span class="n">step</span><span class="p">)</span>
+        <span class="n">frame_index</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">time_step</span><span class="o">-</span><span class="n">time_frame_0</span><span class="o">+</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="o">/</span><span class="mf">2.</span><span class="p">)</span><span class="o">/</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">return_time_diff</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">frame_index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">time_frame</span> <span class="o">=</span> <span class="n">time_frame_0</span> <span class="o">+</span> <span class="n">frame_index</span><span class="o">*</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span>
+            <span class="n">time_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">time_frame</span> <span class="o">-</span> <span class="n">time_step</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">frame_index</span><span class="p">,</span> <span class="n">time_diff</span></div>
+
+<div class="viewcode-block" id="AuxReader.move_to_ts"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.move_to_ts">[docs]</a>    <span class="k">def</span> <span class="nf">move_to_ts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Position auxiliary reader just before trajectory timestep *ts*.</span>
+
+<span class="sd">        Calling ``next()`` should read the first auxiliary step &#39;assigned&#39; to</span>
+<span class="sd">        the trajectory timestep *ts* or, if no auxiliary steps are</span>
+<span class="sd">        assigned to that timestep (as in the case of less frequent auxiliary</span>
+<span class="sd">        data), the first auxiliary step after *ts*.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">            The trajectory timestep before which the auxiliary reader is to</span>
+<span class="sd">            be positioned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># figure out what step we want to end up at</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant_dt</span><span class="p">:</span>
+            <span class="c1"># if dt constant, calculate from dt/offset/etc</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="o">-</span><span class="n">ts</span><span class="o">.</span><span class="n">dt</span><span class="o">/</span><span class="mi">2</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">))</span>
+            <span class="c1"># if we&#39;re out of range of the number of steps, reset back</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># otherwise, go through steps till we find the right one</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">ts</span><span class="o">.</span><span class="n">frame</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="c1"># we want the step before this</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span>
+        <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_restart</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">step</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AuxReader.next_nonempty_frame"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.next_nonempty_frame">[docs]</a>    <span class="k">def</span> <span class="nf">next_nonempty_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Find the next trajectory frame for which a representative auxiliary</span>
+<span class="sd">        value can be calculated.</span>
+
+<span class="sd">        That is, the next trajectory frame to which one or more auxiliary steps</span>
+<span class="sd">        are assigned and fall within the cutoff.</span>
+
+<span class="sd">        Starts looking from the current step time. If the end of the auxiliary</span>
+<span class="sd">        data is reached before a trajectory frame is found, None is returned.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ts : :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
+<span class="sd">            Any timestep from the trajectory for which the next &#39;non-empty&#39;</span>
+<span class="sd">            frame is to be found.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int</span>
+<span class="sd">            Index of the next auxiliary-containing frame in the trajectory.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        The returned index may be out of range for the trajectory.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span>
+        <span class="k">while</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">next_frame</span><span class="p">,</span> <span class="n">time_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to_frame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span>
+                                                       <span class="n">return_time_diff</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">time_diff</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">:</span>
+                <span class="c1"># &#39;representative values&#39; will be NaN; check next step</span>
+                <span class="n">step</span> <span class="o">=</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">next_frame</span>
+        <span class="c1"># we ran out of auxiliary steps...</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the AuxStep corresponding to the *i*-th auxiliary step(s)</span>
+<span class="sd">        (0-based). Negative numbers are counted from the end.</span>
+
+<span class="sd">        *i* may be an integer (in which case the corresponding AuxStep is</span>
+<span class="sd">        returned) or a list of integers or slice (in which case an iterator is</span>
+<span class="sd">        returned)::</span>
+
+<span class="sd">             step_10 = aux_reader[10]</span>
+
+<span class="sd">        will move to step 10 of the auxiliary and return the :class:`AuxStep`.</span>
+<span class="sd">        By using a slice/list, we can iterated over specified steps in the</span>
+<span class="sd">        auxiliary, e.g. when performing analysis ::</span>
+
+<span class="sd">             for auxstep in aux_reader[100:200]:   # analyse only steps 100 to 200</span>
+<span class="sd">                 run_analysis(auxstep)</span>
+
+<span class="sd">             for auxstep in aux_reader[::10]       # analyse every 10th step</span>
+<span class="sd">                 run_analysis(auxstep)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_index</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_list_iter</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_check_index</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">i</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
+            <span class="c1"># default start to first frame (ie. 0)</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_index</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+            <span class="c1"># default stop to after last frame (i.e. n_steps)</span>
+            <span class="c1"># n_steps is a valid stop index but will fail _check_index;</span>
+            <span class="c1"># deal with separately</span>
+            <span class="n">stop</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span>
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_index</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                    <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">)</span>
+            <span class="n">step</span> <span class="o">=</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span> <span class="ow">or</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">)</span> <span class="ow">or</span> <span class="n">step</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Step must be positive integer&quot;</span><span class="p">)</span> <span class="c1"># allow -ve?</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">&gt;</span> <span class="n">stop</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;Stop frame is lower than start frame&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slice_iter</span><span class="p">(</span><span class="nb">slice</span><span class="p">(</span><span class="n">start</span><span class="p">,</span><span class="n">stop</span><span class="p">,</span><span class="n">step</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Index must be integer, list of integers or slice&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_check_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Step indices must be integers&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> is out of range of auxiliary (num. steps &quot;</span>
+                             <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="nf">_list_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">i</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_slice_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">i</span><span class="o">.</span><span class="n">step</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_go_to_step</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_go_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move to and read i-th auxiliary step. &quot;&quot;&quot;</span>
+        <span class="c1"># Need to define in each auxiliary reader</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;BUG: Override _go_to_step() in auxiliary reader!&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_reset_frame_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">_add_step_to_frame_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts_time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Update ``frame_data`` with values for the current step.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ts_time : float</span>
+<span class="sd">            the time of the timestep the current step is being &#39;added to&#39;. Used</span>
+<span class="sd">            to calculate difference in time between current step and timestep.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">time_diff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">-</span> <span class="n">ts_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span><span class="p">[</span><span class="n">time_diff</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">data</span>
+
+<div class="viewcode-block" id="AuxReader.calc_representative"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.calc_representative">[docs]</a>    <span class="k">def</span> <span class="nf">calc_representative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate representative auxiliary value(s) from the data in</span>
+<span class="sd">        *frame_data*.</span>
+
+<span class="sd">        Currently implemented options for calculating representative value are:</span>
+
+<span class="sd">          * `closest`: default; the value(s) from the step closest to in time</span>
+<span class="sd">            to the trajectory timestep</span>
+
+<span class="sd">          * `average`: average of the value(s) from steps &#39;assigned&#39; to the</span>
+<span class="sd">            trajectory timestep.</span>
+
+<span class="sd">        Additionally, if ``cutoff`` is specified, only steps within this time</span>
+<span class="sd">        of the trajectory timestep are considered in calculating the</span>
+<span class="sd">        representative.</span>
+
+<span class="sd">        If no auxiliary steps were assigned to the timestep, or none fall</span>
+<span class="sd">        within the cutoff, representative values are set to ``np.nan``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ndarray</span>
+<span class="sd">            Array of auxiliary value(s) &#39;representative&#39; for the timestep.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">cutoff_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cutoff_data</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">val</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">frame_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                           <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cutoff</span><span class="p">}</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cutoff_data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># no steps are &#39;assigned&#39; to this trajectory frame, so return</span>
+            <span class="c1"># values of ``np.nan``</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_empty_data</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_ts_as</span> <span class="o">==</span> <span class="s1">&#39;closest&#39;</span><span class="p">:</span>
+            <span class="n">min_diff</span> <span class="o">=</span> <span class="nb">min</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cutoff_data</span><span class="p">])</span>
+            <span class="c1"># we don&#39;t know the original sign, and might have two equally-spaced</span>
+            <span class="c1"># steps; check the earlier time first</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cutoff_data</span><span class="p">[</span><span class="o">-</span><span class="n">min_diff</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">cutoff_data</span><span class="p">[</span><span class="n">min_diff</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_ts_as</span> <span class="o">==</span> <span class="s1">&#39;average&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">val</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">cutoff_data</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+                            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Overwrite as appropriate</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_steps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Total number of steps in the auxiliary data. &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count_n_steps</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_steps</span>
+
+<div class="viewcode-block" id="AuxReader.step_to_time"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.step_to_time">[docs]</a>    <span class="k">def</span> <span class="nf">step_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return time of auxiliary step *i*.</span>
+
+<span class="sd">        Calculated using ``dt`` and ``initial_time`` if ``constant_dt`` is True;</span>
+<span class="sd">        otherwise from the list of times as read from the auxiliary data for</span>
+<span class="sd">        each step.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">            Index (0-based) of step to return time for</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        time : float</span>
+<span class="sd">            Time (in ps) of step *i*</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            When *i* not in valid range</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid step index (total number of &quot;</span>
+                             <span class="s2">&quot;steps is </span><span class="si">{1}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant_dt</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">i</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_time</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_all_times</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">represent_ts_as</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Method by which &#39;representative&#39; timestep values of auxiliary data</span>
+<span class="sd">        will be calculated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_represent_ts_as</span>
+
+    <span class="nd">@represent_ts_as</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">represent_ts_as</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">new</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_options</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{0}</span><span class="s2"> is not a valid option for calculating &quot;</span>
+                             <span class="s2">&quot;representative value(s). Enabled options are: &quot;</span>
+                             <span class="s2">&quot;</span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">new</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">represent_options</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_represent_ts_as</span> <span class="o">=</span> <span class="n">new</span>
+
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<div class="viewcode-block" id="AuxReader.get_description"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.get_description">[docs]</a>    <span class="k">def</span> <span class="nf">get_description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Get the values of the parameters necessary for replicating the</span>
+<span class="sd">        AuxReader.</span>
+
+<span class="sd">        An AuxReader can be duplicated using</span>
+<span class="sd">        :func:`~MDAnalysis.auxiliary.core.auxreader`::</span>
+
+<span class="sd">            description = original_aux.get_description()</span>
+<span class="sd">            new_aux = MDAnalysis.auxiliary.auxreader(**description)</span>
+
+<span class="sd">        The resulting dictionary may also be passed directly to</span>
+<span class="sd">        :meth:`~MDAnalysis.coordinates.base.ProtoReader.add_auxiliary` to</span>
+<span class="sd">        reload an auxiliary into a trajectory::</span>
+
+<span class="sd">             trajectory.add_auxiliary(**description)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict</span>
+<span class="sd">            Key-word arguments and values that can be used to replicate the</span>
+<span class="sd">            AuxReader.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="p">{</span><span class="n">attr</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+                       <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_attrs</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">description</span></div>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_attrs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of the current auxiliary step (as stored in ``auxstep``;</span>
+<span class="sd">        0-based).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Time of current auxiliary step (as stored in ``auxstep``; in ps)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Change in time between auxiliary steps (as stored in ``auxstep``;</span>
+<span class="sd">        in ps)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_dt</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">initial_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Time of first auxiliary step (as stored in ``auxstep``; in ps)&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_initial_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Key to select &#39;time&#39; value from the full set of data read for each step.</span>
+<span class="sd">        As stored in ``austep``.</span>
+
+<span class="sd">        Type differs between auxiliary formats, depending how the data for each</span>
+<span class="sd">        step is read in and stored; e.g. data from .xvg files is read in as a</span>
+<span class="sd">        list and `time_selector` must be a valid index. If time selection is not</span>
+<span class="sd">        enabled by the reader, ``time_selector`` will default to ``None``.</span>
+
+<span class="sd">        See each individual auxiliary reader.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_time_selector</span>
+
+    <span class="nd">@time_selector</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">time_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_time_selector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_time_selector</span> <span class="o">=</span> <span class="n">new</span>
+        <span class="k">if</span> <span class="n">old</span> <span class="o">!=</span> <span class="n">new</span><span class="p">:</span>
+            <span class="c1"># if constant_dt is False and so we&#39;re using a _times list, this will</span>
+            <span class="c1"># now be made invalid</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_times</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Key(s) to select auxiliary data values of interest from the full set</span>
+<span class="sd">        of data read for each step (as stored in ``auxstep``).</span>
+
+<span class="sd">        Type differs between auxiliary formats, depending how the data for each</span>
+<span class="sd">        step is read in and stored - e.g. data from .xvg files is read in as</span>
+<span class="sd">        a list and `data_selector` must be a list of valid indicies. If data</span>
+<span class="sd">        selection is not enabled by the reader, ``data_selector`` will default</span>
+<span class="sd">        to ``None``.</span>
+
+<span class="sd">        See each individual auxiliary reader.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data_selector</span>
+
+    <span class="nd">@data_selector</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">data_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_data_selector</span> <span class="o">=</span> <span class="n">new</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">constant_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; True if ``dt`` is constant throughout the auxiliary (as stored in</span>
+<span class="sd">        ``auxstep``) &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_constant_dt</span>
+
+    <span class="nd">@constant_dt</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">constant_dt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">_constant_dt</span> <span class="o">=</span> <span class="n">new</span></div>
+
+
+<div class="viewcode-block" id="AuxFileReader"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxFileReader">[docs]</a><span class="k">class</span> <span class="nc">AuxFileReader</span><span class="p">(</span><span class="n">AuxReader</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Base class for auxiliary readers that read from file.</span>
+
+<span class="sd">    Extends AuxReader with attributes and methods particular to reading</span>
+<span class="sd">    auxiliary data from an open file, for use when auxiliary files may be too</span>
+<span class="sd">    large to read in at once.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">       Location of the file containing the auxiliary data.</span>
+<span class="sd">    **kwargs</span>
+<span class="sd">       Other AuxReader options.</span>
+
+<span class="sd">    See also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :class:`AuxReader`</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    auxfile</span>
+<span class="sd">       File object for the auxiliary file.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="n">anyopen</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_auxdata</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">AuxFileReader</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AuxFileReader.close"><a class="viewcode-back" href="../../../documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxFileReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Close *auxfile*. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+    <span class="k">def</span> <span class="nf">_restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reposition to just before first step. &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_reopen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Close and then reopen *auxfile*. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxfile</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_auxdata</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">auxstep</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">_go_to_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Move to and read i-th auxiliary step.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">            Step number (0-indexed) to move to</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            If step index not in valid range.</span>
+
+<span class="sd">        Note</span>
+<span class="sd">        ----</span>
+<span class="sd">        Works by reading through all steps consecutively until correct step</span>
+<span class="sd">        is reached. Overwrite if this can be done more efficiently.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">## could seek instead?</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Step index </span><span class="si">{0}</span><span class="s2"> is not valid for auxiliary &quot;</span>
+                             <span class="s2">&quot;(num. steps </span><span class="si">{1}</span><span class="s2">!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_steps</span><span class="p">))</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rewind</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

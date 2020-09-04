@@ -1,0 +1,1731 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.analysis.density &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.analysis.density</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.analysis.density</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="c1"># MDAnalysis -- density analysis</span>
+<span class="c1"># Copyright (c) 2007-2011 Oliver Beckstein &lt;orbeckst@gmail.com&gt;</span>
+<span class="c1"># (based on code from Hop --- a framework to analyze solvation dynamics from MD simulations)</span>
+
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generating densities from trajectories --- :mod:`MDAnalysis.analysis.density`</span>
+<span class="sd">=============================================================================</span>
+
+<span class="sd">:Author: Oliver Beckstein</span>
+<span class="sd">:Year: 2011</span>
+<span class="sd">:Copyright: GNU Public License v3</span>
+
+<span class="sd">The module provides classes and functions to generate and represent</span>
+<span class="sd">volumetric data, in particular densities.</span>
+
+<span class="sd">Generating a density from a MD trajectory</span>
+<span class="sd">-----------------------------------------</span>
+
+<span class="sd">A common use case is to analyze the solvent density around a protein of</span>
+<span class="sd">interest. The density is calculated with :func:`density_from_Universe` in the</span>
+<span class="sd">fixed coordinate system of the simulation unit cell. It is therefore necessary</span>
+<span class="sd">to orient and fix the protein with respect to the box coordinate system. In</span>
+<span class="sd">practice this means centering and superimposing the protein, frame by frame, on</span>
+<span class="sd">a reference structure and translating and rotating all other components of the</span>
+<span class="sd">simulation with the protein. In this way, the solvent will appear in the</span>
+<span class="sd">reference frame of the protein.</span>
+
+<span class="sd">An input trajectory must</span>
+
+<span class="sd">1. have been centered on the protein of interest;</span>
+<span class="sd">2. have all molecules made whole that have been broken across periodic</span>
+<span class="sd">   boundaries [#pbc]_;</span>
+<span class="sd">3. have the solvent molecules remapped so that they are closest to the</span>
+<span class="sd">   solute (this is important when using triclinic unit cells such as</span>
+<span class="sd">   a dodecahedron or a truncated octahedron) [#pbc]_.</span>
+<span class="sd">4. have a fixed frame of reference; for instance, by superimposing a protein</span>
+<span class="sd">   on a reference structure so that one can study the solvent density around</span>
+<span class="sd">   it [#fit]_.</span>
+
+<span class="sd">To generate the density of water molecules around a protein (assuming that the</span>
+<span class="sd">trajectory is already appropriately treated for periodic boundary artifacts and</span>
+<span class="sd">is suitably superimposed to provide a fixed reference frame) [#testraj]_ ::</span>
+
+<span class="sd">  from MDAnalysis.analysis.density import DensityAnalysis</span>
+<span class="sd">  u = Universe(TPR, XTC)</span>
+<span class="sd">  ow = u.select_atoms(&quot;name OW&quot;)</span>
+<span class="sd">  D = DensityAnalysis(ow, delta=1.0)</span>
+<span class="sd">  D.run()</span>
+<span class="sd">  D.density.convert_density(&#39;TIP4P&#39;)</span>
+<span class="sd">  D.density.export(&quot;water.dx&quot;, type=&quot;double&quot;)</span>
+
+<span class="sd">The positions of all water oxygens (the :class:`AtomGroup` `ow`) are</span>
+<span class="sd">histogrammed on a grid with spacing *delta* = 1 Å. Initially the density is</span>
+<span class="sd">measured in :math:`\text{Å}^{-3}`. With the :meth:`Density.convert_density`</span>
+<span class="sd">method, the units of measurement are changed. In the example we are now</span>
+<span class="sd">measuring the density relative to the literature value of the TIP4P water model</span>
+<span class="sd">at ambient conditions (see the values in :data:`MDAnalysis.units.water` for</span>
+<span class="sd">details). Finally, the density is written as an OpenDX_ compatible file that</span>
+<span class="sd">can be read in VMD_, Chimera_, or PyMOL_.</span>
+
+<span class="sd">The :class:`Density` object is accessible as the</span>
+<span class="sd">:attr:`DensityAnalysis.density` attribute.  In particular, the data for the</span>
+<span class="sd">density is stored as a NumPy array in :attr:`Density.grid`, which can be</span>
+<span class="sd">processed in any manner.</span>
+
+
+<span class="sd">Creating densities</span>
+<span class="sd">------------------</span>
+
+<span class="sd">The :class:`DensityAnalysis` class generates a :class:`Density` from an</span>
+<span class="sd">atomgroup. Its function equivalent :func:`density_from_Universe` is deprecated.</span>
+
+<span class="sd">:func:`density_from_PDB` generates a pseudo-density from a PDB file by</span>
+<span class="sd">replacing each atom with a Gaussian density with a width that is computed from</span>
+<span class="sd">the crystallographic temperature factors (B-factor) with :func:`Bfactor2RMSF`.</span>
+
+<span class="sd">.. autoclass:: DensityAnalysis</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members: run</span>
+
+<span class="sd">   .. attribute:: density</span>
+
+<span class="sd">      After the analysis (see the :meth:`~DensityAnalysis.run` method), the resulting density is</span>
+<span class="sd">      stored in the :attr:`density` attribute as a :class:`Density` instance.</span>
+
+
+<span class="sd">Density object</span>
+<span class="sd">--------------</span>
+
+<span class="sd">The main output of the density creation functions is a :class:`Density`</span>
+<span class="sd">instance, which is derived from a :class:`gridData.core.Grid`. A</span>
+<span class="sd">:class:`Density` is essentially a 3D array with origin and lengths.</span>
+
+<span class="sd">.. See Also:: :mod:`gridData`</span>
+
+
+<span class="sd">.. autoclass:: Density</span>
+<span class="sd">   :members:</span>
+<span class="sd">   :inherited-members:</span>
+<span class="sd">   :show-inheritance:</span>
+
+
+<span class="sd">Deprecated functionality</span>
+<span class="sd">------------------------</span>
+
+<span class="sd">Use :class:`DensityAnalysis` instead of :func:`density_from_Universe`. The</span>
+<span class="sd">:func:`density_from_PDB` function is no longer supported and will also be</span>
+<span class="sd">removed in 2.0.0.</span>
+
+<span class="sd">.. autofunction:: density_from_Universe</span>
+
+<span class="sd">.. autofunction:: density_from_PDB</span>
+
+<span class="sd">.. autofunction:: Bfactor2RMSF</span>
+
+<span class="sd">.. autoclass:: BfactorDensityCreator</span>
+<span class="sd">   :members:</span>
+
+<span class="sd">.. autofunction:: notwithin_coordinates_factory</span>
+
+
+
+<span class="sd">.. rubric:: Footnotes</span>
+
+<span class="sd">.. [#pbc] Making molecules whole can be accomplished with the</span>
+<span class="sd">          :meth:`MDAnalysis.core.groups.AtomGroup.wrap` of</span>
+<span class="sd">          :attr:`Universe.atoms` (use ``compound=&quot;fragments&quot;``).  or the</span>
+<span class="sd">          PBC-wrapping transformations in</span>
+<span class="sd">          :mod:`MDAnalysis.transformations.wrap`.</span>
+
+<span class="sd">.. [#fit] Superposition can be performed with</span>
+<span class="sd">          :class:`MDAnalysis.analysis.align.AlignTraj` or the fitting</span>
+<span class="sd">          transformations in :mod:`MDAnalysis.transformations.fit`.</span>
+
+<span class="sd">.. [#testraj] Note that the trajectory in the example (`XTC`) is *not*</span>
+<span class="sd">              properly made whole and fitted to a reference structure;</span>
+<span class="sd">              these steps were omitted to clearly show the steps necessary</span>
+<span class="sd">              for the actual density calculation.</span>
+
+<span class="sd">.. Links</span>
+<span class="sd">.. -----</span>
+
+<span class="sd">.. _OpenDX: http://www.opendx.org/</span>
+<span class="sd">.. _VMD:   http://www.ks.uiuc.edu/Research/vmd/</span>
+<span class="sd">.. _Chimera: https://www.cgl.ucsf.edu/chimera/</span>
+<span class="sd">.. _PyMOL: http://www.pymol.org/</span>
+<span class="sd">.. _Gromacs: http://www.gromacs.org</span>
+<span class="sd">.. _`gmx trjconv`: http://manual.gromacs.org/programs/gmx-trjconv.html</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span><span class="p">,</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">six</span> <span class="kn">import</span> <span class="n">raise_from</span><span class="p">,</span> <span class="n">string_types</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">os.path</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">from</span> <span class="nn">gridData</span> <span class="kn">import</span> <span class="n">Grid</span>
+
+<span class="kn">import</span> <span class="nn">MDAnalysis</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.core</span> <span class="kn">import</span> <span class="n">groups</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">fixedwidth_bins</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">asiterable</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib</span> <span class="kn">import</span> <span class="n">NeighborSearch</span> <span class="k">as</span> <span class="n">NS</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis</span> <span class="kn">import</span> <span class="n">NoDataError</span><span class="p">,</span> <span class="n">MissingDataWarning</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">..lib</span> <span class="kn">import</span> <span class="n">distances</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressBar</span> 
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.log</span> <span class="kn">import</span> <span class="n">ProgressMeter</span>   <span class="c1"># remove in 2.0</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">deprecate</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">AnalysisBase</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.analysis.density&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DensityAnalysis"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.DensityAnalysis">[docs]</a><span class="k">class</span> <span class="nc">DensityAnalysis</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Volumetric density analysis.</span>
+
+<span class="sd">    The trajectory is read, frame by frame, and the atoms in `atomgroup` are</span>
+<span class="sd">    histogrammed on a 3D grid with spacing `delta`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    atomgroup : AtomGroup or UpdatingAtomGroup</span>
+<span class="sd">            Group of atoms (such as all the water oxygen atoms) being analyzed.</span>
+<span class="sd">            This can be an :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` for</span>
+<span class="sd">            selections that change every time step.</span>
+<span class="sd">    delta : float (optional)</span>
+<span class="sd">            Bin size for the density grid in ångström (same in x,y,z).</span>
+<span class="sd">    padding : float (optional)</span>
+<span class="sd">            Increase histogram dimensions by padding (on top of initial box</span>
+<span class="sd">            size) in ångström. Padding is ignored when setting a user defined</span>
+<span class="sd">            grid.</span>
+<span class="sd">    gridcenter : numpy ndarray, float32 (optional)</span>
+<span class="sd">            3 element numpy array detailing the x, y and z coordinates of the</span>
+<span class="sd">            center of a user defined grid box in ångström.</span>
+<span class="sd">    xdim : float (optional)</span>
+<span class="sd">            User defined x dimension box edge in ångström; ignored if</span>
+<span class="sd">            gridcenter is &quot;None&quot;.</span>
+<span class="sd">    ydim : float (optional)</span>
+<span class="sd">            User defined y dimension box edge in ångström; ignored if</span>
+<span class="sd">            gridcenter is &quot;None&quot;.</span>
+<span class="sd">    zdim : float (optional)</span>
+<span class="sd">            User defined z dimension box edge in ångström; ignored if</span>
+<span class="sd">            gridcenter is &quot;None&quot;.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    pmda.density.DensityAnalysis for a parallel version</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Normal :class:`AtomGroup` instances represent a static selection of</span>
+<span class="sd">    atoms. If you want *dynamically changing selections* (such as &quot;name OW and</span>
+<span class="sd">    around 4.0 (protein and not name H*)&quot;, i.e., the water oxygen atoms that</span>
+<span class="sd">    are within 4 Å of the protein heavy atoms) then create an</span>
+<span class="sd">    :class:`~MDAnalysis.core.groups.UpdatingAtomGroup` (see Examples).</span>
+
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    A common use case is to analyze the solvent density around a protein of</span>
+<span class="sd">    interest. The density is calculated with :class:`DensityAnalysis` in the</span>
+<span class="sd">    fixed coordinate system of the simulation unit cell. It is therefore</span>
+<span class="sd">    necessary to orient and fix the protein with respect to the box coordinate</span>
+<span class="sd">    system. In practice this means centering and superimposing the protein,</span>
+<span class="sd">    frame by frame, on a reference structure and translating and rotating all</span>
+<span class="sd">    other components of the simulation with the protein. In this way, the</span>
+<span class="sd">    solvent will appear in the reference frame of the protein.</span>
+
+<span class="sd">    An input trajectory must</span>
+
+<span class="sd">    1. have been centered on the protein of interest;</span>
+<span class="sd">    2. have all molecules made whole that have been broken across periodic</span>
+<span class="sd">       boundaries [#pbc]_;</span>
+<span class="sd">    3. have the solvent molecules remapped so that they are closest to the</span>
+<span class="sd">       solute (this is important when using triclinic unit cells such as</span>
+<span class="sd">       a dodecahedron or a truncated octahedron) [#pbc]_;</span>
+<span class="sd">    4. have a fixed frame of reference; for instance, by superimposing a</span>
+<span class="sd">       protein on a reference structure so that one can study the solvent</span>
+<span class="sd">       density around it [#fit]_.</span>
+
+<span class="sd">    .. rubric:: Generate the density</span>
+
+<span class="sd">    To generate the density of water molecules around a protein (assuming that</span>
+<span class="sd">    the trajectory is already appropriately treated for periodic boundary</span>
+<span class="sd">    artifacts and is suitably superimposed to provide a fixed reference frame)</span>
+<span class="sd">    [#testraj]_, first  create the :class:`DensityAnalysis` object by</span>
+<span class="sd">    supplying an AtomGroup, then use  the :meth:`run` method::</span>
+
+<span class="sd">        from MDAnalysis.analysis import density</span>
+<span class="sd">        u = Universe(TPR, XTC)</span>
+<span class="sd">        ow = u.select_atoms(&quot;name OW&quot;)</span>
+<span class="sd">        D = density.DensityAnalysis(ow, delta=1.0)</span>
+<span class="sd">        D.run()</span>
+<span class="sd">        D.density.convert_density(&#39;TIP4P&#39;)</span>
+
+<span class="sd">    The positions of all water oxygens are histogrammed on a grid with spacing</span>
+<span class="sd">    *delta* = 1 Å and stored as a :class:`Density` object in the attribute</span>
+<span class="sd">    :attr:`DensityAnalysis.density`.</span>
+
+<span class="sd">    .. rubric:: Working with a density</span>
+
+<span class="sd">    A :class:`Density` contains a large number of methods and attributes that</span>
+<span class="sd">    are listed in the documentation. Here we use the</span>
+<span class="sd">    :meth:`Density.convert_density` to convert the density from inverse cubic</span>
+<span class="sd">    ångström to a density relative to the bulk density of TIP4P water at</span>
+<span class="sd">    standard conditions. (MDAnalysis stores a number of literature values in</span>
+<span class="sd">    :data:`MDAnalysis.units.water`.)</span>
+
+<span class="sd">    One can directly access the density as a 3D NumPy array through</span>
+<span class="sd">    :attr:`Density.grid`.</span>
+
+<span class="sd">    By default, the :class:`Density` object returned contains a physical</span>
+<span class="sd">    density in units of Å\ :sup:`-3`. If you are interested in recovering the</span>
+<span class="sd">    underlying **probability density**, simply divide by the sum::</span>
+
+<span class="sd">      probability_density = D.density.grid / D.density.grid.sum()</span>
+
+<span class="sd">    Similarly, if you would like to recover a grid containing a **histogram of</span>
+<span class="sd">    atom counts**, simply multiply by the volume `dV` of each bin (or voxel);</span>
+<span class="sd">    in this case you need to ensure that the physical density is measured in</span>
+<span class="sd">    Å\ :sup:`-3` by converting it::</span>
+
+<span class="sd">      import numpy as np</span>
+
+<span class="sd">      # ensure that the density is A^{-3}</span>
+<span class="sd">      D.density.convert_density(&quot;A^{-3}&quot;)</span>
+
+<span class="sd">      dV = np.prod(D.density.delta)</span>
+<span class="sd">      atom_count_histogram = D.density.grid * dV</span>
+
+
+<span class="sd">    .. rubric:: Writing the density to a file</span>
+
+<span class="sd">    A density can be `exported to different formats</span>
+<span class="sd">    &lt;https://www.mdanalysis.org/GridDataFormats/gridData/formats.html&gt;`_ with</span>
+<span class="sd">    :meth:`Density.export` (thanks to the fact that :class:`Density` is a</span>
+<span class="sd">    subclass :class:`gridData.core.Grid`, which provides the functionality).</span>
+<span class="sd">    For example, to `write a DX file</span>
+<span class="sd">    &lt;https://www.mdanalysis.org/GridDataFormats/gridData/basic.html#writing-out-data&gt;`_</span>
+<span class="sd">    ``water.dx`` that can be read with VMD, PyMOL, or Chimera::</span>
+
+<span class="sd">      D.density.export(&quot;water.dx&quot;, type=&quot;double&quot;)</span>
+
+
+<span class="sd">    .. rubric:: Example: Water density in the whole simulation</span>
+
+<span class="sd">    Basic use for creating a water density (just using the water oxygen</span>
+<span class="sd">    atoms &quot;OW&quot;)::</span>
+
+<span class="sd">      D = DensityAnalysis(universe.select_atoms(&#39;name OW&#39;)).run()</span>
+
+
+<span class="sd">    .. rubric:: Example: Water in a binding site (updating selection)</span>
+
+<span class="sd">    If you are only interested in water within a certain region, e.g., within</span>
+<span class="sd">    a vicinity around a binding site, you can use a selection that updates</span>
+<span class="sd">    every step by using an :class:`~MDAnalysis.core.groups.UpdatingAtomGroup`::</span>
+
+<span class="sd">      near_waters = universe.select_atoms(&#39;name OW and around 5 (resid 156 157 305)&#39;,</span>
+<span class="sd">                    updating=True)</span>
+<span class="sd">      D_site = DensityAnalysis(near_waters).run()</span>
+
+
+<span class="sd">    .. rubric:: Example: Small region around a ligand (manual box selection)</span>
+
+<span class="sd">    If you are interested in explicitly setting a grid box of a given edge size</span>
+<span class="sd">    and origin, you can use the `gridcenter` and `xdim`/`ydim`/`zdim`</span>
+<span class="sd">    arguments.  For example to plot the density of waters within 5 Å of a</span>
+<span class="sd">    ligand (in this case the ligand has been assigned the residue name &quot;LIG&quot;)</span>
+<span class="sd">    in a cubic grid with 20 Å edges which is centered on the center of mass</span>
+<span class="sd">    (COM) of the ligand::</span>
+
+<span class="sd">      # Create a selection based on the ligand</span>
+<span class="sd">      ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)</span>
+
+<span class="sd">      # Extract the COM of the ligand</span>
+<span class="sd">      ligand_COM = ligand_selection.center_of_mass()</span>
+
+<span class="sd">      # Create a density of waters on a cubic grid centered on the ligand COM</span>
+<span class="sd">      # In this case, we update the atom selection as shown above.</span>
+<span class="sd">      ligand_waters = universe.select_atoms(&#39;name OW and around 5 resname LIG&#39;,</span>
+<span class="sd">                                            updating=True)</span>
+<span class="sd">      D_water = DensityAnalysis(ligand_waters,</span>
+<span class="sd">                                delta=1.0,</span>
+<span class="sd">                                gridcenter=ligand_COM,</span>
+<span class="sd">                                xdim=20, ydim=20, zdim=20)</span>
+
+<span class="sd">    (It should be noted that the `padding` keyword is not used when a user</span>
+<span class="sd">    defined grid is assigned).</span>
+
+
+
+<span class="sd">    .. versionadded:: 1.0.0</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                 <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                 <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">xdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">atomgroup</span><span class="o">.</span><span class="n">universe</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DensityAnalysis</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span> <span class="o">=</span> <span class="n">atomgroup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delta</span> <span class="o">=</span> <span class="n">delta</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">=</span> <span class="n">padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="o">=</span> <span class="n">gridcenter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span> <span class="o">=</span> <span class="n">xdim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span> <span class="o">=</span> <span class="n">ydim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span> <span class="o">=</span> <span class="n">zdim</span>
+
+    <span class="k">def</span> <span class="nf">_prepare</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Issue 2372: padding is ignored, defaults to 2.0 therefore warn</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{0}</span><span class="s2">) &quot;</span>
+                       <span class="s2">&quot;is not used in user defined grids.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">))</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># Generate a copy of smin/smax from coords to later check if the</span>
+            <span class="c1"># defined box might be too small for the selection</span>
+            <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># Overwrite smin/smax with user defined values</span>
+            <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="n">_set_user_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gridcenter</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xdim</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_ydim</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Make the box bigger to avoid as much as possible &#39;outlier&#39;. This</span>
+            <span class="c1"># is important if the sites are defined at a high density: in this</span>
+            <span class="c1"># case the bulk regions don&#39;t have to be close to 1 * n0 but can</span>
+            <span class="c1"># be less. It&#39;s much more difficult to deal with outliers.  The</span>
+            <span class="c1"># ideal solution would use images: implement &#39;looking across the</span>
+            <span class="c1"># periodic boundaries&#39; but that gets complicated when the box</span>
+            <span class="c1"># rotates due to RMS fitting.</span>
+            <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
+            <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span>
+        <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+        <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">])))</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">]</span>
+        <span class="c1"># create empty grid with the right dimensions (and get the edges)</span>
+        <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span>
+                                     <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">*=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">=</span> <span class="n">grid</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_edges</span> <span class="o">=</span> <span class="n">edges</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arange</span> <span class="o">=</span> <span class="n">arange</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bins</span> <span class="o">=</span> <span class="n">bins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_single_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">h</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_atomgroup</span><span class="o">.</span><span class="n">positions</span><span class="p">,</span>
+                              <span class="n">bins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_arange</span><span class="p">,</span>
+                              <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># reduce (proposed change #2542 to match the parallel version in pmda.density)</span>
+        <span class="c1"># return self._reduce(self._grid, h)</span>
+        <span class="c1">#</span>
+        <span class="c1"># serial code can simply do</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">+=</span> <span class="n">h</span>
+
+    <span class="k">def</span> <span class="nf">_conclude</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># average:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_frames</span><span class="p">)</span>
+        <span class="n">density</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_edges</span><span class="p">,</span>
+                          <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s2">&quot;Angstrom&quot;</span><span class="p">},</span>
+                          <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;isDensity&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+        <span class="n">density</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">density</span> <span class="o">=</span> <span class="n">density</span></div>
+
+    <span class="c1"># _reduce is not strictly necessary for the serial version but is necessary for</span>
+    <span class="c1"># pmda-style parallelism (see #2542)</span>
+    <span class="c1"># @staticmethod</span>
+    <span class="c1"># def _reduce(res, result_single_frame):</span>
+    <span class="c1">#     &quot;&quot;&quot;&#39;accumulate&#39; action for a time series</span>
+    <span class="c1">#</span>
+    <span class="c1">#     If `res` is a numpy array, the `result_single_frame` is added to it</span>
+    <span class="c1">#     element-wise. If `res` and `result_single_frame` are lists then</span>
+    <span class="c1">#     `result_single_frame` is appended to `res`.</span>
+    <span class="c1">#     &quot;&quot;&quot;</span>
+    <span class="c1">#     if isinstance(res, list) and len(res) == 0:</span>
+    <span class="c1">#         res = result_single_frame</span>
+    <span class="c1">#     else:</span>
+    <span class="c1">#         res += result_single_frame</span>
+    <span class="c1">#     return res</span>
+
+
+<div class="viewcode-block" id="Density"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density">[docs]</a><span class="k">class</span> <span class="nc">Density</span><span class="p">(</span><span class="n">Grid</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Class representing a density on a regular cartesian grid.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : array_like</span>
+<span class="sd">        histogram or density, typically a :class:`numpy.ndarray`</span>
+<span class="sd">    edges : list</span>
+<span class="sd">        list of arrays, the lower and upper bin edges along the axes</span>
+<span class="sd">    parameters : dict</span>
+<span class="sd">        dictionary of class parameters; saved with</span>
+<span class="sd">        :meth:`Density.save`. The following keys are meaningful to</span>
+<span class="sd">        the class. Meaning of the values are listed:</span>
+
+<span class="sd">         *isDensity*</span>
+
+<span class="sd">            - ``False``: grid is a histogram with counts [default]</span>
+<span class="sd">            - ``True``: a density</span>
+
+<span class="sd">            Applying :meth:`Density.make_density`` sets it to ``True``.</span>
+<span class="sd">    units : dict</span>
+<span class="sd">        A dict with the keys</span>
+
+<span class="sd">        - *length*:  physical unit of grid edges (Angstrom or nm) [Angstrom]</span>
+<span class="sd">        - *density*: unit of the density if ``isDensity=True`` or ``None``</span>
+<span class="sd">          otherwise; the default is &quot;Angstrom^{-3}&quot; for densities</span>
+<span class="sd">          (meaning :math:`\text{Å}^{-3}`).</span>
+<span class="sd">    metadata : dict</span>
+<span class="sd">        a user defined dictionary of arbitrary values associated with the</span>
+<span class="sd">        density; the class does not touch :attr:`Density.metadata` but</span>
+<span class="sd">        stores it with :meth:`Density.save`</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    grid : array</span>
+<span class="sd">        counts or density</span>
+<span class="sd">    edges : list of 1d-arrays</span>
+<span class="sd">        The boundaries of each cell in `grid` along all axes (equivalent</span>
+<span class="sd">        to what :func:`numpy.histogramdd` returns).</span>
+<span class="sd">    delta : array</span>
+<span class="sd">        Cell size in each dimension.</span>
+<span class="sd">    origin : array</span>
+<span class="sd">        Coordinates of the *center* of the cell at index `grid[0, 0, 0, ...,</span>
+<span class="sd">        0]`, which is considered to be the front lower left corner.</span>
+<span class="sd">    units : dict</span>
+<span class="sd">        The units for lengths and density; change units with the method</span>
+<span class="sd">        :meth:`~Density.convert_length` or :meth:`~Density.convert_density`.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The data (:attr:`Density.grid`) can be manipulated as a standard numpy</span>
+<span class="sd">    array. Changes can be saved to a file using the :meth:`Density.save` method. The</span>
+<span class="sd">    grid can be restored using the :meth:`Density.load` method or by supplying the</span>
+<span class="sd">    filename to the constructor.</span>
+
+<span class="sd">    The attribute :attr:`Density.metadata` holds a user-defined dictionary that</span>
+<span class="sd">    can be used to annotate the data. It is also saved with :meth:`Density.save`.</span>
+
+<span class="sd">    The :meth:`Density.export` method always exports a 3D object (written in</span>
+<span class="sd">    such a way to be readable in VMD_, Chimera_, and PyMOL_), the rest should</span>
+<span class="sd">    work for an array of any dimension. Note that PyMOL_ only understands DX</span>
+<span class="sd">    files with the DX data type &quot;double&quot; in the &quot;array&quot; object (see `known</span>
+<span class="sd">    issues when writing OpenDX files`_ and issue</span>
+<span class="sd">    `MDAnalysis/GridDataFormats#35`_ for details). Using the keyword</span>
+<span class="sd">    ``type=&quot;double&quot;`` for the method :meth:`Density.export`, the user can</span>
+<span class="sd">    ensure that the DX file is written in a format suitable for PyMOL_.</span>
+
+<span class="sd">    If the input histogram consists of counts per cell then the</span>
+<span class="sd">    :meth:`Density.make_density` method converts the grid to a physical density. For</span>
+<span class="sd">    a probability density, divide it by :meth:`Density.grid.sum` or use ``normed=True``</span>
+<span class="sd">    right away in :func:`~numpy.histogramdd`.</span>
+
+<span class="sd">    The user *should* set the *parameters* keyword (see docs for the</span>
+<span class="sd">    constructor); in particular, if the data are already a density, one must</span>
+<span class="sd">    set ``isDensity=True`` because there is no reliable way to detect if</span>
+<span class="sd">    data represent counts or a density. As a special convenience, if data are</span>
+<span class="sd">    read from a file and the user has not set ``isDensity`` then it is assumed</span>
+<span class="sd">    that the data are in fact a density.</span>
+
+<span class="sd">    .. _`MDAnalysis/GridDataFormats#35`:</span>
+<span class="sd">       https://github.com/MDAnalysis/GridDataFormats/issues/35</span>
+<span class="sd">    .. _`known issues when writing OpenDX files`:</span>
+<span class="sd">       https://www.mdanalysis.org/GridDataFormats/gridData/formats/OpenDX.html#known-issues-for-writing-opendx-files</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    gridData.core.Grid is the base class of :class:`Density`.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Typical use:</span>
+
+<span class="sd">    1. From a histogram (i.e. counts on a grid)::</span>
+
+<span class="sd">        h,edges = numpy.histogramdd(...)</span>
+<span class="sd">        D = Density(h, edges, parameters={&#39;isDensity&#39;: False}, units={&#39;length&#39;: &#39;A&#39;})</span>
+<span class="sd">        D.make_density()</span>
+
+<span class="sd">    2. From a saved density file (e.g. in OpenDX format), where the lengths are</span>
+<span class="sd">       in Angstrom and the density in 1/A**3::</span>
+
+<span class="sd">         D = Density(&quot;density.dx&quot;)</span>
+
+<span class="sd">    3. From a saved density file (e.g. in OpenDX format), where the lengths are</span>
+<span class="sd">       in Angstrom and the density is measured relative to the density of water</span>
+<span class="sd">       at ambient conditions::</span>
+
+<span class="sd">         D = Density(&quot;density.dx&quot;, units={&#39;density&#39;: &#39;water&#39;})</span>
+
+<span class="sd">    4. From a saved *histogram* (less common, but in order to demonstrate the</span>
+<span class="sd">       *parameters* keyword) where the lengths are in nm::</span>
+
+<span class="sd">         D = Density(&quot;counts.dx&quot;, parameters={&#39;isDensity&#39;: False}, units={&#39;length&#39;: &#39;nm&#39;})</span>
+<span class="sd">         D.make_density()</span>
+<span class="sd">         D.convert_length(&#39;Angstrom^{-3}&#39;)</span>
+<span class="sd">         D.convert_density(&#39;water&#39;)</span>
+
+<span class="sd">       After the final step, ``D`` will contain a density on a grid measured in</span>
+<span class="sd">       ångström, with the density values itself measured relative to the</span>
+<span class="sd">       density of water.</span>
+
+<span class="sd">    :class:`Density` objects can be algebraically manipulated (added,</span>
+<span class="sd">    subtracted, multiplied, ...)  but there are *no sanity checks* in place to</span>
+<span class="sd">    make sure that units, metadata, etc are compatible!</span>
+
+
+<span class="sd">    .. Note::</span>
+
+<span class="sd">       It is suggested to construct the Grid object from a histogram,</span>
+<span class="sd">       to supply the appropriate length unit, and to use</span>
+<span class="sd">       :meth:`Density.make_density` to obtain a density. This ensures</span>
+<span class="sd">       that the length- and the density unit correspond to each other.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">length_unit</span> <span class="o">=</span> <span class="s1">&#39;Angstrom&#39;</span>
+
+        <span class="n">parameters</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;parameters&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">string_types</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;grid&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">string_types</span><span class="p">):</span>
+            <span class="c1"># try to be smart: when reading from a file then it is likely that this</span>
+            <span class="c1"># is a density</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;isDensity&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">parameters</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;isDensity&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;units&#39;</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
+            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="n">length_unit</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">units</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">Density</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>  <span class="c1"># isDensity: set by make_density()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span> <span class="o">=</span> <span class="n">units</span>
+
+    <span class="k">def</span> <span class="nf">_check_set_unit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check and set units.</span>
+
+<span class="sd">        First check that all units and their values in the dict `u` are valid</span>
+<span class="sd">        and then set the object&#39;s units attribute.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        u : dict</span>
+<span class="sd">            ``{unit_type : value, ...}``</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ValueError</span>
+<span class="sd">            if unit types or unit values are not recognized or if required</span>
+<span class="sd">            unit types are not in :attr:`units`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># all this unit crap should be a class...</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">unit_type</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">u</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># check here, too iffy to use dictionary[None]=None</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">continue</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="n">unit_type</span><span class="p">][</span><span class="n">value</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="n">unit_type</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">raise_from</span><span class="p">(</span>
+                        <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unit &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; of type &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">unit_type</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; is not recognized.&#39;</span><span class="p">),</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                        <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&quot;unit&quot; must be a dictionary with keys &quot;length&quot; and &quot;density.&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># need at least length and density (can be None)</span>
+        <span class="k">if</span> <span class="s1">&#39;length&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;unit&quot; must contain a unit for &quot;length&quot;.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;density&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="Density.make_density"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.make_density">[docs]</a>    <span class="k">def</span> <span class="nf">make_density</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert the grid (a histogram, counts in a cell) to a density (counts/volume).</span>
+
+<span class="sd">        This method changes the grid irrevocably.</span>
+
+<span class="sd">        For a probability density, manually divide by :meth:`grid.sum`.</span>
+
+<span class="sd">        If this is already a density, then a warning is issued and nothing is</span>
+<span class="sd">        done, so calling `make_density` multiple times does not do any harm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make it a density by dividing by the volume of each grid cell</span>
+        <span class="c1"># (from numpy.histogramdd, which is for general n-D grids)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;Running make_density() makes no sense: Grid is already a density. Nothing done.&quot;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">dedges</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span> <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">D</span><span class="p">):</span>
+            <span class="n">shape</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="n">shape</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">/=</span> <span class="n">dedges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># see units.densityUnit_factor for units</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;^{-3}&quot;</span></div>
+
+<div class="viewcode-block" id="Density.convert_length"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_length">[docs]</a>    <span class="k">def</span> <span class="nf">convert_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert Grid object to the new `unit`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        unit : str (optional)</span>
+<span class="sd">              unit that the grid should be converted to: one of</span>
+<span class="sd">              &quot;Angstrom&quot;, &quot;nm&quot;</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This changes the edges but will not change the density; it is the</span>
+<span class="sd">        user&#39;s responsibility to supply the appropriate unit if the Grid object</span>
+<span class="sd">        is constructed from a density. It is suggested to start from a</span>
+<span class="sd">        histogram and a length unit and use :meth:`make_density`.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>
+        <span class="n">cvnfact</span> <span class="o">=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">*</span> <span class="n">cvnfact</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">()</span>  <span class="c1"># needed to recalculate midpoints and origin</span></div>
+
+<div class="viewcode-block" id="Density.convert_density"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.Density.convert_density">[docs]</a>    <span class="k">def</span> <span class="nf">convert_density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert the density to the physical units given by `unit`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        unit : str (optional)</span>
+<span class="sd">             The target unit that the density should be converted to.</span>
+
+<span class="sd">             `unit` can be one of the following:</span>
+
+<span class="sd">             =============  ===============================================================</span>
+<span class="sd">             name           description of the unit</span>
+<span class="sd">             =============  ===============================================================</span>
+<span class="sd">             Angstrom^{-3}  particles/A**3</span>
+<span class="sd">             nm^{-3}        particles/nm**3</span>
+<span class="sd">             SPC            density of SPC water at standard conditions</span>
+<span class="sd">             TIP3P          ... see :data:`MDAnalysis.units.water`</span>
+<span class="sd">             TIP4P          ... see :data:`MDAnalysis.units.water`</span>
+<span class="sd">             water          density of real water at standard conditions (0.997 g/cm**3)</span>
+<span class="sd">             Molar          mol/l</span>
+<span class="sd">             =============  ===============================================================</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        RuntimeError</span>
+<span class="sd">             If the density does not have a unit associated with it to begin</span>
+<span class="sd">             with (i.e., is not a density) then no conversion can take place.</span>
+<span class="sd">        ValueError</span>
+<span class="sd">             for unknown `unit`.</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        (1) This method only works if there is already a length unit associated with the</span>
+<span class="sd">            density; otherwise raises :exc:`RuntimeError`</span>
+<span class="sd">        (2) Conversions always go back to unity so there can be rounding</span>
+<span class="sd">            and floating point artifacts for multiple conversions.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
+            <span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;The grid is not a density so converty_density() makes no sense.&#39;</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">fatal</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]:</span>
+            <span class="k">return</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">*=</span> <span class="n">units</span><span class="o">.</span><span class="n">get_conversion_factor</span><span class="p">(</span><span class="s1">&#39;density&#39;</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">],</span> <span class="n">unit</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">raise_from</span><span class="p">(</span>
+                <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The name of the unit (</span><span class="si">{0!r}</span><span class="s2"> supplied) must be one of:</span><span class="se">\n</span><span class="si">{1!r}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">unit</span><span class="p">,</span> <span class="n">units</span><span class="o">.</span><span class="n">conversion_factor</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())),</span>
+                <span class="kc">None</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">units</span><span class="p">[</span><span class="s1">&#39;density&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">unit</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]:</span>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;density&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">grid_type</span> <span class="o">=</span> <span class="s1">&#39;histogram&#39;</span>
+        <span class="k">return</span> <span class="s1">&#39;&lt;Density &#39;</span> <span class="o">+</span> <span class="n">grid_type</span> <span class="o">+</span> <span class="s1">&#39; with &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; bins&gt;&#39;</span></div>
+
+
+<span class="k">def</span> <span class="nf">_set_user_grid</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Helper function to set the grid dimensions to user defined values</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gridcenter : numpy ndarray, float32</span>
+<span class="sd">            3 element ndarray containing the x, y and z coordinates of the grid</span>
+<span class="sd">            box center</span>
+<span class="sd">    xdim : float</span>
+<span class="sd">            Box edge length in the x dimension</span>
+<span class="sd">    ydim : float</span>
+<span class="sd">            Box edge length in the y dimension</span>
+<span class="sd">    zdim : float</span>
+<span class="sd">            Box edge length in the y dimension</span>
+<span class="sd">    smin : numpy ndarray, float32</span>
+<span class="sd">            Minimum x,y,z coordinates for the input selection</span>
+<span class="sd">    smax : numpy ndarray, float32</span>
+<span class="sd">            Maximum x,y,z coordinates for the input selection</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    umin : numpy ndarray, float32</span>
+<span class="sd">            Minimum x,y,z coordinates of the user defined grid</span>
+<span class="sd">    umax : numpy ndarray, float32</span>
+<span class="sd">            Maximum x,y,z coordinates of the user defined grid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Check user inputs</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">gridcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Non-number values assigned to gridcenter&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gridcenter</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;gridcenter must be a 3D coordinate&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">xyzdim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">raise_from</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;xdim, ydim, and zdim must be numbers&quot;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="c1"># Set min/max by shifting by half the edge length of each dimension</span>
+    <span class="n">umin</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">-</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
+    <span class="n">umax</span> <span class="o">=</span> <span class="n">gridcenter</span> <span class="o">+</span> <span class="n">xyzdim</span><span class="o">/</span><span class="mi">2</span>
+
+    <span class="c1"># Here we test if coords of selection fall outside of the defined grid</span>
+    <span class="c1"># if this happens, we warn users they may want to resize their grids</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">smin</span> <span class="o">&lt;</span> <span class="n">umin</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">smax</span> <span class="o">&gt;</span> <span class="n">umax</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Atom selection does not fit grid --- &quot;</span>
+               <span class="s2">&quot;you may want to define a larger box&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">umin</span><span class="p">,</span> <span class="n">umax</span>
+
+
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;2.0.0&quot;</span><span class="p">,</span>
+           <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Use ``DensityAnalysis(u, ...).run().density`` instead.&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">density_from_Universe</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;name OH2&#39;</span><span class="p">,</span>
+                          <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">soluteselection</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">use_kdtree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">update_selection</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                          <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">gridcenter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">xdim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ydim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">zdim</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a density grid from a :class:`MDAnalysis.Universe` object.</span>
+
+<span class="sd">    The trajectory is read, frame by frame, and the atoms selected with</span>
+<span class="sd">    `select` are histogrammed on a grid with spacing `delta`.</span>
+<span class="sd">    A physical density of units [Angstrom^{-3}] is returned (see</span>
+<span class="sd">    :class:`Density` for more details).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : MDAnalysis.Universe</span>
+<span class="sd">            :class:`MDAnalysis.Universe` object with a trajectory</span>
+<span class="sd">    select : str (optional)</span>
+<span class="sd">            selection string (MDAnalysis syntax) for the species to be analyzed</span>
+<span class="sd">            [&quot;name OH2&quot;]</span>
+<span class="sd">    delta : float (optional)</span>
+<span class="sd">            bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
+<span class="sd">    start : int (optional)</span>
+<span class="sd">    stop : int (optional)</span>
+<span class="sd">    step : int (optional)</span>
+<span class="sd">            Slice the trajectory as ``trajectory[start:stop:step]``; default</span>
+<span class="sd">            is to read the whole trajectory.</span>
+<span class="sd">    metadata : dict. optional</span>
+<span class="sd">            `dict` of additional data to be saved with the object; the meta data</span>
+<span class="sd">            are passed through as they are.</span>
+<span class="sd">    padding : float (optional)</span>
+<span class="sd">            increase histogram dimensions by padding (on top of initial box size)</span>
+<span class="sd">            in Angstrom. Padding is ignored when setting a user defined grid. [2.0]</span>
+<span class="sd">    soluteselection : str (optional)</span>
+<span class="sd">            MDAnalysis selection for the solute, e.g. &quot;protein&quot; [``None``]</span>
+<span class="sd">    cutoff : float (optional)</span>
+<span class="sd">            With `cutoff`, select &quot;&lt;atomsel&gt; NOT WITHIN &lt;cutoff&gt; OF &lt;soluteselection&gt;&quot;</span>
+<span class="sd">            (Special routines that are faster than the standard ``AROUND`` selection);</span>
+<span class="sd">            any value that evaluates to ``False`` (such as the default 0) disables this</span>
+<span class="sd">            special selection.</span>
+<span class="sd">    update_selection : bool (optional)</span>
+<span class="sd">            Should the selection of atoms be updated for every step? [``False``]</span>
+
+<span class="sd">            - ``True``: atom selection is updated for each frame, can be slow</span>
+<span class="sd">            - ``False``: atoms are only selected at the beginning</span>
+<span class="sd">    verbose : bool (optional)</span>
+<span class="sd">            Print status update to the screen for every *interval* frame? [``True``]</span>
+
+<span class="sd">            - ``False``: no status updates when a new frame is processed</span>
+<span class="sd">            - ``True``: status update every frame (including number of atoms</span>
+<span class="sd">              processed, which is interesting with ``update_selection=True``)</span>
+<span class="sd">    interval : int (optional)</span>
+<span class="sd">           Show status update every `interval` frame [1]</span>
+<span class="sd">    parameters : dict (optional)</span>
+<span class="sd">            `dict` with some special parameters for :class:`Density` (see docs)</span>
+<span class="sd">    gridcenter : numpy ndarray, float32 (optional)</span>
+<span class="sd">            3 element numpy array detailing the x, y and z coordinates of the</span>
+<span class="sd">            center of a user defined grid box in Angstrom [``None``]</span>
+<span class="sd">    xdim : float (optional)</span>
+<span class="sd">            User defined x dimension box edge in Angstrom; ignored if</span>
+<span class="sd">            gridcenter is ``None``</span>
+<span class="sd">    ydim : float (optional)</span>
+<span class="sd">            User defined y dimension box edge in Angstrom; ignored if</span>
+<span class="sd">            gridcenter is ``None``</span>
+<span class="sd">    zdim : float (optional)</span>
+<span class="sd">            User defined z dimension box edge in Angstrom; ignored if</span>
+<span class="sd">            gridcenter is ``None``</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`Density`</span>
+<span class="sd">            A :class:`Density` instance with the histogrammed data together</span>
+<span class="sd">            with associated metadata.</span>
+
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+
+<span class="sd">    By default, the `select` is static, i.e., atoms are only selected</span>
+<span class="sd">    once at the beginning. If you want *dynamically changing selections* (such</span>
+<span class="sd">    as &quot;name OW and around 4.0 (protein and not name H*)&quot;, i.e., the water</span>
+<span class="sd">    oxygen atoms that are within 4 Å of the protein heavy atoms) then set</span>
+<span class="sd">    ``update_selection=True``. For the special case of calculating a density of</span>
+<span class="sd">    the &quot;bulk&quot; solvent away from a solute use the optimized selections with</span>
+<span class="sd">    keywords *cutoff* and *soluteselection* (see Examples below).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    Basic use for creating a water density (just using the water oxygen atoms &quot;OW&quot;)::</span>
+
+<span class="sd">      density = density_from_Universe(universe, delta=1.0, select=&#39;name OW&#39;)</span>
+
+<span class="sd">    If you are only interested in water within a certain region, e.g., within a</span>
+<span class="sd">    vicinity around a binding site, you can use a selection that updates every</span>
+<span class="sd">    step by setting the `update_selection` keyword argument::</span>
+
+<span class="sd">      site_density = density_from_Universe(universe, delta=1.0,</span>
+<span class="sd">                                           select=&#39;name OW and around 5 (resid 156 157 305)&#39;,</span>
+<span class="sd">                                           update_selection=True)</span>
+
+<span class="sd">    A special case for an updating selection is to create the &quot;bulk density&quot;,</span>
+<span class="sd">    i.e., the water outside the immediate solvation shell of a protein: Select</span>
+<span class="sd">    all water oxygen atoms that are *farther away* than a given cut-off (say, 4</span>
+<span class="sd">    Å) from the solute (here, heavy atoms of the protein)::</span>
+
+<span class="sd">      bulk = density_from_Universe(universe, delta=1.0, select=&#39;name OW&#39;,</span>
+<span class="sd">                                   solute=&quot;protein and not name H*&quot;,</span>
+<span class="sd">                                   cutoff=4)</span>
+
+<span class="sd">    (Using the special case for the bulk with `soluteselection` and `cutoff`</span>
+<span class="sd">    improves performance over the simple `update_selection` approach.)</span>
+
+<span class="sd">    If you are interested in explicitly setting a grid box of a given edge size</span>
+<span class="sd">    and origin, you can use the gridcenter and x/y/zdim arguments. For example</span>
+<span class="sd">    to plot the density of waters within 5 Å of a ligand (in this case the</span>
+<span class="sd">    ligand has been assigned the residue name &quot;LIG&quot;) in a cubic grid with 20 Å</span>
+<span class="sd">    edges which is centered on the centre of mass (COM) of the ligand::</span>
+
+<span class="sd">      # Create a selection based on the ligand</span>
+<span class="sd">      ligand_selection = universe.select_atoms(&quot;resname LIG&quot;)</span>
+
+<span class="sd">      # Extract the COM of the ligand</span>
+<span class="sd">      ligand_COM = ligand_selection.center_of_mass()</span>
+
+<span class="sd">      # Generate a density of waters on a cubic grid centered on the ligand COM</span>
+<span class="sd">      # In this case, we update the atom selection as shown above.</span>
+<span class="sd">      water_density = density_from_Universe(universe, delta=1.0,</span>
+<span class="sd">                                            select=&#39;name OW around 5 resname LIG&#39;,</span>
+<span class="sd">                                            update_selection=True,</span>
+<span class="sd">                                            gridcenter=ligand_COM,</span>
+<span class="sd">                                            xdim=20.0, ydim=20.0, zdim=20.0)</span>
+
+<span class="sd">      (It should be noted that the `padding` keyword is not used when a user</span>
+<span class="sd">      defined grid is assigned).</span>
+
+<span class="sd">    As detailed above, the :class:`Density` object returned contains a</span>
+<span class="sd">    physical density in units of Angstrom^{-3}. If you are interested in</span>
+<span class="sd">    recovering the underlying probability density, simply divide by the sum::</span>
+
+<span class="sd">      physical_density = density_from_Universe(universe, delta=1.0,</span>
+<span class="sd">                                               select=&#39;name OW&#39;)</span>
+
+<span class="sd">      probability_density = physical_density / physical_density.grid.sum()</span>
+
+<span class="sd">    Similarly, if you would like to recover a grid containing a histogram of</span>
+<span class="sd">    atom counts, simply multiply by the volume::</span>
+
+<span class="sd">      # Here we assume that numpy is imported as np</span>
+<span class="sd">      volume = np.prod(physical_density.delta)</span>
+
+<span class="sd">      atom_count_histogram = physical_density * volume</span>
+
+
+<span class="sd">    .. versionchanged:: 0.13.0</span>
+<span class="sd">       *update_selection* and *quiet* keywords added</span>
+<span class="sd">    .. deprecated:: 0.16</span>
+<span class="sd">       The keyword argument *quiet* is deprecated in favor of *verbose*.</span>
+<span class="sd">    .. versionchanged:: 0.19.0</span>
+<span class="sd">       *gridcenter*, *xdim*, *ydim* and *zdim* keywords added to allow for user</span>
+<span class="sd">       defined boxes</span>
+<span class="sd">    .. versionchanged:: 0.20.0</span>
+<span class="sd">       ProgressMeter now iterates over the number of frames analysed.</span>
+<span class="sd">    .. versionchanged:: 1.0.0</span>
+<span class="sd">       time_unit and length_unit default to ps and Angstrom now flags have</span>
+<span class="sd">       been removed (same as previous flag defaults);</span>
+<span class="sd">       warns users that `padding` value is not used in user defined grids</span>
+<span class="sd">    .. deprecated:: 1.0.0</span>
+<span class="sd">       `density_from_Universe` will removed in 2.0.0; use `DensityAnalysis` instead</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">universe</span>
+
+    <span class="k">if</span> <span class="n">cutoff</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">soluteselection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># special fast selection for &#39;&lt;atomsel&gt; not within &lt;cutoff&gt; of &lt;solutesel&gt;&#39;</span>
+        <span class="n">notwithin_coordinates</span> <span class="o">=</span> <span class="n">notwithin_coordinates_factory</span><span class="p">(</span>
+            <span class="n">u</span><span class="p">,</span> <span class="n">select</span><span class="p">,</span> <span class="n">soluteselection</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span>
+            <span class="n">use_kdtree</span><span class="o">=</span><span class="n">use_kdtree</span><span class="p">,</span> <span class="n">updating_selection</span><span class="o">=</span><span class="n">update_selection</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">current_coordinates</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">notwithin_coordinates</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="n">update_selection</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">current_coordinates</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span>
+
+    <span class="n">coord</span> <span class="o">=</span> <span class="n">current_coordinates</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+        <span class="s2">&quot;Selected </span><span class="si">{0:d}</span><span class="s2"> atoms out of </span><span class="si">{1:d}</span><span class="s2"> atoms (</span><span class="si">{2!s}</span><span class="s2">) from </span><span class="si">{3:d}</span><span class="s2"> total.&quot;</span>
+        <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)),</span>
+                  <span class="n">select</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="c1"># mild warning; typically this is run on RMS-fitted trajectories and</span>
+    <span class="c1"># so the box information is rather meaningless</span>
+    <span class="n">box</span><span class="p">,</span> <span class="n">angles</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">ts</span><span class="o">.</span><span class="n">dimensions</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span>
+    <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Non-orthorhombic unit-cell --- &quot;</span>
+               <span class="s2">&quot;make sure that it has been remapped properly!&quot;</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">gridcenter</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Issue 2372: padding is ignored, defaults to 2.0 therefore warn</span>
+        <span class="k">if</span> <span class="n">padding</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Box padding (currently set at </span><span class="si">{0}</span><span class="s2">) &quot;</span>
+                   <span class="s2">&quot;is not used in user defined grids.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">padding</span><span class="p">))</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># Generate a copy of smin/smax from coords to later check if the</span>
+        <span class="c1"># defined box might be too small for the selection</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Overwrite smin/smax with user defined values</span>
+        <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span> <span class="o">=</span> <span class="n">_set_user_grid</span><span class="p">(</span><span class="n">gridcenter</span><span class="p">,</span> <span class="n">xdim</span><span class="p">,</span> <span class="n">ydim</span><span class="p">,</span> <span class="n">zdim</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Make the box bigger to avoid as much as possible &#39;outlier&#39;. This</span>
+        <span class="c1"># is important if the sites are defined at a high density: in this</span>
+        <span class="c1"># case the bulk regions don&#39;t have to be close to 1 * n0 but can</span>
+        <span class="c1"># be less. It&#39;s much more difficult to deal with outliers.  The</span>
+        <span class="c1"># ideal solution would use images: implement &#39;looking across the</span>
+        <span class="c1"># periodic boundaries&#39; but that gets complicate when the box</span>
+        <span class="c1"># rotates due to RMS fitting.</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">padding</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">padding</span>
+
+    <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+    <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]))</span>
+    <span class="n">arange</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">arange</span><span class="p">)</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">]</span>
+
+    <span class="c1"># create empty grid with the right dimensions (and get the edges)</span>
+    <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">grid</span> <span class="o">*=</span> <span class="mf">0.0</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">check_slice_indices</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span>
+    <span class="n">n_frames</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">ts</span> <span class="ow">in</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">:</span><span class="n">step</span><span class="p">],</span>
+                          <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Histogramming&quot;</span><span class="p">):</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">current_coordinates</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">coord</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">h</span><span class="p">[:],</span> <span class="n">edges</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">+=</span> <span class="n">h</span>  <span class="c1"># accumulate average histogram</span>
+    <span class="n">grid</span> <span class="o">/=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n_frames</span><span class="p">)</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span> <span class="k">if</span> <span class="n">metadata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;psf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">filename</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;dcd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">filename</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">select</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;totaltime&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">n_frames</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">dt</span>
+    <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;time_unit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ps&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;trajectory_skip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">skip_timestep</span>  <span class="c1"># frames</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;trajectory_skip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># seems to not be used..</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;trajectory_delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span><span class="o">.</span><span class="n">delta</span>  <span class="c1"># in native units</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;trajectory_delta&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">cutoff</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">soluteselection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;soluteselection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">soluteselection</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;cutoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cutoff</span>  <span class="c1"># in Angstrom</span>
+
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span> <span class="k">if</span> <span class="n">parameters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+    <span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;isDensity&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># must override</span>
+
+
+    <span class="n">g</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="n">edges</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;length&#39;</span><span class="p">:</span> <span class="s1">&#39;Angstrom&#39;</span><span class="p">},</span>
+                <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+    <span class="n">g</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Density completed (initial density in Angstrom**-3)&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">g</span>
+
+
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;2.0.0&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">notwithin_coordinates_factory</span><span class="p">(</span><span class="n">universe</span><span class="p">,</span> <span class="n">sel1</span><span class="p">,</span> <span class="n">sel2</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">,</span>
+                                  <span class="n">not_within</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_kdtree</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">updating_selection</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate optimized selection for &#39;*sel1* not within *cutoff* of *sel2*&#39;</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    universe : MDAnalysis.Universe</span>
+<span class="sd">        Universe object on which to operate</span>
+<span class="sd">    sel1 : str</span>
+<span class="sd">        Selection string for the *solvent* selection (should be</span>
+<span class="sd">        the group with the *larger number of atoms* to make the</span>
+<span class="sd">        KD-Tree search more efficient)</span>
+<span class="sd">    sel2 : str</span>
+<span class="sd">        Selection string for the *solute* selection</span>
+<span class="sd">    cutoff : float</span>
+<span class="sd">        Distance cutoff</span>
+<span class="sd">    not_within : bool</span>
+
+<span class="sd">        - ``True``: selection behaves as &quot;not within&quot; (As described above)</span>
+<span class="sd">        - ``False``: selection is a &quot;&lt;sel1&gt; WITHIN &lt;cutoff&gt; OF &lt;sel2&gt;&quot;</span>
+<span class="sd">    use_kdtree : bool</span>
+
+<span class="sd">        - ``True``: use fast KD-Tree based selections</span>
+<span class="sd">        - ``False``: use distance matrix approach</span>
+<span class="sd">    updating_selection : bool</span>
+<span class="sd">        If ``True``, re-evaluate the selection string each frame.</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    * Periodic boundary conditions are *not* taken into account: the naive</span>
+<span class="sd">      minimum image convention employed in the distance check is currently</span>
+<span class="sd">      not being applied to remap the coordinates themselves, and hence it</span>
+<span class="sd">      would lead to counts in the wrong region.</span>
+<span class="sd">    * With ``updating_selection=True``, the selection is evaluated every turn;</span>
+<span class="sd">      do not use distance based selections (such as &quot;AROUND&quot;) in your selection</span>
+<span class="sd">      string because it will likely completely negate any gains from using</span>
+<span class="sd">      this function factory in the first place.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`notwithin_coordinates_factory` creates an optimized function that, when called,</span>
+<span class="sd">    returns the coordinates of the &quot;solvent&quot; selection that are *not within* a given cut-off</span>
+<span class="sd">    distance of the &quot;solute&quot;. Because it is KD-tree based, it is cheap to query the KD-tree with</span>
+<span class="sd">    a different cut-off::</span>
+
+<span class="sd">      notwithin_coordinates = notwithin_coordinates_factory(universe, &#39;name OH2&#39;, &#39;protein and not name H*&#39;, 3.5)</span>
+<span class="sd">      ...</span>
+<span class="sd">      coord = notwithin_coordinates()        # get coordinates outside cutoff 3.5 A</span>
+<span class="sd">      coord = notwithin_coordinates(cutoff2) # can use different cut off</span>
+
+<span class="sd">    For programmatic convenience, the function can also function as a factory for a simple</span>
+<span class="sd">    *within cutoff* query if the keyword ``not_within=False`` is set::</span>
+
+<span class="sd">      within_coordinates = notwithin_coordinates_factory(universe, &#39;name OH2&#39;,&#39;protein and not name H*&#39;, 3.5,</span>
+<span class="sd">                                                         not_within=False)</span>
+<span class="sd">      ...</span>
+<span class="sd">      coord = within_coordinates()        # get coordinates within cutoff 3.5 A</span>
+<span class="sd">      coord = within_coordinates(cutoff2) # can use different cut off</span>
+
+<span class="sd">    (Readability is enhanced by properly naming the generated function</span>
+<span class="sd">    ``within_coordinates()``.)</span>
+
+
+<span class="sd">    .. deprecated:: 1.0.0</span>
+<span class="sd">       :func:`notwithin_coordinates_factory` is no longer supported and will be</span>
+<span class="sd">       removed in 2.0.0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Benchmark of FABP system (solvent 3400 OH2, protein 2100 atoms) on G4 powerbook, 500 frames</span>
+    <span class="c1">#                    cpu/s    relative   speedup       use_kdtree</span>
+    <span class="c1"># distance matrix    633        1          1           False</span>
+    <span class="c1"># AROUND + kdtree    420        0.66       1.5         n/a (&#39;name OH2 around 4 protein&#39;)</span>
+    <span class="c1"># manual + kdtree    182        0.29       3.5         True</span>
+    <span class="n">solvent</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel1</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="n">updating_selection</span><span class="p">)</span>
+    <span class="n">protein</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">sel2</span><span class="p">,</span> <span class="n">updating</span><span class="o">=</span><span class="n">updating_selection</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">use_kdtree</span><span class="p">:</span>
+        <span class="c1"># using faster hand-coded &#39;not within&#39; selection with kd-tree</span>
+        <span class="k">if</span> <span class="n">not_within</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># default</span>
+            <span class="k">def</span> <span class="nf">notwithin_coordinates</span><span class="p">(</span><span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">):</span>
+                <span class="c1"># must update every time step</span>
+                <span class="n">ns_w</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">solvent</span><span class="p">)</span>  <span class="c1"># build kd-tree on solvent (N_w &gt; N_protein)</span>
+                <span class="n">solvation_shell</span> <span class="o">=</span> <span class="n">ns_w</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">protein</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>  <span class="c1"># solvent within CUTOFF of protein</span>
+                <span class="c1"># Find indices in solvent NOT in solvation shell</span>
+                <span class="n">uniq_idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">solvent</span><span class="o">.</span><span class="n">ix</span><span class="p">,</span> <span class="n">solvation_shell</span><span class="o">.</span><span class="n">ix</span><span class="p">)</span>
+                <span class="c1"># Then reselect these from Universe.atoms (as these indices are global)</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">uniq_idx</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">notwithin_coordinates</span><span class="p">(</span><span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">):</span>
+                <span class="c1"># acts as &#39;&lt;solvent&gt; WITHIN &lt;cutoff&gt; OF &lt;protein&gt;&#39;</span>
+                <span class="c1"># must update every time step</span>
+                <span class="n">ns_w</span> <span class="o">=</span> <span class="n">NS</span><span class="o">.</span><span class="n">AtomNeighborSearch</span><span class="p">(</span><span class="n">solvent</span><span class="p">)</span>  <span class="c1"># build kd-tree on solvent (N_w &gt; N_protein)</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">ns_w</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">protein</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">)</span>  <span class="c1"># solvent within CUTOFF of protein</span>
+                <span class="k">return</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># slower distance matrix based (calculate all with all distances first)</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">solvent</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">protein</span><span class="p">)),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># as long as s_coor is not minimum-image remapped</span>
+        <span class="k">if</span> <span class="n">not_within</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>  <span class="c1"># default</span>
+            <span class="n">compare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">greater</span>
+            <span class="n">aggregatefunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">compare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span>
+            <span class="n">aggregatefunc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span>
+
+        <span class="k">def</span> <span class="nf">notwithin_coordinates</span><span class="p">(</span><span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">):</span>
+            <span class="n">s_coor</span> <span class="o">=</span> <span class="n">solvent</span><span class="o">.</span><span class="n">positions</span>
+            <span class="n">p_coor</span> <span class="o">=</span> <span class="n">protein</span><span class="o">.</span><span class="n">positions</span>
+            <span class="c1"># Does water i satisfy d[i,j] &gt; r for ALL j?</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">distances</span><span class="o">.</span><span class="n">distance_array</span><span class="p">(</span><span class="n">s_coor</span><span class="p">,</span> <span class="n">p_coor</span><span class="p">,</span> <span class="n">box</span><span class="o">=</span><span class="n">box</span><span class="p">,</span> <span class="n">result</span><span class="o">=</span><span class="n">dist</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">s_coor</span><span class="p">[</span><span class="n">aggregatefunc</span><span class="p">(</span><span class="n">compare</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">cutoff</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">notwithin_coordinates</span>
+
+
+<span class="c1"># This is useful in principle but it is not needed here anymore. Maybe move</span>
+<span class="c1"># to the rms module??</span>
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;2.0.0&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">Bfactor2RMSF</span><span class="p">(</span><span class="n">B</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Atomic root mean square fluctuation (in Angstrom) from the crystallographic B-factor</span>
+
+<span class="sd">    RMSF and B-factor are related by [Willis1975]_</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        B = \frac{8\pi^2}{3} \rm{RMSF}^2</span>
+
+<span class="sd">    and this function returns</span>
+
+<span class="sd">    .. math::</span>
+
+<span class="sd">        \rm{RMSF} = \sqrt{\frac{3 B}{8\pi^2}}</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+
+<span class="sd">    .. [Willis1975]  BTM Willis and AW Pryor. *Thermal vibrations in crystallography*. Cambridge Univ. Press, 1975</span>
+
+
+<span class="sd">    .. deprecated:: 1.0.0</span>
+<span class="sd">       :func:`Bfactor2RMSF` is no longer supported and will be removed in 2.0.0.</span>
+<span class="sd">       as part of the removal of the :func:`density_from_PDB` function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.</span> <span class="o">*</span> <span class="n">B</span> <span class="o">/</span> <span class="mf">8.</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+
+<span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;2.0.0&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">density_from_PDB</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a density from a single frame PDB.</span>
+
+<span class="sd">    Typical use is to make a density from the crystal water</span>
+<span class="sd">    molecules. The density is created from isotropic gaussians</span>
+<span class="sd">    centered at each selected atoms. If B-factors are present in the</span>
+<span class="sd">    file then they are used to calculate the width of the gaussian.</span>
+
+<span class="sd">    Using the *sigma* keyword, one can override this choice and</span>
+<span class="sd">    prescribe a gaussian width for all atoms (in Angstrom), which is</span>
+<span class="sd">    calculated as described for :func:`Bfactor2RMSF`.</span>
+
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    pdb : str</span>
+<span class="sd">          PDB filename (should have the temperatureFactor set); ANISO</span>
+<span class="sd">          records are currently *not* processed</span>
+<span class="sd">    select : str</span>
+<span class="sd">          selection string (MDAnalysis syntax) for the species to be analyzed</span>
+<span class="sd">          [&#39;resname HOH and name O&#39;]</span>
+<span class="sd">    delta : float</span>
+<span class="sd">          bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
+<span class="sd">    metadata : dict</span>
+<span class="sd">          dictionary of additional data to be saved with the object [``None``]</span>
+<span class="sd">    padding : float</span>
+<span class="sd">          increase histogram dimensions by padding (on top of initial box size) [1.0]</span>
+<span class="sd">    sigma : float</span>
+<span class="sd">          width (in Angstrom) of the gaussians that are used to build up the</span>
+<span class="sd">          density; if ``None`` then uses B-factors from *pdb* [``None``]</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    :class:`Density`</span>
+<span class="sd">          object with a density measured relative to the water density at</span>
+<span class="sd">          standard conditions</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The current implementation is *painfully* slow.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    :func:`Bfactor2RMSF` and :class:`BfactorDensityCreator`</span>
+
+
+<span class="sd">    .. deprecated: 1.0.0</span>
+<span class="sd">       This function is not well tested or optimized and will be removed</span>
+<span class="sd">       in 2.0.0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">BfactorDensityCreator</span><span class="p">(</span><span class="n">pdb</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">Density</span><span class="p">()</span>
+
+
+<span class="c1"># REMOVE in 2.0.0</span>
+<div class="viewcode-block" id="BfactorDensityCreator"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.BfactorDensityCreator">[docs]</a><span class="k">class</span> <span class="nc">BfactorDensityCreator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create a density grid from a pdb file using MDAnalysis.</span>
+
+<span class="sd">    The main purpose of this function is to convert crystal waters in</span>
+<span class="sd">    an X-ray structure into a density so that one can compare the</span>
+<span class="sd">    experimental density with the one from molecular dynamics</span>
+<span class="sd">    trajectories. Because a pdb is a single snapshot, the density is</span>
+<span class="sd">    estimated by placing Gaussians of width sigma at the position of</span>
+<span class="sd">    all selected atoms.</span>
+
+<span class="sd">    Sigma can be fixed or taken from the B-factor field, in which case</span>
+<span class="sd">    sigma is taken as sqrt(3.*B/8.)/pi (see :func:`BFactor2RMSF`).</span>
+
+<span class="sd">    .. TODO</span>
+<span class="sd">    .. * Make Gaussian convolution more efficient (at least for same</span>
+<span class="sd">    ..   sigma) because right now it is *very* slow (which may be</span>
+<span class="sd">    ..   acceptable if one only runs this once)</span>
+<span class="sd">    .. * Using a temporary Creator class with the</span>
+<span class="sd">    ..   :meth:`BfactorDensityCreator.Density` helper method is clumsy.</span>
+
+
+<span class="sd">    .. deprecated: 1.0.0</span>
+<span class="sd">       This function is not well tested or optimized and will be removed</span>
+<span class="sd">       in 2.0.0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;2.0.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pdb</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="s1">&#39;resname HOH and name O&#39;</span><span class="p">,</span>
+                 <span class="n">metadata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Construct the density from psf and pdb and the select.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        pdb : str</span>
+<span class="sd">            PDB file or :class:`MDAnalysis.Universe`;</span>
+<span class="sd">        select : str</span>
+<span class="sd">            selection string (MDAnalysis syntax) for the species to be analyzed</span>
+<span class="sd">        delta : float</span>
+<span class="sd">            bin size for the density grid in Angstrom (same in x,y,z) [1.0]</span>
+<span class="sd">        metadata : dict</span>
+<span class="sd">            dictionary of additional data to be saved with the object</span>
+<span class="sd">        padding : float</span>
+<span class="sd">            increase histogram dimensions by padding (on top of initial box size)</span>
+<span class="sd">        sigma : float</span>
+<span class="sd">            width (in Angstrom) of the gaussians that are used to build up the</span>
+<span class="sd">            density; if ``None`` (the default) then uses B-factors from pdb</span>
+
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        For assigning X-ray waters to MD densities one might have to use a sigma</span>
+<span class="sd">        of about 0.5 A to obtain a well-defined and resolved x-ray water density</span>
+<span class="sd">        that can be easily matched to a broader density distribution.</span>
+
+<span class="sd">        .. versionchanged:: 1.0.0</span>
+<span class="sd">           Changed `selection` keyword to `select`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        The following creates the density with the B-factors from the pdb file::</span>
+
+<span class="sd">          DC = BfactorDensityCreator(pdb, delta=1.0, select=&quot;name HOH&quot;,</span>
+<span class="sd">                                     padding=2, sigma=None)</span>
+<span class="sd">          density = DC.Density()</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        :func:`density_from_PDB` for a convenience function</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">as_Universe</span><span class="p">(</span><span class="n">pdb</span><span class="p">)</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="n">select</span><span class="p">)</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">positions</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Selected </span><span class="si">{0:d}</span><span class="s2"> atoms (</span><span class="si">{1!s}</span><span class="s2">) out of </span><span class="si">{2:d}</span><span class="s2"> total.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">coord</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">select</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+        <span class="n">smin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">padding</span>
+        <span class="n">smax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">padding</span>
+
+        <span class="n">BINS</span> <span class="o">=</span> <span class="n">fixedwidth_bins</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">smin</span><span class="p">,</span> <span class="n">smax</span><span class="p">)</span>
+        <span class="n">arange</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;min&#39;</span><span class="p">],</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;max&#39;</span><span class="p">]))</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">BINS</span><span class="p">[</span><span class="s1">&#39;Nbins&#39;</span><span class="p">]</span>
+
+        <span class="c1"># get edges by doing a fake run</span>
+        <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+                                             <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([(</span><span class="n">e</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">midpoints</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">e</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">midpoints</span><span class="p">]</span>
+        <span class="n">n_frames</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">sigma</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># histogram individually, and smear out at the same time</span>
+            <span class="c1"># with the appropriate B-factor</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">tempfactors</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
+                <span class="n">wmsg</span> <span class="o">=</span> <span class="s2">&quot;Some B-factors are Zero (will be skipped).&quot;</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">wmsg</span><span class="p">)</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">wmsg</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="n">MissingDataWarning</span><span class="p">)</span>
+            <span class="n">rmsf</span> <span class="o">=</span> <span class="n">Bfactor2RMSF</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">tempfactors</span><span class="p">)</span>
+            <span class="n">grid</span> <span class="o">*=</span> <span class="mf">0.0</span>  <span class="c1"># reset grid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smear_rmsf</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span> <span class="n">rmsf</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># histogram &#39;delta functions&#39;</span>
+            <span class="n">grid</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogramdd</span><span class="p">(</span><span class="n">coord</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="nb">range</span><span class="o">=</span><span class="n">arange</span><span class="p">,</span> <span class="n">normed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Histogrammed </span><span class="si">{0:6d}</span><span class="s2"> atoms from pdb.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+            <span class="c1"># just a convolution of the density with a Gaussian</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_smear_sigma</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">sigma</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;pdb&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pdb</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pdb&#39;</span><span class="p">:</span> <span class="n">pdb</span><span class="p">}</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;select&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">select</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;n_frames&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n_frames</span>
+        <span class="n">metadata</span><span class="p">[</span><span class="s1">&#39;sigma&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sigma</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span> <span class="o">=</span> <span class="n">metadata</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Histogram completed (initial density in Angstrom**-3)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Density automatically converts histogram to density for isDensity=False -- ??[OB]</span>
+
+<div class="viewcode-block" id="BfactorDensityCreator.Density"><a class="viewcode-back" href="../../../documentation_pages/analysis/density.html#MDAnalysis.analysis.density.BfactorDensityCreator.Density">[docs]</a>    <span class="k">def</span> <span class="nf">Density</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a :class:`Density` object.&quot;&quot;&quot;</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">Density</span><span class="p">(</span><span class="n">grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">g</span><span class="p">,</span> <span class="n">edges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">length</span><span class="o">=</span><span class="s1">&#39;Angstrom&#39;</span><span class="p">),</span>
+                    <span class="n">parameters</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">isDensity</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">make_density</span><span class="p">()</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">convert_density</span><span class="p">(</span><span class="s1">&#39;water&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">d</span></div>
+
+    <span class="k">def</span> <span class="nf">_smear_sigma</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="c1"># smear out points</span>
+        <span class="c1"># (not optimized -- just to test the principle; faster approach could use</span>
+        <span class="c1"># convolution of the whole density with a single Gaussian via FFTs:</span>
+        <span class="c1"># rho_smeared = F^-1[ F[g]*F[rho] ]</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># holds the smeared out density</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">grid</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>  <span class="c1"># position in histogram (as bin numbers)</span>
+        <span class="k">for</span> <span class="n">iwat</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">])):</span>  <span class="c1"># super-ugly loop</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">wp</span><span class="p">[</span><span class="n">iwat</span><span class="p">]</span> <span class="k">for</span> <span class="n">wp</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">])</span>
+            <span class="n">g</span> <span class="o">+=</span> <span class="n">grid</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gaussian</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">sigma</span><span class="p">)</span>
+            <span class="c1"># print(&quot;Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r&quot;.format(iwat + 1, len(pos[0]), sigma),)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_smear_rmsf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coordinates</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">edges</span><span class="p">,</span> <span class="n">rmsf</span><span class="p">):</span>
+        <span class="c1"># smear out each water with its individual Gaussian</span>
+        <span class="c1"># (slower than smear_sigma)</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># holds the smeared out density</span>
+        <span class="n">N</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">coordinates</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">for</span> <span class="n">iwat</span><span class="p">,</span> <span class="n">coord</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">coordinates</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">rmsf</span><span class="p">[</span><span class="n">iwat</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">g</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromfunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gaussian_cartesian</span><span class="p">,</span> <span class="n">grid</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int</span><span class="p">,</span>
+                                    <span class="n">c</span><span class="o">=</span><span class="n">coord</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="n">rmsf</span><span class="p">[</span><span class="n">iwat</span><span class="p">])</span>
+            <span class="c1"># print(&quot;Smearing out atom position {0:4d}/{1:5d} with RMSF {2:4.2f} A\r&quot;.format(iwat + 1, N, rmsf[iwat]),)</span>
+        <span class="k">return</span> <span class="n">g</span>
+
+    <span class="k">def</span> <span class="nf">_gaussian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="c1"># i,j,k can be numpy arrays</span>
+        <span class="c1"># p is center of gaussian as grid index, sigma its width (in A)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># in Angstrom</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_gaussian_cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">sigma</span><span class="p">):</span>
+        <span class="c1"># i,j,k can be numpy arrays</span>
+        <span class="c1"># c is center of gaussian in cartesian coord (A), sigma its width (in A)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># in Angstrom</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">j</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">delta</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">k</span> <span class="o">-</span> <span class="n">c</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">+</span> <span class="n">z</span> <span class="o">*</span> <span class="n">z</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">sigma</span> <span class="o">*</span> <span class="n">sigma</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

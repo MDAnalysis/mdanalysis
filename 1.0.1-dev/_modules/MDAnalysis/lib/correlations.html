@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis.lib.correlations &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="../../../_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="../../../_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="../../../_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="../../../index.html">
+          
+
+          
+            
+            <img src="../../../_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>MDAnalysis.lib.correlations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for MDAnalysis.lib.correlations</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
+<span class="c1">#</span>
+<span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
+<span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
+<span class="c1"># (see the file AUTHORS for the full list of names)</span>
+<span class="c1">#</span>
+<span class="c1"># Released under the GNU Public Licence, v2 or any higher version</span>
+<span class="c1">#</span>
+<span class="c1"># Please cite your use of MDAnalysis in published work:</span>
+<span class="c1">#</span>
+<span class="c1"># R. J. Gowers, M. Linke, J. Barnoud, T. J. E. Reddy, M. N. Melo, S. L. Seyler,</span>
+<span class="c1"># D. L. Dotson, J. Domanski, S. Buchoux, I. M. Kenney, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Python package for the rapid analysis of molecular dynamics</span>
+<span class="c1"># simulations. In S. Benthall and S. Rostrup editors, Proceedings of the 15th</span>
+<span class="c1"># Python in Science Conference, pages 102-109, Austin, TX, 2016. SciPy.</span>
+<span class="c1"># doi: 10.25080/majora-629e541a-00e</span>
+<span class="c1">#</span>
+<span class="c1"># N. Michaud-Agrawal, E. J. Denning, T. B. Woolf, and O. Beckstein.</span>
+<span class="c1"># MDAnalysis: A Toolkit for the Analysis of Molecular Dynamics Simulations.</span>
+<span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
+<span class="c1">#</span>
+
+<span class="sd">&quot;&quot;&quot;Correlations utilities --- :mod:`MDAnalysis.lib.correlations`</span>
+<span class="sd">=================================================================================</span>
+
+
+<span class="sd">:Authors: Paul Smith &amp; Mateusz Bieniek</span>
+<span class="sd">:Year: 2020</span>
+<span class="sd">:Copyright: GNU Public License v2</span>
+
+<span class="sd">.. versionadded:: 1.0.0</span>
+
+<span class="sd">This module is primarily for internal use by other analysis modules. It</span>
+<span class="sd">provides functionality for calculating the time autocorrelation function</span>
+<span class="sd">of a binary variable (i.e one that is either true or false at each</span>
+<span class="sd">frame for a given atom/molecule/set of molecules). This module includes</span>
+<span class="sd">functions for calculating both the time continuous autocorrelation and</span>
+<span class="sd">the intermittent autocorrelation. The function :func:`autocorrelation`</span>
+<span class="sd">calculates the continuous autocorrelation only. The data may be</span>
+<span class="sd">pre-processed using the function :func:`intermittency` in order to</span>
+<span class="sd">acount for intermittency before passing the results to</span>
+<span class="sd">:func:`autocorrelation`.</span>
+
+<span class="sd">This module is inspired by seemingly disparate analyses that rely on the same</span>
+<span class="sd">underlying calculation, including the survival probability of water around</span>
+<span class="sd">proteins [Araya-Secchi2014]_, hydrogen bond lifetimes [Gowers2015]_, [Araya-Secchi2014]_,</span>
+<span class="sd">and the rate of cholesterol flip-flop in lipid bilayers [Gu2019]_.</span>
+
+<span class="sd">.. seeAlso::</span>
+
+<span class="sd">    Analysis tools that make use of modules:</span>
+
+<span class="sd">        * :class:`MDAnalysis.analysis.waterdynamics.SurvivalProbability`</span>
+<span class="sd">            Calculates the continuous or intermittent survival probability</span>
+<span class="sd">            of an atom group in a region of interest.</span>
+
+<span class="sd">        * :class:`MDAnalysis.analysis.hbonds.hbond_analysis`</span>
+<span class="sd">            Calculates the continuous or intermittent hydrogen bond</span>
+<span class="sd">            lifetime.</span>
+
+<span class="sd">.. rubric:: References</span>
+
+<span class="sd">.. [Gu2019] Gu, R.-X.; Baoukina, S.; Tieleman, D. P. (2019)</span>
+<span class="sd">            Cholesterol Flip-Flop in Heterogeneous Membranes.</span>
+<span class="sd">            J. Chem. Theory Comput. 15 (3), 2064–2070.</span>
+<span class="sd">            https://doi.org/10.1021/acs.jctc.8b00933.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+
+<div class="viewcode-block" id="autocorrelation"><a class="viewcode-back" href="../../../documentation_pages/lib/correlations.html#MDAnalysis.lib.correlations.autocorrelation">[docs]</a><span class="k">def</span> <span class="nf">autocorrelation</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">,</span> <span class="n">tau_max</span><span class="p">,</span> <span class="n">window_step</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Implementation of a discrete autocorrelation function.</span>
+
+<span class="sd">    The autocorrelation of a property :math:`x` from a time :math:`t=t_0` to :math:`t=t_0 + \tau`</span>
+<span class="sd">    is given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        C(\tau) = \langle \frac{ x(t_0)x(t_0 +\tau) }{ x(t_0)x(t_0) } \rangle</span>
+
+<span class="sd">    where :math:`x` may represent any property of a particle, such as velocity or</span>
+<span class="sd">    potential energy.</span>
+
+<span class="sd">    This function is an implementation of a special case of the time</span>
+<span class="sd">    autocorrelation function in which the property under consideration can</span>
+<span class="sd">    be encoded with indicator variables, :math:`0` and :math:`1`, to represent the binary</span>
+<span class="sd">    state of said property. This special case is often referred to as the</span>
+<span class="sd">    survival probability (:math:`S(\tau)`). As an example, in calculating the survival</span>
+<span class="sd">    probability of water molecules within 5 Å of a protein, each water</span>
+<span class="sd">    molecule will either be within this cutoff range (:math:`1`) or not (:math:`0`). The</span>
+<span class="sd">    total number of water molecules within the cutoff at time :math:`t_0` will be</span>
+<span class="sd">    given by :math:`N(t_0)`. Other cases include the Hydrogen Bond Lifetime as</span>
+<span class="sd">    well as the translocation rate of cholesterol across a bilayer.</span>
+
+<span class="sd">    The survival probability of a property of a set of particles is</span>
+<span class="sd">    given by:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        S(\tau) =  \langle \frac{ N(t_0, t_0 + \tau )} { N(t_0) }\rangle</span>
+
+<span class="sd">    where :math:`N(t0)` is the number of particles at time :math:`t_0` for which the feature</span>
+<span class="sd">    is observed, and :math:`N(t0, t_0 + \tau)` is the number of particles for which</span>
+<span class="sd">    this feature is present at every frame from :math:`t_0` to :math:`N(t0, t_0 + \tau)`.</span>
+<span class="sd">    The angular brackets represent an average over all time origins, :math:`t_0`.</span>
+
+<span class="sd">    See [Araya-Secchi2014]_ for a description survival probability.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_of_sets : list</span>
+<span class="sd">      List of sets. Each set corresponds to data from a single frame. Each element in a set</span>
+<span class="sd">      may be, for example, an atom id or a tuple of atoms ids. In the case of calculating the</span>
+<span class="sd">      survival probability of water around a protein, these atom ids in a given set will be</span>
+<span class="sd">      those of the atoms which are within a cutoff distance of the protein at a given frame.</span>
+<span class="sd">    tau_max : int</span>
+<span class="sd">      The last tau (lag time, inclusive) for which to calculate the autocorrelation. e.g if tau_max = 20,</span>
+<span class="sd">      the survival probability will be calculated over 20 frames.</span>
+<span class="sd">    window_step : int, optional</span>
+<span class="sd">      The step size for t0 to perform autocorrelation. Ideally, window_step will be larger than</span>
+<span class="sd">       tau_max to ensure independence of each window for which the calculation is performed.</span>
+<span class="sd">       Default is 1.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    --------</span>
+<span class="sd">    tau_timeseries : list of int</span>
+<span class="sd">        the values of tau for which the autocorrelation was calculated</span>
+<span class="sd">    timeseries : list of int</span>
+<span class="sd">        the autocorelation values for each of the tau values</span>
+<span class="sd">    timeseries_data : list of list of int</span>
+<span class="sd">        the raw data from which the autocorrelation is computed, i.e :math:`S(\tau)` at each window.</span>
+<span class="sd">        This allows the time dependant evolution of :math:`S(\tau)` to be investigated.</span>
+
+<span class="sd">    .. versionadded:: 0.19.2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># check types</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">list</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;list_of_sets must be a one-dimensional list of sets&quot;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+
+    <span class="c1"># Check dimensions of parameters</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tau_max</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;tau_max cannot be greater than the length of list_of_sets&quot;</span><span class="p">)</span> <span class="c1"># pragma: no cover</span>
+
+    <span class="n">tau_timeseries</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">tau_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">timeseries_data</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">tau_max</span><span class="p">)]</span>
+
+    <span class="c1"># calculate autocorrelation</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">),</span> <span class="n">window_step</span><span class="p">):</span>
+        <span class="n">Nt</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">Nt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">for</span> <span class="n">tau</span> <span class="ow">in</span> <span class="n">tau_timeseries</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">):</span>
+                <span class="k">break</span>
+
+            <span class="c1"># continuous: IDs that survive from t to t + tau and at every frame in between</span>
+            <span class="n">Ntau</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_sets</span><span class="p">[</span><span class="n">t</span><span class="p">:</span><span class="n">t</span> <span class="o">+</span> <span class="n">tau</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]))</span>
+            <span class="n">timeseries_data</span><span class="p">[</span><span class="n">tau</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Ntau</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">Nt</span><span class="p">))</span>
+
+    <span class="n">timeseries</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">timeseries_data</span><span class="p">]</span>
+
+    <span class="c1"># at time 0 the value has to be one</span>
+    <span class="n">tau_timeseries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">timeseries</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">tau_timeseries</span><span class="p">,</span> <span class="n">timeseries</span><span class="p">,</span> <span class="n">timeseries_data</span></div>
+
+
+<div class="viewcode-block" id="correct_intermittency"><a class="viewcode-back" href="../../../documentation_pages/lib/correlations.html#MDAnalysis.lib.correlations.correct_intermittency">[docs]</a><span class="k">def</span> <span class="nf">correct_intermittency</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">,</span> <span class="n">intermittency</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Preprocess data to allow intermittent behaviour prior to calling :func:`autocorrelation`.</span>
+
+<span class="sd">    Survival probabilty may be calculated either with a strict continuous requirement or</span>
+<span class="sd">    a less strict intermittency. If calculating the survival probability water around a</span>
+<span class="sd">    protein for example, in the former case the water must be within a cutoff distance</span>
+<span class="sd">    of the protein at every frame from :math:`t_0` to :math:`t_0 + \tau` in order for it to be considered</span>
+<span class="sd">    present at :math:`t_0 + \tau`. In the intermittent case, the water molecule is allowed to</span>
+<span class="sd">    leave the region of interest for up to a specified consecutive number of frames whilst still</span>
+<span class="sd">    being considered present at :math:`t_0 + \tau`.</span>
+
+<span class="sd">    This function pre-processes data, such as the atom ids of water molecules within a cutoff</span>
+<span class="sd">    distance of a protein at each frame, in order to allow for intermittent behaviour, with a</span>
+<span class="sd">    single pass over the data.</span>
+
+<span class="sd">    For example, if an atom is absent for a number of frames equal or smaller than the parameter</span>
+<span class="sd">    :attr:`intermittency`, then this absence will be removed and thus the atom is considered to have</span>
+<span class="sd">    not left.</span>
+<span class="sd">    e.g 7,A,A,7 with `intermittency=2` will be replaced by 7,7,7,7, where A=absence.</span>
+
+<span class="sd">    The returned data can be used as input to the function :func:`autocorrelation` in order</span>
+<span class="sd">    to calculate the survival probability with a given intermittency.</span>
+
+<span class="sd">    See [Gowers2015]_ for a description of</span>
+<span class="sd">    intermittency in the calculation of hydrogen bond lifetimes.</span>
+
+<span class="sd">    # TODO - is intermittency consitent with list of sets of sets? (hydrogen bonds)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    list_of_sets: list</span>
+<span class="sd">        In the simple case of e.g survival probability, a list of sets of atom ids present at each frame, where a</span>
+<span class="sd">        single set contains atom ids at a given frame, e.g [{0, 1}, {0}, {0}, {0, 1}]</span>
+<span class="sd">    intermittency : int</span>
+<span class="sd">        The maximum gap allowed. The default `intermittency=0` means that if the datapoint is missing at any frame, no</span>
+<span class="sd">        changes are made to the data. With the value of `intermittency=2`, all datapoints missing for up to two</span>
+<span class="sd">        consecutive frames will be instead be considered present.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    list_of_sets: list</span>
+<span class="sd">        returns a new list with the IDs with added IDs which disappeared for &lt;= :attr:`intermittency`.</span>
+<span class="sd">        e.g If [{0, 1}, {0}, {0}, {0, 1}] is a list of sets of atom ids present at each frame and `intermittency=2`,</span>
+<span class="sd">        both atoms will be considered present throughout and thus the returned list of sets will be</span>
+<span class="sd">        [{0, 1}, {0, 1}, {0, 1}, {0, 1}].</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">intermittency</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">list_of_sets</span>
+
+    <span class="n">list_of_sets</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ids</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">):</span>
+        <span class="c1"># initially update each frame as seen 0 ago (now)</span>
+        <span class="n">seen_frames_ago</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">intermittency</span> <span class="o">+</span> <span class="mi">2</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">atomid</span> <span class="ow">in</span> <span class="n">seen_frames_ago</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="c1"># no more frames</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_sets</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># if the atom is absent now</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">atomid</span> <span class="ow">in</span> <span class="n">list_of_sets</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]:</span>
+                    <span class="c1"># increase its absence counter</span>
+                    <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># the atom is found</span>
+                <span class="k">if</span> <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># the atom was present in the last frame</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># it was absent more times than allowed</span>
+                <span class="k">if</span> <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">intermittency</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># the atom was absent but returned (within &lt;= intermittency_value)</span>
+                <span class="c1"># add it to the frames where it was absent.</span>
+                <span class="c1"># Introduce the corrections.</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">],</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="n">list_of_sets</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">atomid</span><span class="p">)</span>
+
+                <span class="n">seen_frames_ago</span><span class="p">[</span><span class="n">atomid</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="n">list_of_sets</span></div>
+
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

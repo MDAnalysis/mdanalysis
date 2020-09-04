@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>MDAnalysis documentation &mdash; MDAnalysis 1.0.1-dev documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/msmb.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+    <link rel="shortcut icon" href="_static/mdanalysis-logo.ico"/>
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/javascript" src="_static/js/versions.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within MDAnalysis 1.0.1-dev documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1. Overview over MDAnalysis" href="documentation_pages/overview.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+          
+
+          
+            <a href="#">
+          
+
+          
+            
+            <img src="_static/mdanalysis-logo-thin.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.1-dev
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/overview.html">1. Overview over MDAnalysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/topology.html">2. The topology system</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections.html">3. Selection commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/analysis_modules.html">4. Analysis modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/topology_modules.html">5. Topology modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/coordinates_modules.html">6. Coordinates modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/converters.html">7. Converter modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/trajectory_transformations.html">8. Trajectory transformations (“on-the-fly” transformations)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/selections_modules.html">9. Selection exporters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/auxiliary_modules.html">10. Auxiliary modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/core_modules.html">11. Core modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/visualization_modules.html">12. Visualization modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/lib_modules.html">13. Library functions — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.lib</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/version.html">14. Version information for MDAnalysis - <code class="docutils literal notranslate"><span class="pre">MDAnalysis.version</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/units.html">15. Constants and unit conversion — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.units</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/exceptions.html">16. Custom exceptions and warnings — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.exceptions</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="documentation_pages/references.html">17. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">MDAnalysis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>MDAnalysis documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="mdanalysis-documentation">
+<h1>MDAnalysis documentation<a class="headerlink" href="#mdanalysis-documentation" title="Permalink to this headline">¶</a></h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Release:</th><td class="field-body">1.0.1-dev</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Date:</th><td class="field-body">Sep 04, 2020</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MDAnalysis</strong> (<a class="reference external" href="https://www.mdanalysis.org">www.mdanalysis.org</a>) is an object-oriented python
+toolkit to analyze molecular dynamics trajectories generated by
+<a class="reference external" href="http://www.charmm.org/">CHARMM</a>, <a class="reference external" href="http://www.gromacs.org/">Gromacs</a>, <a class="reference external" href="http://ambermd.org/">Amber</a>, <a class="reference external" href="http://www.ks.uiuc.edu/Research/namd/">NAMD</a>, <a class="reference external" href="http://lammps.sandia.gov/">LAMMPS</a>, <a class="reference external" href="http://www.scd.stfc.ac.uk//44516.aspx">DL_POLY</a> and other
+packages; it also reads other formats (e.g., <a class="reference external" href="http://www.rcsb.org/pdb/static.do?p=file_formats/pdb/index.html">PDB</a> files and <a class="reference external" href="http://openbabel.org/wiki/XYZ_%28format%29">XYZ
+format</a> trajectories; see <a class="reference internal" href="documentation_pages/coordinates/init.html#id2"><span class="std std-ref">Table of supported coordinate formats</span></a> and
+<a class="reference internal" href="documentation_pages/topology/init.html#supported-topology-formats"><span class="std std-ref">Table of Supported Topology Formats</span></a> for the full lists). It can write
+most of these formats, too, together with atom selections for use in
+<a class="reference external" href="http://www.gromacs.org/">Gromacs</a>, <a class="reference external" href="http://www.charmm.org/">CHARMM</a>, <a class="reference external" href="http://www.ks.uiuc.edu/Research/vmd/">VMD</a> and <a class="reference external" href="http://www.pymol.org/">PyMol</a> (see <a class="reference internal" href="documentation_pages/selections_modules.html#selection-exporters"><span class="std std-ref">Selection exporters</span></a>).</p>
+<p>It allows one to read molecular dynamics trajectories and access the
+atomic coordinates through <a class="reference external" href="http://numpy.scipy.org">NumPy</a> arrays. This provides a flexible and
+relatively fast framework for complex analysis tasks. Fairly complete
+atom <a class="reference internal" href="documentation_pages/selections.html#selection-commands-label"><span class="std std-ref">Selection commands</span></a> are implemented. Trajectories can
+also be manipulated (for instance, fit to a reference structure) and
+written out in a range of formats.</p>
+<div class="section" id="getting-involved">
+<h2>Getting involved<a class="headerlink" href="#getting-involved" title="Permalink to this headline">¶</a></h2>
+<p>Please report <strong>bugs</strong> or <strong>enhancement requests</strong> through the <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/issues">Issue
+Tracker</a>. Questions can also be asked on the <a class="reference external" href="http://groups.google.com/group/mdnalysis-discussion">mdnalysis-discussion mailing
+list</a>.</p>
+<p>The MDAnalysis community subscribes to a <a class="reference external" href="https://www.mdanalysis.org/pages/conduct/">Code of Conduct</a> that all community
+members agree and adhere to — please read it.</p>
+</div>
+<div class="section" id="installing-mdanalysis">
+<span id="installation-instructions"></span><h2>Installing MDAnalysis<a class="headerlink" href="#installing-mdanalysis" title="Permalink to this headline">¶</a></h2>
+<p>The easiest approach to <a class="reference external" href="https://www.mdanalysis.org/pages/installation_quick_start/">install the latest release</a> is to use a package that
+can be installed either with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> or <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>.</p>
+<div class="section" id="pip">
+<h3>pip<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
+<p>Installation with <a class="reference external" href="http://www.pip-installer.org/en/latest/index.html">pip</a> and a <em>minimal set of dependencies</em>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis
+</pre></div>
+</div>
+<p>To install with a <em>full set of dependencies</em> (which includes everything needed
+for <code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis</span></code>), add the <code class="docutils literal notranslate"><span class="pre">[analysis]</span></code> tag:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysis<span class="o">[</span>analysis<span class="o">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="conda">
+<h3>conda<a class="headerlink" href="#conda" title="Permalink to this headline">¶</a></h3>
+<p>First installation with <a class="reference external" href="http://conda.pydata.org/docs/">conda</a>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
+conda install mdanalysis
+</pre></div>
+</div>
+<p>which will automatically install a <em>full set of dependencies</em>.</p>
+<p>To upgrade later:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda update mdanalysis
+</pre></div>
+</div>
+</div>
+<div class="section" id="tests">
+<h3>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h3>
+<p>If you want to <a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/wiki/UnitTests">run the tests</a> or use example files to follow some of the
+examples in the documentation or the <a class="reference external" href="https://www.mdanalysis.org/pages/learning_MDAnalysis/">tutorials</a>, also install the
+<code class="docutils literal notranslate"><span class="pre">MDAnalysisTests</span></code> package:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install --upgrade MDAnalysisTests    <span class="c1"># with pip</span>
+conda install mdanalysistests            <span class="c1"># with conda</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p><strong>Source code</strong> is available from
+<a class="reference external" href="https://github.com/MDAnalysis/mdanalysis/">https://github.com/MDAnalysis/mdanalysis/</a> under the <a class="reference external" href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU Public
+Licence, version 2</a>. Obtain the sources with <a class="reference external" href="https://git-scm.com/">git</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/MDAnalysis/mdanalysis.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="citation">
+<h2>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h2>
+<p>When using MDAnalysis in published work, please cite
+<a class="reference internal" href="documentation_pages/references.html#michaud-agrawal2011" id="id3">[Michaud-Agrawal2011]</a> and <a class="reference internal" href="documentation_pages/references.html#gowers2016" id="id4">[Gowers2016]</a>.</p>
+<p>MDAnalysis also contains specific algorithms and whole analysis
+modules whose algorithms have also been published in the scientific
+literature. Please make sure to also reference any
+<a class="reference internal" href="documentation_pages/references.html#references-components"><span class="std std-ref">Citations for included algorithms and modules</span></a> in published work.</p>
+<p>Thank you!</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="documentation_pages/overview.html" class="btn btn-neutral float-right" title="1. Overview over MDAnalysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2005-2020, Naveen Michaud-Agrawal, Elizabeth J. Denning, Christian Beckstein (logo), Joshua L. Adelman, Shobhit Agarwal, Irfan Alibay, Anshul Angaria, Luís Pedro Borges Araújo, Balasubramanian, Utkarsh Bansal, Jonathan Barnoud, Tone Bengtsen, Alejandro Bernardin, Ninad Bhat, Mateusz Bieniek, Wouter Boomsma, Jose Borreguero, Cédric Bouysset, Bart Bruininks, Sébastien Buchoux, Sören von Bülow, David Caplan, Yuanyu Chang, Matthieu Chavent, Kathleen Clark, Charlie Cook, Ruggero Cortini, Nicholas Craven, Ramon Crehuet, Davide Cruz, Robert Delgado, John Detlefs, Xavier Deupi, Jan Domanski, David L. Dotson, Ali Ehlen, Shujie Fan, Lennard van der Feltz, Philip Fowler, Guillaume Fraux, William Glass, Joseph Goose, Richard J. Gowers, Lukas Grossar, Abhinav Gupta, Akshay Gupta, Benjamin Hall, Ameya Harmalkar, Ivan Hristov, Eugen Hruska, Kyle J. Huston, Siddharth Jain, Joe Jordan, Jon Kapla, Navya Khare, Andrew William King, Abhishek A. Kognole, Max Linke, Philip Loche, Jinju Lu, Hugo MacDermott-Opeskin, Micaela Matta, Andrew R. McCluskey, Robert McGibbon, Rocco Meli, Manuel Nuno Melo, Dominik &#39;Rathann&#39; Mierzejewski, Henry Mull, Morgan L. Nance, Fiona B. Naughton, Alex Nesterenko, Hai Nguyen, Sang Young Noh, Daniele Padula, Nabarun Pal, Mattia F. Palermo, Danny Parton, Shakul Pathak, Joshua L. Phillips, Kashish Punjani, Michael Quevillon, Vedant Rathore, Tyler Reddy, Pedro Reis, Paul Rigor, Andrea Rizzi, Carlos Yanez S., Utkarsh Saxena, Marcello Sega, Sean L. Seyler, Faraaz Shah, Abhishek Shandilya, Shubham Sharma, Paul Smith, Andy Somogyi, Caio S. Souza, Shantanu Srivastava, Lukas Stelzl, Gorman Stock, Fenil Suchak, Ayush Suhane, Matthijs Tadema, Joao Miguel Correia Teixeira, Xiki Tempula, Matthew W. Thompson, Hao Tian, Matteo Tiberti, Wiep van der Toorn, Isaac Virshup, Lily Wang, Nestor Wendt, Zhiyi Wu, Zhuyi Xue, Juan Eiros Zamora, Johannes Zeman, Yibo Zhang, Yuxuan Zhuang, and Oliver Beckstein
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  <script>
+    var versions_json_url = 'https://docs.mdanalysis.org/versions.json'
+</script>
+
+<div class="rst-versions" data-toggle="rst-versions" role="note"
+     aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      <span class="fa fa-book"></span>
+        1.0.1-dev
+      <span class="fa fa-caret-down"></span>
+    </span>
+
+    <div class="rst-other-versions">
+        <dl id="versionselector">
+            <dt>Other Versions</dt>
+        </dl>
+
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
