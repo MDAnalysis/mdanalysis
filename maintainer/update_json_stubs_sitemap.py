@@ -79,6 +79,7 @@ REDIRECT = """
 for ver in versions[::-1]:
     if ver['latest']:
         latest_url = ver['url']
+        break
 else:
     try:
         latest_url = versions[-1]['url']
