@@ -63,11 +63,10 @@ transformation is called ::
             self.atoms = atoms
             self.dphi = dphi
             self.axis = np.array([0, 0, 1])
-            self.phi = 0
 
         def __call__(self, ts):
-            self.atoms.rotateby(self.phi, self.axis)
-            self.phi += self.dphi
+            phi = self.dphi * ts.frame
+            self.atoms.rotateby(phi, self.axis)
             return ts
 
 This transformation can be used as ::
