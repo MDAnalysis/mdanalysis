@@ -79,11 +79,8 @@ import numpy as np
 from libcpp.vector cimport vector
 from libc.math cimport floor
 
-ctypedef float rvec[3]
-ctypedef double drvec[3]
-
 # Useful Functions
-cdef float rvec_norm2(const rvec a) nogil:
+cdef float rvec_norm2(const float* a) nogil:
     return a[0]*a[0] + a[1]*a[1] + a[2]*a[2]
 
 
@@ -124,20 +121,11 @@ cdef class NSResults(object):
     be used to  generate the desired results on demand.
     """
 
-    cdef readonly float cutoff
-    cdef int npairs
-    cdef vector[int] pairs_buffer
-    cdef vector[double] pair_distances2_buffer
+    cdef vector[int] pairs
+    cdef vector[double] distances2
 
-    def __init__(self, double cutoff):
-        """
-        Parameters
-        ----------
-        cutoff : float
-            Specified cutoff distance
-        """
-        self.cutoff = cutoff
-        self.npairs = 0
+    def __init__(self):
+        pass
 
     cdef void add_neighbors(self, int beadid_i, int beadid_j, double distance2) nogil:
         """Internal function to add pairs and distances to buffers
@@ -149,10 +137,9 @@ cdef class NSResults(object):
         which are considered as neighbors.
         """
 
-        self.pairs_buffer.push_back(beadid_i)
-        self.pairs_buffer.push_back(beadid_j)
-        self.pair_distances2_buffer.push_back(distance2)
-        self.npairs += 1
+        self.pairs.push_back(beadid_i)
+        self.pairs.push_back(beadid_j)
+        self.distances2.push_back(distance2)
 
     def get_pairs(self):
         """Returns all the pairs within the desired cutoff distance
@@ -170,8 +157,7 @@ cdef class NSResults(object):
             pairs of atom indices of neighbors from query
             and initial atom coordinates of shape ``(N, 2)``
         """
-
-        return np.asarray(self.pairs_buffer, dtype=np.intp).reshape(self.npairs, 2)
+        return np.asarray(self.pairs, dtype=np.intp).reshape(-1, 2)
 
     def get_pair_distances(self):
         """Returns all the distances corresponding to each pair of neighbors
@@ -193,9 +179,9 @@ cdef class NSResults(object):
         :meth:`~NSResults.get_pairs`
 
         """
+        dist2 = np.asarray(self.distances2)
 
-        self.pair_distances_buffer = np.sqrt(self.pair_distances2_buffer)
-        return np.asarray(self.pair_distances_buffer)
+        return np.sqrt(dist2)
 
 
 cdef class _NSGrid(object):
@@ -299,7 +285,7 @@ cdef class _NSGrid(object):
             self.next_id[i] = self.head_id[j]
             self.head_id[j] = i
 
-    cdef int coord2cellid(self, rvec coord) nogil:
+    cdef int coord2cellid(self, const float* coord) nogil:
         """Finds the cell-id for the given coordinate inside the brick shaped box
 
         Note
@@ -314,13 +300,13 @@ cdef class _NSGrid(object):
         
         return xyz[0] + xyz[1] * self.cell_offsets[1] + xyz[2] * self.cell_offsets[2]
 
-    cdef void coord2cellxyz(self, rvec coord, int* xyz) nogil:
+    cdef void coord2cellxyz(self, const float* coord, int* xyz) nogil:
         """Calculate cell coordinate for coord"""
         cdef int cx, cy, cz
         
         cz = <int> (coord[2] / self.cellsize[2])
         cy = <int> ((coord[1] - cz * self.triclinic_dimensions[7]) / self.cellsize[1])
-        cx = <int> ((coord[0] - cy * self.triclinic_dimensions[3] - cz * self.triclinic_dimensions[6]) / self.cellsize[2])
+        cx = <int> ((coord[0] - cy * self.triclinic_dimensions[3] - cz * self.triclinic_dimensions[6]) / self.cellsize[0])
         
         xyz[0] = cx
         xyz[1] = cy
@@ -345,18 +331,6 @@ cdef class _NSGrid(object):
 
         return cx + cy * self.cell_offsets[1] + cz * self.cell_offsets[2]
 
-    cdef void cellid2xyz(self, int cellid, int[:] cellxyz) nogil:
-        cdef int cx, cy, cz
-
-        cz = cellid // self.ncells[2]
-        cellid -= cz * self.ncells[2]
-        cy = cellid // self.ncells[1]
-        cellid -= cy * self.ncells[1]
-
-        cellxyz[0] = cellid
-        cellxyz[1] = cy
-        cellxyz[2] = cz
-
 
 cdef class FastNS(object):
     """Grid based search between two group of atoms
@@ -370,8 +344,6 @@ cdef class FastNS(object):
     cdef _NSGrid grid
     cdef bint periodic
 
-    # TODO: This signature isn't great
-    # better instead use box=None to specify pbc=False and put pseudobox generation to inside __init__
     def __init__(self, cutoff, coords, box, pbc=True):
         """
         Initialize the grid and sort the coordinates in respective
@@ -505,9 +477,7 @@ cdef class FastNS(object):
 
         searchcoords_bbox =  distances.apply_PBC(search_coords, self.grid.dimensions)
         size_search = search_coords.shape[0]
-
-        results = NSResults(self.cutoff)
-
+        results = NSResults()
 
         for i in range(size_search):
             # which cell is atom *i* in
@@ -535,7 +505,8 @@ cdef class FastNS(object):
                                                &self.grid.dimensions[0], &self.grid.inverse_dimensions[0])
 
                             if d2 <= cutoff2:
-                                results.add_neighbors(i, j, d2)
+                                # place self.coords index first then search_coords
+                                results.add_neighbors(j, i, d2)
                             j = self.grid.next_id[j]
 
         return results
@@ -567,13 +538,10 @@ cdef class FastNS(object):
         cdef double cutoff2 = self.cutoff * self.cutoff
 
         size_search = self.coords.shape[0]
-        results = NSResults(self.cutoff)
+        results = NSResults()
 
-        # loop cellwise
-        # do self cell pairs
         # loop over 13 neighbouring pairs
         cdef int[:, ::1] route
-
         route = np.array([[1, 0, 0], [1, 1, 0], [0, 1, 0], [-1, 1, 0],
                           [1, 0, -1], [1, 1, -1], [0, 1, -1], [-1, 1, -1],
                           [1, 0, 1], [1, 1, 1], [0, 1, 1], [-1, 1, 1], [0, 0, 1]], dtype=np.int32)
