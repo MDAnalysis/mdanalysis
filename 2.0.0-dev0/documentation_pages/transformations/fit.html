@@ -200,16 +200,16 @@
 <h1>8.5.4. Fitting transformations — <a class="reference internal" href="#module-MDAnalysis.transformations.fit" title="MDAnalysis.transformations.fit"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.fit</span></code></a><a class="headerlink" href="#fitting-transformations-mdanalysis-transformations-fit" title="Permalink to this headline">¶</a></h1>
 <p>Translate and/or rotates the coordinates of a given trajectory to align
 a given AtomGroup to a reference structure.</p>
-<dl class="function">
+<dl class="class">
 <dt id="MDAnalysis.transformations.fit.fit_translation">
-<code class="descclassname">MDAnalysis.transformations.fit.</code><code class="descname">fit_translation</code><span class="sig-paren">(</span><em>ag</em>, <em>reference</em>, <em>plane=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_translation" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.fit.</code><code class="descname">fit_translation</code><span class="sig-paren">(</span><em>ag</em>, <em>reference</em>, <em>plane=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_translation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_translation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translates a given AtomGroup so that its center of geometry/mass matches
 the respective center of the given reference. A plane can be given by the
 user using the option <cite>plane</cite>, and will result in the removal of
 the translation motions of the AtomGroup over that particular plane.</p>
 <p class="rubric">Example</p>
-<p>Removing the translations of a given AtomGroup <cite>ag</cite> on the XY plane by fitting
-its center of mass to the center of mass of a reference <cite>ref</cite>:</p>
+<p>Removing the translations of a given AtomGroup <cite>ag</cite> on the XY plane by
+fitting its center of mass to the center of mass of a reference <cite>ref</cite>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ag</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">select_atoms</span><span class="p">(</span><span class="s2">&quot;protein&quot;</span><span class="p">)</span>
 <span class="n">ref</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="s2">&quot;reference.pdb&quot;</span><span class="p">)</span>
 <span class="n">transform</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">transformations</span><span class="o">.</span><span class="n">fit_translation</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">plane</span><span class="o">=</span><span class="s2">&quot;xy&quot;</span><span class="p">,</span>
@@ -225,10 +225,11 @@ its center of mass to the center of mass of a reference <cite>ref</cite>:</p>
 <li><strong>ag</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – structure to translate, a
 <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a whole
 <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></li>
-<li><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – reference structure, a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a whole
-<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></li>
-<li><strong>plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – used to define the plane on which the translations will be removed. Defined as a
-string of the plane. Suported planes are yz, xz and xy planes.</li>
+<li><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> or </em><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><em>AtomGroup</em></a>) – reference structure, a <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a> or a
+whole <a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><code class="xref py py-class docutils literal notranslate"><span class="pre">Universe</span></code></a></li>
+<li><strong>plane</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em>, </em><em>optional</em>) – used to define the plane on which the translations will be removed.
+Defined as a string of the plane.
+Suported planes are yz, xz and xy planes.</li>
 <li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like, optional) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses as weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code>
 weigh each atom equally. If a float array of the same length as
 <cite>ag</cite> is provided, use each element of the <cite>array_like</cite> as a
@@ -244,11 +245,15 @@ weight for the corresponding atom in <cite>ag</cite>.</li>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
+with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
+</div>
 </dd></dl>
 
-<dl class="function">
+<dl class="class">
 <dt id="MDAnalysis.transformations.fit.fit_rot_trans">
-<code class="descclassname">MDAnalysis.transformations.fit.</code><code class="descname">fit_rot_trans</code><span class="sig-paren">(</span><em>ag</em>, <em>reference</em>, <em>plane=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_rot_trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_rot_trans" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.fit.</code><code class="descname">fit_rot_trans</code><span class="sig-paren">(</span><em>ag</em>, <em>reference</em>, <em>plane=None</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/fit.html#fit_rot_trans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.fit.fit_rot_trans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform a spatial superposition by minimizing the RMSD.</p>
 <p>Spatially align the group of atoms <cite>ag</cite> to <cite>reference</cite> by doing a RMSD
 fit.</p>

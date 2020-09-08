@@ -207,16 +207,16 @@
 <span class="sd">translates the atoms back in the unit cell. :func:`unwrap` translates the</span>
 <span class="sd">atoms of each molecule so that bons don&#39;t split over images.</span>
 
-<span class="sd">.. autofunction:: wrap</span>
+<span class="sd">.. autoclass:: wrap</span>
 
-<span class="sd">.. autofunction:: unwrap</span>
+<span class="sd">.. autoclass:: unwrap</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">..lib._cutil</span> <span class="kn">import</span> <span class="n">make_whole</span>
 
 
-<div class="viewcode-block" id="wrap"><a class="viewcode-back" href="../../../documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.wrap">[docs]</a><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="wrap"><a class="viewcode-back" href="../../../documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.wrap">[docs]</a><span class="k">class</span> <span class="nc">wrap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Shift the contents of a given AtomGroup back into the unit cell. ::</span>
 <span class="sd">    </span>
@@ -258,18 +258,22 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    MDAnalysis.coordinates.base.Timestep</span>
-<span class="sd">    </span>
+
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        The transformation was changed from a function/closure to a class</span>
+<span class="sd">        with ``__call__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
-        <span class="n">ag</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="n">compound</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">ts</span>
-    
-    <span class="k">return</span> <span class="n">wrapped</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;atoms&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compound</span> <span class="o">=</span> <span class="n">compound</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">compound</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">compound</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
 
 
-<div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../../documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.unwrap">[docs]</a><span class="k">def</span> <span class="nf">unwrap</span><span class="p">(</span><span class="n">ag</span><span class="p">):</span>
+<div class="viewcode-block" id="unwrap"><a class="viewcode-back" href="../../../documentation_pages/transformations/wrap.html#MDAnalysis.transformations.wrap.unwrap">[docs]</a><span class="k">class</span> <span class="nc">unwrap</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Move all atoms in an AtomGroup so that bonds don&#39;t split over images</span>
 
@@ -308,22 +312,24 @@
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    MDAnalysis.coordinates.base.Timestep</span>
-<span class="sd">    </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">ag</span><span class="o">.</span><span class="n">fragments</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> has no fragments&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ag</span><span class="p">))</span>
-    
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">:</span>
-            <span class="n">make_whole</span><span class="p">(</span><span class="n">frag</span><span class="p">)</span>
-            
-        <span class="k">return</span> <span class="n">ts</span>
-    
-    <span class="k">return</span> <span class="n">wrapped</span></div>
 
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        The transformation was changed from a function/closure to a class</span>
+<span class="sd">        with ``__call__``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> has no fragments&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">frag</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">fragments</span><span class="p">:</span>
+            <span class="n">make_whole</span><span class="p">(</span><span class="n">frag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 
            </div>

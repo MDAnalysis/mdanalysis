@@ -209,18 +209,17 @@
 <span class="sd">or defined by centering an AtomGroup in the unit cell using the function</span>
 <span class="sd">:func:`center_in_box`</span>
 
-<span class="sd">.. autofunction:: translate</span>
+<span class="sd">.. autoclass:: translate</span>
 
-<span class="sd">.. autofunction:: center_in_box</span>
+<span class="sd">.. autoclass:: center_in_box</span>
 
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 
-<span class="kn">from</span> <span class="nn">..lib.mdamath</span> <span class="kn">import</span> <span class="n">triclinic_vectors</span>
 
-<div class="viewcode-block" id="translate"><a class="viewcode-back" href="../../../documentation_pages/transformations/translate.html#MDAnalysis.transformations.translate.translate">[docs]</a><span class="k">def</span> <span class="nf">translate</span><span class="p">(</span><span class="n">vector</span><span class="p">):</span>
+<div class="viewcode-block" id="translate"><a class="viewcode-back" href="../../../documentation_pages/transformations/translate.html#MDAnalysis.transformations.translate.translate">[docs]</a><span class="k">class</span> <span class="nc">translate</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`</span>
 <span class="sd">    instance by a given vector.</span>
@@ -239,20 +238,20 @@
 <span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">2</span><span class="p">:</span>
-        <span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">vector</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> vector is too short&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">vector</span><span class="p">))</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">vector</span>
 
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
-        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">vector</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">vector</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> vector is too short&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vector</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="n">ts</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector</span>
+        <span class="k">return</span> <span class="n">ts</span></div>
 
-    <span class="k">return</span> <span class="n">wrapped</span></div>
 
-
-<div class="viewcode-block" id="center_in_box"><a class="viewcode-back" href="../../../documentation_pages/transformations/translate.html#MDAnalysis.transformations.translate.center_in_box">[docs]</a><span class="k">def</span> <span class="nf">center_in_box</span><span class="p">(</span><span class="n">ag</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="center_in_box"><a class="viewcode-back" href="../../../documentation_pages/transformations/translate.html#MDAnalysis.transformations.translate.center_in_box">[docs]</a><span class="k">class</span> <span class="nc">center_in_box</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Translates the coordinates of a given :class:`~MDAnalysis.coordinates.base.Timestep`</span>
 <span class="sd">    instance so that the center of geometry/mass of the given :class:`~MDAnalysis.core.groups.AtomGroup`</span>
@@ -287,42 +286,51 @@
 <span class="sd">    -------</span>
 <span class="sd">    :class:`~MDAnalysis.coordinates.base.Timestep` object</span>
 
+
+<span class="sd">    .. versionchanged:: 2.0.0</span>
+<span class="sd">        The transformation was changed from a function/closure to a class</span>
+<span class="sd">        with ``__call__``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">point</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">point</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrap</span> <span class="o">=</span> <span class="n">wrap</span>
 
-    <span class="n">pbc_arg</span> <span class="o">=</span> <span class="n">wrap</span>
-    <span class="k">if</span> <span class="n">point</span><span class="p">:</span>
-        <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">)</span> <span class="ow">and</span> <span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a valid point&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">point</span><span class="p">))</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;geometry&#39;</span><span class="p">:</span>
-            <span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
-            <span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a valid argument for center&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">center</span><span class="p">))</span>
-    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
-            <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ag</span><span class="si">}</span><span class="s1"> is not an AtomGroup object with masses&#39;</span>
-            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">ag</span><span class="si">}</span><span class="s1"> is not an AtomGroup object&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+        <span class="n">pbc_arg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wrap</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a valid point&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">point</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;geometry&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_geometry</span><span class="p">,</span>
+                                             <span class="n">pbc</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">center_of_mass</span><span class="p">,</span>
+                                             <span class="n">pbc</span><span class="o">=</span><span class="n">pbc_arg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="si">}</span><span class="s1"> is valid for center&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">==</span> <span class="s1">&#39;mass&#39;</span><span class="p">:</span>
+                <span class="n">errmsg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="si">}</span><span class="s1"> is not an AtomGroup object with masses&#39;</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">errmsg</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="si">}</span><span class="s1"> is not an AtomGroup object&#39;</span><span class="p">)</span> \
+                                 <span class="kn">from</span> <span class="bp">None</span>
 
-    <span class="k">def</span> <span class="nf">wrapped</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">boxcenter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">triclinic_dimensions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">boxcenter</span> <span class="o">=</span> <span class="n">point</span>
+            <span class="n">boxcenter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">point</span>
 
-        <span class="n">ag_center</span> <span class="o">=</span> <span class="n">center_method</span><span class="p">()</span>
+        <span class="n">ag_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center_method</span><span class="p">()</span>
 
         <span class="n">vector</span> <span class="o">=</span> <span class="n">boxcenter</span> <span class="o">-</span> <span class="n">ag_center</span>
         <span class="n">ts</span><span class="o">.</span><span class="n">positions</span> <span class="o">+=</span> <span class="n">vector</span>
 
-        <span class="k">return</span> <span class="n">ts</span>
-
-    <span class="k">return</span> <span class="n">wrapped</span></div>
-
+        <span class="k">return</span> <span class="n">ts</span></div>
 </pre></div>
 
            </div>

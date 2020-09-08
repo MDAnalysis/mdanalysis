@@ -202,9 +202,9 @@
 The vector can either be user defined, using the function <a class="reference internal" href="#MDAnalysis.transformations.translate.translate" title="MDAnalysis.transformations.translate.translate"><code class="xref py py-func docutils literal notranslate"><span class="pre">translate()</span></code></a>
 or defined by centering an AtomGroup in the unit cell using the function
 <a class="reference internal" href="#MDAnalysis.transformations.translate.center_in_box" title="MDAnalysis.transformations.translate.center_in_box"><code class="xref py py-func docutils literal notranslate"><span class="pre">center_in_box()</span></code></a></p>
-<dl class="function">
+<dl class="class">
 <dt id="MDAnalysis.transformations.translate.translate">
-<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">translate</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">translate</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#translate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.translate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
 instance by a given vector.</p>
 <p class="rubric">Example</p>
@@ -223,9 +223,9 @@ instance by a given vector.</p>
 </table>
 </dd></dl>
 
-<dl class="function">
+<dl class="class">
 <dt id="MDAnalysis.transformations.translate.center_in_box">
-<code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">center_in_box</code><span class="sig-paren">(</span><em>ag</em>, <em>center='geometry'</em>, <em>point=None</em>, <em>wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.translate.</code><code class="descname">center_in_box</code><span class="sig-paren">(</span><em>ag</em>, <em>center='geometry'</em>, <em>point=None</em>, <em>wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/translate.html#center_in_box"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.translate.center_in_box" title="Permalink to this definition">¶</a></dt>
 <dd><p>Translates the coordinates of a given <a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep" title="MDAnalysis.coordinates.base.Timestep"><code class="xref py py-class docutils literal notranslate"><span class="pre">Timestep</span></code></a>
 instance so that the center of geometry/mass of the given <a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">AtomGroup</span></code></a>
 is centered on the unit cell. The unit cell dimensions are taken from the input Timestep object.
@@ -260,6 +260,10 @@ to the atom coordinates are done before calculating the center of the AtomGroup.
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
+with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
+</div>
 </dd></dl>
 
 </div>

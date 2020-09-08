@@ -201,9 +201,9 @@
 <p>Wrap/unwrap the atoms of a given AtomGroup in the unit cell. <a class="reference internal" href="#MDAnalysis.transformations.wrap.wrap" title="MDAnalysis.transformations.wrap.wrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">wrap()</span></code></a>
 translates the atoms back in the unit cell. <a class="reference internal" href="#MDAnalysis.transformations.wrap.unwrap" title="MDAnalysis.transformations.wrap.unwrap"><code class="xref py py-func docutils literal notranslate"><span class="pre">unwrap()</span></code></a> translates the
 atoms of each molecule so that bons don’t split over images.</p>
-<dl class="function">
+<dl class="class">
 <dt id="MDAnalysis.transformations.wrap.wrap">
-<code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">wrap</code><span class="sig-paren">(</span><em>ag</em>, <em>compound='atoms'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.wrap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">wrap</code><span class="sig-paren">(</span><em>ag</em>, <em>compound='atoms'</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.wrap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shift the contents of a given AtomGroup back into the unit cell.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>+-----------+          +-----------+
 |           |          |           |
@@ -250,11 +250,15 @@ inside the unit cell, but rather the center of the compound is.</p>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
+with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
+</div>
 </dd></dl>
 
-<dl class="function">
+<dl class="class">
 <dt id="MDAnalysis.transformations.wrap.unwrap">
-<code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">unwrap</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#unwrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.unwrap" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.wrap.</code><code class="descname">unwrap</code><span class="sig-paren">(</span><em>ag</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/wrap.html#unwrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.wrap.unwrap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move all atoms in an AtomGroup so that bonds don’t split over images</p>
 <p>Atom positions are modified in place.</p>
 <p>This function is most useful when atoms have been packed into the primary
@@ -291,6 +295,10 @@ The positions of this are modified in place.</td>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
+with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
+</div>
 </dd></dl>
 
 </div>

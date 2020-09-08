@@ -845,15 +845,21 @@
         <span class="k">return</span> <span class="s2">&quot;&lt;Universe with </span><span class="si">{n_atoms}</span><span class="s2"> atoms&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">n_atoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c1"># Universe&#39;s two &quot;legs&quot; of topology and traj both serialise themselves</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_unpickle_U</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">traj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Special method used by __reduce__ to deserialise a Universe&quot;&quot;&quot;</span>
+        <span class="c1">#  top is a Topology obj at this point, but Universe can handle that.</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">top</span><span class="p">)</span>
+        <span class="n">u</span><span class="o">.</span><span class="n">trajectory</span> <span class="o">=</span> <span class="n">traj</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_topology</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">_generate_from_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">u</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#  __setstate__/__getstate__ will raise an error when Universe has a</span>
+        <span class="c1">#  transformation (that has AtomGroup inside). Use __reduce__ instead.</span>
+        <span class="c1">#  Universe&#39;s two &quot;legs&quot; of top and traj both serialise themselves.</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unpickle_U</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_topology</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">_trajectory</span><span class="p">))</span>
 
     <span class="c1"># Properties</span>
     <span class="nd">@property</span>

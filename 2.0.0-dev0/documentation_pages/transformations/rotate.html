@@ -198,11 +198,11 @@
             
   <span class="target" id="module-MDAnalysis.transformations.rotate"></span><div class="section" id="trajectory-rotation-mdanalysis-transformations-rotate">
 <h1>8.5.2. Trajectory rotation — <a class="reference internal" href="#module-MDAnalysis.transformations.rotate" title="MDAnalysis.transformations.rotate"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.transformations.rotate</span></code></a><a class="headerlink" href="#trajectory-rotation-mdanalysis-transformations-rotate" title="Permalink to this headline">¶</a></h1>
-<p>Rotates the coordinates by a given angle arround an axis formed by a direction and a
-point</p>
-<dl class="function">
+<p>Rotates the coordinates by a given angle arround an axis formed by a direction
+and a point.</p>
+<dl class="class">
 <dt id="MDAnalysis.transformations.rotate.rotateby">
-<code class="descclassname">MDAnalysis.transformations.rotate.</code><code class="descname">rotateby</code><span class="sig-paren">(</span><em>angle</em>, <em>direction</em>, <em>point=None</em>, <em>ag=None</em>, <em>weights=None</em>, <em>wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/rotate.html#rotateby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.rotate.rotateby" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">MDAnalysis.transformations.rotate.</code><code class="descname">rotateby</code><span class="sig-paren">(</span><em>angle</em>, <em>direction</em>, <em>point=None</em>, <em>ag=None</em>, <em>weights=None</em>, <em>wrap=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/transformations/rotate.html#rotateby"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.transformations.rotate.rotateby" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotates the trajectory by a given angle on a given axis. The axis is defined by
 the user, combining the direction vector and a point. This point can be the center
 of geometry or the center of mass of a user defined AtomGroup, or an array defining
@@ -265,6 +265,10 @@ to the atom coordinates are done before calculating the center of the AtomGroup.
 <p class="first admonition-title">Warning</p>
 <p class="last">Wrapping/unwrapping the trajectory or performing PBC corrections may not be possible
 after rotating the trajectory.</p>
+</div>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>The transformation was changed from a function/closure to a class
+with <code class="docutils literal notranslate"><span class="pre">__call__</span></code>.</p>
 </div>
 </dd></dl>
 
