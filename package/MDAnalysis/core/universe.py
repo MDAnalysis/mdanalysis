@@ -666,7 +666,6 @@ class Universe(object):
         return "<Universe with {n_atoms} atoms>".format(
             n_atoms=len(self.atoms))
 
-
     @classmethod
     def _unpickle_U(cls, top, traj):
         """Special method used by __reduce__ to deserialise a Universe"""
