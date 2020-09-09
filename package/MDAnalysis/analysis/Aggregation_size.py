@@ -79,6 +79,7 @@ molecule type.
 aggregation distance choose too short.
 """
 import numpy as np
+import pandas as pd
 import MDAnalysis as mda
 from MDAnalysis.lib import distances
 from MDAnalysis.analysis.base import AnalysisBase

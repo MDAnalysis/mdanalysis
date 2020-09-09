@@ -179,8 +179,6 @@ __all__ = [
     "JaninArray", "LYSJaninArray", # time series of chi1/chi2 angles
     "PDB_rama", "PDB_janin", # for testing failures of Ramachandran and Janin classes
     "PDB_metal", # PDB with metal atoms
-    "Asph_gro",
-    "Asph_xtc",
     "BATArray", # time series of bond-angle-torsion coordinates array from Molecule_comments_header.mol2
     # DOS line endings
     "WIN_PDB_multiframe", "WIN_DLP_HISTORY", "WIN_TRJ", "WIN_LAMMPSDUMP", "WIN_ARC",
@@ -531,8 +529,6 @@ LYSJaninArray = resource_filename(__name__, 'data/adk_oplsaa_LYS_janin.npy')
 PDB_rama = resource_filename(__name__, 'data/19hc.pdb.gz')
 PDB_janin = resource_filename(__name__, 'data/1a28.pdb.gz')
 
-Asph_gro = resource_filename(__name__, 'data/Asph.gro')
-Asph_xtc = resource_filename(__name__, 'data/Asph.xtc')
 BATArray = resource_filename(__name__, 'data/mol2_comments_header_bat.npy')
 
 ITP = resource_filename(__name__, 'data/gromacs_ala10.itp')
@@ -548,6 +544,10 @@ ITP_no_endif = resource_filename(__name__, 'data/no_endif_spc.itp')
 NAMDBIN = resource_filename(__name__, 'data/adk_open.coor')
 
 SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
+
+Asph_gro = resource_filename(__name__, 'data/Asph.gro')
+Asph_xtc = resource_filename(__name__, 'data/Asph.xtc')
+
 
 # This should be the last line: clean up namespace
 del resource_filename
