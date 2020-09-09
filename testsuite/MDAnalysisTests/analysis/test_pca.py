@@ -56,6 +56,7 @@ def pca(u):
 
 @pytest.fixture(scope='module')
 def pca_aligned(u):
+    u.transfer_to_memory()
     return PCA(u, select=SELECTION, align=True).run()
 
 
