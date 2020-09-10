@@ -144,6 +144,7 @@ class rotateby(object):
             self.point = self.point.reshape(3, )
         elif self.ag:
             try:
+
                 self.atoms = self.ag.atoms
             except AttributeError:
                 raise ValueError(f'{self.ag} is not an AtomGroup object') \
@@ -172,4 +173,5 @@ class rotateby(object):
         translation = matrix[:3, 3]
         ts.positions = np.dot(ts.positions, rotation)
         ts.positions += translation
+
         return ts
