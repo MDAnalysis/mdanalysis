@@ -549,7 +549,5 @@ SDF_molecule = resource_filename(__name__, 'data/molecule.sdf')
 
 Asph_gro = resource_filename(__name__, 'data/Asph.gro')
 Asph_xtc = resource_filename(__name__, 'data/Asph.xtc')
-
-
 # This should be the last line: clean up namespace
 del resource_filename
