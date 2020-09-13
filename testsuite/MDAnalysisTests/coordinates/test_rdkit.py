@@ -331,34 +331,44 @@ class TestRDKitConverter(object):
             mol.GetConformer()
 
     def test_cache(self):
-        u = mda.Universe.from_smiles("CCO", numConfs=5)
-        ag = u.atoms
-        cache = mda.coordinates.RDKit.RDKitConverter._cache
+        cached_func = mda.coordinates.RDKit.atomgroup_to_mol
+        # create universes
+        utraj = mda.Universe.from_smiles("CCO", numConfs=5)
+        uc = mda.Universe.from_smiles("C")
+        ucc = mda.Universe.from_smiles("CC")
+        uccc = mda.Universe.from_smiles("CCC")
         previous_cache = None
-        for ts in u.trajectory:
-            mol = ag.convert_to("RDKIT")
+        for ts in utraj.trajectory:
+            mol = utraj.atoms.convert_to("RDKIT")
+            cache = cached_func.cache_info()
             if previous_cache:
                 # the cache shouldn't change when iterating on timesteps
-                assert cache == previous_cache
+                assert cache.currsize == previous_cache.currsize
                 previous_cache = copy.deepcopy(cache)
-        # cached molecule shouldn't store coordinates
-        mol = list(cache.values())[0]
-        with pytest.raises(ValueError, match="Bad Conformer Id"):
-            mol.GetConformer()
-        # only 1 molecule should be cached
-        u = mda.Universe.from_smiles("C")
-        mol = u.atoms.convert_to("RDKIT")
-        assert len(cache) == 1
-        assert cache != previous_cache
+        # only 2 molecules should be cached by default
+        cached_func.cache_clear()
+        mol = uc.atoms.convert_to("RDKIT")
+        mol = ucc.atoms.convert_to("RDKIT")
+        mol = uccc.atoms.convert_to("RDKIT")
+        cache = cached_func.cache_info()
+        assert cache.currsize == 2
+        assert cache.misses == 3
+        mol = ucc.atoms.convert_to("RDKIT")
+        assert cached_func.cache_info().hits == 1
+        # increase cache size
+        mda.coordinates.RDKit.set_converter_cache_size(3)
+        cached_func = mda.coordinates.RDKit.atomgroup_to_mol
+        assert cached_func.cache_info().maxsize == 3
         # converter with kwargs
-        rdkit_converter = mda.coordinates.RDKit.RDKitConverter().convert
-        # cache should depend on passed arguments
-        previous_cache = copy.deepcopy(cache)
-        mol = rdkit_converter(u.atoms, NoImplicit=False)
-        assert cache != previous_cache
+        previous_cache = cached_func.cache_info()
+        rdkit_converter = mda._CONVERTERS["RDKIT"]().convert
+        mol = rdkit_converter(uc.atoms, NoImplicit=False)
+        cache = cached_func.cache_info()
+        assert cache.misses == previous_cache.misses + 1
         # skip cache
-        mol = rdkit_converter(u.atoms, cache=False)
-        assert cache == {}
+        mol = rdkit_converter(uc.atoms, cache=False)
+        new_cache = cached_func.cache_info()
+        assert cache == new_cache
 
 
 @requires_rdkit
