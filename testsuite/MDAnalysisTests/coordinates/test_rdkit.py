@@ -486,6 +486,7 @@ class TestRDKitFunctions(object):
         "NCCCCC([NH3+])C(=O)[O-]",
         "CC(C=CC1=C(C)CCCC1(C)C)=CC=CC(C)=CC=[NH+]C",
         "C#CC=C",
+        # HID HIE HIP residues, see PR #2941
         "O=C([C@H](CC1=CNC=N1)N)O",
         "O=C([C@H](CC1=CN=CN1)N)O",
         "O=C([C@H](CC1=C[NH1+]=CN1)[NH3+])[O-]",
