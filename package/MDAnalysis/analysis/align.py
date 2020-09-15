@@ -167,6 +167,7 @@ Functions and Classes
 
 .. autofunction:: alignto
 .. autoclass:: AlignTraj
+.. autoclass:: AverageStructure
 .. autofunction:: rotation_matrix
 
 
@@ -803,13 +804,8 @@ class AverageStructure(AnalysisBase):
           already a :class:`MemoryReader` then it is *always* treated as if
           ``in_memory`` had been set to ``True``.
 
+
         .. versionadded:: 1.0.0
-
-        .. versionchanged:: 1.0.0
-           Support for the ``start``, ``stop``, and ``step`` keywords has been
-           removed. These should instead be passed
-           to :meth:`AverageStructure.run`.
-
         """
         if in_memory or isinstance(mobile.trajectory, MemoryReader):
             mobile.transfer_to_memory()
