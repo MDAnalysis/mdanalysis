@@ -54,6 +54,10 @@ from ..lib import distances
 from ..exceptions import SelectionError, NoDataError
 
 
+FLOAT_PATTERN = "-?\d*\.?\d*(?:e[-+]?\d+)?"
+INT_PATTERN = "-?\d+"
+RANGE_PATTERN = "\s*(?:[:-]| to )\s*"
+
 def is_keyword(val):
     """Is val a selection keyword?
 
@@ -104,6 +108,37 @@ def grab_not_keywords(tokens):
         values.append(val)
     return values
 
+def join_separated_values(values):
+    """Join range values that are separated by whitespace
+
+    Parameters
+    ----------
+    values: list
+        list of value strings
+
+    Returns
+    -------
+    values: list of strings
+
+    Examples
+    --------
+    join_separated_values(['37', 'to', '22'])
+    >>> ['37 to 22']
+
+    .. versionadded:: 2.0.0
+    """
+    _values = []
+    while values:
+        v = values.pop(0)
+        if v in ("to", ":", "-"):
+            try:
+                _values[-1] = f"{_values[-1]} {v} {values.pop(0)}"
+            except IndexError:
+                given = f"{' '.join(_values)} {v} {' '.join(values)}"
+                raise ValueError(f"Invalid expression given: {given}")
+        else:
+            _values.append(v)
+    return _values
 
 _SELECTIONDICT = {}
 _OPERATIONS = {}
@@ -619,7 +654,7 @@ class SmartsSelection(Selection):
 class ResidSelection(Selection):
     """Select atoms based on numerical fields
 
-    Allows the use of ':' and '-' to specify a range of values
+    Allows the use of ':', '-' and 'to' to specify a range of values
     For example
 
       resid 1:10
@@ -630,6 +665,8 @@ class ResidSelection(Selection):
         values = grab_not_keywords(tokens)
         if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
+
+        values = join_separated_values(values)
 
         # each value in uppers and lowers is a tuple of (resid, icode)
         uppers = []
@@ -644,7 +681,7 @@ class ResidSelection(Selection):
             else:
                 # check if in appropriate format 'lower:upper' or 'lower-upper'
                 # each val is one or more digits, maybe a letter
-                selrange = re.match(r"(\d+)(\w?)[:-](\d+)(\w?)", val)
+                selrange = re.match(f"(\d+)(\w?){RANGE_PATTERN}(\d+)(\w?)", val)
                 if selrange is None:  # re.match returns None on failure
                     raise ValueError("Failed to parse value: {0}".format(val))
                 res = selrange.groups()
@@ -764,7 +801,7 @@ class RangeSelection(Selection):
     """Range selection for int values"""
 
     value_offset = 0
-    pattern = r"(-?\d+)\s*(?:[:-]|to)\s*(-?\d+)"
+    pattern = f"({INT_PATTERN}){RANGE_PATTERN}({INT_PATTERN})"
     dtype = int
 
     def __init__(self, parser, tokens):
@@ -772,22 +809,12 @@ class RangeSelection(Selection):
         if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
 
+        values = join_separated_values(values)
+
         uppers = []  # upper limit on any range
         lowers = []  # lower limit on any range
 
-        _values = []
-        while values:
-            v = values.pop(0)
-            if v in ("to", ":", "-"):
-                try:
-                    _values[-1] = f"{_values[-1]} {v} {values.pop(0)}"
-                except IndexError:
-                    given = f"{' '.join(_values)} {v} {' '.join(values)}"
-                    raise ValueError(f"Invalid expression given: {given}")
-            else:
-                _values.append(v)
-
-        for val in _values:
+        for val in values:
             try:
                 lower = self.dtype(val)
                 upper = None
@@ -798,8 +825,6 @@ class RangeSelection(Selection):
                     errmsg = f"Failed to parse number: {val}"
                     raise ValueError(errmsg) from None
                 lower, upper = map(self.dtype, selrange.groups())
-                if lower > upper:
-                    lower, upper = upper, lower
 
             lowers.append(lower)
             uppers.append(upper)
@@ -825,7 +850,7 @@ class RangeSelection(Selection):
 class FloatRangeSelection(RangeSelection):
     """Range selection for float values"""
 
-    pattern = r"(-?\d*\.?\d*)\s*(?:[:-]|to)\s*(-?\d*\.?\d*)"
+    pattern = f"({FLOAT_PATTERN}){RANGE_PATTERN}({FLOAT_PATTERN})"
     dtype = float
 
 
@@ -1094,8 +1119,10 @@ class PropertySelection(Selection):
         '<': '>=', '>=': '<',
         '>': '<=', '<=': '>',
     }
-
-    props = {'mass', 'charge', 'x', 'y', 'z'}
+    
+    props = {"x": "positions",
+             "y": "positions",
+             "z": "positions"}
 
     def __init__(self, parser, tokens):
         """
@@ -1158,17 +1185,21 @@ class PropertySelection(Selection):
 
     def apply(self, group):
         try:
+            values = getattr(group, self.props[self.prop])
+        except KeyError:
+            errmsg = f"Expected one of {list(self.props.keys())}"
+            raise SelectionError(errmsg) from None
+        except NoDataError:
+            attr = self.props[self.prop]
+            errmsg = f"This Universe does not contain {attr} information"
+            raise SelectionError(errmsg) from None
+        
+        try:
             col = {'x': 0, 'y': 1, 'z': 2}[self.prop]
         except KeyError:
-            if self.prop == 'mass':
-                values = group.masses
-            elif self.prop == 'charge':
-                values = group.charges
-            else:
-                errmsg = f"Expected one of {['x', 'y', 'z', 'mass', 'charge']}"
-                raise SelectionError(errmsg) from None
+            pass
         else:
-            values = group.positions[:, col]
+            values = values[:, col]
 
         if self.absolute:
             values = np.abs(values)
@@ -1358,9 +1389,10 @@ class SelectionParser(object):
 Parser = SelectionParser()
 
 # create a module container to avoid name clashes of autogenerated classes
-selection_classes = types.ModuleType(f'{__name__}.selection_classes')
+_selectors = types.ModuleType(f"{__name__}._selectors",
+                              doc="Automatically generated selectors")
 # stick it in sys.modules so pickle can find it
-sys.modules[selection_classes.__name__] = selection_classes
+sys.modules[_selectors.__name__] = _selectors
 
 
 def gen_selection_class(singular, attrname, dtype, per_object):
@@ -1383,7 +1415,7 @@ def gen_selection_class(singular, attrname, dtype, per_object):
     """
     basedct = {"token": singular, "field": attrname,
                # manually make modules the selection_classes wrapper
-               "__module__": selection_classes.__name__}
+               "__module__": _selectors.__name__}
     name = f"{attrname.capitalize()}Selection"
 
     if issubclass(dtype, bool):
@@ -1406,5 +1438,5 @@ def gen_selection_class(singular, attrname, dtype, per_object):
                          "subclassing core.selection.Selection")
 
     cls = type(name, (basecls,), basedct)
-    setattr(selection_classes, name, cls)  # stick it in selection_classes
+    setattr(_selectors, name, cls)  # stick it in selection_classes
     return cls

@@ -297,6 +297,10 @@ class _TopologyAttrMeta(type):
             if singular not in selection.SameSelection.prop_trans:
                 selection.SameSelection.prop_trans[singular] = attrname
 
+            # add each to the property selection class
+            if singular not in selection.PropertySelection.props:
+                selection.PropertySelection.props[singular] = attrname
+
             # add token to selectiondict
             if singular not in selection._SELECTIONDICT:
                 dtype = classdict.get("dtype")

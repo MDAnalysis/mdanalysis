@@ -1235,8 +1235,9 @@ def test_chain_sel():
 
 @pytest.mark.parametrize("selstr,n_atoms", [
     ("mass 0.8 to 1.2", 23850),
+    ("mass 8e-1 to 1200e-3", 23850),
     ("mass -5--3", 2),  # select -5 to -3
-    ("mass -3 : -5", 2),  # wrong way around
+    ("mass -3 : -5", 0),  # wrong way around
 ])
 def test_mass_sel(selstr, n_atoms):
     # test auto-topattr addition of float (FloatRangeSelection)
@@ -1248,7 +1249,7 @@ def test_mass_sel(selstr, n_atoms):
 @pytest.mark.parametrize("selstr,n_res", [
     ("resnum -10 to 3", 14),
     ("resnum -5--3", 3),  # select -5 to -3
-    ("resnum -3 : -5", 3),  # wrong way around
+    ("resnum -3 : -5", 0),  # wrong way around
 ])
 def test_int_sel(selstr, n_res):
     # test auto-topattr addition of int (IntRangeSelection)
@@ -1274,3 +1275,4 @@ def test_error_selection_for_strange_dtype():
 
     err = "No base class defined for dtype"
     assert err in str(rec.value)
+

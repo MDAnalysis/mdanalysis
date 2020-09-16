@@ -47,9 +47,11 @@ selection parser. The following applies to all selections:
 * Selections are parsed left to right and parentheses can be used for
   grouping.
 * You can use the singular name of any topology attribute as a selection
-  keyword, including a :class:`~MDAnalysis.core.topologyattrs.TopologyAttr`
-  that you have defined yourself, providing that the attribute ``dtype``
-  is one of ``int``, ``float``, ``str`` (or ``object``), or ``bool``.
+  keyword. `Defined topology attributes`_ are listed in the User Guide.
+  Alternatively, you can define a 
+  :class:`~MDAnalysis.core.topologyattrs.TopologyAttr` yourself,
+  providing that the attribute ``dtype`` is one of ``int``, ``float``, 
+  ``str`` (or ``object``), or ``bool``.
   However, the topology must contain this attribute information for
   the selection to work.
 
@@ -64,6 +66,9 @@ selection parser. The following applies to all selections:
     * Boolean selections default to True, so "myTopologyAttr" and
       "myTopologyAttr True" both give all atoms with
       ``myTopologyAttr == True``.
+
+
+.. _`Defined topology attributes`: https://userguide.mdanalysis.org/2.0.0-dev0/topology_system.html#format-specific-attributes
 
 
 Simple selections
@@ -114,8 +119,8 @@ atom *seg-name*  *residue-number*  *atom-name*
 altLoc *alternative-location*
     a selection for atoms where alternative locations are available, which is
     often the case with high-resolution crystal structures
-    e.g. `resid 4 and resname ALA and altloc B` selects only the atoms of ALA-4
-    that have an altloc B record.
+    e.g. ``resid 4 and resname ALA and altLoc B`` selects only the atoms of ALA-4
+    that have an altLoc B record.
 
 chainID *chain-name*
     a selection for atoms where chainIDs have been defined.
