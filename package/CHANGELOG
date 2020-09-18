@@ -42,6 +42,8 @@ Fixes
   * Fixed the DMSParser, allowing the creation of multiple segids sharing
     residues with identical resids (Issue #1387, PR #2872)
   * Fixed missing space between floats in helanal output files (PR #2733)
+  * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
+    (Issue #2934)
 
 Enhancements
   * Improved performances when parsing TPR files (PR #2804)
@@ -52,7 +54,7 @@ Deprecations
   * lib.util.echo() will be removed in 2.0.0
   * core.universe.as_Universe() will be removed in 2.0.0
   * analysis.leaflets.LeafletFinder() will not accept a filename any more,
-    only a Universe, in 2.0.0 
+    only a Universe, in 2.0.0
   * analysis.helanal will be removed in 2.0.0 and replaced by
     analysis.helix_analysis (PR #2622)
 
