@@ -53,7 +53,9 @@ Fixes
   * libmdaxdr and libdcd classes in their last frame can now be pickled
     (Issue #2878, PR #2911)
   * AtomGroup now are pickled/unpickled without looking for its anchored
-    Universe (PR #2893) 
+    Universe (PR #2893)
+  * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
+    (Issue #2934)
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
