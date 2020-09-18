@@ -616,6 +616,163 @@ removed. These should instead be passed to <code class="xref py py-meth docutils
 </div>
 </dd></dl>
 
+<dl class="class">
+<dt id="MDAnalysis.analysis.align.AverageStructure">
+<em class="property">class </em><code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">AverageStructure</code><span class="sig-paren">(</span><em>mobile</em>, <em>reference=None</em>, <em>select='all'</em>, <em>filename=None</em>, <em>weights=None</em>, <em>tol_mass=0.1</em>, <em>match_atoms=True</em>, <em>strict=False</em>, <em>force=True</em>, <em>in_memory=False</em>, <em>ref_frame=0</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#AverageStructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>RMS-align trajectory to a reference structure using a selection,
+and calculate the average coordinates of the trajectory.</p>
+<p>Both the reference <cite>reference</cite> and the trajectory <cite>mobile</cite> must be
+<code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.Universe</span></code> instances. If they contain a trajectory, then
+it is used. You can also use the same universe if you want to fit to the
+current frame.</p>
+<p>The output file format is determined by the file extension of
+<cite>filename</cite>.</p>
+<p class="rubric">Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">MDAnalysis</span> <span class="k">as</span> <span class="nn">mda</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.tests.datafiles</span> <span class="kn">import</span> <span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span>
+<span class="kn">from</span> <span class="nn">MDAnalysis.analysis</span> <span class="kn">import</span> <span class="n">align</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">mda</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">PSF</span><span class="p">,</span> <span class="n">DCD</span><span class="p">)</span>
+
+<span class="c1"># align to the third frame and average structure</span>
+<span class="n">av</span> <span class="o">=</span> <span class="n">align</span><span class="o">.</span><span class="n">AverageStructure</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">ref_frame</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="n">averaged_universe</span> <span class="o">=</span> <span class="n">av</span><span class="o">.</span><span class="n">universe</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mobile</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a>) – Universe containing trajectory to be fitted to reference</li>
+<li><strong>reference</strong> (<a class="reference internal" href="../core/universe.html#MDAnalysis.core.universe.Universe" title="MDAnalysis.core.universe.Universe"><em>Universe</em></a><em> (</em><em>optional</em><em>)</em>) – Universe containing trajectory frame to be used as reference</li>
+<li><strong>select</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Set as default to all, is used for Universe.select_atoms to choose
+subdomain to be fitted against</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)"><em>str</em></a><em> (</em><em>optional</em><em>)</em>) – Provide a filename for results to be written to</li>
+<li><strong>weights</strong> ({“mass”, <code class="docutils literal notranslate"><span class="pre">None</span></code>} or array_like (optional)) – choose weights. With <code class="docutils literal notranslate"><span class="pre">&quot;mass&quot;</span></code> uses masses of <cite>reference</cite> as
+weights; with <code class="docutils literal notranslate"><span class="pre">None</span></code> weigh each atom equally. If a float array of
+the same length as the selection is provided, use each element of
+the <cite>array_like</cite> as a weight for the corresponding atom in the
+selection.</li>
+<li><strong>tol_mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)"><em>float</em></a><em> (</em><em>optional</em><em>)</em>) – Tolerance given to <cite>get_matching_atoms</cite> to find appropriate atoms</li>
+<li><strong>match_atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Whether to match the mobile and reference atom-by-atom. Default <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+<li><strong>strict</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force <cite>get_matching_atoms</cite> to fail if atoms can’t be found using
+exact methods</li>
+<li><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Force overwrite of filename for rmsd-fitting</li>
+<li><strong>in_memory</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – <em>Permanently</em> switch <cite>mobile</cite> to an in-memory trajectory
+so that alignment can be done in-place, which can improve
+performance substantially in some cases. In this case, no file
+is written out (<cite>filename</cite> and <cite>prefix</cite> are ignored) and only
+the coordinates of <cite>mobile</cite> are <em>changed in memory</em>.</li>
+<li><strong>ref_frame</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.8)"><em>int</em></a><em> (</em><em>optional</em><em>)</em>) – frame index to select frame from <cite>reference</cite></li>
+<li><strong>verbose</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em> (</em><em>optional</em><em>)</em>) – Set logger to show more information and show detailed progress of
+the calculation if set to <code class="docutils literal notranslate"><span class="pre">True</span></code>; the default is <code class="docutils literal notranslate"><span class="pre">False</span></code>.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.reference_atoms">
+<code class="descname">reference_atoms</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.reference_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms of the reference structure to be aligned against</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.mobile_atoms">
+<code class="descname">mobile_atoms</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.mobile_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Atoms inside each trajectory frame to be rmsd_aligned</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="../core/groups.html#MDAnalysis.core.groups.AtomGroup" title="MDAnalysis.core.groups.AtomGroup">AtomGroup</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.universe">
+<code class="descname">universe</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.universe" title="Permalink to this definition">¶</a></dt>
+<dd><p>New Universe with average positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">mda.Universe</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.positions">
+<code class="descname">positions</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average positions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">np.ndarray(dtype=float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.rmsd">
+<code class="descname">rmsd</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.rmsd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Average RMSD per frame</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.8)">float</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="MDAnalysis.analysis.align.AverageStructure.filename">
+<code class="descname">filename</code><a class="headerlink" href="#MDAnalysis.analysis.align.AverageStructure.filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>String reflecting the filename of the file where the average
+structure is written</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.8)">str</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>If set to <code class="docutils literal notranslate"><span class="pre">verbose=False</span></code>, it is recommended to wrap the statement
+in a <code class="docutils literal notranslate"><span class="pre">try</span> <span class="pre">...</span>&#160; <span class="pre">finally</span></code> to guarantee restoring of the log level in
+the case of an exception.</li>
+<li>The <code class="docutils literal notranslate"><span class="pre">in_memory</span></code> option changes the <cite>mobile</cite> universe to an
+in-memory representation (see <a class="reference internal" href="../coordinates/memory.html#module-MDAnalysis.coordinates.memory" title="MDAnalysis.coordinates.memory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.memory</span></code></a>)
+for the remainder of the Python session. If <code class="docutils literal notranslate"><span class="pre">mobile.trajectory</span></code> is
+already a <code class="xref py py-class docutils literal notranslate"><span class="pre">MemoryReader</span></code> then it is <em>always</em> treated as if
+<code class="docutils literal notranslate"><span class="pre">in_memory</span></code> had been set to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</li>
+</ul>
+<div class="versionadded">
+<p><span class="versionmodified">New in version 1.0.0.</span></p>
+</div>
+</dd></dl>
+
 <dl class="function">
 <dt id="MDAnalysis.analysis.align.rotation_matrix">
 <code class="descclassname">MDAnalysis.analysis.align.</code><code class="descname">rotation_matrix</code><span class="sig-paren">(</span><em>a</em>, <em>b</em>, <em>weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/align.html#rotation_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.align.rotation_matrix" title="Permalink to this definition">¶</a></dt>
