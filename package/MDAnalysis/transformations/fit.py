@@ -36,6 +36,7 @@ import numpy as np
 
 from ..analysis import align
 from ..lib.transformations import euler_from_matrix, euler_matrix
+from ..lib.util import threadpool_limits_decorator
 
 
 class fit_translation(object):
@@ -207,6 +208,7 @@ class fit_rot_trans(object):
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
+    @threadpool_limits_decorator(limits=1)
     def __call__(self, ts):
         mobile_com = self.mobile.atoms.center(self.weights)
         mobile_coordinates = self.mobile.atoms.positions - mobile_com

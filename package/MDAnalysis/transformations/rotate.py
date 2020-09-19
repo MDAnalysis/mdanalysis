@@ -36,6 +36,7 @@ from functools import partial
 
 from ..lib.transformations import rotation_matrix
 from ..lib.util import get_weights
+from ..lib.util import threadpool_limits_decorator
 
 
 class rotateby(object):
@@ -162,6 +163,7 @@ class rotateby(object):
         else:
             raise ValueError('A point or an AtomGroup must be specified')
 
+    @threadpool_limits_decorator(limits=1)
     def __call__(self, ts):
         if self.point is None:
             position = self.center_method()
