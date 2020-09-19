@@ -202,6 +202,8 @@ import warnings
 import functools
 from functools import wraps
 import textwrap
+from contextlib import ContextDecorator
+from threadpoolctl import threadpool_limits
 
 import mmtf
 import numpy as np
@@ -2353,3 +2355,11 @@ def check_box(box):
     if np.all(box[3:] == 90.):
         return 'ortho', box[:3]
     return 'tri_vecs', triclinic_vectors(box)
+
+
+class threadpool_limits_decorator(threadpool_limits, ContextDecorator):
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
