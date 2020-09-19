@@ -112,6 +112,9 @@ Changes
   * Removes deprecated waterdynamics.HydrogenBondLifetimes (PR #2842)
   * Make NeighborSearch return empty atomgroup, residue, segments instead of list (Issue #2892, PR #2907)
   * Updated Universe creation function signatures to named arguments (Issue #2921)
+  * Updated Universe creation function signatures to named arguments (Issue #2921)  
+  * The transformation was changed from a function/closure to a class with
+    `__call__` (Issue #2860, PR #2859)
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
 
 Deprecations
