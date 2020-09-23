@@ -176,7 +176,7 @@ class fit_rot_trans(object):
     -------
     MDAnalysis.coordinates.base.Timestep
     """
-    def __init__(self, ag, reference, plane=None, weights=None):
+    def __init__(self, ag, reference, plane=None, weights=None, _thread_limit=1):
         self.ag = ag
         self.reference = reference
         self.plane = plane
@@ -208,7 +208,8 @@ class fit_rot_trans(object):
         self.ref_com = self.ref.center(self.weights)
         self.ref_coordinates = self.ref.atoms.positions - self.ref_com
 
-    @threadpool_limits_decorator(limits=1)
+        self.__call__ = threadpool_limits_decorator(_thread_limit)(self.__call__)
+
     def __call__(self, ts):
         mobile_com = self.mobile.atoms.center(self.weights)
         mobile_coordinates = self.mobile.atoms.positions - mobile_com
