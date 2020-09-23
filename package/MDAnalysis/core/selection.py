@@ -1396,7 +1396,23 @@ sys.modules[_selectors.__name__] = _selectors
 
 
 def gen_selection_class(singular, attrname, dtype, per_object):
-    """Class factory for arbitrary TopologyAttrs
+    """Selection class factory for arbitrary TopologyAttrs.
+
+    This is called by the metaclass
+    :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta` to
+    auto-generate suitable selection classes by creating a token
+    with the topology attribute (singular) name. The function
+    uses the provided ``dtype`` to choose which Selection class
+    to subclass:
+
+    * :class:`BoolSelection` for booleans
+    * :class:`RangeSelection` for integers
+    * :class:`FloatRangeSelection` for floats
+    * :class:`_ProtoStringSelection` for strings
+
+    Other value types are not yet supported and will raise a
+    ValueError. The classes are created in the :mod:`_selectors`
+    module to avoid namespace clashes.
 
     Parameters
     ----------
@@ -1404,19 +1420,37 @@ def gen_selection_class(singular, attrname, dtype, per_object):
         singular name of TopologyAttr
     attrname: str
         attribute name of TopologyAttr
-    dtype:
+    dtype: type
         type of TopologyAttr
-    per_object:
+    per_object: str
         level of TopologyAttr
 
     Returns
     -------
     selection: subclass of Selection
+
+    Raises
+    ------
+    ValueError
+        If ``dtype`` is not one of the supported types
+
+
+    Example
+    -------
+
+    The function creates a class inside ``_selectors`` and returns it::
+    
+        >>> gen_selection_class("resname", "resnames", object, "residue")
+        <class 'MDAnalysis.core.selection._selectors.ResnameSelection'>
+
+    See also
+    --------
+    :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta`
     """
     basedct = {"token": singular, "field": attrname,
-               # manually make modules the selection_classes wrapper
+               # manually make modules the _selectors wrapper
                "__module__": _selectors.__name__}
-    name = f"{attrname.capitalize()}Selection"
+    name = f"{singular.capitalize()}Selection"
 
     if issubclass(dtype, bool):
         basecls = BoolSelection
@@ -1438,5 +1472,5 @@ def gen_selection_class(singular, attrname, dtype, per_object):
                          "subclassing core.selection.Selection")
 
     cls = type(name, (basecls,), basedct)
-    setattr(_selectors, name, cls)  # stick it in selection_classes
+    setattr(_selectors, name, cls)  # stick it in _selectors
     return cls

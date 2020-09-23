@@ -264,7 +264,25 @@ def _attach_transplant_stubs(attribute_name, topology_attribute_class):
 
 
 class _TopologyAttrMeta(type):
-    # register TopologyAttrs
+    """Register TopologyAttrs on class creation
+
+    Each topology attribute is added to the top-level dictionaries
+    for various record purposes. The class itself is added to
+    _TOPOLOGY_ATTRS and _TOPOLOGY_ATTRNAMES. Transplanted methods
+    are also added to _TOPOLOGY_TRANSPLANTS.
+
+    We also attempt to make the topology attribute selectable with
+    atom selection language by automatically generating a relevant
+    selection class with the singular name (``singular``) as the
+    selection token. Only certain ``dtype``\ s are supported; if a
+    selection class cannot be generated, a warning will be raised
+    but no error.
+
+    See also
+    --------
+    :func:`MDAnalysis.core.selection.gen_selection_class`
+
+    """
     def __init__(cls, name, bases, classdict):
         type.__init__(type, name, bases, classdict)
         attrname = classdict.get('attrname')
