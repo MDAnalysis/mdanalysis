@@ -116,6 +116,8 @@ Changes
   * Updated Universe creation function signatures to named arguments (Issue #2921)  
   * The transformation was changed from a function/closure to a class with
     `__call__` (Issue #2860, PR #2859)
+  * deprecated ``analysis.helanal`` module has been removed in favour of
+    ``analysis.helix_analysis`` (PR #2929)
 
 Deprecations
 
