@@ -782,19 +782,27 @@ class BoolSelection(Selection):
     def __init__(self, parser, tokens):
         values = grab_not_keywords(tokens)
         if not values:
-            values = [True]
-        val = values[0]
-        if isinstance(val, str):
-            val = val.lower()
-            if val == "false":
-                val = False
-            elif val == "true":
-                val = True
-        self.value = val
+            values = ["true"]
+        
+        self.values = []
+        for val in values:
+            lower = val.lower()
+            if lower == "false":
+                bval = False
+            elif lower == "true":
+                bval = True
+            else:
+                raise ValueError(f"'{val}' is an invalid value "
+                                 "for boolean selection. "
+                                 "Use 'True' or 'False'")
+            self.values.append(bval)
 
     def apply(self, group):
         vals = getattr(group, self.field)
-        return group[vals == self.value].unique
+        mask = np.zeros(len(vals), dtype=bool)
+        for val in self.values:
+            mask |= vals == val
+        return group[mask].unique
 
 
 class RangeSelection(Selection):
@@ -805,6 +813,9 @@ class RangeSelection(Selection):
     dtype = int
 
     def __init__(self, parser, tokens):
+        self.rtol = parser.rtol
+        self.atol = parser.atol
+
         values = grab_not_keywords(tokens)
         if not values:
             raise ValueError("Unexpected token: '{0}'".format(tokens[0]))
@@ -852,6 +863,37 @@ class FloatRangeSelection(RangeSelection):
 
     pattern = f"({FLOAT_PATTERN}){RANGE_PATTERN}({FLOAT_PATTERN})"
     dtype = float
+
+    def apply(self, group):
+        mask = np.zeros(len(group), dtype=bool)
+        vals = getattr(group, self.field) + self.value_offset
+
+        for upper, lower in zip(self.uppers, self.lowers):
+            if upper is not None:
+                thismask = vals > lower
+                thismask &= vals < upper
+                # thismask |= np.isclose(vals, lower, atol=self.atol,
+                #                        rtol=self.rtol)
+                # thismask |= np.isclose(vals, upper, atol=self.atol,
+                #                        rtol=self.rtol)
+            else:
+                low, high = lower - 1, lower + 1
+                msg = ("Using float equality to select atoms is "
+                       "not recommended because of inherent "
+                       "limitations in representing numbers on "
+                       "computers (see "
+                       "https://docs.python.org/3.8/tutorial/floatingpoint.html"
+                       " for more). Instead, we recommend using a range "
+                       f"to select, e.g. '{self.token} {low} to {high}'. "
+                       "If you still want to compare floats, use the "
+                       "`atol` and `rtol` keywords to modify the tolerance "
+                       "for `np.isclose`.")
+                warnings.warn(msg)
+                thismask = np.isclose(vals, lower, atol=self.atol,
+                                      rtol=self.rtol)
+
+            mask |= thismask
+        return group[mask].unique
 
 
 class ByNumSelection(RangeSelection):
@@ -1321,7 +1363,8 @@ class SelectionParser(object):
                 "Unexpected token: '{0}' Expected: '{1}'"
                 "".format(self.tokens[0], token))
 
-    def parse(self, selectstr, selgroups, periodic=None):
+    def parse(self, selectstr, selgroups, periodic=None, atol=1e-08,
+              rtol=1e-05):
         """Create a Selection object from a string.
 
         Parameters
@@ -1333,6 +1376,13 @@ class SelectionParser(object):
         periodic : bool, optional
             for distance based selections, whether to consider
             periodic boundary conditions
+        atol : float, optional
+            The absolute tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
+        rtol : float, optional
+            The relative tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
+        
 
         Returns
         -------
@@ -1343,8 +1393,14 @@ class SelectionParser(object):
         ------
         SelectionError
             If anything goes wrong in creating the Selection object.
+
+
+        .. versionchanged:: 2.0.0
+            Added `atol` and `rtol` keywords to select float values.
         """
         self.periodic = periodic
+        self.atol = atol
+        self.rtol = rtol
 
         self.selectstr = selectstr
         self.selgroups = selgroups
@@ -1446,6 +1502,8 @@ def gen_selection_class(singular, attrname, dtype, per_object):
     See also
     --------
     :class:`MDAnalysis.core.topologyattrs._TopologyAttrMeta`
+
+    .. versionadded:: 2.0.0
     """
     basedct = {"token": singular, "field": attrname,
                # manually make modules the _selectors wrapper

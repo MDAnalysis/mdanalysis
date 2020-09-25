@@ -2623,6 +2623,12 @@ class AtomGroup(GroupBase):
         periodic : bool (optional)
           for geometric selections, whether to account for atoms in different
           periodic images when searching
+        atol : float, optional
+            The absolute tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
+        rtol : float, optional
+            The relative tolerance parameter for float comparisons.
+            Passed to :func:``numpy.isclose``.
         updating : bool (optional)
           force the selection to be re evaluated each time the Timestep of the
           trajectory is changed.  See section on **Dynamic selections** below.
@@ -2894,6 +2900,8 @@ class AtomGroup(GroupBase):
            periodic are now on by default (as with default flags)
         .. versionchanged:: 2.0.0
             Added the *smarts* selection.
+        .. versionchanged:: 2.0.0
+            Added `atol` and `rtol` keywords to select float values.
         """
 
         if not sel:
@@ -2902,7 +2910,8 @@ class AtomGroup(GroupBase):
             return self[[]]
 
         periodic = selgroups.pop('periodic', True)
-
+        rtol = selgroups.pop('rtol', 1e-05)
+        atol = selgroups.pop('atol', 1e-08)
         updating = selgroups.pop('updating', False)
         sel_strs = (sel,) + othersel
 
@@ -2912,7 +2921,9 @@ class AtomGroup(GroupBase):
                                 "You provided {} for group '{}'".format(
                                     thing.__class__.__name__, group))
 
-        selections = tuple((selection.Parser.parse(s, selgroups, periodic=periodic)
+        selections = tuple((selection.Parser.parse(s, selgroups,
+                                                   periodic=periodic,
+                                                   atol=atol, rtol=rtol)
                             for s in sel_strs))
         if updating:
             atomgrp = UpdatingAtomGroup(self, selections, sel_strs)
