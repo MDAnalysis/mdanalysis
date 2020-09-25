@@ -120,6 +120,7 @@ if latest_version:
 
         write_redirect(file, '', outfile)
     write_redirect('index.html', latest_version, 'latest/index.html')
+    write_redirect('objects.inv', latest_version, 'latest/objects.inv')
 
 if dev_version:
     write_redirect('index.html', dev_version, 'dev/index.html')
