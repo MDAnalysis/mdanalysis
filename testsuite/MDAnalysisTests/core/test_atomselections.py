@@ -1255,7 +1255,10 @@ def u_fake_masses():
     ("mass 0.3", 10, {}),
     ("mass 0.30000000000000004", 10, {}),
     ("mass 0.3 0.30000000000000001", 10, {}),
-
+    # prop thingy
+    ("prop mass == 0.3", 10, {}),
+    ("prop mass == 0.30000000000000004", 10, {}),
+    ("prop mass == 0.30000000000000004", 5, {"rtol": 0, "atol": 0}),
 ])
 def test_mass_sel(u_fake_masses, selstr, n_atoms, selkwargs):
     # test auto-topattr addition of float (FloatRangeSelection)

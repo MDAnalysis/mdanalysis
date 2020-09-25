@@ -1140,6 +1140,9 @@ class NucleicSugarSelection(NucleicSelection):
 class PropertySelection(Selection):
     """Some of the possible properties:
     x, y, z, radius, mass,
+
+    .. versionchanged:: 2.0.0
+        changed == operator to use np.isclose instead of np.equals
     """
     token = 'prop'
     ops = dict([
@@ -1147,7 +1150,7 @@ class PropertySelection(Selection):
         ('<', np.less),
         ('>=', np.greater_equal),
         ('<=', np.less_equal),
-        ('==', np.equal),
+        ('==', np.isclose),
         ('!=', np.not_equal),
     ])
     # order here is important, need to check <= before < so the
@@ -1223,6 +1226,11 @@ class PropertySelection(Selection):
             errmsg = (f"Invalid operator : '{oper}' Use one of : "
                       f"'{self.ops.keys()}'")
             raise ValueError(errmsg) from None
+        else:
+            if oper == "==":
+                self.operator = functools.partial(self.operator,
+                                                  atol=parser.atol,
+                                                  rtol=parser.rtol)
         self.value = float(value)
 
     def apply(self, group):
