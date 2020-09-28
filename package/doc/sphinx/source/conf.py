@@ -344,5 +344,5 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'https://networkx.github.io/documentation/stable/': None,
                        'https://www.mdanalysis.org/GridDataFormats/': None,
                        'https://gsd.readthedocs.io/en/stable/': None,
-                       'https://parmed.github.io/ParmEd/html/': None,
+                       # 'https://parmed.github.io/ParmEd/html/': None,
                        }
