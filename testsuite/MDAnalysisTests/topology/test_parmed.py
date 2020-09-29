@@ -21,8 +21,10 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 import pytest
-import MDAnalysis as mda
+import numpy as np
+from numpy.testing import assert_equal
 
+import MDAnalysis as mda
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysisTests.datafiles import (
     PSF_NAMD_GBIS,
@@ -30,6 +32,7 @@ from MDAnalysisTests.datafiles import (
 )
 
 pmd = pytest.importorskip('parmed')
+
 
 class BaseTestParmedParser(ParserBase):
     parser = mda.topology.ParmEdParser.ParmEdParser
@@ -40,7 +43,7 @@ class BaseTestParmedParser(ParserBase):
                       'epsilon14s', 'elements', 'chainIDs',
                       'resids', 'resnames', 'resnums',
                       'segids',
-                      'bonds', 'ureybradleys', 'angles', 
+                      'bonds', 'ureybradleys', 'angles',
                       'dihedrals', 'impropers', 'cmaps']
 
     expected_n_atoms = 0
@@ -69,42 +72,46 @@ class BaseTestParmedParser(ParserBase):
         unique = set([(a.atom1.idx, a.atom2.idx)
                       for a in filename.bonds])
         assert len(top.bonds.values) == len(unique)
-    
+
     def test_angles_total_counts(self, top, filename):
-        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx) 
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx)
                       for a in filename.angles])
         assert len(top.angles.values) == len(unique)
 
     def test_dihedrals_total_counts(self, top, filename):
         unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx)
-             for a in filename.dihedrals])
+                      for a in filename.dihedrals])
         assert len(top.dihedrals.values) == len(unique)
-    
+
     def test_impropers_total_counts(self, top, filename):
         unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, a.atom4.idx)
                       for a in filename.impropers])
         assert len(top.impropers.values) == len(unique)
 
     def test_cmaps_total_counts(self, top, filename):
-        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx, 
+        unique = set([(a.atom1.idx, a.atom2.idx, a.atom3.idx,
                        a.atom4.idx, a.atom5.idx)
                       for a in filename.cmaps])
         assert len(top.cmaps.values) == len(unique)
-    
+
     def test_ureybradleys_total_counts(self, top, filename):
         unique = set([(a.atom1.idx, a.atom2.idx)
                       for a in filename.urey_bradleys])
         assert len(top.ureybradleys.values) == len(unique)
 
+    def test_elements(self, top):
+        for erange, evals in zip(self.elems_ranges, self.expected_elems):
+            assert_equal(top.elements.values[erange[0]:erange[1]], evals,
+                         "unexpected element match")
 
 
 class TestParmedParserPSF(BaseTestParmedParser):
     """
     PSF with CMAPs
     """
-    
+
     ref_filename = PSF_NAMD_GBIS
-    
+
     expected_n_atoms = 3341
     expected_n_residues = 214
     expected_n_bonds = 3365
@@ -112,21 +119,24 @@ class TestParmedParserPSF(BaseTestParmedParser):
     expected_n_dihedrals = 8921
     expected_n_impropers = 541
     expected_n_cmaps = 212
+    elems_ranges = ((0, 3342),)
+    # No atomic numbers set by parmed == no elements
+    expected_elems = (np.array(['' for i in range(3341)], dtype=object),)
 
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 4
         assert len(universe.atoms[[42]].bonds) == 1
 
     @pytest.mark.parametrize('value', (
-        (0, 1), 
-        (0, 2), 
-        (0, 3), 
+        (0, 1),
+        (0, 2),
+        (0, 3),
         (0, 4),
         ))
     def test_bonds_identity(self, top, value):
         vals = top.bonds.values
         assert value in vals or value[::-1] in vals
-    
+
     def test_bond_types(self, universe):
         b1 = universe.bonds[0]
 
@@ -139,8 +149,8 @@ class TestParmedParserPSF(BaseTestParmedParser):
         assert len(universe.atoms[[42]].angles), 2
 
     @pytest.mark.parametrize('value', (
-        (1, 0, 2), 
-        (1, 0, 3), 
+        (1, 0, 2),
+        (1, 0, 3),
         (1, 0, 4),
         ))
     def test_angles_identity(self, top, value):
@@ -151,15 +161,14 @@ class TestParmedParserPSF(BaseTestParmedParser):
         assert len(universe.atoms[[0]].dihedrals) == 14
 
     @pytest.mark.parametrize('value', (
-        (0, 4, 6, 7), 
-        (0, 4, 6, 8), 
-        (0, 4, 6, 9), 
+        (0, 4, 6, 7),
+        (0, 4, 6, 8),
+        (0, 4, 6, 9),
         (0, 4, 17, 18),
         ))
     def test_dihedrals_identity(self, top, value):
         vals = top.dihedrals.values
         assert value in vals or value[::-1] in vals
-        
 
     @pytest.mark.parametrize('value', (
         (17, 19, 21, 41, 43),
@@ -168,16 +177,22 @@ class TestParmedParserPSF(BaseTestParmedParser):
     def test_cmaps_identity(self, top, value):
         vals = top.cmaps.values
         assert value in vals or value[::-1] in vals
-    
+
+
 class TestParmedParserPRM(BaseTestParmedParser):
     """
     PRM
     """
-    
+
     ref_filename = PRM
-    
+
     expected_n_atoms = 252
     expected_n_residues = 14
+    elems_ranges = ((0, 8), (30, 38))
+    expected_elems = (np.array(['N', 'H', 'H', 'H', 'C', 'H', 'C', 'H'],
+                               dtype=object),
+                      np.array(['H', 'C', 'H', 'H', 'C', 'C', 'H', 'C'],
+                               dtype=object))
 
     def test_bonds_atom_counts(self, universe):
         assert len(universe.atoms[[0]].bonds) == 4
@@ -192,7 +207,7 @@ class TestParmedParserPRM(BaseTestParmedParser):
     def test_bonds_identity(self, top, value):
         vals = top.bonds.values
         assert value in vals or value[::-1] in vals
-    
+
     def test_bond_types(self, universe):
         b1 = universe.bonds[0]
 
@@ -225,9 +240,9 @@ class TestParmedParserPRM(BaseTestParmedParser):
     def test_dihedrals_identity(self, top, value):
         vals = top.dihedrals.values
         assert value in vals or value[::-1] in vals
-    
+
     def test_dihedral_types(self, universe):
-        ag = universe.atoms[[10,12,14,16]]
+        ag = universe.atoms[[10, 12, 14, 16]]
         dih = universe.dihedrals.atomgroup_intersection(ag,
                                                         strict=True)[0]
         assert len(dih.type) == 4

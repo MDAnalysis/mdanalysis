@@ -220,7 +220,7 @@ class ParmEdParser(TopologyReaderBase):
             try:
                 elements.append(Z2SYMB[z])
             except KeyError:
-                elements.append(guess_atom_element(name))
+                elements.append('')
 
         # Make Atom TopologyAttrs
         for vals, Attr, dtype in (
