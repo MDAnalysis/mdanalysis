@@ -33,7 +33,7 @@ r"""Water Bridge analysis --- :mod:`MDAnalysis.analysis.hbonds.WaterBridgeAnalys
 
 .. _`@xiki-tempula`: https://github.com/xiki-tempula
 
-This module is moved to
+This module has moved to
 :class:`MDAnalysis.analysis.hydrogenbonds.WaterBridgeAnalysis`."""
 
 import warnings
