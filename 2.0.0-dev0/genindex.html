@@ -606,6 +606,8 @@
 </li>
       <li><a href="documentation_pages/auxiliary/base.html#MDAnalysis.auxiliary.base.AuxReader.auxstep">auxstep (MDAnalysis.auxiliary.base.AuxReader attribute)</a>
 </li>
+      <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure">AverageStructure (class in MDAnalysis.analysis.align)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -2556,6 +2558,8 @@
       <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AlignTraj.filename">filename (MDAnalysis.analysis.align.AlignTraj attribute)</a>
 
       <ul>
+        <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure.filename">(MDAnalysis.analysis.align.AverageStructure attribute)</a>
+</li>
         <li><a href="documentation_pages/coordinates/chain.html#MDAnalysis.coordinates.chain.ChainReader.filename">(MDAnalysis.coordinates.chain.ChainReader attribute)</a>
 </li>
       </ul></li>
@@ -3085,10 +3089,6 @@
 </li>
       <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.HEADER">HEADER() (MDAnalysis.coordinates.PDB.PDBWriter method)</a>
 </li>
-      <li><a href="documentation_pages/analysis/helanal.html#MDAnalysis.analysis.helanal.helanal_main">helanal_main() (in module MDAnalysis.analysis.helanal)</a>
-</li>
-      <li><a href="documentation_pages/analysis/helanal.html#MDAnalysis.analysis.helanal.helanal_trajectory">helanal_trajectory() (in module MDAnalysis.analysis.helanal)</a>
-</li>
       <li><a href="documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">hes() (in module MDAnalysis.analysis.encore.similarity)</a>, <a href="documentation_pages/analysis/encore/similarity.html#MDAnalysis.analysis.encore.similarity.hes">[1]</a>
 </li>
       <li><a href="documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.histogram_radii">histogram_radii() (MDAnalysis.analysis.hole2.hole.HoleAnalysis method)</a>, <a href="documentation_pages/analysis/hole2.html#MDAnalysis.analysis.hole2.hole.HoleAnalysis.histogram_radii">[1]</a>
@@ -3479,8 +3479,6 @@
 </li>
       <li><a href="documentation_pages/analysis/wbridge_analysis.html#module-MDAnalysis.analysis.hbonds.wbridge_analysis">MDAnalysis.analysis.hbonds.wbridge_analysis (module)</a>
 </li>
-      <li><a href="documentation_pages/analysis/helanal.html#module-MDAnalysis.analysis.helanal">MDAnalysis.analysis.helanal (module)</a>
-</li>
       <li><a href="documentation_pages/analysis/helix_analysis.html#module-MDAnalysis.analysis.helix_analysis">MDAnalysis.analysis.helix_analysis (module)</a>
 </li>
       <li><a href="documentation_pages/analysis/hole2.html#module-MDAnalysis.analysis.hole2.hole">MDAnalysis.analysis.hole2.hole (module)</a>
@@ -3611,10 +3609,10 @@
 </li>
       <li><a href="documentation_pages/lib/correlations.html#module-MDAnalysis.lib.correlations">MDAnalysis.lib.correlations (module)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/lib/distances.html#module-MDAnalysis.lib.distances">MDAnalysis.lib.distances (module)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="documentation_pages/lib/formats/libdcd.html#module-MDAnalysis.lib.formats.libdcd">MDAnalysis.lib.formats.libdcd (module)</a>
 </li>
       <li><a href="documentation_pages/lib/formats/libmdaxdr.html#module-MDAnalysis.lib.formats.libmdaxdr">MDAnalysis.lib.formats.libmdaxdr (module)</a>
@@ -3774,7 +3772,11 @@
       <li><a href="documentation_pages/coordinates/MMTF.html#MDAnalysis.coordinates.MMTF.MMTFReader">MMTFReader (class in MDAnalysis.coordinates.MMTF)</a>
 </li>
       <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AlignTraj.mobile_atoms">mobile_atoms (MDAnalysis.analysis.align.AlignTraj attribute)</a>
+
+      <ul>
+        <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure.mobile_atoms">(MDAnalysis.analysis.align.AverageStructure attribute)</a>
 </li>
+      </ul></li>
       <li><a href="documentation_pages/coordinates/PDB.html#MDAnalysis.coordinates.PDB.PDBWriter.MODEL">MODEL() (MDAnalysis.coordinates.PDB.PDBWriter method)</a>
 </li>
       <li><a href="documentation_pages/topology/MOL2Parser.html#MDAnalysis.topology.MOL2Parser.MOL2Parser">MOL2Parser (class in MDAnalysis.topology.MOL2Parser)</a>
@@ -4363,12 +4365,14 @@
 </li>
       <li><a href="documentation_pages/transformations/positionaveraging.html#MDAnalysis.transformations.positionaveraging.PositionAverager">PositionAverager (class in MDAnalysis.transformations.positionaveraging)</a>
 </li>
-      <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.positions">positions (MDAnalysis.coordinates.base.Timestep attribute)</a>
+      <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure.positions">positions (MDAnalysis.analysis.align.AverageStructure attribute)</a>
 
       <ul>
         <li><a href="documentation_pages/coordinates/FHIAIMS.html#MDAnalysis.coordinates.FHIAIMS.Timestep.positions">(MDAnalysis.coordinates.FHIAIMS.Timestep attribute)</a>
 </li>
         <li><a href="documentation_pages/coordinates/H5MD.html#MDAnalysis.coordinates.H5MD.Timestep.positions">(MDAnalysis.coordinates.H5MD.Timestep attribute)</a>
+</li>
+        <li><a href="documentation_pages/coordinates/base.html#MDAnalysis.coordinates.base.Timestep.positions">(MDAnalysis.coordinates.base.Timestep attribute)</a>
 </li>
         <li><a href="documentation_pages/coordinates/memory.html#MDAnalysis.coordinates.memory.Timestep.positions">(MDAnalysis.coordinates.memory.Timestep attribute)</a>
 </li>
@@ -4534,7 +4538,11 @@
 </li>
       </ul></li>
       <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AlignTraj.reference_atoms">reference_atoms (MDAnalysis.analysis.align.AlignTraj attribute)</a>
+
+      <ul>
+        <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure.reference_atoms">(MDAnalysis.analysis.align.AverageStructure attribute)</a>
 </li>
+      </ul></li>
       <li><a href="documentation_pages/lib/transformations.html#MDAnalysis.lib.transformations.reflection_from_matrix">reflection_from_matrix() (in module MDAnalysis.lib.transformations)</a>
 </li>
       <li><a href="documentation_pages/topology/tpr_util.html#MDAnalysis.topology.tpr.obj.Box.rel">rel (MDAnalysis.topology.tpr.obj.Box attribute)</a>
@@ -4712,6 +4720,8 @@
       <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AlignTraj.rmsd">rmsd (MDAnalysis.analysis.align.AlignTraj attribute)</a>
 
       <ul>
+        <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure.rmsd">(MDAnalysis.analysis.align.AverageStructure attribute)</a>
+</li>
         <li><a href="documentation_pages/analysis/rms.html#MDAnalysis.analysis.rms.RMSD.rmsd">(MDAnalysis.analysis.rms.RMSD attribute)</a>
 </li>
       </ul></li>
@@ -5529,9 +5539,11 @@
       </ul></li>
       <li><a href="documentation_pages/core/universe.html#MDAnalysis.core.universe.Universe">Universe (class in MDAnalysis.core.universe)</a>
 </li>
-      <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.universe">universe (MDAnalysis.core.groups.AtomGroup attribute)</a>
+      <li><a href="documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure.universe">universe (MDAnalysis.analysis.align.AverageStructure attribute)</a>
 
       <ul>
+        <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.AtomGroup.universe">(MDAnalysis.core.groups.AtomGroup attribute)</a>
+</li>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.ResidueGroup.universe">(MDAnalysis.core.groups.ResidueGroup attribute)</a>
 </li>
         <li><a href="documentation_pages/core/groups.html#MDAnalysis.core.groups.SegmentGroup.universe">(MDAnalysis.core.groups.SegmentGroup attribute)</a>

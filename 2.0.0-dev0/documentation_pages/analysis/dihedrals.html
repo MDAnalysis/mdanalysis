@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>4.7.1.4. Dihedral angles analysis — MDAnalysis.analysis.dihedrals &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
+  <title>4.7.1.3. Dihedral angles analysis — MDAnalysis.analysis.dihedrals &mdash; MDAnalysis 2.0.0-dev0 documentation</title>
   
 
   
@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf" href="rdf.html" />
-    <link rel="prev" title="4.7.1.3. HELANAL — analysis of protein helices" href="helix_analysis.html" /> 
+    <link rel="prev" title="4.7.1.2. HELANAL — analysis of protein helices" href="helix_analysis.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -111,9 +111,8 @@
 <li class="toctree-l2 current"><a class="reference internal" href="../analysis_modules.html#structure">4.7. Structure</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../analysis_modules.html#macromolecules">4.7.1. Macromolecules</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="gnm.html">4.7.1.1. Elastic network analysis of MD trajectories — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.gnm</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="helanal.html">4.7.1.2. HELANAL (Deprecated) — analysis of protein helices</a></li>
-<li class="toctree-l4"><a class="reference internal" href="helix_analysis.html">4.7.1.3. HELANAL — analysis of protein helices</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.1.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="helix_analysis.html">4.7.1.2. HELANAL — analysis of protein helices</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../analysis_modules.html#liquids">4.7.2. Liquids</a></li>
@@ -186,7 +185,7 @@
         
           <li><a href="../analysis_modules.html">4. Analysis modules</a> &raquo;</li>
         
-      <li>4.7.1.4. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></li>
+      <li>4.7.1.3. Dihedral angles analysis — <code class="docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -206,7 +205,7 @@
            <div itemprop="articleBody">
             
   <span class="target" id="module-MDAnalysis.analysis.dihedrals"></span><div class="section" id="dihedral-angles-analysis-mdanalysis-analysis-dihedrals">
-<h1>4.7.1.4. Dihedral angles analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.dihedrals" title="MDAnalysis.analysis.dihedrals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a><a class="headerlink" href="#dihedral-angles-analysis-mdanalysis-analysis-dihedrals" title="Permalink to this headline">¶</a></h1>
+<h1>4.7.1.3. Dihedral angles analysis — <a class="reference internal" href="#module-MDAnalysis.analysis.dihedrals" title="MDAnalysis.analysis.dihedrals"><code class="xref py py-mod docutils literal notranslate"><span class="pre">MDAnalysis.analysis.dihedrals</span></code></a><a class="headerlink" href="#dihedral-angles-analysis-mdanalysis-analysis-dihedrals" title="Permalink to this headline">¶</a></h1>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -237,9 +236,9 @@ These plots are best used as references, but they also allow for user customizat
 </dl>
 </div>
 <div class="section" id="example-applications">
-<h2>4.7.1.4.1. Example applications<a class="headerlink" href="#example-applications" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.1.3.1. Example applications<a class="headerlink" href="#example-applications" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="general-dihedral-analysis">
-<h3>4.7.1.4.1.1. General dihedral analysis<a class="headerlink" href="#general-dihedral-analysis" title="Permalink to this headline">¶</a></h3>
+<h3>4.7.1.3.1.1. General dihedral analysis<a class="headerlink" href="#general-dihedral-analysis" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="MDAnalysis.analysis.dihedrals.Dihedral"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dihedral</span></code></a> class is useful for calculating
 angles for many dihedrals of interest. For example, we can find the phi angles
 for residues 5-10 of adenylate kinase (AdK). The trajectory is included within
@@ -258,7 +257,7 @@ the test data files:</p>
 <p>The angles can then be accessed with <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Dihedral.angles" title="MDAnalysis.analysis.dihedrals.Dihedral.angles"><code class="xref py py-attr docutils literal notranslate"><span class="pre">Dihedral.angles</span></code></a>.</p>
 </div>
 <div class="section" id="ramachandran-analysis">
-<h3>4.7.1.4.1.2. Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this headline">¶</a></h3>
+<h3>4.7.1.3.1.2. Ramachandran analysis<a class="headerlink" href="#ramachandran-analysis" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Ramachandran" title="MDAnalysis.analysis.dihedrals.Ramachandran"><code class="xref py py-class docutils literal notranslate"><span class="pre">Ramachandran</span></code></a> class allows for the
 quick calculation of classical Ramachandran plots <a class="reference internal" href="#ramachandran1963" id="id1">[Ramachandran1963]</a> in the
 backbone <span class="math notranslate nohighlight">\(phi\)</span> and <span class="math notranslate nohighlight">\(psi\)</span> angles. Unlike the
@@ -297,7 +296,7 @@ only one <cite>altloc</cite> for the atoms with more than one (<code class="docu
 </div>
 </div>
 <div class="section" id="janin-analysis">
-<h3>4.7.1.4.1.3. Janin analysis<a class="headerlink" href="#janin-analysis" title="Permalink to this headline">¶</a></h3>
+<h3>4.7.1.3.1.3. Janin analysis<a class="headerlink" href="#janin-analysis" title="Permalink to this headline">¶</a></h3>
 <p>Janin plots <a class="reference internal" href="#janin1978" id="id2">[Janin1978]</a> for side chain conformations (<span class="math notranslate nohighlight">\(\chi_1\)</span> and
 <span class="math notranslate nohighlight">\(chi_2\)</span> angles) can be created with the
 <a class="reference internal" href="#MDAnalysis.analysis.dihedrals.Janin" title="MDAnalysis.analysis.dihedrals.Janin"><code class="xref py py-class docutils literal notranslate"><span class="pre">Janin</span></code></a> class. It works in the same way,
@@ -323,7 +322,7 @@ message <em>Too many or too few atoms selected</em> is raised.</p>
 </div>
 </div>
 <div class="section" id="reference-plots">
-<h3>4.7.1.4.1.4. Reference plots<a class="headerlink" href="#reference-plots" title="Permalink to this headline">¶</a></h3>
+<h3>4.7.1.3.1.4. Reference plots<a class="headerlink" href="#reference-plots" title="Permalink to this headline">¶</a></h3>
 <p>Reference plots can be added to the axes for both the Ramachandran and Janin
 classes using the kwarg <code class="docutils literal notranslate"><span class="pre">ref=True</span></code>. The Ramachandran reference data
 (<a class="reference internal" href="data.html#MDAnalysis.analysis.data.filenames.Rama_ref" title="MDAnalysis.analysis.data.filenames.Rama_ref"><code class="xref py py-data docutils literal notranslate"><span class="pre">Rama_ref</span></code></a>) and Janin reference data
@@ -338,7 +337,7 @@ points. The list of PDB files used for the reference plots was taken from
 </div>
 </div>
 <div class="section" id="analysis-classes">
-<h2>4.7.1.4.2. Analysis Classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
+<h2>4.7.1.3.2. Analysis Classes<a class="headerlink" href="#analysis-classes" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="MDAnalysis.analysis.dihedrals.Dihedral">
 <em class="property">class </em><code class="descclassname">MDAnalysis.analysis.dihedrals.</code><code class="descname">Dihedral</code><span class="sig-paren">(</span><em>atomgroups</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/MDAnalysis/analysis/dihedrals.html#Dihedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#MDAnalysis.analysis.dihedrals.Dihedral" title="Permalink to this definition">¶</a></dt>
@@ -474,18 +473,18 @@ the same graph.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</li>
 <li><strong>ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Adds a general Ramachandran plot which shows allowed and
 marginally allowed regions</li>
-<li><strong>kwargs</strong> (<em>optional</em>) – All other kwargs are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.3.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.scatter()</span></code></a>.</li>
+<li><strong>kwargs</strong> (<em>optional</em>) – All other kwargs are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.scatter()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong> – Axes with the plot, either <cite>ax</cite> or the current axes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -583,18 +582,18 @@ same graph.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
+<li><strong>ax</strong> (<a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a>) – If no <cite>ax</cite> is supplied or set to <code class="docutils literal notranslate"><span class="pre">None</span></code> then the plot will
 be added to the current active axes.</li>
 <li><strong>ref</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.8)"><em>bool</em></a><em>, </em><em>optional</em>) – Adds a general Janin plot which shows allowed and marginally
 allowed regions</li>
-<li><strong>kwargs</strong> (<em>optional</em>) – All other kwargs are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.3.1)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.scatter()</span></code></a>.</li>
+<li><strong>kwargs</strong> (<em>optional</em>) – All other kwargs are passed to <a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.pyplot.scatter.html#matplotlib.pyplot.scatter" title="(in Matplotlib v3.3.2)"><code class="xref py py-func docutils literal notranslate"><span class="pre">matplotlib.pyplot.scatter()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>ax</strong> – Axes with the plot, either <cite>ax</cite> or the current axes.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes" title="(in Matplotlib v3.3.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.axes.Axes</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -675,7 +674,7 @@ Analysis in MDAnalysis. Technical report, Arizona State University, 8
         <a href="rdf.html" class="btn btn-neutral float-right" title="4.7.2.1. Radial Distribution Functions — MDAnalysis.analysis.rdf" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="helix_analysis.html" class="btn btn-neutral float-left" title="4.7.1.3. HELANAL — analysis of protein helices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="helix_analysis.html" class="btn btn-neutral float-left" title="4.7.1.2. HELANAL — analysis of protein helices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

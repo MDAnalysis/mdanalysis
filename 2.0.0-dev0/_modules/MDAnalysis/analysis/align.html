@@ -346,6 +346,7 @@
 
 <span class="sd">.. autofunction:: alignto</span>
 <span class="sd">.. autoclass:: AlignTraj</span>
+<span class="sd">.. autoclass:: AverageStructure</span>
 <span class="sd">.. autofunction:: rotation_matrix</span>
 
 
@@ -875,7 +876,7 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span></div>
 
 
-<span class="k">class</span> <span class="nc">AverageStructure</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
+<div class="viewcode-block" id="AverageStructure"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.AverageStructure">[docs]</a><span class="k">class</span> <span class="nc">AverageStructure</span><span class="p">(</span><span class="n">AnalysisBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;RMS-align trajectory to a reference structure using a selection,</span>
 <span class="sd">    and calculate the average coordinates of the trajectory.</span>
 
@@ -975,13 +976,8 @@
 <span class="sd">          already a :class:`MemoryReader` then it is *always* treated as if</span>
 <span class="sd">          ``in_memory`` had been set to ``True``.</span>
 
+
 <span class="sd">        .. versionadded:: 1.0.0</span>
-
-<span class="sd">        .. versionchanged:: 1.0.0</span>
-<span class="sd">           Support for the ``start``, ``stop``, and ``step`` keywords has been</span>
-<span class="sd">           removed. These should instead be passed</span>
-<span class="sd">           to :meth:`AverageStructure.run`.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">in_memory</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">mobile</span><span class="o">.</span><span class="n">trajectory</span><span class="p">,</span> <span class="n">MemoryReader</span><span class="p">):</span>
             <span class="n">mobile</span><span class="o">.</span><span class="n">transfer_to_memory</span><span class="p">()</span>
@@ -1066,7 +1062,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_writer</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="sequence_alignment"><a class="viewcode-back" href="../../../documentation_pages/analysis/align.html#MDAnalysis.analysis.align.sequence_alignment">[docs]</a><span class="k">def</span> <span class="nf">sequence_alignment</span><span class="p">(</span><span class="n">mobile</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">match_score</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">mismatch_penalty</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
