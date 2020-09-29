@@ -20,7 +20,7 @@ The rules for this file:
   * 2.0.0
 
 Fixes
-  * ParmedParser no longer guesses elements if they are not present, instead
+  * ParmedParser no longer guesses elements if they are not recognised, instead
     empty strings are assigned (Issue #2933)
   * Instead of using ATOM for both ATOM and HETATM, HETATM record type
     keyword is properly written out by PDB writer (Issue #1753, PR #2880).
