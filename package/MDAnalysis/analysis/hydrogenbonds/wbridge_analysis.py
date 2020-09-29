@@ -696,7 +696,6 @@ class WaterBridgeAnalysis(AnalysisBase):
 
     .. versionadded:: 0.17.0
 
-
     """
     # use tuple(set()) here so that one can just copy&paste names from the
     # table; set() takes care for removing duplicates. At the end the
