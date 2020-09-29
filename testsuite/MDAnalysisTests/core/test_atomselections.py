@@ -42,6 +42,7 @@ from MDAnalysis.tests.datafiles import (
     TRZ_psf, TRZ,
     PDB_icodes,
     PDB_HOLE,
+    PDB_helix,
 )
 from MDAnalysisTests import make_Universe
 
@@ -74,7 +75,7 @@ class TestSelectionsCHARMM(object):
                      sorted(universe.select_atoms('segid 4AKE').indices),
                      "selected protein is not the same as auto-generated protein segment s4AKE")
 
-    @pytest.mark.parametrize('resname', MDAnalysis.core.selection.ProteinSelection.prot_res)
+    @pytest.mark.parametrize('resname', sorted(MDAnalysis.core.selection.ProteinSelection.prot_res))
     def test_protein_resnames(self, resname):
         u = make_Universe(('resnames',))
         # set half the residues' names to the resname we're testing
@@ -526,16 +527,42 @@ class TestSelectionRDKit(object):
         u = MDAnalysis.Universe.from_smiles(smi, addHs=False,
                                             generate_coordinates=False)
         return u
-        
+
+    @pytest.fixture
+    def u2(self):
+        u = MDAnalysis.Universe.from_smiles("Nc1cc(C[C@H]([O-])C=O)c[nH]1")
+        return u
+
     @pytest.mark.parametrize("sel_str, n_atoms", [
         ("aromatic", 5),
         ("not aromatic", 1),
         ("type N and aromatic", 1),
         ("type C and aromatic", 4),
     ])
-    def test_selection(self, u, sel_str, n_atoms):
+    def test_aromatic_selection(self, u, sel_str, n_atoms):
         sel = u.select_atoms(sel_str)
         assert sel.n_atoms == n_atoms
+
+    @pytest.mark.parametrize("sel_str, indices", [
+        ("smarts n", [10]),
+        ("smarts [#7]", [0, 10]),
+        ("smarts a", [1, 2, 3, 9, 10]),
+        ("smarts c", [1, 2, 3, 9]),
+        ("smarts [*-]", [6]),
+        ("smarts [$([!#1]);$([!R][R])]", [0, 4]),
+        ("smarts [$([C@H](-[CH2])(-[O-])-C=O)]", [5]),
+        ("smarts [$([C@@H](-[CH2])(-[O-])-C=O)]", []),
+        ("smarts a and type C", [1, 2, 3, 9]),
+        ("(smarts a) and (type C)", [1, 2, 3, 9]),
+        ("smarts a and type N", [10]),
+    ])
+    def test_smarts_selection(self, u2, sel_str, indices):
+        sel = u2.select_atoms(sel_str)
+        assert_equal(sel.indices, indices)
+
+    def test_invalid_smarts_sel_raises_error(self, u2):
+        with pytest.raises(ValueError, match="not a valid SMARTS"):
+            u2.select_atoms("smarts foo")
 
 
 class TestSelectionsNucleicAcids(object):

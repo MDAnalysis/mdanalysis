@@ -110,10 +110,10 @@ Development notes
 The TPR reader is a pure-python implementation of a basic TPR
 parser. Currently the following sections of the topology are parsed:
 
-* Atoms: number, name, type, resname, resid, segid, mass, charge,
+* Atoms: number, name, type, resname, resid, segid, mass, charge, element
   [residue, segment, radius, bfactor, resnum, moltype]
 * Bonds
-* Angels
+* Angles
 * Dihedrals
 * Impropers
 
@@ -144,6 +144,13 @@ Versions prior to Gromacs 4.0.x are not supported.
 .. _TPRReaderDevelopment: https://github.com/MDAnalysis/mdanalysis/wiki/TPRReaderDevelopment
 .. _`Issue 2428`: https://github.com/MDAnalysis/mdanalysis/issues/2428
 
+
+.. versionchanged:: 2.0.0
+   The `elements` topology attribute is now exposed if at least one atom has
+   a valid element symbol. In that case, atoms for which the element is not
+   recognized have their element attribute set to an empty string. If none of
+   the elements are recognized, then the `elements` attribute is not set in the
+   topology.
 """
 __author__ = "Zhuyi Xue"
 __copyright__ = "GNU Public Licence, v2"

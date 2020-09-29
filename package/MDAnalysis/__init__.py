@@ -150,7 +150,7 @@ the OPLS/AA force field.
 
 """
 
-__all__ = ['Universe', 'as_Universe', 'Writer', 'fetch_mmtf',
+__all__ = ['Universe', 'Writer', 'fetch_mmtf',
            'AtomGroup', 'ResidueGroup', 'SegmentGroup']
 
 import logging
@@ -181,11 +181,6 @@ _TOPOLOGY_TRANSPLANTS = {}   # {name: [attrname, method, transplant class]}
 _TOPOLOGY_ATTRNAMES = {}  # {lower case name w/o _ : name}
 
 
-# Storing anchor universes for unpickling groups
-import weakref
-_ANCHOR_UNIVERSES = weakref.WeakValueDictionary()
-del weakref
-
 # custom exceptions and warnings
 from .exceptions import (
     SelectionError, NoDataError, ApplicationError, SelectionWarning,
@@ -207,7 +202,7 @@ warnings.filterwarnings(action='once', category=DeprecationWarning,
 from . import units
 
 # Bring some often used objects into the current namespace
-from .core.universe import Universe, as_Universe, Merge
+from .core.universe import Universe, Merge
 from .core.groups import AtomGroup, ResidueGroup, SegmentGroup
 from .coordinates.core import writer as Writer
 

@@ -226,6 +226,7 @@ class Timestep(object):
 
          create a timestep object with space for n_atoms
 
+
     .. versionchanged:: 0.11.0
        Added :meth:`from_timestep` and :meth:`from_coordinates` constructor
        methods.
@@ -233,6 +234,9 @@ class Timestep(object):
        :attr:`n_atoms` now a read only property.
        :attr:`frame` now 0-based instead of 1-based.
        Attributes `status` and `step` removed.
+    .. versionchanged:: 2.0.0
+       Timestep now can be (un)pickled. Weakref for Reader
+       will be dropped.
     """
     order = 'F'
 
@@ -299,7 +303,6 @@ class Timestep(object):
 
         # set up aux namespace for adding auxiliary data
         self.aux = Namespace()
-
 
     @classmethod
     def from_timestep(cls, other, **kwargs):
@@ -381,6 +384,22 @@ class Timestep(object):
 
         return ts
 
+    def __getstate__(self):
+        #  The `dt` property is lazy loaded.
+        #  We need to load it once from the `_reader` (if exists)
+        #  attached to this timestep to get the dt value.
+        #  This will help to (un)pickle a `Timestep` without pickling `_reader`
+        #  and retain its dt value.
+        self.dt
+
+        state = self.__dict__.copy()
+        state.pop('_reader', None)
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
     def _init_unitcell(self):
         """Create custom datastructure for :attr:`_unitcell`."""
         # override for other Timesteps
@@ -442,7 +461,7 @@ class Timestep(object):
             return self._pos[atoms]
         else:
             raise TypeError
-    
+
     def __getattr__(self, attr):
         # special-case timestep info
         if attr in ('velocities', 'forces', 'positions'):
@@ -1400,6 +1419,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
     .. versionchanged:: 0.11.0
        Frames now 0-based instead of 1-based
+    .. versionchanged:: 2.0.0
+       Now supports (un)pickle. Upon unpickling,
+       the current timestep is retained by reconstrunction.
     """
 
     #: The appropriate Timestep class, e.g.
@@ -2060,6 +2082,9 @@ class ProtoReader(IOBase, metaclass=_Readermeta):
 
         return ts
 
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self[self.ts.frame]
 
 
 class ReaderBase(ProtoReader):

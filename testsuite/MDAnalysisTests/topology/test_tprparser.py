@@ -56,7 +56,7 @@ BONDED_TPRS = (
 
 class TPRAttrs(ParserBase):
     parser = MDAnalysis.topology.TPRParser.TPRParser
-    expected_attrs = ['ids', 'names',
+    expected_attrs = ['ids', 'names', 'elements',
                       'resids', 'resnames',
                       'moltypes', 'molnums', 'charges',
                       'bonds', 'angles', 'dihedrals', 'impropers']
@@ -258,3 +258,32 @@ def test_fail_for_unsupported_files(tpr_path, expected_exception):
     with pytest.raises(expected_exception):
         parser.parse()
 
+
+@pytest.mark.parametrize('tpr_path', BONDED_TPRS)
+def test_no_elements(tpr_path):
+    """
+    If the TPR does not contain element information, the element topology
+    attribute is not defined.
+    """
+    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
+    topology = parser.parse()
+    with pytest.raises(AttributeError):
+        _ = topology.elements
+
+
+def test_elements():
+    tpr_path = TPR
+    parser = MDAnalysis.topology.TPRParser.TPRParser(tpr_path)
+    topology = parser.parse()
+    reference = np.array((
+         'H,C,H,H,C,H,H,H,C,H,H,H,C,O,N,H,C,H,C,H,H,C,H,C,H,H,H,C,H,H,'
+         'H,C,O,N,H,C,H,H,C,O,O,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H'
+         ',H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,O,H,H,,'
+         'O,H,H'
+    ).split(','), dtype=object)
+    assert_equal(topology.elements.values[3300:3400], reference)
+    reference = np.array([
+        'O', 'H', 'H', '', 'O', 'H', 'H', '', 'O', 'H', 'H', '', 'O', 'H',
+        'H', '', 'Na', 'Na', 'Na', 'Na',
+    ], dtype=object)
+    assert_equal(topology.elements.values[-20:], reference)
