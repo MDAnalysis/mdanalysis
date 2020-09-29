@@ -23,6 +23,7 @@
 
 __all__ = [
     'HydrogenBondAnalysis'
+    'WaterBridgeAnalysis'
 ]
 
 from .hbond_analysis import HydrogenBondAnalysis
