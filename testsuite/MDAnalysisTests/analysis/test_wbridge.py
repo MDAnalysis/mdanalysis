@@ -7,6 +7,14 @@ import pytest
 
 import MDAnalysis
 
+
+def test_import_warning():
+    wmsg = 'Please use MDAnalysis.analysis.hydrogenbonds.wbridge_analysis'
+    with pytest.warns(DeprecationWarning, match=wmsg):
+        from MDAnalysis.analysis.hbonds.wbridge_analysis import (
+            WaterBridgeAnalysis, )
+
+
 def test_import_from_hbonds():
     try:
         from MDAnalysis.analysis.hbonds import WaterBridgeAnalysis
@@ -16,27 +24,9 @@ def test_import_from_hbonds():
                              "MDAnalysis.analysis.hbonds failed.'")
 
 
-def test_import_warning():
-    with pytest.warns(DeprecationWarning) as record:
-        from MDAnalysis.analysis.hbonds.wbridge_analysis import (
-            WaterBridgeAnalysis, )
-    assert len(record) == 2
-    assert record[0].message.args[0] == 'This module is deprecated as of '\
-                                        'MDAnalysis version 1.0.It will be '\
-                                        'removed in MDAnalysis version 2.0'\
-                                        'Please use '\
-                                        'MDAnalysis.analysis.hydrogenbonds.'\
-                                        'hbond_analysis instead.'
-    assert record[1].message.args[0] == 'This module has been moved to '\
-                                        'MDAnalysis.analysis.hydrogenbondsIt '\
-                                        'will be removed in MDAnalysis '\
-                                        'version 2.0. Please use MDAnalysis.'\
-                                        'analysis.hydrogenbonds.'\
-                                        'wbridge_analysis instead.'
-
-
 from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
     WaterBridgeAnalysis, )
+
 
 class TestWaterBridgeAnalysis(object):
     @staticmethod
