@@ -6,7 +6,6 @@ from numpy.testing import (
 import pytest
 
 import MDAnalysis
-import MDAnalysis.analysis.hbonds
 from MDAnalysis.analysis.hydrogenbonds.wbridge_analysis import (
     WaterBridgeAnalysis, )
 
@@ -21,6 +20,7 @@ def test_import_from_hbonds():
 def test_import_warning():
     with pytest.warns(DeprecationWarning):
         from MDAnalysis.analysis.hbonds import WaterBridgeAnalysis
+
 
 class TestWaterBridgeAnalysis(object):
     @staticmethod
