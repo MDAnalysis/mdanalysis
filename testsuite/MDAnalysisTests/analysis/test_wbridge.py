@@ -18,6 +18,10 @@ def test_import_from_hbonds():
                              "importing WaterBridgeAnalysis from "
                              "MDAnalysis.analysis.hbonds failed.'")
 
+def test_import_warning():
+    with pytest.warns(DeprecationWarning):
+        from MDAnalysis.analysis.hbonds import WaterBridgeAnalysis
+
 class TestWaterBridgeAnalysis(object):
     @staticmethod
     @pytest.fixture(scope='class')
