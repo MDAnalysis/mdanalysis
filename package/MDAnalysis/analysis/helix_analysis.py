@@ -42,6 +42,15 @@ bending angles between successive local helix axes.
 
 .. _HELANAL: https://pubmed.ncbi.nlm.nih.gov/10798526/
 
+.. [Sugeta1967] Sugeta, H. and Miyazawa, T. 1967. General method for
+   calculating helical parameters of polymer chains from bond lengths, bond
+   angles and internal rotation angles. *Biopolymers* 5 673 - 679
+
+.. [Bansal2000] Bansal M, Kumar S, Velavan R. 2000.
+   HELANAL - A program to characterise helix geometry in proteins.
+   *J Biomol Struct Dyn.*  17(5):811-819.
+
+
 Example use
 -----------
 

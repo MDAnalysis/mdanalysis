@@ -20,6 +20,8 @@ The rules for this file:
   * 2.0.0
 
 Fixes
+  * ParmedParser no longer guesses elements if they are not recognised, instead
+    empty strings are assigned (Issue #2933)
   * Instead of using ATOM for both ATOM and HETATM, HETATM record type
     keyword is properly written out by PDB writer (Issue #1753, PR #2880).
   * Change referenced PDB standard version to 3.3 (Issue #2906).
@@ -53,7 +55,9 @@ Fixes
   * libmdaxdr and libdcd classes in their last frame can now be pickled
     (Issue #2878, PR #2911)
   * AtomGroup now are pickled/unpickled without looking for its anchored
-    Universe (PR #2893) 
+    Universe (PR #2893)
+  * ensure that unistd.h is included on macOS when compiling ENCORE's spe.c
+    (Issue #2934)
 
 Enhancements
   * Refactored analysis.helanal into analysis.helix_analysis
@@ -115,6 +119,8 @@ Changes
   * The transformation was changed from a function/closure to a class with
     `__call__` (Issue #2860, PR #2859)
   * Added OpenMM coordinate and topology converters (Issue #2863, PR #2917)
+  * deprecated ``analysis.helanal`` module has been removed in favour of
+    ``analysis.helix_analysis`` (PR #2929)
 
 Deprecations
 
