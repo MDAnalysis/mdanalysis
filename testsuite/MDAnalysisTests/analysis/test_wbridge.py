@@ -31,9 +31,10 @@ def test_import_warning():
                                         'hbond_analysis instead.'
     assert record[1].message.args[0] == 'This module has been moved to '\
                                         'MDAnalysis.analysis.hydrogenbondsIt '\
-                                        'will be removed in MDAnalysis version'\
-                                        ' 2.0. Please use MDAnalysis.analysis.'\
-                                        'hydrogenbonds.wbridge_analysis instead.'
+                                        'will be removed in MDAnalysis '\
+                                        'version 2.0. Please use MDAnalysis.'\
+                                        'analysis.hydrogenbonds.'\
+                                        'wbridge_analysis instead.'
 
 
 class TestWaterBridgeAnalysis(object):
