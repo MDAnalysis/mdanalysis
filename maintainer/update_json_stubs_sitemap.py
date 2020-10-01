@@ -13,6 +13,9 @@ import json
 import os
 import shutil
 import xml.etree.ElementTree as ET
+import errno
+import glob
+import textwrap
 
 try:
     from urllib.request import Request, urlopen
@@ -38,6 +41,21 @@ def get_web_file(filename, callback, default):
             return default
     else:
         return callback(data)
+
+
+def write_redirect(file, version='', outfile=None):
+    if outfile is None:
+        outfile = file
+    url = os.path.join(URL, version, file)
+    REDIRECT = textwrap.dedent(f"""
+    <!DOCTYPE html>
+    <meta charset="utf-8">
+    <title>Redirecting to {url}</title>
+    <meta http-equiv="refresh" content="0; URL={url}">
+    <link rel="canonical" href="{url}">
+    """)
+    with open(outfile, 'w') as f:
+        f.write(REDIRECT)
 
 
 # ========= WRITE JSON =========
@@ -68,44 +86,44 @@ with open("versions.json", 'w') as f:
 # latest/index.html -> latest release
 # dev/index.html -> dev docs
 
-REDIRECT = """
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Redirecting to {url}</title>
-<meta http-equiv="refresh" content="0; URL={url}">
-<link rel="canonical" href="{url}">
-"""
-
 for ver in versions[::-1]:
     if ver['latest']:
-        latest_url = ver['url']
+        latest_version = ver['version']
         break
 else:
     try:
-        latest_url = versions[-1]['url']
+        latest_version = versions[-1]['version']
     except IndexError:
-        latest_url = None
+        latest_version = None
 
 for ver in versions[::-1]:
     if 'dev' in ver['version']:
-        dev_url = ver['url']
+        dev_version = ver['version']
         break
 else:
     try:
-        dev_url = versions[-1]['url']
+        dev_version = versions[-1]['version']
     except IndexError:
-        dev_url = None
+        dev_version = None
 
-if latest_url:
-    with open('index.html', 'w') as f:
-        f.write(REDIRECT.format(url=latest_url))
+if latest_version:
+    html_files = glob.glob(f'{latest_version}/**/*.html', recursive=True)
+    for file in html_files:
+        outfile = file.strip(f'{latest_version}/')
+        dirname = os.path.dirname(outfile)
+        if dirname and not os.path.exists(dirname):
+            try:
+                os.makedirs(dirname)
+            except OSError as exc:
+                if exc.errno != errno.EEXIST:
+                    raise
 
-    with open('latest/index.html', 'w') as f:
-        f.write(REDIRECT.format(url=latest_url))
+        write_redirect(file, '', outfile)
+    write_redirect('index.html', latest_version, 'latest/index.html')
+    write_redirect('objects.inv', latest_version, 'latest/objects.inv')
 
-if dev_url:
-    with open('dev/index.html', 'w') as f:
-        f.write(REDIRECT.format(url=dev_url))
+if dev_version:
+    write_redirect('index.html', dev_version, 'dev/index.html')
 
 # ========= WRITE SUPER SITEMAP.XML =========
 # make one big sitemap.xml
