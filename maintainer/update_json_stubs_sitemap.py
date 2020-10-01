@@ -25,6 +25,16 @@ except ImportError:
 URL = os.environ['URL']
 VERSION = os.environ['VERSION']
 
+if "http" not in URL:
+    raise ValueError("URL should have the transfer protocol (HTTP/S). "
+                     f"Given: $URL={URL}")
+
+try:
+    int(VERSION[0])
+except ValueError:
+    raise ValueError("$VERSION should start with a number. "
+                     f"Given: $VERSION={VERSION}") from None
+
 
 def get_web_file(filename, callback, default):
     url = os.path.join(URL, filename)
@@ -56,6 +66,7 @@ def write_redirect(file, version='', outfile=None):
     """)
     with open(outfile, 'w') as f:
         f.write(REDIRECT)
+    print(f"Wrote redirect from {url} to {outfile}")
 
 
 # ========= WRITE JSON =========
