@@ -178,7 +178,7 @@
             
   <h1>Source code for MDAnalysis.topology.ParmEdParser</h1><div class="highlight"><pre>
 <span></span><span class="c1"># -*- Mode: python; tab-width: 4; indent-tabs-mode:nil; coding:utf-8 -*-</span>
-<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4 </span>
+<span class="c1"># vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4</span>
 <span class="c1">#</span>
 <span class="c1"># MDAnalysis --- https://www.mdanalysis.org</span>
 <span class="c1"># Copyright (c) 2006-2017 The MDAnalysis Development Team and contributors</span>
@@ -204,14 +204,15 @@
 <span class="sd">ParmEd topology parser</span>
 <span class="sd">======================</span>
 
-<span class="sd">Converts a `ParmEd &lt;https://parmed.github.io/ParmEd/html&gt;`_ :class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.</span>
+<span class="sd">Converts a `ParmEd &lt;https://parmed.github.io/ParmEd/html&gt;`_</span>
+<span class="sd">:class:`parmed.structure.Structure` into a :class:`MDAnalysis.core.Topology`.</span>
 
 
 <span class="sd">Example</span>
 <span class="sd">-------</span>
 
-<span class="sd">If you want to use an MDAnalysis-written ParmEd structure for simulation </span>
-<span class="sd">in ParmEd, you need to first read your files with ParmEd to include the </span>
+<span class="sd">If you want to use an MDAnalysis-written ParmEd structure for simulation</span>
+<span class="sd">in ParmEd, you need to first read your files with ParmEd to include the</span>
 <span class="sd">necessary topology parameters. ::</span>
 
 <span class="sd">    &gt;&gt;&gt; import parmed as pmd</span>
@@ -221,7 +222,7 @@
 <span class="sd">    &gt;&gt;&gt; prm</span>
 <span class="sd">    &lt;AmberParm 3026 atoms; 1003 residues; 3025 bonds; PBC (orthogonal); parametrized&gt;</span>
 
-<span class="sd">We can then convert this to an MDAnalysis structure, select only the </span>
+<span class="sd">We can then convert this to an MDAnalysis structure, select only the</span>
 <span class="sd">protein atoms, and then convert it back to ParmEd. ::</span>
 
 <span class="sd">    &gt;&gt;&gt; u = mda.Universe(prm)</span>
@@ -232,7 +233,8 @@
 <span class="sd">    &gt;&gt;&gt; prm_prot</span>
 <span class="sd">    &lt;Structure 23 atoms; 2 residues; 22 bonds; PBC (orthogonal); parametrized&gt;</span>
 
-<span class="sd">From here you can create an OpenMM simulation system and minimize the energy. ::</span>
+<span class="sd">From here you can create an OpenMM simulation system and minimize the</span>
+<span class="sd">energy. ::</span>
 
 <span class="sd">    &gt;&gt;&gt; import simtk.openmm as mm</span>
 <span class="sd">    &gt;&gt;&gt; import simtk.openmm.app as app</span>
@@ -260,12 +262,8 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..lib.util</span> <span class="kn">import</span> <span class="n">openany</span>
-<span class="kn">from</span> <span class="nn">.guessers</span> <span class="kn">import</span> <span class="n">guess_atom_element</span>
 <span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">TopologyReaderBase</span><span class="p">,</span> <span class="n">change_squash</span>
 <span class="kn">from</span> <span class="nn">.tables</span> <span class="kn">import</span> <span class="n">Z2SYMB</span>
 <span class="kn">from</span> <span class="nn">..core.topologyattrs</span> <span class="kn">import</span> <span class="p">(</span>
@@ -301,11 +299,13 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;MDAnalysis.topology.ParmEdParser&quot;</span><span class="p">)</span>
 
+
 <span class="k">def</span> <span class="nf">squash_identical</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+
 
 <div class="viewcode-block" id="ParmEdParser"><a class="viewcode-back" href="../../../documentation_pages/converters/ParmEdParser.html#MDAnalysis.topology.ParmEdParser.ParmEdParser">[docs]</a><span class="k">class</span> <span class="nc">ParmEdParser</span><span class="p">(</span><span class="n">TopologyReaderBase</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -332,6 +332,12 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        MDAnalysis *Topology* object</span>
+
+
+<span class="sd">        .. versionchanged:: 2.0.0</span>
+<span class="sd">           Elements are no longer guessed, if the elements present in the</span>
+<span class="sd">           parmed object are not recoginsed (usually given an atomic mass of 0)</span>
+<span class="sd">           then they will be assigned an empty string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">structure</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
 
@@ -361,8 +367,6 @@
         <span class="n">rmin14s</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">epsilon14s</span> <span class="o">=</span> <span class="p">[]</span>
 
-
-
         <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">structure</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
             <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="n">masses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
@@ -388,7 +392,7 @@
             <span class="n">epsilons</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">epsilon</span><span class="p">)</span>
             <span class="n">rmin14s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">rmin_14</span><span class="p">)</span>
             <span class="n">epsilon14s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">epsilon_14</span><span class="p">)</span>
-        
+
         <span class="n">attrs</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
@@ -399,7 +403,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Z2SYMB</span><span class="p">[</span><span class="n">z</span><span class="p">])</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">guess_atom_element</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                <span class="n">elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 
         <span class="c1"># Make Atom TopologyAttrs</span>
         <span class="k">for</span> <span class="n">vals</span><span class="p">,</span> <span class="n">Attr</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="p">(</span>
@@ -411,7 +415,7 @@
                 <span class="p">(</span><span class="n">serials</span><span class="p">,</span> <span class="n">Atomids</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
                 <span class="p">(</span><span class="n">chainids</span><span class="p">,</span> <span class="n">ChainIDs</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
 
-                <span class="p">(</span><span class="n">altLocs</span><span class="p">,</span> <span class="n">AltLocs</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>                
+                <span class="p">(</span><span class="n">altLocs</span><span class="p">,</span> <span class="n">AltLocs</span><span class="p">,</span> <span class="nb">object</span><span class="p">),</span>
                 <span class="p">(</span><span class="n">bfactors</span><span class="p">,</span> <span class="n">Tempfactors</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
                 <span class="p">(</span><span class="n">occupancies</span><span class="p">,</span> <span class="n">Occupancies</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
 
@@ -432,7 +436,8 @@
         <span class="n">segids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">segids</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
 
         <span class="n">residx</span><span class="p">,</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">chainids</span><span class="p">,</span> <span class="n">segids</span><span class="p">)</span> <span class="o">=</span> <span class="n">change_squash</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">chainids</span><span class="p">,</span> <span class="n">segids</span><span class="p">),</span> <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">chainids</span><span class="p">,</span> <span class="n">segids</span><span class="p">))</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">chainids</span><span class="p">,</span> <span class="n">segids</span><span class="p">),</span>
+            <span class="p">(</span><span class="n">resids</span><span class="p">,</span> <span class="n">resnames</span><span class="p">,</span> <span class="n">chainids</span><span class="p">,</span> <span class="n">segids</span><span class="p">))</span>
 
         <span class="n">n_residues</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">resids</span><span class="p">)</span>
         <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Resids</span><span class="p">(</span><span class="n">resids</span><span class="p">))</span>
@@ -463,7 +468,6 @@
         <span class="n">cmap_values</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">cmap_types</span> <span class="o">=</span> <span class="p">[]</span>
 
-
         <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">structure</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
             <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">bond</span><span class="o">.</span><span class="n">atom1</span><span class="o">.</span><span class="n">idx</span><span class="p">,</span> <span class="n">bond</span><span class="o">.</span><span class="n">atom2</span><span class="o">.</span><span class="n">idx</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bond_values</span><span class="p">:</span>
@@ -478,11 +482,11 @@
             <span class="n">bond_values</span><span class="p">,</span> <span class="n">bond_types</span><span class="p">,</span> <span class="n">bond_orders</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">bond_types</span><span class="p">,</span> <span class="n">bond_orders</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
-            
+
             <span class="n">bond_types</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">squash_identical</span><span class="p">,</span> <span class="n">bond_types</span><span class="p">))</span>
             <span class="n">bond_orders</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">squash_identical</span><span class="p">,</span> <span class="n">bond_orders</span><span class="p">))</span>
 
-        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bonds</span><span class="p">(</span><span class="n">bond_values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">bond_types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+        <span class="n">attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Bonds</span><span class="p">(</span><span class="n">bond_values</span><span class="p">,</span> <span class="n">types</span><span class="o">=</span><span class="n">bond_types</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                            <span class="n">order</span><span class="o">=</span><span class="n">bond_orders</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">pmdlist</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">types</span> <span class="ow">in</span> <span class="p">(</span>
@@ -522,7 +526,6 @@
                        <span class="n">residue_segindex</span><span class="o">=</span><span class="n">segidx</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">top</span></div></div>
-
 </pre></div>
 
            </div>

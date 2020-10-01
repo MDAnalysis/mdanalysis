@@ -196,7 +196,8 @@
             
   <span class="target" id="module-MDAnalysis.topology.ParmEdParser"></span><div class="section" id="parmed-topology-parser">
 <h1>7.1. ParmEd topology parser<a class="headerlink" href="#parmed-topology-parser" title="Permalink to this headline">¶</a></h1>
-<p>Converts a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a> <code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
+<p>Converts a <a class="reference external" href="https://parmed.github.io/ParmEd/html">ParmEd</a>
+<code class="xref py py-class docutils literal notranslate"><span class="pre">parmed.structure.Structure</span></code> into a <code class="xref py py-class docutils literal notranslate"><span class="pre">MDAnalysis.core.Topology</span></code>.</p>
 <p class="rubric">Example</p>
 <p>If you want to use an MDAnalysis-written ParmEd structure for simulation
 in ParmEd, you need to first read your files with ParmEd to include the
@@ -220,7 +221,8 @@ protein atoms, and then convert it back to ParmEd.</p>
 <span class="go">&lt;Structure 23 atoms; 2 residues; 22 bonds; PBC (orthogonal); parametrized&gt;</span>
 </pre></div>
 </div>
-<p>From here you can create an OpenMM simulation system and minimize the energy.</p>
+<p>From here you can create an OpenMM simulation system and minimize the
+energy.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">simtk.openmm</span> <span class="k">as</span> <span class="nn">mm</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">simtk.openmm.app</span> <span class="k">as</span> <span class="nn">app</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">parmed</span> <span class="kn">import</span> <span class="n">unit</span> <span class="k">as</span> <span class="n">u</span>
@@ -495,6 +497,11 @@ is avoided.</p>
 </tr>
 </tbody>
 </table>
+<div class="versionchanged">
+<p><span class="versionmodified">Changed in version 2.0.0: </span>Elements are no longer guessed, if the elements present in the
+parmed object are not recoginsed (usually given an atomic mass of 0)
+then they will be assigned an empty string.</p>
+</div>
 </dd></dl>
 
 </dd></dl>
