@@ -63,12 +63,11 @@ def write_redirect(file, version='', outfile=None):
 versions = get_web_file('versions.json', json.loads, [])
 existing = [item['version'] for item in versions]
 already_exists = VERSION in existing
+latest = 'dev' not in VERSION
 
-if not already_exists:
-    latest = 'dev' not in VERSION
-    if latest:
-        for ver in versions:
-            ver['latest'] = False
+if not already_exists and latest:
+    for ver in versions:
+        ver['latest'] = False
 
     versions.append({
         'version': VERSION,
@@ -76,6 +75,8 @@ if not already_exists:
         'url': os.path.join(URL, VERSION),
         'latest': latest
     })
+
+versions.sort(key=lambda x: x["version"])
 
 with open("versions.json", 'w') as f:
     json.dump(versions, f, indent=2)
@@ -106,10 +107,11 @@ else:
     except IndexError:
         dev_version = None
 
-if latest_version:
-    html_files = glob.glob(f'{latest_version}/**/*.html', recursive=True)
+
+if latest:
+    html_files = glob.glob(f'{VERSION}/**/*.html', recursive=True)
     for file in html_files:
-        outfile = file.strip(f'{latest_version}/')
+        outfile = file.strip(f'{VERSION}/')
         dirname = os.path.dirname(outfile)
         if dirname and not os.path.exists(dirname):
             try:
@@ -119,8 +121,12 @@ if latest_version:
                     raise
 
         write_redirect(file, '', outfile)
-    write_redirect('index.html', latest_version, 'latest/index.html')
+
+if latest_version:
+    write_redirect('index.html', latest_version)
     write_redirect('objects.inv', latest_version, 'latest/objects.inv')
+    write_redirect('index.html', latest_version, 'latest/index.html')
+
 
 if dev_version:
     write_redirect('index.html', dev_version, 'dev/index.html')
