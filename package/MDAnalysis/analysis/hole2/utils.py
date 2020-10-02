@@ -22,8 +22,9 @@
 #
 
 
-"""HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.helper`
-=====================================================================================
+"""
+HOLE Analysis --- :mod:`MDAnalysis.analysis.hole2.helper`
+=========================================================
 
 :Author: Lily Wang
 :Year: 2020
@@ -130,10 +131,10 @@ def check_and_fix_long_filename(filename, tmpdir=os.path.curdir,
             fd, newname = tempfile.mkstemp(suffix=ext, dir=dirname)
             os.close(fd)
             os.unlink(newname)
-        
+
         if len(newname) > max_length:
             newname = os.path.relpath(newname)
-        
+
         if len(newname) <= max_length:
             os.symlink(filename, newname)
             msg = 'Using symlink: {} -> {}'
@@ -173,13 +174,13 @@ def set_up_hole_input(pdbfile,
         are read.
 
     infile_text: str, optional
-        HOLE input text or template. If set to ``None``, the function will 
+        HOLE input text or template. If set to ``None``, the function will
         create the input text from the other parameters.
         Default: ``None``
 
     infile: str, optional
-        File to write the HOLE input text for later inspection. If set to 
-        ``None``, the input text is not written out. 
+        File to write the HOLE input text for later inspection. If set to
+        ``None``, the input text is not written out.
         Default: ``None``
 
     sphpdb_file : str, optional
@@ -194,7 +195,7 @@ def set_up_hole_input(pdbfile,
         distance of particular atoms from the sphere-centre line.
         .sph files can be used to produce molecular graphical
         output from a hole run, by using the
-        :program:`sph_process` program to read the .sph file. 
+        :program:`sph_process` program to read the .sph file.
         Default: 'hole.sph'
 
     vdwradii_file: str, optional
@@ -204,7 +205,7 @@ def set_up_hole_input(pdbfile,
         the HOLE distribution). Default: ``None``
 
     tmpdir: str, optional
-        The temporary directory that files can be symlinked to, to shorten 
+        The temporary directory that files can be symlinked to, to shorten
         the path name. HOLE can only read filenames up to a certain length.
         Default: current working directory
 
@@ -215,13 +216,13 @@ def set_up_hole_input(pdbfile,
         purposes. However, if you wish to visualize a very tight
         constriction then specify a smaller value.
         This value determines how many points in the pore profile are
-        calculated. Default: 0.2 
+        calculated. Default: 0.2
 
     end_radius : float, optional
         Radius in Å, which is considered to be the end of the pore. This
         keyword can be used to specify the radius above which the
         program regards a result as indicating that the end of the pore
-        has been reached. This may need to be increased for large channels, 
+        has been reached. This may need to be increased for large channels,
         or reduced for small channels. Default: 22.0
 
     cpoint : array_like, 'center_of_geometry' or None, optional
@@ -249,7 +250,7 @@ def set_up_hole_input(pdbfile,
 
     cvect : array_like, optional
         Search direction, should be parallel to the pore axis,
-        e.g. ``[0,0,1]`` for the z-axis. 
+        e.g. ``[0,0,1]`` for the z-axis.
         If this keyword is ``None`` (the default), then HOLE attempts to guess
         where the channel will be. The procedure assumes that the channel is
         reasonably symmetric. The guess will be either along the X axis
@@ -261,15 +262,15 @@ def set_up_hole_input(pdbfile,
     random_seed : int, optional
         integer number to start the random number generator.
         By default,
-        :program:`hole` will use the time of the day. 
-        For reproducible runs (e.g., for testing) set ``random_seed`` 
+        :program:`hole` will use the time of the day.
+        For reproducible runs (e.g., for testing) set ``random_seed``
         to an integer. Default: ``None``
 
     ignore_residues : array_like, optional
         sequence of three-letter residues that are not taken into
         account during the calculation; wildcards are *not*
-        supported. Note that all residues must have 3 letters. Pad 
-        with space on the right-hand side if necessary. 
+        supported. Note that all residues must have 3 letters. Pad
+        with space on the right-hand side if necessary.
         Default: {}.
 
     output_level : int, optional
@@ -281,7 +282,7 @@ def set_up_hole_input(pdbfile,
         2: Ditto plus no graph type output - only leaving minimum
         radius and conductance calculations.
         3: All text output other than input card mirroring and error messages
-        turned off. 
+        turned off.
         Default: 0
 
     dcd : str, optional
@@ -380,7 +381,7 @@ def run_hole(outfile, infile_text, executable):
     outfile: str
         Output file name
     infile_text: str
-        HOLE input text 
+        HOLE input text
         (typically generated by :func:`set_up_hole_input`)
     executable: str
         HOLE executable
@@ -487,19 +488,19 @@ def create_vmd_surface(sphpdb='hole.sph',
     sphpdb: str, optional
         sphpdb file to read. Default: 'hole.sph'
     filename: str, optional
-        output VMD surface file. If ``None``, a temporary file 
+        output VMD surface file. If ``None``, a temporary file
         is generated. Default: ``None``
     sph_process: str, optional
         Executable for ``sph_process`` program. Default: 'sph_process'
     sos_triangle: str, optional
-        Executable for ``sos_triangle`` program. Default: 'sos_triangle' 
+        Executable for ``sos_triangle`` program. Default: 'sos_triangle'
     dot_density: int, optional
         density of facets for generating a 3D pore representation.
         The number controls the density of dots that will be used.
-        A sphere of dots is placed on each centre determined in the 
-        Monte Carlo procedure. The actual number of dots written is 
-        controlled by ``dot_density`` and the ``sample`` level of the 
-        original analysis. ``dot_density`` should be set between 5 
+        A sphere of dots is placed on each centre determined in the
+        Monte Carlo procedure. The actual number of dots written is
+        controlled by ``dot_density`` and the ``sample`` level of the
+        original analysis. ``dot_density`` should be set between 5
         (few dots per sphere) and 35 (many dots per sphere).
         Default: 15
 

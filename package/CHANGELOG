@@ -93,6 +93,8 @@ Changes
   * removes deprecated `as_Universe` function from MDAnalysis.core.universe,
     as a result :class:`MDAnalysis.analysis.leaflet.LeafletFinder` now only
     accepts Universes for its `universe` argument (Issue #2920)
+  * deprecated Python escape sequence usage has been fixed in our test suite,
+    and the test suite will now raise an error for this usage of `\` (PR #2885)
   * deprecated NumPy type aliases have been replaced with their actual types
     (see upstream NumPy PR 14882), and our pytest configuration will raise an
     error for any violation when testing with development NumPy builds

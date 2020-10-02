@@ -195,12 +195,12 @@ def hole(pdbfile,
          dcd_iniskip=0,
          dcd_step=1,
          keep_files=True):
-    """Run :program:`hole` on a single frame or a DCD trajectory.
+    r"""Run :program:`hole` on a single frame or a DCD trajectory.
 
     :program:`hole` is part of the HOLE_ suite of programs. It is used to
     analyze channels and cavities in proteins, especially ion channels.
 
-    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_ 
+    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_
     is supported and can be set with keyword arguments.
 
     Parameters
@@ -238,7 +238,7 @@ def hole(pdbfile,
         path to the file specifying van der Waals radii for each atom. If
         set to ``None``, then a set of default radii,
         :data:`SIMPLE2_RAD`, is used (an extension of ``simple.rad`` from
-        the HOLE distribution). 
+        the HOLE distribution).
     executable: str, optional
         Path to the :program:`hole` executable.
         (e.g. ``~/hole2/exe/hole``). If
@@ -291,13 +291,13 @@ def hole(pdbfile,
         (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not
         aligned on one of these axis the results will clearly be
         approximate. If a guess is used then results should be carefully
-        checked. 
+        checked.
     random_seed : int, optional
         integer number to start the random number generator.
         By default,
         :program:`hole` will use the time of the day.
         For reproducible runs (e.g., for testing) set ``random_seed``
-        to an integer. 
+        to an integer.
     ignore_residues : array_like, optional
         sequence of three-letter residues that are not taken into
         account during the calculation; wildcards are *not*
@@ -326,7 +326,7 @@ def hole(pdbfile,
         initially.
     dcd_step : int, optional
         step size for going through the trajectory (skips ``dcd_step-1``
-        frames). 
+        frames).
     keep_files : bool, optional
         Whether to keep the HOLE output files and possible temporary
         symlinks after running the function. Default: ``True``
@@ -407,14 +407,13 @@ def hole(pdbfile,
 
 
 class HoleAnalysis(AnalysisBase):
-
-    """
+    r"""
     Run :program:`hole` on a trajectory.
 
     :program:`hole` is part of the HOLE_ suite of programs. It is used to
     analyze channels and cavities in proteins, especially ion channels.
 
-    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_ 
+    Only a subset of all `HOLE control parameters <http://www.holeprogram.org/doc/old/hole_d03.html>`_
     is supported and can be set with keyword arguments.
 
     This class creates temporary PDB files for each frame and runs HOLE on
@@ -477,7 +476,7 @@ class HoleAnalysis(AnalysisBase):
         (1,0,0), Y axis (0,1,0) or Z axis (0,0,1). If the structure is not
         aligned on one of these axis the results will clearly be
         approximate. If a guess is used then results should be carefully
-        checked. 
+        checked.
     sample : float, optional
         distance of sample points in Å.
         Specifies the distance between the planes used in the HOLE
@@ -485,13 +484,13 @@ class HoleAnalysis(AnalysisBase):
         purposes. However, if you wish to visualize a very tight
         constriction then specify a smaller value.
         This value determines how many points in the pore profile are
-        calculated. 
+        calculated.
     end_radius : float, optional
         Radius in Å, which is considered to be the end of the pore. This
         keyword can be used to specify the radius above which the
         program regards a result as indicating that the end of the pore
         has been reached. This may need to be increased for large channels,
-        or reduced for small channels. 
+        or reduced for small channels.
     output_level : int, optional
         Determines the output of output in the ``outfile``.
         For automated processing, this must be < 3.
@@ -508,10 +507,10 @@ class HoleAnalysis(AnalysisBase):
         supported. Note that all residues must have 3 letters. Pad
         with space on the right-hand side if necessary.
     prefix: str, optional
-        Prefix for HOLE output files. 
+        Prefix for HOLE output files.
     write_input_files: bool, optional
         Whether to write out the input HOLE text as files.
-        Files are called `hole.inp`. 
+        Files are called `hole.inp`.
 
 
     Returns
@@ -783,7 +782,7 @@ class HoleAnalysis(AnalysisBase):
            source hole.vmd
 
         The level of detail is determined by ``dot_density``.
-        The surface will be colored by ``no_water_color``, ``one_water_color``, and 
+        The surface will be colored by ``no_water_color``, ``one_water_color``, and
         ``double_water_color``. You can change these in the
         Tk Console::
 
@@ -805,14 +804,14 @@ class HoleAnalysis(AnalysisBase):
             (few dots per sphere) and 35 (many dots per sphere).
 
         no_water_color: str, optional
-            Color of the surface where the pore radius is too tight for a 
+            Color of the surface where the pore radius is too tight for a
             water molecule.
 
         one_water_color: str, optional
             Color of the surface where the pore can fit one water molecule.
 
         double_water_color: str, optional
-            Color of the surface where the radius is at least double the 
+            Color of the surface where the radius is at least double the
             minimum radius for one water molecule.
 
 
@@ -859,7 +858,7 @@ class HoleAnalysis(AnalysisBase):
             frames.append('set triangles({i}) '.format(i=i) + tri)
 
         trinorms = '\n'.join(frames)
-        vmd_1 = vmd_script_array.format(no_water_color=no_water_color, 
+        vmd_1 = vmd_script_array.format(no_water_color=no_water_color,
                                         one_water_color=one_water_color,
                                         double_water_color=double_water_color)
         vmd_text = vmd_1 + trinorms + vmd_script_function
@@ -868,7 +867,7 @@ class HoleAnalysis(AnalysisBase):
             f.write(vmd_text)
 
         return filename
-    
+
     def min_radius(self):
         """Return the minimum radius over all profiles as a function of q"""
         if not self.profiles:
@@ -948,7 +947,7 @@ class HoleAnalysis(AnalysisBase):
              linestyle='-', y_shift=0.0,
              label=True, ax=None,
              legend_loc='best', **kwargs):
-        """Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.
+        r"""Plot HOLE profiles :math:`R(\zeta)` in a 1D graph.
 
         Lines are colored according to the specified ``color`` or
         drawn from the color map ``cmap``. One line is
@@ -1016,7 +1015,7 @@ class HoleAnalysis(AnalysisBase):
                color=None, cmap='viridis',
                linestyle='-', ax=None, r_max=None,
                ylabel='Frames', **kwargs):
-        """Stacked 3D graph of profiles :math:`R(\zeta)`.
+        r"""Stacked 3D graph of profiles :math:`R(\zeta)`.
 
         Lines are colored according to the specified ``color`` or
         drawn from the color map ``cmap``. One line is
@@ -1122,7 +1121,7 @@ class HoleAnalysis(AnalysisBase):
                        'or a filename with array data '
                        'that can be read by np.loadtxt')
                 raise ValueError(msg.format(order_parameters))
-            
+
 
         order_parameters = np.asarray(order_parameters)
 
@@ -1298,13 +1297,13 @@ class HoleAnalysis(AnalysisBase):
     def histogram_radii(self, aggregator=np.mean, frames=None,
                         bins=100, range=None):
         """Histograms the pore radii into bins by reaction coordinate,
-        aggregate the radii with an `aggregator` function, and returns the 
+        aggregate the radii with an `aggregator` function, and returns the
         aggregated radii and bin edges.
 
         Parameters
         ----------
         aggregator: callable, optional
-            this function must take an iterable of floats and return a 
+            this function must take an iterable of floats and return a
             single value. Default: np.mean
 
         frames: int or iterable of ints, optional
@@ -1418,7 +1417,7 @@ class HoleAnalysis(AnalysisBase):
                                 r_max=None,
                                 ylabel=r'Order parameter',
                                 **kwargs):
-        """Plot HOLE radii over order parameters as a 3D graph.
+        r"""Plot HOLE radii over order parameters as a 3D graph.
 
         Lines are colored according to the specified ``color`` or
         drawn from the color map ``cmap``. One line is
