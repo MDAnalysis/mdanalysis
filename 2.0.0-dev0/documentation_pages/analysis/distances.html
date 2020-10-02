@@ -236,11 +236,10 @@ speed up calculations.</p>
 arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
 <li><strong>configuration</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Configuration coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(m,</span> <span class="pre">3)</span></code> (dtype is
 arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
 <li><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">m)</span></code> and dtype
 <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>.
 Avoids creating the array which saves time when the function
@@ -284,11 +283,10 @@ filled. This can speed up calculations.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>reference</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a>) – Reference coordinate array of shape <code class="docutils literal notranslate"><span class="pre">(3,)</span></code> or <code class="docutils literal notranslate"><span class="pre">(n,</span> <span class="pre">3)</span></code> (dtype is
 arbitrary, will be converted to <code class="docutils literal notranslate"><span class="pre">numpy.float32</span></code> internally).</li>
-<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<li><strong>box</strong> (<em>array_like</em><em>, </em><em>optional</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-</li>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</li>
 <li><strong>result</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><em>numpy.ndarray</em></a><em>, </em><em>optional</em>) – Preallocated result array which must have the shape <code class="docutils literal notranslate"><span class="pre">(n*(n-1)/2,)</span></code> and
 dtype <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code>. Avoids creating the array which saves time when
 the function is called repeatedly.</li>

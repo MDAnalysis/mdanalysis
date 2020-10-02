@@ -280,8 +280,9 @@
         <span class="k">if</span> <span class="n">metadata</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">metadata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Size of metadata having label </span><span class="se">\&quot;</span><span class="si">{0}</span><span class="se">\&quot;\</span>
-<span class="s2">is not equal to the number of cluster elmements&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Size of metadata having label &quot;</span><span class="si">{0}</span><span class="s1">&quot;&#39;</span>
+                                    <span class="s1">&#39;is not equal to the number of cluster &#39;</span>
+                                    <span class="s1">&#39;elements&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_metadata</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -298,8 +299,8 @@
 
     <span class="k">def</span> <span class="nf">add_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Size of metadata is not equal to the number of</span><span class="se">\</span>
-<span class="s2"> cluster elmements&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Size of metadata is not equal to the number of&quot;</span>
+                            <span class="s2">&quot;cluster elmements&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -371,8 +372,9 @@
         <span class="n">centroids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">elements_array</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">centroids</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;element </span><span class="si">{0}</span><span class="s2">, which is a centroid, doesn&#39;t </span><span class="se">\</span>
-<span class="s2">belong to its own cluster&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;element </span><span class="si">{0}</span><span class="s2">, which is a centroid, doesn&#39;t &quot;</span>
+                                 <span class="s2">&quot;belong to its own cluster&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                     <span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
         <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">centroids</span><span class="p">:</span>
             <span class="n">this_metadata</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">this_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">elements_array</span> <span class="o">==</span> <span class="n">c</span><span class="p">)</span>

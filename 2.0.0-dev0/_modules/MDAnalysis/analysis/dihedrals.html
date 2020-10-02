@@ -528,6 +528,7 @@
 
 <span class="sd">    .. versionchanged:: 1.0.0</span>
 <span class="sd">        added c_name, n_name, ca_name, and check_protein keyword arguments</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atomgroup</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span>
@@ -601,8 +602,8 @@
 <div class="viewcode-block" id="Ramachandran.plot"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Ramachandran.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plots data into standard Ramachandran plot.</span>
 
-<span class="sd">        Each time step in :attr:`Ramachandran.angles` is plotted onto</span>
-<span class="sd">        the same graph.</span>
+<span class="sd">        Each time step in :attr:`Ramachandran.angles` is plotted onto the same</span>
+<span class="sd">        graph.</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -647,8 +648,8 @@
 
 
 <div class="viewcode-block" id="Janin"><a class="viewcode-back" href="../../../documentation_pages/analysis/dihedrals.html#MDAnalysis.analysis.dihedrals.Janin">[docs]</a><span class="k">class</span> <span class="nc">Janin</span><span class="p">(</span><span class="n">Ramachandran</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of</span>
-<span class="sd">    selected residues.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Calculate :math:`\chi_1` and :math:`\chi_2` dihedral angles of selected</span>
+<span class="sd">    residues.</span>
 
 <span class="sd">    :math:`\chi_1` and :math:`\chi_2` angles will be calculated for each residue</span>
 <span class="sd">    corresponding to `atomgroup` for each time step in the trajectory. A</span>

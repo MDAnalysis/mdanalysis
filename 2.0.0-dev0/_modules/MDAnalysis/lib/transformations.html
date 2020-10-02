@@ -244,14 +244,14 @@
 
 <span class="sd">Documentation in HTML format can be generated with epydoc.</span>
 
-<span class="sd">Matrices (M) can be inverted using numpy.linalg.inv(M), concatenated using</span>
-<span class="sd">numpy.dot(M0, M1), or used to transform homogeneous coordinates (v) using</span>
-<span class="sd">numpy.dot(M, v) for shape (4, \*) &quot;point of arrays&quot;, respectively</span>
-<span class="sd">numpy.dot(v, M.T) for shape (\*, 4) &quot;array of points&quot;.</span>
+<span class="sd">Matrices (M) can be inverted using ``numpy.linalg.inv(M)``, concatenated using</span>
+<span class="sd">``numpy.dot(M0, M1)``, or used to transform homogeneous coordinates (v) using</span>
+<span class="sd">``numpy.dot(M, v)`` for shape ``(4, *)`` &quot;point of arrays&quot;, respectively</span>
+<span class="sd">``numpy.dot(v, M.T)`` for shape ``(*, 4)`` &quot;array of points&quot;.</span>
 
-<span class="sd">Use the transpose of transformation matrices for OpenGL glMultMatrixd().</span>
+<span class="sd">Use the transpose of transformation matrices for OpenGL ``glMultMatrixd()``.</span>
 
-<span class="sd">Calculations are carried out with numpy.float64 precision.</span>
+<span class="sd">Calculations are carried out with ``numpy.float64`` precision.</span>
 
 <span class="sd">Vector, point, quaternion, and matrix function arguments are expected to be</span>
 <span class="sd">&quot;array like&quot;, i.e. tuple, list, or numpy arrays.</span>
@@ -260,23 +260,23 @@
 
 <span class="sd">Angles are in radians unless specified otherwise.</span>
 
-<span class="sd">Quaternions w+ix+jy+kz are represented as [w, x, y, z].</span>
+<span class="sd">Quaternions w+ix+jy+kz are represented as ``[w, x, y, z]``.</span>
 
 <span class="sd">A triple of Euler angles can be applied/interpreted in 24 ways, which can</span>
 <span class="sd">be specified using a 4 character string or encoded 4-tuple:</span>
 
-<span class="sd">  *Axes 4-string*: e.g. &#39;sxyz&#39; or &#39;ryxy&#39;</span>
+<span class="sd">  - *Axes 4-string*: e.g. &#39;sxyz&#39; or &#39;ryxy&#39;</span>
 
-<span class="sd">  - first character : rotations are applied to &#39;s&#39;tatic or &#39;r&#39;otating frame</span>
-<span class="sd">  - remaining characters : successive rotation axis &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;</span>
+<span class="sd">    - first character : rotations are applied to &#39;s&#39;tatic or &#39;r&#39;otating frame</span>
+<span class="sd">    - remaining characters : successive rotation axis &#39;x&#39;, &#39;y&#39;, or &#39;z&#39;</span>
 
-<span class="sd">  *Axes 4-tuple*: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)</span>
+<span class="sd">  - *Axes 4-tuple*: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)</span>
 
-<span class="sd">  - inner axis: code of axis (&#39;x&#39;:0, &#39;y&#39;:1, &#39;z&#39;:2) of rightmost matrix.</span>
-<span class="sd">  - parity : even (0) if inner axis &#39;x&#39; is followed by &#39;y&#39;, &#39;y&#39; is followed</span>
-<span class="sd">    by &#39;z&#39;, or &#39;z&#39; is followed by &#39;x&#39;. Otherwise odd (1).</span>
-<span class="sd">  - repetition : first and last axis are same (1) or different (0).</span>
-<span class="sd">  - frame : rotations are applied to static (0) or rotating (1) frame.</span>
+<span class="sd">    - inner axis: code of axis (&#39;x&#39;:0, &#39;y&#39;:1, &#39;z&#39;:2) of rightmost matrix.</span>
+<span class="sd">    - parity : even (0) if inner axis &#39;x&#39; is followed by &#39;y&#39;, &#39;y&#39; is followed</span>
+<span class="sd">      by &#39;z&#39;, or &#39;z&#39; is followed by &#39;x&#39;. Otherwise odd (1).</span>
+<span class="sd">    - repetition : first and last axis are same (1) or different (0).</span>
+<span class="sd">    - frame : rotations are applied to static (0) or rotating (1) frame.</span>
 
 <span class="sd">References</span>
 <span class="sd">----------</span>
@@ -1075,9 +1075,9 @@
 <span class="k">def</span> <span class="nf">superimposition_matrix</span><span class="p">(</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">usesvd</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Return matrix to transform given vector set into second vector set.</span>
 
-<span class="sd">    v0 and v1 are shape (3, \*) or (4, \*) arrays of at least 3 vectors.</span>
+<span class="sd">    `v0` and `v1` are shape `(3, *)` or `(4, *)` arrays of at least 3 vectors.</span>
 
-<span class="sd">    If usesvd is True, the weighted sum of squared deviations (RMSD) is</span>
+<span class="sd">    If `usesvd` is ``True``, the weighted sum of squared deviations (RMSD) is</span>
 <span class="sd">    minimized according to the algorithm by W. Kabsch [8]. Otherwise the</span>
 <span class="sd">    quaternion based algorithm by B. Horn [9] is used (slower when using</span>
 <span class="sd">    this Python implementation).</span>
@@ -1556,7 +1556,7 @@
 
 
 <span class="k">def</span> <span class="nf">quaternion_slerp</span><span class="p">(</span><span class="n">quat0</span><span class="p">,</span> <span class="n">quat1</span><span class="p">,</span> <span class="n">fraction</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">shortestpath</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Return spherical linear interpolation between two quaternions.</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return spherical linear interpolation between two quaternions.</span>
 
 <span class="sd">    &gt;&gt;&gt; q0 = random_quaternion()</span>
 <span class="sd">    &gt;&gt;&gt; q1 = random_quaternion()</span>

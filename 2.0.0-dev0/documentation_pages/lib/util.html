@@ -515,7 +515,7 @@ class:<cite>~MDAnalysis.core.universe.Universe</cite> but it is also possible to
 <span class="kn">from</span> <span class="nn">MDAnalysis.lib.util</span> <span class="kn">import</span> <span class="n">NamedStream</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
-<span class="n">pdb_s</span> <span class="o">=</span> <span class="s2">&quot;TITLE     Lonely Ion</span><span class="se">\n</span><span class="s2">ATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00</span><span class="se">\n</span><span class="s2">&quot;</span>
+<span class="n">pdb_s</span> <span class="o">=</span> <span class="s2">&quot;TITLE     Lonely Ion</span><span class="se">\\</span><span class="s2">nATOM      1  NA  NA+     1      81.260  64.982  10.926  1.00  0.00</span><span class="se">\\</span><span class="s2">n&quot;</span>
 <span class="n">u</span> <span class="o">=</span> <span class="n">MDAnalysis</span><span class="o">.</span><span class="n">Universe</span><span class="p">(</span><span class="n">NamedStream</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">pdb_s</span><span class="p">),</span> <span class="s2">&quot;ion.pdb&quot;</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
 <span class="c1">#  &lt;Universe with 1 atoms&gt;</span>
@@ -1496,7 +1496,7 @@ warning and contain the deprecation note in the do string.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@deprecate</span><span class="p">(</span><span class="n">release</span><span class="o">=</span><span class="s2">&quot;0.19.0&quot;</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="s2">&quot;1.0&quot;</span><span class="p">,</span>
            <span class="n">message</span><span class="o">=</span><span class="s2">&quot;Do it yourself instead.&quot;</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Just pass&quot;&quot;&quot;</span>
+    \<span class="s2">&quot;</span><span class="se">\&quot;\&quot;</span><span class="s2">Just pass</span><span class="se">\&quot;\&quot;\&quot;</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -1570,11 +1570,10 @@ the shape of the array and whether all angles are 90 degrees.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> (<em>array_like</em>) – <p>The unitcell dimensions of the system, which can be orthogonal or
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>box</strong> (<em>array_like</em>) – The unitcell dimensions of the system, which can be orthogonal or
 triclinic and must be provided in the same format as returned by
-<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:</p>
-<p><code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</p>
-</td>
+<a class="reference internal" href="../coordinates/base.html#MDAnalysis.coordinates.base.Timestep.dimensions" title="MDAnalysis.coordinates.base.Timestep.dimensions"><code class="xref py py-attr docutils literal notranslate"><span class="pre">MDAnalysis.coordinates.base.Timestep.dimensions</span></code></a>:
+<code class="docutils literal notranslate"><span class="pre">[lx,</span> <span class="pre">ly,</span> <span class="pre">lz,</span> <span class="pre">alpha,</span> <span class="pre">beta,</span> <span class="pre">gamma]</span></code>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><ul>
 <li><strong>boxtype</strong> ({<code class="docutils literal notranslate"><span class="pre">'ortho'</span></code>, <code class="docutils literal notranslate"><span class="pre">'tri_vecs'</span></code>}) – String indicating the box type (orthogonal or triclinic).</li>

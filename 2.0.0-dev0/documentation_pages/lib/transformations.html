@@ -238,32 +238,34 @@ Laboratory for Fluorescence Dynamics, University of California, Irvine</td>
 <p>This Python code is not optimized for speed. Refer to the transformations.c
 module for a faster implementation of some functions.</p>
 <p>Documentation in HTML format can be generated with epydoc.</p>
-<p>Matrices (M) can be inverted using numpy.linalg.inv(M), concatenated using
-numpy.dot(M0, M1), or used to transform homogeneous coordinates (v) using
-numpy.dot(M, v) for shape (4, *) “point of arrays”, respectively
-numpy.dot(v, M.T) for shape (*, 4) “array of points”.</p>
-<p>Use the transpose of transformation matrices for OpenGL glMultMatrixd().</p>
-<p>Calculations are carried out with numpy.float64 precision.</p>
+<p>Matrices (M) can be inverted using <code class="docutils literal notranslate"><span class="pre">numpy.linalg.inv(M)</span></code>, concatenated using
+<code class="docutils literal notranslate"><span class="pre">numpy.dot(M0,</span> <span class="pre">M1)</span></code>, or used to transform homogeneous coordinates (v) using
+<code class="docutils literal notranslate"><span class="pre">numpy.dot(M,</span> <span class="pre">v)</span></code> for shape <code class="docutils literal notranslate"><span class="pre">(4,</span> <span class="pre">*)</span></code> “point of arrays”, respectively
+<code class="docutils literal notranslate"><span class="pre">numpy.dot(v,</span> <span class="pre">M.T)</span></code> for shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">4)</span></code> “array of points”.</p>
+<p>Use the transpose of transformation matrices for OpenGL <code class="docutils literal notranslate"><span class="pre">glMultMatrixd()</span></code>.</p>
+<p>Calculations are carried out with <code class="docutils literal notranslate"><span class="pre">numpy.float64</span></code> precision.</p>
 <p>Vector, point, quaternion, and matrix function arguments are expected to be
 “array like”, i.e. tuple, list, or numpy arrays.</p>
 <p>Return types are numpy arrays unless specified otherwise.</p>
 <p>Angles are in radians unless specified otherwise.</p>
-<p>Quaternions w+ix+jy+kz are represented as [w, x, y, z].</p>
+<p>Quaternions w+ix+jy+kz are represented as <code class="docutils literal notranslate"><span class="pre">[w,</span> <span class="pre">x,</span> <span class="pre">y,</span> <span class="pre">z]</span></code>.</p>
 <p>A triple of Euler angles can be applied/interpreted in 24 ways, which can
 be specified using a 4 character string or encoded 4-tuple:</p>
 <blockquote>
-<div><p><em>Axes 4-string</em>: e.g. ‘sxyz’ or ‘ryxy’</p>
-<ul class="simple">
+<div><ul class="simple">
+<li><em>Axes 4-string</em>: e.g. ‘sxyz’ or ‘ryxy’<ul>
 <li>first character : rotations are applied to ‘s’tatic or ‘r’otating frame</li>
 <li>remaining characters : successive rotation axis ‘x’, ‘y’, or ‘z’</li>
 </ul>
-<p><em>Axes 4-tuple</em>: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)</p>
-<ul class="simple">
+</li>
+<li><em>Axes 4-tuple</em>: e.g. (0, 0, 0, 0) or (1, 1, 1, 1)<ul>
 <li>inner axis: code of axis (‘x’:0, ‘y’:1, ‘z’:2) of rightmost matrix.</li>
 <li>parity : even (0) if inner axis ‘x’ is followed by ‘y’, ‘y’ is followed
 by ‘z’, or ‘z’ is followed by ‘x’. Otherwise odd (1).</li>
 <li>repetition : first and last axis are same (1) or different (0).</li>
 <li>frame : rotations are applied to static (0) or rotating (1) frame.</li>
+</ul>
+</li>
 </ul>
 </div></blockquote>
 <p class="rubric">References</p>

@@ -298,7 +298,7 @@
     <span class="n">xmkt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># Call maximum likelihood estimator (note the additional column)</span>
-    <span class="n">sample</span> <span class="o">=</span> <span class="n">ml_covariance_estimator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">xmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span> \
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">ml_covariance_estimator</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">xmkt</span><span class="p">[:,</span> <span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]]),</span> <span class="mi">0</span><span class="p">)</span>\
         <span class="o">*</span> <span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
     <span class="c1"># Split covariance matrix into components</span>

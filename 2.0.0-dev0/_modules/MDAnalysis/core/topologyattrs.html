@@ -200,7 +200,7 @@
 <span class="c1"># J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787</span>
 <span class="c1">#</span>
 
-<span class="sd">&quot;&quot;&quot;\</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs`</span>
 <span class="sd">===================================================================</span>
 
@@ -210,6 +210,7 @@
 <span class="sd">TopologyAttrs are used to contain attributes such as atom names or resids.</span>
 <span class="sd">These are usually read by the TopologyParser.</span>
 <span class="sd">&quot;&quot;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">Bio.Seq</span>
 <span class="kn">import</span> <span class="nn">Bio.SeqRecord</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
@@ -655,7 +656,7 @@
 <span class="k">class</span> <span class="nc">_AtomStringAttr</span><span class="p">(</span><span class="n">AtomAttr</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
-      
+
         <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># maps str to nmidx</span>
         <span class="n">name_lookup</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># maps idx to str</span>
         <span class="c1"># eg namedict[&#39;O&#39;] = 5 &amp; name_lookup[5] = &#39;O&#39;</span>
@@ -768,7 +769,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;phi_selection&#39;</span><span class="p">,</span> <span class="n">phi_selection</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.phi_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.phi_selections">[docs]</a>    <span class="k">def</span> <span class="nf">phi_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the phi protein </span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the phi protein</span>
 <span class="sd">        backbone dihedral C&#39;-N-CA-C.</span>
 
 <span class="sd">        Parameters</span>
@@ -887,13 +888,13 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;psi_selection&#39;</span><span class="p">,</span> <span class="n">psi_selection</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_next_residues_by_resid</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the next resid for each </span>
+        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the next resid for each</span>
 <span class="sd">        residue in `residues`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        List of Residues</span>
-<span class="sd">            List of the next residues in the Universe, by resid and segid. </span>
+<span class="sd">            List of the next residues in the Universe, by resid and segid.</span>
 <span class="sd">            If not found, the corresponding item in the list is ``None``.</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
@@ -927,13 +928,13 @@
                                       <span class="n">_get_next_residues_by_resid</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">_get_prev_residues_by_resid</span><span class="p">(</span><span class="n">residues</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the previous resid for each </span>
+        <span class="sd">&quot;&quot;&quot;Select list of Residues corresponding to the previous resid for each</span>
 <span class="sd">        residue in `residues`.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        List of Residues</span>
-<span class="sd">            List of the previous residues in the Universe, by resid and segid. </span>
+<span class="sd">            List of the previous residues in the Universe, by resid and segid.</span>
 <span class="sd">            If not found, the corresponding item in the list is ``None``.</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
@@ -959,7 +960,7 @@
                                       <span class="n">_get_prev_residues_by_resid</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.psi_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.psi_selections">[docs]</a>    <span class="k">def</span> <span class="nf">psi_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the psi protein </span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the psi protein</span>
 <span class="sd">        backbone dihedral N-CA-C-N&#39;.</span>
 
 <span class="sd">        Parameters</span>
@@ -975,7 +976,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        List of AtomGroups</span>
 <span class="sd">            4-atom selections in the correct order. If no N&#39; found in the</span>
-<span class="sd">            following residue (by resid) then the corresponding item in the </span>
+<span class="sd">            following residue (by resid) then the corresponding item in the</span>
 <span class="sd">            list is ``None``.</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
@@ -1063,7 +1064,7 @@
     <span class="n">transplants</span><span class="p">[</span><span class="n">Residue</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s1">&#39;omega_selection&#39;</span><span class="p">,</span> <span class="n">omega_selection</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Atomnames.omega_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.omega_selections">[docs]</a>    <span class="k">def</span> <span class="nf">omega_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">c_name</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the omega protein </span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the omega protein</span>
 <span class="sd">        backbone dihedral CA-C-N&#39;-CA&#39;.</span>
 
 <span class="sd">        omega describes the -C-N- peptide bond. Typically, it is trans (180</span>
@@ -1083,7 +1084,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        List of AtomGroups</span>
 <span class="sd">            4-atom selections in the correct order. If no C&#39; found in the</span>
-<span class="sd">            previous residue (by resid) then the corresponding item in the </span>
+<span class="sd">            previous residue (by resid) then the corresponding item in the</span>
 <span class="sd">            list is ``None``.</span>
 
 <span class="sd">        .. versionadded:: 1.0.0</span>
@@ -1152,7 +1153,7 @@
 
 <div class="viewcode-block" id="Atomnames.chi1_selections"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Atomnames.chi1_selections">[docs]</a>    <span class="k">def</span> <span class="nf">chi1_selections</span><span class="p">(</span><span class="n">residues</span><span class="p">,</span> <span class="n">n_name</span><span class="o">=</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="n">ca_name</span><span class="o">=</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="n">cb_name</span><span class="o">=</span><span class="s1">&#39;CB&#39;</span><span class="p">,</span>
                         <span class="n">cg_name</span><span class="o">=</span><span class="s1">&#39;CG&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the chi1 sidechain dihedral </span>
+        <span class="sd">&quot;&quot;&quot;Select list of AtomGroups corresponding to the chi1 sidechain dihedral</span>
 <span class="sd">        N-CA-CB-CG.</span>
 
 <span class="sd">        Parameters</span>
@@ -1318,7 +1319,7 @@
 <div class="viewcode-block" id="Masses.center_of_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.center_of_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="nd">@check_pbc_and_unwrap</span>
     <span class="k">def</span> <span class="nf">center_of_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">pbc</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">unwrap</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Center of mass of (compounds of) the group.</span>
 
 <span class="sd">        Computes the center of mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or</span>
@@ -1379,7 +1380,7 @@
 
 <div class="viewcode-block" id="Masses.total_mass"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Masses.total_mass">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="k">def</span> <span class="nf">total_mass</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Total mass of (compounds of) the group.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total mass of (compounds of) the group.</span>
 
 <span class="sd">        Computes the total mass of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Total masses per :class:`Residue`, :class:`Segment`, molecule, or</span>
@@ -1646,7 +1647,7 @@
 
 
 <span class="sd">        .. versionchanged:: 0.8 Added *pbc* keyword</span>
-<span class="sd">        .. versionchanged:: 1.0.0 </span>
+<span class="sd">        .. versionchanged:: 1.0.0</span>
 <span class="sd">            Always return principal axes in right-hand convention.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -1737,7 +1738,7 @@
 
 <div class="viewcode-block" id="Charges.total_charge"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Charges.total_charge">[docs]</a>    <span class="nd">@warn_if_not_unique</span>
     <span class="k">def</span> <span class="nf">total_charge</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">compound</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Total charge of (compounds of) the group.</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Total charge of (compounds of) the group.</span>
 
 <span class="sd">        Computes the total charge of :class:`Atoms&lt;Atom&gt;` in the group.</span>
 <span class="sd">        Total charges per :class:`Residue`, :class:`Segment`, molecule, or</span>
@@ -1954,7 +1955,7 @@
 <span class="k">class</span> <span class="nc">_ResidueStringAttr</span><span class="p">(</span><span class="n">ResidueAttr</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
-      
+
         <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># maps str to nmidx</span>
         <span class="n">name_lookup</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># maps idx to str</span>
         <span class="c1"># eg namedict[&#39;O&#39;] = 5 &amp; name_lookup[5] = &#39;O&#39;</span>
@@ -1973,7 +1974,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
@@ -2005,7 +2006,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>  <span class="c1"># newidx either single value or same size array</span>
         <span class="k">if</span> <span class="n">newnames</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">newnames</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
 
 <span class="c1"># TODO: update docs to property doc</span>
@@ -2190,7 +2191,7 @@
 <span class="k">class</span> <span class="nc">_SegmentStringAttr</span><span class="p">(</span><span class="n">SegmentAttr</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">guessed</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_guessed</span> <span class="o">=</span> <span class="n">guessed</span>
-      
+
         <span class="bp">self</span><span class="o">.</span><span class="n">namedict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># maps str to nmidx</span>
         <span class="n">name_lookup</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># maps idx to str</span>
         <span class="c1"># eg namedict[&#39;O&#39;] = 5 &amp; name_lookup[5] = &#39;O&#39;</span>
@@ -2209,7 +2210,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nextidx</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_gen_initial_values</span><span class="p">(</span><span class="n">na</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">ns</span><span class="p">):</span>
@@ -2241,9 +2242,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">[</span><span class="n">sg</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">newidx</span>  <span class="c1"># newidx either single value or same size array</span>
         <span class="k">if</span> <span class="n">newnames</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">,</span> <span class="n">newnames</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>    
+        <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name_lookup</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">nmidx</span><span class="p">]</span>
 
-        
+
 <span class="c1"># TODO: update docs to property doc</span>
 <div class="viewcode-block" id="Segids"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Segids">[docs]</a><span class="k">class</span> <span class="nc">Segids</span><span class="p">(</span><span class="n">_SegmentStringAttr</span><span class="p">):</span>
     <span class="n">attrname</span> <span class="o">=</span> <span class="s1">&#39;segids&#39;</span>
@@ -2447,7 +2448,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">universe</span><span class="o">.</span><span class="n">_fragdict</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">ix</span><span class="p">]</span><span class="o">.</span><span class="n">ix</span></div>
 
 <div class="viewcode-block" id="Bonds.fragindices"><a class="viewcode-back" href="../../../documentation_pages/core/topologyattrs.html#MDAnalysis.core.topologyattrs.Bonds.fragindices">[docs]</a>    <span class="k">def</span> <span class="nf">fragindices</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The</span>
 <span class="sd">        :class:`fragment indices&lt;MDAnalysis.core.topologyattrs.Bonds.fragindex&gt;`</span>
 <span class="sd">        of all :class:`Atoms&lt;MDAnalysis.core.groups.Atom&gt;` in this</span>
 <span class="sd">        :class:`~MDAnalysis.core.groups.AtomGroup`.</span>
