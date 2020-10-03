@@ -55,7 +55,7 @@ git reset upstream/gh-pages
 
 # for dev, latest, home redirects
 mkdir dev latest
-export URL="https://docs.mdanalysis.org"
+export URL="https://minium.com.au/mdanalysis"
 python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
 touch .
 touch .nojekyll
@@ -64,6 +64,8 @@ git add -A ${VERSION}/
 git add .nojekyll versions.json
 git add index.html dev latest
 git add *.xml
+
+ls *
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
