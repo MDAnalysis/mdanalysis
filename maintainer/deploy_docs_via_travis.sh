@@ -59,7 +59,7 @@ git reset upstream/gh-pages
 # dev/ is a copy of the dev docs with the highest number (so 2.0.0-dev instead of 1.0.1-dev)
 # stable/ is a copy of the release docs with the highest number
 mkdir latest
-export URL="https://docs.mdanalysis.org"
+export URL="https://minium.com.au/mdanalysis"
 python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
 touch .
 touch .nojekyll
@@ -73,6 +73,8 @@ for dirname in dev stable documentation_pages ; do
 done
 
 git add *.xml *.html
+
+ls *
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes

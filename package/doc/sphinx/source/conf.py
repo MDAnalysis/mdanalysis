@@ -49,7 +49,7 @@ mathjax_path = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?
 # they are now at docs.mdanalysis.org/, which requires a CNAME DNS record
 # pointing to mdanalysis.github.io. To change this URL you should change/delete
 # the CNAME record for "docs" and update the URL in GitHub settings
-site_url = "https://docs.mdanalysis.org/"
+site_url = "https://minium.com.au/mdanalysis"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -161,7 +161,7 @@ html_theme_options = {
 }
 
 html_context = {
-    'versions_json_url': 'https://docs.mdanalysis.org/versions.json'
+    'versions_json_url': 'https://minium.com.au/mdanalysis/versions.json'
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
