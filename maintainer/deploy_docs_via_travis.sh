@@ -54,7 +54,7 @@ git fetch --depth 50 upstream ${GH_DOC_BRANCH} gh-pages
 git reset upstream/gh-pages
 
 # for dev, latest, home redirects
-mkdir dev latest
+mkdir latest
 export URL="https://docs.mdanalysis.org"
 python ${MAINTAIN_DIR}/update_json_stubs_sitemap.py
 touch .
@@ -62,8 +62,13 @@ touch .nojekyll
 
 git add -A ${VERSION}/
 git add .nojekyll versions.json
-git add index.html dev latest
-git add *.xml
+git add index.html latest
+
+for dirname in dev stable documentation_pages ; do
+    if [ -d $dirname ]; then git add $dirname; fi
+done
+
+git add *.xml *.html
 
 # check for anything to commit
 # https://stackoverflow.com/questions/3878624/how-do-i-programmatically-determine-if-there-are-uncommited-changes
