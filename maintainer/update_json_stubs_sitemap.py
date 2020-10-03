@@ -16,6 +16,7 @@ import xml.etree.ElementTree as ET
 import errno
 import glob
 import textwrap
+import shutil
 
 try:
     from urllib.request import Request, urlopen
@@ -120,9 +121,10 @@ else:
 
 
 if latest:
-    html_files = glob.glob(f'{VERSION}/**/*.html', recursive=True)
+    shutil.copytree(VERSION, "stable")
+    html_files = glob.glob(f'stable/**/*.html', recursive=True)
     for file in html_files:
-        outfile = file.strip(f'{VERSION}/')
+        outfile = file.strip(f'stable/')
         dirname = os.path.dirname(outfile)
         if dirname and not os.path.exists(dirname):
             try:
@@ -132,15 +134,16 @@ if latest:
                     raise
 
         write_redirect(file, '', outfile)
+    
+
 
 if latest_version:
-    write_redirect('index.html', latest_version)
-    write_redirect('objects.inv', latest_version, 'latest/objects.inv')
+    write_redirect('index.html', "stable")
     write_redirect('index.html', latest_version, 'latest/index.html')
 
 
-if dev_version:
-    write_redirect('index.html', dev_version, 'dev/index.html')
+if dev_version == VERSION:
+    shutil.copytree(VERSION, "dev")
 
 # ========= WRITE SUPER SITEMAP.XML =========
 # make one big sitemap.xml
