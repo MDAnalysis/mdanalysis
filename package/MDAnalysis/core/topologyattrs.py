@@ -21,7 +21,7 @@
 # J. Comput. Chem. 32 (2011), 2319--2327, doi:10.1002/jcc.21787
 #
 
-"""\
+r"""
 Topology attribute objects --- :mod:`MDAnalysis.core.topologyattrs`
 ===================================================================
 
@@ -31,6 +31,7 @@ parsers.
 TopologyAttrs are used to contain attributes such as atom names or resids.
 These are usually read by the TopologyParser.
 """
+
 import Bio.Seq
 import Bio.SeqRecord
 from collections import defaultdict
@@ -476,7 +477,7 @@ class Atomids(AtomAttr):
 class _AtomStringAttr(AtomAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
-      
+
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
@@ -589,7 +590,7 @@ class Atomnames(_AtomStringAttr):
     transplants[Residue].append(('phi_selection', phi_selection))
 
     def phi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
-        """Select list of AtomGroups corresponding to the phi protein 
+        """Select list of AtomGroups corresponding to the phi protein
         backbone dihedral C'-N-CA-C.
 
         Parameters
@@ -708,13 +709,13 @@ class Atomnames(_AtomStringAttr):
     transplants[Residue].append(('psi_selection', psi_selection))
 
     def _get_next_residues_by_resid(residues):
-        """Select list of Residues corresponding to the next resid for each 
+        """Select list of Residues corresponding to the next resid for each
         residue in `residues`.
 
         Returns
         -------
         List of Residues
-            List of the next residues in the Universe, by resid and segid. 
+            List of the next residues in the Universe, by resid and segid.
             If not found, the corresponding item in the list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -748,13 +749,13 @@ class Atomnames(_AtomStringAttr):
                                       _get_next_residues_by_resid))
 
     def _get_prev_residues_by_resid(residues):
-        """Select list of Residues corresponding to the previous resid for each 
+        """Select list of Residues corresponding to the previous resid for each
         residue in `residues`.
 
         Returns
         -------
         List of Residues
-            List of the previous residues in the Universe, by resid and segid. 
+            List of the previous residues in the Universe, by resid and segid.
             If not found, the corresponding item in the list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -780,7 +781,7 @@ class Atomnames(_AtomStringAttr):
                                       _get_prev_residues_by_resid))
 
     def psi_selections(residues, c_name='C', n_name='N', ca_name='CA'):
-        """Select list of AtomGroups corresponding to the psi protein 
+        """Select list of AtomGroups corresponding to the psi protein
         backbone dihedral N-CA-C-N'.
 
         Parameters
@@ -796,7 +797,7 @@ class Atomnames(_AtomStringAttr):
         -------
         List of AtomGroups
             4-atom selections in the correct order. If no N' found in the
-            following residue (by resid) then the corresponding item in the 
+            following residue (by resid) then the corresponding item in the
             list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -884,7 +885,7 @@ class Atomnames(_AtomStringAttr):
     transplants[Residue].append(('omega_selection', omega_selection))
 
     def omega_selections(residues, c_name='C', n_name='N', ca_name='CA'):
-        """Select list of AtomGroups corresponding to the omega protein 
+        """Select list of AtomGroups corresponding to the omega protein
         backbone dihedral CA-C-N'-CA'.
 
         omega describes the -C-N- peptide bond. Typically, it is trans (180
@@ -904,7 +905,7 @@ class Atomnames(_AtomStringAttr):
         -------
         List of AtomGroups
             4-atom selections in the correct order. If no C' found in the
-            previous residue (by resid) then the corresponding item in the 
+            previous residue (by resid) then the corresponding item in the
             list is ``None``.
 
         .. versionadded:: 1.0.0
@@ -973,7 +974,7 @@ class Atomnames(_AtomStringAttr):
 
     def chi1_selections(residues, n_name='N', ca_name='CA', cb_name='CB',
                         cg_name='CG'):
-        """Select list of AtomGroups corresponding to the chi1 sidechain dihedral 
+        """Select list of AtomGroups corresponding to the chi1 sidechain dihedral
         N-CA-CB-CG.
 
         Parameters
@@ -1139,7 +1140,7 @@ class Masses(AtomAttr):
     @warn_if_not_unique
     @check_pbc_and_unwrap
     def center_of_mass(group, pbc=False, compound='group', unwrap=False):
-        """Center of mass of (compounds of) the group.
+        r"""Center of mass of (compounds of) the group.
 
         Computes the center of mass of :class:`Atoms<Atom>` in the group.
         Centers of mass per :class:`Residue`, :class:`Segment`, molecule, or
@@ -1200,7 +1201,7 @@ class Masses(AtomAttr):
 
     @warn_if_not_unique
     def total_mass(group, compound='group'):
-        """Total mass of (compounds of) the group.
+        r"""Total mass of (compounds of) the group.
 
         Computes the total mass of :class:`Atoms<Atom>` in the group.
         Total masses per :class:`Residue`, :class:`Segment`, molecule, or
@@ -1467,7 +1468,7 @@ class Masses(AtomAttr):
 
 
         .. versionchanged:: 0.8 Added *pbc* keyword
-        .. versionchanged:: 1.0.0 
+        .. versionchanged:: 1.0.0
             Always return principal axes in right-hand convention.
 
         """
@@ -1558,7 +1559,7 @@ class Charges(AtomAttr):
 
     @warn_if_not_unique
     def total_charge(group, compound='group'):
-        """Total charge of (compounds of) the group.
+        r"""Total charge of (compounds of) the group.
 
         Computes the total charge of :class:`Atoms<Atom>` in the group.
         Total charges per :class:`Residue`, :class:`Segment`, molecule, or
@@ -1775,7 +1776,7 @@ class Resids(ResidueAttr):
 class _ResidueStringAttr(ResidueAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
-      
+
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
@@ -1794,7 +1795,7 @@ class _ResidueStringAttr(ResidueAttr):
                 self.nmidx[i] = nextidx
 
         self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -1826,7 +1827,7 @@ class _ResidueStringAttr(ResidueAttr):
         self.nmidx[rg.ix] = newidx  # newidx either single value or same size array
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
 
 # TODO: update docs to property doc
@@ -2011,7 +2012,7 @@ class SegmentAttr(TopologyAttr):
 class _SegmentStringAttr(SegmentAttr):
     def __init__(self, vals, guessed=False):
         self._guessed = guessed
-      
+
         self.namedict = dict()  # maps str to nmidx
         name_lookup = []  # maps idx to str
         # eg namedict['O'] = 5 & name_lookup[5] = 'O'
@@ -2030,7 +2031,7 @@ class _SegmentStringAttr(SegmentAttr):
                 self.nmidx[i] = nextidx
 
         self.name_lookup = np.array(name_lookup, dtype=object)
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
     @staticmethod
     def _gen_initial_values(na, nr, ns):
@@ -2062,9 +2063,9 @@ class _SegmentStringAttr(SegmentAttr):
         self.nmidx[sg.ix] = newidx  # newidx either single value or same size array
         if newnames:
             self.name_lookup = np.concatenate([self.name_lookup, newnames])
-        self.values = self.name_lookup[self.nmidx]    
+        self.values = self.name_lookup[self.nmidx]
 
-        
+
 # TODO: update docs to property doc
 class Segids(_SegmentStringAttr):
     attrname = 'segids'
@@ -2268,7 +2269,7 @@ class Bonds(_Connection):
         return self.universe._fragdict[self.ix].ix
 
     def fragindices(self):
-        """The
+        r"""The
         :class:`fragment indices<MDAnalysis.core.topologyattrs.Bonds.fragindex>`
         of all :class:`Atoms<MDAnalysis.core.groups.Atom>` in this
         :class:`~MDAnalysis.core.groups.AtomGroup`.

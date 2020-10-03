@@ -13,6 +13,9 @@ import json
 import os
 import shutil
 import xml.etree.ElementTree as ET
+import errno
+import glob
+import textwrap
 
 try:
     from urllib.request import Request, urlopen
@@ -21,6 +24,16 @@ except ImportError:
 
 URL = os.environ['URL']
 VERSION = os.environ['VERSION']
+
+if "http" not in URL:
+    raise ValueError("URL should have the transfer protocol (HTTP/S). "
+                     f"Given: $URL={URL}")
+
+try:
+    int(VERSION[0])
+except ValueError:
+    raise ValueError("$VERSION should start with a number. "
+                     f"Given: $VERSION={VERSION}") from None
 
 
 def get_web_file(filename, callback, default):
@@ -40,17 +53,32 @@ def get_web_file(filename, callback, default):
         return callback(data)
 
 
+def write_redirect(file, version='', outfile=None):
+    if outfile is None:
+        outfile = file
+    url = os.path.join(URL, version, file)
+    REDIRECT = textwrap.dedent(f"""
+    <!DOCTYPE html>
+    <meta charset="utf-8">
+    <title>Redirecting to {url}</title>
+    <meta http-equiv="refresh" content="0; URL={url}">
+    <link rel="canonical" href="{url}">
+    """)
+    with open(outfile, 'w') as f:
+        f.write(REDIRECT)
+    print(f"Wrote redirect from {url} to {outfile}")
+
+
 # ========= WRITE JSON =========
 # Update $root/versions.json with links to the right version
 versions = get_web_file('versions.json', json.loads, [])
 existing = [item['version'] for item in versions]
 already_exists = VERSION in existing
+latest = 'dev' not in VERSION
 
-if not already_exists:
-    latest = 'dev' not in VERSION
-    if latest:
-        for ver in versions:
-            ver['latest'] = False
+if not already_exists and latest:
+    for ver in versions:
+        ver['latest'] = False
 
     versions.append({
         'version': VERSION,
@@ -58,6 +86,8 @@ if not already_exists:
         'url': os.path.join(URL, VERSION),
         'latest': latest
     })
+
+versions.sort(key=lambda x: x["version"])
 
 with open("versions.json", 'w') as f:
     json.dump(versions, f, indent=2)
@@ -68,44 +98,49 @@ with open("versions.json", 'w') as f:
 # latest/index.html -> latest release
 # dev/index.html -> dev docs
 
-REDIRECT = """
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>Redirecting to {url}</title>
-<meta http-equiv="refresh" content="0; URL={url}">
-<link rel="canonical" href="{url}">
-"""
-
 for ver in versions[::-1]:
     if ver['latest']:
-        latest_url = ver['url']
+        latest_version = ver['version']
         break
 else:
     try:
-        latest_url = versions[-1]['url']
+        latest_version = versions[-1]['version']
     except IndexError:
-        latest_url = None
+        latest_version = None
 
 for ver in versions[::-1]:
     if 'dev' in ver['version']:
-        dev_url = ver['url']
+        dev_version = ver['version']
         break
 else:
     try:
-        dev_url = versions[-1]['url']
+        dev_version = versions[-1]['version']
     except IndexError:
-        dev_url = None
+        dev_version = None
 
-if latest_url:
-    with open('index.html', 'w') as f:
-        f.write(REDIRECT.format(url=latest_url))
 
-    with open('latest/index.html', 'w') as f:
-        f.write(REDIRECT.format(url=latest_url))
+if latest:
+    html_files = glob.glob(f'{VERSION}/**/*.html', recursive=True)
+    for file in html_files:
+        outfile = file.strip(f'{VERSION}/')
+        dirname = os.path.dirname(outfile)
+        if dirname and not os.path.exists(dirname):
+            try:
+                os.makedirs(dirname)
+            except OSError as exc:
+                if exc.errno != errno.EEXIST:
+                    raise
 
-if dev_url:
-    with open('dev/index.html', 'w') as f:
-        f.write(REDIRECT.format(url=dev_url))
+        write_redirect(file, '', outfile)
+
+if latest_version:
+    write_redirect('index.html', latest_version)
+    write_redirect('objects.inv', latest_version, 'latest/objects.inv')
+    write_redirect('index.html', latest_version, 'latest/index.html')
+
+
+if dev_version:
+    write_redirect('index.html', dev_version, 'dev/index.html')
 
 # ========= WRITE SUPER SITEMAP.XML =========
 # make one big sitemap.xml
