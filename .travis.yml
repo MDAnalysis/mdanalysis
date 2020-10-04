@@ -13,9 +13,9 @@ os:
 
 env:
   global:
-    # - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
+    - secure: "VJ8cMKXuVe7e6vlBeUkd8j6wUbxYF0Yja6CHn0tmpzVGm3CCBXxoZcgvgtfyJTjf+2nqKIjsIy4FdYIkotXYaDwAX5XHHHWS/++7917pddJ2nZkBnBI069c2gLL6vU7E7jbGUzmKywsA73Of44pVsYgtGneK0F7/guLawpWBOOpLsui+pL2X4jYXZL4WHjTPGTphUN4uhQIkqKkuu9ZSR6uodzZDjzkH+q0FT5RLqmgVttnCD9ZmS2ppQsI9f0jZUd8V0M4NGaTHd439uj1UpMMriSJEzcq9DsKZEncjoJZGqfnXPUG9j5Z+jZ8TyxClma93HxeXbXa8A4B6V0wwNA2VG3ZCCeSQon2iNVl8YNZLPaMQleeoQ+uT6D4z26fHVGzk4knMeTROCfHoZo2T8as5EeFDvcbXGva82BnF+aCFxj/d9f1VC3too7bsY+gBBUu/oxVizDWDEby+2Iz2EzUGG3YltF0MjaLrFQ5ggox4vZVVgmlJo8KT6zonTNl8EdKwIzUDh1ZrpiNv3yMgt030heTFL6EJ30xRQJZkwwklJBPgDuARz2FxyKk+hO8IR7AuGLICwP1IpUASXaKeSD1K09qUnmB8W8RO5YhnLu7ABr6oghU9t63r1V0jLTCvYbO4SQIJ2muNsTay/rKo5QtzklPka/5Kud6KyIrsKb4="
     - GH_DOC_BRANCH=develop
-    - GH_REPOSITORY=github.com/lilyminium/mdanalysis.git
+    - GH_REPOSITORY=github.com/MDAnalysis/mdanalysis.git
     - GIT_CI_USER=TravisCI
     - GIT_CI_EMAIL=TravisCI@mdanalysis.org
     - MDA_DOCDIR=${TRAVIS_BUILD_DIR}/package/doc/html/html
@@ -42,12 +42,12 @@ env:
 
   jobs:
     # Run a coverage test for most versions
-    # - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    # - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    # - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    # - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.8 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.7 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - PYTHON_VERSION=3.6 CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
     - NUMPY_VERSION=1.13.3
-    # - NUMPY_VERSION=dev  EVENT_TYPE="cron"
+    - NUMPY_VERSION=dev  EVENT_TYPE="cron"
 
 jobs:
   fast_finish: true
@@ -61,54 +61,54 @@ jobs:
            INSTALL_HOLE="false"
            PIP_DEPENDENCIES="${PIP_DEPENDENCIES} sphinx==1.8.5 sphinx-sitemap sphinx_rtd_theme msmb_theme==1.2.0"
 
-    # - env: NAME="Lint"
-    #        PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
-    #        MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
-    #        SETUP_CMD=""
-    #        BUILD_CMD=""
-    #        CONDA_DEPENDENCIES=""
-    #        INSTALL_HOLE="false"
+    - env: NAME="Lint"
+           PYLINTRC="${TRAVIS_BUILD_DIR}/package/.pylintrc"
+           MAIN_CMD="pylint package/MDAnalysis && pylint testsuite/MDAnalysisTests"
+           SETUP_CMD=""
+           BUILD_CMD=""
+           CONDA_DEPENDENCIES=""
+           INSTALL_HOLE="false"
 
-    # # pin dependencies for legacy:
-    # # - ensure that chemfiles can get the last netcdf4 that is still supported
-    # #   see https://github.com/MDAnalysis/mdanalysis/pull/2798#issuecomment-679991785
-    # # - install chemfiles and chemfiles-lib via pip (conda times out)
-    # - env: NAME="python 2.7"
-    #        PYTHON_VERSION=2.7
-    #        CODECOV="true"
-    #        NUMPY_VERSION=1.16
-    #        CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES}"
-    #        SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
-    #        PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles"
+    # pin dependencies for legacy:
+    # - ensure that chemfiles can get the last netcdf4 that is still supported
+    #   see https://github.com/MDAnalysis/mdanalysis/pull/2798#issuecomment-679991785
+    # - install chemfiles and chemfiles-lib via pip (conda times out)
+    - env: NAME="python 2.7"
+           PYTHON_VERSION=2.7
+           CODECOV="true"
+           NUMPY_VERSION=1.16
+           CONDA_DEPENDENCIES="${CONDA_STANDARD_DEPENDENCIES}"
+           SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0 chemfiles"
 
-    # - env: NAME="asv check"
-    #        PYTHON_VERSION=2.7
-    #        CODECOV="false"
-    #        MAIN_CMD=""
-    #        SETUP_CMD=""
-    #        NUMPY_VERSION=1.16
-    #        PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
-    #        ASV_CHECK="true"
+    - env: NAME="asv check"
+           PYTHON_VERSION=2.7
+           CODECOV="false"
+           MAIN_CMD=""
+           SETUP_CMD=""
+           NUMPY_VERSION=1.16
+           PIP_DEPENDENCIES="${PIP_DEPENDENCIES} setuptools<45.0.0"
+           ASV_CHECK="true"
 
-    # - env: NAME="pypi check"
-    #        PYTHON_VERSION=3.7
-    #        CODECOV="false"
-    #        MAIN_CMD="cd package && python setup.py"
-    #        SETUP_CMD="sdist"
-    #        BUILD_CMD=""
-    #        INSTALL_HOLE="false"
-    #        CONDA_DEPENDENCIES="setuptools cython twine"
-    #        PYPI_CHECK="true"
+    - env: NAME="pypi check"
+           PYTHON_VERSION=3.7
+           CODECOV="false"
+           MAIN_CMD="cd package && python setup.py"
+           SETUP_CMD="sdist"
+           BUILD_CMD=""
+           INSTALL_HOLE="false"
+           CONDA_DEPENDENCIES="setuptools cython twine"
+           PYPI_CHECK="true"
 
-    # - os: osx
-    #   env: PYTHON_VERSION=3.6
-    #        NUMPY_VERSION=1.17.3
+    - os: osx
+      env: PYTHON_VERSION=3.6
+           NUMPY_VERSION=1.17.3
 
-    # - env: NAME='minimal'
-    #        PIP_DEPENDENCIES=""
-    #        CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
-    #        INSTALL_HOLE="false"
-    #        CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
+    - env: NAME='minimal'
+           PIP_DEPENDENCIES=""
+           CONDA_DEPENDENCIES=${CONDA_MIN_DEPENDENCIES}
+           INSTALL_HOLE="false"
+           CODECOV="true" SETUP_CMD="${PYTEST_FLAGS} --cov=MDAnalysis"
 
   allow_failures:
     - env: NUMPY_VERSION=dev EVENT_TYPE="cron"
@@ -168,12 +168,11 @@ after_success:
   # turn off blocking as it causes large writes to stdout to fail 
   # (see https://github.com/travis-ci/travis-ci/issues/4704)
   - |
-    if [[ ${BUILD_DOCS} == "true" ]] ; then
+    if [[ ${TRAVIS_PULL_REQUEST} == "false" ]] && [[ ${BUILD_DOCS} == "true" ]] ; then
       python -c 'import os,sys,fcntl; flags = fcntl.fcntl(sys.stdout, fcntl.F_GETFL); fcntl.fcntl(sys.stdout, fcntl.F_SETFL, flags&~os.O_NONBLOCK);'
       cd ${TRAVIS_BUILD_DIR}/package/MDAnalysis
       export GH_DOC_BRANCH=${TRAVIS_BRANCH}
       export VERSION=$(python -c "import version; print(version.__version__)")
-      export GH_TOKEN=$GH_TOKEN
       cd -
       bash ${TRAVIS_BUILD_DIR}/maintainer/deploy_docs_via_travis.sh;
     fi
